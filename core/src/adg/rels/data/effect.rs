@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffectId, AItemListId},
+    ad::AEffectId,
     adg::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
@@ -24,10 +24,8 @@ impl Fk for EEffect {
     }
     fn get_item_list_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(a_buff_data) = g_supp.eff_buff_map.get(&self.id)
-            && let AItemListId::Eve(e_item_list_id) = a_buff_data.scope.item_list_id
-        {
-            vec.push(e_item_list_id);
+        if let Some(a_buff_data) = g_supp.eff_buff_map.get(&self.id) {
+            vec.extend(a_buff_data.iter_a_item_list_ids().filter_map(|v| v.dc_eve()));
         }
         vec
     }
@@ -43,7 +41,7 @@ impl Fk for EEffect {
         vec.extend(self.get_fks_from_mod_args("modifyingAttributeID"));
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
         if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(buff_info.extract_a_attr_ids());
+            vec.extend(buff_info.iter_a_attr_ids());
         }
         // Hardcoded charge info can reference attributes
         if let Some(n_effect) = N_EFFECT_MAP.get(&AEffectId::Dogma(self.id)) {
@@ -58,7 +56,7 @@ impl Fk for EEffect {
     fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(buff_info.extract_a_buff_ids());
+            vec.extend(buff_info.iter_a_buff_ids());
         }
         vec
     }

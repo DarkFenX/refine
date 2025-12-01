@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId},
+    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId},
     def::{AttrVal, Count, OF},
     ec,
     ed::EEffectId,
@@ -31,16 +31,29 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::Customized(vec![
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::REMOTE_REPAIR_IMPEDANCE, OF(-50.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::WARP_PENALTY, OF(100.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_TETHER, OF(1.0)),
-            ]),
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-                ..
-            },
+            custom: vec![
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::REMOTE_REPAIR_IMPEDANCE,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(-50.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WARP_PENALTY,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(100.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::DISALLOW_TETHER,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+            ],
+            ..
         }),
         adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, true)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),

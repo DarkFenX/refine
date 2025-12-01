@@ -5,7 +5,7 @@ use smallvec::SmallVec;
 use super::AffectorValue;
 use crate::{
     ac,
-    ad::{AAttrId, ABuffModifier, AEffectModifier},
+    ad::{AAttrId, ABuffModifier, AEffectBuffScope, AEffectModifier},
     def::AttrVal,
     misc::EffectSpec,
     nd::NProjMultGetter,
@@ -69,7 +69,7 @@ impl RawModifier {
         effect_mod: &AEffectModifier,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
-        let kind = get_mod_kind(effect, &affectee_filter)?;
+        let kind = get_regular_mod_kind(effect, &affectee_filter)?;
         // Targeted effects are affected by resists
         let resist_attr_id = match kind {
             ModifierKind::Targeted => eff_funcs::get_resist_attr_id(affector_item, effect),
@@ -95,16 +95,18 @@ impl RawModifier {
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
+        buff_scope: &AEffectBuffScope,
         buff_mod: &ABuffModifier,
         affector_attr_id: AAttrId,
         loc: Location,
         buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
-        RawModifier::from_buff(
+        RawModifier::try_from_buff(
             affector_key,
             affector_item,
             effect,
             buff,
+            buff_scope,
             buff_mod,
             AffectorValue::AttrId(affector_attr_id),
             loc,
@@ -116,33 +118,36 @@ impl RawModifier {
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
+        buff_scope: &AEffectBuffScope,
         buff_mod: &ABuffModifier,
         affector_mod_val: AttrVal,
         loc: Location,
     ) -> Option<Self> {
-        RawModifier::from_buff(
+        RawModifier::try_from_buff(
             affector_key,
             affector_item,
             effect,
             buff,
+            buff_scope,
             buff_mod,
             AffectorValue::Hardcoded(affector_mod_val),
             loc,
             None,
         )
     }
-    fn from_buff(
+    fn try_from_buff(
         affector_key: UItemKey,
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
+        buff_scope: &AEffectBuffScope,
         buff_mod: &ABuffModifier,
         affector_value: AffectorValue,
         loc: Location,
         buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_buff_affectee_filter(&buff_mod.affectee_filter, loc, affector_item);
-        let kind = get_mod_kind(effect, &affectee_filter)?;
+        let kind = get_buff_mod_kind(effect, buff_scope)?;
         let resist_attr_id = match kind {
             ModifierKind::Buff => eff_funcs::get_resist_attr_id(affector_item, effect),
             _ => None,
@@ -180,7 +185,7 @@ impl RawModifier {
     }
 }
 
-fn get_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
+fn get_regular_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
     if let AffecteeFilter::Direct(loc) = affectee_filter
         && matches!(loc, Location::Item | Location::Other)
     {
@@ -191,15 +196,22 @@ fn get_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<Mo
         (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)
         }
-        // Buffs
-        (ac::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope.fleet_only {
-            true => Some(ModifierKind::FleetBuff),
-            false => Some(ModifierKind::Buff),
-        },
         // Lib system-wide effects are EVE system effects and buffs
         (ac::effcats::SYSTEM, None) => Some(ModifierKind::System),
         // Targeted effects
         (ac::effcats::TARGET, None) => Some(ModifierKind::Targeted),
+        _ => None,
+    }
+}
+
+fn get_buff_mod_kind(effect: &REffect, buff_scope: &AEffectBuffScope) -> Option<ModifierKind> {
+    match effect.get_category() {
+        ac::effcats::ACTIVE => match buff_scope {
+            // TODO: categorize it properly
+            AEffectBuffScope::Carrier => None,
+            AEffectBuffScope::Projected(_) => Some(ModifierKind::Buff),
+            AEffectBuffScope::Fleet(_) => Some(ModifierKind::FleetBuff),
+        },
         _ => None,
     }
 }

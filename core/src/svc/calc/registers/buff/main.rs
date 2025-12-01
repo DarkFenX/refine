@@ -1,5 +1,4 @@
 use crate::{
-    ad::AEffectBuffSrc,
     misc::AttrSpec,
     rd::{REffect, REffectKey},
     svc::calc::RawModifier,
@@ -51,7 +50,7 @@ impl BuffRegister {
 
 fn uses_default_attrs(effect: &REffect) -> bool {
     match &effect.get_buff_info() {
-        Some(buff_info) => matches!(buff_info.source, AEffectBuffSrc::DefaultAttrs),
+        Some(buff_info) => buff_info.default_attrs.is_some(),
         _ => false,
     }
 }

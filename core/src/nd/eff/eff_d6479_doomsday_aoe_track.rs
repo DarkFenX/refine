@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId},
+    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
@@ -17,31 +17,44 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::Customized(vec![
-                AEffectBuffSrcCustom::AffectorVal(ac::buffs::WD_BURST_TURRET_MAX_RANGE, ac::attrs::MAX_RANGE_BONUS),
-                AEffectBuffSrcCustom::AffectorVal(ac::buffs::WD_BURST_TURRET_FALLOFF_RANGE, ac::attrs::FALLOFF_BONUS),
-                AEffectBuffSrcCustom::AffectorVal(ac::buffs::WD_BURST_TURRET_TRACKING, ac::attrs::TRACKING_SPEED_BONUS),
-                AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::WD_BURST_MISSILE_VELOCITY,
-                    ac::attrs::MISSILE_VELOCITY_BONUS,
-                ),
-                AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::WD_BURST_MISSILE_DURATION,
-                    ac::attrs::EXPLOSION_DELAY_BONUS,
-                ),
-                AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::WD_BURST_MISSILE_EXPLOSION_RADIUS,
-                    ac::attrs::AOE_CLOUD_SIZE_BONUS,
-                ),
-                AEffectBuffSrcCustom::AffectorVal(
-                    ac::buffs::WD_BURST_MISSILE_EXPLOSION_VELOCITY,
-                    ac::attrs::AOE_VELOCITY_BONUS,
-                ),
-            ]),
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-                ..
-            },
+            custom: vec![
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_TURRET_MAX_RANGE,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::MAX_RANGE_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_TURRET_FALLOFF_RANGE,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::FALLOFF_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_TURRET_TRACKING,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::TRACKING_SPEED_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_MISSILE_VELOCITY,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::MISSILE_VELOCITY_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_MISSILE_DURATION,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::EXPLOSION_DELAY_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_MISSILE_EXPLOSION_RADIUS,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::AOE_CLOUD_SIZE_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::WD_BURST_MISSILE_EXPLOSION_VELOCITY,
+                    source: AEffectBuffCustomSrc::Attr(ac::attrs::AOE_VELOCITY_BONUS),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                },
+            ],
+            ..
         }),
         modifier_proj_attrs_getter: Some(get_aoe_burst_mod_proj_attrs),
         hc: NEffectHc {

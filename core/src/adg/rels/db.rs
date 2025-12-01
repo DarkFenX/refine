@@ -3,18 +3,18 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed,
+    ed::{EAbilId, EAttrId, EBuffId, EData, EDataCont, EEffectId, EItemGrpId, EItemId, EItemListId},
     util::RSet,
 };
 
 pub(in crate::adg) struct KeyDb {
-    pub(in crate::adg) items: RSet<ed::EItemId>,
-    pub(in crate::adg) groups: RSet<ed::EItemGrpId>,
-    pub(in crate::adg) item_lists: RSet<ed::EItemListId>,
-    pub(in crate::adg) attrs: RSet<ed::EAttrId>,
-    pub(in crate::adg) effects: RSet<ed::EEffectId>,
-    pub(in crate::adg) abils: RSet<ed::EAbilId>,
-    pub(in crate::adg) buffs: RSet<ed::EBuffId>,
+    pub(in crate::adg) items: RSet<EItemId>,
+    pub(in crate::adg) groups: RSet<EItemGrpId>,
+    pub(in crate::adg) item_lists: RSet<EItemListId>,
+    pub(in crate::adg) attrs: RSet<EAttrId>,
+    pub(in crate::adg) effects: RSet<EEffectId>,
+    pub(in crate::adg) abils: RSet<EAbilId>,
+    pub(in crate::adg) buffs: RSet<EBuffId>,
 }
 impl KeyDb {
     pub(in crate::adg) fn new() -> Self {
@@ -29,7 +29,7 @@ impl KeyDb {
         }
     }
     // Primary keys
-    pub(in crate::adg) fn new_pkdb(e_data: &ed::EData) -> Self {
+    pub(in crate::adg) fn new_pkdb(e_data: &EData) -> Self {
         let mut pkdb = Self::new();
         Self::extend_pk_vec(&mut pkdb.items, &e_data.items);
         Self::extend_pk_vec(&mut pkdb.groups, &e_data.groups);
@@ -40,13 +40,13 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &e_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut RSet<KeyPart>, cont: &ed::EDataCont<T>) {
+    fn extend_pk_vec<T: Pk>(set: &mut RSet<KeyPart>, cont: &EDataCont<T>) {
         for i in cont.data.iter() {
             set.extend(i.get_pk())
         }
     }
     // Foreign keys
-    pub(in crate::adg) fn new_fkdb(e_data: &ed::EData, g_supp: &GSupport) -> Self {
+    pub(in crate::adg) fn new_fkdb(e_data: &EData, g_supp: &GSupport) -> Self {
         let mut fkdb = Self::new();
         fkdb.extend_fk_vec(&e_data.items, g_supp);
         fkdb.extend_fk_vec(&e_data.groups, g_supp);
@@ -65,7 +65,7 @@ impl KeyDb {
         fkdb.process_standalone_buffs(g_supp);
         fkdb
     }
-    fn extend_fk_vec<T: Fk>(&mut self, cont: &ed::EDataCont<T>, g_supp: &GSupport) {
+    fn extend_fk_vec<T: Fk>(&mut self, cont: &EDataCont<T>, g_supp: &GSupport) {
         for v in cont.data.iter() {
             self.items.extend(v.get_item_fks(g_supp));
             self.groups.extend(v.get_group_fks(g_supp));
@@ -78,8 +78,10 @@ impl KeyDb {
     }
     fn process_standalone_buffs(&mut self, g_supp: &GSupport) {
         for a_buff_info in g_supp.standalone_buffs.iter() {
-            self.attrs.extend(a_buff_info.extract_a_attr_ids());
-            self.buffs.extend(a_buff_info.extract_a_buff_ids());
+            self.attrs.extend(a_buff_info.iter_a_attr_ids());
+            self.buffs.extend(a_buff_info.iter_a_buff_ids());
+            self.item_lists
+                .extend(a_buff_info.iter_a_item_list_ids().filter_map(|v| v.dc_eve()));
         }
     }
 }

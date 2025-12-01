@@ -1,11 +1,11 @@
 use crate::{
     ac,
-    ad::{AAttrId, AAttrVal, ABuffId, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom},
+    ad::{AAttrId, AAttrVal, ABuffId, AEffectBuffCustomSrc, AEffectBuffScope},
     misc::EffectSpec,
     rd::{REffect, REffectKey},
     svc::{
         SvcCtx,
-        calc::{Calc, RawModifier},
+        calc::{Calc, Location, RawModifier},
     },
     ud::{UItem, UItemKey},
 };
@@ -29,50 +29,46 @@ impl Calc {
         }
         // Buffs
         if let Some(buff_info) = effect.get_buff_info().as_ref() {
-            match &buff_info.source {
-                AEffectBuffSrc::DefaultAttrs => {
-                    for (buff_type_attr_id, buff_val_attr_id) in ac::extras::BUFF_STDATTRS {
-                        if let Ok(buff_id) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id) {
-                            add_buff_mods(
-                                reuse_rmods,
-                                ctx,
-                                item_key,
-                                item,
-                                effect,
-                                &(buff_id.extra.round() as ABuffId),
-                                &buff_info.scope,
-                                Some(buff_type_attr_id),
-                                buff_val_attr_id,
-                            );
-                        }
+            if let Some(scope) = buff_info.default_attrs {
+                for (buff_type_attr_id, buff_val_attr_id) in ac::extras::BUFF_STDATTRS {
+                    if let Ok(buff_id) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id) {
+                        add_buff_mods(
+                            reuse_rmods,
+                            ctx,
+                            item_key,
+                            item,
+                            effect,
+                            &(buff_id.extra.round() as ABuffId),
+                            &scope,
+                            Some(buff_type_attr_id),
+                            buff_val_attr_id,
+                        );
                     }
                 }
-                AEffectBuffSrc::Customized(buff_custom_srcs) => {
-                    for buff_custom_src in buff_custom_srcs {
-                        match buff_custom_src {
-                            AEffectBuffSrcCustom::AffectorVal(buff_id, buff_val_attr_id) => add_buff_mods(
-                                reuse_rmods,
-                                ctx,
-                                item_key,
-                                item,
-                                effect,
-                                buff_id,
-                                &buff_info.scope,
-                                None,
-                                *buff_val_attr_id,
-                            ),
-                            AEffectBuffSrcCustom::HardcodedVal(buff_id, buff_val) => add_buff_mods_hardcoded(
-                                reuse_rmods,
-                                ctx,
-                                item_key,
-                                item,
-                                effect,
-                                buff_id,
-                                &buff_info.scope,
-                                *buff_val,
-                            ),
-                        }
-                    }
+            }
+            for custom_buff in buff_info.custom.iter() {
+                match custom_buff.source {
+                    AEffectBuffCustomSrc::Attr(buff_val_attr_id) => add_buff_mods(
+                        reuse_rmods,
+                        ctx,
+                        item_key,
+                        item,
+                        effect,
+                        &custom_buff.buff_id,
+                        &custom_buff.scope,
+                        None,
+                        buff_val_attr_id,
+                    ),
+                    AEffectBuffCustomSrc::Hardcoded(buff_val) => add_buff_mods_hardcoded(
+                        reuse_rmods,
+                        ctx,
+                        item_key,
+                        item,
+                        effect,
+                        &custom_buff.buff_id,
+                        &custom_buff.scope,
+                        buff_val,
+                    ),
                 }
             }
         }
@@ -100,7 +96,7 @@ impl Calc {
         for &effect_key in effect_keys {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(buff_info) = effect.get_buff_info().as_ref()
-                && matches!(buff_info.source, AEffectBuffSrc::DefaultAttrs)
+                && let Some(scope) = buff_info.default_attrs
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id)
             {
                 add_buff_mods(
@@ -110,7 +106,7 @@ impl Calc {
                     item,
                     effect,
                     &(buff_id_cval.extra.round() as ABuffId),
-                    &buff_info.scope,
+                    &scope,
                     Some(buff_type_attr_id),
                     buff_value_attr_id,
                 );
@@ -135,15 +131,21 @@ fn add_buff_mods(
         Some(buff) => buff,
         None => return,
     };
+    // TODO: do not bail on non-typelist scope
+    let loc = match Location::try_from_buff_scope(buff_scope) {
+        Some(loc) => loc,
+        None => return,
+    };
     for buff_mod in buff.get_mods().iter() {
         let rmod = match RawModifier::try_from_buff_regular(
             item_key,
             item,
             effect,
             buff,
+            buff_scope,
             buff_mod,
             buff_val_attr_id,
-            buff_scope.into(),
+            loc,
             buff_type_attr_id,
         ) {
             Some(rmod) => rmod,
@@ -167,15 +169,14 @@ fn add_buff_mods_hardcoded(
         Some(buff) => buff,
         None => return,
     };
+    // TODO: do not bail on non-typelist scope
+    let loc = match Location::try_from_buff_scope(buff_scope) {
+        Some(loc) => loc,
+        None => return,
+    };
     for buff_mod in buff.get_mods().iter() {
         let rmod = match RawModifier::try_from_buff_hardcoded(
-            item_key,
-            item,
-            effect,
-            buff,
-            buff_mod,
-            buff_val,
-            buff_scope.into(),
+            item_key, item, effect, buff, buff_scope, buff_mod, buff_val, loc,
         ) {
             Some(rmod) => rmod,
             None => continue,

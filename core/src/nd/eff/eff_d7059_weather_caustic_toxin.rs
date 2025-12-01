@@ -2,7 +2,7 @@
 
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectId},
+    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
     nd::NEffect,
@@ -16,11 +16,8 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::DefaultAttrs,
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-                ..
-            },
+            default_attrs: Some(AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS)),
+            ..
         }),
         ..
     }

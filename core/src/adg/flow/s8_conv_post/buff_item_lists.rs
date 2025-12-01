@@ -8,7 +8,7 @@ pub(in crate::adg::flow::s8_conv_post) fn fill_buff_item_lists(a_data: &mut ADat
     let mut involved_item_list_ids = RSet::new();
     for a_effect in a_data.effects.values() {
         if let Some(a_buff_info) = &a_effect.buff_info {
-            involved_item_list_ids.insert(a_buff_info.scope.item_list_id);
+            involved_item_list_ids.extend(a_buff_info.iter_a_item_list_ids());
         }
     }
     // Put data about buff-involved item lists onto items which belong to those lists

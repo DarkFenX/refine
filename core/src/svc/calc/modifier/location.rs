@@ -10,6 +10,15 @@ pub(crate) enum Location {
     Target,
     ItemList(AItemListId),
 }
+impl Location {
+    pub(in crate::svc::calc) fn try_from_buff_scope(buff_scope: &AEffectBuffScope) -> Option<Self> {
+        match buff_scope {
+            AEffectBuffScope::Carrier => None,
+            AEffectBuffScope::Projected(item_list_id) => Some(Self::ItemList(*item_list_id)),
+            AEffectBuffScope::Fleet(item_list_id) => Some(Self::ItemList(*item_list_id)),
+        }
+    }
+}
 impl From<&AEffectLocation> for Location {
     fn from(effect_loc: &AEffectLocation) -> Self {
         match effect_loc {
@@ -20,10 +29,5 @@ impl From<&AEffectLocation> for Location {
             AEffectLocation::Other => Self::Other,
             AEffectLocation::Target => Self::Target,
         }
-    }
-}
-impl From<&AEffectBuffScope> for Location {
-    fn from(buff_scope: &AEffectBuffScope) -> Self {
-        Self::ItemList(buff_scope.item_list_id)
     }
 }

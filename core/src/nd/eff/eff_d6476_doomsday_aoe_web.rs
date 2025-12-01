@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId},
+    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
@@ -17,14 +17,12 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::Customized(vec![AEffectBuffSrcCustom::AffectorVal(
-                ac::buffs::STASIS_WEBIFICATION_BURST,
-                ac::attrs::SPEED_FACTOR,
-            )]),
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-                ..
-            },
+            custom: vec![AEffectBuffCustom {
+                buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,
+                source: AEffectBuffCustomSrc::Attr(ac::attrs::SPEED_FACTOR),
+                scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+            }],
+            ..
         }),
         modifier_proj_attrs_getter: Some(get_aoe_burst_mod_proj_attrs),
         hc: NEffectHc {

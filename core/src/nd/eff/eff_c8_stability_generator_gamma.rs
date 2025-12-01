@@ -4,7 +4,7 @@
 use crate::{
     ac,
     ad::{
-        AEffect, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId, AItemId, AState,
+        AEffect, AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId, AItemId, AState,
     },
     def::OF,
     nd::{NEffect, eff::shared::sov_stability_generators::assign_effect},
@@ -29,15 +29,24 @@ fn make_effect() -> AEffect {
         category: ac::effcats::ACTIVE,
         state: AState::Active,
         buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::Customized(vec![
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_HITPOINT_BONUS, OF(5.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_SHIELD_BOOSTER_BONUS, OF(5.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::SOV_SMOD_CAPACITOR_CAPACITY_BONUS, OF(10.0)),
-            ]),
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS,
-                ..
-            },
+            custom: vec![
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::SOV_SMOD_SHIELD_HITPOINT_BONUS,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(5.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::SOV_SMOD_SHIELD_BOOSTER_BONUS,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(5.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
+                },
+                AEffectBuffCustom {
+                    buff_id: ac::buffs::SOV_SMOD_CAPACITOR_CAPACITY_BONUS,
+                    source: AEffectBuffCustomSrc::Hardcoded(OF(10.0)),
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
+                },
+            ],
+            ..
         }),
         ..
     }

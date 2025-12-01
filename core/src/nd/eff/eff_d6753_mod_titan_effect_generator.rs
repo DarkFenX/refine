@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectId},
+    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
@@ -17,11 +17,8 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::DefaultAttrs,
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS,
-                ..
-            },
+            default_attrs: Some(AEffectBuffScope::Projected(ac::itemlists::SHIPS)),
+            ..
         }),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {

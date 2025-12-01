@@ -5,7 +5,7 @@
 use crate::{
     ac,
     ad::{
-        AEffect, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId, AItem,
+        AEffect, AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId, AItem,
         AItemEffectData, AItemId, AState,
     },
     nd::{
@@ -41,14 +41,12 @@ fn make_effect() -> AEffect {
         is_offense: true,
         range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
         buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::Customized(vec![AEffectBuffSrcCustom::AffectorVal(
-                ac::buffs::STASIS_WEBIFICATION_BURST,
-                ac::attrs::SPEED_FACTOR,
-            )]),
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-                ..
-            },
+            custom: vec![AEffectBuffCustom {
+                buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,
+                source: AEffectBuffCustomSrc::Attr(ac::attrs::SPEED_FACTOR),
+                scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+            }],
+            ..
         }),
         ..
     }

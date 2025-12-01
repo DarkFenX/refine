@@ -3,8 +3,8 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{
-        AAttrVal, AData, AEffect, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId,
-        AItemEffectData, AItemId, AItemListId, AState,
+        AAttrVal, AData, AEffect, AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope,
+        AEffectId, AItemEffectData, AItemId, AItemListId, AState,
     },
     ed::{EData, EItemSpaceCompBuffData},
 };
@@ -65,20 +65,20 @@ fn process_buffs(
     if valid_buffs.is_empty() {
         return;
     }
+    let e_item_list_id = match e_sc_buff_data.item_list_filter {
+        Some(e_item_list_id) => AItemListId::Eve(e_item_list_id),
+        None => ac::itemlists::SHIPS,
+    };
     let buff_info = AEffectBuffInfo {
-        source: AEffectBuffSrc::Customized(
-            valid_buffs
-                .iter()
-                .map(|v| AEffectBuffSrcCustom::HardcodedVal(v.id, AAttrVal::from(v.value)))
-                .collect(),
-        ),
-        scope: AEffectBuffScope {
-            item_list_id: match e_sc_buff_data.item_list_filter {
-                Some(e_item_list_id) => AItemListId::Eve(e_item_list_id),
-                None => ac::itemlists::SHIPS,
-            },
-            ..
-        },
+        custom: valid_buffs
+            .iter()
+            .map(|v| AEffectBuffCustom {
+                buff_id: v.id,
+                source: AEffectBuffCustomSrc::Hardcoded(AAttrVal::from(v.value)),
+                scope: AEffectBuffScope::Projected(e_item_list_id),
+            })
+            .collect(),
+        ..
     };
     let effect = AEffect {
         id: effect_id,
