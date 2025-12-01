@@ -55,9 +55,9 @@ def reefast_server(
     build_server(proj_root=PROJECT_ROOT, optimized=optimized)
     with log_reader.get_collector() as log_collector:
         server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path, optimized=optimized)
+    try:
         # Wait for server to confirm it's up before yielding
         log_collector.wait_log_entry(msg='re:listening on.+', timeout=10)
-    try:
         yield server_info
     except Exception:
         kill_server(server_info=server_info)
