@@ -34,7 +34,7 @@ In no particular order:
   - it is possible to fit multiple RAHs with different attributes (validation fails, but they are properly simulated nevertheless)
 - modifications applied via space component EVE system: things like insurgency tackle range, skyhook silo link, nexus event buff "mines", Pochven subpylons, Odysseus-specific buffs are defined via it
 - exposure of 3 attribute values for every attribute: base value, dogma value (like you see in game), and value with extra/hidden modifications applied (e.g. AAR rep amount multiplied by 3 if there is paste loaded, or hidden missile flight time bonus based on ship radius)
-- ability to disable most items (or special "ghost" state for modules) to completely disable modifications applied by them, with ability to check their attributes with all the received modifications
+- ability to disable most items (or special "disabled" state for modules, which can be needed for modules like cargo expanders applying their penalties even when offline) to completely disable modifications applied by them, with ability to check their attributes with all the received modifications
 - modification resistance support
 - falloff effect reduction
 - drone propulsion mode (cruise/chase), which affects their speed and signature, and can affect ability of various items apply to them
