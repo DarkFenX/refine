@@ -9,7 +9,7 @@ use crate::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
             opc::get_missile_dmg_opc,
-            proj_mult::{get_bomb_proj_mult, get_noapp_bomb_proj_mult, get_radius_ratio_mult, get_range_mult_bomb},
+            proj_mult::{get_bomb_proj_mult, get_bomb_range_mult, get_noapp_bomb_proj_mult, get_radius_ratio_mult},
         },
     },
     rd::REffect,
@@ -95,7 +95,7 @@ fn internal_get_neut_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        amount *= get_range_mult_bomb(ctx, calc, projector_key, proj_data);
+        amount *= get_bomb_range_mult(ctx, calc, projector_key, proj_data);
     }
     Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }

@@ -8,7 +8,7 @@ use crate::{
     util::Xyz,
 };
 
-pub(super) fn get_application_mult_turret(
+pub(super) fn get_turret_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -41,7 +41,7 @@ pub(super) fn get_application_mult_turret(
     }
 }
 
-pub(super) fn get_application_mult_missile(
+pub(super) fn get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -98,7 +98,9 @@ pub(in crate::nd::eff) fn get_radius_ratio_mult(
     radius_ratio.clamp(OF(0.0), OF(1.0))
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn calc_angular(
     ctx: SvcCtx,
     calc: &mut Calc,

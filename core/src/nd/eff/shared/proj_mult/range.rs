@@ -8,8 +8,10 @@ use crate::{
     util::{ceil_tick, floor_tick},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular optimal/falloff range calculation
-pub(super) fn get_range_mult_simple_c2s(
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn get_simple_c2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -23,7 +25,7 @@ pub(super) fn get_range_mult_simple_c2s(
     }
 }
 
-pub(super) fn get_range_mult_simple_s2s(
+pub(super) fn get_simple_s2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -37,14 +39,14 @@ pub(super) fn get_range_mult_simple_s2s(
     }
 }
 
-pub(super) fn get_range_mult_full_restricted(
+pub(super) fn get_full_restricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_full(
+    get_full_range_mult(
         ctx,
         calc,
         projector_key,
@@ -54,14 +56,14 @@ pub(super) fn get_range_mult_full_restricted(
     )
 }
 
-pub(super) fn get_range_mult_full_unrestricted(
+pub(super) fn get_full_unrestricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_range_mult_full(
+    get_full_range_mult(
         ctx,
         calc,
         projector_key,
@@ -71,7 +73,7 @@ pub(super) fn get_range_mult_full_unrestricted(
     )
 }
 
-fn get_range_mult_full(
+fn get_full_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -97,8 +99,10 @@ fn get_range_mult_full(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Missile-alike effect range calculation
-pub(super) fn get_range_mult_missile(
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn get_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -157,7 +161,7 @@ pub(super) fn get_range_mult_missile(
     }
 }
 
-pub(in crate::nd::eff) fn get_range_mult_bomb(
+pub(in crate::nd::eff) fn get_bomb_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -240,8 +244,10 @@ fn calc_flight_range(max_velocity: AttrVal, flight_time: AttrVal, mass: AttrVal,
     max_velocity * (flight_time - accel_time / OF(2.0))
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc effects
-pub(super) fn get_range_mult_aoe_burst(
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn get_aoe_burst_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -257,7 +263,26 @@ pub(super) fn get_range_mult_aoe_burst(
     }
 }
 
-pub(super) fn get_range_mult_dd_neut(
+pub(super) fn get_aoe_dd_range_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    proj_data: UProjData,
+) -> AttrVal {
+    // AoE doomsdays' effects starts at the edge of attacker, and goes up to specified range
+    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    if proj_data.get_range_s2s() > affector_optimal {
+        return OF(0.0);
+    }
+    // Targets which are completely in attacker's model receive no damage
+    match proj_data.get_range_c2c() + proj_data.get_tgt_radius() < proj_data.get_src_radius() {
+        true => OF(0.0),
+        false => OF(1.0),
+    }
+}
+
+pub(super) fn get_dd_neut_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -271,7 +296,9 @@ pub(super) fn get_range_mult_dd_neut(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey, attr_id: Option<AAttrId>) -> AttrVal {
     match attr_id {
         Some(attr_id) => match calc.get_item_attr_val_full(ctx, projector_key, &attr_id) {

@@ -10,7 +10,7 @@ use crate::{
         eff::shared::{
             mods::add_dd_mods,
             opc::get_aoe_dd_neut_opc,
-            proj_mult::{get_dd_lance_proj_mult, get_noapp_simple_c2s_proj_mult, get_simple_mod_proj_attrs},
+            proj_mult::{get_dd_lance_proj_mult, get_noapp_aoe_dd_proj_mult, get_simple_mod_proj_attrs},
         },
     },
     rd::REffect,
@@ -22,10 +22,6 @@ use crate::{
     ud::{UItem, UItemKey},
     util::floor_unerr,
 };
-
-// TODO: test if it uses center-to-surface range (might use surface-to-surface), and check if damage
-// TODO: radius is needed to be added to range or not. Range is used in modifier application and
-// TODO: damage application
 
 const E_EFFECT_ID: EEffectId = ec::effects::DEBUFF_LANCE;
 const A_EFFECT_ID: AEffectId = ac::effects::DEBUFF_LANCE;
@@ -49,7 +45,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, true)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_noapp_simple_c2s_proj_mult),
+            modifier_proj_mult_getter: Some(get_noapp_aoe_dd_proj_mult),
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),
             neut_opc_getter: Some(get_aoe_dd_neut_opc),

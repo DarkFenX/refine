@@ -262,11 +262,19 @@ def test_range(client, consts):
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
     api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 107999, 0))
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 6999, 0))
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
-    # Verification - within center-to-surface range
+    # Verification - within attacking ship radius
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    # Action
+    api_affectee_ship.change_ship(coordinates=(0, 7001, 0))
+    # Verification - slightly goes out of attacking ship radius
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
     # Action
-    api_affectee_ship.change_ship(coordinates=(0, 108001, 0))
-    # Verification - slightly out of center-to-surface range
+    api_affectee_ship.change_ship(coordinates=(0, 122999, 0))
+    # Verification - within surface-to-surface range
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    # Action
+    api_affectee_ship.change_ship(coordinates=(0, 123001, 0))
+    # Verification - slightly out of surface-to-surface range
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1)
