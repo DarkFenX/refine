@@ -71,6 +71,7 @@ pub(crate) const LIGHTNING_WEAPON: EEffectId = 6447;
 pub(crate) const FTR_ABIL_TACKLE: EEffectId = 6464;
 pub(crate) const FTR_ABIL_ATK_MISSILE: EEffectId = 6465;
 pub(crate) const REMOTE_ECM_FALLOFF: EEffectId = 6470;
+pub(crate) const DOOMSDAY_CONE_DOT: EEffectId = 6473;
 pub(crate) const DOOMSDAY_AOE_WEB: EEffectId = 6476;
 pub(crate) const DOOMSDAY_AOE_NEUT: EEffectId = 6477;
 pub(crate) const DOOMSDAY_AOE_PAINT: EEffectId = 6478;

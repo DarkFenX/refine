@@ -77,6 +77,7 @@ pub(crate) const LIGHTNING_WEAPON: AEffectId = AEffectId::Dogma(ece::LIGHTNING_W
 pub(crate) const FTR_ABIL_TACKLE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_TACKLE);
 pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = AEffectId::Dogma(ece::FTR_ABIL_ATK_MISSILE);
 pub(crate) const REMOTE_ECM_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_ECM_FALLOFF);
+pub(crate) const DOOMSDAY_CONE_DOT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_CONE_DOT);
 pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_WEB);
 pub(crate) const DOOMSDAY_AOE_NEUT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_NEUT);
 pub(crate) const DOOMSDAY_AOE_PAINT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_PAINT);

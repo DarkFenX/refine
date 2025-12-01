@@ -180,6 +180,21 @@ pub(in crate::nd::eff) fn get_dd_lance_proj_mult(
     mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::DOOMSDAY_DMG_RADIUS)
 }
 
+pub(in crate::nd::eff) fn get_dd_boson_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let mult = get_range_mult_simple_c2s(ctx, calc, projector_key, projector_effect, proj_data);
+    if mult == OF(0.0) {
+        return OF(0.0);
+    }
+    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::SIG_RADIUS)
+}
+
 pub(in crate::nd::eff) fn get_dd_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,

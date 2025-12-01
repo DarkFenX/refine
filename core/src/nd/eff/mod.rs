@@ -67,6 +67,7 @@ mod eff_d6442_ftr_abil_micro_jump_drive;
 mod eff_d6443_point_defense;
 mod eff_d6447_lightning_weapon;
 mod eff_d6470_remote_ecm_falloff;
+mod eff_d6473_doomsday_cone_dot;
 mod eff_d6476_doomsday_aoe_web;
 mod eff_d6477_doomsday_aoe_neut;
 mod eff_d6478_doomsday_aoe_paint;
@@ -191,6 +192,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6443_point_defense::mk_n_effect(),
         eff_d6447_lightning_weapon::mk_n_effect(),
         eff_d6470_remote_ecm_falloff::mk_n_effect(),
+        eff_d6473_doomsday_cone_dot::mk_n_effect(),
         eff_d6476_doomsday_aoe_web::mk_n_effect(),
         eff_d6477_doomsday_aoe_neut::mk_n_effect(),
         eff_d6478_doomsday_aoe_paint::mk_n_effect(),

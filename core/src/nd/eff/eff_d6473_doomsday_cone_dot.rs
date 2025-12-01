@@ -1,17 +1,13 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectId},
+    ad::AEffectId,
     def::{AttrVal, Count, OF},
     ec,
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::{
-            mods::add_dd_mods,
-            opc::get_aoe_dd_neut_opc,
-            proj_mult::{get_dd_lance_proj_mult, get_noapp_simple_c2s_proj_mult, get_simple_mod_proj_attrs},
-        },
+        eff::shared::{mods::add_dd_mods, opc::get_aoe_dd_neut_opc, proj_mult::get_dd_boson_proj_mult},
     },
     rd::REffect,
     svc::{
@@ -23,33 +19,15 @@ use crate::{
     util::floor_unerr,
 };
 
-// TODO: test if it uses center-to-surface range (might use surface-to-surface), and check if damage
-// TODO: radius is needed to be added to range or not. Range is used in modifier application and
-// TODO: damage application
-
-const E_EFFECT_ID: EEffectId = ec::effects::DEBUFF_LANCE;
-const A_EFFECT_ID: AEffectId = ac::effects::DEBUFF_LANCE;
+const E_EFFECT_ID: EEffectId = ec::effects::DOOMSDAY_CONE_DOT;
+const A_EFFECT_ID: AEffectId = ac::effects::DOOMSDAY_CONE_DOT;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
-            source: AEffectBuffSrc::Customized(vec![
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::REMOTE_REPAIR_IMPEDANCE, OF(-50.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::WARP_PENALTY, OF(100.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
-                AEffectBuffSrcCustom::HardcodedVal(ac::buffs::DISALLOW_TETHER, OF(1.0)),
-            ]),
-            scope: AEffectBuffScope {
-                item_list_id: ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-                ..
-            },
-        }),
         adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, true)),
-        modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_noapp_simple_c2s_proj_mult),
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),
             neut_opc_getter: Some(get_aoe_dd_neut_opc),
@@ -84,7 +62,7 @@ fn internal_get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        let mult = get_dd_lance_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mult = get_dd_boson_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         dmg_em *= mult;
         dmg_therm *= mult;
         dmg_kin *= mult;
