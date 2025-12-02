@@ -141,55 +141,63 @@ impl RawModifier {
         affector_value: AffectorValue,
         buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
-        let (kind, item_list_id, resist_attr_id) = match effect.get_category() {
-            ac::effcats::ACTIVE => match buff_scope {
-                AEffectBuffScope::Projected(item_list_id) => (
-                    ModifierKind::Buff,
-                    *item_list_id,
-                    eff_funcs::get_resist_attr_id(affector_item, effect),
+        if effect.get_category() != ac::effcats::ACTIVE {
+            return None;
+        }
+        Some(match buff_scope {
+            // Special processing for carrier scope. It is unknown how those self-buffs work on
+            // non-ship items, since EVE does not have those in game, but we convert those into
+            // local modifiers which affect just ship for simplicity of further processing
+            AEffectBuffScope::Carrier => Self {
+                kind: ModifierKind::Local,
+                affector_espec: EffectSpec::new(affector_key, effect.get_key()),
+                affector_value,
+                op: (&buff.get_op()).into(),
+                aggr_mode: AggrMode::from_buff(buff),
+                affectee_filter: AffecteeFilter::from_buff_affectee_filter(
+                    &buff_mod.affectee_filter,
+                    Location::Ship,
+                    affector_item,
                 ),
-                // Fleet buffs cannot be resisted regardless of what effect says
-                AEffectBuffScope::Fleet(item_list_id) => (ModifierKind::FleetBuff, *item_list_id, None),
-                // Special processing for carrier scope. It is unknown how those self-buffs work on
-                // non-ship items, since EVE does not have those in game, but we convert those into
-                // local modifiers which affect just ship for simplicity of processing
-                AEffectBuffScope::Carrier => {
-                    return Some(Self {
-                        kind: ModifierKind::Local,
-                        affector_espec: EffectSpec::new(affector_key, effect.get_key()),
-                        affector_value,
-                        op: (&buff.get_op()).into(),
-                        aggr_mode: AggrMode::from_buff(buff),
-                        affectee_filter: AffecteeFilter::from_buff_affectee_filter(
-                            &buff_mod.affectee_filter,
-                            Location::Ship,
-                            affector_item,
-                        ),
-                        affectee_attr_id: buff_mod.affectee_attr_id,
-                        buff_type_attr_id,
-                        ..
-                    });
-                }
+                affectee_attr_id: buff_mod.affectee_attr_id,
+                buff_type_attr_id,
+                ..
             },
-            _ => return None,
-        };
-        Some(Self {
-            kind,
-            affector_espec: EffectSpec::new(affector_key, effect.get_key()),
-            affector_value,
-            op: (&buff.get_op()).into(),
-            aggr_mode: AggrMode::from_buff(buff),
-            affectee_filter: AffecteeFilter::from_buff_affectee_filter(
-                &buff_mod.affectee_filter,
-                Location::ItemList(item_list_id),
-                affector_item,
-            ),
-            affectee_attr_id: buff_mod.affectee_attr_id,
-            buff_type_attr_id,
-            proj_mult_getter: effect.get_modifier_proj_mult_getter(),
-            proj_attr_ids: effect.get_modifier_proj_attr_ids(),
-            resist_attr_id,
-            ..
+            // Projected modifiers can be range-reduced and resisted
+            AEffectBuffScope::Projected(item_list_id) => Self {
+                kind: ModifierKind::Buff,
+                affector_espec: EffectSpec::new(affector_key, effect.get_key()),
+                affector_value,
+                op: (&buff.get_op()).into(),
+                aggr_mode: AggrMode::from_buff(buff),
+                affectee_filter: AffecteeFilter::from_buff_affectee_filter(
+                    &buff_mod.affectee_filter,
+                    Location::ItemList(*item_list_id),
+                    affector_item,
+                ),
+                affectee_attr_id: buff_mod.affectee_attr_id,
+                buff_type_attr_id,
+                proj_mult_getter: effect.get_modifier_proj_mult_getter(),
+                proj_attr_ids: effect.get_modifier_proj_attr_ids(),
+                resist_attr_id: eff_funcs::get_resist_attr_id(affector_item, effect),
+                ..
+            },
+            // Fleet buffs cannot be resisted and range-reduced regardless of what effect says
+            AEffectBuffScope::Fleet(item_list_id) => Self {
+                kind: ModifierKind::FleetBuff,
+                affector_espec: EffectSpec::new(affector_key, effect.get_key()),
+                affector_value,
+                op: (&buff.get_op()).into(),
+                aggr_mode: AggrMode::from_buff(buff),
+                affectee_filter: AffecteeFilter::from_buff_affectee_filter(
+                    &buff_mod.affectee_filter,
+                    Location::ItemList(*item_list_id),
+                    affector_item,
+                ),
+                affectee_attr_id: buff_mod.affectee_attr_id,
+                buff_type_attr_id,
+                ..
+            },
         })
     }
     pub(in crate::svc::calc) fn get_affector_attr_id(&self) -> Option<AAttrId> {
