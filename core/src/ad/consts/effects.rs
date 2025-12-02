@@ -79,6 +79,7 @@ pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = AEffectId::Dogma(ece::FTR_ABI
 pub(crate) const REMOTE_ECM_FALLOFF: AEffectId = AEffectId::Dogma(ece::REMOTE_ECM_FALLOFF);
 pub(crate) const DOOMSDAY_BEAM_DOT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_BEAM_DOT);
 pub(crate) const DOOMSDAY_CONE_DOT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_CONE_DOT);
+pub(crate) const DOOMSDAY_HOG: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_HOG);
 pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_WEB);
 pub(crate) const DOOMSDAY_AOE_NEUT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_NEUT);
 pub(crate) const DOOMSDAY_AOE_PAINT: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_AOE_PAINT);
