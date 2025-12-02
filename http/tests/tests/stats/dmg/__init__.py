@@ -205,8 +205,7 @@ def setup_dmg_basics(
     eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_max_range_attr_id if effect_range else Default)
+        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
     eve_dd_vorton_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.lightning_weapon,
         cat_id=consts.EveEffCat.target,

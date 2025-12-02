@@ -170,11 +170,11 @@ pub(in crate::nd::eff) fn get_dd_lance_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &REffect,
+    _projector_effect: &REffect,
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    let mult = get_aoe_dd_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
+    let mult = get_aoe_dd_range_mult(ctx, calc, projector_key, proj_data);
     if mult == OF(0.0) {
         return OF(0.0);
     }
@@ -185,11 +185,11 @@ pub(in crate::nd::eff) fn get_dd_boson_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &REffect,
+    _projector_effect: &REffect,
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    let mult = get_aoe_dd_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
+    let mult = get_aoe_dd_range_mult(ctx, calc, projector_key, proj_data);
     if mult == OF(0.0) {
         return OF(0.0);
     }
@@ -287,11 +287,11 @@ pub(in crate::nd::eff) fn get_noapp_aoe_dd_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &REffect,
+    _projector_effect: &REffect,
     _projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_aoe_dd_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
+    get_aoe_dd_range_mult(ctx, calc, projector_key, proj_data)
 }
 
 // Utility

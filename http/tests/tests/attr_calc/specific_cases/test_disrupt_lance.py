@@ -241,15 +241,14 @@ def test_drone(client, consts):
 
 def test_range(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
-    eve_range_attr_id = client.mk_eve_attr()
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     client.mk_eve_buff(
         id_=consts.EveBuff.remote_repair_impedance,
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.debuff_lance, cat_id=consts.EveEffCat.active, range_attr_id=eve_range_attr_id)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.debuff_lance, cat_id=consts.EveEffCat.active)
     eve_affector_module_id = client.mk_eve_item(
         attrs={eve_range_attr_id: 100000}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_affector_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 15000})

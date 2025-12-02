@@ -305,10 +305,12 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
         api_src_fit.add_skill(type_id=eve_skill_id, level=5)
     api_src_ship = api_src_fit.set_ship(type_id=77281, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Hubris
     # Lance
-    api_src_module = api_src_fit.add_module(type_id=77401, rack=consts.ApiRack.high, state=consts.ApiModuleState.online)
+    api_src_lance = api_src_fit.add_module(type_id=77401, rack=consts.ApiRack.high, state=consts.ApiModuleState.online)
+    # Armor RR
+    api_src_rr = api_src_fit.add_module(type_id=41466, rack=consts.ApiRack.high, state=consts.ApiModuleState.active)
 
     api_src_ship_attrs_before = api_src_ship.update().update().attrs
-    api_src_module.change_module(state=consts.ApiModuleState.active)
+    api_src_lance.change_module(state=consts.ApiModuleState.active)
     api_src_ship_attrs_after = api_src_ship.update().attrs
     print_attr_diff(attrs1=api_src_ship_attrs_before, attrs2=api_src_ship_attrs_after)
 
@@ -317,9 +319,12 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     for eve_skill_id in get_skill_type_ids():
         api_tgt_fit.add_skill(type_id=eve_skill_id, level=5)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(0, 0, 0))  # Nightmare
+    api_src_rr.change_module(add_projs=[api_tgt_ship.id])
 
+    print(api_tgt_fit.get_stats(options=FitStatsOptions(rps=True)).rps.one().armor)
     api_tgt_ship_attrs_before = api_tgt_ship.update().update().attrs
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_lance.change_module(add_projs=[api_tgt_ship.id])
+    print(api_tgt_fit.get_stats(options=FitStatsOptions(rps=True)).rps.one().armor)
     api_tgt_ship_attrs_after = api_tgt_ship.update().attrs
     print_attr_diff(attrs1=api_tgt_ship_attrs_before, attrs2=api_tgt_ship_attrs_after)
 

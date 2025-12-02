@@ -7,7 +7,7 @@ pub(in crate::nd::eff) use composite::{
     get_turret_proj_mult, get_vorton_proj_mult,
 };
 pub(in crate::nd::eff) use modification::{
-    get_aoe_burst_mod_proj_attrs, get_full_mod_proj_attrs, get_simple_mod_proj_attrs,
+    get_aoe_burst_mod_proj_attrs, get_aoe_dd_mod_proj_attrs, get_full_mod_proj_attrs, get_simple_mod_proj_attrs,
 };
 pub(in crate::nd::eff) use range::get_bomb_range_mult;
 

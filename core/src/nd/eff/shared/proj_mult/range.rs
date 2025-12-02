@@ -267,11 +267,11 @@ pub(super) fn get_aoe_dd_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    // AoE doomsdays' effects starts at the edge of attacker, and goes up to specified range
-    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.get_range_attr_id());
+    // AoE doomsdays' effects do not specify range attribute ID, so it is hardcoded here. Their
+    // effect starts at the edge of attacker, and goes up to specified range
+    let affector_optimal = get_effect_range(ctx, calc, projector_key, Some(ac::attrs::MAX_RANGE));
     if proj_data.get_range_s2s() > affector_optimal {
         return OF(0.0);
     }

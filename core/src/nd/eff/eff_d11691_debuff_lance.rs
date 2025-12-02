@@ -12,7 +12,7 @@ use crate::{
         eff::shared::{
             mods::make_dd_self_debuffs,
             opc::get_aoe_dd_neut_opc,
-            proj_mult::{get_dd_lance_proj_mult, get_noapp_aoe_dd_proj_mult, get_simple_mod_proj_attrs},
+            proj_mult::{get_aoe_dd_mod_proj_attrs, get_dd_lance_proj_mult, get_noapp_aoe_dd_proj_mult},
         },
     },
     rd::REffect,
@@ -63,7 +63,7 @@ pub(super) fn mk_n_effect() -> NEffect {
             .collect(),
             ..
         }),
-        modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
+        modifier_proj_attrs_getter: Some(get_aoe_dd_mod_proj_attrs),
         hc: NEffectHc {
             modifier_proj_mult_getter: Some(get_noapp_aoe_dd_proj_mult),
             dmg_kind_getter: Some(internal_get_dmg_kind),
