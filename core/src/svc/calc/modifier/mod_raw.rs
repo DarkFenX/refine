@@ -69,7 +69,7 @@ impl RawModifier {
         effect_mod: &AEffectModifier,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
-        let kind = get_regular_mod_kind(effect, &affectee_filter)?;
+        let kind = get_effect_mod_kind(effect, &affectee_filter)?;
         // Targeted effects are affected by resists
         let resist_attr_id = match kind {
             ModifierKind::Targeted => eff_funcs::get_resist_attr_id(affector_item, effect),
@@ -90,7 +90,7 @@ impl RawModifier {
             ..
         })
     }
-    pub(in crate::svc::calc) fn try_from_buff_regular(
+    pub(in crate::svc::calc) fn try_from_buff_with_attr(
         affector_key: UItemKey,
         affector_item: &UItem,
         effect: &REffect,
@@ -113,7 +113,7 @@ impl RawModifier {
             buff_type_attr_id,
         )
     }
-    pub(in crate::svc::calc) fn try_from_buff_hardcoded(
+    pub(in crate::svc::calc) fn try_from_buff_with_hardcoded(
         affector_key: UItemKey,
         affector_item: &UItem,
         effect: &REffect,
@@ -146,8 +146,34 @@ impl RawModifier {
         loc: Location,
         buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
-        let affectee_filter = AffecteeFilter::from_buff_affectee_filter(&buff_mod.affectee_filter, loc, affector_item);
-        let kind = get_buff_mod_kind(effect, buff_scope)?;
+        let kind = match effect.get_category() {
+            ac::effcats::ACTIVE => match buff_scope {
+                AEffectBuffScope::Projected(_) => ModifierKind::Buff,
+                AEffectBuffScope::Fleet(_) => ModifierKind::FleetBuff,
+                // Special processing for carrier scope. It is unknown how those self-buffs work on
+                // non-ship items, since EVE does not have those in game, but we convert those to
+                // local modifiers for simplicity of processing
+                AEffectBuffScope::Carrier => {
+                    return Some(Self {
+                        kind: ModifierKind::Local,
+                        affector_espec: EffectSpec::new(affector_key, effect.get_key()),
+                        affector_value,
+                        op: (&buff.get_op()).into(),
+                        aggr_mode: AggrMode::from_buff(buff),
+                        affectee_filter: AffecteeFilter::from_buff_affectee_filter(
+                            &buff_mod.affectee_filter,
+                            loc,
+                            affector_item,
+                        ),
+                        affectee_attr_id: buff_mod.affectee_attr_id,
+                        buff_type_attr_id,
+                        ..
+                    });
+                }
+            },
+            _ => return None,
+        };
+        // Fleet buffs cannot be resisted regardless of what effect says
         let resist_attr_id = match kind {
             ModifierKind::Buff => eff_funcs::get_resist_attr_id(affector_item, effect),
             _ => None,
@@ -158,7 +184,7 @@ impl RawModifier {
             affector_value,
             op: (&buff.get_op()).into(),
             aggr_mode: AggrMode::from_buff(buff),
-            affectee_filter,
+            affectee_filter: AffecteeFilter::from_buff_affectee_filter(&buff_mod.affectee_filter, loc, affector_item),
             affectee_attr_id: buff_mod.affectee_attr_id,
             buff_type_attr_id,
             proj_mult_getter: effect.get_modifier_proj_mult_getter(),
@@ -185,33 +211,18 @@ impl RawModifier {
     }
 }
 
-fn get_regular_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
+fn get_effect_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
     if let AffecteeFilter::Direct(loc) = affectee_filter
-        && matches!(loc, Location::Item | Location::Other)
+        && let Location::Item | Location::Other = loc
     {
         return Some(ModifierKind::Local);
     }
     match (effect.get_category(), &effect.get_buff_info()) {
-        // Local modifications
-        (ac::effcats::PASSIVE | ac::effcats::ACTIVE | ac::effcats::ONLINE | ac::effcats::OVERLOAD, None) => {
+        (ac::effcats::PASSIVE | ac::effcats::ONLINE | ac::effcats::ACTIVE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)
         }
-        // Lib system-wide effects are EVE system effects and buffs
         (ac::effcats::SYSTEM, None) => Some(ModifierKind::System),
-        // Targeted effects
         (ac::effcats::TARGET, None) => Some(ModifierKind::Targeted),
-        _ => None,
-    }
-}
-
-fn get_buff_mod_kind(effect: &REffect, buff_scope: &AEffectBuffScope) -> Option<ModifierKind> {
-    match effect.get_category() {
-        ac::effcats::ACTIVE => match buff_scope {
-            // TODO: categorize it properly
-            AEffectBuffScope::Carrier => None,
-            AEffectBuffScope::Projected(_) => Some(ModifierKind::Buff),
-            AEffectBuffScope::Fleet(_) => Some(ModifierKind::FleetBuff),
-        },
         _ => None,
     }
 }

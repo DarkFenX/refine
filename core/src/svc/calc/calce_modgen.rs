@@ -137,7 +137,7 @@ fn add_buff_mods(
         None => return,
     };
     for buff_mod in buff.get_mods().iter() {
-        let rmod = match RawModifier::try_from_buff_regular(
+        let rmod = match RawModifier::try_from_buff_with_attr(
             item_key,
             item,
             effect,
@@ -175,7 +175,7 @@ fn add_buff_mods_hardcoded(
         None => return,
     };
     for buff_mod in buff.get_mods().iter() {
-        let rmod = match RawModifier::try_from_buff_hardcoded(
+        let rmod = match RawModifier::try_from_buff_with_hardcoded(
             item_key, item, effect, buff, buff_scope, buff_mod, buff_val, loc,
         ) {
             Some(rmod) => rmod,
