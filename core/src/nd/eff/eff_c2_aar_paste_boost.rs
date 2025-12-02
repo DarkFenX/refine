@@ -91,7 +91,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
             match charge.get_type_id() {
                 ac::items::NANITE_REPAIR_PASTE => {
                     match calc.get_item_attr_val_full(ctx, espec.item_key, &AAR_MULTIPLIER) {
-                        Ok(sol_attr) => Some(sol_attr.dogma),
+                        Ok(attr) => Some(attr.dogma),
                         // Can't fetch multiplier attr - no extra reps
                         Err(_) => Some(OF(1.0)),
                     }
