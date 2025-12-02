@@ -32,7 +32,7 @@ impl Calc {
             if let Some(scope) = buff_info.default_attrs {
                 for (buff_type_attr_id, buff_val_attr_id) in ac::extras::BUFF_STDATTRS {
                     if let Ok(buff_id) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id) {
-                        add_buff_mods(
+                        add_buff_mods_with_attr(
                             reuse_rmods,
                             ctx,
                             item_key,
@@ -48,7 +48,7 @@ impl Calc {
             }
             for custom_buff in buff_info.custom.iter() {
                 match custom_buff.source {
-                    AEffectBuffCustomSrc::Attr(buff_val_attr_id) => add_buff_mods(
+                    AEffectBuffCustomSrc::Attr(buff_val_attr_id) => add_buff_mods_with_attr(
                         reuse_rmods,
                         ctx,
                         item_key,
@@ -59,7 +59,7 @@ impl Calc {
                         None,
                         buff_val_attr_id,
                     ),
-                    AEffectBuffCustomSrc::Hardcoded(buff_val) => add_buff_mods_hardcoded(
+                    AEffectBuffCustomSrc::Hardcoded(buff_val) => add_buff_mods_with_hardcoded(
                         reuse_rmods,
                         ctx,
                         item_key,
@@ -99,7 +99,7 @@ impl Calc {
                 && let Some(scope) = buff_info.default_attrs
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id)
             {
-                add_buff_mods(
+                add_buff_mods_with_attr(
                     &mut rmods,
                     ctx,
                     item_key,
@@ -116,7 +116,7 @@ impl Calc {
     }
 }
 
-fn add_buff_mods(
+fn add_buff_mods_with_attr(
     rmods: &mut Vec<RawModifier>,
     ctx: SvcCtx,
     item_key: UItemKey,
@@ -149,7 +149,7 @@ fn add_buff_mods(
     }
 }
 
-fn add_buff_mods_hardcoded(
+fn add_buff_mods_with_hardcoded(
     rmods: &mut Vec<RawModifier>,
     ctx: SvcCtx,
     item_key: UItemKey,

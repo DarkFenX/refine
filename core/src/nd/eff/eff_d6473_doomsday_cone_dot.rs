@@ -1,13 +1,13 @@
 use crate::{
     ac,
-    ad::AEffectId,
+    ad::{AEffectBuffInfo, AEffectId},
     def::{AttrVal, Count, OF},
     ec,
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
-        eff::shared::{mods::add_dd_mods, opc::get_aoe_dd_neut_opc, proj_mult::get_dd_boson_proj_mult},
+        eff::shared::{mods::make_dd_self_debuffs, opc::get_aoe_dd_neut_opc, proj_mult::get_dd_boson_proj_mult},
     },
     rd::REffect,
     svc::{
@@ -26,7 +26,10 @@ pub(super) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, true)),
+        adg_buff_info: Some(AEffectBuffInfo {
+            custom: make_dd_self_debuffs().collect(),
+            ..
+        }),
         hc: NEffectHc {
             dmg_kind_getter: Some(internal_get_dmg_kind),
             normal_dmg_opc_getter: Some(internal_get_dmg_opc),

@@ -1,5 +1,5 @@
 pub(in crate::nd::eff) use damp::add_damp_mods;
-pub(in crate::nd::eff) use doomsday::add_dd_mods;
+pub(in crate::nd::eff) use doomsday::make_dd_self_debuffs;
 pub(in crate::nd::eff) use prop::{add_prop_speed_mod, mk_mjd_sig_mod, mk_mwd_sig_mod, mk_prop_mass_mod};
 pub(in crate::nd::eff) use subsystem::mk_subsystem_mod;
 pub(in crate::nd::eff) use tp::add_tp_mods;

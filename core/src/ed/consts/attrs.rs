@@ -137,7 +137,6 @@ pub(crate) const UPGRADE_CAPACITY: EAttrId = 1132;
 pub(crate) const ENTITY_MAX_VELOCITY_SIG_RADIUS_MULT: EAttrId = 1133;
 pub(crate) const UPGRADE_COST: EAttrId = 1153;
 pub(crate) const UPGRADE_SLOTS_LEFT: EAttrId = 1154;
-pub(crate) const CAN_CLOAK: EAttrId = 1163;
 pub(crate) const SPEED_FACTOR_BONUS: EAttrId = 1164;
 pub(crate) const REQUIRED_THERMODYNAMICS_SKILL: EAttrId = 1212;
 pub(crate) const SPEED_BOOST_FACTOR_BONUS: EAttrId = 1270;

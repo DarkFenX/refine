@@ -2,7 +2,9 @@
 
 use crate::ed::EBuffId;
 
+pub(crate) const VELOCITY_PENALTY: EBuffId = 3;
 pub(crate) const WARP_PENALTY: EBuffId = 4;
+pub(crate) const DISALLOW_CLOAK: EBuffId = 5;
 pub(crate) const DISALLOW_DOCK_JUMP: EBuffId = 6;
 pub(crate) const STASIS_WEBIFICATION_BURST: EBuffId = 27;
 pub(crate) const WD_BURST_TURRET_MAX_RANGE: EBuffId = 28;

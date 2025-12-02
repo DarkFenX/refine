@@ -1,37 +1,36 @@
 use crate::{
     ac,
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffScope},
+    def::OF,
 };
 
-pub(in crate::nd::eff) fn add_dd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect, cloak_mod: bool) {
-    if !a_effect.mods.is_empty() {
-        tracing::info!("effect {a_effect_id}: doomsday effect has modifiers, overwriting them");
-        a_effect.mods.clear();
-    }
-    a_effect.mods.extend([
-        make_ship_mod(ac::attrs::SPEED_FACTOR, AOp::PostPerc, ac::attrs::MAX_VELOCITY),
-        make_ship_mod(
-            ac::attrs::SIEGE_MODE_WARP_STATUS,
-            AOp::Add,
-            ac::attrs::WARP_SCRAMBLE_STATUS,
-        ),
-        make_ship_mod(ac::attrs::DISALLOW_TETHERING, AOp::Add, ac::attrs::DISALLOW_TETHERING),
-        make_ship_mod(ac::attrs::DISALLOW_DOCKING, AOp::Add, ac::attrs::DISALLOW_DOCKING),
-    ]);
-    if cloak_mod {
-        a_effect.mods.push(make_ship_mod(
-            ac::attrs::CAN_CLOAK,
-            AOp::PostAssign,
-            ac::attrs::CAN_CLOAK,
-        ))
-    }
-}
-
-fn make_ship_mod(affector_attr_id: AAttrId, op: AOp, affectee_attr_id: AAttrId) -> AEffectModifier {
-    AEffectModifier {
-        affector_attr_id,
-        op,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id,
-    }
+pub(in crate::nd::eff) fn make_dd_self_debuffs() -> impl Iterator<Item = AEffectBuffCustom> {
+    [
+        AEffectBuffCustom {
+            buff_id: ac::buffs::VELOCITY_PENALTY,
+            source: AEffectBuffCustomSrc::Attr(ac::attrs::SPEED_FACTOR),
+            scope: AEffectBuffScope::Carrier,
+        },
+        AEffectBuffCustom {
+            buff_id: ac::buffs::DISALLOW_CLOAK,
+            source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+            scope: AEffectBuffScope::Carrier,
+        },
+        AEffectBuffCustom {
+            buff_id: ac::buffs::WARP_PENALTY,
+            source: AEffectBuffCustomSrc::Attr(ac::attrs::SIEGE_MODE_WARP_STATUS),
+            scope: AEffectBuffScope::Carrier,
+        },
+        AEffectBuffCustom {
+            buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
+            source: AEffectBuffCustomSrc::Attr(ac::attrs::DISALLOW_DOCKING),
+            scope: AEffectBuffScope::Carrier,
+        },
+        AEffectBuffCustom {
+            buff_id: ac::buffs::DISALLOW_TETHER,
+            source: AEffectBuffCustomSrc::Attr(ac::attrs::DISALLOW_TETHERING),
+            scope: AEffectBuffScope::Carrier,
+        },
+    ]
+    .into_iter()
 }

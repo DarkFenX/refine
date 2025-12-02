@@ -1,3 +1,5 @@
+use itertools::chain;
+
 use crate::{
     ac,
     ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId},
@@ -8,7 +10,7 @@ use crate::{
     nd::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
-            mods::add_dd_mods,
+            mods::make_dd_self_debuffs,
             opc::get_aoe_dd_neut_opc,
             proj_mult::{get_dd_lance_proj_mult, get_noapp_aoe_dd_proj_mult, get_simple_mod_proj_attrs},
         },
@@ -31,31 +33,36 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            custom: vec![
-                AEffectBuffCustom {
-                    buff_id: ac::buffs::REMOTE_REPAIR_IMPEDANCE,
-                    source: AEffectBuffCustomSrc::Hardcoded(OF(-50.0)),
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
-                },
-                AEffectBuffCustom {
-                    buff_id: ac::buffs::WARP_PENALTY,
-                    source: AEffectBuffCustomSrc::Hardcoded(OF(100.0)),
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
-                },
-                AEffectBuffCustom {
-                    buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
-                    source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
-                },
-                AEffectBuffCustom {
-                    buff_id: ac::buffs::DISALLOW_TETHER,
-                    source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
-                },
-            ],
+            custom: chain!(
+                // Projected debuffs
+                [
+                    AEffectBuffCustom {
+                        buff_id: ac::buffs::REMOTE_REPAIR_IMPEDANCE,
+                        source: AEffectBuffCustomSrc::Hardcoded(OF(-50.0)),
+                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                    },
+                    AEffectBuffCustom {
+                        buff_id: ac::buffs::WARP_PENALTY,
+                        source: AEffectBuffCustomSrc::Hardcoded(OF(100.0)),
+                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                    },
+                    AEffectBuffCustom {
+                        buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
+                        source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                    },
+                    AEffectBuffCustom {
+                        buff_id: ac::buffs::DISALLOW_TETHER,
+                        source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
+                    },
+                ],
+                // Self-debuffs
+                make_dd_self_debuffs()
+            )
+            .collect(),
             ..
         }),
-        adg_update_effect_fn: Some(|a_effect| add_dd_mods(A_EFFECT_ID, a_effect, true)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         hc: NEffectHc {
             modifier_proj_mult_getter: Some(get_noapp_aoe_dd_proj_mult),
