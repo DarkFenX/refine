@@ -9,7 +9,7 @@ use crate::{
         NEffect, NEffectDmgKind, NEffectHc,
         eff::shared::{
             opc::get_missile_dmg_opc,
-            proj_mult::{get_bomb_proj_mult, get_bomb_range_mult, get_noapp_bomb_proj_mult, get_radius_ratio_mult},
+            proj_mult::{get_bomb_noapp_proj_mult, get_bomb_proj_mult, get_bomb_range_mult, get_radius_ratio_mult},
         },
     },
     rd::REffect,
@@ -126,7 +126,7 @@ fn internal_get_ecm_opc(
         );
         // Lockbreaker bombs have perfect application whenever they hit, regardless of target
         // signature radius
-        let mut mult = get_noapp_bomb_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mut mult = get_bomb_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
         if let Some(resist_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)

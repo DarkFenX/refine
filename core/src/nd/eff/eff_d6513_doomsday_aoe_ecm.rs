@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::{Ecm, EffectSpec},
-    nd::{NEffect, NEffectHc, eff::shared::proj_mult::get_noapp_aoe_burst_proj_mult},
+    nd::{NEffect, NEffectHc, eff::shared::proj_mult::get_aoe_burst_noapp_proj_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::UItemKey,
@@ -49,7 +49,7 @@ fn internal_get_ecm_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        mult *= get_noapp_aoe_burst_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        mult *= get_aoe_burst_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
         if let Some(rr_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)

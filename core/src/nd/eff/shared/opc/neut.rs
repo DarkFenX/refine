@@ -3,7 +3,7 @@ use crate::{
     ad::AAttrId,
     def::{AttrVal, OF},
     misc::{AttrSpec, EffectSpec},
-    nd::{NProjMultGetter, eff::shared::proj_mult::get_dd_neut_proj_mult},
+    nd::{NProjMultGetter, eff::shared::proj_mult::get_aoe_dd_side_neut_proj_mult},
     rd::REffect,
     svc::{
         SvcCtx,
@@ -51,7 +51,7 @@ pub(in crate::nd::eff) fn get_generic_neut_opc(
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
-pub(in crate::nd::eff) fn get_aoe_dd_neut_opc(
+pub(in crate::nd::eff) fn get_aoe_dd_side_neut_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -66,7 +66,7 @@ pub(in crate::nd::eff) fn get_aoe_dd_neut_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        amount *= get_dd_neut_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        amount *= get_aoe_dd_side_neut_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
         let projectee_aspec = AttrSpec::new(projectee_key, ac::attrs::DOOMSDAY_ENERGY_NEUT_RESIST_ID);
         if let Some(resist_mult) = eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, calc, &projectee_aspec) {

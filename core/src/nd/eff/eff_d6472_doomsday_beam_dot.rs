@@ -13,8 +13,8 @@ use crate::{
     ud::UItem,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::DOOMSDAY_CONE_DOT;
-const A_EFFECT_ID: AEffectId = ac::effects::DOOMSDAY_CONE_DOT;
+const E_EFFECT_ID: EEffectId = ec::effects::DOOMSDAY_BEAM_DOT;
+const A_EFFECT_ID: AEffectId = ac::effects::DOOMSDAY_BEAM_DOT;
 
 pub(super) fn mk_n_effect() -> NEffect {
     NEffect {

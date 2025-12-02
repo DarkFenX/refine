@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, Spool},
-    nd::{NEffect, NEffectDmgKind, NEffectHc, eff::shared::proj_mult::get_noapp_simple_s2s_proj_mult},
+    nd::{NEffect, NEffectDmgKind, NEffectHc, eff::shared::proj_mult::get_simple_s2s_noapp_proj_mult},
     rd::REffect,
     svc::{
         SvcCtx,
@@ -54,7 +54,7 @@ fn get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.get_key()),
             projectee_key,
         );
-        let mult = get_noapp_simple_s2s_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mult = get_simple_s2s_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         dmg_em *= mult;
         dmg_therm *= mult;
         dmg_kin *= mult;

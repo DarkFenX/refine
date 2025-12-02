@@ -166,22 +166,7 @@ pub(in crate::nd::eff) fn get_aoe_burst_proj_mult(
     )
 }
 
-pub(in crate::nd::eff) fn get_dd_lance_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    let mult = get_aoe_dd_range_mult(ctx, calc, projector_key, proj_data);
-    if mult == OF(0.0) {
-        return OF(0.0);
-    }
-    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::DOOMSDAY_DMG_RADIUS)
-}
-
-pub(in crate::nd::eff) fn get_dd_boson_proj_mult(
+pub(in crate::nd::eff) fn get_aoe_dd_dmg_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -196,7 +181,7 @@ pub(in crate::nd::eff) fn get_dd_boson_proj_mult(
     mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::SIG_RADIUS)
 }
 
-pub(in crate::nd::eff) fn get_dd_neut_proj_mult(
+pub(in crate::nd::eff) fn get_aoe_dd_side_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -239,7 +224,7 @@ pub(in crate::nd::eff) fn get_neut_proj_mult(
 }
 
 // Just range projection, application factor is excluded
-pub(in crate::nd::eff) fn get_noapp_simple_s2s_proj_mult(
+pub(in crate::nd::eff) fn get_simple_s2s_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -250,7 +235,7 @@ pub(in crate::nd::eff) fn get_noapp_simple_s2s_proj_mult(
     get_simple_s2s_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
 }
 
-pub(in crate::nd::eff) fn get_noapp_full_proj_mult(
+pub(in crate::nd::eff) fn get_full_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -261,7 +246,7 @@ pub(in crate::nd::eff) fn get_noapp_full_proj_mult(
     get_full_restricted_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
 }
 
-pub(in crate::nd::eff) fn get_noapp_bomb_proj_mult(
+pub(in crate::nd::eff) fn get_bomb_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -272,7 +257,7 @@ pub(in crate::nd::eff) fn get_noapp_bomb_proj_mult(
     get_bomb_range_mult(ctx, calc, projector_key, proj_data)
 }
 
-pub(in crate::nd::eff) fn get_noapp_aoe_burst_proj_mult(
+pub(in crate::nd::eff) fn get_aoe_burst_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -283,7 +268,7 @@ pub(in crate::nd::eff) fn get_noapp_aoe_burst_proj_mult(
     get_aoe_burst_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
 }
 
-pub(in crate::nd::eff) fn get_noapp_aoe_dd_proj_mult(
+pub(in crate::nd::eff) fn get_aoe_dd_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

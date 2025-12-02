@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::proj_mult::{get_full_mod_proj_attrs, get_noapp_full_proj_mult},
+        eff::shared::proj_mult::{get_full_mod_proj_attrs, get_full_noapp_proj_mult},
     },
 };
 
@@ -16,7 +16,7 @@ pub(in crate::nd::eff) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         modifier_proj_attrs_getter: Some(get_full_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_noapp_full_proj_mult),
+            modifier_proj_mult_getter: Some(get_full_noapp_proj_mult),
             ..
         },
         ..

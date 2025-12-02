@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::{opc::get_generic_neut_opc, proj_mult::get_noapp_simple_s2s_proj_mult},
+        eff::shared::{opc::get_generic_neut_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -41,7 +41,7 @@ fn internal_get_neut_opc(
         projector_key,
         projector_effect,
         projectee_key,
-        get_noapp_simple_s2s_proj_mult,
+        get_simple_s2s_noapp_proj_mult,
         &ac::attrs::ENERGY_NEUT_AMOUNT,
         true,
     )

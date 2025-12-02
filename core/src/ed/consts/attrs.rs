@@ -210,7 +210,6 @@ pub(crate) const DOOMSDAY_ENERGY_NEUT_RADIUS: EAttrId = 2259;
 pub(crate) const DOOMSDAY_ENERGY_NEUT_AMOUNT: EAttrId = 2260;
 pub(crate) const DOOMSDAY_ENERGY_NEUT_SIG_RADIUS: EAttrId = 2261;
 pub(crate) const DOOMSDAY_WARNING_DURATION: EAttrId = 2262;
-pub(crate) const DOOMSDAY_DMG_RADIUS: EAttrId = 2263;
 pub(crate) const DOOMSDAY_DMG_DURATION: EAttrId = 2264;
 pub(crate) const DOOMSDAY_DMG_CYCLE_TIME: EAttrId = 2265;
 pub(crate) const DOOMSDAY_AOE_RANGE: EAttrId = 2279;

@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectHc,
         eff::shared::{
-            opc::get_outgoing_armor_rep_opc, proj_mult::get_noapp_simple_s2s_proj_mult, spool::get_resolved_spool,
+            opc::get_outgoing_armor_rep_opc, proj_mult::get_simple_s2s_noapp_proj_mult, spool::get_resolved_spool,
         },
     },
     rd::REffect,
@@ -66,6 +66,6 @@ fn internal_get_outgoing_rep_opc(
         spool,
         Some(internal_get_resolved_spool),
         projectee_key,
-        get_noapp_simple_s2s_proj_mult,
+        get_simple_s2s_noapp_proj_mult,
     )
 }

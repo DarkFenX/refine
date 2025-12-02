@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectHc,
-        eff::shared::proj_mult::{get_full_mod_proj_attrs, get_noapp_full_proj_mult},
+        eff::shared::proj_mult::{get_full_mod_proj_attrs, get_full_noapp_proj_mult},
     },
 };
 
@@ -19,7 +19,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         adg_update_effect_fn: Some(update_effect),
         modifier_proj_attrs_getter: Some(get_full_mod_proj_attrs),
         hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_noapp_full_proj_mult),
+            modifier_proj_mult_getter: Some(get_full_noapp_proj_mult),
             ..
         },
         ..
