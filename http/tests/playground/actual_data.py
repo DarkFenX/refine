@@ -296,6 +296,34 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
     print(api_src_fit_stats.cap_sim.one())  # noqa: T201
 
 
+def test_playground(client, consts):  # noqa: ANN001, ANN201
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_src_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_src_ship = api_src_fit.set_ship(type_id=77281, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Hubris
+    # Lance
+    api_src_module = api_src_fit.add_module(type_id=77401, rack=consts.ApiRack.high, state=consts.ApiModuleState.online)
+
+    api_src_ship_attrs_before = api_src_ship.update().update().attrs
+    api_src_module.change_module(state=consts.ApiModuleState.active)
+    api_src_ship_attrs_after = api_src_ship.update().attrs
+    print_attr_diff(attrs1=api_src_ship_attrs_before, attrs2=api_src_ship_attrs_after)
+
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_fit.set_character(type_id=1373)
+    for eve_skill_id in get_skill_type_ids():
+        api_tgt_fit.add_skill(type_id=eve_skill_id, level=5)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(0, 0, 0))  # Nightmare
+
+    api_tgt_ship_attrs_before = api_tgt_ship.update().update().attrs
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_tgt_ship_attrs_after = api_tgt_ship.update().attrs
+    print_attr_diff(attrs1=api_tgt_ship_attrs_before, attrs2=api_tgt_ship_attrs_after)
+
+
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
     files = [
         'fsd_built/types.json',
