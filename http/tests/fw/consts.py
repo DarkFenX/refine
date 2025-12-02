@@ -125,6 +125,7 @@ class EveEffect(IntEnum):
     lightning_weapon = 6447
     ftr_abil_attack_m = 6465
     remote_ecm_falloff = 6470
+    doomsday_cone_dot = 6473
     doomsday_aoe_web = 6476
     doomsday_aoe_neut = 6477
     ftr_abil_launch_bomb = 6485

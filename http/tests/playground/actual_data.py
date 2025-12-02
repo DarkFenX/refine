@@ -321,10 +321,10 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     api_tgt_ship = api_tgt_fit.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(0, 0, 0))  # Nightmare
     api_src_rr.change_module(add_projs=[api_tgt_ship.id])
 
-    print(api_tgt_fit.get_stats(options=FitStatsOptions(rps=True)).rps.one().armor)
+    api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     api_tgt_ship_attrs_before = api_tgt_ship.update().update().attrs
     api_src_lance.change_module(add_projs=[api_tgt_ship.id])
-    print(api_tgt_fit.get_stats(options=FitStatsOptions(rps=True)).rps.one().armor)
+    api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     api_tgt_ship_attrs_after = api_tgt_ship.update().attrs
     print_attr_diff(attrs1=api_tgt_ship_attrs_before, attrs2=api_tgt_ship_attrs_after)
 
