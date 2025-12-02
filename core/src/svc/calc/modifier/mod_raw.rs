@@ -70,7 +70,7 @@ impl RawModifier {
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
         let kind = get_effect_mod_kind(effect, &affectee_filter)?;
-        // Targeted effects are affected by resists
+        // Only targeted effects can be affected by resists
         let resist_attr_id = match kind {
             ModifierKind::Targeted => eff_funcs::get_resist_attr_id(affector_item, effect),
             _ => None,
@@ -98,7 +98,6 @@ impl RawModifier {
         buff_scope: &AEffectBuffScope,
         buff_mod: &ABuffModifier,
         affector_attr_id: AAttrId,
-        loc: Location,
         buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
         RawModifier::try_from_buff(
@@ -109,7 +108,6 @@ impl RawModifier {
             buff_scope,
             buff_mod,
             AffectorValue::AttrId(affector_attr_id),
-            loc,
             buff_type_attr_id,
         )
     }
@@ -121,7 +119,6 @@ impl RawModifier {
         buff_scope: &AEffectBuffScope,
         buff_mod: &ABuffModifier,
         affector_mod_val: AttrVal,
-        loc: Location,
     ) -> Option<Self> {
         RawModifier::try_from_buff(
             affector_key,
@@ -131,7 +128,6 @@ impl RawModifier {
             buff_scope,
             buff_mod,
             AffectorValue::Hardcoded(affector_mod_val),
-            loc,
             None,
         )
     }
@@ -143,16 +139,20 @@ impl RawModifier {
         buff_scope: &AEffectBuffScope,
         buff_mod: &ABuffModifier,
         affector_value: AffectorValue,
-        loc: Location,
         buff_type_attr_id: Option<AAttrId>,
     ) -> Option<Self> {
-        let kind = match effect.get_category() {
+        let (kind, item_list_id, resist_attr_id) = match effect.get_category() {
             ac::effcats::ACTIVE => match buff_scope {
-                AEffectBuffScope::Projected(_) => ModifierKind::Buff,
-                AEffectBuffScope::Fleet(_) => ModifierKind::FleetBuff,
+                AEffectBuffScope::Projected(item_list_id) => (
+                    ModifierKind::Buff,
+                    *item_list_id,
+                    eff_funcs::get_resist_attr_id(affector_item, effect),
+                ),
+                // Fleet buffs cannot be resisted regardless of what effect says
+                AEffectBuffScope::Fleet(item_list_id) => (ModifierKind::FleetBuff, *item_list_id, None),
                 // Special processing for carrier scope. It is unknown how those self-buffs work on
-                // non-ship items, since EVE does not have those in game, but we convert those to
-                // local modifiers for simplicity of processing
+                // non-ship items, since EVE does not have those in game, but we convert those into
+                // local modifiers which affect just ship for simplicity of processing
                 AEffectBuffScope::Carrier => {
                     return Some(Self {
                         kind: ModifierKind::Local,
@@ -162,7 +162,7 @@ impl RawModifier {
                         aggr_mode: AggrMode::from_buff(buff),
                         affectee_filter: AffecteeFilter::from_buff_affectee_filter(
                             &buff_mod.affectee_filter,
-                            loc,
+                            Location::Ship,
                             affector_item,
                         ),
                         affectee_attr_id: buff_mod.affectee_attr_id,
@@ -173,18 +173,17 @@ impl RawModifier {
             },
             _ => return None,
         };
-        // Fleet buffs cannot be resisted regardless of what effect says
-        let resist_attr_id = match kind {
-            ModifierKind::Buff => eff_funcs::get_resist_attr_id(affector_item, effect),
-            _ => None,
-        };
         Some(Self {
             kind,
             affector_espec: EffectSpec::new(affector_key, effect.get_key()),
             affector_value,
             op: (&buff.get_op()).into(),
             aggr_mode: AggrMode::from_buff(buff),
-            affectee_filter: AffecteeFilter::from_buff_affectee_filter(&buff_mod.affectee_filter, loc, affector_item),
+            affectee_filter: AffecteeFilter::from_buff_affectee_filter(
+                &buff_mod.affectee_filter,
+                Location::ItemList(item_list_id),
+                affector_item,
+            ),
             affectee_attr_id: buff_mod.affectee_attr_id,
             buff_type_attr_id,
             proj_mult_getter: effect.get_modifier_proj_mult_getter(),

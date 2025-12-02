@@ -5,7 +5,7 @@ use crate::{
     rd::{REffect, REffectKey},
     svc::{
         SvcCtx,
-        calc::{Calc, Location, RawModifier},
+        calc::{Calc, RawModifier},
     },
     ud::{UItem, UItemKey},
 };
@@ -131,11 +131,6 @@ fn add_buff_mods(
         Some(buff) => buff,
         None => return,
     };
-    // TODO: do not bail on non-typelist scope
-    let loc = match Location::try_from_buff_scope(buff_scope) {
-        Some(loc) => loc,
-        None => return,
-    };
     for buff_mod in buff.get_mods().iter() {
         let rmod = match RawModifier::try_from_buff_with_attr(
             item_key,
@@ -145,7 +140,6 @@ fn add_buff_mods(
             buff_scope,
             buff_mod,
             buff_val_attr_id,
-            loc,
             buff_type_attr_id,
         ) {
             Some(rmod) => rmod,
@@ -169,14 +163,9 @@ fn add_buff_mods_hardcoded(
         Some(buff) => buff,
         None => return,
     };
-    // TODO: do not bail on non-typelist scope
-    let loc = match Location::try_from_buff_scope(buff_scope) {
-        Some(loc) => loc,
-        None => return,
-    };
     for buff_mod in buff.get_mods().iter() {
         let rmod = match RawModifier::try_from_buff_with_hardcoded(
-            item_key, item, effect, buff, buff_scope, buff_mod, buff_val, loc,
+            item_key, item, effect, buff, buff_scope, buff_mod, buff_val,
         ) {
             Some(rmod) => rmod,
             None => continue,
