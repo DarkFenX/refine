@@ -138,7 +138,7 @@ def test_application(client, consts):
         dmg_interval=1000,
         dmg_duration=15000,
         range_optimal=100000,
-        dmg_radius=2500)
+        dmg_radius=10000)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=1613)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=250, speed=522, sig_radius=296)
     client.create_sources()
@@ -155,46 +155,46 @@ def test_application(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one() == [0, approx(301.92), 0, 0]
-    assert api_fleet_stats.volley.one() == [0, approx(6038.4), 0, 0]
+    assert api_fleet_stats.dps.one() == [0, approx(75.48), 0, 0]
+    assert api_fleet_stats.volley.one() == [0, approx(1509.6), 0, 0]
     api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [0, approx(301.92), 0, 0]
-    assert api_fit_stats.volley.one() == [0, approx(6038.4), 0, 0]
+    assert api_fit_stats.dps.one() == [0, approx(75.48), 0, 0]
+    assert api_fit_stats.volley.one() == [0, approx(1509.6), 0, 0]
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_proj_stats.dps.one() == [0, approx(150.96), 0, 0]
-    assert api_module_proj_stats.volley.one() == [0, approx(3019.2), 0, 0]
+    assert api_module_proj_stats.dps.one() == [0, approx(37.74), 0, 0]
+    assert api_module_proj_stats.volley.one() == [0, approx(754.8), 0, 0]
     api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_nonproj_stats.dps.one() == [0, approx(150.96), 0, 0]
-    assert api_module_nonproj_stats.volley.one() == [0, approx(3019.2), 0, 0]
+    assert api_module_nonproj_stats.dps.one() == [0, approx(37.74), 0, 0]
+    assert api_module_nonproj_stats.volley.one() == [0, approx(754.8), 0, 0]
     # Action
     api_tgt_ship.change_ship(movement=(0, 0, 0))
     # Verification - no changes, since application does not depend on speed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one() == [0, approx(301.92), 0, 0]
-    assert api_fleet_stats.volley.one() == [0, approx(6038.4), 0, 0]
+    assert api_fleet_stats.dps.one() == [0, approx(75.48), 0, 0]
+    assert api_fleet_stats.volley.one() == [0, approx(1509.6), 0, 0]
     api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [0, approx(301.92), 0, 0]
-    assert api_fit_stats.volley.one() == [0, approx(6038.4), 0, 0]
+    assert api_fit_stats.dps.one() == [0, approx(75.48), 0, 0]
+    assert api_fit_stats.volley.one() == [0, approx(1509.6), 0, 0]
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_proj_stats.dps.one() == [0, approx(150.96), 0, 0]
-    assert api_module_proj_stats.volley.one() == [0, approx(3019.2), 0, 0]
+    assert api_module_proj_stats.dps.one() == [0, approx(37.74), 0, 0]
+    assert api_module_proj_stats.volley.one() == [0, approx(754.8), 0, 0]
     api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_nonproj_stats.dps.one() == [0, approx(150.96), 0, 0]
-    assert api_module_nonproj_stats.volley.one() == [0, approx(3019.2), 0, 0]
+    assert api_module_nonproj_stats.dps.one() == [0, approx(37.74), 0, 0]
+    assert api_module_nonproj_stats.volley.one() == [0, approx(754.8), 0, 0]
 
 
 def test_npc_prop_mode(client, consts):
