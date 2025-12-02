@@ -50,7 +50,6 @@ class DmgBasicInfo:
     aoe_cloud_size_attr_id: int
     aoe_velocity_attr_id: int
     aoe_drf_attr_id: int
-    dd_dmg_radius_attr_id: int
     shield_hp_attr_id: int
     armor_hp_attr_id: int
     hull_hp_attr_id: int
@@ -128,7 +127,6 @@ def setup_dmg_basics(
     eve_aoe_cloud_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_cloud_size)
     eve_aoe_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_velocity)
     eve_aoe_drf_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_damage_reduction_factor)
-    eve_dd_dmg_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_radius)
     eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
     eve_armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
     eve_hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
@@ -278,7 +276,6 @@ def setup_dmg_basics(
         aoe_cloud_size_attr_id=eve_aoe_cloud_size_attr_id,
         aoe_velocity_attr_id=eve_aoe_velocity_attr_id,
         aoe_drf_attr_id=eve_aoe_drf_attr_id,
-        dd_dmg_radius_attr_id=eve_dd_dmg_radius_attr_id,
         shield_hp_attr_id=eve_shield_hp_attr_id,
         armor_hp_attr_id=eve_armor_hp_attr_id,
         hull_hp_attr_id=eve_hull_hp_attr_id,
@@ -873,7 +870,7 @@ def make_eve_dd_lance_debuff(
     _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_interval_attr_id, value=dmg_interval)
     _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_duration_attr_id, value=dmg_duration)
     _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_radius_attr_id, value=dmg_radius)
+    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_lance_debuff_effect_id],
