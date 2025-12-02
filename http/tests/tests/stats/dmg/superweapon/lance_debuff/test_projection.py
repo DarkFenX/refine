@@ -264,7 +264,7 @@ def test_npc_prop_mode(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, approx(1020), 0, 0]
 
 
-def test_lance_attr_range_absent(client, consts):
+def test_dd_attr_range_absent(client, consts):
     # No optimal range defined - it is considered equal to 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_dd_lance_debuff(
@@ -338,7 +338,7 @@ def test_lance_attr_range_absent(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, 0, 0, 0]
 
 
-def test_lance_attr_radius_absent(client, consts):
+def test_dd_attr_radius_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_dd_lance_debuff(
         client=client,
@@ -372,7 +372,7 @@ def test_lance_attr_radius_absent(client, consts):
     assert api_module_nonproj_stats.volley.one() == [0, approx(25500), 0, 0]
 
 
-def test_lance_ship_not_loaded(client, consts):
+def test_dd_ship_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_dd_lance_debuff(
         client=client,

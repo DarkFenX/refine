@@ -113,8 +113,9 @@ class EveEffect(IntEnum):
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
     energy_neut_falloff = 6187
-    energy_nosf_falloff = 6197
     ship_mod_remote_armor_repairer = 6188
+    energy_nosf_falloff = 6197
+    doomsday_slash = 6201
     struct_energy_neut_falloff = 6216
     struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
