@@ -50,6 +50,7 @@ pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: AEffectId = AEffectId::Dogma(ec
 pub(crate) const ENERGY_NEUT_FALLOFF: AEffectId = AEffectId::Dogma(ece::ENERGY_NEUT_FALLOFF);
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: AEffectId = AEffectId::Dogma(ece::SHIP_MOD_REMOTE_ARMOR_REPAIRER);
 pub(crate) const ENERGY_NOSF_FALLOFF: AEffectId = AEffectId::Dogma(ece::ENERGY_NOSF_FALLOFF);
+pub(crate) const DOOMSDAY_SLASH: AEffectId = AEffectId::Dogma(ece::DOOMSDAY_SLASH);
 pub(crate) const MICRO_JUMP_PORTAL_DRIVE: AEffectId = AEffectId::Dogma(ece::MICRO_JUMP_PORTAL_DRIVE);
 pub(crate) const STRUCT_ENERGY_NEUT_FALLOFF: AEffectId = AEffectId::Dogma(ece::STRUCT_ENERGY_NEUT_FALLOFF);
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: AEffectId =

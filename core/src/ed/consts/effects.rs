@@ -46,6 +46,7 @@ pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: EEffectId = 6186;
 pub(crate) const ENERGY_NEUT_FALLOFF: EEffectId = 6187;
 pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: EEffectId = 6188;
 pub(crate) const ENERGY_NOSF_FALLOFF: EEffectId = 6197;
+pub(crate) const DOOMSDAY_SLASH: EEffectId = 6201;
 pub(crate) const MICRO_JUMP_PORTAL_DRIVE: EEffectId = 6208;
 pub(crate) const STRUCT_ENERGY_NEUT_FALLOFF: EEffectId = 6216;
 pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: EEffectId = 6222;
