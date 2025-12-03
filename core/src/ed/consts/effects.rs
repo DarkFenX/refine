@@ -101,6 +101,7 @@ pub(crate) const REMOTE_WEBIFIER_ENTITY: EEffectId = 6690;
 pub(crate) const ENTITY_ENERGY_NEUT_FALLOFF: EEffectId = 6691;
 pub(crate) const ENTITY_ECM_FALLOFF: EEffectId = 6695;
 pub(crate) const ECM_BURST_JAMMER: EEffectId = 6714;
+pub(crate) const MOD_BONUS_INDUSTRIAL_INVULNERABILITY: EEffectId = 6719;
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: EEffectId = 6730;
 pub(crate) const MOD_BONUS_AFTERBURNER: EEffectId = 6731;
 pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: EEffectId = 6732;

@@ -100,6 +100,7 @@ mod eff_d6693_remote_sensor_damp_entity;
 mod eff_d6694_npc_entity_weapon_disruptor;
 mod eff_d6695_entity_ecm_falloff;
 mod eff_d6714_ecm_burst_jammer;
+mod eff_d6719_mod_bonus_industrial_invulnerability;
 mod eff_d6730_mod_bonus_microwarpdrive;
 mod eff_d6731_mod_bonus_afterburner;
 mod eff_d6732_warfare_link_armor;
@@ -224,6 +225,7 @@ fn get_n_effects() -> Vec<NEffect> {
         eff_d6694_npc_entity_weapon_disruptor::mk_n_effect(),
         eff_d6695_entity_ecm_falloff::mk_n_effect(),
         eff_d6714_ecm_burst_jammer::mk_n_effect(),
+        eff_d6719_mod_bonus_industrial_invulnerability::mk_n_effect(),
         eff_d6730_mod_bonus_microwarpdrive::mk_n_effect(),
         eff_d6731_mod_bonus_afterburner::mk_n_effect(),
         eff_d6732_warfare_link_armor::mk_n_effect(),

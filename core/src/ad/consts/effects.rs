@@ -112,6 +112,8 @@ pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = AEffectId::Dogma(ece::REMOT
 pub(crate) const ENTITY_ENERGY_NEUT_FALLOFF: AEffectId = AEffectId::Dogma(ece::ENTITY_ENERGY_NEUT_FALLOFF);
 pub(crate) const ENTITY_ECM_FALLOFF: AEffectId = AEffectId::Dogma(ece::ENTITY_ECM_FALLOFF);
 pub(crate) const ECM_BURST_JAMMER: AEffectId = AEffectId::Dogma(ece::ECM_BURST_JAMMER);
+pub(crate) const MOD_BONUS_INDUSTRIAL_INVULNERABILITY: AEffectId =
+    AEffectId::Dogma(ece::MOD_BONUS_INDUSTRIAL_INVULNERABILITY);
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_MICROWARPDRIVE);
 pub(crate) const MOD_BONUS_AFTERBURNER: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_AFTERBURNER);
 pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: AEffectId = AEffectId::Dogma(ece::MOD_BONUS_WARFARE_LINK_ARMOR);
