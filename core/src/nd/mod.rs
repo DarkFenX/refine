@@ -8,6 +8,7 @@ pub(crate) use effect::{
     NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc, NEffectProjecteeFilter,
     NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
+pub(crate) use item_list::{N_ITEM_LISTS, NItemList};
 
 mod effect;
 mod item_list;

@@ -1,84 +1,36 @@
+use std::collections::hash_map::Entry;
+
 use crate::{
-    ac,
-    ad::{AData, AItemCatId, AItemList, AItemListId},
+    ad::{AData, AItemList},
+    nd::N_ITEM_LISTS,
+    util::RSet,
 };
 
 pub(in crate::adg::flow::s7_custom) fn customize_item_lists(a_data: &mut AData) {
-    mk_list_by_cats(a_data, ac::itemlists::SHIPS, &[ac::itemcats::SHIP]);
-    mk_list_by_cats(
-        a_data,
-        ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS,
-        &[ac::itemcats::SHIP, ac::itemcats::DRONE, ac::itemcats::FIGHTER],
-    );
-    mk_capitals_freighters_list(a_data);
-    mk_panic_eligible_list(a_data);
-}
-
-fn mk_list_by_cats(a_data: &mut AData, a_item_list_id: AItemListId, a_item_cats: &[AItemCatId]) {
-    let a_item_list = AItemList {
-        id: a_item_list_id,
-        item_ids: a_data
-            .items
-            .values()
-            .filter_map(|v| match a_item_cats.contains(&v.cat_id) {
-                true => Some(v.id),
-                false => None,
-            })
-            .collect(),
-    };
-    a_data.item_lists.insert(a_item_list_id, a_item_list);
-}
-
-fn mk_capitals_freighters_list(a_data: &mut AData) {
-    let a_item_list = AItemList {
-        id: ac::itemlists::CAPITALS_FREIGHTERS,
-        item_ids: a_data
-            .items
-            .values()
-            .filter_map(|v| {
-                match v.srqs.contains_key(&ac::items::CAPITAL_SHIPS)
-                    || [ac::itemgrps::FREIGHTER, ac::itemgrps::JUMP_FREIGHTER].contains(&v.grp_id)
-                {
-                    true => Some(v.id),
-                    false => None,
+    for n_item_list in N_ITEM_LISTS.iter() {
+        if let Some(item_filter) = n_item_list.adg_item_filter_fn {
+            let a_item_list = match a_data.item_lists.entry(n_item_list.aid) {
+                Entry::Occupied(entry) => {
+                    let a_item_list = entry.into_mut();
+                    if !a_item_list.item_ids.is_empty() {
+                        tracing::info!(
+                            "item list {}: clearing to overwrite with custom contents",
+                            a_item_list.id
+                        );
+                        a_item_list.item_ids.clear();
+                    }
+                    a_item_list
                 }
-            })
-            .collect(),
-    };
-    a_data.item_lists.insert(a_item_list.id, a_item_list);
-}
-
-fn mk_panic_eligible_list(a_data: &mut AData) {
-    let a_item_list = AItemList {
-        id: ac::itemlists::PANIC_ELIGIBLE,
-        item_ids: a_data
-            .items
-            .values()
-            .filter_map(|v| {
-                match [
-                    ac::itemgrps::HAULER,
-                    ac::itemgrps::BLOCKADE_RUNNER,
-                    ac::itemgrps::DEEP_SPACE_TRANSPORT,
-                    ac::itemgrps::EXPEDITION_FRIGATE,
-                    ac::itemgrps::MINING_BARGE,
-                    ac::itemgrps::EXHUMER,
-                    ac::itemgrps::INDUSTRIAL_COMMAND_SHIP,
-                ]
-                .contains(&v.grp_id)
-                    || [
-                        ac::items::VENTURE,
-                        ac::items::VENTURE_CONSORTIUM_ISSUE,
-                        ac::items::PIONEER,
-                        ac::items::PIONEER_CONSORTIUM_ISSUE,
-                        ac::items::OUTRIDER,
-                    ]
-                    .contains(&v.id)
-                {
-                    true => Some(v.id),
-                    false => None,
+                Entry::Vacant(entry) => entry.insert(AItemList {
+                    id: n_item_list.aid,
+                    item_ids: RSet::new(),
+                }),
+            };
+            for a_item in a_data.items.values() {
+                if item_filter(a_item) {
+                    a_item_list.item_ids.insert(a_item.id);
                 }
-            })
-            .collect(),
-    };
-    a_data.item_lists.insert(a_item_list.id, a_item_list);
+            }
+        }
+    }
 }
