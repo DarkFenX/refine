@@ -127,9 +127,9 @@ fn get_effects() -> Vec<NEffect> {
         data::d11691_debuff_lance::mk_n_effect(),
         data::d12126_micro_jump_portal_drive_capital::mk_n_effect(),
         data::d12174_dot_missile_launching::mk_n_effect(),
-        data::test::eff_d10000000_mod_proj_simple::mk_n_effect(),
-        data::test::eff_d10000001_mod_proj_normal1::mk_n_effect(),
-        data::test::eff_d10000002_mod_proj_normal2::mk_n_effect(),
+        data::test::d10000000_mod_proj_simple::mk_n_effect(),
+        data::test::d10000001_mod_proj_normal1::mk_n_effect(),
+        data::test::d10000002_mod_proj_normal2::mk_n_effect(),
     ]
 }
 
