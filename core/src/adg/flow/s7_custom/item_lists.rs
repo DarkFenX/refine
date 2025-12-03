@@ -54,12 +54,30 @@ fn mk_panic_eligible_list(a_data: &mut AData) {
         item_ids: a_data
             .items
             .values()
-            .filter_map(
-                |v| match [ac::itemgrps::EXHUMER, ac::itemgrps::INDUSTRIAL_COMMAND_SHIP].contains(&v.grp_id) {
+            .filter_map(|v| {
+                match [
+                    ac::itemgrps::HAULER,
+                    ac::itemgrps::BLOCKADE_RUNNER,
+                    ac::itemgrps::DEEP_SPACE_TRANSPORT,
+                    ac::itemgrps::EXPEDITION_FRIGATE,
+                    ac::itemgrps::MINING_BARGE,
+                    ac::itemgrps::EXHUMER,
+                    ac::itemgrps::INDUSTRIAL_COMMAND_SHIP,
+                ]
+                .contains(&v.grp_id)
+                    || [
+                        ac::items::VENTURE,
+                        ac::items::VENTURE_CONSORTIUM_ISSUE,
+                        ac::items::PIONEER,
+                        ac::items::PIONEER_CONSORTIUM_ISSUE,
+                        ac::items::OUTRIDER,
+                    ]
+                    .contains(&v.id)
+                {
                     true => Some(v.id),
                     false => None,
-                },
-            )
+                }
+            })
             .collect(),
     };
     a_data.item_lists.insert(a_item_list.id, a_item_list);
