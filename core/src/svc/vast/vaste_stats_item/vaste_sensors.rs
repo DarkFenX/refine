@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatSensors, StatSensorsKind, Vast},
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemKey, UShipKind},
     util::round_unerr,
 };
 
@@ -25,9 +25,12 @@ impl Vast {
         let mut item_locks = calc
             .get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_LOCKED_TARGETS)
             .unwrap();
-        // Ship locks are limited by character locks. Drone/fighter locks are not limited by it
+        // Ship (ship kind) locks are limited by character locks. Anything else, including
+        // structures, drones and fighter are not limited by it
         let u_item = ctx.u_data.items.get(item_key);
-        if let UItem::Ship(u_ship) = u_item {
+        if let UItem::Ship(u_ship) = u_item
+            && let UShipKind::Ship = u_ship.get_kind()
+        {
             let u_fit = ctx.u_data.fits.get(u_ship.get_fit_key());
             if let Some(character_key) = u_fit.character
                 && let Ok(character_locks) =
