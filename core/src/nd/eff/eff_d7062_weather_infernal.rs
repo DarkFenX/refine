@@ -17,7 +17,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
             attr_merge: Some(AEffectBuffAttrMerge {
-                duration: AEffectBuffDuration::Inherit,
+                duration: AEffectBuffDuration::None,
                 scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
             }),
             ..

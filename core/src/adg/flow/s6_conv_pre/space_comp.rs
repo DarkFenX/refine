@@ -75,7 +75,7 @@ fn process_buffs(
             .map(|v| AEffectBuffFull {
                 buff_id: v.id,
                 strength: AEffectBuffStrength::Hardcoded(AAttrVal::from(v.value)),
-                duration: AEffectBuffDuration::Inherit,
+                duration: AEffectBuffDuration::None,
                 scope: AEffectBuffScope::Projected(e_item_list_id),
             })
             .collect(),

@@ -34,13 +34,13 @@ fn make_effect() -> AEffect {
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_CAPACITOR_RECHARGE_BONUS,
                     strength: AEffectBuffStrength::Hardcoded(OF(-25.0)),
-                    duration: AEffectBuffDuration::Inherit,
+                    duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_TARGETING_AND_DSCAN_RANGE_BONUS,
                     strength: AEffectBuffStrength::Hardcoded(OF(25.0)),
-                    duration: AEffectBuffDuration::Inherit,
+                    duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
             ],

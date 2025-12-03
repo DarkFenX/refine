@@ -34,13 +34,13 @@ fn make_effect() -> AEffect {
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_WARP_SPEED_ADD,
                     strength: AEffectBuffStrength::Hardcoded(OF(2.0)),
-                    duration: AEffectBuffDuration::Inherit,
+                    duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_SCAN_RESOLUTION_BONUS,
                     strength: AEffectBuffStrength::Hardcoded(OF(25.0)),
-                    duration: AEffectBuffDuration::Inherit,
+                    duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
             ],

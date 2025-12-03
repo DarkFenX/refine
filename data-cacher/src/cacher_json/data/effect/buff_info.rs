@@ -98,13 +98,13 @@ impl From<&CEffectBuffStrength> for rc::ad::AEffectBuffStrength {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 enum CEffectBuffDuration {
-    Inherit,
+    None,
     AttrMs(CAttrId),
 }
 impl From<&rc::ad::AEffectBuffDuration> for CEffectBuffDuration {
     fn from(a_buff_dur: &rc::ad::AEffectBuffDuration) -> Self {
         match a_buff_dur {
-            rc::ad::AEffectBuffDuration::Inherit => Self::Inherit,
+            rc::ad::AEffectBuffDuration::None => Self::None,
             rc::ad::AEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
         }
     }
@@ -112,7 +112,7 @@ impl From<&rc::ad::AEffectBuffDuration> for CEffectBuffDuration {
 impl From<&CEffectBuffDuration> for rc::ad::AEffectBuffDuration {
     fn from(c_buff_dur: &CEffectBuffDuration) -> Self {
         match c_buff_dur {
-            CEffectBuffDuration::Inherit => Self::Inherit,
+            CEffectBuffDuration::None => Self::None,
             CEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
         }
     }

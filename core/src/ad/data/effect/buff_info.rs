@@ -56,14 +56,14 @@ impl AEffectBuffStrength {
 #[derive(Copy, Clone)]
 pub enum AEffectBuffDuration {
     /// Buff is active as long as item which applies it is active.
-    Inherit,
+    None,
     /// Attribute with this ID defines duration in milliseconds.
     AttrMs(AAttrId),
 }
 impl AEffectBuffDuration {
     fn get_a_attr_id(&self) -> Option<AAttrId> {
         match self {
-            Self::Inherit => None,
+            Self::None => None,
             Self::AttrMs(attr_id) => Some(*attr_id),
         }
     }
