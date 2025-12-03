@@ -6,7 +6,8 @@ use crate::{
     util::RMapRSet,
 };
 
-// Intended to hold data about modifiers which originated from buffs defined using on-item attribute
+// Intended to hold data about modifiers which originated from buffs defined using on-item
+// attributes
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
     pub(super) effect_keys: RMapRSet<UItemKey, REffectKey>,
@@ -50,7 +51,7 @@ impl BuffRegister {
 
 fn uses_default_attrs(effect: &REffect) -> bool {
     match &effect.get_buff_info() {
-        Some(buff_info) => buff_info.default_attrs.is_some(),
+        Some(buff_info) => buff_info.attr_merge.is_some(),
         _ => false,
     }
 }

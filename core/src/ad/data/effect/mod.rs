@@ -1,5 +1,7 @@
 pub use affectee_filter::AEffectAffecteeFilter;
-pub use buff_info::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope};
+pub use buff_info::{
+    AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength,
+};
 pub use effect::AEffect;
 pub use id::AEffectId;
 pub use location::AEffectLocation;

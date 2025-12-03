@@ -1,47 +1,70 @@
-use std::iter::chain;
-
 use crate::ad::{AAttrId, AAttrVal, ABuffId, AItemListId};
 
 /// Effect-specific buff info.
 #[derive(Clone)]
 pub struct AEffectBuffInfo {
-    /// Specifies how effect uses warfareBuff* series of attributes, which define buff ID and buff
-    /// strength.
-    pub default_attrs: Option<AEffectBuffScope> = None,
-    pub custom: Vec<AEffectBuffCustom> = Vec::new(),
+    pub attr_merge: Option<AEffectBuffAttrMerge> = None,
+    pub full: Vec<AEffectBuffFull> = Vec::new(),
 }
 impl AEffectBuffInfo {
     pub(crate) fn iter_a_item_list_ids(&self) -> impl Iterator<Item = AItemListId> {
-        chain(
-            self.default_attrs.and_then(|v| v.get_a_item_list_id()),
-            self.custom.iter().filter_map(|v| v.scope.get_a_item_list_id()),
-        )
+        let attr_merges = self.attr_merge.and_then(|v| v.scope.get_a_item_list_id()).into_iter();
+        let full = self.full.iter().filter_map(|v| v.scope.get_a_item_list_id());
+        attr_merges.chain(full)
     }
     pub(crate) fn iter_a_attr_ids(&self) -> impl Iterator<Item = AAttrId> {
-        self.custom.iter().filter_map(|v| v.source.get_a_attr_id())
+        let attr_merges = self.attr_merge.and_then(|v| v.duration.get_a_attr_id()).into_iter();
+        let full_str = self.full.iter().filter_map(|v| v.strength.get_a_attr_id());
+        let full_dur = self.full.iter().filter_map(|v| v.duration.get_a_attr_id());
+        attr_merges.chain(full_str).chain(full_dur)
     }
     pub(crate) fn iter_a_buff_ids(&self) -> impl Iterator<Item = ABuffId> {
-        self.custom.iter().map(|v| v.buff_id)
+        self.full.iter().map(|v| v.buff_id)
     }
 }
 
+/// Specifies how effect uses warfareBuff* series of attributes, which define buff ID and buff
+/// strength.
 #[derive(Copy, Clone)]
-pub struct AEffectBuffCustom {
-    pub buff_id: ABuffId,
-    pub source: AEffectBuffCustomSrc,
+pub struct AEffectBuffAttrMerge {
+    pub duration: AEffectBuffDuration,
     pub scope: AEffectBuffScope,
 }
 
 #[derive(Copy, Clone)]
-pub enum AEffectBuffCustomSrc {
+pub struct AEffectBuffFull {
+    pub buff_id: ABuffId,
+    pub strength: AEffectBuffStrength,
+    pub duration: AEffectBuffDuration,
+    pub scope: AEffectBuffScope,
+}
+
+#[derive(Copy, Clone)]
+pub enum AEffectBuffStrength {
     Attr(AAttrId),
     Hardcoded(AAttrVal),
 }
-impl AEffectBuffCustomSrc {
+impl AEffectBuffStrength {
     fn get_a_attr_id(&self) -> Option<AAttrId> {
         match self {
             Self::Attr(attr_id) => Some(*attr_id),
             Self::Hardcoded(_) => None,
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+pub enum AEffectBuffDuration {
+    /// Buff is active as long as item which applies it is active.
+    Inherit,
+    /// Attribute with this ID defines duration in milliseconds.
+    AttrMs(AAttrId),
+}
+impl AEffectBuffDuration {
+    fn get_a_attr_id(&self) -> Option<AAttrId> {
+        match self {
+            Self::Inherit => None,
+            Self::AttrMs(attr_id) => Some(*attr_id),
         }
     }
 }

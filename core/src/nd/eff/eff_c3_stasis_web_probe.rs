@@ -5,8 +5,8 @@
 use crate::{
     ac,
     ad::{
-        AEffect, AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId, AItem,
-        AItemEffectData, AItemId, AState,
+        AEffect, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength,
+        AEffectId, AItem, AItemEffectData, AItemId, AState,
     },
     nd::{
         NEffect, NEffectHc,
@@ -41,9 +41,10 @@ fn make_effect() -> AEffect {
         is_offense: true,
         range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
         buff_info: Some(AEffectBuffInfo {
-            custom: vec![AEffectBuffCustom {
+            full: vec![AEffectBuffFull {
                 buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,
-                source: AEffectBuffCustomSrc::Attr(ac::attrs::SPEED_FACTOR),
+                strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),
+                duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                 scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
             }],
             ..

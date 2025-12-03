@@ -2,70 +2,118 @@ use crate::cacher_json::data::{CAttrId, CAttrVal, CBuffId, CItemListId};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::cacher_json) struct CEffectBuffInfo {
-    default_attrs: Option<CEffectBuffScope>,
-    custom: Vec<CEffectBuffCustom>,
+    attr_merge: Option<CEffectBuffAttrMerge>,
+    full: Vec<CEffectBuffFull>,
 }
 impl From<&rc::ad::AEffectBuffInfo> for CEffectBuffInfo {
     fn from(a_buff_info: &rc::ad::AEffectBuffInfo) -> Self {
         Self {
-            default_attrs: a_buff_info.default_attrs.as_ref().map(Into::into),
-            custom: a_buff_info.custom.iter().map(Into::into).collect(),
+            attr_merge: a_buff_info.attr_merge.as_ref().map(Into::into),
+            full: a_buff_info.full.iter().map(Into::into).collect(),
         }
     }
 }
 impl From<&CEffectBuffInfo> for rc::ad::AEffectBuffInfo {
     fn from(c_buff_info: &CEffectBuffInfo) -> Self {
         Self {
-            default_attrs: c_buff_info.default_attrs.as_ref().map(Into::into),
-            custom: c_buff_info.custom.iter().map(Into::into).collect(),
+            attr_merge: c_buff_info.attr_merge.as_ref().map(Into::into),
+            full: c_buff_info.full.iter().map(Into::into).collect(),
         }
     }
 }
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CEffectBuffCustom {
-    buff_id: CBuffId,
-    source: CEffectBuffCustomSrc,
+struct CEffectBuffAttrMerge {
+    duration: CEffectBuffDuration,
     scope: CEffectBuffScope,
 }
-impl From<&rc::ad::AEffectBuffCustom> for CEffectBuffCustom {
-    fn from(a_buff_custom: &rc::ad::AEffectBuffCustom) -> Self {
+impl From<&rc::ad::AEffectBuffAttrMerge> for CEffectBuffAttrMerge {
+    fn from(a_buff_attr_merge: &rc::ad::AEffectBuffAttrMerge) -> Self {
         Self {
-            buff_id: a_buff_custom.buff_id,
-            source: (&a_buff_custom.source).into(),
-            scope: (&a_buff_custom.scope).into(),
+            duration: (&a_buff_attr_merge.duration).into(),
+            scope: (&a_buff_attr_merge.scope).into(),
         }
     }
 }
-impl From<&CEffectBuffCustom> for rc::ad::AEffectBuffCustom {
-    fn from(c_buff_custom: &CEffectBuffCustom) -> Self {
+impl From<&CEffectBuffAttrMerge> for rc::ad::AEffectBuffAttrMerge {
+    fn from(c_buff_attr_merge: &CEffectBuffAttrMerge) -> Self {
         Self {
-            buff_id: c_buff_custom.buff_id,
-            source: (&c_buff_custom.source).into(),
-            scope: (&c_buff_custom.scope).into(),
+            duration: (&c_buff_attr_merge.duration).into(),
+            scope: (&c_buff_attr_merge.scope).into(),
+        }
+    }
+}
+
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+pub(in crate::cacher_json) struct CEffectBuffFull {
+    buff_id: CBuffId,
+    strength: CEffectBuffStrength,
+    duration: CEffectBuffDuration,
+    scope: CEffectBuffScope,
+}
+impl From<&rc::ad::AEffectBuffFull> for CEffectBuffFull {
+    fn from(a_buff_full: &rc::ad::AEffectBuffFull) -> Self {
+        Self {
+            buff_id: a_buff_full.buff_id,
+            strength: (&a_buff_full.strength).into(),
+            duration: (&a_buff_full.duration).into(),
+            scope: (&a_buff_full.scope).into(),
+        }
+    }
+}
+impl From<&CEffectBuffFull> for rc::ad::AEffectBuffFull {
+    fn from(c_buff_full: &CEffectBuffFull) -> Self {
+        Self {
+            buff_id: c_buff_full.buff_id,
+            strength: (&c_buff_full.strength).into(),
+            duration: (&c_buff_full.duration).into(),
+            scope: (&c_buff_full.scope).into(),
         }
     }
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::cacher_json) enum CEffectBuffCustomSrc {
+pub(in crate::cacher_json) enum CEffectBuffStrength {
     Attr(CAttrId),
     Hardcoded(CAttrVal),
 }
-impl From<&rc::ad::AEffectBuffCustomSrc> for CEffectBuffCustomSrc {
-    fn from(a_buff_src: &rc::ad::AEffectBuffCustomSrc) -> Self {
-        match a_buff_src {
-            rc::ad::AEffectBuffCustomSrc::Attr(attr_id) => Self::Attr(*attr_id),
-            rc::ad::AEffectBuffCustomSrc::Hardcoded(buff_val) => Self::Hardcoded(*buff_val),
+impl From<&rc::ad::AEffectBuffStrength> for CEffectBuffStrength {
+    fn from(a_buff_str: &rc::ad::AEffectBuffStrength) -> Self {
+        match a_buff_str {
+            rc::ad::AEffectBuffStrength::Attr(attr_id) => Self::Attr(*attr_id),
+            rc::ad::AEffectBuffStrength::Hardcoded(buff_val) => Self::Hardcoded(*buff_val),
         }
     }
 }
-impl From<&CEffectBuffCustomSrc> for rc::ad::AEffectBuffCustomSrc {
-    fn from(c_buff_src: &CEffectBuffCustomSrc) -> Self {
-        match c_buff_src {
-            CEffectBuffCustomSrc::Attr(attr_id) => Self::Attr(*attr_id),
-            CEffectBuffCustomSrc::Hardcoded(buff_val) => Self::Hardcoded(*buff_val),
+impl From<&CEffectBuffStrength> for rc::ad::AEffectBuffStrength {
+    fn from(c_buff_str: &CEffectBuffStrength) -> Self {
+        match c_buff_str {
+            CEffectBuffStrength::Attr(attr_id) => Self::Attr(*attr_id),
+            CEffectBuffStrength::Hardcoded(buff_val) => Self::Hardcoded(*buff_val),
+        }
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum CEffectBuffDuration {
+    Inherit,
+    AttrMs(CAttrId),
+}
+impl From<&rc::ad::AEffectBuffDuration> for CEffectBuffDuration {
+    fn from(a_buff_dur: &rc::ad::AEffectBuffDuration) -> Self {
+        match a_buff_dur {
+            rc::ad::AEffectBuffDuration::Inherit => Self::Inherit,
+            rc::ad::AEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
+        }
+    }
+}
+impl From<&CEffectBuffDuration> for rc::ad::AEffectBuffDuration {
+    fn from(c_buff_dur: &CEffectBuffDuration) -> Self {
+        match c_buff_dur {
+            CEffectBuffDuration::Inherit => Self::Inherit,
+            CEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
         }
     }
 }

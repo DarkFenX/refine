@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectBuffScope, AEffectId},
+    ad::{AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffInfo, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
@@ -14,7 +14,10 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            default_attrs: Some(AEffectBuffScope::Fleet(ac::itemlists::SHIPS)),
+            attr_merge: Some(AEffectBuffAttrMerge {
+                duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),
+                scope: AEffectBuffScope::Fleet(ac::itemlists::SHIPS),
+            }),
             ..
         }),
         hc: NEffectHc {

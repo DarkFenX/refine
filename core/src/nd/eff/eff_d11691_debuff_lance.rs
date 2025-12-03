@@ -2,7 +2,7 @@ use itertools::chain;
 
 use crate::{
     ac,
-    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId},
+    ad::{AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength, AEffectId},
     def::OF,
     ec,
     ed::EEffectId,
@@ -25,27 +25,31 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            custom: chain!(
+            full: chain!(
                 // Projected debuffs
                 [
-                    AEffectBuffCustom {
+                    AEffectBuffFull {
                         buff_id: ac::buffs::REMOTE_REPAIR_IMPEDANCE,
-                        source: AEffectBuffCustomSrc::Hardcoded(OF(-50.0)),
+                        strength: AEffectBuffStrength::Hardcoded(OF(-50.0)),
+                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                     },
-                    AEffectBuffCustom {
+                    AEffectBuffFull {
                         buff_id: ac::buffs::WARP_PENALTY,
-                        source: AEffectBuffCustomSrc::Hardcoded(OF(100.0)),
+                        strength: AEffectBuffStrength::Hardcoded(OF(100.0)),
+                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                     },
-                    AEffectBuffCustom {
+                    AEffectBuffFull {
                         buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
-                        source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+                        strength: AEffectBuffStrength::Hardcoded(OF(1.0)),
+                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                     },
-                    AEffectBuffCustom {
+                    AEffectBuffFull {
                         buff_id: ac::buffs::DISALLOW_TETHER,
-                        source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+                        strength: AEffectBuffStrength::Hardcoded(OF(1.0)),
+                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                     },
                 ],

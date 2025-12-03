@@ -26,7 +26,7 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            custom: make_dd_self_debuffs().collect(),
+            full: make_dd_self_debuffs().collect(),
             ..
         }),
         hc: NEffectHc {

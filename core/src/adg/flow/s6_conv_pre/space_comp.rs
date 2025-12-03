@@ -3,8 +3,8 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{
-        AAttrVal, AData, AEffect, AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope,
-        AEffectId, AItemEffectData, AItemId, AItemListId, AState,
+        AAttrVal, AData, AEffect, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope,
+        AEffectBuffStrength, AEffectId, AItemEffectData, AItemId, AItemListId, AState,
     },
     ed::{EData, EItemSpaceCompBuffData},
 };
@@ -70,11 +70,12 @@ fn process_buffs(
         None => ac::itemlists::SHIPS,
     };
     let buff_info = AEffectBuffInfo {
-        custom: valid_buffs
+        full: valid_buffs
             .iter()
-            .map(|v| AEffectBuffCustom {
+            .map(|v| AEffectBuffFull {
                 buff_id: v.id,
-                source: AEffectBuffCustomSrc::Hardcoded(AAttrVal::from(v.value)),
+                strength: AEffectBuffStrength::Hardcoded(AAttrVal::from(v.value)),
+                duration: AEffectBuffDuration::Inherit,
                 scope: AEffectBuffScope::Projected(e_item_list_id),
             })
             .collect(),

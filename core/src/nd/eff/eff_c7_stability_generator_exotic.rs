@@ -4,7 +4,8 @@
 use crate::{
     ac,
     ad::{
-        AEffect, AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId, AItemId, AState,
+        AEffect, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength,
+        AEffectId, AItemId, AState,
     },
     def::OF,
     nd::{NEffect, eff::shared::sov_stability_generators::assign_effect},
@@ -29,15 +30,17 @@ fn make_effect() -> AEffect {
         category: ac::effcats::ACTIVE,
         state: AState::Active,
         buff_info: Some(AEffectBuffInfo {
-            custom: vec![
-                AEffectBuffCustom {
+            full: vec![
+                AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_WARP_SPEED_ADD,
-                    source: AEffectBuffCustomSrc::Hardcoded(OF(2.0)),
+                    strength: AEffectBuffStrength::Hardcoded(OF(2.0)),
+                    duration: AEffectBuffDuration::Inherit,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_SCAN_RESOLUTION_BONUS,
-                    source: AEffectBuffCustomSrc::Hardcoded(OF(25.0)),
+                    strength: AEffectBuffStrength::Hardcoded(OF(25.0)),
+                    duration: AEffectBuffDuration::Inherit,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
             ],

@@ -94,7 +94,7 @@ def test_known_failures(client, consts):
 def test_modified(client, consts):
     # This is the basic use-case, usually modules don't have it set, and external factors (e.g.
     # scrambler) set it to 1
-    eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
+    eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
     eve_range_attr_id = client.mk_eve_attr()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

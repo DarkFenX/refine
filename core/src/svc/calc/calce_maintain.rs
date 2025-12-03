@@ -204,7 +204,7 @@ impl Calc {
             }
         }
         // Process buffs which rely on attribute being modified
-        if ac::extras::BUFF_STDATTR_IDS.contains(&aspec.attr_id) {
+        if ac::extras::BUFF_MERGE_ATTR_IDS.contains(&aspec.attr_id) {
             let item = ctx.u_data.items.get(aspec.item_key);
             // Remove modifiers of buffs which rely on the attribute
             if let Some(rmods) = self.buffs.extract_dependent_mods(&aspec) {

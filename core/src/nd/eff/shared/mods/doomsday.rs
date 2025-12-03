@@ -1,34 +1,39 @@
 use crate::{
     ac,
-    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffScope},
+    ad::{AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength},
     def::OF,
 };
 
-pub(in crate::nd::eff) fn make_dd_self_debuffs() -> impl Iterator<Item = AEffectBuffCustom> {
+pub(in crate::nd::eff) fn make_dd_self_debuffs() -> impl Iterator<Item = AEffectBuffFull> {
     [
-        AEffectBuffCustom {
+        AEffectBuffFull {
             buff_id: ac::buffs::VELOCITY_PENALTY,
-            source: AEffectBuffCustomSrc::Attr(ac::attrs::SPEED_FACTOR),
+            strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),
+            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_IMMOBILITY_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
-        AEffectBuffCustom {
+        AEffectBuffFull {
             buff_id: ac::buffs::WARP_PENALTY,
-            source: AEffectBuffCustomSrc::Attr(ac::attrs::SIEGE_MODE_WARP_STATUS),
+            strength: AEffectBuffStrength::Attr(ac::attrs::SIEGE_MODE_WARP_STATUS),
+            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_IMMOBILITY_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
-        AEffectBuffCustom {
+        AEffectBuffFull {
             buff_id: ac::buffs::DISALLOW_CLOAK,
-            source: AEffectBuffCustomSrc::Hardcoded(OF(1.0)),
+            strength: AEffectBuffStrength::Hardcoded(OF(1.0)),
+            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
-        AEffectBuffCustom {
+        AEffectBuffFull {
             buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
-            source: AEffectBuffCustomSrc::Attr(ac::attrs::DISALLOW_DOCKING),
+            strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_DOCKING),
+            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
-        AEffectBuffCustom {
+        AEffectBuffFull {
             buff_id: ac::buffs::DISALLOW_TETHER,
-            source: AEffectBuffCustomSrc::Attr(ac::attrs::DISALLOW_TETHERING),
+            strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_TETHERING),
+            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
     ]

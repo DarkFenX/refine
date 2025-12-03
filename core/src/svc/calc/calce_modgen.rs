@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AAttrId, AAttrVal, ABuffId, AEffectBuffCustomSrc, AEffectBuffScope},
+    ad::{AAttrId, AAttrVal, ABuffId, AEffectBuffScope, AEffectBuffStrength},
     misc::EffectSpec,
     rd::{REffect, REffectKey},
     svc::{
@@ -29,8 +29,10 @@ impl Calc {
         }
         // Buffs
         if let Some(buff_info) = effect.get_buff_info().as_ref() {
-            if let Some(scope) = buff_info.default_attrs {
-                for (buff_type_attr_id, buff_val_attr_id) in ac::extras::BUFF_STDATTRS {
+            // Buffs which are partially defined and rely on on-item attributes to complete
+            // definition
+            if let Some(buff_attr_merge) = buff_info.attr_merge {
+                for (buff_type_attr_id, buff_val_attr_id) in ac::extras::BUFF_MERGE_ATTRS {
                     if let Ok(buff_id) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id) {
                         add_buff_mods_with_attr(
                             reuse_rmods,
@@ -39,34 +41,35 @@ impl Calc {
                             item,
                             effect,
                             &(buff_id.extra.round() as ABuffId),
-                            &scope,
+                            &buff_attr_merge.scope,
                             Some(buff_type_attr_id),
                             buff_val_attr_id,
                         );
                     }
                 }
             }
-            for custom_buff in buff_info.custom.iter() {
-                match custom_buff.source {
-                    AEffectBuffCustomSrc::Attr(buff_val_attr_id) => add_buff_mods_with_attr(
+            // Fully defined buffs
+            for buff_full in buff_info.full.iter() {
+                match buff_full.strength {
+                    AEffectBuffStrength::Attr(buff_val_attr_id) => add_buff_mods_with_attr(
                         reuse_rmods,
                         ctx,
                         item_key,
                         item,
                         effect,
-                        &custom_buff.buff_id,
-                        &custom_buff.scope,
+                        &buff_full.buff_id,
+                        &buff_full.scope,
                         None,
                         buff_val_attr_id,
                     ),
-                    AEffectBuffCustomSrc::Hardcoded(buff_val) => add_buff_mods_with_hardcoded(
+                    AEffectBuffStrength::Hardcoded(buff_val) => add_buff_mods_with_hardcoded(
                         reuse_rmods,
                         ctx,
                         item_key,
                         item,
                         effect,
-                        &custom_buff.buff_id,
-                        &custom_buff.scope,
+                        &buff_full.buff_id,
+                        &buff_full.scope,
                         buff_val,
                     ),
                 }
@@ -96,7 +99,7 @@ impl Calc {
         for &effect_key in effect_keys {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(buff_info) = effect.get_buff_info().as_ref()
-                && let Some(scope) = buff_info.default_attrs
+                && let Some(buff_attr_merge) = buff_info.attr_merge
                 && let Ok(buff_id_cval) = self.get_item_attr_val_full(ctx, item_key, &buff_type_attr_id)
             {
                 add_buff_mods_with_attr(
@@ -106,7 +109,7 @@ impl Calc {
                     item,
                     effect,
                     &(buff_id_cval.extra.round() as ABuffId),
-                    &scope,
+                    &buff_attr_merge.scope,
                     Some(buff_type_attr_id),
                     buff_value_attr_id,
                 );

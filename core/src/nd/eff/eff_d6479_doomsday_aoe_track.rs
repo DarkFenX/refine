@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffCustom, AEffectBuffCustomSrc, AEffectBuffInfo, AEffectBuffScope, AEffectId},
+    ad::{AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
@@ -17,40 +17,47 @@ pub(super) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_buff_info: Some(AEffectBuffInfo {
-            custom: vec![
-                AEffectBuffCustom {
+            full: vec![
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_TURRET_MAX_RANGE,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::MAX_RANGE_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::MAX_RANGE_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_TURRET_FALLOFF_RANGE,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::FALLOFF_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::FALLOFF_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_TURRET_TRACKING,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::TRACKING_SPEED_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::TRACKING_SPEED_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_MISSILE_VELOCITY,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::MISSILE_VELOCITY_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::MISSILE_VELOCITY_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_MISSILE_DURATION,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::EXPLOSION_DELAY_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::EXPLOSION_DELAY_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_MISSILE_EXPLOSION_RADIUS,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::AOE_CLOUD_SIZE_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::AOE_CLOUD_SIZE_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
-                AEffectBuffCustom {
+                AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_MISSILE_EXPLOSION_VELOCITY,
-                    source: AEffectBuffCustomSrc::Attr(ac::attrs::AOE_VELOCITY_BONUS),
+                    strength: AEffectBuffStrength::Attr(ac::attrs::AOE_VELOCITY_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_NPCS),
                 },
             ],

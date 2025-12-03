@@ -53,7 +53,7 @@ impl Fk for EItemAttr {
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let (true, Some(v_fk)) = (
-            ec::extras::BUFF_STDATTR_IDS.contains(&self.attr_id),
+            ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.attr_id),
             attr_val_to_fk(self.value),
         ) {
             vec.push(v_fk);
