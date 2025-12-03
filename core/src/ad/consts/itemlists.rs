@@ -6,3 +6,4 @@ pub(crate) const WORMHOLE_JUMP_BLACK_LIST: AItemListId = AItemListId::Eve(ecil::
 pub(crate) const SHIPS: AItemListId = AItemListId::Custom(1);
 pub(crate) const SHIPS_DRONES_FIGHTERS_NPCS: AItemListId = AItemListId::Custom(2);
 pub(crate) const CAPITALS_FREIGHTERS: AItemListId = AItemListId::Custom(3);
+pub(crate) const PANIC_ELIGIBLE: AItemListId = AItemListId::Custom(4);
