@@ -125,9 +125,10 @@ impl StandardRegister {
         }
         cmods
     }
-    pub(in crate::svc::calc::registers::standard) fn reg_affectee_ship_for_fleet_buff(
+    pub(in crate::svc::calc::registers::standard) fn load_affectee_for_fleet(
         &mut self,
         ctx: SvcCtx,
+        ship_key: UItemKey,
         ship: &UShip,
     ) {
         let fit_key = ship.get_fit_key();
@@ -137,18 +138,19 @@ impl StandardRegister {
                 let fleet = ctx.u_data.fleets.get(fleet_key);
                 for fleet_fit_key in fleet.iter_fits() {
                     let fleet_rmods = self.rmods_fleet.get(&fleet_fit_key);
-                    apply_fleet_mods_to_ship_fit(&mut self.cmods, fleet_rmods, ship);
+                    apply_fleet_mods_to_ship_fit(&mut self.cmods, fleet_rmods, ship_key, ship);
                 }
             }
             None => {
                 let fleet_rmods = self.rmods_fleet.get(&fit_key);
-                apply_fleet_mods_to_ship_fit(&mut self.cmods, fleet_rmods, ship);
+                apply_fleet_mods_to_ship_fit(&mut self.cmods, fleet_rmods, ship_key, ship);
             }
         }
     }
-    pub(in crate::svc::calc::registers::standard) fn unreg_affectee_ship_for_fleet_buff(
+    pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_fleet(
         &mut self,
         ctx: SvcCtx,
+        ship_key: UItemKey,
         ship: &UShip,
     ) {
         let fit_key = ship.get_fit_key();
@@ -158,12 +160,12 @@ impl StandardRegister {
                 let fleet = ctx.u_data.fleets.get(fleet_key);
                 for fleet_fit_key in fleet.iter_fits() {
                     let fleet_rmods = self.rmods_fleet.get(&fleet_fit_key);
-                    unapply_fleet_mods_from_ship_fit(&mut self.cmods, fleet_rmods, ship);
+                    unapply_fleet_mods_from_ship_fit(&mut self.cmods, fleet_rmods, ship_key, ship);
                 }
             }
             None => {
                 let fleet_rmods = self.rmods_fleet.get(&fit_key);
-                unapply_fleet_mods_from_ship_fit(&mut self.cmods, fleet_rmods, ship);
+                unapply_fleet_mods_from_ship_fit(&mut self.cmods, fleet_rmods, ship_key, ship);
             }
         }
     }
@@ -201,12 +203,9 @@ fn apply_fleet_mod_with_fit_key(
 ) -> bool {
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
-            if let Some((_, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_key, &item_list_id)
-                && let Ok(loc_kind) = ship.get_kind().try_into()
-            {
-                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                let key = (fit_key, loc_kind);
-                add_cmod(&mut reg_cmods.root, key, cmod, &mut reg_cmods.by_aspec);
+            if let Some((ship_key, _)) = is_fit_ship_on_fleet_item_list(ctx, fit_key, &item_list_id) {
+                let cmod = CtxModifier::new_with_projectee_item(rmod, ship_key);
+                add_cmod(&mut reg_cmods.direct, ship_key, cmod, &mut reg_cmods.by_aspec);
                 reuse_cmods.push(cmod);
             }
             true
@@ -258,12 +257,10 @@ fn unapply_fleet_mod_with_fit_key(
     // modifiers which passed checks when they were added, and location check is part of those
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_id))
-            if let Some((_, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_key, &item_list_id)
-                && let Ok(loc_kind) = ship.get_kind().try_into() =>
+            if let Some((ship_key, _)) = is_fit_ship_on_fleet_item_list(ctx, fit_key, &item_list_id) =>
         {
-            let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-            let key = (fit_key, loc_kind);
-            remove_cmod(&mut reg_cmods.root, key, &cmod, &mut reg_cmods.by_aspec);
+            let cmod = CtxModifier::new_with_projectee_item(rmod, ship_key);
+            remove_cmod(&mut reg_cmods.direct, ship_key, &cmod, &mut reg_cmods.by_aspec);
             reuse_cmods.push(cmod);
         }
         AffecteeFilter::Loc(Location::ItemList(item_list_id))
@@ -303,18 +300,17 @@ fn unapply_fleet_mod_with_fit_key(
 fn apply_fleet_mods_to_ship_fit<'a>(
     reg_cmods: &mut StandardRegisterCtxMods,
     fleet_rmods: impl Iterator<Item = &'a RawModifier>,
+    ship_key: UItemKey,
     ship: &UShip,
 ) {
     let fit_key = ship.get_fit_key();
     for rmod in fleet_rmods {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_id))
-                if is_ship_on_fleet_item_list(ship, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into() =>
+                if is_ship_on_fleet_item_list(ship, &item_list_id) =>
             {
-                let cmod = CtxModifier::new_with_fit(*rmod, fit_key);
-                let key = (fit_key, loc_kind);
-                add_cmod(&mut reg_cmods.root, key, cmod, &mut reg_cmods.by_aspec);
+                let cmod = CtxModifier::new_with_projectee_item(*rmod, ship_key);
+                add_cmod(&mut reg_cmods.direct, ship_key, cmod, &mut reg_cmods.by_aspec);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id))
                 if is_ship_on_fleet_item_list(ship, &item_list_id)
@@ -347,18 +343,17 @@ fn apply_fleet_mods_to_ship_fit<'a>(
 fn unapply_fleet_mods_from_ship_fit<'a>(
     reg_cmods: &mut StandardRegisterCtxMods,
     fleet_rmods: impl Iterator<Item = &'a RawModifier>,
+    ship_key: UItemKey,
     ship: &UShip,
 ) {
     let fit_key = ship.get_fit_key();
     for rmod in fleet_rmods {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_id))
-                if is_ship_on_fleet_item_list(ship, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into() =>
+                if is_ship_on_fleet_item_list(ship, &item_list_id) =>
             {
-                let cmod = CtxModifier::new_with_fit(*rmod, fit_key);
-                let key = (fit_key, loc_kind);
-                remove_cmod(&mut reg_cmods.root, key, &cmod, &mut reg_cmods.by_aspec);
+                let cmod = CtxModifier::new_with_projectee_item(*rmod, ship_key);
+                remove_cmod(&mut reg_cmods.direct, ship_key, &cmod, &mut reg_cmods.by_aspec);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_id))
                 if is_ship_on_fleet_item_list(ship, &item_list_id)

@@ -64,7 +64,7 @@ impl StandardRegister {
             self.reg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_ids);
         }
         if let UItem::Ship(ship) = item {
-            self.reg_affectee_ship_for_fleet_buff(ctx, ship);
+            self.load_affectee_for_fleet(ctx, item_key, ship);
             // If it's ship being unregistered, adding it might trigger attribute changes on various
             // items like modules. Valid list of modifiers can be fetched only with ship in place,
             // so do it after everything is processed
@@ -84,7 +84,7 @@ impl StandardRegister {
             // various items like modules. Valid list of modifiers can be fetched only with ship in
             // place, so do it before anything is processed
             self.get_mods_for_changed_ship(item, &mut cmods);
-            self.unreg_affectee_ship_for_fleet_buff(ctx, ship);
+            self.unload_affectee_for_fleet(ctx, item_key, ship);
         }
         // Let existing projections know their projectee got updated
         self.unload_affectee_for_proj(item_key, item);

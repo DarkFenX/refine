@@ -25,7 +25,7 @@ impl StandardRegister {
             Context::None => self.fill_no_context(reuse_affectees, ctx, &cmod.raw),
             Context::Fit(fit_key) => self.fill_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
             Context::ProjItem(item_key) => match cmod.raw.kind {
-                ModifierKind::Targeted | ModifierKind::Buff => {
+                ModifierKind::Buff | ModifierKind::FleetBuff | ModifierKind::Targeted => {
                     self.fill_direct_only(reuse_affectees, &cmod.raw, item_key)
                 }
                 _ => (),
@@ -58,21 +58,13 @@ impl StandardRegister {
         }
     }
     fn fill_for_fit(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitKey) {
-        // The only fit-context modifiers with item list filter are fleet buffs, and those are
-        // hardcoded to use ship location during reg/unreg, follow that here as well
         match rmod.affectee_filter {
-            AffecteeFilter::Direct(loc) => {
-                let loc_kind = match loc {
-                    Location::ItemList(_) => LocationKind::Ship,
-                    _ => match loc.try_into() {
-                        Ok(loc_kind) => loc_kind,
-                        _ => return,
-                    },
-                };
-                if check_location_root(ctx.u_data, loc_kind, fit_key) {
-                    let key = (fit_key, loc_kind);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_root, &key);
-                }
+            AffecteeFilter::Direct(loc)
+                if let Ok(loc_kind) = loc.try_into()
+                    && check_location_root(ctx.u_data, loc_kind, fit_key) =>
+            {
+                let key = (fit_key, loc_kind);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_root, &key);
             }
             AffecteeFilter::Loc(loc) => {
                 let loc_kind = match loc {
@@ -117,6 +109,7 @@ impl StandardRegister {
                 let key = (fit_key, srq_type_id);
                 extend_vec_from_map_set_l1(affectees, &self.affectee_own_srq, &key);
             }
+            _ => (),
         }
     }
     fn fill_for_fit_item_target(
