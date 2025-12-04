@@ -299,15 +299,15 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
 def test_playground(client, consts):  # noqa: ANN001, ANN201
     setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fleet = api_sol.create_fleet()
     api_src_fit = api_sol.create_fit()
+    api_src_fit.change(fleet_id=api_fleet.id)
     api_src_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_src_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_src_ship = api_src_fit.set_ship(type_id=77281, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Hubris
-    # Lance
-    api_src_lance = api_src_fit.add_module(type_id=77401, rack=consts.ApiRack.high, state=consts.ApiModuleState.online)
-    # Armor RR
-    api_src_rr = api_src_fit.add_module(type_id=41466, rack=consts.ApiRack.high, state=consts.ApiModuleState.active)
+    api_src_ship = api_src_fit.set_ship(type_id=28352, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Rorqual
+    # PANIC
+    api_src_lance = api_src_fit.add_module(type_id=42522, rack=consts.ApiRack.high, state=consts.ApiModuleState.online)
 
     api_src_ship_attrs_before = api_src_ship.update().update().attrs
     api_src_lance.change_module(state=consts.ApiModuleState.active)
@@ -318,13 +318,10 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     api_tgt_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_tgt_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(0, 0, 0))  # Nightmare
-    api_src_rr.change_module(add_projs=[api_tgt_ship.id])
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=22544, coordinates=(0, 20000, 0), movement=(0, 0, 0))  # Hulk
 
-    api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     api_tgt_ship_attrs_before = api_tgt_ship.update().update().attrs
-    api_src_lance.change_module(add_projs=[api_tgt_ship.id])
-    api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    api_tgt_fit.change(fleet_id=api_fleet.id)
     api_tgt_ship_attrs_after = api_tgt_ship.update().attrs
     print_attr_diff(attrs1=api_tgt_ship_attrs_before, attrs2=api_tgt_ship_attrs_after)
 
