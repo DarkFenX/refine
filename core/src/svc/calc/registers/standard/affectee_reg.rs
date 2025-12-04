@@ -25,17 +25,19 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return cmods,
         };
-        let root_loc = item.get_root_loc_kind();
+        let root_loc_kind = item.get_root_loc_kind();
         let item_grp_id = item.get_group_id().unwrap();
         let srqs = item.get_skill_reqs().unwrap();
-        if let Some(root_loc) = root_loc {
-            self.affectee_root.add_entry((fit_key, root_loc), item_key);
+        if let Some(root_loc_kind) = root_loc_kind {
+            self.affectee_root.add_entry((fit_key, root_loc_kind), item_key);
         }
-        for loc in PotentialLocations::new(item) {
-            self.affectee_loc.add_entry((fit_key, loc), item_key);
-            self.affectee_loc_grp.add_entry((fit_key, loc, item_grp_id), item_key);
+        for loc_kind in PotentialLocations::new(item) {
+            self.affectee_loc.add_entry((fit_key, loc_kind), item_key);
+            self.affectee_loc_grp
+                .add_entry((fit_key, loc_kind, item_grp_id), item_key);
             for &srq_type_id in srqs.keys() {
-                self.affectee_loc_srq.add_entry((fit_key, loc, srq_type_id), item_key);
+                self.affectee_loc_srq
+                    .add_entry((fit_key, loc_kind, srq_type_id), item_key);
             }
         }
         if item.is_owner_modifiable() {
@@ -93,19 +95,19 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return cmods,
         };
-        let root_loc = item.get_root_loc_kind();
+        let root_loc_kind = item.get_root_loc_kind();
         let item_grp_id = item.get_group_id().unwrap();
         let srqs = item.get_skill_reqs().unwrap();
-        if let Some(root_loc) = root_loc {
-            self.affectee_root.remove_entry((fit_key, root_loc), &item_key);
+        if let Some(root_loc_kind) = root_loc_kind {
+            self.affectee_root.remove_entry((fit_key, root_loc_kind), &item_key);
         }
-        for loc in PotentialLocations::new(item) {
-            self.affectee_loc.remove_entry((fit_key, loc), &item_key);
+        for loc_kind in PotentialLocations::new(item) {
+            self.affectee_loc.remove_entry((fit_key, loc_kind), &item_key);
             self.affectee_loc_grp
-                .remove_entry((fit_key, loc, item_grp_id), &item_key);
+                .remove_entry((fit_key, loc_kind, item_grp_id), &item_key);
             for &srq_type_id in srqs.keys() {
                 self.affectee_loc_srq
-                    .remove_entry((fit_key, loc, srq_type_id), &item_key);
+                    .remove_entry((fit_key, loc_kind, srq_type_id), &item_key);
             }
         }
         if item.is_owner_modifiable() {
@@ -136,15 +138,15 @@ impl StandardRegister {
         cmods
     }
     fn get_mods_for_changed_ship(&self, item: &UItem, cmods: &mut Vec<CtxModifier>) {
-        if let (Some(item_fit_key), Some(item_loc)) = (item.get_fit_key(), item.get_ship_loc_kind()) {
-            cmods.extend(self.cmods.loc.get(&(item_fit_key, item_loc)));
-            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods.loc_grp.iter() {
-                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
+        if let (Some(item_fit_key), Some(loc_kind)) = (item.get_fit_key(), item.get_ship_loc_kind()) {
+            cmods.extend(self.cmods.loc.get(&(item_fit_key, loc_kind)));
+            for ((stored_fit_key, stored_loc_kind, _), stored_cmods) in self.cmods.loc_grp.iter() {
+                if item_fit_key == *stored_fit_key && loc_kind == *stored_loc_kind {
                     cmods.extend(stored_cmods);
                 }
             }
-            for ((stored_fit_key, stored_loc, _), stored_cmods) in self.cmods.loc_srq.iter() {
-                if item_fit_key == *stored_fit_key && item_loc == *stored_loc {
+            for ((stored_fit_key, stored_loc_kind, _), stored_cmods) in self.cmods.loc_srq.iter() {
+                if item_fit_key == *stored_fit_key && loc_kind == *stored_loc_kind {
                     cmods.extend(stored_cmods);
                 }
             }
