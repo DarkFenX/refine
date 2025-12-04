@@ -7,7 +7,7 @@ use crate::{
             modifier::CtxModifier,
             registers::standard::{
                 StandardRegister,
-                func::{add_cmod, remove_cmod},
+                modifier::func::{add_cmod, is_fit_ship_on_item_list, remove_cmod},
             },
         },
     },
@@ -238,19 +238,5 @@ impl StandardRegister {
                 _ => (),
             };
         }
-    }
-}
-
-fn is_fit_ship_on_item_list<'u>(
-    ctx: SvcCtx<'u, '_>,
-    fit_key: UFitKey,
-    item_list_id: &AItemListId,
-) -> Option<(UItemKey, &'u UShip)> {
-    let fit = ctx.u_data.fits.get(fit_key);
-    let ship_key = fit.ship?;
-    let ship = ctx.u_data.items.get(ship_key).dc_ship().unwrap();
-    match ship.get_buff_item_lists()?.contains(item_list_id) {
-        true => Some((ship_key, ship)),
-        false => None,
     }
 }

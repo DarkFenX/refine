@@ -3,7 +3,7 @@ use crate::{
         AffecteeFilter, CtxModifier, Location, RawModifier,
         registers::standard::{
             data::{StandardRegisterCtxMods, StandardRegisterRawProjStatus},
-            func::{add_cmod, remove_cmod},
+            modifier::func::{add_cmod, remove_cmod},
         },
     },
     ud::{UItem, UItemKey, UShipKind},

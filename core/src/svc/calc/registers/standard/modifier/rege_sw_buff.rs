@@ -6,7 +6,7 @@ use crate::{
             AffecteeFilter, CtxModifier, Location, RawModifier,
             registers::standard::{
                 StandardRegister,
-                func::{add_cmod, remove_cmod},
+                modifier::func::{add_cmod, remove_cmod},
             },
         },
     },

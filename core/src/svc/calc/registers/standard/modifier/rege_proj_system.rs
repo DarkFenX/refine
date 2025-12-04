@@ -3,7 +3,7 @@ use crate::{
         AffecteeFilter, CtxModifier, RawModifier,
         registers::standard::{
             data::StandardRegisterCtxMods,
-            func::{add_cmod, remove_cmod},
+            modifier::func::{add_cmod, remove_cmod},
         },
     },
     ud::UItem,
