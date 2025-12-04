@@ -60,10 +60,4 @@ impl UItem {
             _ => None,
         }
     }
-    pub(in crate::svc::calc) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        match self {
-            Self::Ship(ship) => ship.get_fleet_buff_item_lists(),
-            _ => None,
-        }
-    }
 }

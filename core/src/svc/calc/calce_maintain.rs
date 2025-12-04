@@ -69,14 +69,14 @@ impl Calc {
     pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         // Notify core calc services
         self.attrs.item_loaded(item_key, item);
-        let cmods = self.std.reg_affectee(item_key, item);
+        let cmods = self.std.reg_affectee(ctx, item_key, item);
         if !cmods.is_empty() {
             let mut reuse_affectees = Vec::new();
             for cmod in cmods {
                 self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
             }
         }
-        self.std.reg_affectee(item_key, item);
+        self.std.reg_affectee(ctx, item_key, item);
         // Notify RAH sim
         self.rah_item_loaded(ctx, item);
     }
@@ -84,7 +84,7 @@ impl Calc {
         // Notify RAH sim
         self.rah_item_unloaded(ctx, item);
         // Notify core calc services
-        let cmods = self.std.unreg_affectee(item_key, item);
+        let cmods = self.std.unreg_affectee(ctx, item_key, item);
         if !cmods.is_empty() {
             let mut reuse_affectees = Vec::new();
             for cmod in cmods {

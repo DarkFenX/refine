@@ -1,14 +1,22 @@
 use crate::{
-    svc::calc::{
-        CtxModifier,
-        registers::standard::{data::StandardRegister, iter_locs_pot::PotentialLocations},
+    svc::{
+        SvcCtx,
+        calc::{
+            CtxModifier,
+            registers::standard::{data::StandardRegister, iter_locs_pot::PotentialLocations},
+        },
     },
     ud::{UItem, UItemKey},
 };
 
 impl StandardRegister {
     // Modification methods
-    pub(in crate::svc::calc) fn reg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
+    pub(in crate::svc::calc) fn reg_affectee(
+        &mut self,
+        ctx: SvcCtx,
+        item_key: UItemKey,
+        item: &UItem,
+    ) -> Vec<CtxModifier> {
         // Let existing projections know their projectee got updated
         self.load_affectee_for_proj(item_key, item);
         let mut cmods = Vec::new();
@@ -55,21 +63,28 @@ impl StandardRegister {
             self.reg_affectee_for_sw_buff(item_key, ship, item_list_ids);
             self.reg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_ids);
         }
-        // If it's ship being unregistered, adding it might trigger attribute changes on various
-        // items like modules. Valid list of modifiers can be fetched only with ship in place, so
-        // do it after everything is processed
-        if let UItem::Ship(_) = item {
+        if let UItem::Ship(ship) = item {
+            self.reg_affectee_ship_for_fleet_buff(ctx, ship);
+            // If it's ship being unregistered, adding it might trigger attribute changes on various
+            // items like modules. Valid list of modifiers can be fetched only with ship in place,
+            // so do it after everything is processed
             self.get_mods_for_changed_ship(item, &mut cmods);
         }
         cmods
     }
-    pub(in crate::svc::calc) fn unreg_affectee(&mut self, item_key: UItemKey, item: &UItem) -> Vec<CtxModifier> {
-        // If it's ship being unregistered, removing it might trigger attribute changes on various
-        // items like modules. Valid list of modifiers can be fetched only with ship in place, so
-        // do it before anything is processed
+    pub(in crate::svc::calc) fn unreg_affectee(
+        &mut self,
+        ctx: SvcCtx,
+        item_key: UItemKey,
+        item: &UItem,
+    ) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
-        if let UItem::Ship(_) = item {
+        if let UItem::Ship(ship) = item {
+            // If it's ship being unregistered, removing it might trigger attribute changes on
+            // various items like modules. Valid list of modifiers can be fetched only with ship in
+            // place, so do it before anything is processed
             self.get_mods_for_changed_ship(item, &mut cmods);
+            self.unreg_affectee_ship_for_fleet_buff(ctx, ship);
         }
         // Let existing projections know their projectee got updated
         self.unload_affectee_for_proj(item_key, item);
