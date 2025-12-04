@@ -4,7 +4,7 @@ use crate::{
         calc::{
             AffecteeFilter, CtxModifier, Location, RawModifier,
             registers::standard::{
-                StandardRegister,
+                data::{StandardRegister, StandardRegisterCtxMods},
                 modifier::func::{add_cmod, is_fit_ship_on_item_list, remove_cmod},
             },
         },
@@ -31,13 +31,13 @@ impl StandardRegister {
             Some(fleet_key) => {
                 let fleet = ctx.u_data.fleets.get(fleet_key);
                 for fleet_fit_key in fleet.iter_fits() {
-                    if self.apply_fleet_mod(reuse_cmods, ctx, rmod, fleet_fit_key) {
+                    if apply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fleet_fit_key) {
                         valid = true;
                     }
                 }
             }
             None => {
-                if self.apply_fleet_mod(reuse_cmods, ctx, rmod, fit_key) {
+                if apply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fit_key) {
                     valid = true;
                 }
             }
@@ -65,11 +65,11 @@ impl StandardRegister {
             Some(fleet_key) => {
                 let fleet = ctx.u_data.fleets.get(fleet_key);
                 for fleet_fit_key in fleet.iter_fits() {
-                    self.unapply_fleet_mod(reuse_cmods, ctx, rmod, fleet_fit_key);
+                    unapply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fleet_fit_key);
                 }
             }
             None => {
-                self.unapply_fleet_mod(reuse_cmods, ctx, rmod, fit_key);
+                unapply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fit_key);
             }
         }
         self.rmods_fleet.remove_entry(fit_key, &rmod);
@@ -80,14 +80,12 @@ impl StandardRegister {
         fleet: &UFleet,
         fit_key: UFitKey,
     ) -> Vec<CtxModifier> {
-        let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
-        rmods.extend(self.rmods_fleet.get(&fit_key).copied());
-        for rmod in rmods.iter() {
+        for rmod in self.rmods_fleet.get(&fit_key) {
             for fleet_fit_key in fleet.iter_fits() {
                 if fleet_fit_key != fit_key {
-                    self.apply_fleet_mod(&mut cmods, ctx, *rmod, fleet_fit_key);
+                    apply_fleet_mod(&mut cmods, ctx, &mut self.cmods, *rmod, fleet_fit_key);
                 }
             }
         }
@@ -96,10 +94,8 @@ impl StandardRegister {
             if fleet_fit_key == fit_key {
                 continue;
             }
-            rmods.clear();
-            rmods.extend(self.rmods_fleet.get(&fleet_fit_key).copied());
-            for rmod in rmods.iter() {
-                self.apply_fleet_mod(&mut cmods, ctx, *rmod, fit_key);
+            for &rmod in self.rmods_fleet.get(&fleet_fit_key) {
+                apply_fleet_mod(&mut cmods, ctx, &mut self.cmods, rmod, fit_key);
             }
         }
         cmods
@@ -110,14 +106,12 @@ impl StandardRegister {
         fleet: &UFleet,
         fit_key: UFitKey,
     ) -> Vec<CtxModifier> {
-        let mut rmods = Vec::new();
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
-        rmods.extend(self.rmods_fleet.get(&fit_key).copied());
-        for rmod in rmods.iter() {
+        for rmod in self.rmods_fleet.get(&fit_key) {
             for fleet_fit_key in fleet.iter_fits() {
                 if fleet_fit_key != fit_key {
-                    self.unapply_fleet_mod(&mut cmods, ctx, *rmod, fleet_fit_key)
+                    unapply_fleet_mod(&mut cmods, ctx, &mut self.cmods, *rmod, fleet_fit_key);
                 }
             }
         }
@@ -126,123 +120,121 @@ impl StandardRegister {
             if fleet_fit_key == fit_key {
                 continue;
             }
-            rmods.clear();
-            rmods.extend(self.rmods_fleet.get(&fleet_fit_key).copied());
-            for rmod in rmods.iter() {
-                self.unapply_fleet_mod(&mut cmods, ctx, *rmod, fit_key)
+            for rmod in self.rmods_fleet.get(&fleet_fit_key) {
+                unapply_fleet_mod(&mut cmods, ctx, &mut self.cmods, *rmod, fit_key);
             }
         }
         cmods
     }
-    // Private methods
-    fn apply_fleet_mod(
-        &mut self,
-        reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
-        rmod: RawModifier,
-        fit_key: UFitKey,
-    ) -> bool {
-        // Assume all fleet buffs affect ships. This is controlled by the lib, so whenever
-        // item-specific buffs are added to EVE, this implementation has to be changed
-        match rmod.affectee_filter {
-            AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind);
-                    add_cmod(&mut self.cmods.root, key, cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-                true
+}
+
+fn apply_fleet_mod(
+    reuse_cmods: &mut Vec<CtxModifier>,
+    ctx: SvcCtx,
+    reg_cmods: &mut StandardRegisterCtxMods,
+    rmod: RawModifier,
+    fit_key: UFitKey,
+) -> bool {
+    // Assume all fleet buffs affect ships. This is controlled by the lib, so whenever
+    // item-specific buffs are added to EVE, this implementation has to be changed
+    match rmod.affectee_filter {
+        AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind);
+                add_cmod(&mut reg_cmods.root, key, cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
             }
-            AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind);
-                    add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-                true
-            }
-            AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind, item_grp_id);
-                    add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-                true
-            }
-            AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind, srq_type_id);
-                    add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-                true
-            }
-            _ => false,
+            true
         }
+        AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind);
+                add_cmod(&mut reg_cmods.loc, key, cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
+            }
+            true
+        }
+        AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind, item_grp_id);
+                add_cmod(&mut reg_cmods.loc_grp, key, cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
+            }
+            true
+        }
+        AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind, srq_type_id);
+                add_cmod(&mut reg_cmods.loc_srq, key, cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
+            }
+            true
+        }
+        _ => false,
     }
-    fn unapply_fleet_mod(
-        &mut self,
-        reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
-        rmod: RawModifier,
-        fit_key: UFitKey,
-    ) {
-        // We don't check location here, since logic on layers above ensures we receive only
-        // modifiers which passed checks when they were added, and location check is part of those
-        match rmod.affectee_filter {
-            AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind);
-                    remove_cmod(&mut self.cmods.root, key, &cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
+}
+fn unapply_fleet_mod(
+    reuse_cmods: &mut Vec<CtxModifier>,
+    ctx: SvcCtx,
+    reg_cmods: &mut StandardRegisterCtxMods,
+    rmod: RawModifier,
+    fit_key: UFitKey,
+) {
+    // We don't check location here, since logic on layers above ensures we receive only
+    // modifiers which passed checks when they were added, and location check is part of those
+    match rmod.affectee_filter {
+        AffecteeFilter::Direct(Location::ItemList(item_list_id)) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind);
+                remove_cmod(&mut reg_cmods.root, key, &cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
             }
-            AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind);
-                    remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-            }
-            AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind, item_grp_id);
-                    remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-            }
-            AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
-                if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
-                {
-                    let cmod = CtxModifier::new_with_fit(rmod, fit_key);
-                    let key = (fit_key, loc_kind, srq_type_id);
-                    remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
-                    reuse_cmods.push(cmod);
-                }
-            }
-            _ => (),
         }
+        AffecteeFilter::Loc(Location::ItemList(item_list_id)) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind);
+                remove_cmod(&mut reg_cmods.loc, key, &cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
+            }
+        }
+        AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind, item_grp_id);
+                remove_cmod(&mut reg_cmods.loc_grp, key, &cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
+            }
+        }
+        AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id) => {
+            if let Some((_, ship)) = is_fit_ship_on_item_list(ctx, fit_key, &item_list_id)
+                && let Ok(loc_kind) = ship.get_kind().try_into()
+            {
+                let cmod = CtxModifier::new_with_fit(rmod, fit_key);
+                let key = (fit_key, loc_kind, srq_type_id);
+                remove_cmod(&mut reg_cmods.loc_srq, key, &cmod, &mut reg_cmods.by_aspec);
+                reuse_cmods.push(cmod);
+            }
+        }
+        _ => (),
     }
 }
