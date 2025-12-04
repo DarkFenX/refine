@@ -196,8 +196,8 @@ pub(super) fn load_affectee_for_proj_buff(
 ) -> bool {
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_id))
-            if let Some(buffable_item_lists) = projectee_item.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id) =>
+            if let Some(proj_buff_item_lists) = projectee_item.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id) =>
         {
             let cmod = CtxModifier::new_with_projectee_item(*rmod, projectee_key);
             add_cmod(&mut reg_cmods.direct, projectee_key, cmod, &mut reg_cmods.by_aspec);
@@ -205,8 +205,8 @@ pub(super) fn load_affectee_for_proj_buff(
         }
         AffecteeFilter::Loc(Location::ItemList(item_list_id))
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(buffable_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id)
+                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id)
                 && let Ok(loc_kind) = projectee_ship.get_kind().try_into() =>
         {
             let fit_key = projectee_ship.get_fit_key();
@@ -217,8 +217,8 @@ pub(super) fn load_affectee_for_proj_buff(
         }
         AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(buffable_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id)
+                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id)
                 && let Ok(loc_kind) = projectee_ship.get_kind().try_into() =>
         {
             let fit_key = projectee_ship.get_fit_key();
@@ -229,8 +229,8 @@ pub(super) fn load_affectee_for_proj_buff(
         }
         AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(buffable_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id)
+                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id)
                 && let Ok(loc_kind) = projectee_ship.get_kind().try_into() =>
         {
             let fit_key = projectee_ship.get_fit_key();
@@ -250,8 +250,8 @@ pub(super) fn unload_affectee_for_proj_buff(
 ) -> bool {
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_id))
-            if let Some(buffable_item_lists) = projectee_item.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id) =>
+            if let Some(proj_buff_item_lists) = projectee_item.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id) =>
         {
             let cmod = CtxModifier::new_with_projectee_item(*rmod, projectee_key);
             remove_cmod(&mut reg_cmods.direct, projectee_key, &cmod, &mut reg_cmods.by_aspec);
@@ -259,8 +259,8 @@ pub(super) fn unload_affectee_for_proj_buff(
         }
         AffecteeFilter::Loc(Location::ItemList(item_list_id))
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(buffable_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id)
+                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id)
                 && let Ok(loc_kind) = projectee_ship.get_kind().try_into() =>
         {
             let fit_key = projectee_ship.get_fit_key();
@@ -271,8 +271,8 @@ pub(super) fn unload_affectee_for_proj_buff(
         }
         AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(buffable_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id)
+                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id)
                 && let Ok(loc_kind) = projectee_ship.get_kind().try_into() =>
         {
             let fit_key = projectee_ship.get_fit_key();
@@ -283,8 +283,8 @@ pub(super) fn unload_affectee_for_proj_buff(
         }
         AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(buffable_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && buffable_item_lists.contains(&item_list_id)
+                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
+                && proj_buff_item_lists.contains(&item_list_id)
                 && let Ok(loc_kind) = projectee_ship.get_kind().try_into() =>
         {
             let fit_key = projectee_ship.get_fit_key();

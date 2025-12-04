@@ -142,12 +142,12 @@ impl StandardRegister {
         item_key: UItemKey,
         ship: Option<&UShip>,
         fit_key: UFitKey,
-        buffable_item_lists: &[AItemListId],
+        proj_buff_item_lists: &[AItemListId],
     ) {
         // Direct changes can affect all buffable items
         for rmod in self.rmods_fw_buff.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
-                && buffable_item_lists.contains(&item_list_id)
+                && proj_buff_item_lists.contains(&item_list_id)
             {
                 let cmod = CtxModifier::new_with_projectee_item(*rmod, item_key);
                 add_cmod(&mut self.cmods.direct, item_key, cmod, &mut self.cmods.by_aspec);
@@ -164,21 +164,21 @@ impl StandardRegister {
         for rmod in self.rmods_fw_buff.get(&fit_key) {
             match rmod.affectee_filter {
                 AffecteeFilter::Loc(Location::ItemList(item_list_id))
-                    if buffable_item_lists.contains(&item_list_id) =>
+                    if proj_buff_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::new_with_projectee_fit_item(*rmod, fit_key, item_key);
                     let key = (fit_key, loc_kind);
                     add_cmod(&mut self.cmods.loc, key, cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id)
-                    if buffable_item_lists.contains(&item_list_id) =>
+                    if proj_buff_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::new_with_projectee_fit_item(*rmod, fit_key, item_key);
                     let key = (fit_key, loc_kind, item_grp_id);
                     add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id)
-                    if buffable_item_lists.contains(&item_list_id) =>
+                    if proj_buff_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::new_with_projectee_fit_item(*rmod, fit_key, item_key);
                     let key = (fit_key, loc_kind, srq_type_id);
@@ -193,12 +193,12 @@ impl StandardRegister {
         item_key: UItemKey,
         ship: Option<&UShip>,
         fit_key: UFitKey,
-        buffable_item_lists: &[AItemListId],
+        proj_buff_item_lists: &[AItemListId],
     ) {
         // Direct changes can affect all buffable items
         for rmod in self.rmods_fw_buff.get(&fit_key) {
             if let AffecteeFilter::Direct(Location::ItemList(item_list_id)) = rmod.affectee_filter
-                && buffable_item_lists.contains(&item_list_id)
+                && proj_buff_item_lists.contains(&item_list_id)
             {
                 let cmod = CtxModifier::new_with_projectee_item(*rmod, item_key);
                 remove_cmod(&mut self.cmods.direct, item_key, &cmod, &mut self.cmods.by_aspec);
@@ -215,21 +215,21 @@ impl StandardRegister {
         for rmod in self.rmods_fw_buff.get(&fit_key) {
             match rmod.affectee_filter {
                 AffecteeFilter::Loc(Location::ItemList(item_list_id))
-                    if buffable_item_lists.contains(&item_list_id) =>
+                    if proj_buff_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::new_with_projectee_fit_item(*rmod, fit_key, item_key);
                     let key = (fit_key, loc_kind);
                     remove_cmod(&mut self.cmods.loc, key, &cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocGrp(Location::ItemList(item_list_id), item_grp_id)
-                    if buffable_item_lists.contains(&item_list_id) =>
+                    if proj_buff_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::new_with_projectee_fit_item(*rmod, fit_key, item_key);
                     let key = (fit_key, loc_kind, item_grp_id);
                     remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocSrq(Location::ItemList(item_list_id), srq_type_id)
-                    if buffable_item_lists.contains(&item_list_id) =>
+                    if proj_buff_item_lists.contains(&item_list_id) =>
                 {
                     let cmod = CtxModifier::new_with_projectee_fit_item(*rmod, fit_key, item_key);
                     let key = (fit_key, loc_kind, srq_type_id);
