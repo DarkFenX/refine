@@ -23,18 +23,20 @@ impl StandardRegister {
         reuse_affectees.clear();
         match cmod.ctx {
             Context::None => self.fill_no_context(reuse_affectees, ctx, &cmod.raw),
-            Context::Fit(fit_key) => self.fill_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
-            Context::ProjItem(item_key) => match cmod.raw.kind {
+            Context::Item(item_key) => match cmod.raw.kind {
                 ModifierKind::Buff | ModifierKind::FleetBuff | ModifierKind::Targeted => {
                     self.fill_direct_only(reuse_affectees, &cmod.raw, item_key)
                 }
                 _ => (),
             },
-            Context::ProjFitItem(fit_key, item_key) => match cmod.raw.kind {
+            Context::Fit(fit_key) => self.fill_for_fit(reuse_affectees, ctx, &cmod.raw, fit_key),
+            Context::FitItem(fit_key, item_key) => match cmod.raw.kind {
                 ModifierKind::Targeted => {
                     self.fill_for_fit_item_target(reuse_affectees, ctx, &cmod.raw, fit_key, item_key)
                 }
-                ModifierKind::Buff => self.fill_for_fit_item_buff(reuse_affectees, ctx, &cmod.raw, fit_key),
+                ModifierKind::Buff | ModifierKind::FleetBuff => {
+                    self.fill_for_fit_item_buff(reuse_affectees, ctx, &cmod.raw, fit_key)
+                }
                 _ => (),
             },
         }
@@ -66,44 +68,26 @@ impl StandardRegister {
                 let key = (fit_key, loc_kind);
                 extend_vec_from_map_set_l1(affectees, &self.affectee_root, &key);
             }
-            AffecteeFilter::Loc(loc) => {
-                let loc_kind = match loc {
-                    Location::ItemList(_) => LocationKind::Ship,
-                    _ => match loc.try_into() {
-                        Ok(loc_kind) => loc_kind,
-                        _ => return,
-                    },
-                };
-                if check_location_root(ctx.u_data, loc_kind, fit_key) {
-                    let key = (fit_key, loc_kind);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
-                }
+            AffecteeFilter::Loc(loc)
+                if let Ok(loc_kind) = loc.try_into()
+                    && check_location_root(ctx.u_data, loc_kind, fit_key) =>
+            {
+                let key = (fit_key, loc_kind);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
             }
-            AffecteeFilter::LocGrp(loc, item_grp_id) => {
-                let loc_kind = match loc {
-                    Location::ItemList(_) => LocationKind::Ship,
-                    _ => match loc.try_into() {
-                        Ok(loc_kind) => loc_kind,
-                        _ => return,
-                    },
-                };
-                if check_location_root(ctx.u_data, loc_kind, fit_key) {
-                    let key = (fit_key, loc_kind, item_grp_id);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
-                }
+            AffecteeFilter::LocGrp(loc, item_grp_id)
+                if let Ok(loc_kind) = loc.try_into()
+                    && check_location_root(ctx.u_data, loc_kind, fit_key) =>
+            {
+                let key = (fit_key, loc_kind, item_grp_id);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
             }
-            AffecteeFilter::LocSrq(loc, srq_type_id) => {
-                let loc_kind = match loc {
-                    Location::ItemList(_) => LocationKind::Ship,
-                    _ => match loc.try_into() {
-                        Ok(loc_kind) => loc_kind,
-                        _ => return,
-                    },
-                };
-                if check_location_root(ctx.u_data, loc_kind, fit_key) {
-                    let key = (fit_key, loc_kind, srq_type_id);
-                    extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
-                }
+            AffecteeFilter::LocSrq(loc, srq_type_id)
+                if let Ok(loc_kind) = loc.try_into()
+                    && check_location_root(ctx.u_data, loc_kind, fit_key) =>
+            {
+                let key = (fit_key, loc_kind, srq_type_id);
+                extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
             }
             AffecteeFilter::OwnSrq(srq_type_id) => {
                 let key = (fit_key, srq_type_id);

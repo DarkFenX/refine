@@ -23,25 +23,22 @@ pub(super) const LIMITED_PRECISION_ATTR_IDS: [AAttrId; 4] = [
 impl Calc {
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
         let resist_attr_id = cmod.raw.resist_attr_id?;
-        let projectee_key = cmod.ctx.get_projectee_key()?;
-        let resist = eff_funcs::get_resist_mult_val_by_projectee_aspec(
-            ctx,
-            self,
-            &AttrSpec::new(projectee_key, resist_attr_id),
-        )?;
+        let item_key = cmod.ctx.get_item_key()?;
+        let resist =
+            eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(item_key, resist_attr_id))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
-        let projectee_key = cmod.ctx.get_projectee_key()?;
+        let item_key = cmod.ctx.get_item_key()?;
         let proj_mult_getter = cmod.raw.proj_mult_getter?;
         let effect = ctx.u_data.src.get_effect(cmod.raw.affector_espec.effect_key);
-        let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, projectee_key)?;
+        let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, item_key)?;
         Some(proj_mult_getter(
             ctx,
             self,
             cmod.raw.affector_espec.item_key,
             effect,
-            projectee_key,
+            item_key,
             proj_data,
         ))
     }
