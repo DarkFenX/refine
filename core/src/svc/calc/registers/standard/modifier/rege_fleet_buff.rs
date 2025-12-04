@@ -25,24 +25,18 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return false,
         };
-        let mut valid = false;
-        let affector_fit = ctx.u_data.fits.get(fit_key);
-        match affector_fit.fleet {
-            Some(fleet_key) => {
-                let fleet = ctx.u_data.fleets.get(fleet_key);
-                for fleet_fit_key in fleet.iter_fits() {
-                    if apply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fleet_fit_key) {
-                        valid = true;
-                    }
-                }
-            }
-            None => {
-                if apply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fit_key) {
-                    valid = true;
-                }
-            }
-        }
+        // Check validity and apply buffs to fit which carries it
+        let valid = apply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fit_key);
         if valid {
+            // If buff is valid, apply to the rest of the fleet
+            if let Some(fleet_key) = ctx.u_data.fits.get(fit_key).fleet {
+                for fleet_fit_key in ctx.u_data.fleets.get(fleet_key).iter_fits() {
+                    if fleet_fit_key == fit_key {
+                        continue;
+                    }
+                    apply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fleet_fit_key);
+                }
+            }
             self.rmods_fleet.add_entry(fit_key, rmod);
             self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
@@ -60,11 +54,11 @@ impl StandardRegister {
             Some(fit_key) => fit_key,
             None => return,
         };
-        let affector_fit = ctx.u_data.fits.get(fit_key);
-        match affector_fit.fleet {
+        // Modifiers received by this function are assumed to be valid, so just unapply all
+        // modifications and remove modifier from helper container
+        match ctx.u_data.fits.get(fit_key).fleet {
             Some(fleet_key) => {
-                let fleet = ctx.u_data.fleets.get(fleet_key);
-                for fleet_fit_key in fleet.iter_fits() {
+                for fleet_fit_key in ctx.u_data.fleets.get(fleet_key).iter_fits() {
                     unapply_fleet_mod(reuse_cmods, ctx, &mut self.cmods, rmod, fleet_fit_key);
                 }
             }
