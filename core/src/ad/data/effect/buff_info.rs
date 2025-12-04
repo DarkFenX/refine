@@ -8,9 +8,7 @@ pub struct AEffectBuffInfo {
 }
 impl AEffectBuffInfo {
     pub(crate) fn iter_a_item_list_ids(&self) -> impl Iterator<Item = AItemListId> {
-        let attr_merges = self.attr_merge.and_then(|v| v.scope.get_a_item_list_id()).into_iter();
-        let full = self.full.iter().filter_map(|v| v.scope.get_a_item_list_id());
-        attr_merges.chain(full)
+        self.iter_a_scopes().filter_map(|v| v.get_a_item_list_id())
     }
     pub(crate) fn iter_a_attr_ids(&self) -> impl Iterator<Item = AAttrId> {
         let attr_merges = self.attr_merge.and_then(|v| v.duration.get_a_attr_id()).into_iter();
@@ -20,6 +18,11 @@ impl AEffectBuffInfo {
     }
     pub(crate) fn iter_a_buff_ids(&self) -> impl Iterator<Item = ABuffId> {
         self.full.iter().map(|v| v.buff_id)
+    }
+    pub(crate) fn iter_a_scopes(&self) -> impl Iterator<Item = AEffectBuffScope> {
+        let attr_merges = self.attr_merge.map(|v| v.scope).into_iter();
+        let full = self.full.iter().map(|v| v.scope);
+        attr_merges.chain(full)
     }
 }
 

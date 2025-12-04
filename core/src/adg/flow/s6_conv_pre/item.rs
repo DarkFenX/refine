@@ -34,7 +34,8 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_supp: &GSu
             defeff_id: defeff_id.map(AEffectId::Dogma),
             abil_ids: Vec::new(),
             srqs: RMap::new(),
-            buff_item_list_ids: Vec::new(),
+            proj_buff_item_list_ids: Vec::new(),
+            fleet_buff_item_list_ids: Vec::new(),
             // Following fields are set to some default values, actual values will be set after
             // customization
             max_state: AState::Offline,

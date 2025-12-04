@@ -96,8 +96,11 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base_get_r_item().map(|v| v.get_srqs())
     }
-    pub(in crate::ud::item) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        self.base_get_r_item().map(|v| v.get_buff_item_lists())
+    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+        self.base_get_r_item().map(|v| v.get_proj_buff_item_lists())
+    }
+    pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+        self.base_get_r_item().map(|v| v.get_fleet_buff_item_lists())
     }
     // Extra data access methods
     pub(in crate::ud::item) fn get_axt(&self) -> Option<&RItemAXt> {

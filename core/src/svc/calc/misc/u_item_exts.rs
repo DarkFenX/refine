@@ -1,10 +1,17 @@
 use crate::{
     ad::AItemListId,
     svc::calc::LocationKind,
-    ud::{UItem, UItemKey, UShip, UShipKind},
+    ud::{UItem, UItemKey, UShipKind},
 };
 
 impl UItem {
+    pub(in crate::svc::calc) fn get_other_key(&self) -> Option<UItemKey> {
+        match self {
+            Self::Charge(charge) => Some(charge.get_cont_item_key()),
+            Self::Module(module) => module.get_charge_key(),
+            _ => None,
+        }
+    }
     pub(in crate::svc::calc) fn get_root_loc_kind(&self) -> Option<LocationKind> {
         match self {
             Self::Character(_) => Some(LocationKind::Character),
@@ -44,36 +51,18 @@ impl UItem {
     pub(in crate::svc::calc) fn is_owner_modifiable(&self) -> bool {
         matches!(self, Self::Charge(_) | Self::Drone(_) | Self::Fighter(_))
     }
-    pub(in crate::svc::calc) fn is_ship_buffable_by_item_list(&self, item_list_id: &AItemListId) -> Option<&UShip> {
+    // Buff-related
+    pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
         match self {
-            Self::Ship(ship) => match ship.get_buff_item_lists() {
-                Some(buff_item_lists) => match buff_item_lists.contains(item_list_id) {
-                    true => Some(ship),
-                    false => None,
-                },
-                None => None,
-            },
+            Self::Drone(drone) => drone.get_proj_buff_item_lists(),
+            Self::Fighter(fighter) => fighter.get_proj_buff_item_lists(),
+            Self::Ship(ship) => ship.get_proj_buff_item_lists(),
             _ => None,
         }
     }
-    pub(in crate::svc::calc) fn is_item_buffable_by_item_list(&self, item_list_id: &AItemListId) -> bool {
-        match self.get_item_buff_item_lists() {
-            Some(buff_item_list_ids) => buff_item_list_ids.contains(item_list_id),
-            None => false,
-        }
-    }
-    pub(in crate::svc::calc) fn get_item_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+    pub(in crate::svc::calc) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
         match self {
-            Self::Drone(drone) => drone.get_buff_item_lists(),
-            Self::Fighter(fighter) => fighter.get_buff_item_lists(),
-            Self::Ship(ship) => ship.get_buff_item_lists(),
-            _ => None,
-        }
-    }
-    pub(in crate::svc::calc) fn get_other_key(&self) -> Option<UItemKey> {
-        match self {
-            Self::Charge(charge) => Some(charge.get_cont_item_key()),
-            Self::Module(module) => module.get_charge_key(),
+            Self::Ship(ship) => ship.get_fleet_buff_item_lists(),
             _ => None,
         }
     }

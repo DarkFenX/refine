@@ -36,7 +36,7 @@ impl StandardRegister {
             }
         }
         // Buff-related processing
-        if let Some(item_list_ids) = item.get_item_buff_item_lists()
+        if let Some(item_list_ids) = item.get_proj_buff_item_lists()
             && !item_list_ids.is_empty()
         {
             for &item_list_id in item_list_ids {
@@ -99,7 +99,7 @@ impl StandardRegister {
             }
         }
         // Buff-related processing
-        if let Some(item_list_ids) = item.get_item_buff_item_lists()
+        if let Some(item_list_ids) = item.get_proj_buff_item_lists()
             && !item_list_ids.is_empty()
         {
             for &item_list_id in item_list_ids {

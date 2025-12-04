@@ -69,8 +69,11 @@ impl UShip {
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base.get_skill_reqs()
     }
-    pub(crate) fn get_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        self.base.get_buff_item_lists()
+    pub(crate) fn get_proj_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+        self.base.get_proj_buff_item_lists()
+    }
+    pub(crate) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+        self.base.get_fleet_buff_item_lists()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base.get_axt()

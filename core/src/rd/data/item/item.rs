@@ -72,8 +72,11 @@ impl RItem {
     pub(crate) fn get_srqs(&self) -> &RMap<AItemId, ASkillLevel> {
         &self.a_item.srqs
     }
-    pub(crate) fn get_buff_item_lists(&self) -> &Vec<AItemListId> {
-        &self.a_item.buff_item_list_ids
+    pub(crate) fn get_proj_buff_item_lists(&self) -> &Vec<AItemListId> {
+        &self.a_item.proj_buff_item_list_ids
+    }
+    pub(crate) fn get_fleet_buff_item_lists(&self) -> &Vec<AItemListId> {
+        &self.a_item.fleet_buff_item_list_ids
     }
     pub(crate) fn get_max_state(&self) -> AState {
         self.a_item.max_state
