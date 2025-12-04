@@ -23,7 +23,7 @@ In no particular order:
 - environmental effects: system-wide (applied to all items in a system), fit-wide (applied to all items of a fit) and projected (applied only to selected items)
 - booster side effects
 - fighter abilities
-- fleet buffs
+- fleet buffs, including type-filtered fleet buffs (e.g. PANIC)
 - automatically loaded charges by some effects (e.g. LR fighter bombs)
   - auto-charges are exposed as regular items so that it's possible to check their attributes and effects (but there are some limits, e.g. you cannot remove them)
 - fast & flexible fit validation
