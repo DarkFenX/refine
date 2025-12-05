@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_self_state_switch(client, consts):
+def test_state_switch_self(client, consts):
     # Check that fleet effects are applied/removed when module carrying them changes state
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -27,7 +27,36 @@ def test_self_state_switch(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_self_buff_switch_no_default(client, consts):
+def test_state_switch_fleeted(client, consts):
+    # Check that fleet effects are applied/removed when module carrying them changes state
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_ship = api_fit2.set_ship(type_id=eve_ship_id)
+    api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    api_module.change_module(state=consts.ApiModuleState.active)
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    api_module.change_module(state=consts.ApiModuleState.online)
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+
+
+def test_buff_switch_self_no_default(client, consts):
     # Check that when buff reference changes, buff gets updated as well
     eve_buff_val_mult_attr_id = client.mk_eve_attr()
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id, def_val=0)
@@ -96,7 +125,7 @@ def test_self_buff_switch_no_default(client, consts):
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
 
 
-def test_self_buff_switch_with_default(client, consts):
+def test_buff_switch_self_with_default(client, consts):
     # Check that when buff reference changes, buff gets updated as well
     eve_buff_val_mult_attr_id = client.mk_eve_attr()
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -175,88 +204,7 @@ def test_self_buff_switch_with_default(client, consts):
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(125)
 
 
-def test_self_after_fleet_unassigment(client, consts):
-    # Check that fleet effects stay even after a fit has been removed from a fleet
-    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
-    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_buff_id = client.mk_eve_buff(
-        aggr_mode=consts.EveBuffAggrMode.max,
-        op=consts.EveBuffOp.post_mul,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
-        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fleet = api_sol.create_fleet()
-    api_fit = api_sol.create_fit()
-    api_fit.change(fleet_id=api_fleet.id)
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-    api_fit.change(fleet_id=None)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-
-
-def test_self_after_fleet_removal(client, consts):
-    # Check that fleet effects stay even after the fleet has been removed
-    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
-    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_buff_id = client.mk_eve_buff(
-        aggr_mode=consts.EveBuffAggrMode.max,
-        op=consts.EveBuffOp.post_mul,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
-        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fleet = api_sol.create_fleet()
-    api_fit = api_sol.create_fit()
-    api_fit.change(fleet_id=api_fleet.id)
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-    api_fleet.remove()
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-
-
-def test_fleeted_state_switch(client, consts):
-    # Check that fleet effects are applied/removed when module carrying them changes state
-    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
-    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_buff_id = client.mk_eve_buff(
-        aggr_mode=consts.EveBuffAggrMode.max,
-        op=consts.EveBuffOp.post_mul,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
-        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fleet = api_sol.create_fleet()
-    api_fit1 = api_sol.create_fit()
-    api_fit2 = api_sol.create_fit()
-    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
-    api_ship = api_fit2.set_ship(type_id=eve_ship_id)
-    api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
-    api_module.change_module(state=consts.ApiModuleState.active)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-    api_module.change_module(state=consts.ApiModuleState.online)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
-
-
-def test_fleeted_buff_switch(client, consts):
+def test_buff_switch_fleeted(client, consts):
     # Check that when buff reference changes, buff gets updated as well
     eve_buff_val_mult_attr_id = client.mk_eve_attr()
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id, def_val=0)
@@ -328,7 +276,59 @@ def test_fleeted_buff_switch(client, consts):
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
 
 
-def test_fleeted_booster_added_removed(client, consts):
+def test_after_fleet_unassigment(client, consts):
+    # Check that fleet effects stay even after a fit has been removed from a fleet
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit()
+    api_fit.change(fleet_id=api_fleet.id)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    api_fit.change(fleet_id=None)
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+
+
+def test_after_fleet_removal(client, consts):
+    # Check that fleet effects stay even after the fleet has been removed
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_buff_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit()
+    api_fit.change(fleet_id=api_fleet.id)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    api_fleet.remove()
+    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+
+
+def test_booster_added_removed(client, consts):
     # Check that fleet effects are applied/removed when boosting fit joins/leaves
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -357,7 +357,7 @@ def test_fleeted_booster_added_removed(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_fleeted_boosted_fit_added_removed(client, consts):
+def test_boosted_fit_added_removed(client, consts):
     # Check that fleet effects are applied/removed when boosted fit joins/leaves
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -386,7 +386,7 @@ def test_fleeted_boosted_fit_added_removed(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_fleeted_boosted_item_added_removed(client, consts):
+def test_boosted_item_added_removed(client, consts):
     # Check that fleet effects are applied through boosted item removal and addition
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -414,7 +414,7 @@ def test_fleeted_boosted_item_added_removed(client, consts):
     assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(75)
 
 
-def test_fleeted_fleet_removed(client, consts):
+def test_fleet_removed(client, consts):
     # Check that fleet effects are removed when fleet is removed
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

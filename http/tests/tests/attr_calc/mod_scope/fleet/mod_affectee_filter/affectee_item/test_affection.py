@@ -316,7 +316,7 @@ def test_unaffected_other_fleet(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
-def test_unaffected_projected(client, consts):
+def test_unaffected_projectee(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()

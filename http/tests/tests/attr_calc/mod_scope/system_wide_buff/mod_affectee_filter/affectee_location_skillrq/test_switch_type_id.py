@@ -32,7 +32,7 @@ def setup_root_test(*, client, consts):
         api_module)
 
 
-def test_loaded_onlist_to_loaded_offlist_remove(client, consts):
+def test_root_loaded_onlist_to_loaded_offlist_remove(client, consts):
     (eve_affectee_attr_id,
      eve_loaded_onlist_id,
      eve_loaded_offlist_id,

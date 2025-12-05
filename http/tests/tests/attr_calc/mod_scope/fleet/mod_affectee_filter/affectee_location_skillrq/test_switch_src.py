@@ -30,7 +30,7 @@ def setup_test(*, client, consts):
     return eve_d1, eve_d2, eve_affectee_attr_id, eve_root_id, eve_module_id, eve_rig_id
 
 
-def test_self_to_struct(client, consts):
+def test_onlist_to_offlist_self(client, consts):
     eve_d1, eve_d2, eve_affectee_attr_id, eve_root_id, eve_module_id, eve_rig_id = setup_test(
         client=client, consts=consts)
     api_sol = client.create_sol(data=eve_d1)
@@ -50,7 +50,7 @@ def test_self_to_struct(client, consts):
     assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
 
 
-def test_fleeted_to_struct(client, consts):
+def test_onlist_to_offlist_fleeted(client, consts):
     eve_d1, eve_d2, eve_affectee_attr_id, eve_root_id, eve_module_id, eve_rig_id = setup_test(
         client=client, consts=consts)
     api_sol = client.create_sol(data=eve_d1)
