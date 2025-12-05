@@ -1,4 +1,5 @@
-//! Standard register is pretty much heart of attribute calculations. It collects all the data to
+//! Standard register is pretty much heart of attribute calculations. It collects all the data
+//! related to standard attribute dependencies (which are 95%+ of all attribute dependencies) to
 //! answer two ultimate questions:
 //!
 //! - which modifiers affect value of an attribute on an item;
