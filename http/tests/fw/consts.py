@@ -207,6 +207,7 @@ class EveModOp(IntEnum):
 class EveBuff(IntEnum):
     warp_penalty = 4
     disallow_dock_jump = 6
+    panic_shield_recharge_time = 9
     stasis_webification_burst = 27
     disallow_tether = 57
     remote_repair_impedance = 2201
@@ -692,20 +693,23 @@ class PenaltyStr(float, Enum):
     p8 = 0.0010349204826687042
 
 
+class UtilItemList(IntEnum):
+    buff_fleet_filter = 10_000_000
+
+
 class UtilEffect(IntEnum):
+    # Some effects were hardcoded into the lib for testing, since EVE ones are not 100% suitable for
+    # tests e.g. due to various side effects caused by their properties not used in tests directly
     buff_everything = EveEffect.weather_darkness
     buff_ships = EveEffect.mod_titan_effect_generator
     buff_fleet_ships = EveEffect.mod_bonus_warfare_link_armor
-    # Use targetAttack/projectileFired effects, since they bring no extra modifiers and define
-    # optimal/falloff as range-defining attributes
-    tgt_normal1 = 10_000_001
-    tgt_normal2 = 10_000_002
-    # Use targetDisintegratorAttack effect, since it brings no extra modifiers and defines optimal
-    # as a range-defining attribute
-    tgt_simple = 10_000_000
+    buff_fleet_filtered = 10_000_003
     cycle_charge_rate = EveEffect.projectile_fired
     cycle_crystal = EveEffect.tgt_attack
     cycle_none = EveEffect.warp_disrupt_sphere
     activates_charge = EveEffect.use_missiles
     activates_autocharge = EveEffect.ftr_abil_launch_bomb
     not_activates_charge = EveEffect.projectile_fired
+    tgt_normal1 = 10_000_001
+    tgt_normal2 = 10_000_002
+    tgt_simple = 10_000_000

@@ -130,6 +130,7 @@ fn get_effects() -> Vec<NEffect> {
         data::test::d10000000_mod_proj_simple::mk_n_effect(),
         data::test::d10000001_mod_proj_normal1::mk_n_effect(),
         data::test::d10000002_mod_proj_normal2::mk_n_effect(),
+        data::test::d10000003_buff_fleet_filtered::mk_n_effect(),
     ]
 }
 

@@ -6,3 +6,4 @@
 pub(in crate::nd::effect) mod d10000000_mod_proj_simple;
 pub(in crate::nd::effect) mod d10000001_mod_proj_normal1;
 pub(in crate::nd::effect) mod d10000002_mod_proj_normal2;
+pub(in crate::nd::effect) mod d10000003_buff_fleet_filtered;
