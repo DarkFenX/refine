@@ -80,8 +80,8 @@ where
             }
         }
     }
-    pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V, H1, H2>> {
-        self.data.remove(key).map(|v| v.into_iter())
+    pub(crate) fn remove_key(&mut self, key: &K) -> impl ExactSizeIterator<Item = V> + use<K, V, H1, H2> {
+        self.data.remove(key).unwrap_or_default().into_iter()
     }
     // Buffer methods
     pub(crate) fn buffer_if<F>(&mut self, key: K, filter: F)

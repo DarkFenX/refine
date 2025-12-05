@@ -207,7 +207,8 @@ impl Calc {
         if ac::extras::BUFF_MERGE_ATTR_IDS.contains(&aspec.attr_id) {
             let item = ctx.u_data.items.get(aspec.item_key);
             // Remove modifiers of buffs which rely on the attribute
-            if let Some(rmods) = self.buffs.extract_dependent_mods(&aspec) {
+            let rmods = self.buffs.extract_dependent_mods(&aspec);
+            if rmods.len() > 0 {
                 let mut reuse_items = Vec::new();
                 let mut reuse_cmods = Vec::new();
                 let rmods = rmods.collect_vec();

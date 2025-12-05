@@ -70,9 +70,7 @@ impl StandardRegister {
         espec: EffectSpec,
     ) {
         reuse_raw_modifiers.clear();
-        if let Some(effect_mods) = self.rmods_all.remove_key(&espec) {
-            reuse_raw_modifiers.extend(effect_mods)
-        }
+        reuse_raw_modifiers.extend(self.rmods_all.remove_key(&espec))
     }
 }
 

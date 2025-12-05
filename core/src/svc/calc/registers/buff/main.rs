@@ -38,7 +38,7 @@ impl BuffRegister {
     pub(in crate::svc::calc) fn extract_dependent_mods(
         &mut self,
         aspec: &AttrSpec,
-    ) -> Option<impl ExactSizeIterator<Item = RawModifier> + use<>> {
+    ) -> impl ExactSizeIterator<Item = RawModifier> + use<> {
         self.rmods.remove_key(aspec)
     }
     pub(in crate::svc::calc) fn reg_dependent_mod(&mut self, aspec: AttrSpec, rmod: RawModifier) {

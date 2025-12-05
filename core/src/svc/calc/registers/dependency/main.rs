@@ -67,31 +67,23 @@ impl DependencyRegister {
         self.source_by_item.add_entry(affectee_aspec.item_key, source_espec);
     }
     pub(in crate::svc::calc) fn remove_by_source(&mut self, source_espec: &EffectSpec) {
-        if let Some(spec_iter) = self.by_source.remove_key(source_espec) {
-            for (affector_spec, affectee_spec) in spec_iter {
-                self.data.remove_entry(affector_spec, &affectee_spec);
-                self.source_by_item.remove_entry(affector_spec.item_key, source_espec);
-                self.source_by_item.remove_entry(affectee_spec.item_key, source_espec);
-            }
+        for (affector_spec, affectee_spec) in self.by_source.remove_key(source_espec) {
+            self.data.remove_entry(affector_spec, &affectee_spec);
+            self.source_by_item.remove_entry(affector_spec.item_key, source_espec);
+            self.source_by_item.remove_entry(affectee_spec.item_key, source_espec);
         }
     }
     pub(in crate::svc::calc) fn remove_item(&mut self, item_key: UItemKey) {
         // Anonymous dependencies
-        if let Some(attrs_iter) = self.anonymous_by_item.remove_key(&item_key) {
-            for (affector_attr_id, affectee_attr_id) in attrs_iter {
-                let affector_spec = AttrSpec::new(item_key, affector_attr_id);
-                let affectee_spec = AttrSpec::new(item_key, affectee_attr_id);
-                self.data.remove_entry(affector_spec, &affectee_spec);
-            }
+        for (affector_attr_id, affectee_attr_id) in self.anonymous_by_item.remove_key(&item_key) {
+            let affector_spec = AttrSpec::new(item_key, affector_attr_id);
+            let affectee_spec = AttrSpec::new(item_key, affectee_attr_id);
+            self.data.remove_entry(affector_spec, &affectee_spec);
         }
         // Dependencies with source
-        if let Some(sources) = self.source_by_item.remove_key(&item_key) {
-            for source in sources {
-                if let Some(aspec_iter) = self.by_source.remove_key(&source) {
-                    for (affector_spec, affectee_spec) in aspec_iter {
-                        self.data.remove_entry(affector_spec, &affectee_spec);
-                    }
-                }
+        for source in self.source_by_item.remove_key(&item_key) {
+            for (affector_spec, affectee_spec) in self.by_source.remove_key(&source) {
+                self.data.remove_entry(affector_spec, &affectee_spec);
             }
         }
     }
