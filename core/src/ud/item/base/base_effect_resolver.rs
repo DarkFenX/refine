@@ -85,7 +85,7 @@ fn update_running_effects(
 ) {
     // Separate handling for the online effect
     let online_should_run = resolve_online_effect_status(item, item_effect_modes, item_state);
-    let online_running = match src.get_online_effect_key() {
+    let online_running = match src.get_effect_consts().online {
         Some(online_effect_key) => reffs.contains(&online_effect_key),
         None => false,
     };
@@ -98,7 +98,7 @@ fn update_running_effects(
     }
     for &effect_key in item.get_effect_datas().keys() {
         // Online effect has already been handled
-        if Some(effect_key) == src.get_online_effect_key() {
+        if Some(effect_key) == src.get_effect_consts().online {
             continue;
         }
         let effect = src.get_effect(effect_key);

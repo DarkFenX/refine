@@ -234,7 +234,7 @@ impl Calc {
         let cycle_s = eff_funcs::get_espec_duration_s(
             ctx,
             self,
-            EffectSpec::new(item_key, ctx.u_data.src.get_rah_effect_key()?),
+            EffectSpec::new(item_key, ctx.u_data.src.get_effect_consts().rah?),
         )?;
         let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))

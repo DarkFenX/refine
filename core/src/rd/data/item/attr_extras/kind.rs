@@ -95,27 +95,27 @@ pub(super) fn get_item_kind_inherited(
     match item_cat_id {
         // Ship & structure modules
         ac::itemcats::MODULE | ac::itemcats::STRUCTURE_MODULE => {
-            if let Some(hi_slot_effect_key) = src.get_hi_slot_effect_key()
+            if let Some(hi_slot_effect_key) = src.get_effect_consts().hi_slot
                 && item_effects.contains_key(&hi_slot_effect_key)
             {
                 kinds.push(RItemKind::ModuleHigh);
             }
-            if let Some(mid_slot_effect_key) = src.get_mid_slot_effect_key()
+            if let Some(mid_slot_effect_key) = src.get_effect_consts().mid_slot
                 && item_effects.contains_key(&mid_slot_effect_key)
             {
                 kinds.push(RItemKind::ModuleMid);
             }
-            if let Some(low_slot_effect_key) = src.get_low_slot_effect_key()
+            if let Some(low_slot_effect_key) = src.get_effect_consts().low_slot
                 && item_effects.contains_key(&low_slot_effect_key)
             {
                 kinds.push(RItemKind::ModuleLow);
             }
-            if let Some(rig_slot_effect_key) = src.get_rig_slot_effect_key()
+            if let Some(rig_slot_effect_key) = src.get_effect_consts().rig_slot
                 && item_effects.contains_key(&rig_slot_effect_key)
             {
                 kinds.push(RItemKind::Rig);
             }
-            if let Some(svc_slot_effect_key) = src.get_svc_slot_effect_key()
+            if let Some(svc_slot_effect_key) = src.get_effect_consts().svc_slot
                 && item_effects.contains_key(&svc_slot_effect_key)
             {
                 kinds.push(RItemKind::Service);

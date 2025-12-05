@@ -6,6 +6,7 @@ use crate::{
 
 pub(in crate::nd::effect::data) fn make_dd_self_debuffs() -> impl Iterator<Item = AEffectBuffFull> {
     [
+        // Short debuffs
         AEffectBuffFull {
             buff_id: ac::buffs::VELOCITY_PENALTY,
             strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),
@@ -18,6 +19,7 @@ pub(in crate::nd::effect::data) fn make_dd_self_debuffs() -> impl Iterator<Item 
             duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_IMMOBILITY_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
+        // Long debuffs
         AEffectBuffFull {
             buff_id: ac::buffs::DISALLOW_CLOAK,
             strength: AEffectBuffStrength::Hardcoded(OF(1.0)),

@@ -14,16 +14,10 @@ use crate::{
 #[derive(Clone)]
 pub struct Src {
     r_data: RData,
-    effect_id_key_map: RMap<AEffectId, REffectKey>,
-    online_effect_key: Option<REffectKey>,
     online_effect: Option<RcEffect>,
-    rah_effect_key: Option<REffectKey>,
+    effect_id_key_map: RMap<AEffectId, REffectKey>,
+    effect_consts: SrcEffectConsts,
     rah_duration_attr_id: Option<AAttrId>,
-    hi_slot_effect_key: Option<REffectKey>,
-    mid_slot_effect_key: Option<REffectKey>,
-    low_slot_effect_key: Option<REffectKey>,
-    rig_slot_effect_key: Option<REffectKey>,
-    svc_slot_effect_key: Option<REffectKey>,
 }
 impl Src {
     #[tracing::instrument(name = "src-new", level = "trace", skip_all)]
@@ -38,27 +32,25 @@ impl Src {
             .iter()
             .map(|(k, v)| (v.get_id(), k))
             .collect::<RMap<_, _>>();
-        let online_effect_key = effect_id_key_map.get(&ac::effects::ONLINE).copied();
-        let online_effect = online_effect_key.map(|v| r_data.effects.get(v).unwrap().clone());
-        let rah_effect_key = effect_id_key_map.get(&ac::effects::ADAPTIVE_ARMOR_HARDENER).copied();
-        let rah_duration_attr_id = rah_effect_key.and_then(|v| r_data.effects.get(v).unwrap().get_duration_attr_id());
-        let hi_slot_effect_key = effect_id_key_map.get(&ac::effects::HI_POWER).copied();
-        let mid_slot_effect_key = effect_id_key_map.get(&ac::effects::MED_POWER).copied();
-        let low_slot_effect_key = effect_id_key_map.get(&ac::effects::LO_POWER).copied();
-        let rig_slot_effect_key = effect_id_key_map.get(&ac::effects::RIG_SLOT).copied();
-        let svc_slot_effect_key = effect_id_key_map.get(&ac::effects::SERVICE_SLOT).copied();
+        let effect_consts = SrcEffectConsts {
+            online: effect_id_key_map.get(&ac::effects::ONLINE).copied(),
+            rah: effect_id_key_map.get(&ac::effects::ADAPTIVE_ARMOR_HARDENER).copied(),
+            hi_slot: effect_id_key_map.get(&ac::effects::HI_POWER).copied(),
+            mid_slot: effect_id_key_map.get(&ac::effects::MED_POWER).copied(),
+            low_slot: effect_id_key_map.get(&ac::effects::LO_POWER).copied(),
+            rig_slot: effect_id_key_map.get(&ac::effects::RIG_SLOT).copied(),
+            svc_slot: effect_id_key_map.get(&ac::effects::SERVICE_SLOT).copied(),
+        };
+        let rah_duration_attr_id = effect_consts
+            .rah
+            .and_then(|v| r_data.effects.get(v).unwrap().get_duration_attr_id());
+        let online_effect = effect_consts.online.map(|v| r_data.effects.get(v).unwrap().clone());
         Ok(Self {
             r_data,
             effect_id_key_map,
-            online_effect_key,
             online_effect,
-            rah_effect_key,
+            effect_consts,
             rah_duration_attr_id,
-            hi_slot_effect_key,
-            mid_slot_effect_key,
-            low_slot_effect_key,
-            rig_slot_effect_key,
-            svc_slot_effect_key,
         })
     }
     pub(crate) fn get_item(&self, id: &AItemId) -> Option<&RcItem> {
@@ -86,31 +78,24 @@ impl Src {
     pub(crate) fn get_effect_key_by_id(&self, id: &AEffectId) -> Option<REffectKey> {
         self.effect_id_key_map.get(id).copied()
     }
-    pub(crate) fn get_online_effect_key(&self) -> Option<REffectKey> {
-        self.online_effect_key
-    }
     pub(crate) fn get_online_effect(&self) -> Option<&RcEffect> {
         self.online_effect.as_ref()
     }
-    pub(crate) fn get_rah_effect_key(&self) -> Option<REffectKey> {
-        self.rah_effect_key
+    pub(crate) fn get_effect_consts(&self) -> &SrcEffectConsts {
+        &self.effect_consts
     }
     pub(crate) fn get_rah_duration_attr_id(&self) -> Option<AAttrId> {
         self.rah_duration_attr_id
     }
-    pub(crate) fn get_hi_slot_effect_key(&self) -> Option<REffectKey> {
-        self.hi_slot_effect_key
-    }
-    pub(crate) fn get_mid_slot_effect_key(&self) -> Option<REffectKey> {
-        self.mid_slot_effect_key
-    }
-    pub(crate) fn get_low_slot_effect_key(&self) -> Option<REffectKey> {
-        self.low_slot_effect_key
-    }
-    pub(crate) fn get_rig_slot_effect_key(&self) -> Option<REffectKey> {
-        self.rig_slot_effect_key
-    }
-    pub(crate) fn get_svc_slot_effect_key(&self) -> Option<REffectKey> {
-        self.svc_slot_effect_key
-    }
+}
+
+#[derive(Copy, Clone)]
+pub(crate) struct SrcEffectConsts {
+    pub(crate) online: Option<REffectKey>,
+    pub(crate) rah: Option<REffectKey>,
+    pub(crate) hi_slot: Option<REffectKey>,
+    pub(crate) mid_slot: Option<REffectKey>,
+    pub(crate) low_slot: Option<REffectKey>,
+    pub(crate) rig_slot: Option<REffectKey>,
+    pub(crate) svc_slot: Option<REffectKey>,
 }
