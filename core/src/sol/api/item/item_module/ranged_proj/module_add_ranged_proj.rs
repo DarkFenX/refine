@@ -27,7 +27,7 @@ impl SolarSystem {
             .into());
         }
         // Check if projectee can receive projections by getting its user physics
-        let projectee_physics = match projectee_u_item.get_physics() {
+        let projectee_physics = match projectee_u_item.get_direct_physics() {
             Some(projectee_physics) => *projectee_physics,
             None => {
                 return Err(ItemReceiveProjError {

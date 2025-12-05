@@ -33,7 +33,7 @@ impl UData {
             Some(ship_key) => ship_key,
             None => return OF(0.0),
         };
-        self.items.get(ship_key).get_radius()
+        self.items.get(ship_key).get_direct_radius()
     }
     pub(crate) fn get_ship_physics_by_fit_key(&self, fit_key: UFitKey) -> UPhysics {
         let fit = self.fits.get(fit_key);
@@ -42,12 +42,12 @@ impl UData {
             None => UPhysics::default(),
         }
     }
-    pub(crate) fn get_physic_item_key(&self, item_key: UItemKey) -> Option<UItemKey> {
+    pub(crate) fn get_physics_carrier_key(&self, item_key: UItemKey) -> Option<UItemKey> {
         match self.items.get(item_key) {
-            UItem::Autocharge(autocharge) => self.get_physic_item_key(autocharge.get_cont_item_key()),
+            UItem::Autocharge(autocharge) => self.get_physics_carrier_key(autocharge.get_cont_item_key()),
             UItem::Booster(booster) => self.fits.get(booster.get_fit_key()).ship,
             UItem::Character(character) => self.fits.get(character.get_fit_key()).ship,
-            UItem::Charge(charge) => self.get_physic_item_key(charge.get_cont_item_key()),
+            UItem::Charge(charge) => self.get_physics_carrier_key(charge.get_cont_item_key()),
             UItem::Drone(_) => Some(item_key),
             UItem::Fighter(_) => Some(item_key),
             UItem::FwEffect(_) => None,

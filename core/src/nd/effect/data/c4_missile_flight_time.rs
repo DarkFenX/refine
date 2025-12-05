@@ -92,7 +92,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     let missile_velocity = calc
         .get_item_attr_val_full(ctx, espec.item_key, &MISSILE_VELOCITY)
         .ok()?;
-    let ship_radius = ctx.u_data.items.get(ship_key).get_radius();
+    let ship_radius = ctx.u_data.items.get(ship_key).get_direct_radius();
     // Missile flight time is stored in milliseconds, thus have to multiply by 1000
     let val = ship_radius / missile_velocity.dogma * OF(1000.0);
     if val.is_infinite() {

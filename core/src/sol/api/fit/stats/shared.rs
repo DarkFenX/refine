@@ -37,7 +37,7 @@ impl<'a> FitMut<'a> {
     ) -> Result<UItemKey, FitStatAppliedError> {
         let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
         let projectee_u_item = self.sol.u_data.items.get(projectee_key);
-        if !projectee_u_item.can_receive_projs() {
+        if projectee_u_item.get_direct_physics().is_none() {
             return Err(ItemReceiveProjError {
                 item_id: projectee_u_item.get_item_id(),
                 item_kind: projectee_u_item.get_name(),

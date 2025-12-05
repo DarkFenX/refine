@@ -56,7 +56,9 @@ impl UItem {
             Self::SwEffect(_) => USwEffect::get_name(),
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Access to base item methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     pub(crate) fn get_item_id(&self) -> ItemId {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_item_id(),
@@ -435,7 +437,9 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.is_loaded(),
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Access to item-specific methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     pub(crate) fn get_fit_key(&self) -> Option<UFitKey> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_fit_key()),
@@ -457,10 +461,7 @@ impl UItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(crate) fn can_receive_projs(&self) -> bool {
-        matches!(self, Self::Drone(_) | Self::Fighter(_) | Self::Ship(_))
-    }
-    pub(crate) fn get_physics(&self) -> Option<&UPhysics> {
+    pub(crate) fn get_direct_physics(&self) -> Option<&UPhysics> {
         match self {
             Self::Drone(drone) => Some(drone.get_physics()),
             Self::Fighter(fighter) => Some(fighter.get_physics()),
@@ -468,18 +469,15 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_physics_indirect(&self, u_data: &UData) -> UPhysics {
+    pub(crate) fn get_carrier_physics(&self, u_data: &UData) -> UPhysics {
         match self {
             Self::Autocharge(autocharge) => u_data
                 .items
                 .get(autocharge.get_cont_item_key())
-                .get_physics_indirect(u_data),
+                .get_carrier_physics(u_data),
             Self::Booster(booster) => u_data.get_ship_physics_by_fit_key(booster.get_fit_key()),
             Self::Character(character) => u_data.get_ship_physics_by_fit_key(character.get_fit_key()),
-            Self::Charge(charge) => u_data
-                .items
-                .get(charge.get_cont_item_key())
-                .get_physics_indirect(u_data),
+            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_key()).get_carrier_physics(u_data),
             Self::Drone(drone) => *drone.get_physics(),
             Self::Fighter(fighter) => *fighter.get_physics(),
             Self::FwEffect(_) => UPhysics::default(),
@@ -495,7 +493,7 @@ impl UItem {
             Self::SwEffect(_) => UPhysics::default(),
         }
     }
-    pub(crate) fn get_radius(&self) -> AttrVal {
+    pub(crate) fn get_direct_radius(&self) -> AttrVal {
         match self {
             Self::Drone(drone) => drone.get_radius(),
             Self::Fighter(fighter) => fighter.get_radius(),
@@ -503,15 +501,15 @@ impl UItem {
             _ => OF(0.0),
         }
     }
-    pub(crate) fn get_radius_indirect(&self, u_data: &UData) -> AttrVal {
+    pub(crate) fn get_carrier_radius(&self, u_data: &UData) -> AttrVal {
         match self {
             Self::Autocharge(autocharge) => u_data
                 .items
                 .get(autocharge.get_cont_item_key())
-                .get_radius_indirect(u_data),
+                .get_carrier_radius(u_data),
             Self::Booster(booster) => u_data.get_ship_radius_by_fit_key(booster.get_fit_key()),
             Self::Character(character) => u_data.get_ship_radius_by_fit_key(character.get_fit_key()),
-            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_key()).get_radius_indirect(u_data),
+            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_key()).get_carrier_radius(u_data),
             Self::Drone(drone) => drone.get_radius(),
             Self::Fighter(fighter) => fighter.get_radius(),
             Self::FwEffect(_) => AttrVal::default(),

@@ -31,10 +31,10 @@ impl EffProjs {
                 let projector_u_item = u_data.items.get(projector_espec.item_key);
                 let projectee_u_item = u_data.items.get(projectee_key);
                 UProjData::from_physics_with_radii(
-                    projector_u_item.get_physics_indirect(u_data),
-                    projectee_u_item.get_physics_indirect(u_data),
-                    Some(projector_u_item.get_radius_indirect(u_data)),
-                    Some(projectee_u_item.get_radius_indirect(u_data)),
+                    projector_u_item.get_carrier_physics(u_data),
+                    projectee_u_item.get_carrier_physics(u_data),
+                    Some(projector_u_item.get_carrier_radius(u_data)),
+                    Some(projectee_u_item.get_carrier_radius(u_data)),
                 )
             }
         }
