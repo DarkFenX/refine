@@ -93,7 +93,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
         && let ac::items::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_key).get_type_id()
         && let Some(val) = calc.get_item_oattr_odogma(ctx, espec.item_key, ctx.ac().charged_armor_dmg_mult)
     {
-        Some(val);
+        return Some(val);
     }
     Some(OF(1.0))
 }
