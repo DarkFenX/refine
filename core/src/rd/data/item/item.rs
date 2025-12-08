@@ -40,7 +40,7 @@ impl RItem {
     pub(in crate::rd) fn from_a_item(a_item: &AItem) -> Self {
         Self {
             id: a_item.id,
-            grp_id: a_item.id,
+            grp_id: a_item.grp_id,
             cat_id: a_item.cat_id,
             abil_ids: a_item.abil_ids.clone(),
             srqs: a_item.srqs.clone(),
