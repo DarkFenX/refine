@@ -47,7 +47,7 @@ fn get_mining_ore_opc(
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_key);
-    if item.get_axt()?.is_ice_harvester {
+    if item.is_ice_harvester() {
         return None;
     }
     get_mining_opc(ctx, calc, item_key, effect)
@@ -60,7 +60,7 @@ fn get_mining_ice_opc(
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_key);
-    if !item.get_axt()?.is_ice_harvester {
+    if !item.is_ice_harvester() {
         return None;
     }
     get_mining_opc(ctx, calc, item_key, effect)
@@ -68,10 +68,12 @@ fn get_mining_ice_opc(
 
 fn get_mining_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, effect: &REffect) -> Option<Output<MiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
-    let crit_chance = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::MINING_CRIT_CHANCE)?;
+    let attr_consts = ctx.ac();
+    let crit_chance = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_chance, OF(0.0))?;
     let yield_ = match crit_chance > OF(0.0) {
         true => {
-            let crit_bonus = calc.get_item_attr_val_extra_opt(ctx, item_key, &ac::attrs::MINING_CRIT_BONUS_YIELD)?;
+            let crit_bonus =
+                calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_bonus_yield, OF(0.0))?;
             yield_ * (OF(1.0) + crit_chance.clamp(OF(0.0), OF(1.0)) * crit_bonus)
         }
         false => yield_,

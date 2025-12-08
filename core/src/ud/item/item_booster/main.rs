@@ -1,10 +1,8 @@
 use crate::{
-    ad::{
-        AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, ASlotIndex, AState,
-    },
+    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex, AState},
     def::ItemId,
     misc::EffectMode,
-    rd::{REffectKey, RItemAXt},
+    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData},
     src::Src,
     ud::{
         UFitKey,
@@ -41,10 +39,10 @@ impl UBooster {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<AAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
         self.base.get_attrs()
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, AItemEffectData>> {
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
         self.base.get_effect_datas()
     }
     pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
@@ -58,6 +56,9 @@ impl UBooster {
     }
     pub(crate) fn get_state(&self) -> AState {
         self.base.get_state()
+    }
+    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
+        self.base.is_ice_harvester()
     }
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()

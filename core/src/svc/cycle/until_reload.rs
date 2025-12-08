@@ -1,8 +1,7 @@
 use crate::{
-    ac,
     def::{Count, OF},
     rd,
-    svc::SvcCtx,
+    svc::{SvcCtx, calc::Calc},
     ud::{UItem, UModule},
     util::{InfCount, ceil_unerr, trunc_unerr},
 };
@@ -13,7 +12,7 @@ pub(super) fn get_autocharge_cycle_count(item: &UItem, effect: &rd::REffect) -> 
         // Effect wants autocharge, but item does not support autocharges -> can't cycle
         None => return InfCount::Count(0),
     };
-    if !autocharges.contains_ac_for_effect(&effect.get_key()) {
+    if !autocharges.contains_ac_for_effect(&effect.key) {
         // Effect wants autocharge, but no autocharge in the item - can't cycle. Since
         // autocharges are not add here when they cannot be loaded (no adapted item in
         // data source), non-loaded autocharges are covered by this as well.
@@ -22,7 +21,7 @@ pub(super) fn get_autocharge_cycle_count(item: &UItem, effect: &rd::REffect) -> 
     // Should always be available, since this method should never be requested for
     // non-loaded items
     let effect_datas = item.get_effect_datas().unwrap();
-    match effect_datas.get(&effect.get_key()).unwrap().charge_count {
+    match effect_datas.get(&effect.key).unwrap().charge_count {
         Some(charge_count) => InfCount::Count(charge_count),
         None => InfCount::Infinite,
     }
@@ -60,6 +59,7 @@ pub(super) fn get_charge_rate_cycle_count(
 
 pub(super) fn get_crystal_cycle_count(
     ctx: SvcCtx,
+    calc: &mut Calc,
     module: &UModule,
     can_run_uncharged: bool,
     reload_optionals: bool,
@@ -79,14 +79,16 @@ pub(super) fn get_crystal_cycle_count(
             };
         }
     };
-    let charge_item = ctx.u_data.items.get(module.get_charge_key().unwrap());
+    let charge_key = module.get_charge_key().unwrap();
+    let charge_item = ctx.u_data.items.get(charge_key);
     let charge_attrs = match charge_item.get_attrs() {
         Some(attrs) => attrs,
         // Charge is not loaded - can't cycle
         None => return InfCount::Count(0),
     };
+    let attr_consts = ctx.ac();
     if charge_attrs
-        .get(&ac::attrs::CRYSTALS_GET_DAMAGED)
+        .get_opt(attr_consts.crystals_get_damaged)
         .copied()
         .unwrap_or(OF(0.0))
         == OF(0.0)
@@ -94,17 +96,18 @@ pub(super) fn get_crystal_cycle_count(
         return InfCount::Infinite;
     }
     // Damage or chance of 0 or not defined - can cycle infinitely
-    let dmg = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_DMG) {
+    let dmg = match calc.get_item_oattr_oextra(ctx, charge_key, attr_consts.crystal_volatility_dmg) {
+        // let dmg = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_DMG) {
         Some(OF(0.0)) => return InfCount::Infinite,
-        Some(dmg) => *dmg,
+        Some(dmg) => dmg,
         None => return InfCount::Infinite,
     };
-    let chance = match charge_attrs.get(&ac::attrs::CRYSTAL_VOLATILITY_CHANCE) {
+    let chance = match calc.get_item_oattr_oextra(ctx, charge_key, attr_consts.crystal_volatility_chance) {
         Some(OF(0.0)) => return InfCount::Infinite,
-        Some(dmg) => *dmg,
+        Some(dmg) => dmg,
         None => return InfCount::Infinite,
     };
-    let hp = charge_attrs.get(&ac::attrs::HP).copied().unwrap_or(OF(0.0));
+    let hp = charge_attrs.get_opt(attr_consts.hp).copied().unwrap_or(OF(0.0));
     let procs_until_killed = ceil_unerr(hp / dmg);
     let cycle_count_per_charge = trunc_unerr(procs_until_killed / chance).into_inner() as Count;
     InfCount::Count(charge_count * cycle_count_per_charge)

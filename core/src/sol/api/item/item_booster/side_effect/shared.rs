@@ -10,5 +10,6 @@ pub(super) fn get_se_chance_attr_id_by_effect_id(src: &Src, effect_id: &AEffectI
 }
 
 pub(super) fn get_se_chance_attr_id_by_effect_key(src: &Src, effect_key: REffectKey) -> Option<AAttrId> {
-    src.get_effect(effect_key).get_chance_attr_id()
+    let attr_key = src.get_effect(effect_key).chance_attr_key?;
+    Some(src.get_attr(attr_key).id)
 }

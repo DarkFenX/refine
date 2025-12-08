@@ -4,7 +4,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, ResolvedSpool, Spool},
     nd::{NEffectCharge, NEffectDmgKind, NEffectProjecteeFilter},
-    rd::REffect,
+    rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
@@ -18,7 +18,7 @@ pub(crate) type NEffectMaker = fn() -> AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
 pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, EffectSpec);
+pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
 pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>) -> Option<ResolvedSpool>;
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, UItemKey, UProjData) -> AttrVal;
 pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
@@ -51,7 +51,6 @@ pub(crate) struct NEffect {
     pub(crate) hc: NEffectHc = NEffectHc { .. },
 }
 
-#[derive(Copy, Clone, Default)]
 pub(crate) struct NEffectHc {
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,

@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    ad,
+    rd::RAttrKey,
     sol::SolarSystem,
     svc::{calc::CalcAttrVal, err::KeyedItemLoadedError},
     ud::UItemKey,
@@ -11,9 +11,9 @@ impl SolarSystem {
     pub(in crate::sol::api) fn internal_get_item_attr(
         &mut self,
         item_key: UItemKey,
-        a_attr_id: &ad::AAttrId,
+        attr_key: RAttrKey,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
-        self.svc.get_item_attr_val_full(&self.u_data, item_key, a_attr_id)
+        self.svc.get_item_attr_val_full(&self.u_data, item_key, attr_key)
     }
     pub(in crate::sol::api) fn internal_remove_incoming_projections(&mut self, projectee_key: UItemKey) {
         let projector_keys = self.rev_projs.iter_projectors(&projectee_key).collect_vec();

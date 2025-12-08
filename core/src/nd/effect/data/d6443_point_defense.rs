@@ -53,16 +53,17 @@ fn get_dmg_opc(
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let charge_key = ctx.u_data.items.get(projector_key).get_charge_key()?;
-    let mut dmg_mult = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DMG_MULT)?;
-    let dmg_em = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EM_DMG)?;
-    let dmg_therm = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::THERM_DMG)?;
-    let dmg_kin = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::KIN_DMG)?;
-    let dmg_expl = calc.get_item_attr_val_extra_opt(ctx, charge_key, &ac::attrs::EXPL_DMG)?;
+    let attr_consts = ctx.ac();
+    let mut dmg_mult = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dmg_mult, OF(1.0))?;
+    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.em_dmg, OF(0.0))?;
+    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.therm_dmg, OF(0.0))?;
+    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.kin_dmg, OF(0.0))?;
+    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.expl_dmg, OF(0.0))?;
     if let Some(projectee_key) = projectee_key {
         // Projection/application reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         dmg_mult *=

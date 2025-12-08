@@ -3,7 +3,7 @@ use crate::cacher_json::data::{CAttrVal, CCount, CItemId, CItemListId};
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::cacher_json) struct CItemEffectData {
     autocharge: Option<CItemId>,
-    cd: Option<CAttrVal>,
+    cooldown: Option<CAttrVal>,
     charge_count: Option<CCount>,
     charge_reload_time: Option<CAttrVal>,
     projectee_filter: Option<CItemListId>,
@@ -12,7 +12,7 @@ impl From<&rc::ad::AItemEffectData> for CItemEffectData {
     fn from(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {
         Self {
             autocharge: a_item_effect_data.autocharge,
-            cd: a_item_effect_data.cd,
+            cooldown: a_item_effect_data.cooldown,
             charge_count: a_item_effect_data.charge_count,
             charge_reload_time: a_item_effect_data.charge_reload_time,
             projectee_filter: a_item_effect_data.projectee_filter.as_ref().map(Into::into),
@@ -23,7 +23,7 @@ impl From<&CItemEffectData> for rc::ad::AItemEffectData {
     fn from(c_item_effect_data: &CItemEffectData) -> Self {
         Self {
             autocharge: c_item_effect_data.autocharge,
-            cd: c_item_effect_data.cd,
+            cooldown: c_item_effect_data.cooldown,
             charge_count: c_item_effect_data.charge_count,
             charge_reload_time: c_item_effect_data.charge_reload_time,
             projectee_filter: c_item_effect_data.projectee_filter.as_ref().map(Into::into),

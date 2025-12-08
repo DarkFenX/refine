@@ -10,10 +10,9 @@ use super::{
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
 use crate::{
-    ac,
     def::{OF, SERVER_TICK_S},
-    nd::{NEffectChargeDepl, NEffectChargeLoc},
-    rd::REffectKey,
+    nd::NEffectChargeDepl,
+    rd::{REffectChargeLoc, REffectKey},
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UItem, UItemKey, UModule},
     util::{InfCount, RMap},
@@ -74,7 +73,7 @@ fn fill_module_effect_info(
     options: CycleOptions,
 ) {
     let effect = ctx.u_data.src.get_effect(effect_key);
-    if !effect.is_active_with_duration() {
+    if !effect.is_active_with_duration {
         return;
     }
     // No appropriate duration - no info
@@ -83,15 +82,15 @@ fn fill_module_effect_info(
         None => return,
     };
     // Charge count info
-    let cycle_count = match effect.get_charge_info() {
+    let cycle_count = match &effect.charge_info {
         Some(charge_info) => match charge_info.location {
-            NEffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect),
-            NEffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
+            REffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect),
+            REffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
                 NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
                     get_charge_rate_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
                 }
                 NEffectChargeDepl::Crystal { can_run_uncharged } => {
-                    get_crystal_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
+                    get_crystal_cycle_count(ctx, calc, module, can_run_uncharged, options.reload_optionals)
                 }
                 NEffectChargeDepl::None => InfCount::Infinite,
             },
@@ -99,8 +98,8 @@ fn fill_module_effect_info(
             // - lasers: regular crystal cycle getter
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
-            NEffectChargeLoc::TargetAttack(_) => match module.get_axt().unwrap().capacity > OF(0.0) {
-                true => get_crystal_cycle_count(ctx, module, false, options.reload_optionals),
+            REffectChargeLoc::TargetAttack(_) => match module.get_axt().unwrap().capacity > OF(0.0) {
+                true => get_crystal_cycle_count(ctx, calc, module, false, options.reload_optionals),
                 false => InfCount::Infinite,
             },
         },
@@ -111,7 +110,7 @@ fn fill_module_effect_info(
         return;
     }
     // Self-killers are fairly trivial. Record info about them and go to next effect
-    if effect.kills_item() {
+    if effect.kills_item {
         self_killers.push(SelfKillerInfo { effect_key, duration_s });
         cycle_infos.insert(
             effect_key,
@@ -124,7 +123,7 @@ fn fill_module_effect_info(
         return;
     }
     let reactivation_delay_s = (calc
-        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::MOD_REACTIVATION_DELAY)
+        .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mod_reactivation_delay, OF(0.0))
         .unwrap()
         / 1000.0)
         .max(OF(0.0));
@@ -136,7 +135,7 @@ fn fill_module_effect_info(
                 CycleOptionReload::Burst => OF(0.0),
                 CycleOptionReload::Sim => {
                     let reload_time_s = calc
-                        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RELOAD_TIME)
+                        .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
                         .unwrap()
                         / 1000.0;
                     match reload_time_s > OF(0.0) {

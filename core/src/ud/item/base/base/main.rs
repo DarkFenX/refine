@@ -1,11 +1,8 @@
 use crate::{
-    ad::{
-        AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
-        ASkillLevel, AState,
-    },
+    ad::{AAbilId, AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     def::ItemId,
     misc::EffectMode,
-    rd::{REffectKey, RItemAXt, RShipKind, RcItem},
+    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind, RcItem},
     src::Src,
     ud::item::{
         base::{UEffectUpdates, process_effects},
@@ -76,57 +73,69 @@ impl UItemBase {
         self.base_update_r_data(src);
     }
     pub(in crate::ud::item) fn get_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().map(|v| v.get_group_id())
+        self.base_get_r_item().map(|v| v.grp_id)
     }
     pub(in crate::ud::item) fn get_category_id(&self) -> Option<AItemCatId> {
-        self.base_get_r_item().map(|v| v.get_category_id())
+        self.base_get_r_item().map(|v| v.cat_id)
     }
-    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<AAttrId, AAttrVal>> {
-        self.base_get_r_item().map(|v| v.get_attrs())
+    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
+        self.base_get_r_item().map(|v| &v.attrs)
     }
-    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, AItemEffectData>> {
-        self.base_get_r_item().map(|v| v.get_effect_datas())
+    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
+        self.base_get_r_item().map(|v| &v.effect_datas)
     }
     pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
-        self.base_get_r_item().map(|v| v.get_defeff_key())
+        self.base_get_r_item().map(|v| v.defeff_key)
     }
     pub(in crate::ud::item) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
-        self.base_get_r_item().map(|v| v.get_abils())
+        self.base_get_r_item().map(|v| &v.abil_ids)
     }
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
-        self.base_get_r_item().map(|v| v.get_srqs())
+        self.base_get_r_item().map(|v| &v.srqs)
     }
-    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        self.base_get_r_item().map(|v| v.get_proj_buff_item_lists())
+    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListKey>> {
+        self.base_get_r_item().map(|v| &v.proj_buff_item_list_keys)
     }
-    pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
-        self.base_get_r_item().map(|v| v.get_fleet_buff_item_lists())
+    pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<RItemListKey>> {
+        self.base_get_r_item().map(|v| &v.fleet_buff_item_list_keys)
     }
     // Extra data access methods
     pub(in crate::ud::item) fn get_axt(&self) -> Option<&RItemAXt> {
-        self.base_get_r_item().map(|v| v.get_axt())
+        self.base_get_r_item().map(|v| &v.axt)
+    }
+    pub(in crate::ud::item) fn get_max_state(&self) -> Option<AState> {
+        self.base_get_r_item().map(|v| v.max_state)
     }
     pub(in crate::ud::item) fn get_disallowed_in_wspace(&self) -> Option<bool> {
-        self.base_get_r_item().map(|v| v.is_disallowed_in_wspace())
+        self.base_get_r_item().map(|v| v.disallowed_in_wspace)
     }
     pub(in crate::ud::item) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().and_then(|v| v.get_val_fitted_group_id())
+        self.base_get_r_item().and_then(|v| v.val_fitted_group_id)
     }
     pub(in crate::ud::item) fn get_val_online_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().and_then(|v| v.get_val_online_group_id())
+        self.base_get_r_item().and_then(|v| v.val_online_group_id)
+    }
+    pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
+        self.base_get_r_item().and_then(|v| v.val_active_group_id)
     }
     pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
-        self.base_get_r_item().and_then(|v| v.get_ship_kind())
+        self.base_get_r_item().and_then(|v| v.ship_kind)
     }
     pub(in crate::ud::item) fn takes_turret_hardpoint(&self) -> bool {
         match self.base_get_r_item() {
-            Some(r_item) => r_item.takes_turret_hardpoint(),
+            Some(r_item) => r_item.takes_turret_hardpoint,
             None => false,
         }
     }
     pub(in crate::ud::item) fn takes_launcher_hardpoint(&self) -> bool {
         match self.base_get_r_item() {
-            Some(r_item) => r_item.takes_launcher_hardpoint(),
+            Some(r_item) => r_item.takes_launcher_hardpoint,
+            None => false,
+        }
+    }
+    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
+        match self.base_get_r_item() {
+            Some(r_item) => r_item.is_ice_harvester,
             None => false,
         }
     }

@@ -1,6 +1,7 @@
 use crate::ad::{AItemGrpId, AModifierSrq};
 
 /// Defines which items will be affected by a modifier.
+#[derive(Copy, Clone)]
 pub enum ABuffAffecteeFilter {
     /// Single item modified, as specified by the location.
     Direct,

@@ -1,10 +1,9 @@
 use crate::{
     ac,
     ad::{
-        AAbilId, AAttrId, AAttrVal, AEffectId, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
-        ASkillLevel, AState,
+        AAbilId, AAttrId, AAttrVal, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId, ASkillLevel, AState,
     },
-    rd::{REffectKey, RItemAXt, RShipKind},
+    rd::{RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind},
     util::{GetId, Named, RMap},
 };
 
@@ -13,106 +12,111 @@ use crate::{
 // An item carries alot of info needed to calculate fit attributes, for example base attribute
 // values.
 pub(crate) struct RItem {
-    a_item: AItem,
-    // Extra data extracted from adapted item
-    axt: RItemAXt,
-    ship_kind: Option<RShipKind>,
-    has_online_effect: bool,
-    takes_turret_hardpoint: bool,
-    takes_launcher_hardpoint: bool,
-    // Fields which need slab keys to be filled
-    effect_datas: RMap<REffectKey, AItemEffectData>,
-    defeff_key: Option<REffectKey>,
+    pub(crate) id: AItemId,
+    pub(crate) grp_id: AItemGrpId,
+    pub(crate) cat_id: AItemCatId,
+    pub(crate) abil_ids: Vec<AAbilId>,
+    pub(crate) srqs: RMap<AItemId, ASkillLevel>,
+    pub(crate) max_state: AState,
+    pub(crate) val_fitted_group_id: Option<AItemGrpId>,
+    pub(crate) val_online_group_id: Option<AItemGrpId>,
+    pub(crate) val_active_group_id: Option<AItemGrpId>,
+    pub(crate) disallowed_in_wspace: bool,
+    // Fields derived from adapted data
+    pub(crate) is_ice_harvester: bool,
+    // Fields which depend on slab keys
+    pub(crate) attrs: RMap<RAttrKey, AAttrVal>,
+    pub(crate) effect_datas: RMap<REffectKey, RItemEffectData>,
+    pub(crate) defeff_key: Option<REffectKey>,
+    pub(crate) proj_buff_item_list_keys: Vec<RItemListKey>,
+    pub(crate) fleet_buff_item_list_keys: Vec<RItemListKey>,
+    pub(crate) ship_kind: Option<RShipKind>,
+    pub(crate) has_online_effect: bool,
+    pub(crate) takes_turret_hardpoint: bool,
+    pub(crate) takes_launcher_hardpoint: bool,
+    pub(crate) axt: RItemAXt,
 }
 impl RItem {
-    pub(in crate::rd) fn new(a_item: AItem) -> Self {
-        let axt = RItemAXt::new_initial(&a_item);
-        let ship_kind = get_ship_kind(a_item.cat_id, &a_item.srqs);
-        let has_online_effect = has_online_effect(&a_item.effect_datas);
-        let takes_turret_hardpoint = has_turret_effect(&a_item.effect_datas);
-        let takes_launcher_hardpoint = has_launcher_effect(&a_item.effect_datas);
+    pub(in crate::rd) fn from_a_item(a_item: &AItem) -> Self {
         Self {
-            a_item,
-            axt,
-            ship_kind,
-            has_online_effect,
-            takes_turret_hardpoint,
-            takes_launcher_hardpoint,
-            effect_datas: RMap::new(),
-            defeff_key: None,
+            id: a_item.id,
+            grp_id: a_item.id,
+            cat_id: a_item.cat_id,
+            abil_ids: a_item.abil_ids.clone(),
+            srqs: a_item.srqs.clone(),
+            max_state: a_item.max_state,
+            val_fitted_group_id: a_item.val_fitted_group_id,
+            val_online_group_id: a_item.val_online_group_id,
+            val_active_group_id: a_item.val_active_group_id,
+            disallowed_in_wspace: a_item.disallowed_in_wspace,
+            // Fields derived from adapted data
+            is_ice_harvester: is_ice_harvester(&a_item.srqs),
+            // Fields which depend on slab keys
+            attrs: Default::default(),
+            effect_datas: Default::default(),
+            defeff_key: Default::default(),
+            proj_buff_item_list_keys: Default::default(),
+            fleet_buff_item_list_keys: Default::default(),
+            ship_kind: Default::default(),
+            has_online_effect: Default::default(),
+            takes_turret_hardpoint: Default::default(),
+            takes_launcher_hardpoint: Default::default(),
+            axt: Default::default(),
         }
     }
-    pub(in crate::rd) fn fill_key_dependents(&mut self, effect_id_key_map: &RMap<AEffectId, REffectKey>) {
-        for (a_effect_id, a_effect_data) in self.a_item.effect_datas.iter() {
-            if let Some(&effect_key) = effect_id_key_map.get(a_effect_id) {
-                self.effect_datas.insert(effect_key, *a_effect_data);
+    pub(in crate::rd) fn fill_key_dependents(
+        &mut self,
+        a_items: &RMap<AItemId, AItem>,
+        item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
+        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        effect_id_key_map: &RMap<AEffectId, REffectKey>,
+        attr_consts: &RAttrConsts,
+        effect_consts: &REffectConsts,
+    ) {
+        let a_item = a_items.get(&self.id).unwrap();
+        for (a_attr_id, attr_value) in a_item.attrs.iter() {
+            if let Some(&attr_key) = attr_id_key_map.get(a_attr_id) {
+                self.attrs.insert(attr_key, *attr_value);
             }
         }
-        self.defeff_key = self.a_item.defeff_id.and_then(|v| effect_id_key_map.get(&v).copied());
-    }
-    // Methods which expose adapted item info
-    pub(crate) fn get_group_id(&self) -> AItemGrpId {
-        self.a_item.grp_id
-    }
-    pub(crate) fn get_category_id(&self) -> AItemCatId {
-        self.a_item.cat_id
-    }
-    pub(crate) fn get_attrs(&self) -> &RMap<AAttrId, AAttrVal> {
-        &self.a_item.attrs
-    }
-    pub(crate) fn get_effect_datas(&self) -> &RMap<REffectKey, AItemEffectData> {
-        &self.effect_datas
-    }
-    pub(crate) fn get_defeff_key(&self) -> Option<REffectKey> {
-        self.defeff_key
-    }
-    pub(crate) fn get_abils(&self) -> &Vec<AAbilId> {
-        &self.a_item.abil_ids
-    }
-    pub(crate) fn get_srqs(&self) -> &RMap<AItemId, ASkillLevel> {
-        &self.a_item.srqs
-    }
-    pub(crate) fn get_proj_buff_item_lists(&self) -> &Vec<AItemListId> {
-        &self.a_item.proj_buff_item_list_ids
-    }
-    pub(crate) fn get_fleet_buff_item_lists(&self) -> &Vec<AItemListId> {
-        &self.a_item.fleet_buff_item_list_ids
-    }
-    pub(crate) fn get_max_state(&self) -> AState {
-        self.a_item.max_state
-    }
-    pub(crate) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
-        self.a_item.val_fitted_group_id
-    }
-    pub(crate) fn get_val_online_group_id(&self) -> Option<AItemGrpId> {
-        self.a_item.val_online_group_id
-    }
-    pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
-        self.a_item.val_active_group_id
-    }
-    pub(crate) fn is_disallowed_in_wspace(&self) -> bool {
-        self.a_item.disallowed_in_wspace
-    }
-    // Methods which expose info generated during runtime
-    pub(crate) fn get_axt(&self) -> &RItemAXt {
-        &self.axt
-    }
-    pub(crate) fn get_ship_kind(&self) -> Option<RShipKind> {
-        self.ship_kind
-    }
-    pub(crate) fn has_online_effect(&self) -> bool {
-        self.has_online_effect
-    }
-    pub(crate) fn takes_turret_hardpoint(&self) -> bool {
-        self.takes_turret_hardpoint
-    }
-    pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
-        self.takes_launcher_hardpoint
+        for (a_effect_id, a_effect_data) in a_item.effect_datas.iter() {
+            if let Some(&effect_key) = effect_id_key_map.get(a_effect_id) {
+                let r_effect_data = RItemEffectData::from_a_effect_data(a_effect_data, item_list_id_key_map);
+                self.effect_datas.insert(effect_key, r_effect_data);
+            }
+        }
+        self.defeff_key = a_item.defeff_id.and_then(|v| effect_id_key_map.get(&v).copied());
+        self.proj_buff_item_list_keys.extend(
+            a_item
+                .proj_buff_item_list_ids
+                .iter()
+                .filter_map(|v| item_list_id_key_map.get(v).copied()),
+        );
+        self.fleet_buff_item_list_keys.extend(
+            a_item
+                .fleet_buff_item_list_ids
+                .iter()
+                .filter_map(|v| item_list_id_key_map.get(v).copied()),
+        );
+        self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
+        self.has_online_effect = has_online_effect(&self.effect_datas, effect_id_key_map);
+        self.takes_turret_hardpoint = has_turret_effect(&self.effect_datas, effect_id_key_map);
+        self.takes_launcher_hardpoint = has_launcher_effect(&self.effect_datas, effect_id_key_map);
+        self.axt.fill(
+            self.id,
+            self.grp_id,
+            self.cat_id,
+            &self.attrs,
+            &self.effect_datas,
+            attr_id_key_map,
+            attr_consts,
+            effect_consts,
+        );
     }
 }
 impl GetId<AItemId> for RItem {
     fn get_id(&self) -> AItemId {
-        self.a_item.id
+        self.id
     }
 }
 impl Named for RItem {
@@ -121,14 +125,38 @@ impl Named for RItem {
     }
 }
 
-pub(super) fn has_online_effect(item_effects: &RMap<AEffectId, AItemEffectData>) -> bool {
-    item_effects.contains_key(&ac::effects::ONLINE)
+fn has_online_effect(
+    item_effects: &RMap<REffectKey, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+) -> bool {
+    has_effect(item_effects, effect_id_key_map, &ac::effects::ONLINE)
 }
-pub(super) fn has_turret_effect(item_effects: &RMap<AEffectId, AItemEffectData>) -> bool {
-    item_effects.contains_key(&ac::effects::TURRET_FITTED)
+fn has_turret_effect(
+    item_effects: &RMap<REffectKey, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+) -> bool {
+    has_effect(item_effects, effect_id_key_map, &ac::effects::TURRET_FITTED)
 }
-pub(super) fn has_launcher_effect(item_effects: &RMap<AEffectId, AItemEffectData>) -> bool {
-    item_effects.contains_key(&ac::effects::LAUNCHER_FITTED)
+fn has_launcher_effect(
+    item_effects: &RMap<REffectKey, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+) -> bool {
+    has_effect(item_effects, effect_id_key_map, &ac::effects::LAUNCHER_FITTED)
+}
+fn has_effect(
+    item_effects: &RMap<REffectKey, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+    effect_id: &AEffectId,
+) -> bool {
+    let effect_key = match effect_id_key_map.get(effect_id) {
+        Some(effect_key) => effect_key,
+        None => return false,
+    };
+    item_effects.contains_key(effect_key)
+}
+
+fn is_ice_harvester(item_srqs: &RMap<AItemId, ASkillLevel>) -> bool {
+    item_srqs.contains_key(&ac::items::ICE_HARVESTING)
 }
 
 fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &RMap<AItemId, ASkillLevel>) -> Option<RShipKind> {

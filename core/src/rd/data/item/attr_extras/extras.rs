@@ -1,37 +1,39 @@
 use super::{
     attr_val::{
-        get_bandwidth_use, get_capacity, get_charge_rate, get_charge_size, get_max_type_fitted_count,
-        get_online_max_sec_class, get_radius, get_remote_resist_attr_id, get_volume,
+        get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_max_fighter_count,
+        get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl, get_radius,
+        get_remote_resist_attr_id, get_rig_size, get_volume,
     },
     charge_limit::get_item_charge_limit,
     container_limit::get_item_container_limit,
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
-    fighter_count::get_max_fighter_count,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
-    kind::{get_item_kind_inherited, get_item_kind_initial},
-    mining::is_ice_harvester,
+    kind::get_item_kind,
+    max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
     mobility::is_mobile,
-    overload_td_lvl::get_overload_td_lvl,
     sec_zone::is_sec_zone_limitable,
     ship_kind::get_item_ship_kind,
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    ad::{AAttrId, AAttrVal, ACount, AItem, ASkillLevel, ASlotIndex},
-    rd::{RItem, RItemChargeLimit, RItemContLimit, RItemKind, RItemShipLimit, RShipDroneLimit, RShipKind},
-    src::Src,
-    util::{GetId, RMap},
+    AttrVal,
+    ad::{AAttrId, AAttrVal, ACount, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
+    rd::{
+        RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemKind,
+        RItemShipLimit, RShipDroneLimit, RShipKind,
+    },
+    util::RMap,
 };
 
 // On-item container for data derived from item attributes. Has to be stored as a separate entity,
 // since it has to be regenerated for mutated items, which get their attributes determined only
 // during runtime.
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub(crate) struct RItemAXt {
     // Item type
     pub(crate) kind: Option<RItemKind>,
@@ -84,92 +86,77 @@ pub(crate) struct RItemAXt {
     // True if assistive item projected to targets immune to offensive modifiers should break the
     // offense immunity validation
     pub(crate) disallow_vs_ew_immune_tgt: bool,
-    // Attribute ID which defines how affectee resists effect
-    pub(crate) remote_resist_attr_id: Option<AAttrId>,
+    // Attribute key which defines how affectee resists effect
+    pub(crate) remote_resist_attr_key: Option<RAttrKey>,
     // Unmutated and unmodified charge size
     pub(crate) charge_size: Option<AAttrVal>,
     // Unmutated and unmodified charge rate
     pub(crate) charge_rate: ACount,
     // True if item has some speed
     pub(crate) is_mobile: bool,
-    // True if item has ice harvesting in skill requirement
-    pub(crate) is_ice_harvester: bool,
+    // Rig calibration cost
+    pub(crate) calibration_use: Option<AAttrVal>,
+    // Can item be limited by "max group fitted" limit
+    pub(crate) max_group_fitted_limited: bool,
+    // Can item be limited by "max group online" limit
+    pub(crate) max_group_online_limited: bool,
+    // Can item be limited by "max group active" limit
+    pub(crate) max_group_active_limited: bool,
+    // Size of a rig, or rig size used by a ship
+    pub(crate) rig_size: Option<AttrVal>,
 }
 impl RItemAXt {
-    // Build extras out of item with its original attributes
-    pub(crate) fn new_initial(a_item: &AItem) -> Self {
-        Self {
-            kind: get_item_kind_initial(a_item.grp_id, a_item.cat_id, &a_item.attrs, &a_item.effect_datas),
-            volume: get_volume(&a_item.attrs),
-            capacity: get_capacity(&a_item.attrs),
-            radius: get_radius(&a_item.attrs),
-            ship_limit: get_item_ship_limit(a_item.id, &a_item.attrs),
-            charge_limit: get_item_charge_limit(&a_item.attrs),
-            cont_limit: get_item_container_limit(&a_item.attrs),
-            implant_slot: get_implant_slot(&a_item.attrs),
-            booster_slot: get_booster_slot(&a_item.attrs),
-            subsystem_slot: get_subsystem_slot(&a_item.attrs),
-            is_light_fighter: get_light_fighter_flag(&a_item.attrs),
-            is_heavy_fighter: get_heavy_fighter_flag(&a_item.attrs),
-            is_support_fighter: get_support_fighter_flag(&a_item.attrs),
-            is_st_light_fighter: get_st_light_fighter_flag(&a_item.attrs),
-            is_st_heavy_fighter: get_st_heavy_fighter_flag(&a_item.attrs),
-            is_st_support_fighter: get_st_support_fighter_flag(&a_item.attrs),
-            item_ship_kind: get_item_ship_kind(a_item.cat_id, &a_item.attrs),
-            drone_limit: get_ship_drone_limit(&a_item.attrs),
-            max_fighter_count: get_max_fighter_count(&a_item.attrs),
-            bandwidth_use: get_bandwidth_use(&a_item.attrs),
-            overload_td_lvl: get_overload_td_lvl(&a_item.attrs),
-            max_type_fitted: get_max_type_fitted_count(&a_item.attrs),
-            online_max_sec_class: get_online_max_sec_class(&a_item.attrs),
-            sec_zone_limitable: is_sec_zone_limitable(&a_item.attrs),
-            disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(&a_item.attrs),
-            remote_resist_attr_id: get_remote_resist_attr_id(&a_item.attrs),
-            charge_size: get_charge_size(&a_item.attrs),
-            charge_rate: get_charge_rate(&a_item.attrs),
-            is_mobile: is_mobile(&a_item.attrs),
-            is_ice_harvester: is_ice_harvester(&a_item.srqs),
-        }
-    }
-    // Build extras out of item with overridden attributes
-    pub(crate) fn new_inherited(r_item: &RItem, attrs: &RMap<AAttrId, AAttrVal>, src: &Src) -> Self {
-        Self {
-            kind: get_item_kind_inherited(
-                r_item.get_group_id(),
-                r_item.get_category_id(),
-                attrs,
-                r_item.get_effect_datas(),
-                src,
-            ),
-            volume: get_volume(attrs),
-            capacity: get_capacity(attrs),
-            radius: get_radius(attrs),
-            ship_limit: get_item_ship_limit(r_item.get_id(), attrs),
-            charge_limit: get_item_charge_limit(attrs),
-            cont_limit: get_item_container_limit(attrs),
-            implant_slot: get_implant_slot(attrs),
-            booster_slot: get_booster_slot(attrs),
-            subsystem_slot: get_subsystem_slot(attrs),
-            is_light_fighter: get_light_fighter_flag(attrs),
-            is_heavy_fighter: get_heavy_fighter_flag(attrs),
-            is_support_fighter: get_support_fighter_flag(attrs),
-            is_st_light_fighter: get_st_light_fighter_flag(attrs),
-            is_st_heavy_fighter: get_st_heavy_fighter_flag(attrs),
-            is_st_support_fighter: get_st_support_fighter_flag(attrs),
-            item_ship_kind: get_item_ship_kind(r_item.get_category_id(), attrs),
-            drone_limit: get_ship_drone_limit(attrs),
-            max_fighter_count: get_max_fighter_count(attrs),
-            bandwidth_use: get_bandwidth_use(attrs),
-            overload_td_lvl: get_overload_td_lvl(attrs),
-            max_type_fitted: get_max_type_fitted_count(attrs),
-            online_max_sec_class: get_online_max_sec_class(attrs),
-            sec_zone_limitable: is_sec_zone_limitable(attrs),
-            disallow_vs_ew_immune_tgt: get_disallow_vs_ew_immune_tgt(attrs),
-            remote_resist_attr_id: get_remote_resist_attr_id(attrs),
-            charge_size: get_charge_size(attrs),
-            charge_rate: get_charge_rate(attrs),
-            is_mobile: is_mobile(attrs),
-            is_ice_harvester: is_ice_harvester(r_item.get_srqs()),
-        }
+    pub(crate) fn fill(
+        &mut self,
+        item_id: AItemId,
+        item_grp_id: AItemGrpId,
+        item_cat_id: AItemCatId,
+        item_attrs: &RMap<RAttrKey, AAttrVal>,
+        item_effects: &RMap<REffectKey, RItemEffectData>,
+        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        attr_consts: &RAttrConsts,
+        effect_consts: &REffectConsts,
+    ) {
+        self.kind = get_item_kind(
+            item_grp_id,
+            item_cat_id,
+            item_attrs,
+            item_effects,
+            attr_consts,
+            effect_consts,
+        );
+        self.volume = get_volume(item_attrs, attr_consts);
+        self.capacity = get_capacity(item_attrs, attr_consts);
+        self.radius = get_radius(item_attrs, attr_consts);
+        self.ship_limit = get_item_ship_limit(item_id, item_attrs, attr_consts);
+        self.charge_limit = get_item_charge_limit(item_attrs, attr_consts);
+        self.cont_limit = get_item_container_limit(item_attrs, attr_consts);
+        self.implant_slot = get_implant_slot(item_attrs, attr_consts);
+        self.booster_slot = get_booster_slot(item_attrs, attr_consts);
+        self.subsystem_slot = get_subsystem_slot(item_attrs, attr_consts);
+        self.is_light_fighter = get_light_fighter_flag(item_attrs, attr_consts);
+        self.is_heavy_fighter = get_heavy_fighter_flag(item_attrs, attr_consts);
+        self.is_support_fighter = get_support_fighter_flag(item_attrs, attr_consts);
+        self.is_st_light_fighter = get_st_light_fighter_flag(item_attrs, attr_consts);
+        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(item_attrs, attr_consts);
+        self.is_st_support_fighter = get_st_support_fighter_flag(item_attrs, attr_consts);
+        self.item_ship_kind = get_item_ship_kind(item_cat_id, item_attrs, attr_consts);
+        self.drone_limit = get_ship_drone_limit(item_attrs, attr_consts);
+        self.max_fighter_count = get_max_fighter_count(item_attrs, attr_consts);
+        self.bandwidth_use = get_bandwidth_use(item_attrs, attr_consts);
+        self.overload_td_lvl = get_overload_td_lvl(item_attrs, attr_consts);
+        self.max_type_fitted = get_max_type_fitted_count(item_attrs, attr_consts);
+        self.online_max_sec_class = get_online_max_sec_class(item_attrs, attr_consts);
+        self.sec_zone_limitable = is_sec_zone_limitable(item_attrs, attr_consts);
+        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(item_attrs, attr_consts);
+        self.remote_resist_attr_key = get_remote_resist_attr_id(item_attrs, attr_consts, attr_id_key_map);
+        self.charge_size = get_charge_size(item_attrs, attr_consts);
+        self.charge_rate = get_charge_rate(item_attrs, attr_consts);
+        self.is_mobile = is_mobile(item_attrs, attr_consts);
+        self.calibration_use = get_calibration_use(item_attrs, attr_consts);
+        self.max_group_fitted_limited = get_max_group_fitted_limited(item_attrs, attr_consts);
+        self.max_group_online_limited = get_max_group_online_limited(item_attrs, attr_consts);
+        self.max_group_active_limited = get_max_group_active_limited(item_attrs, attr_consts);
+        self.rig_size = get_rig_size(item_attrs, attr_consts);
     }
 }

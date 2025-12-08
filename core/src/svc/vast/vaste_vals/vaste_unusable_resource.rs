@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use super::shared::get_max_resource;
 use crate::{
-    ac,
     def::{AttrVal, ItemId, OF},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemKey},
@@ -28,7 +27,7 @@ impl VastFitData {
         if self.drones_bandwidth.is_empty() {
             return true;
         }
-        let max = get_max_resource(ctx, calc, fit.ship, &ac::attrs::DRONE_BANDWIDTH).unwrap_or(OF(0.0));
+        let max = get_max_resource(ctx, calc, fit.ship, ctx.ac().drone_bandwidth).unwrap_or(OF(0.0));
         for (item_key, &item_use) in self.drones_bandwidth.iter() {
             if item_use > max && !kfs.contains(item_key) {
                 return false;
@@ -47,7 +46,7 @@ impl VastFitData {
         if self.drones_bandwidth.is_empty() {
             return None;
         }
-        let max = get_max_resource(ctx, calc, fit.ship, &ac::attrs::DRONE_BANDWIDTH);
+        let max = get_max_resource(ctx, calc, fit.ship, ctx.ac().drone_bandwidth);
         let effective_max = max.unwrap_or(OF(0.0));
         let users: HashMap<_, _> = self
             .drones_bandwidth

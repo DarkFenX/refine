@@ -1,7 +1,8 @@
 use super::attr_val::get_volume;
 use crate::{
     ac,
-    ad::{AAttrId, AAttrVal, AItemCatId},
+    ad::{AAttrVal, AItemCatId},
+    rd::{RAttrConsts, RAttrKey},
     util::RMap,
 };
 
@@ -12,9 +13,13 @@ pub(crate) enum RShipKind {
     Structure,
 }
 
-pub(super) fn get_item_ship_kind(item_cat_id: AItemCatId, item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<RShipKind> {
+pub(super) fn get_item_ship_kind(
+    item_cat_id: AItemCatId,
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<RShipKind> {
     match item_cat_id {
-        ac::itemcats::MODULE => match get_volume(item_attrs) <= ac::extras::MAX_SUBCAP_MODULE_VOLUME {
+        ac::itemcats::MODULE => match get_volume(item_attrs, attr_consts) <= ac::extras::MAX_SUBCAP_MODULE_VOLUME {
             true => Some(RShipKind::Ship),
             false => Some(RShipKind::CapitalShip),
         },

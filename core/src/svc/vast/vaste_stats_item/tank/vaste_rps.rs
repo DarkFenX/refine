@@ -1,6 +1,5 @@
 use super::super::checks::check_item_drone_fighter_ship;
 use crate::{
-    ac,
     def::{AttrVal, OF},
     misc::Spool,
     nd::{NLocalRepGetter, NOutgoingRepGetter},
@@ -187,11 +186,12 @@ fn irr_data_to_penalized(irr_data: Vec<IrrEntry>) -> AttrVal {
 }
 
 fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, shield_perc: UnitInterval) -> AttrVal {
+    let attr_consts = ctx.ac();
     let shield_hp = calc
-        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)
+        .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.shield_capacity, OF(0.0))
         .unwrap();
     let shield_regen_time = calc
-        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_RECHARGE_RATE)
+        .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.shield_recharge_rate, OF(0.0))
         .unwrap()
         / OF(1000.0);
     calc_regen(shield_hp, shield_regen_time, shield_perc.get_inner())

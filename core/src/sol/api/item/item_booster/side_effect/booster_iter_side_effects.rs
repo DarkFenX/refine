@@ -73,12 +73,12 @@ fn iter_side_effects(sol: &SolarSystem, booster_key: UItemKey) -> impl Iterator<
     let u_booster = sol.u_data.items.get(booster_key).dc_booster().unwrap();
     u_booster.get_effect_datas().into_iter().flat_map(move |effect_datas| {
         effect_datas.keys().filter_map(move |&effect_key| {
-            get_se_chance_attr_id_by_effect_key(&sol.u_data.src, effect_key).map(|chance_a_attr_id| {
+            get_se_chance_attr_id_by_effect_key(&sol.u_data.src, effect_key).map(|chance_attr_id| {
                 FullSideEffect::new(
                     sol,
                     booster_key,
                     sol.u_data.src.get_effect(effect_key).get_id(),
-                    chance_a_attr_id,
+                    chance_attr_id,
                 )
             })
         })

@@ -4,6 +4,7 @@ use crate::{
     ad::AEffectId,
     def::{AttrId, AttrVal},
     misc::OpInfo,
+    rd::RAttrKey,
     sol::api::{FullSideEffect, FullSideEffectMut},
     src::Src,
 };
@@ -11,6 +12,8 @@ use crate::{
 pub struct SideEffectPartialStr {
     op: OpInfo,
     attr_id: AttrId,
+    // Used only to generate full side effect strength with modification value
+    attr_key: RAttrKey,
 }
 impl SideEffectPartialStr {
     pub fn get_op(&self) -> OpInfo {
@@ -62,7 +65,7 @@ impl<'a> FullSideEffectMut<'a> {
     /// ID to apply modification.
     pub fn get_strength(&mut self) -> Option<SideEffectStr> {
         match self.get_strength_partial() {
-            Some(partial) => match self.sol.internal_get_item_attr(self.key, &partial.attr_id) {
+            Some(partial) => match self.sol.internal_get_item_attr(self.key, partial.attr_key) {
                 Ok(calc_val) => Some(SideEffectStr {
                     op: partial.op,
                     attr_id: partial.attr_id,
@@ -79,28 +82,30 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
     let effect_key = src.get_effect_key_by_id(effect_id).unwrap();
     let mut se_strs = src
         .get_effect(effect_key)
-        .get_mods()
+        .mods
         .iter()
-        .map(|a_modifier| (a_modifier.op, a_modifier.affector_attr_id))
+        .map(|modifier| (modifier.op, modifier.affector_attr_key))
         .collect_vec();
     match se_strs.len() {
         0 => None,
         1 => se_strs
             .into_iter()
-            .map(|(a_op, a_attr_id)| SideEffectPartialStr {
+            .map(|(a_op, attr_key)| SideEffectPartialStr {
                 op: a_op.into(),
-                attr_id: a_attr_id,
+                attr_id: src.get_attr(attr_key).id,
+                attr_key,
             })
             .next(),
         _ => {
-            let (base_a_op, base_a_attr_id) = se_strs.pop().unwrap();
+            let (base_op, base_attr_key) = se_strs.pop().unwrap();
             match se_strs
                 .into_iter()
-                .all(|(a_op, a_attr_id)| a_op == base_a_op && a_attr_id == base_a_attr_id)
+                .all(|(op, attr_key)| op == base_op && attr_key == base_attr_key)
             {
                 true => Some(SideEffectPartialStr {
-                    op: base_a_op.into(),
-                    attr_id: base_a_attr_id,
+                    op: base_op.into(),
+                    attr_id: src.get_attr(base_attr_key).id,
+                    attr_key: base_attr_key,
                 }),
                 false => None,
             }

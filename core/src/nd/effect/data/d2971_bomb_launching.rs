@@ -69,16 +69,18 @@ fn internal_get_neut_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ENERGY_NEUT_AMOUNT)?;
+    let attr_consts = ctx.ac();
+    let mut amount = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.energy_neut_amount, OF(0.0))?;
     // Do not return neut stats for non-neut bombs
     if amount <= OF(0.0) {
         return None;
     }
     if let Some(projectee_key) = projectee_key {
+        let attr_consts = ctx.ac();
         // Here, projection reduction is split into 2 separate parts, range and application
         // reduction. This is done to correctly process cases when target has 50% chance to hit, and
         // target's cap pool is below post-application/resist bomb neut value
-        amount *= get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::AOE_CLOUD_SIZE);
+        amount *= get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, attr_consts.aoe_cloud_size);
         // Effect resistance reduction
         if let Some(resist_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
@@ -86,13 +88,13 @@ fn internal_get_neut_opc(
             amount *= resist_mult;
         }
         // Total resource pool limit
-        if let Some(cap) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, &ac::attrs::CAPACITOR_CAPACITY) {
+        if let Some(cap) = calc.get_item_oattr_oextra(ctx, projectee_key, attr_consts.capacitor_capacity) {
             amount = amount.min(cap);
         }
         // Range reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         amount *= get_bomb_range_mult(ctx, calc, projector_key, proj_data);
@@ -107,12 +109,19 @@ fn internal_get_ecm_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<Ecm> {
-    let mut str_radar = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_RADAR_STRENGTH_BONUS)?;
-    let mut str_magnet =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_BONUS)?;
+    let attr_consts = ctx.ac();
+    let mut str_radar =
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
+    let mut str_magnet = calc.get_item_oattr_afb_oextra(
+        ctx,
+        projector_key,
+        attr_consts.scan_magnetometric_strength_bonus,
+        OF(0.0),
+    )?;
     let mut str_grav =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_BONUS)?;
-    let mut str_ladar = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_LADAR_STRENGTH_BONUS)?;
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
+    let mut str_ladar =
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
     // Do not return ECM stats for non-ecm bombs
     if str_radar <= OF(0.0) && str_magnet <= OF(0.0) && str_grav <= OF(0.0) && str_ladar <= OF(0.0) {
         return None;
@@ -121,7 +130,7 @@ fn internal_get_ecm_opc(
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         // Lockbreaker bombs have perfect application whenever they hit, regardless of target

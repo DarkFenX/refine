@@ -1,12 +1,12 @@
 use crate::{
-    ad::{AAttrId, AAttrVal, AItemGrpId, AItemId, AItemListId, ASkillLevel, ASlotIndex},
+    ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{
         NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NLocalRepGetter, NMiningGetter, NNeutGetter,
         NNormalDmgGetter, NOutgoingRepGetter,
     },
-    rd::{REffectKey, RItemShipLimit},
+    rd::{RAttrKey, REffectKey, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
     },
@@ -118,7 +118,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemKey, AItemListId>,
+    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemKey, RItemListKey>,
     // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, REffectKey, NNormalDmgGetter>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, REffectKey, NBreacherDmgGetter>,
@@ -140,7 +140,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     // Stats-related - cap
-    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, AAttrId>,
+    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, RAttrKey>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
 }
 impl VastFitData {

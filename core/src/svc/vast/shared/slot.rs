@@ -1,6 +1,6 @@
 use crate::{
-    ad,
     def::Count,
+    rd::RAttrKey,
     svc::{SvcCtx, calc::Calc},
     ud::UItemKey,
 };
@@ -9,8 +9,16 @@ pub(in crate::svc::vast) fn get_attr_as_count(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemKey>,
-    max_a_attr_id: &ad::AAttrId,
+    max_attr_key: Option<RAttrKey>,
 ) -> Option<Count> {
-    calc.get_item_attr_val_extra_opt_opt(ctx, max_item_key, max_a_attr_id)
-        .map(|v| v.round() as Count)
+    // Return None only when there is no item
+    let max_item_key = max_item_key?;
+    let max_attr_key = match max_attr_key {
+        Some(max_attr_key) => max_attr_key,
+        None => return Some(0),
+    };
+    match calc.get_item_attr_rextra(ctx, max_item_key, max_attr_key) {
+        Ok(val) => Some(val.round() as Count),
+        Err(_) => Some(0),
+    }
 }

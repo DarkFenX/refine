@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AState,
     def::{ItemTypeId, OF},
     misc::{AddMode, MinionState, ModRack, ModuleState, RmMode, ServiceState},
     rd,
@@ -24,7 +24,7 @@ impl SolarSystem {
                 Some(a_item) => a_item,
                 None => continue,
             };
-            let item_kind = match r_item.get_axt().kind {
+            let item_kind = match r_item.axt.kind {
                 Some(item_kind) => item_kind,
                 None => continue,
             };
@@ -72,7 +72,7 @@ impl SolarSystem {
                         ModRack::High,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(r_item.get_max_state()),
+                        conv_state(r_item.max_state),
                         None,
                         None,
                         reuse_eupdates,
@@ -88,7 +88,7 @@ impl SolarSystem {
                         ModRack::Mid,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(r_item.get_max_state()),
+                        conv_state(r_item.max_state),
                         None,
                         None,
                         reuse_eupdates,
@@ -104,7 +104,7 @@ impl SolarSystem {
                         ModRack::Low,
                         AddMode::Equip,
                         *type_id,
-                        conv_state(r_item.get_max_state()),
+                        conv_state(r_item.max_state),
                         None,
                         None,
                         reuse_eupdates,
@@ -187,13 +187,13 @@ fn get_chargeable_modules(u_data: &UData, fit_key: UFitKey) -> Vec<UItemKey> {
     module_keys
 }
 
-fn conv_state(a_state: ad::AState) -> ModuleState {
+fn conv_state(a_state: AState) -> ModuleState {
     match a_state {
-        ad::AState::Ghost => ModuleState::Disabled,
-        ad::AState::Disabled => ModuleState::Disabled,
-        ad::AState::Offline => ModuleState::Offline,
-        ad::AState::Online => ModuleState::Online,
-        ad::AState::Active => ModuleState::Online,
-        ad::AState::Overload => ModuleState::Online,
+        AState::Ghost => ModuleState::Disabled,
+        AState::Disabled => ModuleState::Disabled,
+        AState::Offline => ModuleState::Offline,
+        AState::Online => ModuleState::Online,
+        AState::Active => ModuleState::Online,
+        AState::Overload => ModuleState::Online,
     }
 }

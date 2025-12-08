@@ -1,9 +1,9 @@
 use crate::{
-    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
+    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, ModuleState, Spool},
-    rd::{REffectKey, RItemAXt},
+    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData},
     src::Src,
     ud::{
         UData, UFitKey, UItemKey,
@@ -61,10 +61,10 @@ impl UModule {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<AAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
         self.base.get_attrs()
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, AItemEffectData>> {
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
         self.base.get_effect_datas()
     }
     pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
@@ -96,6 +96,9 @@ impl UModule {
     }
     pub(crate) fn get_state(&self) -> AState {
         self.base.get_state()
+    }
+    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
+        self.base.is_ice_harvester()
     }
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
         self.base.get_reffs()
@@ -136,7 +139,7 @@ impl UModule {
         &mut self,
         src: &Src,
         attr_mutations: Vec<AttrMutationRequest>,
-    ) -> Result<Vec<AAttrId>, ItemMutatedError> {
+    ) -> Result<Vec<RAttrKey>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
     pub(crate) fn set_mutator_id(&mut self, mutator_id: AItemId, src: &Src) -> Result<(), ItemMutatedError> {

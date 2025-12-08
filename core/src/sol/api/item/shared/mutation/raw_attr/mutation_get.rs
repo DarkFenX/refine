@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AAttrId,
     def::AttrId,
     err::basic::ItemMAttrFoundError,
     sol::{
@@ -75,11 +75,7 @@ impl<'a> IncompleteMutationMut<'a> {
     }
 }
 
-fn get_raw_mattr(
-    sol: &SolarSystem,
-    item_key: UItemKey,
-    a_attr_id: ad::AAttrId,
-) -> Result<RawMAttr<'_>, GetRawMAttrError> {
+fn get_raw_mattr(sol: &SolarSystem, item_key: UItemKey, a_attr_id: AAttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
     match sol
         .u_data
         .items
@@ -101,7 +97,7 @@ fn get_raw_mattr(
 fn get_raw_mattr_mut(
     sol: &mut SolarSystem,
     item_key: UItemKey,
-    a_attr_id: ad::AAttrId,
+    a_attr_id: AAttrId,
 ) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
     match sol
         .u_data

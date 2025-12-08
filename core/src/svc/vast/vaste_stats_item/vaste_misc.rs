@@ -1,7 +1,6 @@
 use super::checks::check_item_key_character;
 use crate::{
-    ac,
-    def::AttrVal,
+    def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
     ud::UItemKey,
 };
@@ -22,7 +21,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::DRONE_CONTROL_DISTANCE)
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().drone_control_distance, OF(0.0))
             .unwrap()
     }
 }

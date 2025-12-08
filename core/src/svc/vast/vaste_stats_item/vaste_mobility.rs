@@ -3,7 +3,6 @@ use super::checks::{
     check_item_key_fighter_ship_no_struct, check_item_key_ship_no_struct,
 };
 use crate::{
-    ac,
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, item_funcs, vast::Vast},
     ud::UItemKey,
@@ -23,7 +22,7 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        item_funcs::get_speed(ctx, calc, item_key).unwrap()
+        item_funcs::get_speed(ctx, calc, item_key)
     }
     pub(in crate::svc) fn get_stat_item_agility(
         ctx: SvcCtx,
@@ -34,13 +33,16 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
+        let attr_consts = ctx.ac();
         let agility = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::AGILITY)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.agility, OF(0.0))
             .unwrap();
         if agility <= OF(0.0) {
             return None;
         }
-        let mass = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MASS).unwrap();
+        let mass = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mass, OF(0.0))
+            .unwrap();
         if mass <= OF(0.0) {
             return None;
         }
@@ -74,7 +76,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> AttrVal {
-        item_funcs::get_sig_radius(ctx, calc, item_key).unwrap()
+        item_funcs::get_sig_radius(ctx, calc, item_key)
     }
     pub(in crate::svc) fn get_stat_item_mass(
         ctx: SvcCtx,
@@ -85,7 +87,8 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MASS).unwrap()
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mass, OF(0.0))
+            .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_warp_speed(
         ctx: SvcCtx,
@@ -101,7 +104,7 @@ impl Vast {
         item_key: UItemKey,
     ) -> Option<AttrVal> {
         let result = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_SPEED_MULT)
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_speed_mult, OF(0.0))
             .unwrap();
         match result > OF(0.0) {
             true => Some(result),
@@ -126,7 +129,7 @@ impl Vast {
         let cap = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
         let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key);
         let cap_need = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::WARP_CAPACITOR_NEED)
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_capacitor_need, OF(0.0))
             .unwrap();
         let result = cap / mass / cap_need;
         match result.is_finite() && result > OF(0.0) {

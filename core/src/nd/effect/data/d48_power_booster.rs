@@ -33,17 +33,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn get_cap_inject(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
     let item = ctx.u_data.items.get(item_key);
     let charge_key = item.get_charge_key()?;
-    let charge_amount = calc
-        .get_item_attr_val_extra(ctx, charge_key, &ac::attrs::CAPACITOR_BONUS)
-        .unwrap_or(OF(0.0));
+    let attr_consts = ctx.ac();
+    let charge_amount = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.capacitor_bonus, OF(0.0))?;
     let fit_key = ctx.u_data.items.get(charge_key).dc_charge().unwrap().get_fit_key();
     let ship_key = ctx.u_data.fits.get(fit_key).ship;
-    let ship_amount = match ship_key {
-        Some(ship_key) => calc
-            .get_item_attr_val_extra(ctx, ship_key, &ac::attrs::CAPACITOR_CAPACITY)
-            .unwrap_or(OF(0.0)),
-        None => OF(0.0),
-    };
+    let ship_amount = calc.get_oitem_oattr_ffb_extra(ctx, ship_key, attr_consts.capacitor_capacity, OF(0.0));
     let amount = AttrVal::min(charge_amount, ship_amount);
     Some(amount)
 }

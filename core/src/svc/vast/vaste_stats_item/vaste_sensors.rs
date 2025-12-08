@@ -22,8 +22,9 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_locks(ctx, calc, item_key))
     }
     fn internal_get_stat_item_locks(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Count {
+        let attr_consts = ctx.ac();
         let mut item_locks = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_LOCKED_TARGETS)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.max_locked_targets, OF(0.0))
             .unwrap();
         // Ship (ship kind) locks are limited by character locks. Anything else, including
         // structures, drones and fighter are not limited by it
@@ -33,8 +34,8 @@ impl Vast {
         {
             let u_fit = ctx.u_data.fits.get(u_ship.get_fit_key());
             if let Some(character_key) = u_fit.character
-                && let Ok(character_locks) =
-                    calc.get_item_attr_val_extra(ctx, character_key, &ac::attrs::MAX_LOCKED_TARGETS)
+                && let Some(character_locks) =
+                    calc.get_item_oattr_afb_oextra(ctx, character_key, attr_consts.max_locked_targets, OF(0.0))
             {
                 item_locks = item_locks.min(character_locks)
             }
@@ -51,7 +52,7 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_lock_range_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_lock_range_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_TARGET_RANGE)
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().max_target_range, OF(0.0))
             .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_scan_res(
@@ -63,7 +64,7 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_scan_res_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_scan_res_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_RESOLUTION)
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().scan_resolution, OF(0.0))
             .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_sensors(
@@ -79,19 +80,20 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> StatSensors {
+        let attr_consts = ctx.ac();
         // Strength ties are resolved using the following order:
         // Radar > ladar > magnetometric > gravimetric
         let str_radar = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_RADAR_STRENGTH)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.scan_radar_strength, OF(0.0))
             .unwrap();
         let str_ladar = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_LADAR_STRENGTH)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.scan_ladar_strength, OF(0.0))
             .unwrap();
         let str_magnet = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.scan_magnetometric_strength, OF(0.0))
             .unwrap();
         let str_grav = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.scan_gravimetric_strength, OF(0.0))
             .unwrap();
         let mut sensors = StatSensors {
             kind: StatSensorsKind::Radar,
@@ -120,7 +122,7 @@ impl Vast {
         Ok(Vast::internal_get_stat_item_dscan_range_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_dscan_range_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::MAX_DIRECTIONAL_SCAN_RANGE)
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().max_directional_scan_range, OF(0.0))
             .unwrap()
             / ac::extras::AU
     }

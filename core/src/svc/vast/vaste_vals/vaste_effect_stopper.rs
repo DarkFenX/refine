@@ -83,7 +83,7 @@ fn get_espec_proj_mult(
     projectee_key: UItemKey,
 ) -> Option<AttrVal> {
     let projector_effect = ctx.u_data.src.get_effect(projector_espec.effect_key);
-    let proj_mult_getter = projector_effect.get_modifier_proj_mult_getter()?;
+    let proj_mult_getter = projector_effect.modifier_proj_mult_getter?;
     let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_key)?;
     Some(proj_mult_getter(
         ctx,

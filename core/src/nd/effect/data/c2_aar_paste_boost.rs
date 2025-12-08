@@ -6,10 +6,11 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac,
-    ad::{AAttrId, AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    ad::{AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
     def::{AttrVal, OF},
     misc::EffectSpec,
     nd::{NEffect, NEffectHc},
+    rd::RAttrConsts,
     svc::{
         SvcCtx,
         calc::{
@@ -22,7 +23,6 @@ use crate::{
 };
 
 const A_EFFECT_ID: AEffectId = ac::effects::AAR_PASTE_BOOST;
-const AAR_MULTIPLIER: AAttrId = ac::attrs::CHARGED_ARMOR_DMG_MULT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -62,54 +62,50 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
 }
 
 // Calc customizations
-fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
-    let rmod = RawModifier {
-        kind: ModifierKind::Local,
-        affector_espec: espec,
-        affector_value: AffectorValue::Custom(CustomAffectorValue {
-            kind: CustomAffectorValueKind::AarRepAmount,
-            affector_attr_id: Some(AAR_MULTIPLIER),
-            affector_info_getter: get_affector_info,
-            mod_val_getter: get_mod_val,
-            item_add_reviser: Some(revise_on_item_add_removal),
-            item_remove_reviser: Some(revise_on_item_add_removal),
-        }),
-        op: Op::ExtraMul,
-        aggr_mode: AggrMode::Stack,
-        affectee_filter: AffecteeFilter::Direct(Location::Item),
-        affectee_attr_id: ac::attrs::ARMOR_DMG_AMOUNT,
-        ..
-    };
-    rmods.push(rmod);
-}
-
-fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
-    let item = ctx.u_data.items.get(espec.item_key);
-    match item.get_charge_key() {
-        Some(charge_key) => {
-            let charge = ctx.u_data.items.get(charge_key);
-            match charge.get_type_id() {
-                ac::items::NANITE_REPAIR_PASTE => {
-                    match calc.get_item_attr_val_full(ctx, espec.item_key, &AAR_MULTIPLIER) {
-                        Ok(attr) => Some(attr.dogma),
-                        // Can't fetch multiplier attr - no extra reps
-                        Err(_) => Some(OF(1.0)),
-                    }
-                }
-                // Different charge - no extra reps
-                _ => Some(OF(1.0)),
-            }
-        }
-        // No charge - no extra reps
-        None => Some(OF(1.0)),
+fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrConsts, espec: EffectSpec) {
+    if let Some(armor_dmg_amount_key) = attr_consts.armor_dmg_amount
+        && let Some(charged_armor_dmg_mult_key) = attr_consts.charged_armor_dmg_mult
+    {
+        let rmod = RawModifier {
+            kind: ModifierKind::Local,
+            affector_espec: espec,
+            affector_value: AffectorValue::Custom(CustomAffectorValue {
+                kind: CustomAffectorValueKind::AarRepAmount,
+                affector_attr_key: Some(charged_armor_dmg_mult_key),
+                affector_info_getter: get_affector_info,
+                mod_val_getter: get_mod_val,
+                item_add_reviser: Some(revise_on_item_add_removal),
+                item_remove_reviser: Some(revise_on_item_add_removal),
+            }),
+            op: Op::ExtraMul,
+            aggr_mode: AggrMode::Stack,
+            affectee_filter: AffecteeFilter::Direct(Location::Item),
+            affectee_attr_key: armor_dmg_amount_key,
+            ..
+        };
+        rmods.push(rmod);
     }
 }
 
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+    // Return multiplier only if everything could be fetched successfully
+    if let Some(charge_key) = ctx.u_data.items.get(espec.item_key).get_charge_key()
+        && let ac::items::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_key).get_type_id()
+        && let Some(val) = calc.get_item_oattr_odogma(ctx, espec.item_key, ctx.ac().charged_armor_dmg_mult)
+    {
+        Some(val);
+    }
+    Some(OF(1.0))
+}
+
 fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
-    smallvec![AffectorInfo {
-        item_id: ctx.u_data.items.id_by_key(item_key),
-        attr_id: Some(AAR_MULTIPLIER)
-    }]
+    match ctx.ac().charged_armor_dmg_mult {
+        Some(charged_armor_dmg_mult_key) => smallvec![AffectorInfo {
+            item_id: ctx.u_data.items.id_by_key(item_key),
+            attr_id: Some(ctx.u_data.src.get_attr(charged_armor_dmg_mult_key).id)
+        }],
+        None => SmallVec::new(),
+    }
 }
 
 fn revise_on_item_add_removal(

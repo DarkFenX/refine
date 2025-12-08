@@ -1,7 +1,7 @@
 use crate::{
-    ad,
+    ad::AState,
     misc::{AttrSpec, EffectSpec},
-    rd::{REffectKey, RcEffect},
+    rd::{RAttrKey, REffectKey, RcEffect},
     svc::{Svc, SvcCtx},
     ud::{UData, UFighter, UFitKey, UFleet, UItem, UItemKey, UProjData, USkill},
 };
@@ -37,10 +37,10 @@ impl Svc {
         self.calc.item_removed(svc_ctx, item_key, item);
         self.vast.item_removed(u_data, item_key, item);
     }
-    pub(crate) fn notify_state_activated(&mut self, item_key: UItemKey, item: &UItem, a_state: &ad::AState) {
+    pub(crate) fn notify_state_activated(&mut self, item_key: UItemKey, item: &UItem, a_state: &AState) {
         self.vast.item_state_activated(item_key, item, a_state);
     }
-    pub(crate) fn notify_state_deactivated(&mut self, item_key: &UItemKey, item: &UItem, a_state: &ad::AState) {
+    pub(crate) fn notify_state_deactivated(&mut self, item_key: &UItemKey, item: &UItem, a_state: &AState) {
         self.vast.item_state_deactivated(item_key, item, a_state);
     }
     pub(crate) fn notify_item_loaded(&mut self, u_data: &UData, item_key: UItemKey, item: &UItem) {
@@ -53,30 +53,15 @@ impl Svc {
         self.calc.item_unloaded(svc_ctx, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
-    pub(crate) fn notify_base_attr_value_changed(
-        &mut self,
-        u_data: &UData,
-        item_key: UItemKey,
-        a_attr_id: ad::AAttrId,
-    ) {
+    pub(crate) fn notify_base_attr_value_changed(&mut self, u_data: &UData, item_key: UItemKey, attr_key: RAttrKey) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
-            .force_attr_value_recalc(svc_ctx, AttrSpec::new(item_key, a_attr_id));
+            .force_attr_value_recalc(svc_ctx, AttrSpec::new(item_key, attr_key));
     }
-    pub(crate) fn notify_item_state_activated_loaded(
-        &mut self,
-        item_key: UItemKey,
-        item: &UItem,
-        a_state: &ad::AState,
-    ) {
+    pub(crate) fn notify_item_state_activated_loaded(&mut self, item_key: UItemKey, item: &UItem, a_state: &AState) {
         self.vast.item_state_activated_loaded(item_key, item, a_state);
     }
-    pub(crate) fn notify_item_state_deactivated_loaded(
-        &mut self,
-        item_key: &UItemKey,
-        item: &UItem,
-        a_state: &ad::AState,
-    ) {
+    pub(crate) fn notify_item_state_deactivated_loaded(&mut self, item_key: &UItemKey, item: &UItem, a_state: &AState) {
         self.vast.item_state_deactivated_loaded(item_key, item, a_state);
     }
     pub(crate) fn notify_effects_started(
@@ -114,7 +99,7 @@ impl Svc {
         projectee_item: &UItem,
         proj_data: Option<UProjData>,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, effect.get_key());
+        let projector_espec = EffectSpec::new(projector_key, effect.key);
         self.eff_projs.add_proj_data(projector_espec, projectee_key, proj_data);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
@@ -131,7 +116,7 @@ impl Svc {
         projectee_key: UItemKey,
         projectee_item: &UItem,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, effect.get_key());
+        let projector_espec = EffectSpec::new(projector_key, effect.key);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
             .effect_unprojected(svc_ctx, projector_espec, projectee_key, projectee_item);

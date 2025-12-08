@@ -24,7 +24,7 @@ impl Vast {
             }
             UItem::Drone(drone) => {
                 for effect in effects {
-                    if effect.is_active_with_duration() {
+                    if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_key, &drone.get_fit_key());
                         self.handle_mining_start(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &drone.get_fit_key());
@@ -34,7 +34,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
-                    if effect.is_active_with_duration() {
+                    if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_neut_start(effect, item_key, &fighter.get_fit_key());
@@ -43,47 +43,39 @@ impl Vast {
             }
             UItem::Module(module) => {
                 for effect in effects {
-                    if effect.is_active_with_duration() {
+                    if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_key, &module.get_fit_key());
                         self.handle_mining_start(effect, item_key, &module.get_fit_key());
                         // Local reps
-                        if let Some(rep_getter) = effect.get_local_shield_rep_opc_getter() {
+                        if let Some(rep_getter) = effect.local_shield_rep_opc_getter {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_shield.add_entry(item_key, effect.get_key(), rep_getter);
-                            if effect.get_charge_info().is_some() {
-                                fit_data
-                                    .lr_shield_limitable
-                                    .add_entry(item_key, effect.get_key(), rep_getter);
+                            fit_data.lr_shield.add_entry(item_key, effect.key, rep_getter);
+                            if effect.charge_info.is_some() {
+                                fit_data.lr_shield_limitable.add_entry(item_key, effect.key, rep_getter);
                             }
                         }
-                        if let Some(rep_getter) = effect.get_local_armor_rep_opc_getter() {
+                        if let Some(rep_getter) = effect.local_armor_rep_opc_getter {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_armor.add_entry(item_key, effect.get_key(), rep_getter);
-                            if effect.get_charge_info().is_some() {
-                                fit_data
-                                    .lr_armor_limitable
-                                    .add_entry(item_key, effect.get_key(), rep_getter);
+                            fit_data.lr_armor.add_entry(item_key, effect.key, rep_getter);
+                            if effect.charge_info.is_some() {
+                                fit_data.lr_armor_limitable.add_entry(item_key, effect.key, rep_getter);
                             }
                         }
-                        if let Some(rep_getter) = effect.get_local_hull_rep_opc_getter() {
+                        if let Some(rep_getter) = effect.local_hull_rep_opc_getter {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_hull.add_entry(item_key, effect.get_key(), rep_getter);
+                            fit_data.lr_hull.add_entry(item_key, effect.key, rep_getter);
                         }
                         // Outgoing reps
                         self.handle_orrs_start(effect, item_key, &module.get_fit_key());
                         // Cap
-                        if let Some(cap_inject_getter) = effect.get_cap_inject_getter() {
+                        if let Some(cap_inject_getter) = effect.cap_inject_getter {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data
-                                .cap_injects
-                                .add_entry(item_key, effect.get_key(), cap_inject_getter);
+                            fit_data.cap_injects.add_entry(item_key, effect.key, cap_inject_getter);
                         }
                         self.handle_neut_start(effect, item_key, &module.get_fit_key());
-                        if let Some(use_attr_id) = effect.get_discharge_attr_id() {
+                        if let Some(use_attr_key) = effect.discharge_attr_key {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data
-                                .cap_consumers
-                                .add_entry(item_key, effect.get_key(), use_attr_id);
+                            fit_data.cap_consumers.add_entry(item_key, effect.key, use_attr_key);
                         }
                     }
                 }
@@ -110,7 +102,7 @@ impl Vast {
             }
             UItem::Drone(drone) => {
                 for effect in effects {
-                    if effect.is_active_with_duration() {
+                    if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_mining_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &drone.get_fit_key());
@@ -120,7 +112,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
-                    if effect.is_active_with_duration() {
+                    if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_neut_stop(effect, item_key, &fighter.get_fit_key());
@@ -129,39 +121,39 @@ impl Vast {
             }
             UItem::Module(module) => {
                 for effect in effects {
-                    if effect.is_active_with_duration() {
+                    if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_key, &module.get_fit_key());
                         self.handle_mining_stop(effect, item_key, &module.get_fit_key());
                         // Local reps
-                        if effect.get_local_shield_rep_opc_getter().is_some() {
+                        if effect.local_shield_rep_opc_getter.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_shield.remove_l2(item_key, &effect.get_key());
-                            if effect.get_charge_info().is_some() {
-                                fit_data.lr_shield_limitable.remove_l2(item_key, &effect.get_key());
+                            fit_data.lr_shield.remove_l2(item_key, &effect.key);
+                            if effect.charge_info.is_some() {
+                                fit_data.lr_shield_limitable.remove_l2(item_key, &effect.key);
                             }
                         }
-                        if effect.get_local_armor_rep_opc_getter().is_some() {
+                        if effect.local_armor_rep_opc_getter.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_armor.remove_l2(item_key, &effect.get_key());
-                            if effect.get_charge_info().is_some() {
-                                fit_data.lr_armor_limitable.remove_l2(item_key, &effect.get_key());
+                            fit_data.lr_armor.remove_l2(item_key, &effect.key);
+                            if effect.charge_info.is_some() {
+                                fit_data.lr_armor_limitable.remove_l2(item_key, &effect.key);
                             }
                         }
-                        if effect.get_local_hull_rep_opc_getter().is_some() {
+                        if effect.local_hull_rep_opc_getter.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_hull.remove_l2(item_key, &effect.get_key());
+                            fit_data.lr_hull.remove_l2(item_key, &effect.key);
                         }
                         // Outgoing reps
                         self.handle_orrs_stop(effect, item_key, &module.get_fit_key());
                         // Cap
-                        if effect.get_cap_inject_getter().is_some() {
+                        if effect.cap_inject_getter.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.cap_injects.remove_l2(item_key, &effect.get_key());
+                            fit_data.cap_injects.remove_l2(item_key, &effect.key);
                         }
                         self.handle_neut_stop(effect, item_key, &module.get_fit_key());
-                        if effect.get_discharge_attr_id().is_some() {
+                        if effect.discharge_attr_key.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.cap_consumers.remove_l2(item_key, &effect.get_key());
+                            fit_data.cap_consumers.remove_l2(item_key, &effect.key);
                         }
                     }
                 }
@@ -170,99 +162,99 @@ impl Vast {
         }
     }
     fn handle_dmg_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter() {
+        if let Some(dmg_getter) = effect.normal_dmg_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.dmg_normal.add_entry(item_key, effect.get_key(), dmg_getter);
+            fit_data.dmg_normal.add_entry(item_key, effect.key, dmg_getter);
         }
-        if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter() {
+        if let Some(dmg_getter) = effect.breacher_dmg_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.dmg_breacher.add_entry(item_key, effect.get_key(), dmg_getter);
+            fit_data.dmg_breacher.add_entry(item_key, effect.key, dmg_getter);
         }
     }
     fn handle_dmg_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.get_normal_dmg_opc_getter().is_some() {
+        if effect.normal_dmg_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.dmg_normal.remove_l2(item_key, &effect.get_key());
+            fit_data.dmg_normal.remove_l2(item_key, &effect.key);
         }
-        if effect.get_breacher_dmg_opc_getter().is_some() {
+        if effect.breacher_dmg_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.dmg_breacher.remove_l2(item_key, &effect.get_key());
+            fit_data.dmg_breacher.remove_l2(item_key, &effect.key);
         }
     }
     fn handle_mining_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(mining_getter) = effect.get_mining_ore_opc_getter() {
+        if let Some(mining_getter) = effect.mining_ore_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_ore.add_entry(item_key, effect.get_key(), mining_getter);
+            fit_data.mining_ore.add_entry(item_key, effect.key, mining_getter);
         }
-        if let Some(mining_getter) = effect.get_mining_ice_opc_getter() {
+        if let Some(mining_getter) = effect.mining_ice_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_ice.add_entry(item_key, effect.get_key(), mining_getter);
+            fit_data.mining_ice.add_entry(item_key, effect.key, mining_getter);
         }
-        if let Some(mining_getter) = effect.get_mining_gas_opc_getter() {
+        if let Some(mining_getter) = effect.mining_gas_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_gas.add_entry(item_key, effect.get_key(), mining_getter);
+            fit_data.mining_gas.add_entry(item_key, effect.key, mining_getter);
         }
     }
     fn handle_mining_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.get_mining_ore_opc_getter().is_some() {
+        if effect.mining_ore_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_ore.remove_l2(item_key, &effect.get_key());
+            fit_data.mining_ore.remove_l2(item_key, &effect.key);
         }
-        if effect.get_mining_ice_opc_getter().is_some() {
+        if effect.mining_ice_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_ice.remove_l2(item_key, &effect.get_key());
+            fit_data.mining_ice.remove_l2(item_key, &effect.key);
         }
-        if effect.get_mining_gas_opc_getter().is_some() {
+        if effect.mining_gas_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_gas.remove_l2(item_key, &effect.get_key());
+            fit_data.mining_gas.remove_l2(item_key, &effect.key);
         }
     }
     fn handle_orrs_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(rep_getter) = effect.get_outgoing_shield_rep_opc_getter() {
+        if let Some(rep_getter) = effect.outgoing_shield_rep_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_shield.add_entry(item_key, effect.get_key(), rep_getter);
+            fit_data.orr_shield.add_entry(item_key, effect.key, rep_getter);
         }
-        if let Some(rep_getter) = effect.get_outgoing_armor_rep_opc_getter() {
+        if let Some(rep_getter) = effect.outgoing_armor_rep_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_armor.add_entry(item_key, effect.get_key(), rep_getter);
+            fit_data.orr_armor.add_entry(item_key, effect.key, rep_getter);
         }
-        if let Some(rep_getter) = effect.get_outgoing_hull_rep_opc_getter() {
+        if let Some(rep_getter) = effect.outgoing_hull_rep_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_hull.add_entry(item_key, effect.get_key(), rep_getter);
+            fit_data.orr_hull.add_entry(item_key, effect.key, rep_getter);
         }
-        if let Some(rep_getter) = effect.get_outgoing_cap_rep_opc_getter() {
+        if let Some(rep_getter) = effect.outgoing_cap_rep_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.out_cap.add_entry(item_key, effect.get_key(), rep_getter);
+            fit_data.out_cap.add_entry(item_key, effect.key, rep_getter);
         }
     }
     fn handle_orrs_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.get_outgoing_shield_rep_opc_getter().is_some() {
+        if effect.outgoing_shield_rep_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_shield.remove_l2(item_key, &effect.get_key());
+            fit_data.orr_shield.remove_l2(item_key, &effect.key);
         }
-        if effect.get_outgoing_armor_rep_opc_getter().is_some() {
+        if effect.outgoing_armor_rep_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_armor.remove_l2(item_key, &effect.get_key());
+            fit_data.orr_armor.remove_l2(item_key, &effect.key);
         }
-        if effect.get_outgoing_hull_rep_opc_getter().is_some() {
+        if effect.outgoing_hull_rep_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_hull.remove_l2(item_key, &effect.get_key());
+            fit_data.orr_hull.remove_l2(item_key, &effect.key);
         }
-        if effect.get_outgoing_cap_rep_opc_getter().is_some() {
+        if effect.outgoing_cap_rep_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.out_cap.remove_l2(item_key, &effect.get_key());
+            fit_data.out_cap.remove_l2(item_key, &effect.key);
         }
     }
     fn handle_neut_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(neut_getter) = effect.get_neut_opc_getter() {
+        if let Some(neut_getter) = effect.neut_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.out_neuts.add_entry(item_key, effect.get_key(), neut_getter);
+            fit_data.out_neuts.add_entry(item_key, effect.key, neut_getter);
         }
     }
     fn handle_neut_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.get_neut_opc_getter().is_some() {
+        if effect.neut_opc_getter.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.out_neuts.remove_l2(item_key, &effect.get_key());
+            fit_data.out_neuts.remove_l2(item_key, &effect.key);
         }
     }
 }

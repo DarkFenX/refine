@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::{AAttr, AAttrId},
-    def::{AttrVal, OF},
+    def::AttrVal,
     misc::AttrSpec,
     rd::RAttr,
     svc::{
@@ -10,22 +8,14 @@ use crate::{
         eff_funcs,
     },
     ud::UItem,
-    util::GetId,
 };
-
-pub(super) const LIMITED_PRECISION_ATTR_IDS: [AAttrId; 4] = [
-    ac::attrs::CPU,
-    ac::attrs::POWER,
-    ac::attrs::CPU_OUTPUT,
-    ac::attrs::POWER_OUTPUT,
-];
 
 impl Calc {
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
-        let resist_attr_id = cmod.raw.resist_attr_id?;
+        let resist_attr_key = cmod.raw.resist_attr_key?;
         let item_key = cmod.ctx.get_item_key()?;
         let resist =
-            eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, self, &AttrSpec::new(item_key, resist_attr_id))?;
+            eff_funcs::get_resist_mult_by_projectee_aspec(ctx, self, &AttrSpec::new(item_key, resist_attr_key))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
@@ -44,21 +34,10 @@ impl Calc {
     }
 }
 
-pub(super) fn make_default_attr(attr_id: AAttrId) -> RAttr {
-    RAttr::new(AAttr {
-        id: attr_id,
-        penalizable: false,
-        hig: true,
-        def_val: OF(0.0),
-        min_attr_id: None,
-        max_attr_id: None,
-    })
-}
-
 pub(super) fn get_base_attr_value(item: &UItem, attr: &RAttr) -> AttrVal {
     // Fetch unmodified on-item attribute value, or use base attribute value if it is not available
-    match item.get_attrs().unwrap().get(&attr.get_id()) {
-        Some(orig_val) => *orig_val as AttrVal,
-        None => attr.get_def_val() as AttrVal,
+    match item.get_attrs().unwrap().get(&attr.key) {
+        Some(orig_val) => *orig_val,
+        None => attr.def_val,
     }
 }

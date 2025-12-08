@@ -36,7 +36,7 @@ fn internal_get_neut_opc(
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
     // Not a blood raider ship - not considered as a neut
-    if calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::NOS_OVERRIDE)? == OF(0.0) {
+    if calc.get_item_oattr_oextra(ctx, projector_key, ctx.ac().nos_override)? == OF(0.0) {
         return None;
     }
     get_generic_neut_opc(
@@ -46,7 +46,7 @@ fn internal_get_neut_opc(
         projector_effect,
         projectee_key,
         get_neut_proj_mult,
-        &ac::attrs::POWER_TRANSFER_AMOUNT,
+        ctx.ac().power_transfer_amount,
         false,
     )
 }

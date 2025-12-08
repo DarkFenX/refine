@@ -1,21 +1,24 @@
 use crate::{
-    ac,
-    ad::{AAttrId, AAttrVal, ASlotIndex},
+    ad::{AAttrVal, ASlotIndex},
+    rd::{RAttrConsts, RAttrKey},
     util::RMap,
 };
 
-pub(super) fn get_implant_slot(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<ASlotIndex> {
-    get_slot_from_attr(item_attrs, &ac::attrs::IMPLANTNESS)
+pub(super) fn get_implant_slot(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<ASlotIndex> {
+    get_slot_from_attr(item_attrs, attr_consts.implantness)
 }
 
-pub(super) fn get_booster_slot(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<ASlotIndex> {
-    get_slot_from_attr(item_attrs, &ac::attrs::BOOSTERNESS)
+pub(super) fn get_booster_slot(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<ASlotIndex> {
+    get_slot_from_attr(item_attrs, attr_consts.boosterness)
 }
 
-pub(super) fn get_subsystem_slot(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<ASlotIndex> {
-    get_slot_from_attr(item_attrs, &ac::attrs::SUBSYSTEM_SLOT)
+pub(super) fn get_subsystem_slot(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<ASlotIndex> {
+    get_slot_from_attr(item_attrs, attr_consts.subsystem_slot)
 }
 
-fn get_slot_from_attr(item_attrs: &RMap<AAttrId, AAttrVal>, attr_id: &AAttrId) -> Option<ASlotIndex> {
-    item_attrs.get(attr_id).map(|v| v.round() as ASlotIndex)
+fn get_slot_from_attr(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_key: Option<RAttrKey>) -> Option<ASlotIndex> {
+    attr_key.and_then(|v| item_attrs.get(&v).map(|v| v.round() as ASlotIndex))
 }

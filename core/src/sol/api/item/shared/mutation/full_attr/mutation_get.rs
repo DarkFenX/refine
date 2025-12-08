@@ -1,7 +1,7 @@
 use crate::{
-    ad,
+    ad::AAttrId,
     def::AttrId,
-    err::basic::{ItemMAttrMutatorError, ItemMAttrValueError},
+    err::basic::{AttrFoundError, ItemMAttrMutatorError, ItemMAttrValueError},
     sol::{
         SolarSystem,
         api::{EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
@@ -31,10 +31,14 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> Result<(), GetFullMAttrError> {
+fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> Result<(), GetFullMAttrError> {
     let u_item = sol.u_data.items.get(item_key);
+    let attr_key = match sol.u_data.src.get_attr_key_by_id(a_attr_id) {
+        Some(attr_key) => attr_key,
+        None => return Err(AttrFoundError { attr_id: *a_attr_id }.into()),
+    };
     let mutation_cache = u_item.get_mutation_data().unwrap().get_cache().unwrap();
-    if !mutation_cache.get_r_mutator().get_attr_mods().contains_key(a_attr_id) {
+    if !mutation_cache.get_r_mutator().attr_mods.contains_key(&attr_key) {
         return Err(ItemMAttrMutatorError {
             item_id: sol.u_data.items.id_by_key(item_key),
             attr_id: *a_attr_id,
@@ -42,7 +46,7 @@ fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId)
         }
         .into());
     };
-    if !u_item.get_attrs().unwrap().contains_key(a_attr_id) {
+    if !u_item.get_attrs().unwrap().contains_key(&attr_key) {
         return Err(ItemMAttrValueError {
             item_id: sol.u_data.items.id_by_key(item_key),
             attr_id: *a_attr_id,
@@ -54,6 +58,8 @@ fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId)
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFullMAttrError {
+    #[error("{0}")]
+    AttrNotFound(#[from] AttrFoundError),
     #[error("{0}")]
     NotMutable(#[from] ItemMAttrMutatorError),
     #[error("{0}")]

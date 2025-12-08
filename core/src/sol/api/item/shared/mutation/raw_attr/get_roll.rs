@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AAttrId,
     sol::{
         SolarSystem,
         api::{RawMAttr, RawMAttrMut},
@@ -22,7 +22,7 @@ impl<'a> RawMAttrMut<'a> {
     }
 }
 
-fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> UnitInterval {
+fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> UnitInterval {
     sol.u_data
         .items
         .get(item_key)

@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AState,
     sol::SolarSystem,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemKey},
@@ -22,7 +22,7 @@ impl SolarSystem {
             svc,
             item_key,
             u_item,
-            ad::AState::Ghost,
+            AState::Ghost,
             u_item.get_state(),
             eupdates,
         );
@@ -43,7 +43,7 @@ impl SolarSystem {
             item_key,
             u_item,
             u_item.get_state(),
-            ad::AState::Ghost,
+            AState::Ghost,
             reuse_eupdates,
         );
         if u_item.is_loaded() {

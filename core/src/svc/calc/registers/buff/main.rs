@@ -26,12 +26,12 @@ impl BuffRegister {
     }
     pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.add_entry(item_key, effect.get_key());
+            self.effect_keys.add_entry(item_key, effect.key);
         }
     }
     pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.remove_entry(item_key, &effect.get_key());
+            self.effect_keys.remove_entry(item_key, &effect.key);
         }
     }
     // Modifier methods
@@ -50,7 +50,7 @@ impl BuffRegister {
 }
 
 fn uses_default_attrs(effect: &REffect) -> bool {
-    match &effect.get_buff_info() {
+    match &effect.buff_info {
         Some(buff_info) => buff_info.attr_merge.is_some(),
         _ => false,
     }

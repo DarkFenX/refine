@@ -38,6 +38,9 @@ where
     {
         self.data.get(key)
     }
+    pub(crate) fn get_opt(&self, key: Option<K>) -> Option<&V> {
+        key.and_then(|key| self.data.get(&key))
+    }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = (&K, &V)> {
         self.data.iter()
     }

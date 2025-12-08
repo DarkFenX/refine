@@ -1,4 +1,5 @@
 pub use abil_found::AbilityFoundError;
+pub use attr_found::AttrFoundError;
 pub use breacher_dmg::BreacherDmgError;
 pub use dmg::DmgError;
 pub use fit_dps_profile_found::FitDpsProfileFoundError;
@@ -25,6 +26,7 @@ pub use skill_eve_type::SkillEveTypeError;
 pub use supported_stat::SupportedStatError;
 
 mod abil_found;
+mod attr_found;
 mod breacher_dmg;
 mod dmg;
 mod fit_dps_profile_found;

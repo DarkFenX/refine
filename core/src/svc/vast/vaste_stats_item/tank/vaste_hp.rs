@@ -1,6 +1,5 @@
 use super::super::checks::check_item_drone_fighter_ship;
 use crate::{
-    ac,
     def::{AttrVal, OF},
     nd::{NLocalRepGetter, NOutgoingRepGetter},
     rd::REffectKey,
@@ -39,14 +38,17 @@ impl Vast {
         item_key: UItemKey,
         u_item: &UItem,
     ) -> StatTank<StatLayerHp> {
+        let attr_consts = ctx.ac();
         // Buffer - if item is not loaded, fetching those will fail
         let shield_buffer = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::SHIELD_CAPACITY)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.shield_capacity, OF(0.0))
             .unwrap();
         let armor_buffer = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::ARMOR_HP)
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.armor_hp, OF(0.0))
             .unwrap();
-        let hull_buffer = calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::HP).unwrap();
+        let hull_buffer = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.hp, OF(0.0))
+            .unwrap();
         // Local ancillary repairs
         let (local_asb, local_aar) = match u_item {
             UItem::Ship(u_ship) => {

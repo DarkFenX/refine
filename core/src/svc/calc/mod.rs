@@ -33,9 +33,7 @@
 use accum::{AttrValInfo, ModAccumFast, ModAccumInfo};
 pub(crate) use calc::Calc;
 pub use misc::CalcAttrVal;
-use misc::{
-    FTR_COUNT_ATTR, ItemAttrPostprocs, LocationKind, Modification, ModificationKey, SEC_STATUS_ATTR, SKILL_LVL_ATTR,
-};
+use misc::{ItemAttrPostprocs, LocationKind, Modification, ModificationKey};
 pub use mod_info::{AffectorInfo, ModificationInfo};
 pub(crate) use modifier::{
     AffecteeFilter, AffectorValue, AggrKey, AggrMode, CustomAffectorValue, CustomAffectorValueKind, ItemAddReviser,

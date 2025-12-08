@@ -1,5 +1,5 @@
 use crate::{
-    err::basic::{ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
+    err::basic::{AttrFoundError, ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
     svc::err::StatItemCheckError,
     ud::UItems,
 };
@@ -8,6 +8,8 @@ use crate::{
 pub enum GetItemAttrError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
+    #[error("{0}")]
+    AttrNotFound(#[from] AttrFoundError),
 }
 
 #[derive(thiserror::Error, Debug)]

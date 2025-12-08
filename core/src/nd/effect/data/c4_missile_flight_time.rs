@@ -7,10 +7,11 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     ac,
-    ad::{AAttrId, AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    ad::{AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
     def::{AttrVal, OF},
     misc::EffectSpec,
     nd::{NEffect, NEffectHc, effect::data::shared::util::get_item_fit_ship_key},
+    rd::RAttrConsts,
     svc::{
         SvcCtx,
         calc::{
@@ -23,9 +24,6 @@ use crate::{
 };
 
 const A_EFFECT_ID: AEffectId = ac::effects::MISSILE_FLIGHT_TIME;
-const SHIP_RADIUS: AAttrId = ac::attrs::RADIUS;
-const MISSILE_VELOCITY: AAttrId = ac::attrs::MAX_VELOCITY;
-const MISSILE_FLIGHT_TIME: AAttrId = ac::attrs::EXPLOSION_DELAY;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -66,35 +64,38 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
 }
 
 // Calc customizations
-fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, espec: EffectSpec) {
-    let rmod = RawModifier {
-        kind: ModifierKind::Local,
-        affector_espec: espec,
-        affector_value: AffectorValue::Custom(CustomAffectorValue {
-            kind: CustomAffectorValueKind::MissileFlightTime,
-            affector_attr_id: Some(MISSILE_VELOCITY),
-            affector_info_getter: get_affector_info,
-            mod_val_getter: get_mod_val,
-            item_add_reviser: Some(revise_on_item_add_removal),
-            item_remove_reviser: Some(revise_on_item_add_removal),
-        }),
-        op: Op::ExtraAdd,
-        aggr_mode: AggrMode::Stack,
-        affectee_filter: AffecteeFilter::Direct(Location::Item),
-        affectee_attr_id: MISSILE_FLIGHT_TIME,
-        ..
-    };
-    rmods.push(rmod);
+fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrConsts, espec: EffectSpec) {
+    if let Some(max_velocity_key) = attr_consts.max_velocity
+        && let Some(explosion_delay_key) = attr_consts.explosion_delay
+        && attr_consts.radius.is_some()
+    {
+        let rmod = RawModifier {
+            kind: ModifierKind::Local,
+            affector_espec: espec,
+            affector_value: AffectorValue::Custom(CustomAffectorValue {
+                kind: CustomAffectorValueKind::MissileFlightTime,
+                affector_attr_key: Some(max_velocity_key),
+                affector_info_getter: get_affector_info,
+                mod_val_getter: get_mod_val,
+                item_add_reviser: Some(revise_on_item_add_removal),
+                item_remove_reviser: Some(revise_on_item_add_removal),
+            }),
+            op: Op::ExtraAdd,
+            aggr_mode: AggrMode::Stack,
+            affectee_filter: AffecteeFilter::Direct(Location::Item),
+            affectee_attr_key: explosion_delay_key,
+            ..
+        };
+        rmods.push(rmod);
+    }
 }
 
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     let ship_key = get_item_fit_ship_key(ctx, espec.item_key)?;
-    let missile_velocity = calc
-        .get_item_attr_val_full(ctx, espec.item_key, &MISSILE_VELOCITY)
-        .ok()?;
+    let missile_velocity = calc.get_item_oattr_odogma(ctx, espec.item_key, ctx.ac().max_velocity)?;
     let ship_radius = ctx.u_data.items.get(ship_key).get_direct_radius();
-    // Missile flight time is stored in milliseconds, thus have to multiply by 1000
-    let val = ship_radius / missile_velocity.dogma * OF(1000.0);
+    // Missile flight time is stored in milliseconds
+    let val = ship_radius / missile_velocity * OF(1000.0);
     if val.is_infinite() {
         return None;
     }
@@ -106,23 +107,24 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
 }
 
 fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
-    match get_item_fit_ship_key(ctx, item_key) {
-        Some(ship_key) => {
-            smallvec![
-                AffectorInfo {
-                    item_id: ctx.u_data.items.id_by_key(item_key),
-                    attr_id: Some(MISSILE_VELOCITY),
-                },
-                // There is no dependency on modified ship radius, but we add it for informational
-                // purposes nevertheless
-                AffectorInfo {
-                    item_id: ctx.u_data.items.id_by_key(ship_key),
-                    attr_id: Some(SHIP_RADIUS),
-                }
-            ]
-        }
-        None => SmallVec::new(),
-    }
+    if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
+        && let Some(max_velocity_key) = ctx.ac().max_velocity
+        && let Some(radius_key) = ctx.ac().radius
+    {
+        return smallvec![
+            AffectorInfo {
+                item_id: ctx.u_data.items.id_by_key(item_key),
+                attr_id: Some(ctx.u_data.src.get_attr(max_velocity_key).id),
+            },
+            // There is no dependency on modified ship radius, but we add it for informational
+            // purposes nevertheless
+            AffectorInfo {
+                item_id: ctx.u_data.items.id_by_key(ship_key),
+                attr_id: Some(ctx.u_data.src.get_attr(radius_key).id),
+            }
+        ];
+    };
+    SmallVec::new()
 }
 
 fn revise_on_item_add_removal(

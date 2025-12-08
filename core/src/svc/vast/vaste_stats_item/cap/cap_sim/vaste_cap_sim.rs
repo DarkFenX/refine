@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     def::OF,
     svc::{
         SvcCtx,
@@ -34,7 +33,7 @@ impl Vast {
         check_item_ship(item_key, item)?;
         let max_cap = Vast::get_stat_item_cap_amount(ctx, calc, item_key).unwrap();
         let recharge_time = calc
-            .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().recharge_rate, OF(0.0))
             .unwrap()
             / OF(1000.0);
         let start_cap = max_cap * cap_perc.get_inner();

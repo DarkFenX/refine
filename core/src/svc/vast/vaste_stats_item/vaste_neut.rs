@@ -53,7 +53,7 @@ impl Vast {
                 continue;
             }
             let r_effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(neut_getter) = r_effect.get_neut_opc_getter()
+            if let Some(neut_getter) = r_effect.neut_opc_getter
                 && let Some(neut_amount) = neut_getter(ctx, calc, item_key, r_effect, projectee_key)
             {
                 item_nps += neut_amount.get_total() / effect_cycle.get_average_cycle_time();

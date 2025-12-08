@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AAttrId,
     sol::{
         SolarSystem,
         api::{FullMAttr, FullMAttrMut},
@@ -30,20 +30,21 @@ impl<'a> FullMAttrMut<'a> {
     }
 }
 
-fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> Option<UnitInterval> {
+fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> Option<UnitInterval> {
     let u_item = sol.u_data.items.get(item_key);
-    if let Some(roll) = u_item.get_mutation_data().unwrap().get_attr_rolls().get(a_attr_id) {
-        return Some(*roll);
+    if let Some(&roll) = u_item.get_mutation_data().unwrap().get_attr_rolls().get(a_attr_id) {
+        return Some(roll);
     }
     // If roll data was not available, calculate it using unmutated attribute value
+    let attr_key = sol.u_data.src.get_attr_key_by_id(a_attr_id).unwrap();
     let a_mutation_range = u_item
         .get_mutation_data()
         .unwrap()
         .get_cache()
         .unwrap()
         .get_r_mutator()
-        .get_attr_mods()
-        .get(a_attr_id)
+        .attr_mods
+        .get(&attr_key)
         .unwrap();
     // In absence of mutation, for purposes of calculating roll, it is fine to use base attribute
     // value in place of unmutated attribute value:
@@ -52,7 +53,7 @@ fn get_roll(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &ad::AAttrId) -> O
     // - if value was shifted into any direction (e.g. unmutated 10 with range [1.2, 1.4] exposed as
     //   base value 12), it will still lie on appropriate edge of shifted roll (in this case it will be
     //   0.0 relatively [14.4, 16.8] range - range is wrong, result is right).
-    let value = u_item.get_attr(a_attr_id).unwrap();
+    let value = u_item.get_attr(attr_key).unwrap();
     let min_value = value * a_mutation_range.min_mult;
     let max_value = value * a_mutation_range.max_mult;
     if min_value == max_value {

@@ -33,20 +33,27 @@ fn internal_get_ecm_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<Ecm> {
+    let attr_consts = ctx.ac();
     let duration_s =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_AOE_DURATION)? / OF(1000.0);
-    let mut str_radar = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_RADAR_STRENGTH_BONUS)?;
-    let mut str_magnet =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_BONUS)?;
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.doomsday_aoe_duration, OF(0.0))? / OF(1000.0);
+    let mut str_radar =
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
+    let mut str_magnet = calc.get_item_oattr_afb_oextra(
+        ctx,
+        projector_key,
+        attr_consts.scan_magnetometric_strength_bonus,
+        OF(0.0),
+    )?;
     let mut str_grav =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_BONUS)?;
-    let mut str_ladar = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::SCAN_LADAR_STRENGTH_BONUS)?;
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
+    let mut str_ladar =
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
     if let Some(projectee_key) = projectee_key {
         let mut mult = OF(1.0);
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         mult *= get_aoe_burst_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);

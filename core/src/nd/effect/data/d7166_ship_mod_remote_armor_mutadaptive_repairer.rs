@@ -36,17 +36,17 @@ fn internal_get_resolved_spool(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    r_effect: &REffect,
+    effect: &REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
     get_resolved_spool(
         ctx,
         calc,
         item_key,
-        r_effect,
+        effect,
         spool,
-        &ac::attrs::REP_MULT_BONUS_PER_CYCLE,
-        &ac::attrs::REP_MULT_BONUS_MAX,
+        ctx.ac().rep_mult_bonus_per_cycle,
+        ctx.ac().rep_mult_bonus_max,
     )
 }
 

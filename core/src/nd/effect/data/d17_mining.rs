@@ -33,7 +33,7 @@ fn internal_get_mining_ore_opc(
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_key);
-    if item.get_axt()?.is_ice_harvester {
+    if item.is_ice_harvester() {
         return None;
     }
     get_mining_opc(ctx, calc, item_key, effect)
@@ -46,7 +46,7 @@ fn internal_get_mining_ice_opc(
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_key);
-    if !item.get_axt()?.is_ice_harvester {
+    if !item.is_ice_harvester() {
         return None;
     }
     get_mining_opc(ctx, calc, item_key, effect)

@@ -142,12 +142,12 @@ impl Vast {
                 continue;
             }
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
+            if let Some(dmg_getter) = effect.normal_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
                 *dps_normal += dmg_opc.get_total() / cycle.get_average_cycle_time();
             }
-            if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter()
+            if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
             {
                 breacher_accum.add(dmg_opc, cycle);
@@ -273,12 +273,12 @@ impl Vast {
         };
         for (effect_key, _cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(dmg_getter) = effect.get_normal_dmg_opc_getter()
+            if let Some(dmg_getter) = effect.normal_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
                 *volley_normal += dmg_opc.get_amount();
             }
-            if let Some(dmg_getter) = effect.get_breacher_dmg_opc_getter()
+            if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
             {
                 volley_breacher.stack_instance_output(dmg_opc);

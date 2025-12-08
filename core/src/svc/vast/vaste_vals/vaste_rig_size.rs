@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    ac, ad,
+    ad::AAttrVal,
     def::{AttrVal, ItemId},
     svc::{SvcCtx, vast::VastFitData},
     ud::{UItemKey, UShip},
@@ -53,6 +53,6 @@ impl VastFitData {
     }
 }
 
-fn get_allowed_size(ship: Option<&UShip>) -> Option<ad::AAttrVal> {
-    ship?.get_attrs()?.get(&ac::attrs::RIG_SIZE).copied()
+fn get_allowed_size(ship: Option<&UShip>) -> Option<AAttrVal> {
+    ship?.get_axt()?.rig_size
 }

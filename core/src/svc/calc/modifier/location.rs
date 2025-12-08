@@ -1,4 +1,4 @@
-use crate::ad::{AEffectLocation, AItemListId};
+use crate::{ad::AEffectLocation, rd::RItemListKey};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum Location {
@@ -8,7 +8,7 @@ pub(crate) enum Location {
     Item,
     Other,
     Target,
-    ItemList(AItemListId),
+    ItemList(RItemListKey),
 }
 impl From<&AEffectLocation> for Location {
     fn from(effect_loc: &AEffectLocation) -> Self {

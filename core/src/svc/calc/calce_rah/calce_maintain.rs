@@ -1,10 +1,7 @@
 use itertools::Itertools;
 
-use super::shared::{
-    ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID, HULL_HP_ATTR_ID,
-    RAH_EFFECT_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID,
-};
 use crate::{
+    ac,
     misc::{AttrSpec, DmgKinds},
     rd::RcEffect,
     svc::{
@@ -12,7 +9,6 @@ use crate::{
         calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
     },
     ud::{UFitKey, UItem, UItemKey},
-    util::GetId,
 };
 
 impl Calc {
@@ -43,7 +39,8 @@ impl Calc {
             return;
         }
         if let UItem::Module(module) = item
-            && effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
+            && let Some(rah_effect_key) = ctx.ec().adaptive_armor_hardener
+            && effects.iter().any(|v| v.key == rah_effect_key)
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
@@ -52,35 +49,44 @@ impl Calc {
             self.rah.resonances.insert(item_key, None);
             self.rah.by_fit.add_entry(fit_key, item_key);
             // Add postprocessors
+            let attr_consts = ctx.ac();
             let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
-            item_attr_data.postprocs.insert(
-                ARMOR_EM_ATTR_ID,
-                ItemAttrPostprocs {
-                    fast: rah_em_resonance_postproc_fast,
-                    info: rah_em_resonance_postproc_info,
-                },
-            );
-            item_attr_data.postprocs.insert(
-                ARMOR_THERM_ATTR_ID,
-                ItemAttrPostprocs {
-                    fast: rah_therm_resonance_postproc_fast,
-                    info: rah_therm_resonance_postproc_info,
-                },
-            );
-            item_attr_data.postprocs.insert(
-                ARMOR_KIN_ATTR_ID,
-                ItemAttrPostprocs {
-                    fast: rah_kin_resonance_postproc_fast,
-                    info: rah_kin_resonance_postproc_info,
-                },
-            );
-            item_attr_data.postprocs.insert(
-                ARMOR_EXPL_ATTR_ID,
-                ItemAttrPostprocs {
-                    fast: rah_expl_resonance_postproc_fast,
-                    info: rah_expl_resonance_postproc_info,
-                },
-            );
+            if let Some(em_attr_key) = attr_consts.armor_em_dmg_resonance {
+                item_attr_data.postprocs.insert(
+                    em_attr_key,
+                    ItemAttrPostprocs {
+                        fast: rah_em_resonance_postproc_fast,
+                        info: rah_em_resonance_postproc_info,
+                    },
+                );
+            }
+            if let Some(therm_attr_key) = attr_consts.armor_therm_dmg_resonance {
+                item_attr_data.postprocs.insert(
+                    therm_attr_key,
+                    ItemAttrPostprocs {
+                        fast: rah_therm_resonance_postproc_fast,
+                        info: rah_therm_resonance_postproc_info,
+                    },
+                );
+            }
+            if let Some(kin_attr_key) = attr_consts.armor_kin_dmg_resonance {
+                item_attr_data.postprocs.insert(
+                    kin_attr_key,
+                    ItemAttrPostprocs {
+                        fast: rah_kin_resonance_postproc_fast,
+                        info: rah_kin_resonance_postproc_info,
+                    },
+                );
+            }
+            if let Some(expl_attr_key) = attr_consts.armor_expl_dmg_resonance {
+                item_attr_data.postprocs.insert(
+                    expl_attr_key,
+                    ItemAttrPostprocs {
+                        fast: rah_expl_resonance_postproc_fast,
+                        info: rah_expl_resonance_postproc_info,
+                    },
+                );
+            }
         }
     }
     pub(in crate::svc::calc) fn rah_effects_stopped(
@@ -94,15 +100,25 @@ impl Calc {
             return;
         }
         if let UItem::Module(module) = item
-            && effects.iter().any(|v| v.get_id() == RAH_EFFECT_ID)
+            && let Some(rah_effect_key) = ctx.ec().adaptive_armor_hardener
+            && effects.iter().any(|v| v.key == rah_effect_key)
         {
             let fit_key = module.get_fit_key();
             // Remove postprocessors
+            let attr_consts = ctx.ac();
             let item_attr_data = self.attrs.get_item_attr_data_mut(item_key).unwrap();
-            item_attr_data.postprocs.remove(&ARMOR_EM_ATTR_ID);
-            item_attr_data.postprocs.remove(&ARMOR_THERM_ATTR_ID);
-            item_attr_data.postprocs.remove(&ARMOR_KIN_ATTR_ID);
-            item_attr_data.postprocs.remove(&ARMOR_EXPL_ATTR_ID);
+            if let Some(em_attr_key) = attr_consts.armor_em_dmg_resonance {
+                item_attr_data.postprocs.remove(&em_attr_key);
+            }
+            if let Some(therm_attr_key) = attr_consts.armor_therm_dmg_resonance {
+                item_attr_data.postprocs.remove(&therm_attr_key);
+            }
+            if let Some(kin_attr_key) = attr_consts.armor_kin_dmg_resonance {
+                item_attr_data.postprocs.remove(&kin_attr_key);
+            }
+            if let Some(expl_attr_key) = attr_consts.armor_expl_dmg_resonance {
+                item_attr_data.postprocs.remove(&expl_attr_key);
+            }
             // Remove sim data for RAH being stopped
             self.rah.resonances.remove(item_key);
             self.rah.by_fit.remove_entry(fit_key, item_key);
@@ -119,21 +135,23 @@ impl Calc {
         if self.rah.resonances.is_empty() {
             return;
         }
-        match aspec.attr_id {
+        let attr = ctx.u_data.src.get_attr(aspec.attr_key);
+        match attr.id {
             // Ship armor resonances and RAH resonances
-            ARMOR_EM_ATTR_ID | ARMOR_THERM_ATTR_ID | ARMOR_KIN_ATTR_ID | ARMOR_EXPL_ATTR_ID => {
-                match ctx.u_data.items.get(aspec.item_key) {
-                    UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_key()),
-                    UItem::Module(module) => {
-                        if self.rah.resonances.contains_key(&aspec.item_key) {
-                            self.clear_fit_rah_results(ctx, module.get_fit_key());
-                        }
+            ac::attrs::ARMOR_EM_DMG_RESONANCE
+            | ac::attrs::ARMOR_THERM_DMG_RESONANCE
+            | ac::attrs::ARMOR_KIN_DMG_RESONANCE
+            | ac::attrs::ARMOR_EXPL_DMG_RESONANCE => match ctx.u_data.items.get(aspec.item_key) {
+                UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_key()),
+                UItem::Module(module) => {
+                    if self.rah.resonances.contains_key(&aspec.item_key) {
+                        self.clear_fit_rah_results(ctx, module.get_fit_key());
                     }
-                    _ => (),
                 }
-            }
+                _ => (),
+            },
             // RAH shift amount
-            RAH_SHIFT_ATTR_ID => {
+            ac::attrs::RESIST_SHIFT_AMOUNT => {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -142,7 +160,7 @@ impl Calc {
                 }
             }
             // RAH cycle time
-            attr_id if Some(attr_id) == ctx.u_data.src.get_rah_duration_attr_id() => {
+            _ if Some(aspec.attr_key) == ctx.u_data.src.get_rah_duration_attr_key() => {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -155,7 +173,7 @@ impl Calc {
                 }
             }
             // Ship HP - need to clear results since breacher DPS depends on those
-            SHIELD_HP_ATTR_ID | ARMOR_HP_ATTR_ID | HULL_HP_ATTR_ID => {
+            ac::attrs::SHIELD_CAPACITY | ac::attrs::ARMOR_HP | ac::attrs::HP => {
                 if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_key) {
                     let fit_key = ship.get_fit_key();
                     if ctx.u_data.get_fit_key_rah_incoming_dps(fit_key).deals_breacher_dps() {
@@ -178,10 +196,11 @@ impl Calc {
     }
     fn clear_rah_result(&mut self, ctx: SvcCtx, item_key: UItemKey) {
         if self.rah.resonances.get_mut(&item_key).unwrap().take().is_some() {
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
+            let attr_consts = ctx.ac();
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_em_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_therm_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_kin_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_expl_dmg_resonance);
         }
     }
     fn get_rah_resonances(&mut self, ctx: SvcCtx, item_key: UItemKey) -> DmgKinds<CalcAttrVal> {

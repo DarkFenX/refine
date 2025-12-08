@@ -97,7 +97,7 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &G
             None => (),
             Some(flags) => match flags.len() {
                 1 => {
-                    a_effect.hisec = Some(!*flags.iter().next().unwrap());
+                    a_effect.is_usable_in_hisec = Some(!*flags.iter().next().unwrap());
                 }
                 _ => {
                     let msg = format!(
@@ -114,7 +114,7 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &G
             None => (),
             Some(flags) => match flags.len() {
                 1 => {
-                    a_effect.lowsec = Some(!*flags.iter().next().unwrap());
+                    a_effect.is_usable_in_lowsec = Some(!*flags.iter().next().unwrap());
                 }
                 _ => {
                     let msg = format!(

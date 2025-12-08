@@ -1,6 +1,5 @@
 use super::super::checks::check_item_key_ship;
 use crate::{
-    ac,
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
     ud::UItemKey,
@@ -20,7 +19,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> AttrVal {
-        calc.get_item_attr_val_extra(ctx, item_key, &ac::attrs::CAPACITOR_CAPACITY)
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().capacitor_capacity, OF(0.0))
             .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_neut_resist(
@@ -34,7 +33,7 @@ impl Vast {
     fn internal_get_stat_item_neut_resist_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
         OF(1.0)
             - calc
-                .get_item_attr_val_extra(ctx, item_key, &ac::attrs::ENERGY_WARFARE_RESIST)
+                .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().energy_warfare_resist, OF(0.0))
                 .unwrap()
     }
 }

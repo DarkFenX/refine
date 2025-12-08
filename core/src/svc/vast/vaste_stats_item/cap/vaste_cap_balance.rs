@@ -5,7 +5,6 @@ use super::{
     shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
 };
 use crate::{
-    ac,
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
@@ -106,7 +105,7 @@ impl Vast {
 fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: UnitInterval) -> AttrVal {
     let max_amount = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
     let cap_regen_time = calc
-        .get_item_attr_val_extra(ctx, item_key, &ac::attrs::RECHARGE_RATE)
+        .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().recharge_rate, OF(0.0))
         .unwrap()
         / OF(1000.0);
     calc_regen(max_amount, cap_regen_time, cap_perc.get_inner())
@@ -152,8 +151,8 @@ fn get_cap_consumed(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (&effect_key, attr_id) in item_data.iter() {
-            let cap_consumed = match calc.get_item_attr_val_extra(ctx, item_key, attr_id) {
+        for (&effect_key, &attr_key) in item_data.iter() {
+            let cap_consumed = match calc.get_item_attr_rextra(ctx, item_key, attr_key) {
                 Ok(cap_consumed) => cap_consumed,
                 Err(_) => continue,
             };

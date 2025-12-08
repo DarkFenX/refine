@@ -19,9 +19,7 @@ impl<'a> FullSideEffectMut<'a> {
     ///
     /// Since operation mutates solar system state, side effect has to be mutable as well.
     pub fn get_chance(&mut self) -> AttrVal {
-        self.sol
-            .internal_get_item_attr(self.key, &self.chance_attr_id)
-            .unwrap()
-            .extra
+        let attr_key = self.sol.u_data.src.get_attr_key_by_id(&self.chance_attr_id).unwrap();
+        self.sol.internal_get_item_attr(self.key, attr_key).unwrap().extra
     }
 }

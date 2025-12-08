@@ -1,7 +1,6 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    ac,
     def::{AttrVal, Count, OF, SERVER_TICK_HZ, SERVER_TICK_S},
     svc::{SvcCtx, calc::Calc, cycle::Cycle, output::OutputDmgBreacher, vast::StatDmgBreacher},
     ud::UItemKey,
@@ -312,15 +311,10 @@ pub(in crate::svc::vast) fn apply_breacher(
     breacher_raw: StatDmgBreacher,
     projectee_key: UItemKey,
 ) -> AttrVal {
-    let hp_shield = calc
-        .get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::SHIELD_CAPACITY)
-        .unwrap_or(OF(0.0));
-    let hp_armor = calc
-        .get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::ARMOR_HP)
-        .unwrap_or(OF(0.0));
-    let hp_hull = calc
-        .get_item_attr_val_extra(ctx, projectee_key, &ac::attrs::HP)
-        .unwrap_or(OF(0.0));
+    let attr_consts = ctx.ac();
+    let hp_shield = calc.get_item_oattr_ffb_extra(ctx, projectee_key, attr_consts.shield_capacity, OF(0.0));
+    let hp_armor = calc.get_item_oattr_ffb_extra(ctx, projectee_key, attr_consts.armor_hp, OF(0.0));
+    let hp_hull = calc.get_item_oattr_ffb_extra(ctx, projectee_key, attr_consts.hp, OF(0.0));
     breacher_raw
         .absolute_max
         .min(breacher_raw.relative_max * (hp_shield + hp_armor + hp_hull))

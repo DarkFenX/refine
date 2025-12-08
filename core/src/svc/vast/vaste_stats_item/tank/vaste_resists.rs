@@ -1,8 +1,8 @@
 use super::super::checks::check_item_key_drone_fighter_ship;
 use crate::{
-    ac, ad,
     def::{AttrVal, OF},
     misc::DmgKinds,
+    rd::RAttrKey,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -37,10 +37,10 @@ impl Vast {
             ctx,
             calc,
             item_key,
-            &ac::attrs::SHIELD_EM_DMG_RESONANCE,
-            &ac::attrs::SHIELD_THERM_DMG_RESONANCE,
-            &ac::attrs::SHIELD_KIN_DMG_RESONANCE,
-            &ac::attrs::SHIELD_EXPL_DMG_RESONANCE,
+            ctx.ac().shield_em_dmg_resonance,
+            ctx.ac().shield_therm_dmg_resonance,
+            ctx.ac().shield_kin_dmg_resonance,
+            ctx.ac().shield_expl_dmg_resonance,
         )
     }
     fn get_item_armor_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> DmgKinds<AttrVal> {
@@ -48,10 +48,10 @@ impl Vast {
             ctx,
             calc,
             item_key,
-            &ac::attrs::ARMOR_EM_DMG_RESONANCE,
-            &ac::attrs::ARMOR_THERM_DMG_RESONANCE,
-            &ac::attrs::ARMOR_KIN_DMG_RESONANCE,
-            &ac::attrs::ARMOR_EXPL_DMG_RESONANCE,
+            ctx.ac().armor_em_dmg_resonance,
+            ctx.ac().armor_therm_dmg_resonance,
+            ctx.ac().armor_kin_dmg_resonance,
+            ctx.ac().armor_expl_dmg_resonance,
         )
     }
     fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> DmgKinds<AttrVal> {
@@ -59,10 +59,10 @@ impl Vast {
             ctx,
             calc,
             item_key,
-            &ac::attrs::EM_DMG_RESONANCE,
-            &ac::attrs::THERM_DMG_RESONANCE,
-            &ac::attrs::KIN_DMG_RESONANCE,
-            &ac::attrs::EXPL_DMG_RESONANCE,
+            ctx.ac().em_dmg_resonance,
+            ctx.ac().therm_dmg_resonance,
+            ctx.ac().kin_dmg_resonance,
+            ctx.ac().expl_dmg_resonance,
         )
     }
 }
@@ -71,15 +71,27 @@ fn get_item_layer_resists(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    em_a_attr_id: &ad::AAttrId,
-    therm_a_attr_id: &ad::AAttrId,
-    kin_a_attr_id: &ad::AAttrId,
-    expl_a_attr_id: &ad::AAttrId,
+    em_attr_key: Option<RAttrKey>,
+    therm_attr_key: Option<RAttrKey>,
+    kin_attr_key: Option<RAttrKey>,
+    expl_attr_key: Option<RAttrKey>,
 ) -> DmgKinds<AttrVal> {
     DmgKinds {
-        em: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, em_a_attr_id).unwrap(),
-        thermal: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, therm_a_attr_id).unwrap(),
-        kinetic: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, kin_a_attr_id).unwrap(),
-        explosive: OF(1.0) - calc.get_item_attr_val_extra(ctx, item_key, expl_a_attr_id).unwrap(),
+        em: OF(1.0)
+            - calc
+                .get_item_oattr_afb_oextra(ctx, item_key, em_attr_key, OF(1.0))
+                .unwrap(),
+        thermal: OF(1.0)
+            - calc
+                .get_item_oattr_afb_oextra(ctx, item_key, therm_attr_key, OF(1.0))
+                .unwrap(),
+        kinetic: OF(1.0)
+            - calc
+                .get_item_oattr_afb_oextra(ctx, item_key, kin_attr_key, OF(1.0))
+                .unwrap(),
+        explosive: OF(1.0)
+            - calc
+                .get_item_oattr_afb_oextra(ctx, item_key, expl_attr_key, OF(1.0))
+                .unwrap(),
     }
 }

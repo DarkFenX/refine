@@ -113,17 +113,17 @@ fn get_orr_effect(
 }
 
 fn get_getter_shield(effect: &REffect) -> Option<NOutgoingRepGetter> {
-    effect.get_outgoing_shield_rep_opc_getter()
+    effect.outgoing_shield_rep_opc_getter
 }
 
 fn get_getter_armor(effect: &REffect) -> Option<NOutgoingRepGetter> {
-    effect.get_outgoing_armor_rep_opc_getter()
+    effect.outgoing_armor_rep_opc_getter
 }
 
 fn get_getter_hull(effect: &REffect) -> Option<NOutgoingRepGetter> {
-    effect.get_outgoing_hull_rep_opc_getter()
+    effect.outgoing_hull_rep_opc_getter
 }
 
 fn get_getter_cap(effect_id: &REffect) -> Option<NOutgoingRepGetter> {
-    effect_id.get_outgoing_cap_rep_opc_getter()
+    effect_id.outgoing_cap_rep_opc_getter
 }

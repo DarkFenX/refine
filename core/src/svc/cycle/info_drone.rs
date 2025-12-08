@@ -26,7 +26,7 @@ pub(super) fn get_drone_cycle_info(
     };
     for effect_key in effect_keys {
         let effect = ctx.u_data.src.get_effect(effect_key);
-        if !effect.is_active_with_duration() {
+        if !effect.is_active_with_duration {
             continue;
         }
         let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {

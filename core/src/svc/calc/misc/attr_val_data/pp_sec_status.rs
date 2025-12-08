@@ -1,14 +1,10 @@
 use crate::{
-    ac,
-    ad::AAttrId,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVal},
     },
     ud::UItemKey,
 };
-
-pub(in crate::svc::calc) const SEC_STATUS_ATTR: AAttrId = ac::attrs::PILOT_SECURITY_STATUS;
 
 pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,

@@ -8,16 +8,13 @@ use super::{
     rah_data_sim::RahDataSim,
     rah_history_entry::RahSimHistoryEntry,
     rah_info::RahInfo,
-    shared::{
-        ARMOR_EM_ATTR_ID, ARMOR_EXPL_ATTR_ID, ARMOR_HP_ATTR_ID, ARMOR_KIN_ATTR_ID, ARMOR_THERM_ATTR_ID,
-        HULL_HP_ATTR_ID, RAH_SHIFT_ATTR_ID, SHIELD_HP_ATTR_ID, TickCount, rah_round,
-    },
+    shared::{TickCount, rah_round},
     ship_stats::RahShipStats,
     tick_iter::RahSimTickIter,
 };
 use crate::{
     def::{AttrVal, OF},
-    misc::{AttrSpec, DmgKinds, EffectSpec},
+    misc::{DmgKinds, EffectSpec},
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVal},
@@ -25,6 +22,12 @@ use crate::{
     },
     ud::{UFitKey, UItemKey},
     util::{RMap, RSet},
+};
+
+const FALLBACK_RESONANCE: CalcAttrVal = CalcAttrVal {
+    base: OF(1.0),
+    dogma: OF(1.0),
+    extra: OF(1.0),
 };
 
 impl Calc {
@@ -152,40 +155,20 @@ impl Calc {
         self.set_partial_fit_rahs_result(ctx, avg_resos, &sim_datas);
     }
     fn get_ship_stats(&mut self, ctx: SvcCtx, ship_key: UItemKey) -> Option<RahShipStats> {
-        let em = self
-            .get_item_attr_val_full(ctx, ship_key, &ARMOR_EM_ATTR_ID)
-            .ok()?
-            .dogma;
-        let thermal = self
-            .get_item_attr_val_full(ctx, ship_key, &ARMOR_THERM_ATTR_ID)
-            .ok()?
-            .dogma;
-        let kinetic = self
-            .get_item_attr_val_full(ctx, ship_key, &ARMOR_KIN_ATTR_ID)
-            .ok()?
-            .dogma;
-        let explosive = self
-            .get_item_attr_val_full(ctx, ship_key, &ARMOR_EXPL_ATTR_ID)
-            .ok()?
-            .dogma;
-        let shield_hp = match self.get_item_attr_val_full(ctx, ship_key, &SHIELD_HP_ATTR_ID) {
-            Ok(shield_hp) => shield_hp.dogma,
-            Err(_) => OF(0.0),
-        };
-        let armor_hp = match self.get_item_attr_val_full(ctx, ship_key, &ARMOR_HP_ATTR_ID) {
-            Ok(armor_hp) => armor_hp.dogma,
-            Err(_) => OF(0.0),
-        };
-        let hull_hp = match self.get_item_attr_val_full(ctx, ship_key, &HULL_HP_ATTR_ID) {
-            Ok(hull_hp) => hull_hp.dogma,
-            Err(_) => OF(0.0),
-        };
+        let attr_consts = ctx.ac();
+        let em = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_em_dmg_resonance, OF(1.0))?;
+        let therm = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_therm_dmg_resonance, OF(1.0))?;
+        let kin = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_kin_dmg_resonance, OF(1.0))?;
+        let expl = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_expl_dmg_resonance, OF(1.0))?;
+        let shield_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.shield_capacity, OF(0.0))?;
+        let armor_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_hp, OF(0.0))?;
+        let hull_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.hp, OF(0.0))?;
         Some(RahShipStats {
             resos: DmgKinds {
                 em,
-                thermal,
-                kinetic,
-                explosive,
+                thermal: therm,
+                kinetic: kin,
+                explosive: expl,
             },
             total_hp: shield_hp + armor_hp + hull_hp,
         })
@@ -208,11 +191,24 @@ impl Calc {
         rah_datas
     }
     fn get_rah_sim_data(&mut self, ctx: SvcCtx, item_key: UItemKey) -> Option<RahDataSim> {
-        // Get resonances through postprocessing functions, since we already installed them for RAHs
-        let res_em = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EM_ATTR_ID).ok()?;
-        let res_therm = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_THERM_ATTR_ID).ok()?;
-        let res_kin = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_KIN_ATTR_ID).ok()?;
-        let res_expl = self.get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EXPL_ATTR_ID).ok()?;
+        // Get resonances bypassing postprocessing functions, since we already installed them
+        let attr_consts = ctx.ac();
+        let res_em =
+            self.get_item_oattr_afb_ofull_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance, FALLBACK_RESONANCE)?;
+        let res_therm = self.get_item_oattr_afb_ofull_nopp(
+            ctx,
+            item_key,
+            attr_consts.armor_therm_dmg_resonance,
+            FALLBACK_RESONANCE,
+        )?;
+        let res_kin =
+            self.get_item_oattr_afb_ofull_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance, FALLBACK_RESONANCE)?;
+        let res_expl = self.get_item_oattr_afb_ofull_nopp(
+            ctx,
+            item_key,
+            attr_consts.armor_expl_dmg_resonance,
+            FALLBACK_RESONANCE,
+        )?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
             && res_kin.dogma == OF(1.0)
@@ -223,19 +219,12 @@ impl Calc {
         // Other attributes using regular getters
         // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
         // resonances are in absolute form
-        let shift_amount = self
-            .get_item_attr_val_full(ctx, item_key, &RAH_SHIFT_ATTR_ID)
-            .ok()?
-            .dogma
-            / OF(100.0);
+        let shift_amount = self.get_item_oattr_odogma(ctx, item_key, attr_consts.resist_shift_amount)? / OF(100.0);
         if shift_amount <= OF(0.0) {
             return None;
         }
-        let cycle_s = eff_funcs::get_espec_duration_s(
-            ctx,
-            self,
-            EffectSpec::new(item_key, ctx.u_data.src.get_effect_consts().rah?),
-        )?;
+        let rah_espec = EffectSpec::new(item_key, ctx.ec().adaptive_armor_hardener?);
+        let cycle_s = eff_funcs::get_espec_duration_s(ctx, self, rah_espec)?;
         let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))
     }
@@ -246,39 +235,20 @@ impl Calc {
         }
     }
     fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_key: UItemKey, notify: bool) {
-        let em = self
-            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EM_ATTR_ID)
-            .unwrap_or(CalcAttrVal {
-                base: OF(1.0),
-                dogma: OF(1.0),
-                extra: OF(1.0),
-            });
-        let thermal = self
-            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_THERM_ATTR_ID)
-            .unwrap_or(CalcAttrVal {
-                base: OF(1.0),
-                dogma: OF(1.0),
-                extra: OF(1.0),
-            });
-        let kinetic = self
-            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_KIN_ATTR_ID)
-            .unwrap_or(CalcAttrVal {
-                base: OF(1.0),
-                dogma: OF(1.0),
-                extra: OF(1.0),
-            });
-        let explosive = self
-            .get_item_attr_val_no_pp(ctx, item_key, &ARMOR_EXPL_ATTR_ID)
-            .unwrap_or(CalcAttrVal {
-                base: OF(1.0),
-                dogma: OF(1.0),
-                extra: OF(1.0),
-            });
+        let attr_consts = ctx.ac();
+        let em =
+            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance, FALLBACK_RESONANCE);
+        let therm =
+            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_therm_dmg_resonance, FALLBACK_RESONANCE);
+        let kin =
+            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance, FALLBACK_RESONANCE);
+        let expl =
+            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_expl_dmg_resonance, FALLBACK_RESONANCE);
         let rah_resos = DmgKinds {
             em,
-            thermal,
-            kinetic,
-            explosive,
+            thermal: therm,
+            kinetic: kin,
+            explosive: expl,
         };
         self.set_rah_result(ctx, item_key, rah_resos, notify);
     }
@@ -286,10 +256,11 @@ impl Calc {
     fn set_rah_result(&mut self, ctx: SvcCtx, item_key: UItemKey, resos: DmgKinds<CalcAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(&item_key).unwrap().replace(resos);
         if notify {
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EM_ATTR_ID));
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_THERM_ATTR_ID));
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_KIN_ATTR_ID));
-            self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, ARMOR_EXPL_ATTR_ID));
+            let attr_consts = ctx.ac();
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_em_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_therm_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_kin_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_expl_dmg_resonance);
         }
     }
     fn set_partial_fit_rahs_result(

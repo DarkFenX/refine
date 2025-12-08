@@ -1,4 +1,5 @@
 /// Defines dogma location which is affected by a modification.
+#[derive(Copy, Clone)]
 pub enum AEffectLocation {
     /// Ship or items belonging to it.
     Ship,

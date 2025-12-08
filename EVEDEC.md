@@ -10,5 +10,5 @@ Some knowledge used to write the library came from EVE common sense, my work on 
   - library: attribute calculation functions
   - client: dogma/attributes/securityModifierAttribute.py
 - some of custom effects, which have no modifiers in static data (e.g. basic modifiers for propulsion modules):
-  - library: nd::eff::* definitions
+  - library: nd::effect::* definitions
   - client: eve/common/script/dogma/pythonEffects/*.py

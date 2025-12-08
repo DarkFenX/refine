@@ -1,7 +1,6 @@
 use crate::ad::AAttrId;
 
 // Specifies where effect should look for charge
-#[derive(Copy, Clone)]
 pub(crate) struct NEffectCharge {
     pub(crate) location: NEffectChargeLoc,
     // When true, controlled charge state is switched to active when effect is running
@@ -9,7 +8,6 @@ pub(crate) struct NEffectCharge {
 }
 
 // Specifies where effect should look for charge
-#[derive(Copy, Clone)]
 pub(crate) enum NEffectChargeLoc {
     // Effect uses charge loaded into item
     Loaded(NEffectChargeDepl),

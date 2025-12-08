@@ -2,8 +2,9 @@ use std::collections::HashMap;
 
 use super::shared::get_max_resource;
 use crate::{
-    ac, ad,
+    ad::AAttrVal,
     def::{AttrVal, ItemId, OF},
+    rd::RAttrKey,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemKey},
     util::{RSet, round},
@@ -33,8 +34,8 @@ impl VastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ac::attrs::CPU,
-            &ac::attrs::CPU_OUTPUT,
+            ctx.ac().cpu,
+            ctx.ac().cpu_output,
         )
     }
     pub(in crate::svc::vast) fn validate_powergrid_fast(
@@ -50,8 +51,8 @@ impl VastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ac::attrs::POWER,
-            &ac::attrs::POWER_OUTPUT,
+            ctx.ac().power,
+            ctx.ac().power_output,
         )
     }
     pub(in crate::svc::vast) fn validate_calibration_fast(
@@ -67,7 +68,7 @@ impl VastFitData {
             calc,
             fit,
             self.rigs_offline_calibration.iter(),
-            &ac::attrs::UPGRADE_CAPACITY,
+            ctx.ac().upgrade_capacity,
         )
     }
     pub(in crate::svc::vast) fn validate_drone_bay_volume_fast(
@@ -77,14 +78,7 @@ impl VastFitData {
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
-        validate_fast_other(
-            kfs,
-            ctx,
-            calc,
-            fit,
-            self.drones_volume.iter(),
-            &ac::attrs::DRONE_CAPACITY,
-        )
+        validate_fast_other(kfs, ctx, calc, fit, self.drones_volume.iter(), ctx.ac().drone_capacity)
     }
     pub(in crate::svc::vast) fn validate_drone_bandwidth_fast(
         &self,
@@ -99,7 +93,7 @@ impl VastFitData {
             calc,
             fit,
             self.drones_online_bandwidth.iter(),
-            &ac::attrs::DRONE_BANDWIDTH,
+            ctx.ac().drone_bandwidth,
         )
     }
     pub(in crate::svc::vast) fn validate_fighter_bay_volume_fast(
@@ -109,14 +103,7 @@ impl VastFitData {
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
-        validate_fast_other(
-            kfs,
-            ctx,
-            calc,
-            fit,
-            self.fighters_volume.iter(),
-            &ac::attrs::FTR_CAPACITY,
-        )
+        validate_fast_other(kfs, ctx, calc, fit, self.fighters_volume.iter(), ctx.ac().ftr_capacity)
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_cpu_verbose(
@@ -132,8 +119,8 @@ impl VastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ac::attrs::CPU,
-            &ac::attrs::CPU_OUTPUT,
+            ctx.ac().cpu,
+            ctx.ac().cpu_output,
         )
     }
     pub(in crate::svc::vast) fn validate_powergrid_verbose(
@@ -149,8 +136,8 @@ impl VastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ac::attrs::POWER,
-            &ac::attrs::POWER_OUTPUT,
+            ctx.ac().power,
+            ctx.ac().power_output,
         )
     }
     pub(in crate::svc::vast) fn validate_calibration_verbose(
@@ -166,7 +153,7 @@ impl VastFitData {
             calc,
             fit,
             self.rigs_offline_calibration.iter(),
-            &ac::attrs::UPGRADE_CAPACITY,
+            ctx.ac().upgrade_capacity,
         )
     }
     pub(in crate::svc::vast) fn validate_drone_bay_volume_verbose(
@@ -176,14 +163,7 @@ impl VastFitData {
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResFail> {
-        validate_verbose_other(
-            kfs,
-            ctx,
-            calc,
-            fit,
-            self.drones_volume.iter(),
-            &ac::attrs::DRONE_CAPACITY,
-        )
+        validate_verbose_other(kfs, ctx, calc, fit, self.drones_volume.iter(), ctx.ac().drone_capacity)
     }
     pub(in crate::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
@@ -198,7 +178,7 @@ impl VastFitData {
             calc,
             fit,
             self.drones_online_bandwidth.iter(),
-            &ac::attrs::DRONE_BANDWIDTH,
+            ctx.ac().drone_bandwidth,
         )
     }
     pub(in crate::svc::vast) fn validate_fighter_bay_volume_verbose(
@@ -208,14 +188,7 @@ impl VastFitData {
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResFail> {
-        validate_verbose_other(
-            kfs,
-            ctx,
-            calc,
-            fit,
-            self.fighters_volume.iter(),
-            &ac::attrs::FTR_CAPACITY,
-        )
+        validate_verbose_other(kfs, ctx, calc, fit, self.fighters_volume.iter(), ctx.ac().ftr_capacity)
     }
 }
 
@@ -225,14 +198,16 @@ fn validate_fast_fitting<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = &'a UItemKey>,
-    use_a_attr_id: &ad::AAttrId,
-    max_a_attr_id: &ad::AAttrId,
+    use_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrKey>,
 ) -> bool {
     let mut total_use = OF(0.0);
     let mut force_pass = true;
-    for item_key in items {
-        let item_use = calc.get_item_attr_val_extra_opt(ctx, *item_key, use_a_attr_id).unwrap();
-        if force_pass && item_use > OF(0.0) && !kfs.contains(item_key) {
+    for &item_key in items {
+        let item_use = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, use_attr_key, OF(0.0))
+            .unwrap();
+        if force_pass && item_use > OF(0.0) && !kfs.contains(&item_key) {
             force_pass = false;
         }
         total_use += item_use;
@@ -240,7 +215,7 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id).unwrap_or(OF(0.0));
+    let max = get_max_resource(ctx, calc, fit.ship, max_attr_key).unwrap_or(OF(0.0));
     round(total_use, 2) <= max
 }
 fn validate_fast_other<'a>(
@@ -248,8 +223,8 @@ fn validate_fast_other<'a>(
     ctx: SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
-    items: impl Iterator<Item = (&'a UItemKey, &'a ad::AAttrVal)>,
-    max_a_attr_id: &ad::AAttrId,
+    items: impl Iterator<Item = (&'a UItemKey, &'a AAttrVal)>,
+    max_attr_key: Option<RAttrKey>,
 ) -> bool {
     let mut total_use = OF(0.0);
     let mut force_pass = true;
@@ -262,7 +237,7 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id).unwrap_or(OF(0.0));
+    let max = get_max_resource(ctx, calc, fit.ship, max_attr_key).unwrap_or(OF(0.0));
     total_use <= max
 }
 
@@ -272,23 +247,25 @@ fn validate_verbose_fitting<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl ExactSizeIterator<Item = &'a UItemKey>,
-    use_a_attr_id: &ad::AAttrId,
-    max_a_attr_id: &ad::AAttrId,
+    use_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrKey>,
 ) -> Option<ValResFail> {
     let mut total_use = OF(0.0);
     let mut users = HashMap::with_capacity(items.len());
-    for item_key in items {
-        let item_use = calc.get_item_attr_val_extra_opt(ctx, *item_key, use_a_attr_id).unwrap();
+    for &item_key in items {
+        let item_use = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, use_attr_key, OF(0.0))
+            .unwrap();
         total_use += item_use;
-        if item_use > OF(0.0) && !kfs.contains(item_key) {
-            users.insert(ctx.u_data.items.id_by_key(*item_key), item_use);
+        if item_use > OF(0.0) && !kfs.contains(&item_key) {
+            users.insert(ctx.u_data.items.id_by_key(item_key), item_use);
         }
     }
     if users.is_empty() {
         return None;
     }
     let total_use = round(total_use, 2);
-    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id);
+    let max = get_max_resource(ctx, calc, fit.ship, max_attr_key);
     if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -303,8 +280,8 @@ fn validate_verbose_other<'a>(
     ctx: SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
-    items: impl ExactSizeIterator<Item = (&'a UItemKey, &'a ad::AAttrVal)>,
-    max_a_attr_id: &ad::AAttrId,
+    items: impl ExactSizeIterator<Item = (&'a UItemKey, &'a AAttrVal)>,
+    max_attr_key: Option<RAttrKey>,
 ) -> Option<ValResFail> {
     let mut total_use = OF(0.0);
     let mut users = HashMap::with_capacity(items.len());
@@ -317,7 +294,7 @@ fn validate_verbose_other<'a>(
     if users.is_empty() {
         return None;
     }
-    let max = get_max_resource(ctx, calc, fit.ship, max_a_attr_id);
+    let max = get_max_resource(ctx, calc, fit.ship, max_attr_key);
     if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }

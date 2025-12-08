@@ -1,9 +1,10 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
-    ad::{AAttrId, AAttrVal},
+    ad::AAttrVal,
     def::AttrVal,
     misc::EffectSpec,
+    rd::RAttrKey,
     svc::{
         SvcCtx,
         calc::{AffectorInfo, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
@@ -13,7 +14,7 @@ use crate::{
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum AffectorValue {
-    AttrId(AAttrId),
+    Attr(RAttrKey),
     Hardcoded(AAttrVal),
     Custom(CustomAffectorValue),
 }
@@ -21,19 +22,19 @@ impl AffectorValue {
     // Simple and fast way to get affector attribute. Variants which have actual affector attributes
     // but do not expose anything are designed to handle attribute cleanup in some other way (via
     // dependency/revision registers)
-    pub(super) fn get_affector_attr_id(&self) -> Option<AAttrId> {
+    pub(super) fn get_affector_attr_key(&self) -> Option<RAttrKey> {
         match self {
-            Self::AttrId(attr_id) => Some(*attr_id),
+            Self::Attr(attr_key) => Some(*attr_key),
             Self::Hardcoded(_) => None,
-            Self::Custom(custom) => custom.affector_attr_id,
+            Self::Custom(custom) => custom.affector_attr_key,
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
     pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
         match self {
-            Self::AttrId(attr_id) => smallvec![AffectorInfo {
+            Self::Attr(attr_key) => smallvec![AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(item_key),
-                attr_id: Some(*attr_id)
+                attr_id: Some(ctx.u_data.src.get_attr(*attr_key).id)
             }],
             Self::Hardcoded(_) => smallvec![AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(item_key),
@@ -44,7 +45,7 @@ impl AffectorValue {
     }
     pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
         match self {
-            Self::AttrId(attr_id) => Some(calc.get_item_attr_val_full(ctx, espec.item_key, attr_id).ok()?.dogma),
+            Self::Attr(attr_key) => Some(calc.get_item_attr_rfull(ctx, espec.item_key, *attr_key).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
             Self::Custom(custom) => (custom.mod_val_getter)(calc, ctx, espec),
         }
@@ -52,14 +53,14 @@ impl AffectorValue {
     // Revision methods - define if modification value can change upon some action
     pub(super) fn get_item_add_reviser(&self) -> Option<ItemAddReviser> {
         match self {
-            Self::AttrId(_) => None,
+            Self::Attr(_) => None,
             Self::Hardcoded(_) => None,
             Self::Custom(custom) => custom.item_add_reviser,
         }
     }
     pub(super) fn get_item_remove_reviser(&self) -> Option<ItemRemoveReviser> {
         match self {
-            Self::AttrId(_) => None,
+            Self::Attr(_) => None,
             Self::Hardcoded(_) => None,
             Self::Custom(custom) => custom.item_remove_reviser,
         }

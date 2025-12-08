@@ -43,15 +43,16 @@ fn get_dmg_opc(
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    let mut dmg_em = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EM_DMG)?;
-    let mut dmg_therm = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::THERM_DMG)?;
-    let mut dmg_kin = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::KIN_DMG)?;
-    let mut dmg_expl = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EXPL_DMG)?;
+    let attr_consts = ctx.ac();
+    let mut dmg_em = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.em_dmg, OF(0.0))?;
+    let mut dmg_therm = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.therm_dmg, OF(0.0))?;
+    let mut dmg_kin = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.kin_dmg, OF(0.0))?;
+    let mut dmg_expl = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.expl_dmg, OF(0.0))?;
     if let Some(projectee_key) = projectee_key {
         // Projection/application reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         let mult = get_simple_s2s_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);

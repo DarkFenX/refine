@@ -1,6 +1,6 @@
 use crate::{
-    ac, ad,
-    def::AttrVal,
+    def::{AttrVal, OF},
+    rd::RAttrKey,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemKey},
     util::round,
@@ -19,8 +19,8 @@ impl VastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ac::attrs::CPU,
-            &ac::attrs::CPU_OUTPUT,
+            ctx.ac().cpu,
+            ctx.ac().cpu_output,
         )
     }
     pub(in crate::svc) fn get_stat_powergrid(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
@@ -29,8 +29,8 @@ impl VastFitData {
             calc,
             fit,
             self.mods_svcs_online.iter(),
-            &ac::attrs::POWER,
-            &ac::attrs::POWER_OUTPUT,
+            ctx.ac().power,
+            ctx.ac().power_output,
         )
     }
     pub(in crate::svc) fn get_stat_calibration(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
@@ -39,11 +39,11 @@ impl VastFitData {
             calc,
             fit,
             self.rigs_offline_calibration.values(),
-            &ac::attrs::UPGRADE_CAPACITY,
+            ctx.ac().upgrade_capacity,
         )
     }
     pub(in crate::svc) fn get_stat_drone_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
-        get_resource_stats_other(ctx, calc, fit, self.drones_volume.values(), &ac::attrs::DRONE_CAPACITY)
+        get_resource_stats_other(ctx, calc, fit, self.drones_volume.values(), ctx.ac().drone_capacity)
     }
     pub(in crate::svc) fn get_stat_drone_bandwidth(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
         get_resource_stats_other(
@@ -51,11 +51,11 @@ impl VastFitData {
             calc,
             fit,
             self.drones_online_bandwidth.values(),
-            &ac::attrs::DRONE_BANDWIDTH,
+            ctx.ac().drone_bandwidth,
         )
     }
     pub(in crate::svc) fn get_stat_fighter_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatRes {
-        get_resource_stats_other(ctx, calc, fit, self.fighters_volume.values(), &ac::attrs::FTR_CAPACITY)
+        get_resource_stats_other(ctx, calc, fit, self.fighters_volume.values(), ctx.ac().ftr_capacity)
     }
 }
 
@@ -64,12 +64,12 @@ fn get_resource_stats_fitting<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = &'a UItemKey>,
-    use_a_attr_id: &ad::AAttrId,
-    output_a_attr_id: &ad::AAttrId,
+    use_attr_key: Option<RAttrKey>,
+    output_attr_key: Option<RAttrKey>,
 ) -> StatRes {
-    let output = calc.get_item_attr_val_extra_opt_opt(ctx, fit.ship, output_a_attr_id);
+    let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, output_attr_key, OF(0.0));
     let used = items
-        .filter_map(|item_key| calc.get_item_attr_val_extra_opt(ctx, *item_key, use_a_attr_id))
+        .filter_map(|&item_key| calc.get_item_oattr_oextra(ctx, item_key, use_attr_key))
         .sum();
     // Round possible float errors despite individual use values being rounded
     StatRes {
@@ -82,9 +82,9 @@ fn get_resource_stats_other<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items_use: impl Iterator<Item = &'a AttrVal>,
-    output_a_attr_id: &ad::AAttrId,
+    output_attr_key: Option<RAttrKey>,
 ) -> StatRes {
-    let output = calc.get_item_attr_val_extra_opt_opt(ctx, fit.ship, output_a_attr_id);
+    let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, output_attr_key, OF(0.0));
     let used = items_use.sum();
     StatRes { used, output }
 }

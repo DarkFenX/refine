@@ -68,7 +68,7 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_supp: &GSu
                 Some(e_effect_id) => match a_item.effect_datas.get_mut(&AEffectId::Dogma(e_effect_id)) {
                     None => continue,
                     Some(a_item_eff_data) => {
-                        a_item_eff_data.cd = e_item_abil.cooldown.map(OF);
+                        a_item_eff_data.cooldown = e_item_abil.cooldown.map(OF);
                         a_item_eff_data.charge_count = e_item_abil.charge_count;
                         a_item_eff_data.charge_reload_time = e_item_abil.charge_rearm_time.map(OF);
                     }

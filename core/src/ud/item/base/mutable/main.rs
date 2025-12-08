@@ -1,12 +1,12 @@
 use crate::{
     ad::{
-        AAttrId, AAttrVal, AEffectId, AEveItemListId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
-        AMutaAttrRange, ASkillLevel, AState,
+        AAttrId, AAttrVal, AEffectId, AEveItemListId, AItemCatId, AItemGrpId, AItemId, AItemListId, AMutaAttrRange,
+        ASkillLevel, AState,
     },
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
-    rd::{REffectKey, RItem, RItemAXt, RMuta, RcItem, RcMuta},
+    rd::{RAttrKey, REffectKey, RItem, RItemAXt, RItemEffectData, RItemListKey, RMuta, RcItem, RcMuta},
     src::Src,
     ud::{
         err::ItemMutatedError,
@@ -60,7 +60,7 @@ impl UItemBaseMutable {
             }
         };
         // No mutated item ID in mapping or no mutated item itself
-        let mutated_r_item = match mutator.get_item_map().get(&type_id).and_then(|v| src.get_item(v)) {
+        let mutated_r_item = match mutator.item_map.get(&type_id).and_then(|v| src.get_item(v)) {
             Some(mutated_r_item) => mutated_r_item,
             None => {
                 return match src.get_item(&type_id) {
@@ -80,9 +80,9 @@ impl UItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let mut merged_attrs = get_combined_attr_values(src.get_item(&type_id), mutated_r_item);
-        let merged_effdatas = merge_effect_datas(src, mutated_r_item, &merged_attrs);
-        let item_axt = RItemAXt::new_inherited(mutated_r_item, &merged_attrs, src);
-        apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls);
+        let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
+        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
+        apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
         let regular_base = UItemBase::base_new_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_id: type_id,
@@ -128,7 +128,7 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<AAttrId, AAttrVal>> {
+    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
         let item_mutation = match &self.mutation {
             Some(item_mutation) => item_mutation,
             None => return self.base.get_attrs(),
@@ -138,7 +138,7 @@ impl UItemBaseMutable {
             None => self.base.get_attrs(),
         }
     }
-    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, AItemEffectData>> {
+    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
         // Merged effect data is set only if mutation is valid, and if it contained any differences
         // to mutated item effect data
         if let Some(item_mutation) = &self.mutation
@@ -155,7 +155,7 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base.get_skill_reqs()
     }
-    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<AItemListId>> {
+    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListKey>> {
         self.base.get_proj_buff_item_lists()
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,22 +170,25 @@ impl UItemBaseMutable {
         self.base.get_axt()
     }
     pub(in crate::ud::item) fn get_max_state(&self) -> Option<AState> {
-        self.base.base_get_r_item().map(|v| v.get_max_state())
+        self.base.get_max_state()
     }
     pub(in crate::ud::item) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
-        self.base.base_get_r_item().and_then(|v| v.get_val_fitted_group_id())
+        self.base.get_val_fitted_group_id()
     }
     pub(in crate::ud::item) fn get_val_online_group_id(&self) -> Option<AItemGrpId> {
-        self.base.base_get_r_item().and_then(|v| v.get_val_online_group_id())
+        self.base.get_val_online_group_id()
     }
     pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
-        self.base.base_get_r_item().and_then(|v| v.get_val_active_group_id())
+        self.base.get_val_active_group_id()
     }
     pub(in crate::ud::item) fn takes_turret_hardpoint(&self) -> bool {
         self.base.takes_turret_hardpoint()
     }
     pub(in crate::ud::item) fn takes_launcher_hardpoint(&self) -> bool {
         self.base.takes_launcher_hardpoint()
+    }
+    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
+        self.base.is_ice_harvester()
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Misc methods
@@ -254,7 +257,7 @@ impl UItemBaseMutable {
                 }
             },
         };
-        let mutated_r_item = match mutator.get_item_map().get(&base_type_id).and_then(|v| src.get_item(v)) {
+        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item(v)) {
             Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no item itself - invalidate mutated cache and use non-mutated
             // item
@@ -273,9 +276,9 @@ impl UItemBaseMutable {
         };
         // Compose attribute cache
         let mut merged_attrs = get_combined_attr_values(src.get_item(&base_type_id), mutated_r_item);
-        let merged_effdatas = merge_effect_datas(src, mutated_r_item, &merged_attrs);
-        let item_axt = RItemAXt::new_inherited(mutated_r_item, &merged_attrs, src);
-        apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation.attr_rolls);
+        let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
+        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
+        apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation.attr_rolls, src);
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
@@ -314,7 +317,7 @@ impl UItemBaseMutable {
                 return Ok(());
             }
         };
-        let mutated_r_item = match mutator.get_item_map().get(&base_type_id).and_then(|v| src.get_item(v)) {
+        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item(v)) {
             Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no mutated item itself - nothing changes, except for
             // user-defined mutations getting stored
@@ -325,9 +328,9 @@ impl UItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let mut merged_attrs = get_combined_attr_values(self.base.base_get_r_item(), mutated_r_item);
-        let merged_effdatas = merge_effect_datas(src, mutated_r_item, &merged_attrs);
-        let item_axt = RItemAXt::new_inherited(mutated_r_item, &merged_attrs, src);
-        apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls);
+        let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
+        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
+        apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_id,
@@ -343,7 +346,7 @@ impl UItemBaseMutable {
         &mut self,
         src: &Src,
         attr_mutation_requests: Vec<AttrMutationRequest>,
-    ) -> Result<Vec<AAttrId>, ItemMutatedError> {
+    ) -> Result<Vec<RAttrKey>, ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
             None => {
@@ -375,22 +378,15 @@ impl UItemBaseMutable {
         // with the same source
         let mutated_type_id = mutation_cache
             .mutator
-            .get_item_map()
+            .item_map
             .get(&mutation_cache.base_type_id)
             .unwrap();
         let mutated_r_item = src.get_item(mutated_type_id).unwrap();
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut base_r_item_cache = None;
-        let mut changed_attr_ids = Vec::new();
+        let mut changed_attr_keys = Vec::new();
         for attr_mutation_request in attr_mutation_requests {
-            let unmutated_value = get_combined_attr_value(
-                src,
-                &mutation_cache.base_type_id,
-                &mut base_r_item_cache,
-                mutated_r_item,
-                &attr_mutation_request.attr_id,
-            );
-            let new_value = match attr_mutation_request.value {
+            let new_key_value = match attr_mutation_request.value {
                 // Mutation change request
                 Some(attr_roll) => {
                     // Update user-defined data
@@ -398,18 +394,20 @@ impl UItemBaseMutable {
                         .attr_rolls
                         .insert(attr_mutation_request.attr_id, attr_roll);
                     // Process source-dependent data and return new value
-                    let unmutated_value = match unmutated_value {
+                    let unmutated_value = match get_combined_attr_value(
+                        src,
+                        &mutation_cache.base_type_id,
+                        &mut base_r_item_cache,
+                        mutated_r_item,
+                        &attr_mutation_request.attr_id,
+                    ) {
                         Some(unmutated_value) => unmutated_value,
                         // No unmutated value now means there couldn't be any mutated value with any
                         // mutation earlier as well, thus attribute value cannot change. We already
                         // updated user data, so just go to next attribute
                         None => continue,
                     };
-                    let mutation_range = match mutation_cache
-                        .mutator
-                        .get_attr_mods()
-                        .get(&attr_mutation_request.attr_id)
-                    {
+                    let mutation_range = match mutation_cache.mutator.attr_mods.get(&unmutated_value.key) {
                         Some(mutation_range) => mutation_range,
                         // No mutation range now means there couldn't be any mutated value
                         // earlier as well, regardless of user-defined roll data, thus attribute
@@ -417,26 +415,34 @@ impl UItemBaseMutable {
                         // attribute
                         None => continue,
                     };
-                    mutate_attr_value(unmutated_value, mutation_range, attr_roll)
+                    AttrKeyVal {
+                        key: unmutated_value.key,
+                        value: mutate_attr_value(unmutated_value.value, mutation_range, attr_roll),
+                    }
                 }
                 // Mutation removal request
                 None => {
                     // Update user-defined data
                     item_mutation.attr_rolls.remove(&attr_mutation_request.attr_id);
                     // Update source-dependent data
-                    let unmutated_value = match unmutated_value {
+                    let unmutated_value = match get_combined_attr_value(
+                        src,
+                        &mutation_cache.base_type_id,
+                        &mut base_r_item_cache,
+                        mutated_r_item,
+                        &attr_mutation_request.attr_id,
+                    ) {
                         Some(unmutated_value) => unmutated_value,
                         // No unmutated value - can't do any comparisons
                         None => continue,
                     };
-                    // Limit possible values by roll range, if it is available
-                    match mutation_cache
-                        .mutator
-                        .get_attr_mods()
-                        .get(&attr_mutation_request.attr_id)
-                    {
-                        Some(mutation_range) => limit_attr_value(unmutated_value, mutation_range),
-                        None => unmutated_value,
+                    AttrKeyVal {
+                        key: unmutated_value.key,
+                        // Limit possible values by roll range, if it is available
+                        value: match mutation_cache.mutator.attr_mods.get(&unmutated_value.key) {
+                            Some(mutation_range) => limit_attr_value(unmutated_value.value, mutation_range),
+                            None => unmutated_value.value,
+                        },
                     }
                 }
             };
@@ -445,13 +451,13 @@ impl UItemBaseMutable {
             // logic as unmutated value)
             let old_value = mutation_cache
                 .merged_attrs
-                .insert(attr_mutation_request.attr_id, new_value)
+                .insert(new_key_value.key, new_key_value.value)
                 .unwrap();
-            if old_value != new_value {
-                changed_attr_ids.push(attr_mutation_request.attr_id);
+            if old_value != new_key_value.value {
+                changed_attr_keys.push(new_key_value.key);
             }
         }
-        Ok(changed_attr_ids)
+        Ok(changed_attr_keys)
     }
     pub(in crate::ud::item) fn set_mutator_id(
         &mut self,
@@ -531,8 +537,8 @@ impl ItemMutationData {
 pub(crate) struct ItemMutationDataCache {
     base_type_id: AItemId,
     mutator: RcMuta,
-    merged_attrs: RMap<AAttrId, AAttrVal>,
-    merged_effdatas: Option<RMap<REffectKey, AItemEffectData>>,
+    merged_attrs: RMap<RAttrKey, AAttrVal>,
+    merged_effdatas: Option<RMap<REffectKey, RItemEffectData>>,
     axt: RItemAXt,
 }
 impl ItemMutationDataCache {
@@ -558,24 +564,26 @@ fn convert_request_to_data(mutation_request: ItemMutationRequest) -> ItemMutatio
 // Attribute mutations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn apply_attr_mutations(
-    attrs: &mut RMap<AAttrId, AAttrVal>,
+    attrs: &mut RMap<RAttrKey, AAttrVal>,
     mutator: &RMuta,
     attr_rolls: &RMap<AAttrId, UnitInterval>,
+    src: &Src,
 ) {
-    for (attr_id, attr_mutation_range) in mutator.get_attr_mods().iter() {
-        let unmutated_value = match attrs.get(attr_id) {
+    for (&attr_key, attr_mutation_range) in mutator.attr_mods.iter() {
+        let unmutated_value = match attrs.get(&attr_key) {
             Some(unmutated_value) => *unmutated_value,
             None => continue,
         };
-        match attr_rolls.get(attr_id) {
+        let attr_id = src.get_attr(attr_key).id;
+        match attr_rolls.get(&attr_id) {
             Some(attr_roll) => {
                 let mutated_val = mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll);
-                attrs.insert(*attr_id, mutated_val);
+                attrs.insert(attr_key, mutated_val);
             }
             // When no roll is defined by user, still limit possible values by what roll range is
             None => {
                 let mutated_val = limit_attr_value(unmutated_value, attr_mutation_range);
-                attrs.insert(*attr_id, mutated_val);
+                attrs.insert(attr_key, mutated_val);
             }
         }
     }
@@ -596,50 +604,58 @@ fn limit_attr_value(unmutated_value: AAttrVal, roll_range: &AMutaAttrRange) -> A
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Misc functions
+// Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+struct AttrKeyVal {
+    key: RAttrKey,
+    value: AAttrVal,
+}
+
 fn get_combined_attr_value<'a>(
     src: &'a Src,
     base_type_id: &AItemId,
     base_r_item_cache: &mut Option<Option<&'a RcItem>>,
     mutated_r_item: &RItem,
     attr_id: &AAttrId,
-) -> Option<AAttrVal> {
-    match mutated_r_item.get_attrs().get(attr_id) {
-        Some(unmutated_value) => Some(*unmutated_value),
+) -> Option<AttrKeyVal> {
+    let attr_key = src.get_attr_key_by_id(attr_id)?;
+    let value = match mutated_r_item.attrs.get(&attr_key) {
+        Some(&unmutated_value) => Some(unmutated_value),
         None => match base_r_item_cache {
             Some(opt_base_r_item) => match opt_base_r_item {
-                Some(base_r_item) => base_r_item.get_attrs().get(attr_id).copied(),
+                Some(base_r_item) => base_r_item.attrs.get(&attr_key).copied(),
                 None => None,
             },
             None => {
+                // TODO: if items are moved to slab, get rid of cache logic and just fetch via key
                 let opt_base_r_item = src.get_item(base_type_id);
                 base_r_item_cache.replace(opt_base_r_item);
                 match opt_base_r_item {
-                    Some(base_r_item) => base_r_item.get_attrs().get(attr_id).copied(),
+                    Some(base_r_item) => base_r_item.attrs.get(&attr_key).copied(),
                     None => None,
                 }
             }
         },
-    }
+    }?;
+    Some(AttrKeyVal { key: attr_key, value })
 }
 
 fn merge_effect_datas(
+    mutated_item: &RItem,
+    merged_attrs: &RMap<RAttrKey, AAttrVal>,
     src: &Src,
-    mutated_item: &RcItem,
-    merged_attrs: &RMap<AAttrId, AAttrVal>,
-) -> Option<RMap<REffectKey, AItemEffectData>> {
+) -> Option<RMap<REffectKey, RItemEffectData>> {
     let mut result = None;
-    let effect_datas = mutated_item.get_effect_datas();
+    let effect_datas = &mutated_item.effect_datas;
     for (&effect_key, effect_data) in effect_datas.iter() {
         let effect = src.get_effect(effect_key);
         // Autocharge - if effect defines autocharge attr ID, and its value references some non-zero
         // type ID, compare it to what's already in effect data; if it's different, create a copy
         // of effect data with new value
-        if let Some(charge_info) = effect.get_charge_info()
-            && let Some(attr_id) = charge_info.location.get_autocharge_attr_id()
+        if let Some(charge_info) = &effect.charge_info
+            && let Some(attr_key) = charge_info.location.get_autocharge_attr_key()
         {
-            let new_ac_type_id = match merged_attrs.get(&attr_id) {
+            let new_ac_type_id = match merged_attrs.get(&attr_key) {
                 Some(&value) => match value.round() as AItemId {
                     0 => None,
                     a_item_id => Some(a_item_id),
@@ -652,13 +668,13 @@ fn merge_effect_datas(
             }
         }
         // Projectee filter - same approach as for autocharges
-        if let Some(projectee_filter_info) = effect.get_projectee_filter_info()
-            && let Some(attr_id) = projectee_filter_info.get_item_list_attr_id()
+        if let Some(projectee_filter_info) = &effect.projectee_filter
+            && let Some(attr_key) = projectee_filter_info.get_item_list_attr_key()
         {
-            let new_projectee_filter = match merged_attrs.get(&attr_id) {
+            let new_projectee_filter = match merged_attrs.get(&attr_key) {
                 Some(&value) => match value.round() as AEveItemListId {
                     0 => None,
-                    item_list_id => Some(AItemListId::Eve(item_list_id)),
+                    item_list_id => src.get_item_list_key_by_id(&AItemListId::Eve(item_list_id)),
                 },
                 None => None,
             };
@@ -674,16 +690,36 @@ fn merge_effect_datas(
 pub(crate) fn get_combined_attr_values(
     base_r_item: Option<&RcItem>,
     mutated_r_item: &RItem,
-) -> RMap<AAttrId, AAttrVal> {
+) -> RMap<RAttrKey, AAttrVal> {
     match base_r_item {
         Some(base_r_item) => {
-            let mut attrs = base_r_item.get_attrs().clone();
+            let mut attrs = base_r_item.attrs.clone();
             // Mutated item attributes have priority in case of collisions
-            for (attr_id, attr_val) in mutated_r_item.get_attrs().iter() {
-                attrs.insert(*attr_id, *attr_val);
+            for (&attr_key, &attr_val) in mutated_r_item.attrs.iter() {
+                attrs.insert(attr_key, attr_val);
             }
             attrs
         }
-        None => mutated_r_item.get_attrs().clone(),
+        None => mutated_r_item.attrs.clone(),
     }
+}
+
+fn make_axt(
+    r_item: &RItem,
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_effects_override: Option<&RMap<REffectKey, RItemEffectData>>,
+    src: &Src,
+) -> RItemAXt {
+    let mut axt = RItemAXt::default();
+    axt.fill(
+        r_item.id,
+        r_item.grp_id,
+        r_item.cat_id,
+        item_attrs,
+        item_effects_override.unwrap_or(&r_item.effect_datas),
+        src.get_attr_id_key_map(),
+        src.get_attr_consts(),
+        src.get_effect_consts(),
+    );
+    axt
 }

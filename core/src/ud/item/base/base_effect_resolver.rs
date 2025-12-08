@@ -96,7 +96,7 @@ fn update_running_effects(
     } else if !online_running && online_should_run {
         reuse_eupdates.to_start.push(src.get_online_effect().unwrap().clone());
     }
-    for &effect_key in item.get_effect_datas().keys() {
+    for &effect_key in item.effect_datas.keys() {
         // Online effect has already been handled
         if Some(effect_key) == src.get_effect_consts().online {
             continue;
@@ -104,7 +104,7 @@ fn update_running_effects(
         let effect = src.get_effect(effect_key);
         let should_run = resolve_regular_effect_status(
             item_effect_modes,
-            item.get_defeff_key(),
+            item.defeff_key,
             item_state,
             online_should_run,
             effect,
@@ -134,14 +134,14 @@ fn update_running_effects(
             }
         };
     }
-    reffs.extend(reuse_eupdates.to_start.iter().map(|effect| effect.get_key()));
+    reffs.extend(reuse_eupdates.to_start.iter().map(|effect| effect.key));
     for effect in reuse_eupdates.to_stop.iter() {
-        reffs.remove(&effect.get_key());
+        reffs.remove(&effect.key);
     }
 }
 
 fn resolve_online_effect_status(item: &RItem, item_effect_modes: &EffectModes, item_state: AState) -> bool {
-    if !item.has_online_effect() {
+    if !item.has_online_effect {
         return false;
     }
     match item_effect_modes.get_by_id(&ONLINE_EFFECT_ID) {
@@ -163,11 +163,11 @@ fn resolve_regular_effect_status(
 ) -> bool {
     // Ghosted items should never affect anything regardless of effect mode, so check it first
     // wherever applicable
-    match item_effect_modes.get_by_key(&effect.get_key()) {
+    match item_effect_modes.get_by_key(&effect.key) {
         EffectMode::FullCompliance => {
             resolve_regular_effect_status_full(item_defeff_key, item_state, effect, online_running)
         }
-        EffectMode::StateCompliance => item_state >= effect.get_state(),
+        EffectMode::StateCompliance => item_state >= effect.state,
         EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,
     }
@@ -179,25 +179,25 @@ fn resolve_regular_effect_status_full(
     effect: &REffect,
     online_running: bool,
 ) -> bool {
-    match effect.get_state() {
+    match effect.state {
         AState::Ghost => false,
-        AState::Disabled => item_state >= effect.get_state(),
+        AState::Disabled => item_state >= effect.state,
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
-        AState::Offline => item_state >= effect.get_state() && effect.get_chance_attr_id().is_none(),
+        AState::Offline => item_state >= effect.state && effect.chance_attr_key.is_none(),
         // Online effects depend on 'online' effect, ignoring everything else
         AState::Online => online_running,
         // Only default active effect is run, and only if item is in active+ state
         AState::Active => {
-            if effect.get_state() > item_state {
+            if effect.state > item_state {
                 return false;
             };
             match item_defeff_key {
-                Some(defeff_key) => defeff_key == effect.get_key(),
+                Some(defeff_key) => defeff_key == effect.key,
                 _ => false,
             }
         }
         // No additional restrictions for overload effects except for item being overloaded
-        AState::Overload => item_state >= effect.get_state(),
+        AState::Overload => item_state >= effect.state,
     }
 }

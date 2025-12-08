@@ -97,13 +97,13 @@ fn get_mps_effect(
 }
 
 fn get_getter_ore(effect: &REffect) -> Option<NMiningGetter> {
-    effect.get_mining_ore_opc_getter()
+    effect.mining_ore_opc_getter
 }
 
 fn get_getter_ice(effect: &REffect) -> Option<NMiningGetter> {
-    effect.get_mining_ice_opc_getter()
+    effect.mining_ice_opc_getter
 }
 
 fn get_getter_gas(effect: &REffect) -> Option<NMiningGetter> {
-    effect.get_mining_gas_opc_getter()
+    effect.mining_gas_opc_getter
 }

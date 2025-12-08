@@ -1,39 +1,31 @@
 use crate::{
-    ac,
     def::{AttrVal, OF},
-    svc::{SvcCtx, calc::Calc, err::KeyedItemLoadedError},
+    svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemKey, UNpcProp},
 };
 
-pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Result<AttrVal, KeyedItemLoadedError> {
-    let attr_id = match ctx.u_data.items.get(item_key) {
+pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+    let attr_key = match ctx.u_data.items.get(item_key) {
         UItem::Drone(u_drone) => match u_drone.get_prop_mode() {
-            UNpcProp::Cruise => ac::attrs::ENTITY_CRUISE_SPEED,
-            UNpcProp::Chase => ac::attrs::MAX_VELOCITY,
+            UNpcProp::Cruise => ctx.ac().entity_cruise_speed,
+            UNpcProp::Chase => ctx.ac().max_velocity,
         },
-        _ => ac::attrs::MAX_VELOCITY,
+        _ => ctx.ac().max_velocity,
     };
-    calc.get_item_attr_val_full(ctx, item_key, &attr_id)
-        .map(|v| v.extra.max(OF(0.0)))
+    calc.get_item_oattr_ffb_extra(ctx, item_key, attr_key, OF(0.0))
+        .max(OF(0.0))
 }
 
-pub(crate) fn get_sig_radius(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Result<AttrVal, KeyedItemLoadedError> {
+pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
     let mut sig_radius = calc
-        .get_item_attr_val_full(ctx, item_key, &ac::attrs::SIG_RADIUS)?
-        .extra
+        .get_item_oattr_ffb_extra(ctx, item_key, ctx.ac().sig_radius, OF(0.0))
         .max(OF(0.0));
     if let UItem::Drone(u_drone) = ctx.u_data.items.get(item_key)
         && matches!(u_drone.get_prop_mode(), UNpcProp::Chase)
     {
         sig_radius *= calc
-            .get_item_attr_val_full(ctx, item_key, &ac::attrs::ENTITY_MAX_VELOCITY_SIG_RADIUS_MULT)
-            .unwrap()
-            .extra
+            .get_item_oattr_ffb_extra(ctx, item_key, ctx.ac().entity_max_velocity_sig_radius_mult, OF(1.0))
             .max(OF(0.0))
     }
-    Ok(sig_radius)
+    sig_radius
 }

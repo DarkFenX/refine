@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use super::shared::is_flag_set;
+use super::shared::is_attr_flag_set;
 use crate::{
-    ac, ad,
     def::{ItemId, OF},
     misc::EffectSpec,
+    rd::RAttrKey,
     svc::{SvcCtx, calc::Calc, eff_funcs, vast::VastFitData},
     ud::UItemKey,
     util::{RMapRSet, RSet},
@@ -23,13 +23,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(
-            kfs,
-            ctx,
-            calc,
-            &self.blockable_assistance,
-            &ac::attrs::DISALLOW_ASSISTANCE,
-        )
+        validate_fast(kfs, ctx, calc, &self.blockable_assistance, ctx.ac().disallow_assistance)
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_fast(
         &self,
@@ -42,7 +36,7 @@ impl VastFitData {
             ctx,
             calc,
             &self.blockable_offense,
-            &ac::attrs::DISALLOW_OFFENSIVE_MODIFIERS,
+            ctx.ac().disallow_offensive_modifiers,
         )
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_fast(
@@ -52,7 +46,7 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0)) {
+            if eff_funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0)) {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
@@ -72,13 +66,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        validate_verbose(
-            kfs,
-            ctx,
-            calc,
-            &self.blockable_assistance,
-            &ac::attrs::DISALLOW_ASSISTANCE,
-        )
+        validate_verbose(kfs, ctx, calc, &self.blockable_assistance, ctx.ac().disallow_assistance)
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
         &self,
@@ -91,7 +79,7 @@ impl VastFitData {
             ctx,
             calc,
             &self.blockable_offense,
-            &ac::attrs::DISALLOW_OFFENSIVE_MODIFIERS,
+            ctx.ac().disallow_offensive_modifiers,
         )
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
@@ -102,7 +90,7 @@ impl VastFitData {
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if eff_funcs::get_resist_mult_val_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
+            if eff_funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
                 && projector_especs.len() > 0
             {
                 let projectee_item_id = ctx.u_data.items.id_by_key(projectee_aspec.item_key);
@@ -130,10 +118,14 @@ fn validate_fast(
     ctx: SvcCtx,
     calc: &mut Calc,
     blockable: &RMapRSet<UItemKey, EffectSpec>,
-    a_attr_id: &ad::AAttrId,
+    attr_key: Option<RAttrKey>,
 ) -> bool {
-    for (projectee_key, mut projector_especs) in blockable.iter() {
-        if is_flag_set(ctx, calc, *projectee_key, a_attr_id) {
+    let attr_key = match attr_key {
+        Some(attr_key) => attr_key,
+        None => return true,
+    };
+    for (&projectee_key, mut projector_especs) in blockable.iter() {
+        if is_attr_flag_set(ctx, calc, projectee_key, attr_key) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -152,12 +144,13 @@ fn validate_verbose(
     ctx: SvcCtx,
     calc: &mut Calc,
     blockable: &RMapRSet<UItemKey, EffectSpec>,
-    a_attr_id: &ad::AAttrId,
+    attr_key: Option<RAttrKey>,
 ) -> Option<ValProjImmunityFail> {
+    let attr_key = attr_key?;
     let mut items = HashMap::new();
-    for (projectee_key, projector_especs) in blockable.iter() {
-        if is_flag_set(ctx, calc, *projectee_key, a_attr_id) && projector_especs.len() > 0 {
-            let projectee_item_id = ctx.u_data.items.id_by_key(*projectee_key);
+    for (&projectee_key, projector_especs) in blockable.iter() {
+        if is_attr_flag_set(ctx, calc, projectee_key, attr_key) && projector_especs.len() > 0 {
+            let projectee_item_id = ctx.u_data.items.id_by_key(projectee_key);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_key) {
                     continue;

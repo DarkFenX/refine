@@ -144,7 +144,7 @@ impl Vast {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
                         .add_entry(a_item_grp_id, item_key);
-                    if module.get_attrs().unwrap().contains_key(&ac::attrs::MAX_GROUP_FITTED) {
+                    if item_axt.max_group_fitted_limited {
                         fit_data
                             .mods_svcs_rigs_max_group_fitted_limited
                             .insert(item_key, a_item_grp_id);
@@ -188,8 +188,7 @@ impl Vast {
             UItem::Rig(rig) => {
                 let item_axt = rig.get_axt().unwrap();
                 item_kind_add(fit_data, item_key, item_axt.kind, rd::RItemKind::Rig);
-                let rig_size = rig.get_attrs().unwrap().get(&ac::attrs::RIG_SIZE).copied();
-                fit_data.rigs_rig_size.insert(item_key, rig_size);
+                fit_data.rigs_rig_size.insert(item_key, item_axt.rig_size);
                 if let Some(ship_limit) = &item_axt.ship_limit {
                     fit_data.ship_limited_items.insert(item_key, ship_limit.clone());
                 }
@@ -197,7 +196,7 @@ impl Vast {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
                         .add_entry(a_item_grp_id, item_key);
-                    if rig.get_attrs().unwrap().contains_key(&ac::attrs::MAX_GROUP_FITTED) {
+                    if item_axt.max_group_fitted_limited {
                         fit_data
                             .mods_svcs_rigs_max_group_fitted_limited
                             .insert(item_key, a_item_grp_id);
@@ -224,7 +223,7 @@ impl Vast {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
                         .add_entry(a_item_grp_id, item_key);
-                    if service.get_attrs().unwrap().contains_key(&ac::attrs::MAX_GROUP_FITTED) {
+                    if item_axt.max_group_fitted_limited {
                         fit_data
                             .mods_svcs_rigs_max_group_fitted_limited
                             .insert(item_key, a_item_grp_id);
@@ -425,7 +424,9 @@ impl Vast {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
                         .remove_entry(a_item_grp_id, item_key);
-                    fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
+                    if item_axt.max_group_fitted_limited {
+                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
+                    }
                 }
                 if let Some(charge_key) = module.get_charge_key() {
                     if item_axt.charge_limit.is_some() {
@@ -464,7 +465,9 @@ impl Vast {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
                         .remove_entry(a_item_grp_id, item_key);
-                    fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
+                    if item_axt.max_group_fitted_limited {
+                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
+                    }
                 }
                 if item_axt.sec_zone_limitable {
                     fit_data.sec_zone_fitted.remove(item_key);
@@ -481,7 +484,9 @@ impl Vast {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
                         .remove_entry(a_item_grp_id, item_key);
-                    fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
+                    if item_axt.max_group_fitted_limited {
+                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
+                    }
                 }
                 if item_axt.max_type_fitted.is_some() {
                     fit_data

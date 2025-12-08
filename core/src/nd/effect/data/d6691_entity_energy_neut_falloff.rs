@@ -42,7 +42,7 @@ fn internal_get_neut_opc(
         projector_effect,
         projectee_key,
         get_simple_s2s_noapp_proj_mult,
-        &ac::attrs::ENERGY_NEUT_AMOUNT,
+        ctx.ac().energy_neut_amount,
         true,
     )
 }

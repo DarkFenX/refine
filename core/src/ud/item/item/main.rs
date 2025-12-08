@@ -1,10 +1,10 @@
 use either::Either;
 
 use crate::{
-    ad::{AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel, AState},
+    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{AttrVal, ItemId, OF},
     misc::{EffectMode, Spool},
-    rd::{REffectKey, RItemAXt},
+    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData},
     src::Src,
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitKey, UFwEffect, UImplant, UItemKey,
@@ -143,7 +143,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_category_id(),
         }
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<AAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_attrs(),
             Self::Booster(booster) => booster.get_attrs(),
@@ -164,7 +164,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_attrs(),
         }
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, AItemEffectData>> {
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_effect_datas(),
             Self::Booster(booster) => booster.get_effect_datas(),
@@ -246,6 +246,27 @@ impl UItem {
             Self::Stance(stance) => stance.get_axt(),
             Self::Subsystem(subsystem) => subsystem.get_axt(),
             Self::SwEffect(sw_effect) => sw_effect.get_axt(),
+        }
+    }
+    pub(crate) fn is_ice_harvester(&self) -> bool {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.is_ice_harvester(),
+            Self::Booster(booster) => booster.is_ice_harvester(),
+            Self::Character(character) => character.is_ice_harvester(),
+            Self::Charge(charge) => charge.is_ice_harvester(),
+            Self::Drone(drone) => drone.is_ice_harvester(),
+            Self::Fighter(fighter) => fighter.is_ice_harvester(),
+            Self::FwEffect(fw_effect) => fw_effect.is_ice_harvester(),
+            Self::Implant(implant) => implant.is_ice_harvester(),
+            Self::Module(module) => module.is_ice_harvester(),
+            Self::ProjEffect(proj_effect) => proj_effect.is_ice_harvester(),
+            Self::Rig(rig) => rig.is_ice_harvester(),
+            Self::Service(service) => service.is_ice_harvester(),
+            Self::Ship(ship) => ship.is_ice_harvester(),
+            Self::Skill(skill) => skill.is_ice_harvester(),
+            Self::Stance(stance) => stance.is_ice_harvester(),
+            Self::Subsystem(subsystem) => subsystem.is_ice_harvester(),
+            Self::SwEffect(sw_effect) => sw_effect.is_ice_harvester(),
         }
     }
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
@@ -579,9 +600,9 @@ impl UItem {
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_id: &AAttrId) -> Option<AAttrVal> {
+    pub(crate) fn get_attr(&self, attr_key: RAttrKey) -> Option<AAttrVal> {
         match self.get_attrs() {
-            Some(attrs) => attrs.get(attr_id).copied(),
+            Some(attrs) => attrs.get(&attr_key).copied(),
             None => None,
         }
     }

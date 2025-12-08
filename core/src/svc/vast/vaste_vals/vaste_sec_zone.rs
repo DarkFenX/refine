@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use super::shared::is_flag_set;
+use super::shared::{is_attr_flag_set, is_oattr_flag_set};
 use crate::{
-    ac, ad,
+    ad,
     def::{ItemId, OF},
     misc::{SecZone, SecZoneCorruption},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
@@ -114,8 +114,8 @@ fn flags_check_fast(
     match ctx.u_data.sec_zone {
         SecZone::HiSec(corruption) => {
             for &item_key in items_main.iter() {
-                if is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE)
-                    || is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_HISEC)
+                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space)
+                    || is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hisec)
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
@@ -126,7 +126,7 @@ fn flags_check_fast(
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
                         SecZoneCorruption::C5 => {
-                            if !is_flag_set(ctx, calc, item_key, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
+                            if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_hisec)
                                 && !kfs.contains(&item_key)
                             {
                                 return false;
@@ -138,21 +138,23 @@ fn flags_check_fast(
             true
         }
         SecZone::LowSec(corruption) => {
-            for &item_key in items_main.iter() {
-                if is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE) {
-                    match corruption {
-                        // No corruption in actual security zone - fail
-                        SecZoneCorruption::None => {
-                            if !kfs.contains(&item_key) {
-                                return false;
+            if let Some(disallow_in_empire_space_key) = ctx.ac().disallow_in_empire_space {
+                for &item_key in items_main.iter() {
+                    if is_attr_flag_set(ctx, calc, item_key, disallow_in_empire_space_key) {
+                        match corruption {
+                            // No corruption in actual security zone - fail
+                            SecZoneCorruption::None => {
+                                if !kfs.contains(&item_key) {
+                                    return false;
+                                }
                             }
-                        }
-                        // If corrupted, check if module is allowed in corrupted lowsec
-                        SecZoneCorruption::C5 => {
-                            if !is_flag_set(ctx, calc, item_key, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
-                                && !kfs.contains(&item_key)
-                            {
-                                return false;
+                            // If corrupted, check if module is allowed in corrupted lowsec
+                            SecZoneCorruption::C5 => {
+                                if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_lowsec)
+                                    && !kfs.contains(&item_key)
+                                {
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -161,9 +163,11 @@ fn flags_check_fast(
             true
         }
         SecZone::Hazard => {
-            for &item_key in items_main.iter() {
-                if is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(&item_key) {
-                    return false;
+            if let Some(disallow_in_hazard_key) = ctx.ac().disallow_in_hazard {
+                for &item_key in items_main.iter() {
+                    if is_attr_flag_set(ctx, calc, item_key, disallow_in_hazard_key) && !kfs.contains(&item_key) {
+                        return false;
+                    }
                 }
             }
             true
@@ -188,8 +192,8 @@ fn flags_check_verbose(
     match ctx.u_data.sec_zone {
         SecZone::HiSec(corruption) => {
             for &item_key in items_main.iter() {
-                if is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE)
-                    || is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_HISEC)
+                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space)
+                    || is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hisec)
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
@@ -200,7 +204,7 @@ fn flags_check_verbose(
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
                         SecZoneCorruption::C5 => {
-                            if !is_flag_set(ctx, calc, item_key, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC)
+                            if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_hisec)
                                 && !kfs.contains(&item_key)
                             {
                                 failed_item_keys.push(item_key);
@@ -212,7 +216,7 @@ fn flags_check_verbose(
         }
         SecZone::LowSec(corruption) => {
             for &item_key in items_main.iter() {
-                if is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE) {
+                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space) {
                     match corruption {
                         // No corruption in actual security zone - fail
                         SecZoneCorruption::None => {
@@ -222,7 +226,7 @@ fn flags_check_verbose(
                         }
                         // If corrupted, check if module is allowed in corrupted lowsec
                         SecZoneCorruption::C5 => {
-                            if !is_flag_set(ctx, calc, item_key, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC)
+                            if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_lowsec)
                                 && !kfs.contains(&item_key)
                             {
                                 failed_item_keys.push(item_key);
@@ -234,7 +238,7 @@ fn flags_check_verbose(
         }
         SecZone::Hazard => {
             for &item_key in items_main.iter() {
-                if is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_HAZARD) && !kfs.contains(&item_key) {
+                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hazard) && !kfs.contains(&item_key) {
                     failed_item_keys.push(item_key);
                 }
             }
@@ -271,11 +275,11 @@ fn get_allowed_sec_zones(
     items_wspace_banned: Option<&RSet<UItemKey>>,
 ) -> Vec<SecZone> {
     let mut allowed_zones = Vec::new();
-    let disallow_empire = is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_EMPIRE_SPACE);
+    let disallow_empire = is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space);
     // Hisec
-    match disallow_empire || is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_HISEC) {
+    match disallow_empire || is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hisec) {
         true => {
-            if is_flag_set(ctx, calc, item_key, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_HISEC) {
+            if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_hisec) {
                 allowed_zones.push(SecZone::HiSec(SecZoneCorruption::C5))
             }
         }
@@ -284,7 +288,7 @@ fn get_allowed_sec_zones(
     // Lowsec
     match disallow_empire {
         true => {
-            if is_flag_set(ctx, calc, item_key, &ac::attrs::ALLOW_IN_FULLY_CORRUPTED_LOWSEC) {
+            if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_lowsec) {
                 allowed_zones.push(SecZone::LowSec(SecZoneCorruption::C5))
             }
         }
@@ -300,7 +304,7 @@ fn get_allowed_sec_zones(
         allowed_zones.push(SecZone::WSpace);
     }
     // Zarzakh
-    if !is_flag_set(ctx, calc, item_key, &ac::attrs::DISALLOW_IN_HAZARD) {
+    if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hazard) {
         allowed_zones.push(SecZone::Hazard);
     }
     allowed_zones

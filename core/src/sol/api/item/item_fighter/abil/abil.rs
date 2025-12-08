@@ -53,8 +53,5 @@ fn get_charge_count(sol: &SolarSystem, fighter_key: UItemKey, abil_id: &AAbilId)
     // Only abilities which exist in source are exposed by API, just unwrap
     let r_abil = sol.u_data.src.get_ability(abil_id).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();
-    u_fighter
-        .get_effect_datas()?
-        .get(&r_abil.get_effect_key())?
-        .charge_count
+    u_fighter.get_effect_datas()?.get(&r_abil.effect_key)?.charge_count
 }

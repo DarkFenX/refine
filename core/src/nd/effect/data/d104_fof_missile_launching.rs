@@ -60,13 +60,11 @@ fn get_dmg_proj_mult_fof_missile(
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
-    let range_limit = calc
-        .get_item_attr_val_full(ctx, projector_key, &ac::attrs::MAX_FOF_TGT_RANGE)
-        .unwrap()
-        .extra;
     // FoF missiles are limited by c2s range
-    if proj_data.get_range_c2s() > range_limit {
+    if let Some(range_limit) = calc.get_item_oattr_oextra(ctx, projector_key, ctx.ac().max_fof_tgt_range)
+        && proj_data.get_range_c2s() > range_limit
+    {
         return OF(0.0);
-    };
+    }
     get_missile_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
 }

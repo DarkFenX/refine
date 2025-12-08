@@ -37,7 +37,7 @@ impl Svc {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_key()??;
         let defeff = u_data.src.get_effect(defeff_key);
-        let spool_resolver = defeff.get_spool_resolver()?;
+        let spool_resolver = defeff.spool_resolver?;
         let resolved_spool = spool_resolver(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,

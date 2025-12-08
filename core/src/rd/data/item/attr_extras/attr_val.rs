@@ -1,49 +1,105 @@
 use crate::{
-    ac,
-    ad::{AAttrId, AAttrVal, ACount},
+    ad::{AAttrId, AAttrVal, ACount, ASkillLevel},
     def::OF,
+    rd::{RAttrConsts, RAttrKey},
     util::RMap,
 };
 
-pub(super) fn get_volume(item_attrs: &RMap<AAttrId, AAttrVal>) -> AAttrVal {
-    match item_attrs.get(&ac::attrs::VOLUME) {
+pub(super) fn get_volume(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> AAttrVal {
+    match attr_consts.volume.and_then(|v| item_attrs.get(&v)) {
         Some(volume) => *volume,
         None => OF(0.0),
     }
 }
-pub(super) fn get_capacity(item_attrs: &RMap<AAttrId, AAttrVal>) -> AAttrVal {
-    match item_attrs.get(&ac::attrs::CAPACITY) {
+pub(super) fn get_capacity(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> AAttrVal {
+    match attr_consts.capacity.and_then(|v| item_attrs.get(&v)) {
         Some(capacity) => *capacity,
         None => OF(0.0),
     }
 }
-pub(super) fn get_radius(item_attrs: &RMap<AAttrId, AAttrVal>) -> AAttrVal {
-    match item_attrs.get(&ac::attrs::RADIUS) {
+pub(super) fn get_radius(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> AAttrVal {
+    match attr_consts.radius.and_then(|v| item_attrs.get(&v)) {
         Some(radius) => *radius,
         None => OF(0.0),
     }
 }
-pub(super) fn get_bandwidth_use(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
-    item_attrs.get(&ac::attrs::DRONE_BANDWIDTH_USED).copied()
+
+pub(super) fn get_bandwidth_use(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<AAttrVal> {
+    attr_consts
+        .drone_bandwidth_used
+        .and_then(|v| item_attrs.get(&v).copied())
 }
-pub(super) fn get_max_type_fitted_count(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<ACount> {
-    item_attrs.get(&ac::attrs::MAX_TYPE_FITTED).map(|v| v.round() as ACount)
+
+pub(super) fn get_calibration_use(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<AAttrVal> {
+    attr_consts.upgrade_cost.and_then(|v| item_attrs.get(&v).copied())
 }
-pub(super) fn get_online_max_sec_class(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
-    item_attrs.get(&ac::attrs::ONLINE_MAX_SECURITY_CLASS).copied()
+
+pub(super) fn get_rig_size(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<AAttrVal> {
+    attr_consts.rig_size.and_then(|v| item_attrs.get(&v).copied())
 }
-pub(super) fn get_remote_resist_attr_id(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrId> {
-    item_attrs.get(&ac::attrs::REMOTE_RESIST_ID).and_then(|val| match val {
-        OF(0.0) => None,
-        _ => Some(val.into_inner().round() as AAttrId),
-    })
+
+pub(super) fn get_max_type_fitted_count(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<ACount> {
+    attr_consts
+        .max_type_fitted
+        .and_then(|v| item_attrs.get(&v))
+        .map(|v| v.round() as ACount)
 }
-pub(super) fn get_charge_size(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<AAttrVal> {
-    item_attrs.get(&ac::attrs::CHARGE_SIZE).copied()
+
+pub(super) fn get_online_max_sec_class(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<AAttrVal> {
+    attr_consts
+        .online_max_security_class
+        .and_then(|v| item_attrs.get(&v).copied())
 }
-pub(super) fn get_charge_rate(item_attrs: &RMap<AAttrId, AAttrVal>) -> ACount {
-    match item_attrs.get(&ac::attrs::CHARGE_RATE) {
+
+pub(super) fn get_remote_resist_attr_id(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+    attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+) -> Option<RAttrKey> {
+    attr_consts
+        .remote_resist_id
+        .and_then(|v| item_attrs.get(&v))
+        .and_then(|v| match v {
+            OF(0.0) => None,
+            v => {
+                let attr_id = v.into_inner().round() as AAttrId;
+                attr_id_key_map.get(&attr_id).copied()
+            }
+        })
+}
+
+pub(super) fn get_overload_td_lvl(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<ASkillLevel> {
+    attr_consts
+        .required_thermodynamics_skill
+        .and_then(|v| item_attrs.get(&v).map(|v| ASkillLevel::new(v.round() as i32)))
+}
+
+pub(super) fn get_charge_size(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<AAttrVal> {
+    attr_consts.charge_size.and_then(|v| item_attrs.get(&v).copied())
+}
+pub(super) fn get_charge_rate(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> ACount {
+    match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
         Some(val) => val.round() as ACount,
+        None => 1,
+    }
+}
+
+pub(super) fn get_max_fighter_count(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> ACount {
+    match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
+        // Ensure there can be at least 1 fighter in a squad
+        Some(value) => ACount::max(value.round() as ACount, 1),
         None => 1,
     }
 }

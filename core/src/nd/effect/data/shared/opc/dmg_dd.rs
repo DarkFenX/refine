@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     def::{AttrVal, Count, OF},
     misc::{DmgKinds, EffectSpec, Spool},
     nd::effect::data::shared::proj_mult::get_aoe_dd_dmg_proj_mult,
@@ -22,11 +21,13 @@ pub(in crate::nd::effect::data) fn get_direct_dd_dmg_opc(
     _projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     // Direct DDs have no range limitations
-    let dmg_em = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EM_DMG)?;
-    let dmg_therm = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::THERM_DMG)?;
-    let dmg_kin = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::KIN_DMG)?;
-    let dmg_expl = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EXPL_DMG)?;
-    let delay_s = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DMG_DELAY_DURATION)? / OF(1000.0);
+    let attr_consts = ctx.ac();
+    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.em_dmg, OF(0.0))?;
+    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.therm_dmg, OF(0.0))?;
+    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.kin_dmg, OF(0.0))?;
+    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.expl_dmg, OF(0.0))?;
+    let delay_s =
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dmg_delay_duration, OF(0.0))? / OF(1000.0);
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
             em: dmg_em,
@@ -46,17 +47,18 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc(
     _spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    let mut dmg_em = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EM_DMG)?;
-    let mut dmg_therm = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::THERM_DMG)?;
-    let mut dmg_kin = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::KIN_DMG)?;
-    let mut dmg_expl = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::EXPL_DMG)?;
-    let delay_s =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_WARNING_DURATION)? / OF(1000.0);
+    let attr_consts = ctx.ac();
+    let mut dmg_em = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.em_dmg, OF(0.0))?;
+    let mut dmg_therm = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.therm_dmg, OF(0.0))?;
+    let mut dmg_kin = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.kin_dmg, OF(0.0))?;
+    let mut dmg_expl = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.expl_dmg, OF(0.0))?;
+    let delay_s = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.doomsday_warning_duration, OF(0.0))?
+        / OF(1000.0);
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         let mult = get_aoe_dd_dmg_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
@@ -65,12 +67,11 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc(
         dmg_kin *= mult;
         dmg_expl *= mult;
     }
-    let interval_s =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DMG_CYCLE_TIME)? / OF(1000.0);
-    if interval_s > OF(0.0) {
-        let duration_s =
-            calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_DMG_DURATION)? / OF(1000.0);
-        let repeats = floor_unerr(duration_s / interval_s).into_inner() as Count;
+    if let Some(interval_ms) = calc.get_item_oattr_oextra(ctx, projector_key, attr_consts.doomsday_dmg_cycle_time)
+        && interval_ms > OF(0.0)
+        && let Some(duration_ms) = calc.get_item_oattr_oextra(ctx, projector_key, attr_consts.doomsday_dmg_duration)
+    {
+        let repeats = floor_unerr(duration_ms / interval_ms).into_inner() as Count;
         if repeats >= 2 {
             return Some(Output::Complex(OutputComplex {
                 amount: DmgKinds {
@@ -81,7 +82,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc(
                 },
                 delay: delay_s,
                 repeats,
-                interval: interval_s,
+                interval: interval_ms / OF(1000.0),
             }));
         }
     }

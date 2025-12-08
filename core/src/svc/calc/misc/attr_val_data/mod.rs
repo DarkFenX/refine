@@ -1,8 +1,5 @@
 pub(in crate::svc::calc) use item::ItemAttrValData;
 pub(in crate::svc::calc) use postproc::ItemAttrPostprocs;
-pub(in crate::svc::calc) use pp_fighter_count::FTR_COUNT_ATTR;
-pub(in crate::svc::calc) use pp_sec_status::SEC_STATUS_ATTR;
-pub(in crate::svc::calc) use pp_skill_level::SKILL_LVL_ATTR;
 pub(in crate::svc::calc) use sol::AttrValData;
 
 mod debug;

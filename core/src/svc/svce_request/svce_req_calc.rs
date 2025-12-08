@@ -1,5 +1,6 @@
 use crate::{
-    ad,
+    ad::AAttrId,
+    rd::RAttrKey,
     svc::{
         Svc, SvcCtx,
         calc::{CalcAttrVal, ModificationInfo},
@@ -13,24 +14,24 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-        a_attr_id: &ad::AAttrId,
+        attr_key: RAttrKey,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         self.calc
-            .get_item_attr_val_full(SvcCtx::new(u_data, &self.eff_projs), item_key, a_attr_id)
+            .get_item_attr_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key, attr_key)
     }
     pub(crate) fn iter_item_attr_vals(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, CalcAttrVal)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVal)>, KeyedItemLoadedError> {
         self.calc
-            .iter_item_attr_vals(SvcCtx::new(u_data, &self.eff_projs), item_key)
+            .iter_item_attr_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
     pub(crate) fn iter_item_mods(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (ad::AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
         self.calc.iter_item_mods(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
 }

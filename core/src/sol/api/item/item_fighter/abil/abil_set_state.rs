@@ -4,7 +4,7 @@ impl<'a> AbilityMut<'a> {
     pub fn set_state(&mut self, state: bool) {
         // Only abilities which exist in source are exposed by API, just unwrap
         let r_abil = self.sol.u_data.src.get_ability(&self.abil_id).unwrap();
-        let effect_id = r_abil.get_effect_id();
+        let effect_id = r_abil.effect_id;
         let effect_mode = match state {
             true => EffectMode::StateCompliance,
             false => EffectMode::ForceStop,

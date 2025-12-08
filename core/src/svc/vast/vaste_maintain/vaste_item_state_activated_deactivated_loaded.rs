@@ -1,5 +1,5 @@
 use crate::{
-    ac, ad,
+    ad,
     misc::ModuleState,
     svc::vast::{ValModuleStateModuleInfo, Vast},
     ud::{UItem, UItemKey},
@@ -15,10 +15,10 @@ impl Vast {
         match a_state {
             ad::AState::Offline => {
                 if let UItem::Rig(rig) = item
-                    && let Some(val) = rig.get_attrs().unwrap().get(&ac::attrs::UPGRADE_COST)
+                    && let Some(val) = rig.get_axt().unwrap().calibration_use
                 {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_key());
-                    fit_data.rigs_offline_calibration.insert(item_key, *val);
+                    fit_data.rigs_offline_calibration.insert(item_key, val);
                 }
             }
             ad::AState::Online => match item {
@@ -52,7 +52,7 @@ impl Vast {
                         fit_data
                             .mods_svcs_max_group_online_all
                             .add_entry(a_item_grp_id, item_key);
-                        if module.get_attrs().unwrap().contains_key(&ac::attrs::MAX_GROUP_ONLINE) {
+                        if item_axt.max_group_online_limited {
                             fit_data
                                 .mods_svcs_max_group_online_limited
                                 .insert(item_key, a_item_grp_id);
@@ -79,7 +79,7 @@ impl Vast {
                         fit_data
                             .mods_svcs_max_group_online_all
                             .add_entry(a_item_grp_id, item_key);
-                        if service.get_attrs().unwrap().contains_key(&ac::attrs::MAX_GROUP_ONLINE) {
+                        if item_axt.max_group_online_limited {
                             fit_data
                                 .mods_svcs_max_group_online_limited
                                 .insert(item_key, a_item_grp_id);
@@ -104,7 +104,7 @@ impl Vast {
                     let item_axt = module.get_axt().unwrap();
                     if let Some(a_item_grp_id) = module.get_val_active_group_id() {
                         fit_data.mods_max_group_active_all.add_entry(a_item_grp_id, item_key);
-                        if module.get_attrs().unwrap().contains_key(&ac::attrs::MAX_GROUP_ACTIVE) {
+                        if item_axt.max_group_active_limited {
                             fit_data.mods_max_group_active_limited.insert(item_key, a_item_grp_id);
                         }
                     }
@@ -236,7 +236,9 @@ impl Vast {
                     let item_axt = module.get_axt().unwrap();
                     if let Some(a_item_grp_id) = module.get_val_active_group_id() {
                         fit_data.mods_max_group_active_all.remove_entry(a_item_grp_id, item_key);
-                        fit_data.mods_max_group_active_limited.remove(item_key);
+                        if item_axt.max_group_active_limited {
+                            fit_data.mods_max_group_active_limited.remove(item_key);
+                        }
                     }
                     match module.get_max_state().unwrap() {
                         ad::AState::Offline => {

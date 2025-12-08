@@ -39,15 +39,17 @@ fn get_dmg_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<OutputDmgBreacher> {
-    let mut abs_max = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_MAX_DMG_PER_TICK)?;
+    let attr_consts = ctx.ac();
+    let mut abs_max = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_max_dmg_per_tick, OF(0.0))?;
     let mut rel_max =
-        calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_MAX_HP_PERC_PER_TICK)? / OF(100.0);
-    let duration_s = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOT_DURATION)? / OF(1000.0);
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_max_hp_perc_per_tick, OF(0.0))? / OF(100.0);
+    let duration_s =
+        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_duration, OF(0.0))? / OF(1000.0);
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         let mult = get_breacher_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);

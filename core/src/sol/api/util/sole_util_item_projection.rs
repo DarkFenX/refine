@@ -75,7 +75,7 @@ impl SolarSystem {
                     svc.notify_effect_proj_data_changed(
                         u_data,
                         projector_key,
-                        r_effect.get_key(),
+                        r_effect.key,
                         projectee_key,
                         projectee_u_item,
                         proj_data,

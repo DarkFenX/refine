@@ -1,7 +1,7 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::AttrVal,
+    def::{AttrVal, OF},
     ec,
     ed::EEffectId,
     misc::EffectSpec,
@@ -38,13 +38,14 @@ fn internal_get_neut_opc(
     projector_effect: &REffect,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::ENERGY_NEUT_AMOUNT)?;
-    let delay = calc.get_item_attr_val_extra_opt(ctx, projector_key, &ac::attrs::DOOMSDAY_WARNING_DURATION)?;
+    let attr_consts = ctx.ac();
+    let mut amount = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.energy_neut_amount, OF(0.0))?;
+    let delay = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.doomsday_warning_duration, OF(0.0))?;
     if let Some(projectee_key) = projectee_key {
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.get_key()),
+            EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
         amount *= get_aoe_burst_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
@@ -55,7 +56,7 @@ fn internal_get_neut_opc(
             amount *= neut_mult;
         }
         // Total resource pool limit
-        if let Some(cap) = calc.get_item_attr_val_extra_opt(ctx, projectee_key, &ac::attrs::CAPACITOR_CAPACITY) {
+        if let Some(cap) = calc.get_item_oattr_oextra(ctx, projectee_key, attr_consts.capacitor_capacity) {
             amount = amount.min(cap);
         }
     }

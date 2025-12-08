@@ -46,24 +46,24 @@ impl StandardRegister {
             }
         }
         // Buff-related processing
-        if let Some(item_list_ids) = item.get_proj_buff_item_lists()
-            && !item_list_ids.is_empty()
+        if let Some(item_list_keys) = item.get_proj_buff_item_lists()
+            && !item_list_keys.is_empty()
         {
-            for &item_list_id in item_list_ids {
-                self.affectee_buffable.add_entry((fit_key, item_list_id), item_key);
+            for &item_list_key in item_list_keys {
+                self.affectee_buffable.add_entry((fit_key, item_list_key), item_key);
             }
             let ship = match item {
                 UItem::Ship(ship) if let Ok(loc_kind) = ship.get_kind().try_into() => {
-                    for &item_list_id in item_list_ids {
+                    for &item_list_key in item_list_keys {
                         self.affectee_buffable_ships
-                            .add_entry(item_list_id, (ship.get_fit_key(), item_key, loc_kind));
+                            .add_entry(item_list_key, (ship.get_fit_key(), item_key, loc_kind));
                     }
                     Some(ship)
                 }
                 _ => None,
             };
-            self.reg_affectee_for_sw_buff(item_key, ship, item_list_ids);
-            self.reg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_ids);
+            self.reg_affectee_for_sw_buff(item_key, ship, item_list_keys);
+            self.reg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_keys);
         }
         if let UItem::Ship(ship) = item {
             self.load_affectee_for_fleet(ctx, item_key, ship);
@@ -116,24 +116,24 @@ impl StandardRegister {
             }
         }
         // Buff-related processing
-        if let Some(item_list_ids) = item.get_proj_buff_item_lists()
-            && !item_list_ids.is_empty()
+        if let Some(item_list_keys) = item.get_proj_buff_item_lists()
+            && !item_list_keys.is_empty()
         {
-            for &item_list_id in item_list_ids {
-                self.affectee_buffable.remove_entry((fit_key, item_list_id), &item_key);
+            for &item_list_key in item_list_keys {
+                self.affectee_buffable.remove_entry((fit_key, item_list_key), &item_key);
             }
             let ship = match item {
                 UItem::Ship(ship) if let Ok(loc_kind) = ship.get_kind().try_into() => {
-                    for &item_list_id in item_list_ids {
+                    for &item_list_key in item_list_keys {
                         self.affectee_buffable_ships
-                            .remove_entry(item_list_id, &(ship.get_fit_key(), item_key, loc_kind));
+                            .remove_entry(item_list_key, &(ship.get_fit_key(), item_key, loc_kind));
                     }
                     Some(ship)
                 }
                 _ => None,
             };
-            self.unreg_affectee_for_sw_buff(item_key, ship, item_list_ids);
-            self.unreg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_ids);
+            self.unreg_affectee_for_sw_buff(item_key, ship, item_list_keys);
+            self.unreg_affectee_for_fw_buff(item_key, ship, fit_key, item_list_keys);
         }
         cmods
     }

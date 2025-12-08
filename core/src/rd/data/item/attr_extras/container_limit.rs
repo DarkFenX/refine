@@ -1,32 +1,33 @@
 use itertools::Itertools;
 
 use crate::{
-    ac,
-    ad::{AAttrId, AAttrVal, AItemGrpId},
+    ad::{AAttrVal, AItemGrpId},
+    rd::{RAttrConsts, RAttrKey},
     util::RMap,
 };
-
-const GROUP_ATTRS: [AAttrId; 6] = [
-    ac::attrs::LAUNCHER_GROUP,
-    ac::attrs::LAUNCHER_GROUP2,
-    ac::attrs::LAUNCHER_GROUP3,
-    ac::attrs::LAUNCHER_GROUP4,
-    ac::attrs::LAUNCHER_GROUP5,
-    ac::attrs::LAUNCHER_GROUP6,
-];
 
 #[derive(Clone)]
 pub(crate) struct RItemContLimit {
     pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_container_limit(item_attrs: &RMap<AAttrId, AAttrVal>) -> Option<RItemContLimit> {
-    let group_ids = GROUP_ATTRS
-        .iter()
-        .filter_map(|a| item_attrs.get(a))
-        .map(|v| v.round() as AItemGrpId)
-        .unique()
-        .collect_vec();
+pub(super) fn get_item_container_limit(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<RItemContLimit> {
+    let group_ids = [
+        attr_consts.launcher_group,
+        attr_consts.launcher_group2,
+        attr_consts.launcher_group3,
+        attr_consts.launcher_group4,
+        attr_consts.launcher_group5,
+        attr_consts.launcher_group6,
+    ]
+    .iter()
+    .filter_map(|opt| opt.and_then(|attr_key| item_attrs.get(&attr_key)))
+    .map(|v| v.round() as AItemGrpId)
+    .unique()
+    .collect_vec();
     if group_ids.is_empty() {
         return None;
     }

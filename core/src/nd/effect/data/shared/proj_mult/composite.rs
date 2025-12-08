@@ -7,7 +7,6 @@ use super::{
     },
 };
 use crate::{
-    ac,
     def::{AttrVal, OF},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
@@ -116,7 +115,7 @@ pub(in crate::nd::effect::data) fn get_bomb_proj_mult(
     if mult == OF(0.0) {
         return OF(0.0);
     }
-    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::AOE_CLOUD_SIZE)
+    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
 }
 
 pub(in crate::nd::effect::data) fn get_guided_bomb_proj_mult(
@@ -131,7 +130,7 @@ pub(in crate::nd::effect::data) fn get_guided_bomb_proj_mult(
     if mult == OF(0.0) {
         return OF(0.0);
     }
-    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::AOE_CLOUD_SIZE)
+    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
 }
 
 pub(in crate::nd::effect::data) fn get_bubble_proj_mult(
@@ -162,7 +161,7 @@ pub(in crate::nd::effect::data) fn get_aoe_burst_proj_mult(
         calc,
         projector_key,
         projectee_key,
-        &ac::attrs::DOOMSDAY_AOE_SIG_RADIUS,
+        ctx.ac().doomsday_aoe_sig_radius,
     )
 }
 
@@ -178,7 +177,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_proj_mult(
     if mult == OF(0.0) {
         return OF(0.0);
     }
-    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, &ac::attrs::SIG_RADIUS)
+    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().sig_radius)
 }
 
 pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_proj_mult(
@@ -198,7 +197,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_proj_mult(
         calc,
         projector_key,
         projectee_key,
-        &ac::attrs::DOOMSDAY_ENERGY_NEUT_SIG_RADIUS,
+        ctx.ac().doomsday_energy_neut_sig_radius,
     )
 }
 
@@ -219,7 +218,7 @@ pub(in crate::nd::effect::data) fn get_neut_proj_mult(
         calc,
         projector_key,
         projectee_key,
-        &ac::attrs::ENERGY_NEUT_SIG_RESOLUTION,
+        ctx.ac().energy_neut_sig_resolution,
     )
 }
 
