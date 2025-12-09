@@ -9,7 +9,7 @@ use crate::{
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
+        calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey, misc::ItemAttrValData},
         err::KeyedItemLoadedError,
     },
     ud::{UItem, UItemKey},
@@ -246,12 +246,7 @@ impl Calc {
         attr_key: RAttrKey,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         // Try accessing cached value
-        let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
-            Some(item_attr_data) => item_attr_data,
-            None => {
-                return Err(KeyedItemLoadedError { item_key });
-            }
-        };
+        let item_attr_data = self.get_item_data_with_err(item_key)?;
         if let Some(cval) = item_attr_data.values.get(&attr_key) {
             return Ok(match item_attr_data.postprocs.get(&attr_key) {
                 Some(postprocs) => {
@@ -277,12 +272,7 @@ impl Calc {
         item_key: UItemKey,
         attr_key: RAttrKey,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
-        let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
-            Some(item_attr_data) => item_attr_data,
-            None => {
-                return Err(KeyedItemLoadedError { item_key });
-            }
-        };
+        let item_attr_data = self.get_item_data_with_err(item_key)?;
         if let Some(cval) = item_attr_data.values.get(&attr_key) {
             return Ok(*cval);
         };
@@ -300,14 +290,11 @@ impl Calc {
         item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVal)> + use<>, KeyedItemLoadedError> {
         let item = ctx.u_data.items.get(item_key);
-        // SolItem can have attributes which are not defined on the original EVE item. This happens
+        // Items can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let item_attr_data = match self.attrs.get_item_attr_data(&item_key) {
-            Some(item_attr_data) => item_attr_data,
-            None => return Err(KeyedItemLoadedError { item_key }),
-        };
+        let item_attr_data = self.get_item_data_with_err(item_key)?;
         let pp_attr_keys = item_attr_data.postprocs.keys().copied().collect_vec();
         let mut cvals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
@@ -435,5 +422,11 @@ impl Calc {
             }
         }
         get_base_attr_value(item, attr)
+    }
+    fn get_item_data_with_err(&self, item_key: UItemKey) -> Result<&ItemAttrValData, KeyedItemLoadedError> {
+        // All loaded items have attribute map created for them
+        self.attrs
+            .get_item_attr_data(&item_key)
+            .ok_or_else(|| KeyedItemLoadedError { item_key })
     }
 }
