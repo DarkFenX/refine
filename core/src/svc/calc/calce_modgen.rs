@@ -86,7 +86,7 @@ impl Calc {
         if let Some(customizer) = effect.calc_customizer {
             customizer(
                 reuse_rmods,
-                &ctx.u_data.src.get_attr_consts(),
+                ctx.u_data.src.get_attr_consts(),
                 EffectSpec::new(item_key, effect.key),
             );
         }

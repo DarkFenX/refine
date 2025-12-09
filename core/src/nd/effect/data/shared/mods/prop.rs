@@ -114,7 +114,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     let val = OF(1.0) + perc / OF(100.0);
     // Register dependencies, so that affectee attribute is properly cleared up when any of affector
     // attributes change
-    reg_dependencies(calc, &ctx.u_data.src.get_attr_consts(), ship_key, espec);
+    reg_dependencies(calc, ctx.u_data.src.get_attr_consts(), ship_key, espec);
     Some(val)
 }
 

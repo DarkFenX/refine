@@ -19,9 +19,10 @@ impl REffectBuffInfo {
         buff_id_key_map: &RMap<ABuffId, RBuffKey>,
     ) -> Option<Self> {
         let r_buff = Self {
-            attr_merge: a_buff.attr_merge.as_ref().and_then(|v| {
-                REffectBuffAttrMerge::try_from_a_buff_attr_merge(v, item_list_id_key_map, attr_id_key_map)
-            }),
+            attr_merge: a_buff
+                .attr_merge
+                .as_ref()
+                .and_then(|v| REffectBuffAttrMerge::try_from_a_buff_attr_merge(v, item_list_id_key_map)),
             full: a_buff
                 .full
                 .iter()
@@ -44,7 +45,6 @@ impl REffectBuffAttrMerge {
     fn try_from_a_buff_attr_merge(
         a_buff_attr_merge: &AEffectBuffAttrMerge,
         item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
     ) -> Option<Self> {
         Some(Self {
             scope: REffectBuffScope::try_from_a_buff_scope(&a_buff_attr_merge.scope, item_list_id_key_map)?,

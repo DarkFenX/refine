@@ -67,7 +67,7 @@ impl Calc {
     }
     pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem) {
         // Notify core calc services
-        self.attrs.item_loaded(&ctx.u_data, item_key, item);
+        self.attrs.item_loaded(ctx.u_data, item_key, item);
         let cmods = self.std.reg_affectee(ctx, item_key, item);
         if !cmods.is_empty() {
             let mut reuse_affectees = Vec::new();

@@ -411,6 +411,6 @@ impl Calc {
         // All loaded items have attribute map created for them
         self.attrs
             .get_item_attr_data(&item_key)
-            .ok_or_else(|| KeyedItemLoadedError { item_key })
+            .ok_or(KeyedItemLoadedError { item_key })
     }
 }

@@ -11,7 +11,7 @@ pub(in crate::adg::flow::s8_conv_post) fn fill_effect_projectee_filters(a_data: 
             {
                 let a_item_list_id = match n_projectee_filter {
                     NEffectProjecteeFilter::ItemList(a_item_list_id) => *a_item_list_id,
-                    NEffectProjecteeFilter::ItemListAttr(a_attr_id) => match a_item.attrs.get(&a_attr_id) {
+                    NEffectProjecteeFilter::ItemListAttr(a_attr_id) => match a_item.attrs.get(a_attr_id) {
                         Some(&attr_value) => match attr_value.round() as AEveItemListId {
                             0 => continue,
                             eve_item_list_id => AItemListId::Eve(eve_item_list_id),
