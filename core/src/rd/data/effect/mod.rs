@@ -1,5 +1,5 @@
 pub(crate) use buff_info::{
-    REffectBuffAttrMerge, REffectBuffDuration, REffectBuffFull, REffectBuffInfo, REffectBuffScope, REffectBuffStrength,
+    REffectBuffAttrMerge, REffectBuffFull, REffectBuffInfo, REffectBuffScope, REffectBuffStrength,
 };
 pub(crate) use charge::{REffectCharge, REffectChargeLoc};
 pub(crate) use consts::REffectConsts;

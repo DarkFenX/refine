@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AAttrVal, ABuffId, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo,
-        AEffectBuffScope, AEffectBuffStrength, AItemListId,
+        AAttrId, AAttrVal, ABuffId, AEffectBuffAttrMerge, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope,
+        AEffectBuffStrength, AItemListId,
     },
     rd::{RAttrKey, RBuffKey, RItemListKey},
     util::RMap,
@@ -38,7 +38,6 @@ impl REffectBuffInfo {
 }
 
 pub(crate) struct REffectBuffAttrMerge {
-    pub(crate) duration: REffectBuffDuration,
     pub(crate) scope: REffectBuffScope,
 }
 impl REffectBuffAttrMerge {
@@ -48,7 +47,6 @@ impl REffectBuffAttrMerge {
         attr_id_key_map: &RMap<AAttrId, RAttrKey>,
     ) -> Option<Self> {
         Some(Self {
-            duration: REffectBuffDuration::from_a_buff_duration(&a_buff_attr_merge.duration, attr_id_key_map),
             scope: REffectBuffScope::try_from_a_buff_scope(&a_buff_attr_merge.scope, item_list_id_key_map)?,
         })
     }
@@ -57,7 +55,6 @@ impl REffectBuffAttrMerge {
 pub(crate) struct REffectBuffFull {
     pub(crate) buff_key: RBuffKey,
     pub(crate) strength: REffectBuffStrength,
-    pub(crate) duration: REffectBuffDuration,
     pub(crate) scope: REffectBuffScope,
 }
 impl REffectBuffFull {
@@ -70,7 +67,6 @@ impl REffectBuffFull {
         Some(Self {
             buff_key: *buff_id_key_map.get(&a_buff_full.buff_id)?,
             strength: REffectBuffStrength::try_from_a_buff_strength(&a_buff_full.strength, attr_id_key_map)?,
-            duration: REffectBuffDuration::from_a_buff_duration(&a_buff_full.duration, attr_id_key_map),
             scope: REffectBuffScope::try_from_a_buff_scope(&a_buff_full.scope, item_list_id_key_map)?,
         })
     }
@@ -88,24 +84,6 @@ impl REffectBuffStrength {
         match a_buff_strength {
             AEffectBuffStrength::Attr(attr_id) => Some(Self::Attr(*attr_id_key_map.get(attr_id)?)),
             AEffectBuffStrength::Hardcoded(val) => Some(Self::Hardcoded(*val)),
-        }
-    }
-}
-
-pub(crate) enum REffectBuffDuration {
-    None,
-    AttrMs(RAttrKey),
-}
-impl REffectBuffDuration {
-    fn from_a_buff_duration(a_buff_duration: &AEffectBuffDuration, attr_id_key_map: &RMap<AAttrId, RAttrKey>) -> Self {
-        match a_buff_duration {
-            AEffectBuffDuration::None => Self::None,
-            // Unlike other buff info parts, do not fail conversion when attribute does not exist
-            // in data. The lib does not use duration in any way anyway.
-            AEffectBuffDuration::AttrMs(attr_id) => match attr_id_key_map.get(attr_id) {
-                Some(attr_key) => Self::AttrMs(*attr_key),
-                None => Self::None,
-            },
         }
     }
 }

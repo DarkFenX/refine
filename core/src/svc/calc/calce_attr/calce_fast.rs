@@ -143,22 +143,6 @@ impl Calc {
         }
     }
     // - Optional item
-    // - Extra value as an option
-    pub(crate) fn get_oitem_attr_oextra(
-        &mut self,
-        ctx: SvcCtx,
-        item_key: Option<UItemKey>,
-        attr_key: RAttrKey,
-    ) -> Option<AttrVal> {
-        match item_key {
-            Some(item_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                Ok(full) => Some(full.extra),
-                Err(_) => None,
-            },
-            None => None,
-        }
-    }
-    // - Optional item
     // - Optional attribute
     // - Fallback for missing attribute argument
     // - Extra value as an option

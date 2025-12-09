@@ -3,8 +3,8 @@ pub(crate) use attr::{RAttr, RAttrConsts};
 pub(crate) use buff::{RBuff, RBuffModifier};
 pub(crate) use data::RData;
 pub(crate) use effect::{
-    REffect, REffectBuffAttrMerge, REffectBuffDuration, REffectBuffFull, REffectBuffInfo, REffectBuffScope,
-    REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectModifier, REffectProjecteeFilter,
+    REffect, REffectBuffAttrMerge, REffectBuffFull, REffectBuffInfo, REffectBuffScope, REffectBuffStrength,
+    REffectCharge, REffectChargeLoc, REffectConsts, REffectModifier, REffectProjecteeFilter,
 };
 pub use item::RItemKind;
 pub(crate) use item::{
