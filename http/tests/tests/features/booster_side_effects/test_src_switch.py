@@ -267,7 +267,7 @@ def test_absent_to_valid(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_chance_attr_id = client.mk_eve_attr(datas=[eve_d2])
     eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d2])
-    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d2])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
