@@ -244,7 +244,7 @@ impl Calc {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). Removing attribute forces
             // recalculation
-            if item_attr_data.values.remove(&aspec.attr_key).is_some() {
+            if item_attr_data.unset_value(aspec.attr_key) {
                 self.attr_value_changed(ctx, aspec);
             }
         }
@@ -267,7 +267,7 @@ impl Calc {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). In this case we do not remove
             // attribute, because only postprocessing output is supposed to change
-            if item_attr_data.values.contains_key(&aspec.attr_key) {
+            if item_attr_data.has_value(&aspec.attr_key) {
                 self.attr_value_changed(ctx, aspec);
             }
         }

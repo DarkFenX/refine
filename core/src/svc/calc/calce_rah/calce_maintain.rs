@@ -52,7 +52,7 @@ impl Calc {
             let attr_consts = ctx.ac();
             let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
             if let Some(em_attr_key) = attr_consts.armor_em_dmg_resonance {
-                item_attr_data.postprocs.insert(
+                item_attr_data.reg_postproc(
                     em_attr_key,
                     ItemAttrPostprocs {
                         fast: rah_em_resonance_postproc_fast,
@@ -61,7 +61,7 @@ impl Calc {
                 );
             }
             if let Some(therm_attr_key) = attr_consts.armor_therm_dmg_resonance {
-                item_attr_data.postprocs.insert(
+                item_attr_data.reg_postproc(
                     therm_attr_key,
                     ItemAttrPostprocs {
                         fast: rah_therm_resonance_postproc_fast,
@@ -70,7 +70,7 @@ impl Calc {
                 );
             }
             if let Some(kin_attr_key) = attr_consts.armor_kin_dmg_resonance {
-                item_attr_data.postprocs.insert(
+                item_attr_data.reg_postproc(
                     kin_attr_key,
                     ItemAttrPostprocs {
                         fast: rah_kin_resonance_postproc_fast,
@@ -79,7 +79,7 @@ impl Calc {
                 );
             }
             if let Some(expl_attr_key) = attr_consts.armor_expl_dmg_resonance {
-                item_attr_data.postprocs.insert(
+                item_attr_data.reg_postproc(
                     expl_attr_key,
                     ItemAttrPostprocs {
                         fast: rah_expl_resonance_postproc_fast,
@@ -108,16 +108,16 @@ impl Calc {
             let attr_consts = ctx.ac();
             let item_attr_data = self.attrs.get_item_attr_data_mut(item_key).unwrap();
             if let Some(em_attr_key) = attr_consts.armor_em_dmg_resonance {
-                item_attr_data.postprocs.remove(&em_attr_key);
+                item_attr_data.unreg_postproc(em_attr_key);
             }
             if let Some(therm_attr_key) = attr_consts.armor_therm_dmg_resonance {
-                item_attr_data.postprocs.remove(&therm_attr_key);
+                item_attr_data.unreg_postproc(therm_attr_key);
             }
             if let Some(kin_attr_key) = attr_consts.armor_kin_dmg_resonance {
-                item_attr_data.postprocs.remove(&kin_attr_key);
+                item_attr_data.unreg_postproc(kin_attr_key);
             }
             if let Some(expl_attr_key) = attr_consts.armor_expl_dmg_resonance {
-                item_attr_data.postprocs.remove(&expl_attr_key);
+                item_attr_data.unreg_postproc(expl_attr_key);
             }
             // Remove sim data for RAH being stopped
             self.rah.resonances.remove(item_key);

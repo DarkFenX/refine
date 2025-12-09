@@ -4,13 +4,20 @@ use crate::{
     rd::RAttr,
     svc::{
         SvcCtx,
-        calc::{Calc, CtxModifier},
+        calc::{Calc, CtxModifier, misc::ItemAttrData},
         eff_funcs,
+        err::KeyedItemLoadedError,
     },
-    ud::UItem,
+    ud::{UItem, UItemKey},
 };
 
 impl Calc {
+    pub(super) fn get_item_data_with_err(&self, item_key: UItemKey) -> Result<&ItemAttrData, KeyedItemLoadedError> {
+        // All loaded items have attribute map created for them
+        self.attrs
+            .get_item_attr_data(&item_key)
+            .ok_or(KeyedItemLoadedError { item_key })
+    }
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
         let resist_attr_key = cmod.raw.resist_attr_key?;
         let item_key = cmod.ctx.get_item_key()?;

@@ -1,7 +1,5 @@
 use std::collections::hash_map::Entry;
 
-use itertools::Itertools;
-
 use super::calce_shared::get_base_attr_value;
 use crate::{
     def::AttrVal,
@@ -9,7 +7,7 @@ use crate::{
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey, misc::ItemAttrValData},
+        calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
         err::KeyedItemLoadedError,
     },
     ud::{UItem, UItemKey},
@@ -231,20 +229,22 @@ impl Calc {
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        if let Some(&cval) = item_attr_data.values.get(&attr_key) {
-            return Ok(match item_attr_data.postprocs.get(&attr_key) {
+        if let Some(attr_entry) = item_attr_data.get(&attr_key)
+            && let Some(cval) = attr_entry.value
+        {
+            let cval = match &attr_entry.postprocs {
                 Some(postprocs) => {
                     let pp_fn = postprocs.fast;
                     pp_fn(self, ctx, item_key, cval)
                 }
                 None => cval,
-            });
+            };
+            return Ok(cval);
         }
         // If it is not cached, calculate and cache it
         let mut cval = self.calc_item_attr_val(ctx, item_key, attr_key);
         let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
-        item_attr_data.values.insert(attr_key, cval);
-        if let Some(postprocs) = item_attr_data.postprocs.get(&attr_key) {
+        if let Some(postprocs) = item_attr_data.set_value_and_get_pp(attr_key, cval) {
             let pp_fn = postprocs.fast;
             cval = pp_fn(self, ctx, item_key, cval);
         }
@@ -257,15 +257,16 @@ impl Calc {
         attr_key: RAttrKey,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        if let Some(&cval) = item_attr_data.values.get(&attr_key) {
+        if let Some(attr_entry) = item_attr_data.get(&attr_key)
+            && let Some(cval) = attr_entry.value
+        {
             return Ok(cval);
-        };
+        }
         let cval = self.calc_item_attr_val(ctx, item_key, attr_key);
         self.attrs
             .get_item_attr_data_mut(&item_key)
             .unwrap()
-            .values
-            .insert(attr_key, cval);
+            .set_value_and_get_pp(attr_key, cval);
         Ok(cval)
     }
     pub(in crate::svc) fn iter_item_attrs_rfull(
@@ -273,39 +274,40 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVal)> + use<>, KeyedItemLoadedError> {
-        let item = ctx.u_data.items.get(item_key);
         // Items can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        let pp_attr_keys = item_attr_data.postprocs.keys().copied().collect_vec();
-        let mut cvals = item_attr_data.values.clone();
+        let mut result = RMap::new();
+        let mut attrs_with_pps = Vec::new();
+        for (&attr_key, attr_entry) in item_attr_data.iter() {
+            if let Some(cval) = attr_entry.value {
+                result.insert(attr_key, cval);
+                if let Some(postprocs) = &attr_entry.postprocs {
+                    attrs_with_pps.push((attr_key, postprocs.fast));
+                }
+            }
+        }
+        for (attr_key, pp_fn) in attrs_with_pps {
+            if let Entry::Occupied(mut entry) = result.entry(attr_key) {
+                let cval = *entry.get();
+                let cval = pp_fn(self, ctx, item_key, cval);
+                entry.insert(cval);
+            }
+        }
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
+        let item = ctx.u_data.items.get(item_key);
         for &attr_key in item.get_attrs().unwrap().keys() {
-            if let Entry::Vacant(entry) = cvals.entry(attr_key) {
+            if let Entry::Vacant(entry) = result.entry(attr_key) {
                 match self.get_item_attr_rfull(ctx, item_key, attr_key) {
                     Ok(v) => entry.insert(v),
                     _ => continue,
                 };
             }
         }
-        for pp_attr_key in pp_attr_keys {
-            if let Some(cval) = cvals.get(&pp_attr_key) {
-                let pp_fn = self
-                    .attrs
-                    .get_item_attr_data(&item_key)
-                    .unwrap()
-                    .postprocs
-                    .get(&pp_attr_key)
-                    .unwrap()
-                    .fast;
-                let cval = pp_fn(self, ctx, item_key, *cval);
-                cvals.insert(pp_attr_key, cval);
-            }
-        }
-        Ok(cvals.into_iter())
+        Ok(result.into_iter())
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Private methods
@@ -406,11 +408,5 @@ impl Calc {
             }
         }
         get_base_attr_value(item, attr)
-    }
-    fn get_item_data_with_err(&self, item_key: UItemKey) -> Result<&ItemAttrValData, KeyedItemLoadedError> {
-        // All loaded items have attribute map created for them
-        self.attrs
-            .get_item_attr_data(&item_key)
-            .ok_or(KeyedItemLoadedError { item_key })
     }
 }

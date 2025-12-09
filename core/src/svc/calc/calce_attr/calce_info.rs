@@ -53,12 +53,15 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = RAttrKey> + use<>, KeyedItemLoadedError> {
-        let item_attrs = match ctx.u_data.items.get(item_key).get_attrs() {
-            Some(item_a_attrs) => item_a_attrs,
-            None => return Err(KeyedItemLoadedError { item_key }),
-        };
-        let mut attr_keys: RSet<_> = item_attrs.keys().copied().collect();
-        attr_keys.extend(self.attrs.get_item_attr_data(&item_key).unwrap().values.keys().copied());
+        let item_attr_data = self.get_item_data_with_err(item_key)?;
+        let mut attr_keys = RSet::new();
+        for (&attr_key, attr_entry) in item_attr_data.iter() {
+            if attr_entry.value.is_some() {
+                attr_keys.insert(attr_key);
+            }
+        }
+        let item_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
+        attr_keys.extend(item_attrs.keys().copied());
         Ok(attr_keys.into_iter())
     }
     fn iter_affections(
@@ -163,18 +166,12 @@ impl Calc {
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, attr.hig);
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
-        match self
-            .attrs
-            .get_item_attr_data(&item_key)
-            .unwrap()
-            .postprocs
-            .get(&attr_key)
-        {
-            Some(postprocs) => {
+        match self.attrs.get_item_attr_data(&item_key).unwrap().get(&attr_key) {
+            Some(attr_entry) if let Some(postprocs) = &attr_entry.postprocs => {
                 let pp_fn = postprocs.info;
                 pp_fn(self, ctx, item_key, extra_attr_info)
             }
-            None => extra_attr_info,
+            _ => extra_attr_info,
         }
     }
     fn calc_item_base_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem, attr: &RAttr) -> AttrValInfo {
