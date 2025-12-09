@@ -97,7 +97,7 @@ pub(super) fn get_charge_rate(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts
 }
 
 pub(super) fn get_max_fighter_count(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> ACount {
-    match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
+    match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
         // Ensure there can be at least 1 fighter in a squad
         Some(value) => ACount::max(value.round() as ACount, 1),
         None => 1,
