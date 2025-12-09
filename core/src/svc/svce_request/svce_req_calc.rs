@@ -25,7 +25,7 @@ impl Svc {
         item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVal)>, KeyedItemLoadedError> {
         self.calc
-            .iter_item_attr_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key)
+            .iter_item_attrs_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
     pub(crate) fn iter_item_mods(
         &mut self,

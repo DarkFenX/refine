@@ -231,13 +231,13 @@ impl Calc {
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        if let Some(cval) = item_attr_data.values.get(&attr_key) {
+        if let Some(&cval) = item_attr_data.values.get(&attr_key) {
             return Ok(match item_attr_data.postprocs.get(&attr_key) {
                 Some(postprocs) => {
                     let pp_fn = postprocs.fast;
-                    pp_fn(self, ctx, item_key, *cval)
+                    pp_fn(self, ctx, item_key, cval)
                 }
-                None => *cval,
+                None => cval,
             });
         }
         // If it is not cached, calculate and cache it
@@ -257,8 +257,8 @@ impl Calc {
         attr_key: RAttrKey,
     ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        if let Some(cval) = item_attr_data.values.get(&attr_key) {
-            return Ok(*cval);
+        if let Some(&cval) = item_attr_data.values.get(&attr_key) {
+            return Ok(cval);
         };
         let cval = self.calc_item_attr_val(ctx, item_key, attr_key);
         self.attrs
@@ -268,7 +268,7 @@ impl Calc {
             .insert(attr_key, cval);
         Ok(cval)
     }
-    pub(in crate::svc) fn iter_item_attr_rfull(
+    pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
