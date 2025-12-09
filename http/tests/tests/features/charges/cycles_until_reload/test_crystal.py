@@ -386,13 +386,14 @@ def test_modified(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
-    # Verification - unmodified values are used from charge
+    # Verification - modified values are used for damage amount and damage chance. Chance
+    # modification is used in EVE, mining preservation command burst charges change it.
     api_module.update()
     assert api_module.charge.attrs[eve_dmg_flag_attr_id].extra == approx(0)
     assert api_module.charge.attrs[eve_hp_attr_id].extra == approx(2)
     assert api_module.charge.attrs[eve_chance_attr_id].extra == approx(0.05)
     assert api_module.charge.attrs[eve_dmg_attr_id].extra == approx(0.005)
-    assert api_module.cycles_until_empty == 1000
+    assert api_module.cycles_until_empty == 4000
 
 
 def test_multiple_charges(client, consts):
