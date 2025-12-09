@@ -279,7 +279,9 @@ impl Calc {
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        let mut result = RMap::new();
+        let item = ctx.u_data.items.get(item_key);
+        let base_attrs = item.get_attrs().unwrap();
+        let mut result = RMap::with_capacity(base_attrs.len());
         let mut attrs_with_pps = Vec::new();
         for (&attr_key, attr_entry) in item_attr_data.iter() {
             if let Some(cval) = attr_entry.value {
@@ -298,8 +300,7 @@ impl Calc {
         }
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
-        let item = ctx.u_data.items.get(item_key);
-        for &attr_key in item.get_attrs().unwrap().keys() {
+        for &attr_key in base_attrs.keys() {
             if let Entry::Vacant(entry) = result.entry(attr_key) {
                 match self.get_item_attr_rfull(ctx, item_key, attr_key) {
                     Ok(v) => entry.insert(v),
