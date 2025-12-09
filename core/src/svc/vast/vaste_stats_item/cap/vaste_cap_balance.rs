@@ -152,9 +152,9 @@ fn get_cap_consumed(
             None => continue,
         };
         for (&effect_key, &attr_key) in item_data.iter() {
-            let cap_consumed = match calc.get_item_attr_rextra(ctx, item_key, attr_key) {
-                Ok(cap_consumed) => cap_consumed,
-                Err(_) => continue,
+            let cap_consumed = match calc.get_item_attr_oextra(ctx, item_key, attr_key) {
+                Some(cap_consumed) => cap_consumed,
+                None => continue,
             };
             match (cap_consumed.cmp(&OF(0.0)), drains, gains) {
                 (Ordering::Greater, true, _) | (Ordering::Less, _, true) => (),

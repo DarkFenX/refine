@@ -1,5 +1,5 @@
 use crate::{
-    def::Count,
+    def::{Count, OF},
     rd::RAttrKey,
     svc::{SvcCtx, calc::Calc},
     ud::UItemKey,
@@ -11,14 +11,6 @@ pub(in crate::svc::vast) fn get_attr_as_count(
     max_item_key: Option<UItemKey>,
     max_attr_key: Option<RAttrKey>,
 ) -> Option<Count> {
-    // Return None only when there is no item
-    let max_item_key = max_item_key?;
-    let max_attr_key = match max_attr_key {
-        Some(max_attr_key) => max_attr_key,
-        None => return Some(0),
-    };
-    match calc.get_item_attr_rextra(ctx, max_item_key, max_attr_key) {
-        Ok(val) => Some(val.round() as Count),
-        Err(_) => Some(0),
-    }
+    calc.get_oitem_oattr_afb_oextra(ctx, max_item_key, max_attr_key, OF(0.0))
+        .map(|v| v.round() as Count)
 }

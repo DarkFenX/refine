@@ -19,40 +19,13 @@ impl Calc {
     // Thin wrappers around core query methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // - Extra value as an option
-    pub(crate) fn get_item_attr_odogma(
-        &mut self,
-        ctx: SvcCtx,
-        item_key: UItemKey,
-        attr_key: RAttrKey,
-    ) -> Option<AttrVal> {
-        match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-            Ok(full) => Some(full.dogma),
-            Err(_) => None,
-        }
-    }
-    // - Extra value as a result
-    pub(crate) fn get_item_attr_rextra(
-        &mut self,
-        ctx: SvcCtx,
-        item_key: UItemKey,
-        attr_key: RAttrKey,
-    ) -> Result<AttrVal, KeyedItemLoadedError> {
-        match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-            Ok(full) => Ok(full.extra),
-            Err(err) => Err(err),
-        }
-    }
-    // - Extra value as an option
     pub(crate) fn get_item_attr_oextra(
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
         attr_key: RAttrKey,
     ) -> Option<AttrVal> {
-        match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-            Ok(full) => Some(full.extra),
-            Err(_) => None,
-        }
+        self.get_item_attr_rfull(ctx, item_key, attr_key).ok().map(|v| v.extra)
     }
     // - Optional attribute
     // - Dogma value as an option
@@ -62,13 +35,7 @@ impl Calc {
         item_key: UItemKey,
         attr_key: Option<RAttrKey>,
     ) -> Option<AttrVal> {
-        match attr_key {
-            Some(attr_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                Ok(full) => Some(full.dogma),
-                Err(_) => None,
-            },
-            None => None,
-        }
+        self.get_item_attr_rfull(ctx, item_key, attr_key?).ok().map(|v| v.dogma)
     }
     // - Optional attribute
     // - Extra value as an option
@@ -78,13 +45,7 @@ impl Calc {
         item_key: UItemKey,
         attr_key: Option<RAttrKey>,
     ) -> Option<AttrVal> {
-        match attr_key {
-            Some(attr_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                Ok(full) => Some(full.extra),
-                Err(_) => None,
-            },
-            None => None,
-        }
+        self.get_item_attr_rfull(ctx, item_key, attr_key?).ok().map(|v| v.extra)
     }
     // - Optional attribute
     // - Fallback in case of missing attribute argument
@@ -96,12 +57,12 @@ impl Calc {
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
-        match attr_key {
-            Some(attr_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                Ok(full) => Some(full.dogma),
-                Err(_) => None,
+        match self.get_item_oattr_rfull(ctx, item_key, attr_key) {
+            Ok(full) => Some(full.dogma),
+            Err(error) => match error {
+                GetOAttrError::ItemNotLoaded(_) => None,
+                GetOAttrError::NoAttr(_) => Some(fallback),
             },
-            None => Some(fallback),
         }
     }
     // - Optional attribute
@@ -114,12 +75,12 @@ impl Calc {
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
-        match attr_key {
-            Some(attr_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                Ok(full) => Some(full.extra),
-                Err(_) => None,
+        match self.get_item_oattr_rfull(ctx, item_key, attr_key) {
+            Ok(full) => Some(full.extra),
+            Err(error) => match error {
+                GetOAttrError::ItemNotLoaded(_) => None,
+                GetOAttrError::NoAttr(_) => Some(fallback),
             },
-            None => Some(fallback),
         }
     }
     // - Optional attribute
@@ -132,12 +93,9 @@ impl Calc {
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> AttrVal {
-        match attr_key {
-            Some(attr_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                Ok(full) => full.extra,
-                Err(_) => fallback,
-            },
-            None => fallback,
+        match self.get_item_oattr_rfull(ctx, item_key, attr_key) {
+            Ok(full) => full.extra,
+            Err(_) => fallback,
         }
     }
     // - Optional item
@@ -151,15 +109,12 @@ impl Calc {
         attr_key: Option<UItemKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
-        match item_key {
-            Some(item_key) => match attr_key {
-                Some(attr_key) => match self.get_item_attr_rfull(ctx, item_key, attr_key) {
-                    Ok(full) => Some(full.extra),
-                    Err(_) => None,
-                },
-                None => Some(fallback),
+        match self.get_item_oattr_rfull(ctx, item_key?, attr_key) {
+            Ok(full) => Some(full.extra),
+            Err(error) => match error {
+                GetOAttrError::ItemNotLoaded(_) => None,
+                GetOAttrError::NoAttr(_) => Some(fallback),
             },
-            None => None,
         }
     }
     // - Optional item
@@ -192,12 +147,12 @@ impl Calc {
         attr_key: Option<RAttrKey>,
         fallback: CalcAttrVal,
     ) -> Option<CalcAttrVal> {
-        match attr_key {
-            Some(attr_key) => match self.get_item_attr_rfull_nopp(ctx, item_key, attr_key) {
-                Ok(full) => Some(full),
-                Err(_) => None,
+        match self.get_item_oattr_rfull_nopp(ctx, item_key, attr_key) {
+            Ok(full) => Some(full),
+            Err(error) => match error {
+                GetOAttrError::ItemNotLoaded(_) => None,
+                GetOAttrError::NoAttr(_) => Some(fallback),
             },
-            None => Some(fallback),
         }
     }
     // - Optional attribute
@@ -211,16 +166,13 @@ impl Calc {
         attr_key: Option<RAttrKey>,
         fallback: CalcAttrVal,
     ) -> CalcAttrVal {
-        match attr_key {
-            Some(attr_key) => self
-                .get_item_attr_rfull_nopp(ctx, item_key, attr_key)
-                .unwrap_or(fallback),
-            None => fallback,
-        }
+        self.get_item_oattr_rfull_nopp(ctx, item_key, attr_key)
+            .unwrap_or(fallback)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Core query methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    // TODO: make code below less duplicated
     pub(crate) fn get_item_attr_rfull(
         &mut self,
         ctx: SvcCtx,
@@ -250,13 +202,50 @@ impl Calc {
         }
         Ok(cval)
     }
-    fn get_item_attr_rfull_nopp(
+    fn get_item_oattr_rfull(
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
-        attr_key: RAttrKey,
-    ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
+        attr_key: Option<RAttrKey>,
+    ) -> Result<CalcAttrVal, GetOAttrError> {
+        // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
+        let attr_key = match attr_key {
+            Some(attr_key) => attr_key,
+            None => return Err(NoAttrError {}.into()),
+        };
+        if let Some(attr_entry) = item_attr_data.get(&attr_key)
+            && let Some(cval) = attr_entry.value
+        {
+            let cval = match &attr_entry.postprocs {
+                Some(postprocs) => {
+                    let pp_fn = postprocs.fast;
+                    pp_fn(self, ctx, item_key, cval)
+                }
+                None => cval,
+            };
+            return Ok(cval);
+        }
+        // If it is not cached, calculate and cache it
+        let mut cval = self.calc_item_attr_val(ctx, item_key, attr_key);
+        let item_attr_data = self.attrs.get_item_attr_data_mut(&item_key).unwrap();
+        if let Some(postprocs) = item_attr_data.set_value_and_get_pp(attr_key, cval) {
+            let pp_fn = postprocs.fast;
+            cval = pp_fn(self, ctx, item_key, cval);
+        }
+        Ok(cval)
+    }
+    fn get_item_oattr_rfull_nopp(
+        &mut self,
+        ctx: SvcCtx,
+        item_key: UItemKey,
+        attr_key: Option<RAttrKey>,
+    ) -> Result<CalcAttrVal, GetOAttrError> {
+        let item_attr_data = self.get_item_data_with_err(item_key)?;
+        let attr_key = match attr_key {
+            Some(attr_key) => attr_key,
+            None => return Err(NoAttrError {}.into()),
+        };
         if let Some(attr_entry) = item_attr_data.get(&attr_key)
             && let Some(cval) = attr_entry.value
         {
@@ -409,4 +398,16 @@ impl Calc {
         }
         get_base_attr_value(item, attr)
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+#[error("no attribute key in request")]
+struct NoAttrError {}
+
+#[derive(thiserror::Error, Debug)]
+enum GetOAttrError {
+    #[error("{0}")]
+    ItemNotLoaded(#[from] KeyedItemLoadedError),
+    #[error("{0}")]
+    NoAttr(#[from] NoAttrError),
 }

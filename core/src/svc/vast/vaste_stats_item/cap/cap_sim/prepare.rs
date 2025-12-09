@@ -53,9 +53,9 @@ fn fill_consumers(
             None => continue,
         };
         for (&effect_key, &attr_key) in item_data.iter() {
-            let cap_consumed = match calc.get_item_attr_rextra(ctx, item_key, attr_key) {
+            let cap_consumed = match calc.get_item_attr_oextra(ctx, item_key, attr_key) {
                 // Cap consumed can be negative value, e.g. for nosfs
-                Ok(cap_consumed) if cap_consumed != OF(0.0) => cap_consumed,
+                Some(cap_consumed) if cap_consumed != OF(0.0) => cap_consumed,
                 _ => continue,
             };
             let effect_cycles = match cycle_map.remove(&effect_key) {
