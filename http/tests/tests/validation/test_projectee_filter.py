@@ -190,6 +190,8 @@ def test_filter_reference_values(client, consts):
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
     eve_ship_id = client.mk_eve_ship()
     eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_ship_id])
+    client.mk_eve_item_list(id_=eve_item_list_id - 1)
+    client.mk_eve_item_list(id_=eve_item_list_id + 1)
     eve_module1_id = client.mk_eve_item(
         attrs={eve_tgt_list_attr_id: eve_item_list_id - 0.6},
         eff_ids=[eve_effect_id],
@@ -213,7 +215,7 @@ def test_filter_reference_values(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - ID is resolved to some value which does not exist, thus check fails
+    # Verification - ID is resolved to lower value which is an empty list, thus check fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
@@ -233,7 +235,7 @@ def test_filter_reference_values(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_src_module.change_module(type_id=eve_module4_id)
-    # Verification - ID is resolved to some value which does not exist again
+    # Verification - ID is resolved to higher value which is an empty list
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
