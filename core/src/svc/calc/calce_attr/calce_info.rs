@@ -54,14 +54,14 @@ impl Calc {
         item_key: UItemKey,
     ) -> Result<impl ExactSizeIterator<Item = RAttrKey> + use<>, KeyedItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        let mut attr_keys = RSet::new();
+        let base_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
+        let mut attr_keys = RSet::with_capacity(item_attr_data.len().max(base_attrs.len()));
         for (&attr_key, attr_entry) in item_attr_data.iter() {
             if attr_entry.value.is_some() {
                 attr_keys.insert(attr_key);
             }
         }
-        let item_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
-        attr_keys.extend(item_attrs.keys().copied());
+        attr_keys.extend(base_attrs.keys().copied());
         Ok(attr_keys.into_iter())
     }
     fn iter_affections(

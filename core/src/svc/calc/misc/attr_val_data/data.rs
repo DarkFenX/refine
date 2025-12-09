@@ -21,6 +21,9 @@ impl ItemAttrData {
     pub(in crate::svc::calc) fn iter(&self) -> impl ExactSizeIterator<Item = (&RAttrKey, &AttrEntry)> {
         self.data.iter()
     }
+    pub(in crate::svc::calc) fn len(&self) -> usize {
+        self.data.len()
+    }
     pub(in crate::svc::calc) fn set_value_and_get_pp(
         &mut self,
         attr_key: RAttrKey,
@@ -52,11 +55,6 @@ impl ItemAttrData {
             Some(attr_entry) => attr_entry.value.is_some(),
             None => false,
         }
-    }
-    pub(in crate::svc::calc) fn iter_postprocs(&self) -> impl Iterator<Item = (&RAttrKey, &ItemAttrPostprocs)> {
-        self.data
-            .iter()
-            .filter_map(|(k, v)| v.postprocs.as_ref().map(|p| (k, p)))
     }
     pub(in crate::svc::calc) fn reg_postproc(&mut self, attr_key: RAttrKey, postprocs: ItemAttrPostprocs) {
         match self.data.entry(attr_key) {

@@ -279,36 +279,35 @@ impl Calc {
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.get_item_data_with_err(item_key)?;
-        let item = ctx.u_data.items.get(item_key);
-        let base_attrs = item.get_attrs().unwrap();
-        let mut result = RMap::with_capacity(base_attrs.len());
+        let base_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
+        let mut cval_map = RMap::with_capacity(item_attr_data.len().max(base_attrs.len()));
         let mut attrs_with_pps = Vec::new();
         for (&attr_key, attr_entry) in item_attr_data.iter() {
             if let Some(cval) = attr_entry.value {
-                result.insert(attr_key, cval);
+                cval_map.insert(attr_key, cval);
                 if let Some(postprocs) = &attr_entry.postprocs {
                     attrs_with_pps.push((attr_key, postprocs.fast));
                 }
             }
         }
         for (attr_key, pp_fn) in attrs_with_pps {
-            if let Entry::Occupied(mut entry) = result.entry(attr_key) {
+            if let Entry::Occupied(mut entry) = cval_map.entry(attr_key) {
                 let cval = *entry.get();
                 let cval = pp_fn(self, ctx, item_key, cval);
                 entry.insert(cval);
             }
         }
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
-        // item
+        // item. Attribute fetcher handles postprocessing on its own, so no need to do it here
         for &attr_key in base_attrs.keys() {
-            if let Entry::Vacant(entry) = result.entry(attr_key) {
+            if let Entry::Vacant(entry) = cval_map.entry(attr_key) {
                 match self.get_item_attr_rfull(ctx, item_key, attr_key) {
                     Ok(v) => entry.insert(v),
                     _ => continue,
                 };
             }
         }
-        Ok(result.into_iter())
+        Ok(cval_map.into_iter())
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Private methods
