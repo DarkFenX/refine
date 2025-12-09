@@ -108,7 +108,7 @@ impl Calc {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(buff_info) = &effect.buff_info
                 && let Some(buff_attr_merge) = &buff_info.attr_merge
-                && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_key, buff_str_attr_key)
+                && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_key, buff_type_attr_key)
             {
                 let buff_id = buff_id_cval.extra.round() as ABuffId;
                 let buff = match ctx.u_data.src.get_buff_by_id(&buff_id) {
