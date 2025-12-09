@@ -98,7 +98,7 @@ fn fill_module_effect_info(
             // - lasers: regular crystal cycle getter
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
-            REffectChargeLoc::TargetAttack(_) => match module.get_axt().unwrap().capacity > OF(0.0) {
+            REffectChargeLoc::TargetAttack => match module.get_axt().unwrap().capacity > OF(0.0) {
                 true => get_crystal_cycle_count(ctx, calc, module, false, options.reload_optionals),
                 false => InfCount::Infinite,
             },

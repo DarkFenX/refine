@@ -24,7 +24,7 @@ impl REffectCharge {
 pub(crate) enum REffectChargeLoc {
     Loaded(NEffectChargeDepl),
     Autocharge(RAttrKey),
-    TargetAttack(RAttrKey),
+    TargetAttack,
 }
 impl REffectChargeLoc {
     pub(in crate::rd::data::effect) fn try_from_n_charge_loc(
@@ -37,17 +37,14 @@ impl REffectChargeLoc {
                 let attr_key = *attr_id_key_map.get(attr_id)?;
                 Some(Self::Autocharge(attr_key))
             }
-            NEffectChargeLoc::TargetAttack(attr_id) => {
-                let attr_key = *attr_id_key_map.get(attr_id)?;
-                Some(Self::TargetAttack(attr_key))
-            }
+            NEffectChargeLoc::TargetAttack(_) => Some(Self::TargetAttack),
         }
     }
     pub(crate) fn get_autocharge_attr_key(&self) -> Option<RAttrKey> {
         match self {
             Self::Loaded(_) => None,
             Self::Autocharge(attr_key) => Some(*attr_key),
-            Self::TargetAttack(attr_key) => Some(*attr_key),
+            Self::TargetAttack => None,
         }
     }
 }

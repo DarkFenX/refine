@@ -19,7 +19,7 @@ const CUR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
 impl Svc {
     pub(crate) fn get_item_cycles_until_empty(&mut self, u_data: &UData, item_key: UItemKey) -> Option<InfCount> {
         let u_item = u_data.items.get(item_key);
-        let defeff_id = u_item.get_defeff_key()??;
+        let defeff_key = u_item.get_defeff_key()??;
         let cycle_info = get_item_cycle_info(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -27,7 +27,7 @@ impl Svc {
             CUR_CYCLE_OPTIONS,
             true,
         )?;
-        Some(cycle_info.get(&defeff_id)?.get_cycles_until_empty())
+        Some(cycle_info.get(&defeff_key)?.get_cycles_until_empty())
     }
     pub(crate) fn get_effect_spool_cycle_count(
         &mut self,
