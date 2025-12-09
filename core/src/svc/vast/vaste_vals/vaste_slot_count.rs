@@ -138,7 +138,7 @@ impl VastFitData {
             ctx,
             calc,
             fit.ship,
-            ctx.ac().ftr_st_light_slots,
+            ctx.ac().ftr_light_slots,
             &self.light_fighters_online,
         )
     }
