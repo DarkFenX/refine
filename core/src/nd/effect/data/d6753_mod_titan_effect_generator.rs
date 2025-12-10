@@ -1,10 +1,10 @@
 use crate::{
     ac,
-    ad::{AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffInfo, AEffectBuffScope, AEffectId},
+    ad::{AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::proj_mult::{get_simple_mod_proj_attrs, get_simple_s2s_noapp_proj_mult},
     },
 };
@@ -16,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
+        adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
                 duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),
                 scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
@@ -24,10 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
-        hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
-            ..
-        },
+        modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
         ..
     }
 }

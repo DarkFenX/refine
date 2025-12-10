@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectBuffInfo, AEffectId, AItem, AItemId},
+    ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     def::AttrVal,
     ed::EEffectId,
     misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, ResolvedSpool, Spool},
@@ -39,26 +39,19 @@ pub(crate) struct NEffect {
     pub(crate) eid: Option<EEffectId>,
     // Adapted data effect ID
     pub(crate) aid: AEffectId,
-    // Specifies if effect applies any buffs
-    pub(crate) adg_buff_info: Option<AEffectBuffInfo> = None,
-    // Data customization function ran during cache generation time
+    // Fields related to adapted data generation - buff info and effect customization functions
+    pub(crate) adg_buff: Option<AEffectBuff> = None,
     pub(crate) adg_make_effect_fn: Option<NEffectMaker> = None,
     pub(crate) adg_assign_effect_fn: Option<NEffectAssigner> = None,
     pub(crate) adg_update_effect_fn: Option<NEffectUpdater> = None,
-    // Getter for attribute IDs which define how attribute modifier is applied in case of projection
-    pub(crate) modifier_proj_attrs_getter: Option<NModProjAttrGetter> = None,
-    // Effect data hardcoded in the library
-    pub(crate) hc: NEffectHc = NEffectHc { .. },
-}
-
-pub(crate) struct NEffectHc {
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) kills_item: bool = false,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_customizer: Option<NCalcCustomizer> = None,
     pub(crate) spool_resolver: Option<NSpoolResolver> = None,
-    // Defines strength of application of projected effects
+    // Define which attributes affect modifier projection strength, and how
+    pub(crate) modifier_proj_attrs_getter: Option<NModProjAttrGetter> = None,
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter> = None,
     // Local reps
     pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter> = None,

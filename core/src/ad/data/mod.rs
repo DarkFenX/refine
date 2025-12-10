@@ -3,7 +3,7 @@ pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use data::AData;
 pub use effect::{
-    AEffect, AEffectAffecteeFilter, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo,
+    AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull,
     AEffectBuffScope, AEffectBuffStrength, AEffectId, AEffectLocation, AEffectModifier,
 };
 pub use item::{AItem, AItemEffectData, ASkillLevel};

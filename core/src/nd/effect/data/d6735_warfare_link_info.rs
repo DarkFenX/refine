@@ -1,9 +1,9 @@
 use crate::{
     ac,
-    ad::{AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffInfo, AEffectBuffScope, AEffectId},
+    ad::{AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_INFO;
@@ -13,22 +13,19 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
+        adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
                 duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),
                 scope: AEffectBuffScope::Fleet(ac::itemlists::SHIPS),
             }),
             ..
         }),
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                    can_run_uncharged: false,
-                }),
-                activates_charge: false,
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                can_run_uncharged: false,
             }),
-            ..
-        },
+            activates_charge: false,
+        }),
         ..
     }
 }

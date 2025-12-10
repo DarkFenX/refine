@@ -1,10 +1,10 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectId},
+    ad::{AEffectBuff, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::{mods::make_dd_self_debuffs, opc::get_aoe_dd_side_neut_opc},
     },
 };
@@ -16,14 +16,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
+        adg_buff: Some(AEffectBuff {
             full: make_dd_self_debuffs().collect(),
             ..
         }),
-        hc: NEffectHc {
-            neut_opc_getter: Some(get_aoe_dd_side_neut_opc),
-            ..
-        },
+        neut_opc_getter: Some(get_aoe_dd_side_neut_opc),
         ..
     }
 }

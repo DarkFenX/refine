@@ -4,7 +4,7 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc},
     svc::{SvcCtx, calc::Calc},
     ud::UItemKey,
 };
@@ -16,16 +16,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                    can_run_uncharged: false,
-                }),
-                activates_charge: false,
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                can_run_uncharged: false,
             }),
-            cap_inject_getter: Some(get_cap_inject),
-            ..
-        },
+            activates_charge: false,
+        }),
+        cap_inject_getter: Some(get_cap_inject),
         ..
     }
 }

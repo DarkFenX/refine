@@ -4,8 +4,7 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
-        effect::data::shared::opc::get_local_armor_rep_opc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, effect::data::shared::opc::get_local_armor_rep_opc,
     },
 };
 
@@ -16,16 +15,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                    can_run_uncharged: true,
-                }),
-                activates_charge: false,
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                can_run_uncharged: true,
             }),
-            local_armor_rep_opc_getter: Some(get_local_armor_rep_opc),
-            ..
-        },
+            activates_charge: false,
+        }),
+        local_armor_rep_opc_getter: Some(get_local_armor_rep_opc),
         ..
     }
 }

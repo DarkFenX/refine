@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::Spool,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc,
         effect::data::shared::{opc::get_outgoing_armor_rep_opc, proj_mult::get_full_noapp_proj_mult},
     },
     rd::REffect,
@@ -21,16 +21,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                    can_run_uncharged: true,
-                }),
-                activates_charge: false,
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                can_run_uncharged: true,
             }),
-            outgoing_armor_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
-            ..
-        },
+            activates_charge: false,
+        }),
+        outgoing_armor_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
         ..
     }
 }

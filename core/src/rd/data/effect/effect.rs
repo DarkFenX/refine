@@ -6,7 +6,7 @@ use crate::{
         NSpoolResolver,
     },
     rd::{
-        RAttrKey, RBuffKey, REffectBuffInfo, REffectCharge, REffectChargeLoc, REffectKey, REffectModifier,
+        RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectModifier,
         REffectProjecteeFilter, RItem, RItemListKey,
     },
     util::{GetId, Named, RMap},
@@ -47,8 +47,8 @@ pub(crate) struct REffect {
     pub(crate) cap_inject_getter: Option<NCapInjectGetter>,
     pub(crate) ecm_opc_getter: Option<NEcmGetter>,
     // Fields which depend on slab keys
-    pub(crate) charge_info: Option<REffectCharge>,
-    pub(crate) buff_info: Option<REffectBuffInfo>,
+    pub(crate) charge: Option<REffectCharge>,
+    pub(crate) buff: Option<REffectBuff>,
     pub(crate) modifier_proj_attr_keys: [Option<RAttrKey>; 2],
     pub(crate) stopped_effect_keys: Vec<REffectKey>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
@@ -74,29 +74,29 @@ impl REffect {
             is_offense: a_effect.is_offense,
             is_usable_in_hisec: a_effect.is_usable_in_hisec,
             is_usable_in_lowsec: a_effect.is_usable_in_lowsec,
-            kills_item: n_effect.map(|n| n.hc.kills_item).unwrap_or(false),
-            calc_customizer: n_effect.and_then(|n| n.hc.calc_customizer),
-            spool_resolver: n_effect.and_then(|n| n.hc.spool_resolver),
-            modifier_proj_mult_getter: n_effect.and_then(|n| n.hc.modifier_proj_mult_getter),
-            local_shield_rep_opc_getter: n_effect.and_then(|n| n.hc.local_shield_rep_opc_getter),
-            local_armor_rep_opc_getter: n_effect.and_then(|n| n.hc.local_armor_rep_opc_getter),
-            local_hull_rep_opc_getter: n_effect.and_then(|n| n.hc.local_hull_rep_opc_getter),
-            dmg_kind_getter: n_effect.and_then(|n| n.hc.dmg_kind_getter),
-            normal_dmg_opc_getter: n_effect.and_then(|n| n.hc.normal_dmg_opc_getter),
-            breacher_dmg_opc_getter: n_effect.and_then(|n| n.hc.breacher_dmg_opc_getter),
-            mining_ore_opc_getter: n_effect.and_then(|n| n.hc.mining_ore_opc_getter),
-            mining_ice_opc_getter: n_effect.and_then(|n| n.hc.mining_ice_opc_getter),
-            mining_gas_opc_getter: n_effect.and_then(|n| n.hc.mining_gas_opc_getter),
-            outgoing_shield_rep_opc_getter: n_effect.and_then(|n| n.hc.outgoing_shield_rep_opc_getter),
-            outgoing_armor_rep_opc_getter: n_effect.and_then(|n| n.hc.outgoing_armor_rep_opc_getter),
-            outgoing_hull_rep_opc_getter: n_effect.and_then(|n| n.hc.outgoing_hull_rep_opc_getter),
-            outgoing_cap_rep_opc_getter: n_effect.and_then(|n| n.hc.outgoing_cap_rep_opc_getter),
-            neut_opc_getter: n_effect.and_then(|n| n.hc.neut_opc_getter),
-            cap_inject_getter: n_effect.and_then(|n| n.hc.cap_inject_getter),
-            ecm_opc_getter: n_effect.and_then(|n| n.hc.ecm_opc_getter),
+            kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
+            calc_customizer: n_effect.and_then(|n| n.calc_customizer),
+            spool_resolver: n_effect.and_then(|n| n.spool_resolver),
+            modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
+            local_shield_rep_opc_getter: n_effect.and_then(|n| n.local_shield_rep_opc_getter),
+            local_armor_rep_opc_getter: n_effect.and_then(|n| n.local_armor_rep_opc_getter),
+            local_hull_rep_opc_getter: n_effect.and_then(|n| n.local_hull_rep_opc_getter),
+            dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
+            normal_dmg_opc_getter: n_effect.and_then(|n| n.normal_dmg_opc_getter),
+            breacher_dmg_opc_getter: n_effect.and_then(|n| n.breacher_dmg_opc_getter),
+            mining_ore_opc_getter: n_effect.and_then(|n| n.mining_ore_opc_getter),
+            mining_ice_opc_getter: n_effect.and_then(|n| n.mining_ice_opc_getter),
+            mining_gas_opc_getter: n_effect.and_then(|n| n.mining_gas_opc_getter),
+            outgoing_shield_rep_opc_getter: n_effect.and_then(|n| n.outgoing_shield_rep_opc_getter),
+            outgoing_armor_rep_opc_getter: n_effect.and_then(|n| n.outgoing_armor_rep_opc_getter),
+            outgoing_hull_rep_opc_getter: n_effect.and_then(|n| n.outgoing_hull_rep_opc_getter),
+            outgoing_cap_rep_opc_getter: n_effect.and_then(|n| n.outgoing_cap_rep_opc_getter),
+            neut_opc_getter: n_effect.and_then(|n| n.neut_opc_getter),
+            cap_inject_getter: n_effect.and_then(|n| n.cap_inject_getter),
+            ecm_opc_getter: n_effect.and_then(|n| n.ecm_opc_getter),
             // Fields which depend on slab keys
-            charge_info: Default::default(),
-            buff_info: Default::default(),
+            charge: Default::default(),
+            buff: Default::default(),
             modifier_proj_attr_keys: Default::default(),
             stopped_effect_keys: Default::default(),
             projectee_filter: Default::default(),
@@ -146,8 +146,8 @@ impl REffect {
                 .iter()
                 .filter_map(|a_effect_mod| REffectModifier::try_from_a_effect_mod(a_effect_mod, attr_id_key_map)),
         );
-        self.buff_info = a_effect.buff_info.as_ref().and_then(|n_buff_info| {
-            REffectBuffInfo::try_from_a_buff(n_buff_info, item_list_id_key_map, attr_id_key_map, buff_id_key_map)
+        self.buff = a_effect.buff.as_ref().and_then(|a_effect_buff| {
+            REffectBuff::try_from_a_buff(a_effect_buff, item_list_id_key_map, attr_id_key_map, buff_id_key_map)
         });
         self.stopped_effect_keys.extend(
             a_effect
@@ -156,12 +156,11 @@ impl REffect {
                 .filter_map(|v| effect_id_key_map.get(v)),
         );
         if let Some(n_effect) = N_EFFECT_MAP.get(&a_effect.id) {
-            self.charge_info = n_effect
-                .hc
+            self.charge = n_effect
                 .charge
                 .as_ref()
                 .and_then(|n_charge| REffectCharge::try_from_n_charge(n_charge, attr_id_key_map));
-            self.projectee_filter = n_effect.hc.projectee_filter.as_ref().and_then(|n_projectee_filter| {
+            self.projectee_filter = n_effect.projectee_filter.as_ref().and_then(|n_projectee_filter| {
                 REffectProjecteeFilter::try_from_n_projectee_filter(
                     n_projectee_filter,
                     item_list_id_key_map,
@@ -182,7 +181,7 @@ impl REffect {
     }
     // Misc methods
     pub(crate) fn activates_charge(&self) -> bool {
-        let charge_info = match &self.charge_info {
+        let charge_info = match &self.charge {
             Some(charge_info) => charge_info,
             None => return false,
         };
@@ -203,7 +202,7 @@ impl REffect {
         defeff_key == self.key
     }
     pub(crate) fn activates_autocharge(&self) -> bool {
-        let charge_info = match &self.charge_info {
+        let charge_info = match &self.charge {
             Some(charge_info) => charge_info,
             None => return false,
         };

@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::Spool,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::{opc::get_outgoing_cap_rep_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
     },
     rd::REffect,
@@ -21,10 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            outgoing_cap_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
-            ..
-        },
+        outgoing_cap_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
         ..
     }
 }

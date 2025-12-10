@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind,
         effect::data::shared::{proj_mult::get_disintegrator_proj_mult, spool::get_resolved_spool},
     },
     rd::REffect,
@@ -25,18 +25,15 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                    can_run_uncharged: false,
-                }),
-                activates_charge: false,
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                can_run_uncharged: false,
             }),
-            spool_resolver: Some(internal_get_resolved_spool),
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            normal_dmg_opc_getter: Some(get_dmg_opc),
-            ..
-        },
+            activates_charge: false,
+        }),
+        spool_resolver: Some(internal_get_resolved_spool),
+        dmg_kind_getter: Some(internal_get_dmg_kind),
+        normal_dmg_opc_getter: Some(get_dmg_opc),
         ..
     }
 }

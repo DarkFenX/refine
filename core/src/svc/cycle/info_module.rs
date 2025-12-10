@@ -82,7 +82,7 @@ fn fill_module_effect_info(
         None => return,
     };
     // Charge count info
-    let cycle_count = match &effect.charge_info {
+    let cycle_count = match &effect.charge {
         Some(charge_info) => match charge_info.location {
             REffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect),
             REffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {

@@ -17,7 +17,7 @@ use crate::{
     ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
@@ -28,13 +28,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::None),
-                activates_charge: true,
-            }),
-            ..
-        },
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::None),
+            activates_charge: true,
+        }),
         ..
     }
 }

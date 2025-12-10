@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{
-        AAttrVal, AData, AEffect, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope,
+        AAttrVal, AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
         AEffectBuffStrength, AEffectId, AItemEffectData, AItemId, AItemListId, AState,
     },
     ed::{EData, EItemSpaceCompBuffData},
@@ -69,7 +69,7 @@ fn process_buffs(
         Some(e_item_list_id) => AItemListId::Eve(e_item_list_id),
         None => ac::itemlists::SHIPS,
     };
-    let buff_info = AEffectBuffInfo {
+    let buff = AEffectBuff {
         full: valid_buffs
             .iter()
             .map(|v| AEffectBuffFull {
@@ -85,7 +85,7 @@ fn process_buffs(
         id: effect_id,
         category: ac::effcats::ACTIVE,
         state: AState::Offline,
-        buff_info: Some(buff_info),
+        buff: Some(buff),
         ..
     };
     a_data.effects.insert(effect_id, effect);

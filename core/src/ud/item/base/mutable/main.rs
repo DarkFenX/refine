@@ -652,7 +652,7 @@ fn merge_effect_datas(
         // Autocharge - if effect defines autocharge attr ID, and its value references some non-zero
         // type ID, compare it to what's already in effect data; if it's different, create a copy
         // of effect data with new value
-        if let Some(charge_info) = &effect.charge_info
+        if let Some(charge_info) = &effect.charge
             && let Some(attr_key) = charge_info.location.get_autocharge_attr_key()
         {
             let new_ac_type_id = match merged_attrs.get(&attr_key) {

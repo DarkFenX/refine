@@ -50,14 +50,14 @@ impl Vast {
                         if let Some(rep_getter) = effect.local_shield_rep_opc_getter {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_shield.add_entry(item_key, effect.key, rep_getter);
-                            if effect.charge_info.is_some() {
+                            if effect.charge.is_some() {
                                 fit_data.lr_shield_limitable.add_entry(item_key, effect.key, rep_getter);
                             }
                         }
                         if let Some(rep_getter) = effect.local_armor_rep_opc_getter {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_armor.add_entry(item_key, effect.key, rep_getter);
-                            if effect.charge_info.is_some() {
+                            if effect.charge.is_some() {
                                 fit_data.lr_armor_limitable.add_entry(item_key, effect.key, rep_getter);
                             }
                         }
@@ -128,14 +128,14 @@ impl Vast {
                         if effect.local_shield_rep_opc_getter.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_shield.remove_l2(item_key, &effect.key);
-                            if effect.charge_info.is_some() {
+                            if effect.charge.is_some() {
                                 fit_data.lr_shield_limitable.remove_l2(item_key, &effect.key);
                             }
                         }
                         if effect.local_armor_rep_opc_getter.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_armor.remove_l2(item_key, &effect.key);
-                            if effect.charge_info.is_some() {
+                            if effect.charge.is_some() {
                                 fit_data.lr_armor_limitable.remove_l2(item_key, &effect.key);
                             }
                         }

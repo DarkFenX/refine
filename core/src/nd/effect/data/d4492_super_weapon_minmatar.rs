@@ -1,10 +1,10 @@
 use crate::{
     ac,
-    ad::{AEffectBuffInfo, AEffectId},
+    ad::{AEffectBuff, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectHc, NEffectProjecteeFilter,
+        NEffect, NEffectDmgKind, NEffectProjecteeFilter,
         effect::data::shared::{mods::make_dd_self_debuffs, opc::get_direct_dd_dmg_opc},
     },
     ud::UItem,
@@ -17,16 +17,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
+        adg_buff: Some(AEffectBuff {
             full: make_dd_self_debuffs().collect(),
             ..
         }),
-        hc: NEffectHc {
-            projectee_filter: Some(NEffectProjecteeFilter::ItemList(ac::itemlists::CAPITALS_FREIGHTERS)),
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            normal_dmg_opc_getter: Some(get_direct_dd_dmg_opc),
-            ..
-        },
+        projectee_filter: Some(NEffectProjecteeFilter::ItemList(ac::itemlists::CAPITALS_FREIGHTERS)),
+        dmg_kind_getter: Some(internal_get_dmg_kind),
+        normal_dmg_opc_getter: Some(get_direct_dd_dmg_opc),
         ..
     }
 }

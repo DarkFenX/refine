@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::EffectSpec,
-    nd::{NEffect, NEffectHc, effect::data::shared::proj_mult::get_aoe_burst_proj_mult},
+    nd::{NEffect, effect::data::shared::proj_mult::get_aoe_burst_proj_mult},
     rd::REffect,
     svc::{
         SvcCtx,
@@ -23,10 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            neut_opc_getter: Some(internal_get_neut_opc),
-            ..
-        },
+        neut_opc_getter: Some(internal_get_neut_opc),
         ..
     }
 }

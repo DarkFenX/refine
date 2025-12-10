@@ -6,8 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
-        NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectHc,
-        effect::data::shared::proj_mult::get_turret_proj_mult,
+        NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, effect::data::shared::proj_mult::get_turret_proj_mult,
     },
     rd::REffect,
     svc::{
@@ -25,20 +24,17 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel
-                // confirmed civilian guns use on-gun damage attributes, and ammo is possibly loaded
-                // just for various side effects (e.g. ammo affecting module attributes, or shot
-                // graphics). The library doesn't implement on-module autocharges just for this
-                // effect.
-                location: NEffectChargeLoc::TargetAttack(ac::attrs::AMMO_LOADED),
-                activates_charge: false,
-            }),
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            normal_dmg_opc_getter: Some(get_dmg_opc),
-            ..
-        },
+        charge: Some(NEffectCharge {
+            // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel
+            // confirmed civilian guns use on-gun damage attributes, and ammo is possibly loaded
+            // just for various side effects (e.g. ammo affecting module attributes, or shot
+            // graphics). The library doesn't implement on-module autocharges just for this
+            // effect.
+            location: NEffectChargeLoc::TargetAttack(ac::attrs::AMMO_LOADED),
+            activates_charge: false,
+        }),
+        dmg_kind_getter: Some(internal_get_dmg_kind),
+        normal_dmg_opc_getter: Some(get_dmg_opc),
         ..
     }
 }

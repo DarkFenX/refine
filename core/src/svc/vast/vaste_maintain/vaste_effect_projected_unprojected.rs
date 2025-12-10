@@ -61,7 +61,7 @@ impl Vast {
                 self.irr_shield
                     .add_entry(projectee_key, projector_key, effect.key, rep_getter);
             }
-            if effect.charge_info.is_some() {
+            if effect.charge.is_some() {
                 self.irr_shield_limitable
                     .add_entry(projectee_key, projector_key, effect.key, rep_getter);
             }
@@ -71,7 +71,7 @@ impl Vast {
                 self.irr_armor
                     .add_entry(projectee_key, projector_key, effect.key, rep_getter);
             }
-            if effect.charge_info.is_some() {
+            if effect.charge.is_some() {
                 self.irr_armor_limitable
                     .add_entry(projectee_key, projector_key, effect.key, rep_getter);
             }
@@ -147,7 +147,7 @@ impl Vast {
             if effect.is_active_with_duration {
                 self.irr_shield.remove_l3(projectee_key, projector_key, &effect.key);
             }
-            if effect.charge_info.is_some() {
+            if effect.charge.is_some() {
                 self.irr_shield_limitable
                     .remove_l3(projectee_key, projector_key, &effect.key);
             }
@@ -156,7 +156,7 @@ impl Vast {
             if effect.is_active_with_duration {
                 self.irr_armor.remove_l3(projectee_key, projector_key, &effect.key);
             }
-            if effect.charge_info.is_some() {
+            if effect.charge.is_some() {
                 self.irr_armor_limitable
                     .remove_l3(projectee_key, projector_key, &effect.key);
             }

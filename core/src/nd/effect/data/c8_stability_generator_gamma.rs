@@ -4,8 +4,8 @@
 use crate::{
     ac,
     ad::{
-        AEffect, AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength,
-        AEffectId, AItemId, AState,
+        AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
+        AItemId, AState,
     },
     def::OF,
     nd::{NEffect, effect::data::shared::sov_stability_generators::assign_effect},
@@ -29,7 +29,7 @@ fn make_effect() -> AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: AState::Active,
-        buff_info: Some(AEffectBuffInfo {
+        buff: Some(AEffectBuff {
             full: vec![
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_SHIELD_HITPOINT_BONUS,

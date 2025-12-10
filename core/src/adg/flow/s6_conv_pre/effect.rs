@@ -47,7 +47,7 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &G
             track_attr_id: e_effect.tracking_attr_id,
             chance_attr_id: e_effect.usage_chance_attr_id,
             resist_attr_id: e_effect.resist_attr_id,
-            buff_info: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
+            buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             ..
         };
         for e_modifier in e_effect.mods.iter() {

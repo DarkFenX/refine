@@ -1,10 +1,10 @@
 use crate::{
     ac,
-    ad::{AEffectBuffDuration, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope, AEffectBuffStrength, AEffectId},
+    ad::{AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId},
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::proj_mult::{get_aoe_burst_mod_proj_attrs, get_aoe_burst_noapp_proj_mult},
     },
 };
@@ -16,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
+        adg_buff: Some(AEffectBuff {
             full: vec![
                 AEffectBuffFull {
                     buff_id: ac::buffs::WD_BURST_TURRET_MAX_RANGE,
@@ -64,10 +64,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         modifier_proj_attrs_getter: Some(get_aoe_burst_mod_proj_attrs),
-        hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_aoe_burst_noapp_proj_mult),
-            ..
-        },
+        modifier_proj_mult_getter: Some(get_aoe_burst_noapp_proj_mult),
         ..
     }
 }

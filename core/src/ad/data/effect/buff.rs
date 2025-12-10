@@ -2,11 +2,11 @@ use crate::ad::{AAttrId, AAttrVal, ABuffId, AItemListId};
 
 /// Effect-specific buff info.
 #[derive(Clone)]
-pub struct AEffectBuffInfo {
+pub struct AEffectBuff {
     pub attr_merge: Option<AEffectBuffAttrMerge> = None,
     pub full: Vec<AEffectBuffFull> = Vec::new(),
 }
-impl AEffectBuffInfo {
+impl AEffectBuff {
     pub(crate) fn iter_a_item_list_ids(&self) -> impl Iterator<Item = AItemListId> {
         self.iter_a_scopes().filter_map(|v| v.get_a_item_list_id())
     }

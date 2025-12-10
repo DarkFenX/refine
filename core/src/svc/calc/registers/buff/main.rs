@@ -50,8 +50,8 @@ impl BuffRegister {
 }
 
 fn uses_default_attrs(effect: &REffect) -> bool {
-    match &effect.buff_info {
-        Some(buff_info) => buff_info.attr_merge.is_some(),
+    match &effect.buff {
+        Some(effect_buff) => effect_buff.attr_merge.is_some(),
         _ => false,
     }
 }

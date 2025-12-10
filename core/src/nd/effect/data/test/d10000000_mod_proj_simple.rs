@@ -2,7 +2,7 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::proj_mult::{get_simple_mod_proj_attrs, get_simple_s2s_noapp_proj_mult},
     },
 };
@@ -15,10 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
-        hc: NEffectHc {
-            modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
-            ..
-        },
+        modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
         ..
     }
 }

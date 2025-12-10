@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::EffectSpec,
-    nd::{NEffect, NEffectDmgKind, NEffectHc, effect::data::shared::proj_mult::get_breacher_proj_mult},
+    nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_breacher_proj_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
     ud::{UItem, UItemKey},
@@ -19,11 +19,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            breacher_dmg_opc_getter: Some(get_dmg_opc),
-            ..
-        },
+        dmg_kind_getter: Some(internal_get_dmg_kind),
+        breacher_dmg_opc_getter: Some(get_dmg_opc),
         ..
     }
 }

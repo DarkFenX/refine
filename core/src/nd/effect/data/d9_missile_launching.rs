@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, Spool},
     nd::{
-        NEffect, NEffectDmgKind, NEffectHc,
+        NEffect, NEffectDmgKind,
         effect::data::shared::{
             opc::get_missile_dmg_opc,
             proj_mult::{get_guided_bomb_proj_mult, get_missile_proj_mult},
@@ -24,11 +24,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            normal_dmg_opc_getter: Some(internal_get_dmg_opc),
-            ..
-        },
+        dmg_kind_getter: Some(internal_get_dmg_kind),
+        normal_dmg_opc_getter: Some(internal_get_dmg_opc),
         ..
     }
 }

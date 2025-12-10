@@ -5,7 +5,7 @@
 
 pub(crate) use effect::{
     N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter,
-    NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectHc, NEffectProjecteeFilter,
+    NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectProjecteeFilter,
     NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
 pub(crate) use item_list::{N_ITEM_LISTS, NItemList};

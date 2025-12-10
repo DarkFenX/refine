@@ -39,7 +39,7 @@ impl From<&rc::ad::AEffect> for CEffect {
             resist_attr_id: a_effect.resist_attr_id,
             mods: a_effect.mods.iter().map(Into::into).collect(),
             stop_ids: a_effect.stoped_effect_ids.iter().map(Into::into).collect(),
-            buff: a_effect.buff_info.as_ref().map(Into::into),
+            buff: a_effect.buff.as_ref().map(Into::into),
         }
     }
 }
@@ -62,7 +62,7 @@ impl From<&CEffect> for rc::ad::AEffect {
             resist_attr_id: c_effect.resist_attr_id,
             mods: c_effect.mods.iter().map(Into::into).collect(),
             stoped_effect_ids: c_effect.stop_ids.iter().map(Into::into).collect(),
-            buff_info: c_effect.buff.as_ref().map(Into::into),
+            buff: c_effect.buff.as_ref().map(Into::into),
         }
     }
 }

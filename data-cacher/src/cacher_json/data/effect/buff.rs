@@ -5,19 +5,19 @@ pub(in crate::cacher_json) struct CEffectBuffInfo {
     attr_merge: Option<CEffectBuffAttrMerge>,
     full: Vec<CEffectBuffFull>,
 }
-impl From<&rc::ad::AEffectBuffInfo> for CEffectBuffInfo {
-    fn from(a_buff_info: &rc::ad::AEffectBuffInfo) -> Self {
+impl From<&rc::ad::AEffectBuff> for CEffectBuffInfo {
+    fn from(a_effect_buff: &rc::ad::AEffectBuff) -> Self {
         Self {
-            attr_merge: a_buff_info.attr_merge.as_ref().map(Into::into),
-            full: a_buff_info.full.iter().map(Into::into).collect(),
+            attr_merge: a_effect_buff.attr_merge.as_ref().map(Into::into),
+            full: a_effect_buff.full.iter().map(Into::into).collect(),
         }
     }
 }
-impl From<&CEffectBuffInfo> for rc::ad::AEffectBuffInfo {
-    fn from(c_buff_info: &CEffectBuffInfo) -> Self {
+impl From<&CEffectBuffInfo> for rc::ad::AEffectBuff {
+    fn from(c_effect_buff: &CEffectBuffInfo) -> Self {
         Self {
-            attr_merge: c_buff_info.attr_merge.as_ref().map(Into::into),
-            full: c_buff_info.full.iter().map(Into::into).collect(),
+            attr_merge: c_effect_buff.attr_merge.as_ref().map(Into::into),
+            full: c_effect_buff.full.iter().map(Into::into).collect(),
         }
     }
 }

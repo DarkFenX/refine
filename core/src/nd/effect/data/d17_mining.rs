@@ -4,7 +4,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::MiningAmount,
-    nd::{NEffect, NEffectHc, effect::data::shared::opc::get_mining_opc},
+    nd::{NEffect, effect::data::shared::opc::get_mining_opc},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemKey,
@@ -17,11 +17,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            mining_ore_opc_getter: Some(internal_get_mining_ore_opc),
-            mining_ice_opc_getter: Some(internal_get_mining_ice_opc),
-            ..
-        },
+        mining_ore_opc_getter: Some(internal_get_mining_ore_opc),
+        mining_ice_opc_getter: Some(internal_get_mining_ice_opc),
         ..
     }
 }

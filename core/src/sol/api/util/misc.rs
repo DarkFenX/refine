@@ -7,5 +7,5 @@ pub(super) fn is_a_effect_projectable(u_item: &UItem, a_effect: &rd::REffect) ->
     (matches!(a_effect.category, ac::effcats::ACTIVE | ac::effcats::TARGET) && !matches!(u_item, UItem::ProjEffect(_)))
         || (a_effect.category == ac::effcats::SYSTEM
             && matches!(u_item, UItem::SwEffect(_) | UItem::FwEffect(_) | UItem::ProjEffect(_)))
-        || a_effect.buff_info.is_some()
+        || a_effect.buff.is_some()
 }

@@ -27,10 +27,10 @@ impl Calc {
             };
         }
         // Buffs
-        if let Some(buff_info) = &effect.buff_info {
+        if let Some(effect_buff) = &effect.buff {
             // Buffs which are partially defined and rely on on-item attributes to complete
             // definition
-            if let Some(buff_attr_merge) = &buff_info.attr_merge {
+            if let Some(buff_attr_merge) = &effect_buff.attr_merge {
                 for (buff_type_attr_key, buff_str_attr_key) in ctx.ac().buff_merge_ids_strs.iter() {
                     if let Ok(buff_id) = self.get_item_attr_rfull(ctx, item_key, *buff_type_attr_key) {
                         let buff_id = buff_id.extra.round() as ABuffId;
@@ -52,7 +52,7 @@ impl Calc {
                 }
             }
             // Fully defined buffs
-            for buff_full in buff_info.full.iter() {
+            for buff_full in effect_buff.full.iter() {
                 match buff_full.strength {
                     REffectBuffStrength::Attr(buff_str_attr_key) => {
                         let buff = ctx.u_data.src.get_buff(buff_full.buff_key);
@@ -106,8 +106,8 @@ impl Calc {
         };
         for &effect_key in effect_keys {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(buff_info) = &effect.buff_info
-                && let Some(buff_attr_merge) = &buff_info.attr_merge
+            if let Some(effect_buff) = &effect.buff
+                && let Some(buff_attr_merge) = &effect_buff.attr_merge
                 && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_key, buff_type_attr_key)
             {
                 let buff_id = buff_id_cval.extra.round() as ABuffId;

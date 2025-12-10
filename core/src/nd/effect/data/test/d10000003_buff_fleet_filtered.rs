@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffInfo, AEffectBuffScope, AEffectId, AItemListId},
+    ad::{AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId, AItemListId},
     ed::EEffectId,
     nd::NEffect,
 };
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        adg_buff_info: Some(AEffectBuffInfo {
+        adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
                 duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),
                 scope: AEffectBuffScope::Fleet(AItemListId::Eve(10_000_000)),

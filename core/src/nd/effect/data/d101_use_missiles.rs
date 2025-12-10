@@ -3,7 +3,7 @@ use crate::{
     ad::AEffectId,
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectHc, NEffectProjecteeFilter},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectProjecteeFilter},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::USE_MISSILES;
@@ -13,16 +13,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            charge: Some(NEffectCharge {
-                location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                    can_run_uncharged: false,
-                }),
-                activates_charge: true,
+        charge: Some(NEffectCharge {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
+                can_run_uncharged: false,
             }),
-            projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(ac::attrs::VALID_TGT_WHITELIST)),
-            ..
-        },
+            activates_charge: true,
+        }),
+        projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(ac::attrs::VALID_TGT_WHITELIST)),
         ..
     }
 }

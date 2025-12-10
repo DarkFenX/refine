@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::{opc::get_generic_neut_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
     },
     rd::REffect,
@@ -20,10 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            neut_opc_getter: Some(internal_get_neut_opc),
-            ..
-        },
+        neut_opc_getter: Some(internal_get_neut_opc),
         ..
     }
 }

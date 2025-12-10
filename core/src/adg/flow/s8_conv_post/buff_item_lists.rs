@@ -11,8 +11,8 @@ pub(in crate::adg::flow::s8_conv_post) fn fill_buff_item_lists(a_data: &mut ADat
     let mut proj_item_list_ids = RSet::new();
     let mut fleet_item_list_ids = RSet::new();
     for a_effect in a_data.effects.values() {
-        if let Some(a_buff_info) = &a_effect.buff_info {
-            for a_buff_scope in a_buff_info.iter_a_scopes() {
+        if let Some(a_effect_buff) = &a_effect.buff {
+            for a_buff_scope in a_effect_buff.iter_a_scopes() {
                 match a_buff_scope {
                     AEffectBuffScope::Carrier => (),
                     AEffectBuffScope::Projected(a_item_list_id) => {

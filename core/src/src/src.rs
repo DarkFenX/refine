@@ -27,7 +27,7 @@ impl Src {
     ) -> Result<Self, SrcInitError> {
         let a_data = prepare_adapted_data(ed_handler, ad_cacher)?;
         let r_data = RData::from(a_data);
-        let rah_duration_attr_id = r_data
+        let rah_duration_attr_key = r_data
             .effect_consts
             .adaptive_armor_hardener
             .and_then(|v| r_data.effects.get(v).unwrap().duration_attr_key);
@@ -38,7 +38,7 @@ impl Src {
         Ok(Self {
             r_data,
             online_effect,
-            rah_duration_attr_key: rah_duration_attr_id,
+            rah_duration_attr_key,
         })
     }
     // Item methods

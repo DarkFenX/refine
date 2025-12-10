@@ -1,19 +1,19 @@
 use crate::{
     ad::{
-        AAttrId, AAttrVal, ABuffId, AEffectBuffAttrMerge, AEffectBuffFull, AEffectBuffInfo, AEffectBuffScope,
+        AAttrId, AAttrVal, ABuffId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffFull, AEffectBuffScope,
         AEffectBuffStrength, AItemListId,
     },
     rd::{RAttrKey, RBuffKey, RItemListKey},
     util::RMap,
 };
 
-pub(crate) struct REffectBuffInfo {
+pub(crate) struct REffectBuff {
     pub(crate) attr_merge: Option<REffectBuffAttrMerge>,
     pub(crate) full: Vec<REffectBuffFull>,
 }
-impl REffectBuffInfo {
+impl REffectBuff {
     pub(in crate::rd::data::effect) fn try_from_a_buff(
-        a_buff: &AEffectBuffInfo,
+        a_buff: &AEffectBuff,
         item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
         attr_id_key_map: &RMap<AAttrId, RAttrKey>,
         buff_id_key_map: &RMap<ABuffId, RBuffKey>,

@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, Spool},
-    nd::{NEffect, NEffectDmgKind, NEffectHc, effect::data::shared::proj_mult::get_simple_s2s_noapp_proj_mult},
+    nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_simple_s2s_noapp_proj_mult},
     rd::REffect,
     svc::{
         SvcCtx,
@@ -22,11 +22,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        hc: NEffectHc {
-            dmg_kind_getter: Some(internal_get_dmg_kind),
-            normal_dmg_opc_getter: Some(get_dmg_opc),
-            ..
-        },
+        dmg_kind_getter: Some(internal_get_dmg_kind),
+        normal_dmg_opc_getter: Some(get_dmg_opc),
         ..
     }
 }

@@ -4,7 +4,7 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectHc,
+        NEffect,
         effect::data::shared::mods::{add_prop_speed_mod, mk_mwd_sig_mod, mk_prop_mass_mod},
     },
 };
@@ -17,10 +17,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
-        hc: NEffectHc {
-            calc_customizer: Some(add_prop_speed_mod),
-            ..
-        },
+        calc_customizer: Some(add_prop_speed_mod),
         ..
     }
 }

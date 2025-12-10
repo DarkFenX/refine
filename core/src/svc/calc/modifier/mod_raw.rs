@@ -223,7 +223,7 @@ fn get_effect_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Op
     {
         return Some(ModifierKind::Local);
     }
-    match (effect.category, &effect.buff_info) {
+    match (effect.category, &effect.buff) {
         (ac::effcats::PASSIVE | ac::effcats::ONLINE | ac::effcats::ACTIVE | ac::effcats::OVERLOAD, None) => {
             Some(ModifierKind::Local)
         }

@@ -9,7 +9,7 @@ use crate::{
     ad::{AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
     def::{AttrVal, OF},
     misc::EffectSpec,
-    nd::{NEffect, NEffectHc},
+    nd::NEffect,
     rd::RAttrConsts,
     svc::{
         SvcCtx,
@@ -30,10 +30,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(assign_effect),
-        hc: NEffectHc {
-            calc_customizer: Some(calc_add_custom_modifier),
-            ..
-        },
+        calc_customizer: Some(calc_add_custom_modifier),
         ..
     }
 }

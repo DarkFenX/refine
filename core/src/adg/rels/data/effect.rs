@@ -24,8 +24,8 @@ impl Fk for EEffect {
     }
     fn get_item_list_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(a_buff_data) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(a_buff_data.iter_a_item_list_ids().filter_map(|v| v.dc_eve()));
+        if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
+            vec.extend(effect_buff.iter_a_item_list_ids().filter_map(|v| v.dc_eve()));
         }
         vec
     }
@@ -40,8 +40,8 @@ impl Fk for EEffect {
         vec_push_opt(&mut vec, self.resist_attr_id);
         vec.extend(self.get_fks_from_mod_args("modifyingAttributeID"));
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
-        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(buff_info.iter_a_attr_ids());
+        if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
+            vec.extend(effect_buff.iter_a_attr_ids());
         }
         // Hardcoded charge info can reference attributes
         if let Some(n_effect) = N_EFFECT_MAP.get(&AEffectId::Dogma(self.id)) {
@@ -55,8 +55,8 @@ impl Fk for EEffect {
     }
     fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(buff_info.iter_a_buff_ids());
+        if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
+            vec.extend(effect_buff.iter_a_buff_ids());
         }
         vec
     }

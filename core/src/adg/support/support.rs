@@ -1,5 +1,5 @@
 use crate::{
-    ad::AEffectBuffInfo,
+    ad::AEffectBuff,
     ed::{EAttrId, EAttrUnitId, EData, EEffectId, EItemCatId, EItemGrpId},
     nd::N_EFFECTS,
     util::RMap,
@@ -9,9 +9,9 @@ use crate::{
 pub(in crate::adg) struct GSupport {
     pub(in crate::adg) grp_cat_map: RMap<EItemGrpId, EItemCatId>,
     pub(in crate::adg) attr_unit_map: RMap<EAttrId, EAttrUnitId>,
-    pub(in crate::adg) eff_buff_map: RMap<EEffectId, AEffectBuffInfo>,
+    pub(in crate::adg) eff_buff_map: RMap<EEffectId, AEffectBuff>,
     // Buffs which can be used, but are not attached to any effect yet
-    pub(in crate::adg) standalone_buffs: Vec<AEffectBuffInfo>,
+    pub(in crate::adg) standalone_buffs: Vec<AEffectBuff>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
@@ -34,15 +34,15 @@ impl GSupport {
     }
     fn fill_buff_data(&mut self) {
         for n_effect in N_EFFECTS.iter() {
-            if let Some(buff_info) = &n_effect.adg_buff_info
+            if let Some(effect_buff) = &n_effect.adg_buff
                 && let Some(e_effect_id) = n_effect.eid
             {
-                self.eff_buff_map.insert(e_effect_id, buff_info.clone());
+                self.eff_buff_map.insert(e_effect_id, effect_buff.clone());
             }
             if let Some(effect_maker) = n_effect.adg_make_effect_fn
-                && let Some(buff_info) = effect_maker().buff_info
+                && let Some(effect_buff) = effect_maker().buff
             {
-                self.standalone_buffs.push(buff_info);
+                self.standalone_buffs.push(effect_buff);
             }
         }
     }
