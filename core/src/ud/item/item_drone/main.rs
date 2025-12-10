@@ -165,7 +165,7 @@ impl UDrone {
 }
 impl Named for UDrone {
     fn get_name() -> &'static str {
-        "Drone"
+        "UDrone"
     }
 }
 impl std::fmt::Display for UDrone {

@@ -107,7 +107,7 @@ impl UImplant {
 }
 impl Named for UImplant {
     fn get_name() -> &'static str {
-        "Implant"
+        "UImplant"
     }
 }
 impl std::fmt::Display for UImplant {

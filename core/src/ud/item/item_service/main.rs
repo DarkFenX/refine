@@ -113,7 +113,7 @@ impl UService {
 }
 impl Named for UService {
     fn get_name() -> &'static str {
-        "Service"
+        "UService"
     }
 }
 impl std::fmt::Display for UService {

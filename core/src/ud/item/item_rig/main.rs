@@ -104,7 +104,7 @@ impl URig {
 }
 impl Named for URig {
     fn get_name() -> &'static str {
-        "Rig"
+        "URig"
     }
 }
 impl std::fmt::Display for URig {

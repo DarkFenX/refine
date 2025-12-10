@@ -209,7 +209,7 @@ impl UModule {
 }
 impl Named for UModule {
     fn get_name() -> &'static str {
-        "Module"
+        "UModule"
     }
 }
 impl std::fmt::Display for UModule {

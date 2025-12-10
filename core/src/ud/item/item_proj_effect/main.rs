@@ -101,7 +101,7 @@ impl UProjEffect {
 }
 impl Named for UProjEffect {
     fn get_name() -> &'static str {
-        "ProjEffect"
+        "UProjEffect"
     }
 }
 impl std::fmt::Display for UProjEffect {

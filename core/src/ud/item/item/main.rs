@@ -660,7 +660,7 @@ impl UItem {
 }
 impl Named for UItem {
     fn get_name() -> &'static str {
-        "Item"
+        "UItem"
     }
 }
 impl GetId<ItemId> for UItem {

@@ -7,7 +7,6 @@ use crate::{
     util::RMap,
 };
 
-/// Adapted item type.
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum RItemKind {
     Booster,

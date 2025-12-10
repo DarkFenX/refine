@@ -151,7 +151,7 @@ impl UShip {
 }
 impl Named for UShip {
     fn get_name() -> &'static str {
-        "Ship"
+        "UShip"
     }
 }
 impl std::fmt::Display for UShip {

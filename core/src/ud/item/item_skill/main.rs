@@ -116,7 +116,7 @@ impl USkill {
 }
 impl Named for USkill {
     fn get_name() -> &'static str {
-        "Skill"
+        "USkill"
     }
 }
 impl std::fmt::Display for USkill {

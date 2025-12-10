@@ -107,7 +107,7 @@ impl USubsystem {
 }
 impl Named for USubsystem {
     fn get_name() -> &'static str {
-        "Subsystem"
+        "USubsystem"
     }
 }
 impl std::fmt::Display for USubsystem {

@@ -110,7 +110,7 @@ impl UBooster {
 }
 impl Named for UBooster {
     fn get_name() -> &'static str {
-        "Booster"
+        "UBooster"
     }
 }
 impl std::fmt::Display for UBooster {

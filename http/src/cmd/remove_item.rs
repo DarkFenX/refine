@@ -12,7 +12,7 @@ impl HRemoveItemCmd {
         core_item
             .remove(self.rm_mode.as_ref().unwrap_or(&HRmMode::Free).into())
             .map_err(|error| match error {
-                rc::err::RemoveItemError::UnremovableAutocharge(e) => HExecError::UnremovableAutocharge(e),
+                rc::err::RemoveItemError::UnremovableAutocharge => HExecError::UnremovableAutocharge,
             })?;
         Ok(())
     }

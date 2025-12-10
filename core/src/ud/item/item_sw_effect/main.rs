@@ -93,7 +93,7 @@ impl USwEffect {
 }
 impl Named for USwEffect {
     fn get_name() -> &'static str {
-        "SwEffect"
+        "USwEffect"
     }
 }
 impl std::fmt::Display for USwEffect {

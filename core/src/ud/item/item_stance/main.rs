@@ -101,7 +101,7 @@ impl UStance {
 }
 impl Named for UStance {
     fn get_name() -> &'static str {
-        "Stance"
+        "UStance"
     }
 }
 impl std::fmt::Display for UStance {

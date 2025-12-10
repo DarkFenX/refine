@@ -142,7 +142,7 @@ impl UCharge {
 }
 impl Named for UCharge {
     fn get_name() -> &'static str {
-        "Charge"
+        "UCharge"
     }
 }
 impl std::fmt::Display for UCharge {

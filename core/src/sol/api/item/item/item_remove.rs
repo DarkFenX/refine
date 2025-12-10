@@ -1,9 +1,7 @@
 use crate::{
-    err::basic::ItemKindRemoveError,
     misc::RmMode,
     sol::{SolarSystem, api::ItemMut},
-    ud::{UAutocharge, UEffectUpdates, UItem, UItemKey},
-    util::Named,
+    ud::{UEffectUpdates, UItem, UItemKey},
 };
 
 impl SolarSystem {
@@ -12,13 +10,11 @@ impl SolarSystem {
         item_key: UItemKey,
         pos_mode: RmMode,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> Result<(), ItemKindRemoveError> {
+    ) -> Result<(), RemoveItemError> {
         let u_item = self.u_data.items.get(item_key);
         match u_item {
             UItem::Autocharge(_) => {
-                return Err(ItemKindRemoveError {
-                    item_kind: UAutocharge::get_name(),
-                });
+                return Err(RemoveItemError::UnremovableAutocharge);
             }
             UItem::Booster(_) => self.internal_remove_booster(item_key, reuse_eupdates),
             UItem::Character(_) => self.internal_remove_character(item_key, reuse_eupdates),
@@ -46,10 +42,7 @@ impl<'a> ItemMut<'a> {
         match self {
             // Autocharge can not be removed no matter what
             ItemMut::Autocharge(_) => {
-                return Err(ItemKindRemoveError {
-                    item_kind: UAutocharge::get_name(),
-                }
-                .into());
+                return Err(RemoveItemError::UnremovableAutocharge);
             }
             // For the rest, delegate to per-item removal methods
             ItemMut::Booster(booster) => booster.remove(),
@@ -75,6 +68,6 @@ impl<'a> ItemMut<'a> {
 
 #[derive(thiserror::Error, Debug)]
 pub enum RemoveItemError {
-    #[error("{0}")]
-    UnremovableAutocharge(#[from] ItemKindRemoveError),
+    #[error("autocharge cannot be manually removed")]
+    UnremovableAutocharge,
 }

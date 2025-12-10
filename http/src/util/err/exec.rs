@@ -35,8 +35,8 @@ pub(crate) enum HExecError {
     MutationNotSet(rc::ItemId),
     #[error("item {0} does not have charge set")]
     ChargeNotSet(rc::ItemId),
-    #[error("{0}")]
-    UnremovableAutocharge(#[source] rc::err::basic::ItemKindRemoveError),
+    #[error("autocharge cannot be manually removed")]
+    UnremovableAutocharge,
     #[error("{0}")]
     InvalidFighterCount(#[from] rc::err::FighterCountOverrideError),
     #[error("{0}")]
@@ -68,7 +68,7 @@ impl HExecError {
             HExecError::SkillIdCollision(_) => "EXC-015.1",
             HExecError::MutationNotSet(_) => "MUT-001",
             HExecError::ChargeNotSet(_) => "NCH-001",
-            HExecError::UnremovableAutocharge(_) => "ACH-001",
+            HExecError::UnremovableAutocharge => "ACH-001",
             HExecError::InvalidFighterCount(_) => "FTR-019",
             HExecError::ProjecteeCantTakeProjs(_) => "EXC-021",
             HExecError::ProjectionNotFound(_) => "EXC-022",

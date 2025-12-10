@@ -101,7 +101,7 @@ impl UCharacter {
 }
 impl Named for UCharacter {
     fn get_name() -> &'static str {
-        "Character"
+        "UCharacter"
     }
 }
 impl std::fmt::Display for UCharacter {
