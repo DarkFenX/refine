@@ -19,11 +19,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn internal_update_effect(a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: hardpoint modifier effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    a_effect.mods.extend([
+    a_effect.modifiers.extend([
         mk_subsystem_mod(ac::attrs::TURRET_HARDPOINT_MODIFIER, ac::attrs::TURRET_SLOTS_LEFT),
         mk_subsystem_mod(ac::attrs::LAUNCHER_HARDPOINT_MODIFIER, ac::attrs::LAUNCHER_SLOTS_LEFT),
     ]);

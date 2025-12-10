@@ -27,12 +27,10 @@ pub(crate) struct REffect {
     pub(crate) is_usable_in_hisec: Option<bool>,
     pub(crate) is_usable_in_lowsec: Option<bool>,
     pub(crate) kills_item: bool,
-    pub(crate) calc_customizer: Option<NCalcCustomizer>,
     pub(crate) spool_resolver: Option<NSpoolResolver>,
+    pub(crate) calc_customizer: Option<NCalcCustomizer>,
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
-    pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter>,
-    pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter>,
-    pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter>,
+    // Output getters
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
     pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter>,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
@@ -43,15 +41,19 @@ pub(crate) struct REffect {
     pub(crate) outgoing_armor_rep_opc_getter: Option<NOutgoingRepGetter>,
     pub(crate) outgoing_hull_rep_opc_getter: Option<NOutgoingRepGetter>,
     pub(crate) outgoing_cap_rep_opc_getter: Option<NOutgoingRepGetter>,
+    pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter>,
+    pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter>,
+    pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter>,
     pub(crate) neut_opc_getter: Option<NNeutGetter>,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter>,
     pub(crate) ecm_opc_getter: Option<NEcmGetter>,
     // Fields which depend on slab keys
-    pub(crate) charge: Option<REffectCharge>,
-    pub(crate) buff: Option<REffectBuff>,
-    pub(crate) modifier_proj_attr_keys: [Option<RAttrKey>; 2],
+    pub(crate) modifiers: Vec<REffectModifier>,
     pub(crate) stopped_effect_keys: Vec<REffectKey>,
+    pub(crate) buff: Option<REffectBuff>,
+    pub(crate) charge: Option<REffectCharge>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
+    pub(crate) modifier_proj_attr_keys: [Option<RAttrKey>; 2],
     pub(crate) discharge_attr_key: Option<RAttrKey>,
     pub(crate) duration_attr_key: Option<RAttrKey>,
     pub(crate) range_attr_key: Option<RAttrKey>,
@@ -59,7 +61,6 @@ pub(crate) struct REffect {
     pub(crate) track_attr_key: Option<RAttrKey>,
     pub(crate) chance_attr_key: Option<RAttrKey>,
     pub(crate) resist_attr_key: Option<RAttrKey>,
-    pub(crate) mods: Vec<REffectModifier>,
     pub(crate) is_active_with_duration: bool,
 }
 impl REffect {
@@ -75,12 +76,10 @@ impl REffect {
             is_usable_in_hisec: a_effect.is_usable_in_hisec,
             is_usable_in_lowsec: a_effect.is_usable_in_lowsec,
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
-            calc_customizer: n_effect.and_then(|n| n.calc_customizer),
             spool_resolver: n_effect.and_then(|n| n.spool_resolver),
+            calc_customizer: n_effect.and_then(|n| n.calc_customizer),
             modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
-            local_shield_rep_opc_getter: n_effect.and_then(|n| n.local_shield_rep_opc_getter),
-            local_armor_rep_opc_getter: n_effect.and_then(|n| n.local_armor_rep_opc_getter),
-            local_hull_rep_opc_getter: n_effect.and_then(|n| n.local_hull_rep_opc_getter),
+            // Output getters
             dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
             normal_dmg_opc_getter: n_effect.and_then(|n| n.normal_dmg_opc_getter),
             breacher_dmg_opc_getter: n_effect.and_then(|n| n.breacher_dmg_opc_getter),
@@ -91,15 +90,19 @@ impl REffect {
             outgoing_armor_rep_opc_getter: n_effect.and_then(|n| n.outgoing_armor_rep_opc_getter),
             outgoing_hull_rep_opc_getter: n_effect.and_then(|n| n.outgoing_hull_rep_opc_getter),
             outgoing_cap_rep_opc_getter: n_effect.and_then(|n| n.outgoing_cap_rep_opc_getter),
+            local_shield_rep_opc_getter: n_effect.and_then(|n| n.local_shield_rep_opc_getter),
+            local_armor_rep_opc_getter: n_effect.and_then(|n| n.local_armor_rep_opc_getter),
+            local_hull_rep_opc_getter: n_effect.and_then(|n| n.local_hull_rep_opc_getter),
             neut_opc_getter: n_effect.and_then(|n| n.neut_opc_getter),
             cap_inject_getter: n_effect.and_then(|n| n.cap_inject_getter),
             ecm_opc_getter: n_effect.and_then(|n| n.ecm_opc_getter),
             // Fields which depend on slab keys
-            charge: Default::default(),
-            buff: Default::default(),
-            modifier_proj_attr_keys: Default::default(),
+            modifiers: Default::default(),
             stopped_effect_keys: Default::default(),
+            buff: Default::default(),
+            charge: Default::default(),
             projectee_filter: Default::default(),
+            modifier_proj_attr_keys: Default::default(),
             discharge_attr_key: Default::default(),
             duration_attr_key: Default::default(),
             range_attr_key: Default::default(),
@@ -107,7 +110,6 @@ impl REffect {
             track_attr_key: Default::default(),
             chance_attr_key: Default::default(),
             resist_attr_key: Default::default(),
-            mods: Default::default(),
             is_active_with_duration: Default::default(),
         }
     }
@@ -120,6 +122,9 @@ impl REffect {
         buff_id_key_map: &RMap<ABuffId, RBuffKey>,
     ) {
         let a_effect = a_effects.get(&self.id).unwrap();
+        self.buff = a_effect.buff.as_ref().and_then(|a_effect_buff| {
+            REffectBuff::try_from_a_buff(a_effect_buff, item_list_id_key_map, attr_id_key_map, buff_id_key_map)
+        });
         self.discharge_attr_key = a_effect
             .discharge_attr_id
             .and_then(|id| attr_id_key_map.get(&id))
@@ -140,15 +145,12 @@ impl REffect {
         self.track_attr_key = a_effect.track_attr_id.and_then(|id| attr_id_key_map.get(&id)).copied();
         self.chance_attr_key = a_effect.chance_attr_id.and_then(|id| attr_id_key_map.get(&id)).copied();
         self.resist_attr_key = a_effect.resist_attr_id.and_then(|id| attr_id_key_map.get(&id)).copied();
-        self.mods.extend(
+        self.modifiers.extend(
             a_effect
-                .mods
+                .modifiers
                 .iter()
                 .filter_map(|a_effect_mod| REffectModifier::try_from_a_effect_mod(a_effect_mod, attr_id_key_map)),
         );
-        self.buff = a_effect.buff.as_ref().and_then(|a_effect_buff| {
-            REffectBuff::try_from_a_buff(a_effect_buff, item_list_id_key_map, attr_id_key_map, buff_id_key_map)
-        });
         self.stopped_effect_keys.extend(
             a_effect
                 .stoped_effect_ids

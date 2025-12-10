@@ -19,11 +19,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: RAH effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    a_effect.mods.extend([
+    a_effect.modifiers.extend([
         mk_rah_resonance_mod(ac::attrs::ARMOR_EM_DMG_RESONANCE),
         mk_rah_resonance_mod(ac::attrs::ARMOR_THERM_DMG_RESONANCE),
         mk_rah_resonance_mod(ac::attrs::ARMOR_KIN_DMG_RESONANCE),

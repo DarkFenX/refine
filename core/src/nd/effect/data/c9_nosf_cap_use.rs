@@ -28,7 +28,7 @@ fn make_effect() -> AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: AState::Disabled,
-        mods: vec![AEffectModifier {
+        modifiers: vec![AEffectModifier {
             affector_attr_id: ac::attrs::POWER_TRANSFER_AMOUNT,
             op: AOp::Sub,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),

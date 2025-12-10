@@ -20,7 +20,7 @@ impl Calc {
     ) {
         reuse_rmods.clear();
         // Regular modifiers
-        for effect_mod in effect.mods.iter() {
+        for effect_mod in effect.modifiers.iter() {
             match RawModifier::try_from_effect_mod(item_key, item, effect, effect_mod) {
                 Some(raw_mod) => reuse_rmods.push(raw_mod),
                 None => continue,

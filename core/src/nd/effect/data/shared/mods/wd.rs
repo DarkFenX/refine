@@ -4,28 +4,28 @@ use crate::{
 };
 
 pub(in crate::nd::effect::data) fn add_td_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {a_effect_id}: TD effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    add_td_modifiers(&mut a_effect.mods);
+    add_td_modifiers(&mut a_effect.modifiers);
 }
 
 pub(in crate::nd::effect::data) fn add_gd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {a_effect_id}: GD effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    add_gd_modifiers(&mut a_effect.mods);
+    add_gd_modifiers(&mut a_effect.modifiers);
 }
 
 pub(in crate::nd::effect::data) fn add_wd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {a_effect_id}: WD effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    add_td_modifiers(&mut a_effect.mods);
-    add_gd_modifiers(&mut a_effect.mods);
+    add_td_modifiers(&mut a_effect.modifiers);
+    add_gd_modifiers(&mut a_effect.modifiers);
 }
 
 fn add_td_modifiers(mods: &mut Vec<AEffectModifier>) {

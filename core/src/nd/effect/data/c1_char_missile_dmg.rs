@@ -31,7 +31,7 @@ fn make_effect() -> AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::PASSIVE,
         state: AState::Offline,
-        mods: vec![
+        modifiers: vec![
             mk_modifier(ac::attrs::EM_DMG),
             mk_modifier(ac::attrs::THERM_DMG),
             mk_modifier(ac::attrs::KIN_DMG),

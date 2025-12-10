@@ -14,18 +14,23 @@ use crate::{
     util::RMap,
 };
 
+// ADG
 pub(crate) type NEffectMaker = fn() -> AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
-pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
+// General
 pub(crate) type NSpoolResolver = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>) -> Option<ResolvedSpool>;
+pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
+// Getters - projection
+pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, UItemKey, UProjData) -> AttrVal;
+// Getters - damage output
 pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 pub(crate) type NNormalDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
+// Getters - misc
 pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<MiningAmount>>;
 pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<AttrVal>>;
 pub(crate) type NOutgoingRepGetter =
@@ -44,35 +49,36 @@ pub(crate) struct NEffect {
     pub(crate) adg_make_effect_fn: Option<NEffectMaker> = None,
     pub(crate) adg_assign_effect_fn: Option<NEffectAssigner> = None,
     pub(crate) adg_update_effect_fn: Option<NEffectUpdater> = None,
+    // General info which is not available elsewhere
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) kills_item: bool = false,
+    pub(crate) spool_resolver: Option<NSpoolResolver> = None,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_customizer: Option<NCalcCustomizer> = None,
-    pub(crate) spool_resolver: Option<NSpoolResolver> = None,
-    // Define which attributes affect modifier projection strength, and how
+    // Getters - modifier projection
     pub(crate) modifier_proj_attrs_getter: Option<NModProjAttrGetter> = None,
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter> = None,
-    // Local reps
-    pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter> = None,
-    pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter> = None,
-    pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter> = None,
-    // Damage output
+    // Getters - damage output
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
     pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
-    // Mining
+    // Getters - mining
     pub(crate) mining_ore_opc_getter: Option<NMiningGetter> = None,
     pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
     pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
-    // Rep output
+    // Getters - rep output
     pub(crate) outgoing_shield_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     pub(crate) outgoing_armor_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     pub(crate) outgoing_hull_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     pub(crate) outgoing_cap_rep_opc_getter: Option<NOutgoingRepGetter> = None,
-    // Cap
+    // Getters - local reps
+    pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter> = None,
+    pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter> = None,
+    pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter> = None,
+    // Getters - cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,
-    // Misc
+    // Getters - misc
     pub(crate) ecm_opc_getter: Option<NEcmGetter> = None,
 }

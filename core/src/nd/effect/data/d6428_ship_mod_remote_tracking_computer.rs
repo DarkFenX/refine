@@ -24,11 +24,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: RTC effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    a_effect.mods.extend([
+    a_effect.modifiers.extend([
         make_rtc_mod(ac::attrs::MAX_RANGE_BONUS, ac::attrs::MAX_RANGE),
         make_rtc_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FALLOFF),
         make_rtc_mod(ac::attrs::TRACKING_SPEED_BONUS, ac::attrs::TRACKING_SPEED),

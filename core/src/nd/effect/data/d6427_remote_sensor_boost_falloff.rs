@@ -24,11 +24,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: RSB effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    a_effect.mods.extend([
+    a_effect.modifiers.extend([
         make_rsb_mod(ac::attrs::MAX_TARGET_RANGE_BONUS, ac::attrs::MAX_TARGET_RANGE),
         make_rsb_mod(ac::attrs::SCAN_RESOLUTION_BONUS, ac::attrs::SCAN_RESOLUTION),
         make_rsb_mod(ac::attrs::SCAN_RADAR_STRENGTH_PERCENT, ac::attrs::SCAN_RADAR_STRENGTH),

@@ -4,6 +4,9 @@ pub struct AEffect {
     pub id: AEffectId,
     pub category: AEffectCatId,
     pub state: AState,
+    pub modifiers: Vec<AEffectModifier> = Vec::new(),
+    pub stoped_effect_ids: Vec<AEffectId> = Vec::new(),
+    pub buff: Option<AEffectBuff> = None,
     pub is_assist: bool = false,
     pub is_offense: bool = false,
     pub is_usable_in_hisec: Option<bool> = None,
@@ -15,9 +18,6 @@ pub struct AEffect {
     pub track_attr_id: Option<AAttrId> = None,
     pub chance_attr_id: Option<AAttrId> = None,
     pub resist_attr_id: Option<AAttrId> = None,
-    pub mods: Vec<AEffectModifier> = Vec::new(),
-    pub stoped_effect_ids: Vec<AEffectId> = Vec::new(),
-    pub buff: Option<AEffectBuff> = None,
 }
 impl std::fmt::Display for AEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

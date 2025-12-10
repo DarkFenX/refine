@@ -19,9 +19,9 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: self-skillreq drone dmg effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
     let modifier = AEffectModifier {
         affector_attr_id: ac::attrs::DMG_MULT_BONUS,
@@ -29,5 +29,5 @@ fn update_effect(a_effect: &mut AEffect) {
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::SelfRef),
         affectee_attr_id: ac::attrs::DMG_MULT,
     };
-    a_effect.mods.push(modifier);
+    a_effect.modifiers.push(modifier);
 }

@@ -38,6 +38,7 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &G
             id: AEffectId::Dogma(e_effect.id),
             category: e_effect.category_id,
             state,
+            buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
             discharge_attr_id: e_effect.discharge_attr_id,
@@ -47,7 +48,6 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &G
             track_attr_id: e_effect.tracking_attr_id,
             chance_attr_id: e_effect.usage_chance_attr_id,
             resist_attr_id: e_effect.resist_attr_id,
-            buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             ..
         };
         for e_modifier in e_effect.mods.iter() {
@@ -78,7 +78,7 @@ pub(in crate::adg::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &G
                 }),
             };
             match a_mod_res {
-                Ok(a_mod) => a_effect.mods.push(a_mod),
+                Ok(a_mod) => a_effect.modifiers.push(a_mod),
                 Err(e) => {
                     let msg = format!("failed to build modifier for {a_effect}: {e}");
                     tracing::warn!("{msg}");

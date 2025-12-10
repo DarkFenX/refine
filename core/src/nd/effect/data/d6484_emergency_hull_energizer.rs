@@ -19,11 +19,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    if !a_effect.mods.is_empty() {
+    if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {A_EFFECT_ID}: EHE effect has modifiers, overwriting them");
-        a_effect.mods.clear();
+        a_effect.modifiers.clear();
     }
-    a_effect.mods.extend([
+    a_effect.modifiers.extend([
         make_hull_resist_mod(ac::attrs::HULL_EM_DMG_RESONANCE, ac::attrs::EM_DMG_RESONANCE),
         make_hull_resist_mod(ac::attrs::HULL_THERM_DMG_RESONANCE, ac::attrs::THERM_DMG_RESONANCE),
         make_hull_resist_mod(ac::attrs::HULL_KIN_DMG_RESONANCE, ac::attrs::KIN_DMG_RESONANCE),

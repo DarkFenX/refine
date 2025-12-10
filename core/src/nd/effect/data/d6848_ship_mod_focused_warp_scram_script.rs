@@ -27,8 +27,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn update_effect(a_effect: &mut AEffect) {
     // Effect is expected to have some modifiers, so we're silently clearing them up
-    a_effect.mods.clear();
-    a_effect.mods.extend([
+    a_effect.modifiers.clear();
+    a_effect.modifiers.extend([
         // Warp scrambling
         AEffectModifier {
             affector_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,

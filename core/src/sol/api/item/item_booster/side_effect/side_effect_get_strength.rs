@@ -82,7 +82,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
     let effect_key = src.get_effect_key_by_id(effect_id).unwrap();
     let mut se_strs = src
         .get_effect(effect_key)
-        .mods
+        .modifiers
         .iter()
         .map(|modifier| (modifier.op, modifier.affector_attr_key))
         .collect_vec();
