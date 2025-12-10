@@ -4,15 +4,21 @@ use crate::{
     util::RMap,
 };
 
-pub(super) fn get_implant_slot(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<ASlotIndex> {
+pub(in crate::rd::data::item::attr_extras) fn get_implant_slot(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<ASlotIndex> {
     get_slot_from_attr(item_attrs, attr_consts.implantness)
 }
 
-pub(super) fn get_booster_slot(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> Option<ASlotIndex> {
+pub(in crate::rd::data::item::attr_extras) fn get_booster_slot(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> Option<ASlotIndex> {
     get_slot_from_attr(item_attrs, attr_consts.boosterness)
 }
 
-pub(super) fn get_subsystem_slot(
+pub(in crate::rd::data::item::attr_extras) fn get_subsystem_slot(
     item_attrs: &RMap<RAttrKey, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<ASlotIndex> {

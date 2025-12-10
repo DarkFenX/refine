@@ -1,5 +1,5 @@
 use crate::{
-    rd::REffectKey,
+    rd::{RAttrKey, REffectKey},
     ud::{UData, UFitKey, UItemKey},
 };
 
@@ -24,6 +24,12 @@ pub(crate) fn check_item_key(u_data: &UData, item_key: UItemKey, check_load: boo
     if check_load && !item.is_loaded() {
         return Err(DebugError {});
     }
+    Ok(())
+}
+
+pub(crate) fn check_attr_key(u_data: &UData, attr_key: RAttrKey) -> DebugResult {
+    // Will crash if attr key is not valid
+    u_data.src.get_attr(attr_key);
     Ok(())
 }
 

@@ -13,7 +13,7 @@ pub(crate) struct RItemShipLimit {
     pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(super) fn get_item_ship_limit(
+pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
     a_item_id: AItemId,
     item_attrs: &RMap<RAttrKey, AAttrVal>,
     attr_consts: &RAttrConsts,

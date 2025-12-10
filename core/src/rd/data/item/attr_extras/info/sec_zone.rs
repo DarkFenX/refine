@@ -4,7 +4,10 @@ use crate::{
     util::RMap,
 };
 
-pub(super) fn is_sec_zone_limitable(item_attrs: &RMap<RAttrKey, AAttrVal>, attr_consts: &RAttrConsts) -> bool {
+pub(in crate::rd::data::item::attr_extras) fn is_sec_zone_limitable(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> bool {
     [
         attr_consts.disallow_in_empire_space,
         attr_consts.disallow_in_hisec,

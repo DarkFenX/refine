@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
-    def::{AttrVal, Count},
+    def::Count,
     misc::{AttrSpec, EffectSpec},
     nd::{
         NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NLocalRepGetter, NMiningGetter, NNeutGetter,
@@ -97,7 +97,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) charge_cont_group: RMap<UItemKey, UItemKey>,
     pub(in crate::svc::vast) charge_size: RMap<UItemKey, UItemKey>,
     pub(in crate::svc::vast) charge_volume: RMap<UItemKey, UItemKey>,
-    pub(in crate::svc::vast) mods_capital: RMap<UItemKey, AttrVal>,
+    pub(in crate::svc::vast) mods_capital: RMap<UItemKey, AAttrVal>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_state: RMap<UItemKey, ValModuleStateModuleInfo>,
     pub(in crate::svc::vast) item_kind: RMap<UItemKey, ValItemKindItemInfo>,

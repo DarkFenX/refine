@@ -13,7 +13,7 @@ pub(crate) enum RShipKind {
     Structure,
 }
 
-pub(super) fn get_item_ship_kind(
+pub(in crate::rd::data::item::attr_extras) fn get_item_ship_kind(
     item_cat_id: AItemCatId,
     item_attrs: &RMap<RAttrKey, AAttrVal>,
     attr_consts: &RAttrConsts,

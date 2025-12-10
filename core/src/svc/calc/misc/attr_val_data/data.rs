@@ -18,6 +18,9 @@ impl ItemAttrData {
     pub(in crate::svc::calc) fn get(&self, attr_key: &RAttrKey) -> Option<&AttrEntry> {
         self.data.get(attr_key)
     }
+    pub(in crate::svc::calc) fn keys(&self) -> impl ExactSizeIterator<Item = &RAttrKey> {
+        self.data.keys()
+    }
     pub(in crate::svc::calc) fn iter(&self) -> impl ExactSizeIterator<Item = (&RAttrKey, &AttrEntry)> {
         self.data.iter()
     }

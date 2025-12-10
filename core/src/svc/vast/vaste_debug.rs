@@ -1,6 +1,6 @@
 use super::{Vast, VastFitData};
 use crate::{
-    dbg::{DebugResult, check_effect_key, check_fit_key, check_item_key},
+    dbg::{DebugResult, check_attr_key, check_effect_key, check_fit_key, check_item_key},
     ud::UData,
 };
 
@@ -318,6 +318,7 @@ impl VastFitData {
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
             // There is no logic which ensures that projection target is loaded
             check_item_key(u_data, projectee_aspec.item_key, false)?;
+            check_attr_key(u_data, projectee_aspec.attr_key)?;
             for projector_espec in projector_especs {
                 check_item_key(u_data, projector_espec.item_key, true)?;
                 check_effect_key(u_data, projector_espec.effect_key)?;
@@ -433,8 +434,9 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         for (&item_key, item_data) in self.cap_consumers.iter() {
             check_item_key(u_data, item_key, true)?;
-            for &effect_key in item_data.keys() {
+            for (&effect_key, &attr_key) in item_data.iter() {
                 check_effect_key(u_data, effect_key)?;
+                check_attr_key(u_data, attr_key)?;
             }
         }
         for (&item_key, item_data) in self.cap_injects.iter() {

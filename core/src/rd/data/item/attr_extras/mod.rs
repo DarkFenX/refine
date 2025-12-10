@@ -1,21 +1,6 @@
-pub(crate) use charge_limit::RItemChargeLimit;
-pub(crate) use container_limit::RItemContLimit;
-pub(crate) use drone_limit::RShipDroneLimit;
-pub(crate) use extras::RItemAXt;
-pub(crate) use ship_kind::RShipKind;
-pub(crate) use ship_limit::RItemShipLimit;
+pub(crate) use info::{RItemChargeLimit, RItemContLimit, RItemShipLimit, RShipDroneLimit, RShipKind};
+pub(crate) use main::RItemAXt;
 
-mod attr_val;
-mod charge_limit;
-mod container_limit;
-mod drone_limit;
-mod effect_immunity;
-mod extras;
-mod fighter_kind;
-mod kind;
-mod max_group;
-mod mobility;
-mod sec_zone;
-mod ship_kind;
-mod ship_limit;
-mod slot_index;
+mod debug;
+mod info;
+mod main;

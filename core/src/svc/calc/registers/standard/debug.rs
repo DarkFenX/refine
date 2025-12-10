@@ -1,6 +1,6 @@
 use super::StandardRegister;
 use crate::{
-    dbg::{DebugResult, check_effect_key, check_fit_key, check_item_key},
+    dbg::{DebugResult, check_attr_key, check_effect_key, check_fit_key, check_item_key},
     svc::calc::debug::{check_cmod, check_rmod},
     ud::UData,
 };
@@ -99,6 +99,7 @@ impl StandardRegister {
         // adding modifiers
         for (aspec, cmods) in self.cmods.by_aspec.iter() {
             check_item_key(u_data, aspec.item_key, true)?;
+            check_attr_key(u_data, aspec.attr_key)?;
             for cmod in cmods {
                 check_cmod(u_data, cmod)?;
             }

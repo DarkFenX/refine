@@ -537,9 +537,9 @@ impl ItemMutationData {
 pub(crate) struct ItemMutationDataCache {
     base_type_id: AItemId,
     mutator: RcMuta,
-    merged_attrs: RMap<RAttrKey, AAttrVal>,
-    merged_effdatas: Option<RMap<REffectKey, RItemEffectData>>,
-    axt: RItemAXt,
+    pub(super) merged_attrs: RMap<RAttrKey, AAttrVal>,
+    pub(super) merged_effdatas: Option<RMap<REffectKey, RItemEffectData>>,
+    pub(super) axt: RItemAXt,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_type_id(&self) -> AItemId {

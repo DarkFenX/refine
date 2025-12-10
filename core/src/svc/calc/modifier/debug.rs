@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugResult, check_effect_key, check_fit_key, check_item_key},
+    dbg::{DebugResult, check_attr_key, check_effect_key, check_fit_key, check_item_key},
     svc::calc::{Context, CtxModifier, RawModifier},
     ud::UData,
 };
@@ -7,6 +7,18 @@ use crate::{
 pub(in crate::svc) fn check_rmod(u_data: &UData, rmod: &RawModifier) -> DebugResult {
     check_item_key(u_data, rmod.affector_espec.item_key, true)?;
     check_effect_key(u_data, rmod.affector_espec.effect_key)?;
+    check_attr_key(u_data, rmod.affectee_attr_key)?;
+    if let Some(attr_key) = rmod.buff_type_attr_key {
+        check_attr_key(u_data, attr_key)?;
+    }
+    for &attr_key in rmod.proj_attr_keys.iter() {
+        if let Some(attr_key) = attr_key {
+            check_attr_key(u_data, attr_key)?;
+        }
+    }
+    if let Some(attr_key) = rmod.resist_attr_key {
+        check_attr_key(u_data, attr_key)?;
+    }
     Ok(())
 }
 

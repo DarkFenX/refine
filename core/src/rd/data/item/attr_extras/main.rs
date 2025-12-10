@@ -1,31 +1,31 @@
-use super::{
-    attr_val::{
-        get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_max_fighter_count,
-        get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl, get_radius,
-        get_remote_resist_attr_id, get_rig_size, get_volume,
-    },
-    charge_limit::get_item_charge_limit,
-    container_limit::get_item_container_limit,
-    drone_limit::get_ship_drone_limit,
-    effect_immunity::get_disallow_vs_ew_immune_tgt,
-    fighter_kind::{
-        get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
-        get_st_support_fighter_flag, get_support_fighter_flag,
-    },
-    kind::get_item_kind,
-    max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
-    mobility::is_mobile,
-    sec_zone::is_sec_zone_limitable,
-    ship_kind::get_item_ship_kind,
-    ship_limit::get_item_ship_limit,
-    slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
-};
 use crate::{
     ad::{AAttrId, AAttrVal, ACount, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     misc::ItemKind,
     rd::{
         RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemChargeLimit, RItemContLimit, RItemEffectData,
         RItemShipLimit, RShipDroneLimit, RShipKind,
+        data::item::attr_extras::info::{
+            attr_val::{
+                get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size,
+                get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
+                get_radius, get_remote_resist_attr_id, get_rig_size, get_volume,
+            },
+            charge_limit::get_item_charge_limit,
+            container_limit::get_item_container_limit,
+            drone_limit::get_ship_drone_limit,
+            effect_immunity::get_disallow_vs_ew_immune_tgt,
+            fighter_kind::{
+                get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
+                get_st_support_fighter_flag, get_support_fighter_flag,
+            },
+            kind::get_item_kind,
+            max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
+            mobility::is_mobile,
+            sec_zone::is_sec_zone_limitable,
+            ship_kind::get_item_ship_kind,
+            ship_limit::get_item_ship_limit,
+            slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
+        },
     },
     util::RMap,
 };
