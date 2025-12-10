@@ -478,6 +478,96 @@ def test_no_value_specific(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.6)
 
 
+def test_no_attr_general(client, consts):
+    eve_sec_attr_id = consts.EveAttr.security_modifier
+    eve_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hisec_modifier)
+    eve_lowsec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.lowsec_modifier)
+    eve_nullsec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nullsec_modifier)
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_sec_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_rig_id = client.mk_eve_item(
+        attrs={
+            eve_sec_attr_id: 1.1,
+            eve_hisec_attr_id: 1.2,
+            eve_lowsec_attr_id: 1.9,
+            eve_nullsec_attr_id: 2.1,
+            eve_affectee_attr_id: -2.4},
+        eff_ids=[eve_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.lowsec)
+    api_fit = api_sol.create_fit()
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification - no effect on target attribute, since calculations of general attr value fails
+    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(-2.4)
+
+
+def test_no_attr_specific(client, consts):
+    eve_sec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.security_modifier)
+    eve_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hisec_modifier)
+    eve_lowsec_attr_id = consts.EveAttr.lowsec_modifier
+    eve_nullsec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nullsec_modifier)
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_rig_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_sec_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_rig_effect_id = client.mk_eve_effect(mod_info=[eve_rig_mod])
+    eve_rig_id = client.mk_eve_item(
+        attrs={
+            eve_sec_attr_id: 1.1,
+            eve_hisec_attr_id: 1.2,
+            eve_lowsec_attr_id: 1.9,
+            eve_nullsec_attr_id: 2.1,
+            eve_affectee_attr_id: -2.4},
+        eff_ids=[eve_rig_effect_id])
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_implant_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_sec_attr_id)
+    eve_implant_effect_id = client.mk_eve_effect(mod_info=[eve_implant_mod])
+    eve_implant_id = client.mk_eve_item(attrs={eve_affector_attr_id: 30}, eff_ids=[eve_implant_effect_id])
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_implant = api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_rig.update()
+    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.56)
+    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.744)
+    # Action
+    api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
+    # Verification - since lowsec attr is not available, it uses modified value of general attribute
+    api_rig.update()
+    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.43)
+    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.432)
+    # Action
+    api_implant.remove()
+    # Verification
+    api_rig.update()
+    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.1)
+    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.64)
+    # Action
+    api_sol.change(sec_zone=consts.ApiSecZone.hisec)
+    # Verification
+    api_rig.update()
+    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.2)
+    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.88)
+
+
 def setup_op_precedence_test(*, client, consts, high_is_good):
     eve_sec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.security_modifier, high_is_good=high_is_good)
     eve_hisec_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hisec_modifier)
