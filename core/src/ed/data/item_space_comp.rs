@@ -3,19 +3,12 @@ use crate::{
     util::Named,
 };
 
-/// Space component data attached to an EVE item..
 pub struct EItemSpaceComp {
-    /// Refers an item type this data is attached to.
     pub item_id: EItemId,
-    /// Buffs applicable to pilots in a solar system, with custom function as a filter.
     pub system_wide_buffs: Option<EItemSpaceCompBuffData>,
-    /// Buffs applicable to pilots in a solar system, with custom function as a filter.
     pub system_emitter_buffs: Option<EItemSpaceCompBuffData>,
-    /// Buffs applicable to entities close to effect carrier.
     pub proxy_effect_buffs: Option<EItemSpaceCompBuffData>,
-    /// Buffs applicable to entities close to effect carrier when something triggers it.
     pub proxy_trigger_buffs: Option<EItemSpaceCompBuffData>,
-    /// Buffs applicable to linked ship.
     pub ship_link_buffs: Option<EItemSpaceCompBuffData>,
 }
 impl EItemSpaceComp {
@@ -45,18 +38,12 @@ impl Named for EItemSpaceComp {
     }
 }
 
-/// Info about buffs attached to a space component.
 pub struct EItemSpaceCompBuffData {
-    /// List of buffs to apply.
     pub buffs: Vec<EItemSpaceCompBuffEntry>,
-    /// Buff modification strength.
     pub item_list_filter: Option<EItemListId>,
 }
 
-/// Info about one of space component buffs.
 pub struct EItemSpaceCompBuffEntry {
-    /// Buff ID to use.
     pub id: EBuffId,
-    /// Buff modification strength.
     pub value: EAttrVal,
 }

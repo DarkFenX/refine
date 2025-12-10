@@ -3,7 +3,6 @@ use crate::ed::data::{
     EItemSkillReq, EItemSpaceComp, EMutaAttrMod, EMutaItemConv,
 };
 
-/// Container for primary EVE data.
 pub struct EData {
     pub items: EDataCont<EItem>,
     pub groups: EDataCont<EItemGroup>,
@@ -46,15 +45,11 @@ impl Default for EData {
     }
 }
 
-/// Convenience type to pass data and accumulated warnings to the caller.
 pub struct EDataCont<T> {
-    /// Vector with actual data.
     pub data: Vec<T>,
-    /// Vector with strings which represent warnings encountered during data retrieval.
     pub warns: Vec<String>,
 }
 impl<T> EDataCont<T> {
-    /// Make a new empty container.
     pub fn new() -> EDataCont<T> {
         EDataCont {
             data: Vec::new(),

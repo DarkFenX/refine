@@ -1,21 +1,20 @@
 use crate::ad::{ACustomEffectId, ADogmaEffectId, AItemId};
 
-/// ID of an adapted effect.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum AEffectId {
-    /// ID of a general EVE effect.
+    // ID of a general EVE effect
     Dogma(ADogmaEffectId),
-    /// Space component effect attached to an item, system-wide effect part.
+    // Space component effect attached to an item, system-wide effect part
     ScSystemWide(AItemId),
-    /// Space component effect attached to an item, system buff emitter part.
+    // Space component effect attached to an item, system buff emitter part
     ScSystemEmitter(AItemId),
-    /// Space component effect attached to an item, proximity effect part.
+    // Space component effect attached to an item, proximity effect part
     ScProxyEffect(AItemId),
-    /// Space component effect attached to an item, proximity trap/trigger part.
+    // Space component effect attached to an item, proximity trap/trigger part
     ScProxyTrap(AItemId),
-    /// Space component effect attached to an item, ship link part.
+    // Space component effect attached to an item, ship link part
     ScShipLink(AItemId),
-    /// ID of an effect created by the library.
+    // ID of an effect created by the library
     Custom(ACustomEffectId),
 }
 impl std::fmt::Display for AEffectId {

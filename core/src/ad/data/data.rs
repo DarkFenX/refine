@@ -6,7 +6,6 @@ use crate::{
     util::RMap,
 };
 
-/// Adapted data storage.
 pub struct AData {
     pub items: RMap<AItemId, AItem>,
     pub attrs: RMap<AAttrId, AAttr>,

@@ -1,8 +1,8 @@
 //! Adapted data handler and data types.
 //!
 //! Adapted data types are built from the EVE data provided by an EVE data handler and are optimized
-//! for ease of use by various reefast components. Adapted data types are assumed to be read-only by
-//! the components, anything mutable is built on top of them.
+//! for ease of use by various reefast components. Since adapted types can be persisted, it helps to
+//! avoid processing every time data is loaded.
 
 pub use cacher::AdaptedDataCacher;
 pub(crate) use data::ASlotIndex;

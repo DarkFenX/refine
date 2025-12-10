@@ -1,6 +1,5 @@
 use crate::ad::{AAttrId, AAttrVal, ABuffId, AItemListId};
 
-/// Effect-specific buff info.
 #[derive(Clone)]
 pub struct AEffectBuff {
     pub attr_merge: Option<AEffectBuffAttrMerge> = None,
@@ -26,8 +25,6 @@ impl AEffectBuff {
     }
 }
 
-/// Specifies how effect uses warfareBuff* series of attributes, which define buff ID and buff
-/// strength.
 #[derive(Copy, Clone)]
 pub struct AEffectBuffAttrMerge {
     pub duration: AEffectBuffDuration,
@@ -58,9 +55,7 @@ impl AEffectBuffStrength {
 
 #[derive(Copy, Clone)]
 pub enum AEffectBuffDuration {
-    /// Buff is active as long as item which applies it is active.
     None,
-    /// Attribute with this ID defines duration in milliseconds.
     AttrMs(AAttrId),
 }
 impl AEffectBuffDuration {

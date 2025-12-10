@@ -27,8 +27,8 @@
 //! - Data defined on [`ed::EFighterAbil`](EFighterAbil) is moved to
 //!   [`ad::AEffect`](crate::ad::AEffect).
 //! - Data defined on [`ed::EItemFighterAbil`](EItemFighterAbil) is moved to
-//!   [`ad::AItemEffData`](crate::ad::AItemEffectData), which describe effect properties specific to
-//!   parent [`ad::AItem`](crate::ad::AItem).
+//!   [`ad::AItemEffectData`](crate::ad::AItemEffectData), which describe effect properties specific
+//!   to parent [`ad::AItem`](crate::ad::AItem).
 //!
 //! Since multiple abilities can map to the same dogma effect, collisions are possible. In case of
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are
