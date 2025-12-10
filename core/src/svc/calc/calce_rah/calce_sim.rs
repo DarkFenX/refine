@@ -156,10 +156,11 @@ impl Calc {
     }
     fn get_ship_stats(&mut self, ctx: SvcCtx, ship_key: UItemKey) -> Option<RahShipStats> {
         let attr_consts = ctx.ac();
-        let em = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_em_dmg_resonance, OF(1.0))?;
-        let therm = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_therm_dmg_resonance, OF(1.0))?;
-        let kin = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_kin_dmg_resonance, OF(1.0))?;
-        let expl = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_expl_dmg_resonance, OF(1.0))?;
+        // Fail if ship is not loaded, or any of resonance attributes are not available
+        let em = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_em_dmg_resonance)?;
+        let therm = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_therm_dmg_resonance)?;
+        let kin = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_kin_dmg_resonance)?;
+        let expl = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_expl_dmg_resonance)?;
         let shield_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.shield_capacity, OF(0.0))?;
         let armor_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_hp, OF(0.0))?;
         let hull_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.hp, OF(0.0))?;
@@ -193,22 +194,10 @@ impl Calc {
     fn get_rah_sim_data(&mut self, ctx: SvcCtx, item_key: UItemKey) -> Option<RahDataSim> {
         // Get resonances bypassing postprocessing functions, since we already installed them
         let attr_consts = ctx.ac();
-        let res_em =
-            self.get_item_oattr_afb_ofull_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance, FALLBACK_RESONANCE)?;
-        let res_therm = self.get_item_oattr_afb_ofull_nopp(
-            ctx,
-            item_key,
-            attr_consts.armor_therm_dmg_resonance,
-            FALLBACK_RESONANCE,
-        )?;
-        let res_kin =
-            self.get_item_oattr_afb_ofull_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance, FALLBACK_RESONANCE)?;
-        let res_expl = self.get_item_oattr_afb_ofull_nopp(
-            ctx,
-            item_key,
-            attr_consts.armor_expl_dmg_resonance,
-            FALLBACK_RESONANCE,
-        )?;
+        let res_em = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance)?;
+        let res_therm = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_therm_dmg_resonance)?;
+        let res_kin = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance)?;
+        let res_expl = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_expl_dmg_resonance)?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
             && res_kin.dogma == OF(1.0)
@@ -236,14 +225,18 @@ impl Calc {
     }
     fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_key: UItemKey, notify: bool) {
         let attr_consts = ctx.ac();
-        let em =
-            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance, FALLBACK_RESONANCE);
-        let therm =
-            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_therm_dmg_resonance, FALLBACK_RESONANCE);
-        let kin =
-            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance, FALLBACK_RESONANCE);
-        let expl =
-            self.get_item_oattr_ffb_full_nopp(ctx, item_key, attr_consts.armor_expl_dmg_resonance, FALLBACK_RESONANCE);
+        let em = self
+            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance)
+            .unwrap_or(FALLBACK_RESONANCE);
+        let therm = self
+            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_therm_dmg_resonance)
+            .unwrap_or(FALLBACK_RESONANCE);
+        let kin = self
+            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance)
+            .unwrap_or(FALLBACK_RESONANCE);
+        let expl = self
+            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_expl_dmg_resonance)
+            .unwrap_or(FALLBACK_RESONANCE);
         let rah_resos = DmgKinds {
             em,
             thermal: therm,

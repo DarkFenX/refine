@@ -136,39 +136,6 @@ impl Calc {
             _ => fallback,
         }
     }
-    // - Optional attribute
-    // - Fallback in case of missing attribute argument
-    // - Full value as an option
-    // - No postprocessing
-    pub(in crate::svc::calc) fn get_item_oattr_afb_ofull_nopp(
-        &mut self,
-        ctx: SvcCtx,
-        item_key: UItemKey,
-        attr_key: Option<RAttrKey>,
-        fallback: CalcAttrVal,
-    ) -> Option<CalcAttrVal> {
-        match self.get_item_oattr_rfull_nopp(ctx, item_key, attr_key) {
-            Ok(full) => Some(full),
-            Err(error) => match error {
-                GetOAttrError::ItemNotLoaded(_) => None,
-                GetOAttrError::NoAttr(_) => Some(fallback),
-            },
-        }
-    }
-    // - Optional attribute
-    // - Fallback for all cases
-    // - Full value
-    // - No postprocessing
-    pub(in crate::svc::calc) fn get_item_oattr_ffb_full_nopp(
-        &mut self,
-        ctx: SvcCtx,
-        item_key: UItemKey,
-        attr_key: Option<RAttrKey>,
-        fallback: CalcAttrVal,
-    ) -> CalcAttrVal {
-        self.get_item_oattr_rfull_nopp(ctx, item_key, attr_key)
-            .unwrap_or(fallback)
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Core query methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,28 +202,25 @@ impl Calc {
         }
         Ok(cval)
     }
-    fn get_item_oattr_rfull_nopp(
+    pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
         attr_key: Option<RAttrKey>,
-    ) -> Result<CalcAttrVal, GetOAttrError> {
-        let item_attr_data = self.get_item_data_with_err(item_key)?;
-        let attr_key = match attr_key {
-            Some(attr_key) => attr_key,
-            None => return Err(NoAttrError {}.into()),
-        };
+    ) -> Option<CalcAttrVal> {
+        let attr_key = attr_key?;
+        let item_attr_data = self.attrs.get_item_attr_data(&item_key)?;
         if let Some(attr_entry) = item_attr_data.get(&attr_key)
             && let Some(cval) = attr_entry.value
         {
-            return Ok(cval);
+            return Some(cval);
         }
         let cval = self.calc_item_attr_val(ctx, item_key, attr_key);
         self.attrs
             .get_item_attr_data_mut(&item_key)
             .unwrap()
             .set_value_and_get_pp(attr_key, cval);
-        Ok(cval)
+        Some(cval)
     }
     pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
