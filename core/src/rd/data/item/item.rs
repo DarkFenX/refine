@@ -4,7 +4,7 @@ use crate::{
         AAbilId, AAttrId, AAttrVal, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId, ASkillLevel, AState,
     },
     rd::{RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind},
-    util::{GetId, Named, RMap},
+    util::{GetId, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -117,11 +117,6 @@ impl RItem {
 impl GetId<AItemId> for RItem {
     fn get_id(&self) -> AItemId {
         self.id
-    }
-}
-impl Named for RItem {
-    fn get_name() -> &'static str {
-        "RItem"
     }
 }
 

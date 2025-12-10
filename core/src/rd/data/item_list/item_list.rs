@@ -1,7 +1,7 @@
 use crate::{
     ad::{AItemId, AItemList, AItemListId},
     rd::RItemListKey,
-    util::{GetId, Named, RSet},
+    util::RSet,
 };
 
 // Represents an item list.
@@ -19,15 +19,5 @@ impl RItemList {
             id: a_item_list.id,
             item_ids: a_item_list.item_ids.clone(),
         }
-    }
-}
-impl GetId<AItemListId> for RItemList {
-    fn get_id(&self) -> AItemListId {
-        self.id
-    }
-}
-impl Named for RItemList {
-    fn get_name() -> &'static str {
-        "RItemList"
     }
 }

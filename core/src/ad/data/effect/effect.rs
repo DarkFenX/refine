@@ -1,7 +1,4 @@
-use crate::{
-    ad::{AAttrId, AEffectBuff, AEffectCatId, AEffectId, AEffectModifier, AState},
-    util::Named,
-};
+use crate::ad::{AAttrId, AEffectBuff, AEffectCatId, AEffectId, AEffectModifier, AState};
 
 pub struct AEffect {
     pub id: AEffectId,
@@ -22,13 +19,8 @@ pub struct AEffect {
     pub stoped_effect_ids: Vec<AEffectId> = Vec::new(),
     pub buff: Option<AEffectBuff> = None,
 }
-impl Named for AEffect {
-    fn get_name() -> &'static str {
-        "AEffect"
-    }
-}
 impl std::fmt::Display for AEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}(id={})", Self::get_name(), self.id)
+        write!(f, "AEffect(id={})", self.id)
     }
 }

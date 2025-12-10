@@ -7,7 +7,6 @@ use crate::{
         api::{EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
     },
     ud::UItemKey,
-    util::GetId,
 };
 
 impl<'a> EffectiveMutation<'a> {
@@ -42,7 +41,7 @@ fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> 
         return Err(ItemMAttrMutatorError {
             item_id: sol.u_data.items.id_by_key(item_key),
             attr_id: *a_attr_id,
-            mutator_id: mutation_cache.get_r_mutator().get_id(),
+            mutator_id: mutation_cache.get_r_mutator().id,
         }
         .into());
     };

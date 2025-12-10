@@ -5,7 +5,6 @@ use crate::{
         api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
     },
     ud::{UAutocharge, UItemKey},
-    util::GetId,
 };
 
 // Autocharges expose no projection info, since it fully matches projections of the parent item
@@ -95,7 +94,7 @@ fn get_cont_item(sol: &SolarSystem, autocharge_key: UItemKey) -> Item<'_> {
 }
 fn get_cont_effect_id(sol: &SolarSystem, autocharge_key: UItemKey) -> EffectId {
     let cont_effect_key = get_u_autocharge(sol, autocharge_key).get_cont_effect_key();
-    sol.u_data.src.get_effect(cont_effect_key).get_id().into()
+    sol.u_data.src.get_effect(cont_effect_key).id.into()
 }
 fn get_state(sol: &SolarSystem, autocharge_key: UItemKey) -> bool {
     !get_u_autocharge(sol, autocharge_key).get_force_disabled()

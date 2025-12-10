@@ -2,7 +2,7 @@ use crate::{
     ac,
     ad::{AAttr, AAttrId, AAttrVal},
     rd::RAttrKey,
-    util::{GetId, Named, RMap},
+    util::RMap,
 };
 
 // Represents a dogma attribute.
@@ -50,15 +50,5 @@ impl RAttr {
                 break;
             }
         }
-    }
-}
-impl GetId<AAttrId> for RAttr {
-    fn get_id(&self) -> AAttrId {
-        self.id
-    }
-}
-impl Named for RAttr {
-    fn get_name() -> &'static str {
-        "RAttr"
     }
 }

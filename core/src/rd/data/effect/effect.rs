@@ -9,7 +9,7 @@ use crate::{
         RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectModifier,
         REffectProjecteeFilter, RItem, RItemListKey,
     },
-    util::{GetId, Named, RMap},
+    util::RMap,
 };
 
 // Represents an effect.
@@ -210,15 +210,5 @@ impl REffect {
             return false;
         }
         matches!(charge_info.location, REffectChargeLoc::Autocharge(_))
-    }
-}
-impl GetId<AEffectId> for REffect {
-    fn get_id(&self) -> AEffectId {
-        self.id
-    }
-}
-impl Named for REffect {
-    fn get_name() -> &'static str {
-        "REffect"
     }
 }

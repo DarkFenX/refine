@@ -5,7 +5,7 @@ use crate::{
     misc::{EffectId, EffectSpec},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::UItemKey,
-    util::{GetId, RSet},
+    util::RSet,
 };
 
 pub struct ValEffectStopperFail {
@@ -49,7 +49,7 @@ impl VastFitData {
                 && !kfs.contains(&stopped_espec.item_key)
             {
                 let item_id = ctx.u_data.items.id_by_key(stopped_espec.item_key);
-                let effect_id = ctx.u_data.src.get_effect(stopped_espec.effect_key).get_id();
+                let effect_id = ctx.u_data.src.get_effect(stopped_espec.effect_key).id;
                 items.entry(item_id).or_insert_with(Vec::new).push(effect_id.into());
             }
         }

@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, ABuff, ABuffAggrMode, ABuffId, AOp},
     rd::{RAttrKey, RBuffKey, RBuffModifier},
-    util::{GetId, Named, RMap},
+    util::RMap,
 };
 
 // Represents a dogma buff.
@@ -39,15 +39,5 @@ impl RBuff {
                 .iter()
                 .filter_map(|a_buff_mod| RBuffModifier::try_from_a_buff_mod(a_buff_mod, attr_id_key_map)),
         )
-    }
-}
-impl GetId<ABuffId> for RBuff {
-    fn get_id(&self) -> ABuffId {
-        self.id
-    }
-}
-impl Named for RBuff {
-    fn get_name() -> &'static str {
-        "RBuff"
     }
 }

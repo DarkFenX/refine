@@ -8,7 +8,7 @@ use crate::{
         base::{UEffectUpdates, process_effects},
         misc::EffectModes,
     },
-    util::{GetId, RMap, RSet},
+    util::{RMap, RSet},
 };
 
 // Item base stores all the data every item should have
@@ -52,7 +52,7 @@ impl UItemBase {
     pub(in crate::ud::item::base) fn base_new_with_r_item(item_id: ItemId, r_item: RcItem, state: AState) -> Self {
         Self {
             item_id,
-            type_id: r_item.get_id(),
+            type_id: r_item.id,
             state,
             effect_modes: EffectModes::new(),
             cache: Some(ItemBaseCache {
@@ -189,7 +189,7 @@ impl UItemBase {
         self.cache = None;
     }
     pub(in crate::ud::item::base) fn base_set_r_item(&mut self, r_item: RcItem) {
-        self.type_id = r_item.get_id();
+        self.type_id = r_item.id;
         match &mut self.cache {
             Some(cache) => {
                 cache.r_item = r_item;

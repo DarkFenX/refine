@@ -8,7 +8,6 @@ use crate::{
         api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     },
     ud::UItemKey,
-    util::GetId,
 };
 
 // Lending iterator for side effects
@@ -59,7 +58,7 @@ impl<'a> BoosterMut<'a> {
             .into_iter()
             .flat_map(|effect_datas| {
                 effect_datas.keys().filter_map(|&effect_key| {
-                    let effect_id = self.sol.u_data.src.get_effect(effect_key).get_id();
+                    let effect_id = self.sol.u_data.src.get_effect(effect_key).id;
                     get_se_chance_attr_id_by_effect_key(&self.sol.u_data.src, effect_key)
                         .map(|chance_attr_id| (effect_id, chance_attr_id))
                 })
@@ -77,7 +76,7 @@ fn iter_side_effects(sol: &SolarSystem, booster_key: UItemKey) -> impl Iterator<
                 FullSideEffect::new(
                     sol,
                     booster_key,
-                    sol.u_data.src.get_effect(effect_key).get_id(),
+                    sol.u_data.src.get_effect(effect_key).id,
                     chance_attr_id,
                 )
             })

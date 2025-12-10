@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AItemId, AMuta, AMutaAttrRange},
     rd::RAttrKey,
-    util::{GetId, Named, RMap},
+    util::{GetId, RMap},
 };
 
 // Represents a mutator (aka mutaplasmid in EVE).
@@ -36,10 +36,5 @@ impl RMuta {
 impl GetId<AItemId> for RMuta {
     fn get_id(&self) -> AItemId {
         self.id
-    }
-}
-impl Named for RMuta {
-    fn get_name() -> &'static str {
-        "RMuta"
     }
 }

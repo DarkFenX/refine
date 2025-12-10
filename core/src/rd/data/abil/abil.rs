@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAbil, AAbilId, AEffectId},
     rd::REffectKey,
-    util::{GetId, Named, RMap},
+    util::{GetId, RMap},
 };
 
 // Represents a fighter ability.
@@ -28,10 +28,5 @@ impl RAbil {
 impl GetId<AAbilId> for RAbil {
     fn get_id(&self) -> AAbilId {
         self.id
-    }
-}
-impl Named for RAbil {
-    fn get_name() -> &'static str {
-        "RAbil"
     }
 }

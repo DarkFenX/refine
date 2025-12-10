@@ -19,7 +19,7 @@ use crate::{
         },
     },
     ud::{UEffectUpdates, UItemKey},
-    util::{GetId, UnitInterval},
+    util::UnitInterval,
 };
 
 mod private {
@@ -56,7 +56,7 @@ pub trait ItemCommon: ItemSealed {
             }
         };
         let effect_infos = effect_keys.map(move |&effect_key| {
-            let effect_id = sol.u_data.src.get_effect(effect_key).get_id();
+            let effect_id = sol.u_data.src.get_effect(effect_key).id;
             let running = reffs.contains(&effect_key);
             let mode = item.get_effect_key_mode(&effect_key);
             (effect_id.into(), EffectInfo { running, mode })

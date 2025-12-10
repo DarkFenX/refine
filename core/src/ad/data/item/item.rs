@@ -3,7 +3,7 @@ use crate::{
         AAbilId, AAttrId, AAttrVal, AEffectId, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemListId,
         ASkillLevel, AState,
     },
-    util::{Named, RMap},
+    util::RMap,
 };
 
 pub struct AItem {
@@ -22,14 +22,4 @@ pub struct AItem {
     pub val_online_group_id: Option<AItemGrpId>,
     pub val_active_group_id: Option<AItemGrpId>,
     pub disallowed_in_wspace: bool,
-}
-impl Named for AItem {
-    fn get_name() -> &'static str {
-        "AItem"
-    }
-}
-impl std::fmt::Display for AItem {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}(id={})", Self::get_name(), self.id)
-    }
 }
