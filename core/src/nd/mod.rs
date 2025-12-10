@@ -4,11 +4,11 @@
 //! entities, and entities derived from them.
 
 pub(crate) use effect::{
-    N_EFFECT_MAP, N_EFFECTS, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter,
-    NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectProjecteeFilter,
-    NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
+    N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect,
+    NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectProjecteeFilter, NLocalRepGetter,
+    NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
-pub(crate) use item_list::{N_ITEM_LISTS, NItemList};
+pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 
 mod effect;
 mod item_list;

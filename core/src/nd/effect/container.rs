@@ -1,15 +1,15 @@
-use std::{collections::HashMap, sync::LazyLock};
+use std::sync::LazyLock;
 
 use crate::{
     ad::AEffectId,
     nd::effect::{NEffect, data},
+    util::RMap,
 };
 
-pub(crate) static N_EFFECTS: LazyLock<Vec<NEffect>> = LazyLock::new(get_effects);
-pub(crate) static N_EFFECT_MAP: LazyLock<HashMap<AEffectId, NEffect>> = LazyLock::new(get_effect_map);
+pub(crate) static N_EFFECT_MAP: LazyLock<RMap<AEffectId, NEffect>> = LazyLock::new(get_effect_map);
 
-fn get_effects() -> Vec<NEffect> {
-    vec![
+fn get_effect_map() -> RMap<AEffectId, NEffect> {
+    [
         data::c1_char_missile_dmg::mk_n_effect(),
         data::c2_aar_paste_boost::mk_n_effect(),
         data::c3_stasis_web_probe::mk_n_effect(),
@@ -132,8 +132,7 @@ fn get_effects() -> Vec<NEffect> {
         data::test::d10000002_mod_proj_normal2::mk_n_effect(),
         data::test::d10000003_buff_fleet_filtered::mk_n_effect(),
     ]
-}
-
-fn get_effect_map() -> HashMap<AEffectId, NEffect> {
-    get_effects().into_iter().map(|v| (v.aid, v)).collect()
+    .into_iter()
+    .map(|v| (v.aid, v))
+    .collect()
 }

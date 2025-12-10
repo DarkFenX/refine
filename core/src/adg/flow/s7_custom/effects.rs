@@ -2,11 +2,11 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     ad::AData,
-    nd::{N_EFFECTS, NEffect},
+    nd::{N_EFFECT_MAP, NEffect},
 };
 
 pub(in crate::adg::flow::s7_custom) fn customize_effects(a_data: &mut AData) {
-    for n_effect in N_EFFECTS.iter() {
+    for n_effect in N_EFFECT_MAP.values() {
         if let Some(assigned) = assign_effect(a_data, n_effect) {
             match assigned {
                 true => add_effect(a_data, n_effect),

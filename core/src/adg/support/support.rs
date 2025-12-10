@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectBuff,
     ed::{EAttrId, EAttrUnitId, EData, EEffectId, EItemCatId, EItemGrpId},
-    nd::N_EFFECTS,
+    nd::N_EFFECT_MAP,
     util::RMap,
 };
 
@@ -33,7 +33,7 @@ impl GSupport {
         }
     }
     fn fill_buff_data(&mut self) {
-        for n_effect in N_EFFECTS.iter() {
+        for n_effect in N_EFFECT_MAP.values() {
             if let Some(effect_buff) = &n_effect.adg_buff
                 && let Some(e_effect_id) = n_effect.eid
             {

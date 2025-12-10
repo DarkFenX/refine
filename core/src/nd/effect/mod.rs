@@ -1,5 +1,5 @@
 pub(crate) use charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
-pub(crate) use container::{N_EFFECT_MAP, N_EFFECTS};
+pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect::{
     NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NLocalRepGetter,

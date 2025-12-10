@@ -2,12 +2,12 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     ad::{AData, AItemList},
-    nd::N_ITEM_LISTS,
+    nd::N_ITEM_LIST_MAP,
     util::RSet,
 };
 
 pub(in crate::adg::flow::s7_custom) fn customize_item_lists(a_data: &mut AData) {
-    for n_item_list in N_ITEM_LISTS.iter() {
+    for n_item_list in N_ITEM_LIST_MAP.values() {
         if let Some(item_filter) = n_item_list.adg_item_filter_fn {
             let a_item_list = match a_data.item_lists.entry(n_item_list.aid) {
                 Entry::Occupied(entry) => {
