@@ -33,7 +33,7 @@ def test_benchmark_attr_calc(client, consts):  # noqa: ANN001, ANN201
     for eve_skill_id in get_skill_type_ids():
         api_fit.add_skill(type_id=eve_skill_id, level=5)
     api_fit.set_ship(type_id=11184)  # Crusader
-    iterations = 5000000
+    iterations = 1000000
     print('starting attr-calc benchmark')  # noqa: T201
     before = time()
     api_sol.benchmark(command={'type': 'attr_calc', 'fit_id': api_fit.id, 'type_id': 1306, 'iterations': iterations})
