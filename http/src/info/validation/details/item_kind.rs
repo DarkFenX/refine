@@ -22,8 +22,8 @@ impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 struct HValItemKindItemInfo {
-    kind: Option<HItemKind>,
-    expected_kind: HItemKind,
+    kind: Option<HValItemKind>,
+    expected_kind: HValItemKind,
 }
 impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
     fn from(core_val_item_info: &rc::val::ValItemKindItemInfo) -> Self {
@@ -36,7 +36,7 @@ impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
-enum HItemKind {
+enum HValItemKind {
     Booster,
     Character,
     Charge,
@@ -53,24 +53,24 @@ enum HItemKind {
     Stance,
     Subsystem,
 }
-impl From<&rc::val::ItemKind> for HItemKind {
-    fn from(a_item_kind: &rc::val::ItemKind) -> Self {
+impl From<&rc::val::ValItemKind> for HValItemKind {
+    fn from(a_item_kind: &rc::val::ValItemKind) -> Self {
         match a_item_kind {
-            rc::val::ItemKind::Booster => Self::Booster,
-            rc::val::ItemKind::Character => Self::Character,
-            rc::val::ItemKind::Charge => Self::Charge,
-            rc::val::ItemKind::Drone => Self::Drone,
-            rc::val::ItemKind::Fighter => Self::Fighter,
-            rc::val::ItemKind::Implant => Self::Implant,
-            rc::val::ItemKind::ModuleHigh => Self::ModuleHigh,
-            rc::val::ItemKind::ModuleMid => Self::ModuleMid,
-            rc::val::ItemKind::ModuleLow => Self::ModuleLow,
-            rc::val::ItemKind::Rig => Self::Rig,
-            rc::val::ItemKind::Service => Self::Service,
-            rc::val::ItemKind::Ship => Self::Ship,
-            rc::val::ItemKind::Skill => Self::Skill,
-            rc::val::ItemKind::Stance => Self::Stance,
-            rc::val::ItemKind::Subsystem => Self::Subsystem,
+            rc::val::ValItemKind::Booster => Self::Booster,
+            rc::val::ValItemKind::Character => Self::Character,
+            rc::val::ValItemKind::Charge => Self::Charge,
+            rc::val::ValItemKind::Drone => Self::Drone,
+            rc::val::ValItemKind::Fighter => Self::Fighter,
+            rc::val::ValItemKind::Implant => Self::Implant,
+            rc::val::ValItemKind::ModuleHigh => Self::ModuleHigh,
+            rc::val::ValItemKind::ModuleMid => Self::ModuleMid,
+            rc::val::ValItemKind::ModuleLow => Self::ModuleLow,
+            rc::val::ValItemKind::Rig => Self::Rig,
+            rc::val::ValItemKind::Service => Self::Service,
+            rc::val::ValItemKind::Ship => Self::Ship,
+            rc::val::ValItemKind::Skill => Self::Skill,
+            rc::val::ValItemKind::Stance => Self::Stance,
+            rc::val::ValItemKind::Subsystem => Self::Subsystem,
         }
     }
 }

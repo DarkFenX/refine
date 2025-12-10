@@ -8,7 +8,6 @@
 //! - Combining adapted and hardcoded data (as well as derived from both of those) under one roof;
 //! - Remapping some IDs to slab keys for faster access to some entity types.
 
-pub use data::RItemKind;
 pub(crate) use data::{
     RAbil, RAttr, RAttrConsts, RAttrKey, RBuff, RBuffKey, RBuffModifier, RData, REffect, REffectBuff,
     REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc,

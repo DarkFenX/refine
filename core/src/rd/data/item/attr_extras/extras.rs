@@ -21,10 +21,10 @@ use super::{
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    AttrVal,
     ad::{AAttrId, AAttrVal, ACount, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
+    misc::ItemKind,
     rd::{
-        RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemKind,
+        RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemChargeLimit, RItemContLimit, RItemEffectData,
         RItemShipLimit, RShipDroneLimit, RShipKind,
     },
     util::RMap,
@@ -36,7 +36,7 @@ use crate::{
 #[derive(Clone, Default)]
 pub(crate) struct RItemAXt {
     // Item type
-    pub(crate) kind: Option<RItemKind>,
+    pub(crate) kind: Option<ItemKind>,
     // Unmutated and unmodified item volume
     pub(crate) volume: AAttrVal,
     // Unmutated and unmodified item capacity
@@ -103,7 +103,7 @@ pub(crate) struct RItemAXt {
     // Can item be limited by "max group active" limit
     pub(crate) max_group_active_limited: bool,
     // Size of a rig, or rig size used by a ship
-    pub(crate) rig_size: Option<AttrVal>,
+    pub(crate) rig_size: Option<AAttrVal>,
 }
 impl RItemAXt {
     pub(crate) fn fill(
