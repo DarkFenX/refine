@@ -4,7 +4,7 @@ use crate::{
     ad,
     adg::{eff_abil::get_abil_effect, support::GSupport},
     ed,
-    src::SrcInitError,
+    rd::SrcInitError,
 };
 
 mod eff_abil;

@@ -1,7 +1,7 @@
 pub(crate) use abil::RAbil;
 pub(crate) use attr::{RAttr, RAttrConsts};
 pub(crate) use buff::{RBuff, RBuffModifier};
-pub(crate) use data::RData;
+pub(in crate::rd) use data::RData;
 pub(crate) use effect::{
     REffect, REffectBuff, REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge,
     REffectChargeLoc, REffectConsts, REffectModifier, REffectProjecteeFilter,

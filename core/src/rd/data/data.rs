@@ -15,20 +15,20 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(crate) struct RData {
-    pub(crate) items: RMap<AItemId, RcItem>,
-    pub(crate) item_lists: Slab<RcItemList>,
-    pub(crate) item_list_id_key_map: RMap<AItemListId, RItemListKey>,
-    pub(crate) attrs: Slab<RcAttr>,
-    pub(crate) attr_id_key_map: RMap<AAttrId, RAttrKey>,
-    pub(crate) attr_consts: RAttrConsts,
-    pub(crate) effects: Slab<RcEffect>,
-    pub(crate) effect_id_key_map: RMap<AEffectId, REffectKey>,
-    pub(crate) effect_consts: REffectConsts,
-    pub(crate) buffs: Slab<RcBuff>,
-    pub(crate) buff_id_key_map: RMap<ABuffId, RBuffKey>,
-    pub(crate) mutas: RMap<AItemId, RcMuta>,
-    pub(crate) abils: RMap<AAbilId, RcAbil>,
+pub(in crate::rd) struct RData {
+    pub(in crate::rd) items: RMap<AItemId, RcItem>,
+    pub(in crate::rd) item_lists: Slab<RcItemList>,
+    pub(in crate::rd) item_list_id_key_map: RMap<AItemListId, RItemListKey>,
+    pub(in crate::rd) attrs: Slab<RcAttr>,
+    pub(in crate::rd) attr_id_key_map: RMap<AAttrId, RAttrKey>,
+    pub(in crate::rd) attr_consts: RAttrConsts,
+    pub(in crate::rd) effects: Slab<RcEffect>,
+    pub(in crate::rd) effect_id_key_map: RMap<AEffectId, REffectKey>,
+    pub(in crate::rd) effect_consts: REffectConsts,
+    pub(in crate::rd) buffs: Slab<RcBuff>,
+    pub(in crate::rd) buff_id_key_map: RMap<ABuffId, RBuffKey>,
+    pub(in crate::rd) mutas: RMap<AItemId, RcMuta>,
+    pub(in crate::rd) abils: RMap<AAbilId, RcAbil>,
 }
 impl From<AData> for RData {
     fn from(a_data: AData) -> Self {

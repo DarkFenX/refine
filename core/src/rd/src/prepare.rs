@@ -1,6 +1,6 @@
-use crate::{ad, adg, def::VERSION, ed, src::SrcInitError};
+use crate::{ad, adg, def::VERSION, ed, rd::SrcInitError};
 
-pub(in crate::src) fn prepare_adapted_data(
+pub(in crate::rd::src) fn prepare_adapted_data(
     ed_handler: &Box<dyn ed::EveDataHandler>,
     ad_cacher: Option<&mut Box<dyn ad::AdaptedDataCacher>>,
 ) -> Result<ad::AData, SrcInitError> {

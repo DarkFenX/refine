@@ -3,8 +3,7 @@ use crate::{
     ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{AttrVal, ItemId, OF},
     misc::EffectMode,
-    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind},
-    src::Src,
+    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind, Src},
     ud::{
         UFitKey,
         item::{UEffectUpdates, UItemBase, UPhysics, UShipKind, bool_to_state_offline, state_to_bool},

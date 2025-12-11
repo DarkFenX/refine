@@ -1,4 +1,9 @@
-use crate::{ad::AEffectId, misc::EffectMode, rd::REffectKey, src::Src, util::RMap};
+use crate::{
+    ad::AEffectId,
+    misc::EffectMode,
+    rd::{REffectKey, Src},
+    util::RMap,
+};
 
 const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
 

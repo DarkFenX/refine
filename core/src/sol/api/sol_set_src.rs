@@ -1,7 +1,7 @@
 use crate::{
     def::AttrVal,
+    rd::Src,
     sol::SolarSystem,
-    src::Src,
     ud::{UData, UEffectUpdates, UItem, UItemKey, UShipKind},
 };
 

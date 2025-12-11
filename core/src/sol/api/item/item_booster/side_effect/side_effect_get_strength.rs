@@ -4,9 +4,8 @@ use crate::{
     ad::AEffectId,
     def::{AttrId, AttrVal},
     misc::OpInfo,
-    rd::RAttrKey,
+    rd::{RAttrKey, Src},
     sol::api::{FullSideEffect, FullSideEffectMut},
-    src::Src,
 };
 
 pub struct SideEffectPartialStr {

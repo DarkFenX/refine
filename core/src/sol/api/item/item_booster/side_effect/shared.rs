@@ -1,7 +1,6 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    rd::REffectKey,
-    src::Src,
+    rd::{REffectKey, Src},
 };
 
 pub(super) fn get_se_chance_attr_id_by_effect_id(src: &Src, effect_id: &AEffectId) -> Option<AAttrId> {

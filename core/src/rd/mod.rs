@@ -8,12 +8,15 @@
 //! - Combining adapted and hardcoded data (as well as derived from both of those) under one roof;
 //! - Remapping some IDs to slab keys for faster access to some entity types.
 
+use data::RData;
 pub(crate) use data::{
-    RAbil, RAttr, RAttrConsts, RAttrKey, RBuff, RBuffKey, RBuffModifier, RData, REffect, REffectBuff,
-    REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc,
-    REffectConsts, REffectKey, REffectModifier, REffectProjecteeFilter, RItem, RItemAXt, RItemChargeLimit,
-    RItemContLimit, RItemEffectData, RItemList, RItemListKey, RItemShipLimit, RMuta, RShipDroneLimit, RShipKind,
-    RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcItemList, RcMuta,
+    RAbil, RAttr, RAttrConsts, RAttrKey, RBuff, RBuffKey, RBuffModifier, REffect, REffectBuff, REffectBuffAttrMerge,
+    REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectKey,
+    REffectModifier, REffectProjecteeFilter, RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemEffectData,
+    RItemList, RItemListKey, RItemShipLimit, RMuta, RShipDroneLimit, RShipKind, RcAbil, RcAttr, RcBuff, RcEffect,
+    RcItem, RcItemList, RcMuta,
 };
+pub use src::{Src, SrcInitError};
 
 mod data;
+mod src;

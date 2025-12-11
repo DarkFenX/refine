@@ -1,3 +1,4 @@
+use super::{error::SrcInitError, prepare::prepare_adapted_data};
 use crate::{
     ad::{AAbilId, AAttrId, ABuffId, AEffectId, AItemId, AItemListId, AdaptedDataCacher},
     ed::EveDataHandler,
@@ -5,14 +6,15 @@ use crate::{
         RAttrConsts, RAttrKey, RBuffKey, RData, REffectConsts, REffectKey, RItemListKey, RcAbil, RcAttr, RcBuff,
         RcEffect, RcItem, RcItemList, RcMuta,
     },
-    src::{SrcInitError, prepare::prepare_adapted_data},
     util::RMap,
 };
 
 /// Data source.
 ///
-/// Data source is a top-level entity which manages EVE and adapted data handlers to do necessary
-/// preparations and expose adapted data to solar system and its services.
+/// Data source is a top-level entity which manages EVE data handler and adapted data cacher to do
+/// necessary preparations and expose processed data to solar system and its services.
+// Under the hood it's an entity which builds runtime data container, and then provides access to
+// its contents
 #[derive(Clone)]
 pub struct Src {
     r_data: RData,
