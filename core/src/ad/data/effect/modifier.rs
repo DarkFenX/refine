@@ -1,5 +1,6 @@
 use crate::ad::{AAttrId, AEffectAffecteeFilter, AOp};
 
+#[derive(Clone)]
 pub struct AEffectModifier {
     pub affector_attr_id: AAttrId,
     pub op: AOp,

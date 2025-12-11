@@ -1,5 +1,6 @@
 use crate::ad::{AAttrId, AAttrVal};
 
+#[derive(Clone)]
 pub struct AAttr {
     pub id: AAttrId,
     pub penalizable: bool,

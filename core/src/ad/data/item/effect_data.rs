@@ -1,6 +1,6 @@
 use crate::ad::{AAttrVal, ACount, AItemId, AItemListId};
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct AItemEffectData {
     pub autocharge: Option<AItemId> = None,
     pub cooldown: Option<AAttrVal> = None,

@@ -2,7 +2,11 @@ use crate::ad::{AData, AResult};
 
 /// Adapted data cacher interface definition.
 ///
-/// Caching helps to avoid regeneration of adapted data on every run, which is very expensive.
+/// Caching helps to avoid regeneration of adapted data on every run, which is a very expensive
+/// process.
+///
+/// Any methods which read/write data have mutable self in signature to allow implementations of
+/// data handlers which store data on themselves.
 pub trait AdaptedDataCacher: std::fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
     fn get_cache_fingerprint(&mut self) -> Option<String>;
