@@ -7,7 +7,7 @@ from unittest.mock import ANY as ANY_VALUE
 import pytest
 
 if typing.TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Generator
 
 pytest.register_assert_rewrite(
     'tests.fw.api.client.sol',
@@ -37,7 +37,7 @@ def approx(expected: float, accuracy: int = 7):  # noqa: ANN201
 
 
 @contextlib.contextmanager
-def check_no_field():  # noqa: ANN201
+def check_no_field() -> Generator[None]:
     with pytest.raises(AttributeError):
         yield
 

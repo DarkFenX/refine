@@ -11,7 +11,7 @@ from threading import Thread
 from tests.fw.util import Timer
 
 if typing.TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Generator
     from pathlib import Path
 
 
@@ -92,7 +92,7 @@ class LogReader:
         self.__execute_flag = False
 
     @contextlib.contextmanager
-    def get_collector(self) -> Iterator[LogCollector]:
+    def get_collector(self) -> Generator[LogCollector]:
         collector = LogCollector()
         self.__add_collector(collector=collector)
         try:
@@ -100,7 +100,7 @@ class LogReader:
         finally:
             self.__remove_collector(collector=collector)
 
-    def __follow(self) -> Iterator[str]:
+    def __follow(self) -> Generator[str]:
         self.__path.touch(mode=0o644, exist_ok=True)
         with self.__path.open() as f:
             f.seek(0, os.SEEK_END)

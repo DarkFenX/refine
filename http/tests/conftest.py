@@ -10,7 +10,7 @@ from tests.fw.server import build_config, build_server, kill_server, run_server
 from tests.fw.util import next_free_port
 
 if typing.TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Generator
 
     import pytest_httpserver
 
@@ -48,7 +48,7 @@ def reefast_server(
         pytestconfig: pytest.Config,
         reefast_config: ConfigInfo,
         log_reader: LogReader,
-) -> Iterator[ServerInfo]:
+) -> Generator[ServerInfo]:
     optimized = pytestconfig.getoption('optimized')
     build_server(proj_root=PROJECT_ROOT, optimized=optimized)
     with log_reader.get_collector() as log_collector:
@@ -73,7 +73,7 @@ def client(
         httpserver: pytest_httpserver.HTTPServer,
         reefast_config: ConfigInfo,
         log_reader: LogReader,
-) -> Iterator[TestClient]:
+) -> Generator[TestClient]:
     test_client = TestClient(
         eve_data_server=httpserver,
         api_port=reefast_config.port,
@@ -90,7 +90,7 @@ def consts():  # noqa: ANN201
 
 
 @pytest.fixture(scope='session')
-def log_reader(reefast_tmp_folder: Path) -> Iterator[LogReader]:
+def log_reader(reefast_tmp_folder: Path) -> Generator[LogReader]:
     log_path = reefast_tmp_folder / 'reefast-http.log'
     reader = LogReader(path=log_path)
     reader.run()
@@ -99,6 +99,6 @@ def log_reader(reefast_tmp_folder: Path) -> Iterator[LogReader]:
 
 
 @pytest.fixture
-def log(log_reader: LogReader) -> Iterator[LogCollector]:
+def log(log_reader: LogReader) -> Generator[LogCollector]:
     with log_reader.get_collector() as log_collector:
         yield log_collector
