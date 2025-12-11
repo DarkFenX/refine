@@ -29,6 +29,14 @@ class EveItem(IntEnum):
     stasis_webification_probe = 56748
     capital_micro_jump_drive_operation = 83464
     electric_stability_generator = 87950
+    anhinga = 89807
+    skua = 89808
+    skua_defense_mode = 90060
+    anhinga_primary_mode = 90061
+    skua_propulsion_mode = 90062
+    anhinga_secondary_mode = 90063
+    skua_sharpshooter_mode = 90064
+    anhinga_tertiary_mode = 90065
 
 
 @unique

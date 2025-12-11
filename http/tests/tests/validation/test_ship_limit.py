@@ -342,7 +342,7 @@ def test_subsystem(client, consts):
 
 
 def test_t3d_confessor(client, consts):
-    # Tactical destroyer on-stance limits are hardcoded, we check it here
+    # On-stance limits are hardcoded, we check it here
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_defensive_id = client.mk_eve_item(id_=consts.EveItem.confessor_defense_mode)
     eve_propulsion_id = client.mk_eve_item(id_=consts.EveItem.confessor_propulsion_mode)
@@ -400,7 +400,7 @@ def test_t3d_confessor(client, consts):
 
 
 def test_t3d_hecate(client, consts):
-    # Tactical destroyer on-stance limits are hardcoded, we check it here
+    # On-stance limits are hardcoded, we check it here
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_defensive_id = client.mk_eve_item(id_=consts.EveItem.hecate_defense_mode)
     eve_propulsion_id = client.mk_eve_item(id_=consts.EveItem.hecate_propulsion_mode)
@@ -458,7 +458,7 @@ def test_t3d_hecate(client, consts):
 
 
 def test_t3d_jackdaw(client, consts):
-    # Tactical destroyer on-stance limits are hardcoded, we check it here
+    # On-stance limits are hardcoded, we check it here
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_defensive_id = client.mk_eve_item(id_=consts.EveItem.jackdaw_defense_mode)
     eve_propulsion_id = client.mk_eve_item(id_=consts.EveItem.jackdaw_propulsion_mode)
@@ -516,7 +516,7 @@ def test_t3d_jackdaw(client, consts):
 
 
 def test_t3d_svipul(client, consts):
-    # Tactical destroyer on-stance limits are hardcoded, we check it here
+    # On-stance limits are hardcoded, we check it here
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_defensive_id = client.mk_eve_item(id_=consts.EveItem.svipul_defense_mode)
     eve_propulsion_id = client.mk_eve_item(id_=consts.EveItem.svipul_propulsion_mode)
@@ -566,6 +566,122 @@ def test_t3d_svipul(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_t3d_skua(client, consts):
+    # On-stance limits are hardcoded, we check it here
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_defensive_id = client.mk_eve_item(id_=consts.EveItem.skua_defense_mode)
+    eve_propulsion_id = client.mk_eve_item(id_=consts.EveItem.skua_propulsion_mode)
+    eve_sharpshooter_id = client.mk_eve_item(id_=consts.EveItem.skua_sharpshooter_mode)
+    eve_t3d_id = client.mk_eve_ship(id_=consts.EveItem.skua, grp_id=eve_ship_grp_id)
+    eve_other_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_other_id)
+    api_defensive = api_fit.set_stance(type_id=eve_defensive_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_defensive.id: ([eve_t3d_id], [])}
+    # Action
+    api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_propulsion.id: ([eve_t3d_id], [])}
+    # Action
+    api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_sharpshooter.id: ([eve_t3d_id], [])}
+    # Action
+    api_fit.set_ship(type_id=eve_t3d_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.set_stance(type_id=eve_propulsion_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.set_stance(type_id=eve_defensive_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_abc_anhinga(client, consts):
+    # On-stance limits are hardcoded, we check it here
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_primary_id = client.mk_eve_item(id_=consts.EveItem.anhinga_primary_mode)
+    eve_secondary_id = client.mk_eve_item(id_=consts.EveItem.anhinga_secondary_mode)
+    eve_tertiary_id = client.mk_eve_item(id_=consts.EveItem.anhinga_tertiary_mode)
+    eve_t3d_id = client.mk_eve_ship(id_=consts.EveItem.anhinga, grp_id=eve_ship_grp_id)
+    eve_other_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_other_id)
+    api_primary = api_fit.set_stance(type_id=eve_primary_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_primary.id: ([eve_t3d_id], [])}
+    # Action
+    api_secondary = api_fit.set_stance(type_id=eve_secondary_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_secondary.id: ([eve_t3d_id], [])}
+    # Action
+    api_tertiary = api_fit.set_stance(type_id=eve_tertiary_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_tertiary.id: ([eve_t3d_id], [])}
+    # Action
+    api_fit.set_ship(type_id=eve_t3d_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.set_stance(type_id=eve_secondary_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.set_stance(type_id=eve_primary_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True

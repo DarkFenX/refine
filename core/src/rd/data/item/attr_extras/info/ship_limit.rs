@@ -78,6 +78,12 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
         ac::items::SVIPUL_DEFENSE_MODE => limit_type_ids.push(ac::items::SVIPUL),
         ac::items::SVIPUL_PROPULSION_MODE => limit_type_ids.push(ac::items::SVIPUL),
         ac::items::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::SVIPUL),
+        ac::items::SKUA_DEFENSE_MODE => limit_type_ids.push(ac::items::SKUA),
+        ac::items::SKUA_PROPULSION_MODE => limit_type_ids.push(ac::items::SKUA),
+        ac::items::SKUA_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::SKUA),
+        ac::items::ANHINGA_PRIMARY_MODE => limit_type_ids.push(ac::items::ANHINGA),
+        ac::items::ANHINGA_SECONDARY_MODE => limit_type_ids.push(ac::items::ANHINGA),
+        ac::items::ANHINGA_TERTIARY_MODE => limit_type_ids.push(ac::items::ANHINGA),
         _ => (),
     }
     if limit_type_ids.is_empty() && limit_group_ids.is_empty() {

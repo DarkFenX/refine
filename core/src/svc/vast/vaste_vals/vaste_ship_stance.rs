@@ -28,10 +28,7 @@ impl VastFitData {
             Some(ship) => ship,
             None => return false,
         };
-        matches!(
-            ship.get_type_id(),
-            ac::items::CONFESSOR | ac::items::HECATE | ac::items::JACKDAW | ac::items::SVIPUL
-        ) || kfs.contains(&stance_key)
+        stanceable_matcher(ship) || kfs.contains(&stance_key)
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_stance_verbose(
@@ -50,10 +47,7 @@ impl VastFitData {
                 });
             }
         };
-        if matches!(
-            ship.get_type_id(),
-            ac::items::CONFESSOR | ac::items::HECATE | ac::items::JACKDAW | ac::items::SVIPUL
-        ) {
+        if stanceable_matcher(ship) {
             return None;
         }
         if kfs.contains(&stance_key) {
@@ -63,4 +57,16 @@ impl VastFitData {
             stance_item_id: ctx.u_data.items.id_by_key(stance_key),
         })
     }
+}
+
+fn stanceable_matcher(ship: &UShip) -> bool {
+    matches!(
+        ship.get_type_id(),
+        ac::items::CONFESSOR
+            | ac::items::HECATE
+            | ac::items::JACKDAW
+            | ac::items::SVIPUL
+            | ac::items::SKUA
+            | ac::items::ANHINGA
+    )
 }
