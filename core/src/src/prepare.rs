@@ -1,20 +1,20 @@
 use crate::{ad, adg, def::VERSION, ed, src::SrcInitError};
 
 pub(in crate::src) fn prepare_adapted_data(
-    ed_handler: Box<dyn ed::EveDataHandler>,
-    ad_cacher: Option<Box<dyn ad::AdaptedDataCacher>>,
+    ed_handler: &Box<dyn ed::EveDataHandler>,
+    ad_cacher: Option<&mut Box<dyn ad::AdaptedDataCacher>>,
 ) -> Result<ad::AData, SrcInitError> {
     match ad_cacher {
-        Some(mut ad_cacher) => {
+        Some(ad_cacher) => {
             tracing::info!("initializing new source with {ed_handler:?} and {ad_cacher:?}");
-            let ed_version = get_ed_version(&ed_handler);
-            match get_relevant_a_data(ed_version.clone(), &mut ad_cacher) {
+            let ed_version = get_ed_version(ed_handler);
+            match get_relevant_a_data(ed_version.clone(), ad_cacher) {
                 Some(a_data) => Ok(a_data),
                 None => {
-                    let a_data = adapt_data(&ed_handler)?;
+                    let a_data = adapt_data(ed_handler)?;
                     // Cache is updated only if EVE data version is specified
                     if let Some(ed_version) = ed_version {
-                        let current_fingerprint = get_current_fingerprint(ed_version, &ad_cacher);
+                        let current_fingerprint = get_current_fingerprint(ed_version, ad_cacher);
                         ad_cacher.write_cache(&a_data, &current_fingerprint);
                     }
                     Ok(a_data)

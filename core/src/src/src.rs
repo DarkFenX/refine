@@ -22,8 +22,8 @@ pub struct Src {
 impl Src {
     #[tracing::instrument(name = "src-new", level = "trace", skip_all)]
     pub fn new(
-        ed_handler: Box<dyn EveDataHandler>,
-        ad_cacher: Option<Box<dyn AdaptedDataCacher>>,
+        ed_handler: &Box<dyn EveDataHandler>,
+        ad_cacher: Option<&mut Box<dyn AdaptedDataCacher>>,
     ) -> Result<Self, SrcInitError> {
         let a_data = prepare_adapted_data(ed_handler, ad_cacher)?;
         let r_data = RData::from(a_data);
