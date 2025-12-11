@@ -203,6 +203,22 @@ def test_no_skill(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_attr_id = consts.EveAttr.volume
+    eve_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id)
+    # Verification - validation passes if volume attribute does not exist
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded_ship(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})

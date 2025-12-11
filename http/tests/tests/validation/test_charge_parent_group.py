@@ -373,6 +373,25 @@ def test_no_charge(client):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_group_attr_id = consts.EveAttr.launcher_group
+    eve_charge_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
+    eve_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    # Create an item which has the group, just to prevent the group from being cleaned up
+    client.mk_eve_item(grp_id=eve_grp1_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    # Verification - limits defined with attribute which doesn't exist are ignored
+    api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded_module(client, consts):
     eve_grp_id = client.mk_eve_item_group()
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.launcher_group, unit_id=consts.EveAttrUnit.group_id)

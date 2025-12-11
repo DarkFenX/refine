@@ -349,6 +349,48 @@ def test_no_ship(client, consts):
     assert api_val.details.high_slot_count.users == [api_module.id]
 
 
+def test_no_value_max(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.hi_slots)
+    eve_module_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline)
+    # Verification
+    api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
+    assert api_stats.high_slots == (1, 0)
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
+
+
+def test_no_attr_max(client, consts):
+    eve_max_attr_id = consts.EveAttr.hi_slots
+    eve_module_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline)
+    # Verification - when output attr does not exist, it is assumed to be 0
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
+    assert api_val.passed is False
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
+
+
 def test_not_loaded_user(client, consts):
     # Not loaded modules still take slot
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hi_slots)
@@ -391,28 +433,6 @@ def test_not_loaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.high_slot_count.used == 1
     assert api_val.details.high_slot_count.max is None
-    assert api_val.details.high_slot_count.users == [api_module.id]
-
-
-def test_no_value_max(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.hi_slots)
-    eve_module_id = client.mk_eve_item()
-    eve_ship_id = client.mk_eve_ship()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.ApiRack.high,
-        state=consts.ApiModuleState.offline)
-    # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
-    assert api_stats.high_slots == (1, 0)
-    api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
-    assert api_val.passed is False
-    assert api_val.details.high_slot_count.used == 1
-    assert api_val.details.high_slot_count.max == 0
     assert api_val.details.high_slot_count.users == [api_module.id]
 
 

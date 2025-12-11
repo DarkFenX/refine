@@ -241,6 +241,28 @@ def test_filter_reference_values(client, consts):
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
 
 
+def test_empty_list(client, consts):
+    eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
+    eve_ship_id = client.mk_eve_ship()
+    eve_item_list_id = client.mk_eve_item_list()
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_tgt_list_attr_id: eve_item_list_id},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - if list is defined and fetched but is empty, validation fails
+    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
+    assert api_val.passed is False
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
+
+
 def test_tgt_mutation(client, consts):
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
@@ -435,6 +457,30 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
     api_val = api_src_fit.validate(options=ValOptions(
         projectee_filter=(True, [api_src_item1.id, api_src_other.id, api_src_item2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_no_attr(client, consts):
+    eve_tgt_list_attr_id = consts.EveAttr.tgt_filter_typelist_id
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
+    eve_ship1_id = client.mk_eve_ship()
+    eve_ship2_id = client.mk_eve_ship()
+    eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_ship2_id])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_tgt_list_attr_id: eve_item_list_id},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - if list is defined and fetched but is empty, validation fails
+    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

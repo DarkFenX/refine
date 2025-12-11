@@ -156,6 +156,38 @@ def test_no_char(client, consts):
     assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
+def test_no_value_max(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_drone_id = client.mk_eve_item()
+    eve_char_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=eve_char_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
+    assert api_val.passed is False
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
+
+
+def test_no_attr_max(client, consts):
+    eve_max_attr_id = consts.EveAttr.max_active_drones
+    eve_drone_id = client.mk_eve_item()
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=eve_char_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
+    # Verification - when output attr does not exist, it is assumed to be 0
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
+    assert api_val.passed is False
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
+
+
 def test_not_loaded_user(client, consts):
     # Not loaded drones still take slot
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
@@ -186,22 +218,6 @@ def test_not_loaded_char(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_slot.max is None
-    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
-
-
-def test_no_value_max(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
-    eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_character(type_id=eve_char_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
-    assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.max == 0
     assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 

@@ -407,6 +407,41 @@ def test_no_ship(client, consts):
     assert api_val.details.drone_bandwidth.users == {api_drone.id: 5}
 
 
+def test_no_attr_use(client, consts):
+    eve_use_attr_id = consts.EveAttr.drone_bandwidth_used
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    # Verification - users are assumed to take no resource when attribute does not exist
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_no_attr_max(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = consts.EveAttr.drone_bandwidth
+    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 50})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    # Verification - when output attr does not exist, it is assumed to be 0
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(50)
+    assert api_val.details.drone_bandwidth.max == approx(0)
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: 50}
+
+
 def test_not_loaded_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)

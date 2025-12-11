@@ -185,7 +185,7 @@ def _make_optional_attr(
         default_id: int,
         stackable: bool | type[Default] = Default,
         max_attr_id: int | type[Default] = Default,
-):
+) -> int | None:
     if id_ is None:
         return None
     if id_ is Default:

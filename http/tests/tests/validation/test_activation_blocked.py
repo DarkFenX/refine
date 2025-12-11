@@ -223,6 +223,22 @@ def test_values(client, consts):
         api_module3.id, api_module4.id, api_module5.id, api_module6.id])
 
 
+def test_no_attr(client, consts):
+    eve_attr_id = consts.EveAttr.activation_blocked
+    eve_module1_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_module2_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active)
+    # Verification - validation passes if attr does not exist
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
     eve_module_id = client.alloc_item_id()

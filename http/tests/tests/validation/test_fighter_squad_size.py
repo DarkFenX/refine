@@ -205,20 +205,6 @@ def test_not_positive_max(client, consts):
     assert api_val.details.fighter_squad_size == {api_fighter1.id: (10, 1), api_fighter2.id: (10, 1)}
 
 
-def test_not_loaded(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_fighter_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_fighter(type_id=eve_fighter_id, count=10)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
-
-
 def test_no_value(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     eve_fighter_id = client.mk_eve_item()
@@ -236,3 +222,37 @@ def test_no_value(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
     assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 1)}
+
+
+def test_no_attr(client, consts):
+    eve_count_attr_id = consts.EveAttr.ftr_sq_max_size
+    eve_fighter_id = client.mk_eve_item(attrs={eve_count_attr_id: 9})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fighter.change_fighter(count=10)
+    # Verification - when attribute is not specified, max size of 1 is set
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
+    assert api_val.passed is False
+    assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 1)}
+
+
+def test_not_loaded(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_fighter(type_id=eve_fighter_id, count=10)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018

@@ -540,6 +540,62 @@ def test_no_value_max(client, consts):
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
+def test_no_attr_use(client, consts):
+    eve_use_attr_id = consts.EveAttr.volume
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_capacity)
+    eve_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter_id = client.mk_eve_item(attrs={eve_use_attr_id: 1000, eve_count_attr_id: 9})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification - users are assumed to take no resource when attribute does not exist
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_no_attr_max(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_max_attr_id = consts.EveAttr.ftr_capacity
+    eve_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter_id = client.mk_eve_item(attrs={eve_use_attr_id: 1000, eve_count_attr_id: 5})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 8000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification - when output attr does not exist, it is assumed to be 0
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(5000)
+    assert api_val.details.fighter_bay_volume.max == approx(0)
+    assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(5000)}
+
+
+def test_no_attr_count(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_capacity)
+    eve_count_attr_id = consts.EveAttr.ftr_sq_max_size
+    eve_fighter_id = client.mk_eve_item(attrs={eve_use_attr_id: 1000, eve_count_attr_id: 9})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification - users are assumed to take no resource when attribute does not exist
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(1000)
+    assert api_val.details.fighter_bay_volume.max == approx(500)
+    assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(1000)}
+
+
 def test_criterion_item_kind(client, consts):
     # Validation applies only to fighters
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)

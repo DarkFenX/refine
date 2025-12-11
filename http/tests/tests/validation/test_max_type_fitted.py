@@ -248,6 +248,21 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_val.details.max_type_fitted == {eve_base_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
 
+def test_no_attr(client, consts):
+    eve_limit_attr_id = consts.EveAttr.max_type_fitted
+    eve_service_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
+    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
+    # Verification - when attribute is not available, validation passes
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_service_id = client.alloc_item_id()

@@ -862,6 +862,36 @@ def test_no_ship(client, consts):
     assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship_id], [eve_ship_grp1_id])}
 
 
+def test_no_attr(client, consts):
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_type_attr1_id = consts.EveAttr.can_fit_ship_type1
+    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2, unit_id=consts.EveAttrUnit.item_id)
+    eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    eve_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    eve_module1_id = client.mk_eve_item(attrs={eve_type_attr1_id: eve_ship1_id})
+    eve_module2_id = client.mk_eve_item(attrs={eve_type_attr1_id: eve_ship1_id, eve_type_attr2_id: eve_ship2_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship1_id)
+    api_module = api_fit.add_module(type_id=eve_module1_id)
+    # Verification - the only defined limit attribute doesn't exist, so the lib treats item having
+    # no ship limit
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification - one attribute not existing doesn't prevent other attributes from defining the
+    # ship limit
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship2_id], [])}
+
+
 def test_not_loaded_ship(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)

@@ -285,6 +285,21 @@ def test_no_value(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_attr_id = consts.EveAttr.online_max_security_class
+    eve_service_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    api_fit = api_sol.create_fit()
+    api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
+    # Verification - when attribute can't be fetched, it's assumed to be non-limited in any sec zone
+    api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class, def_val=0)
     eve_service_id = client.alloc_item_id()

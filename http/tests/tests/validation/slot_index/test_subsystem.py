@@ -154,6 +154,21 @@ def test_no_value(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_slot_attr_id = consts.EveAttr.subsystem_slot
+    eve_subsystem_id = client.mk_eve_item(attrs={eve_slot_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_subsystem(type_id=eve_subsystem_id)
+    api_fit.add_subsystem(type_id=eve_subsystem_id)
+    # Verification - validation passes if attr does not exist
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.subsystem_slot)
     eve_subsystem_id = client.alloc_item_id()

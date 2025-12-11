@@ -576,6 +576,19 @@ def test_mutation_attr(client, consts):
         api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
 
 
+def test_no_attr_implant(client, consts):
+    eve_slot_attr_id = consts.EveAttr.implantness
+    eve_implant_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, attrs={eve_slot_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_implant = api_fit.add_implant(type_id=eve_implant_id)
+    # Verification - when attribute doesn't exist, item kind detection can't rely on it
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {api_implant.id: (None, consts.ApiValItemType.implant)}
+
+
 def test_not_loaded(client):
     # Not loaded items are not subjects for validation
     eve_item_id = client.alloc_item_id()

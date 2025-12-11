@@ -277,6 +277,22 @@ def test_no_value(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_attr_id = consts.EveAttr.required_thermodynamics_skill
+    eve_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_skill_id = client.mk_eve_item(id_=consts.EveItem.thermodynamics)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_skill(type_id=eve_skill_id, level=0)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    # Verification - no attribute means level can't be fetched, which means validation always passes
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded_module(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
     eve_module_id = client.alloc_item_id()

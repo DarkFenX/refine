@@ -292,6 +292,37 @@ def test_mutation_drone_group(client, consts):
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
 
 
+def test_no_attr(client, consts):
+    eve_group1_id = client.mk_eve_item_group()
+    eve_group2_id = client.mk_eve_item_group()
+    eve_limit_attr1_id = consts.EveAttr.allowed_drone_group1
+    eve_limit_attr2_id = client.mk_eve_attr(
+        id_=consts.EveAttr.allowed_drone_group2,
+        unit_id=consts.EveAttrUnit.group_id)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group2_id})
+    eve_ship2_id = client.mk_eve_ship(
+        attrs={eve_limit_attr1_id: eve_group1_id, eve_limit_attr2_id: eve_group2_id})
+    eve_drone_id = client.mk_eve_item(grp_id=eve_group1_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    # Verification - limits defined with attribute which doesn't exist are ignored. Without it,
+    # ship has no limit, so validation passes
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification - having some attributes which do not exist does not prevent existing attributes
+    # from functioning
+    api_val = api_fit.validate(options=ValOptions(drone_group=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group1_id})
+
+
 def test_not_loaded_ship(client):
     eve_ship_id = client.alloc_item_id()
     eve_drone_id = client.mk_eve_item()

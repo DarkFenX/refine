@@ -211,6 +211,24 @@ def test_mutation_limit_inheritance(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_grp_id = client.mk_eve_item_group()
+    eve_limit_attr_id = consts.EveAttr.max_group_active
+    eve_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification - when attribute is not available, validation passes
+    api_val = api_fit.validate(options=ValOptions(max_group_active=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.max_group_active)
     eve_module_id = client.alloc_item_id()

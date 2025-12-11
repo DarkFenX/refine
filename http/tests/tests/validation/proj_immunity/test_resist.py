@@ -453,6 +453,26 @@ def test_criterion_effect_cat(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr(client, consts):
+    eve_resist_attr_id = client.alloc_attr_id()
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, resist_attr_id=eve_resist_attr_id)
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_tgt_item_id = client.mk_eve_ship(attrs={eve_resist_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
+    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    # Verification - if resistance attribute cannot be found, assume target is not immune to
+    # modifications
+    api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_known_failures(client, consts):
     # Also test that only validation of source fit is affected
     eve_resist_attr_id = client.mk_eve_attr()

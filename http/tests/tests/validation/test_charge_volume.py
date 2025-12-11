@@ -388,6 +388,37 @@ def test_no_value_charge(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_attr_volume(client, consts):
+    eve_cap_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_vol_attr_id = consts.EveAttr.volume
+    eve_charge_id = client.mk_eve_item(attrs={eve_vol_attr_id: 1.2})
+    eve_module_id = client.mk_eve_item(attrs={eve_cap_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    # Verification - volume is assumed to be 0 when attr does not exist
+    api_val = api_fit.validate(options=ValOptions(charge_volume=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_no_attr_capacity(client, consts):
+    eve_cap_attr_id = consts.EveAttr.capacity
+    eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_charge_id = client.mk_eve_item(attrs={eve_vol_attr_id: 1.2})
+    eve_module_id = client.mk_eve_item(attrs={eve_cap_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    # Verification - capacity is assumed to be 0 when attribute does not exist
+    api_val = api_fit.validate(options=ValOptions(charge_volume=True))
+    assert api_val.passed is False
+    assert api_val.details.charge_volume == {api_module.charge.id: (api_module.id, 1.2, 0)}
+
+
 def test_not_loaded_module(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)

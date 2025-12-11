@@ -394,6 +394,41 @@ def test_no_value_max(client, consts):
     assert api_val.details.calibration.users == {api_rig.id: approx(150)}
 
 
+def test_no_attr_use(client, consts):
+    eve_use_attr_id = consts.EveAttr.upgrade_cost
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_rig(type_id=eve_rig_id)
+    # Verification - users are assumed to take no resource when attribute does not exist
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_no_attr_max(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
+    eve_max_attr_id = consts.EveAttr.upgrade_capacity
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 50})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification - when output attr does not exist, it is assumed to be 0
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(50)
+    assert api_val.details.calibration.max == approx(0)
+    assert api_val.details.calibration.users == {api_rig.id: approx(50)}
+
+
 def test_criterion_rig_state(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
