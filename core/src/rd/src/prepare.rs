@@ -13,6 +13,7 @@ pub(in crate::rd::src) fn prepare_adapted_data(
         Some(ad_cacher) => {
             tracing::info!("initializing new source with {ed_handler:?} and {ad_cacher:?}");
             let ed_version = get_ed_version(ed_handler);
+            let ad_cacher = ad_cacher.as_mut();
             match get_relevant_a_data(ed_version.clone(), ad_cacher) {
                 Some(a_data) => Ok(a_data),
                 None => {
@@ -45,12 +46,12 @@ fn get_ed_version(ed_handler: &dyn EveDataHandler) -> Option<String> {
 }
 
 #[allow(clippy::borrowed_box)]
-fn get_current_fingerprint(ed_version: String, ad_cacher: &Box<dyn AdaptedDataCacher>) -> String {
+fn get_current_fingerprint(ed_version: String, ad_cacher: &dyn AdaptedDataCacher) -> String {
     let adc_version = ad_cacher.get_cacher_version();
     format!("ed{ed_version}_adc{adc_version}_core{VERSION}")
 }
 
-fn get_relevant_a_data(ed_version: Option<String>, ad_cacher: &mut Box<dyn AdaptedDataCacher>) -> Option<AData> {
+fn get_relevant_a_data(ed_version: Option<String>, ad_cacher: &mut dyn AdaptedDataCacher) -> Option<AData> {
     // Failure to read EVE data version is not fatal, we just always generate adapted data in this
     // case
     let ed_version = ed_version?;
