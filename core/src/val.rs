@@ -2,7 +2,7 @@
 pub use crate::{
     misc::ItemKind as ValItemKind,
     svc::vast::{
-        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
+        ValActivationBlockedFail, ValCapUseFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
         ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,
         ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail,
         ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo,

@@ -52,6 +52,8 @@ pub(in crate::cmd) struct HValOptions {
     capital_module: Option<HValOption>,
     #[serde(default)]
     overload_skill: Option<HValOption>,
+    #[serde(default)]
+    cap_use: Option<HValOption>,
     // Charges
     #[serde(default)]
     charge_group: Option<HValOption>,
@@ -181,6 +183,7 @@ impl From<&HValOptions> for rc::val::ValOptions {
         process_option(&h_options.module_state, &mut core_options.module_state);
         process_option(&h_options.capital_module, &mut core_options.capital_module);
         process_option(&h_options.overload_skill, &mut core_options.overload_skill);
+        process_option(&h_options.cap_use, &mut core_options.cap_use);
         // Charges
         process_option(&h_options.charge_group, &mut core_options.charge_group);
         process_option(&h_options.charge_parent_group, &mut core_options.charge_parent_group);

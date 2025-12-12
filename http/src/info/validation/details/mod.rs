@@ -1,4 +1,5 @@
 pub(in crate::info::validation) use activation_blocked::HValActivationBlockedFail;
+pub(in crate::info::validation) use cap_use::HValCapUseFail;
 pub(in crate::info::validation) use capital_module::HValCapitalModFail;
 pub(in crate::info::validation) use charge_group::HValChargeGroupFail;
 pub(in crate::info::validation) use charge_parent_group::HValChargeParentGroupFail;
@@ -28,6 +29,7 @@ pub(in crate::info::validation) use unusable_resource::HValUnusableResFail;
 pub(in crate::info::validation) use unusable_slot::HValUnusableSlotFail;
 
 mod activation_blocked;
+mod cap_use;
 mod capital_module;
 mod charge_group;
 mod charge_parent_group;

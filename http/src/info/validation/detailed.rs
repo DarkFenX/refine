@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
 use crate::info::validation::details::{
-    HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
-    HValChargeVolumeFail, HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
-    HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
-    HValOverloadSkillFail, HValProjFilterFail, HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail,
-    HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail,
-    HValUnusableSlotFail,
+    HValActivationBlockedFail, HValCapUseFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail,
+    HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail,
+    HValItemKindFail, HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail,
+    HValNotLoadedItemFail, HValOverloadSkillFail, HValProjFilterFail, HValProjImmunityFail, HValResFail,
+    HValRigSizeFail, HValSecZoneFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail,
+    HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 // Sol-specific
@@ -118,6 +118,8 @@ struct HValFitInfo {
     capital_module: Option<HValCapitalModFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     overload_skill: Option<HValOverloadSkillFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cap_use: Option<HValCapUseFail>,
     // Charges
     #[serde(skip_serializing_if = "Option::is_none")]
     charge_group: Option<HValChargeGroupFail>,
@@ -243,6 +245,7 @@ impl HValFitInfo {
             && self.module_state.is_none()
             && self.capital_module.is_none()
             && self.overload_skill.is_none()
+            && self.cap_use.is_none()
             // Charges
             && self.charge_group.is_none()
             && self.charge_parent_group.is_none()
@@ -326,6 +329,7 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             module_state: conv(&core_val_result.module_state),
             capital_module: conv(&core_val_result.capital_module),
             overload_skill: conv(&core_val_result.overload_skill),
+            cap_use: conv(&core_val_result.cap_use),
             // Charges
             charge_group: conv(&core_val_result.charge_group),
             charge_parent_group: conv(&core_val_result.charge_parent_group),

@@ -1,4 +1,5 @@
 pub use vaste_activation_blocked::ValActivationBlockedFail;
+pub use vaste_cap_use::ValCapUseFail;
 pub use vaste_capital_module::ValCapitalModFail;
 pub use vaste_charge_cont_group::{ValChargeParentGroupFail, ValChargeParentGroupInfo};
 pub use vaste_charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
@@ -29,6 +30,7 @@ pub use vaste_unusable_slot::ValUnusableSlotFail;
 
 mod shared;
 mod vaste_activation_blocked;
+mod vaste_cap_use;
 mod vaste_capital_module;
 mod vaste_charge_cont_group;
 mod vaste_charge_group;
