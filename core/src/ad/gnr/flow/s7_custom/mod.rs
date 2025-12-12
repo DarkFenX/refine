@@ -1,0 +1,13 @@
+//! Data customizations which are applied on adapted data generation.
+
+use crate::ad::AData;
+
+mod effects;
+mod item_lists;
+mod subsystem_slots;
+
+pub(in crate::ad::gnr) fn customize(a_data: &mut AData) {
+    item_lists::customize_item_lists(a_data);
+    effects::customize_effects(a_data);
+    subsystem_slots::fix_subsysem_slot_count(a_data);
+}

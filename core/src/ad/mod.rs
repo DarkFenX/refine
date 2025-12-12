@@ -13,9 +13,11 @@ pub use data::{
     AEffectId, AEffectLocation, AEffectModifier, AEveItemListId, AItem, AItemCatId, AItemEffectData, AItemGrpId,
     AItemId, AItemList, AItemListId, AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState,
 };
+pub(crate) use gnr::generate_adapted_data;
 pub use result::AResult;
 
 mod cacher;
 pub(crate) mod consts;
 mod data;
+mod gnr;
 mod result;

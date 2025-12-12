@@ -49,7 +49,6 @@ pub use util::UnitInterval;
 
 mod ac;
 pub mod ad;
-mod adg;
 mod dbg;
 mod def;
 mod ec;
