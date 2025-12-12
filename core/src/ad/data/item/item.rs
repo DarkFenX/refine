@@ -22,5 +22,6 @@ pub struct AItem {
     pub val_fitted_group_id: Option<AItemGrpId>,
     pub val_online_group_id: Option<AItemGrpId>,
     pub val_active_group_id: Option<AItemGrpId>,
+    pub is_ice_harvester: bool,
     pub disallowed_in_wspace: bool,
 }

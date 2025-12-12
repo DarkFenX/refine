@@ -21,6 +21,7 @@ pub(in crate::cacher_json) struct CItem {
     val_fitted_group_id: Option<CItemGrpId>,
     val_online_group_id: Option<CItemGrpId>,
     val_active_group_id: Option<CItemGrpId>,
+    is_ice_harvester: bool,
     disallowed_in_wspace: bool,
 }
 impl From<&rc::ad::AItem> for CItem {
@@ -40,6 +41,7 @@ impl From<&rc::ad::AItem> for CItem {
             val_fitted_group_id: a_item.val_fitted_group_id,
             val_online_group_id: a_item.val_online_group_id,
             val_active_group_id: a_item.val_active_group_id,
+            is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
         }
     }
@@ -65,6 +67,7 @@ impl From<&CItem> for rc::ad::AItem {
             val_fitted_group_id: c_item.val_fitted_group_id,
             val_online_group_id: c_item.val_online_group_id,
             val_active_group_id: c_item.val_active_group_id,
+            is_ice_harvester: c_item.is_ice_harvester,
             disallowed_in_wspace: c_item.disallowed_in_wspace,
         }
     }

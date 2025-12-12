@@ -21,9 +21,8 @@ pub(crate) struct RItem {
     pub(crate) val_fitted_group_id: Option<AItemGrpId>,
     pub(crate) val_online_group_id: Option<AItemGrpId>,
     pub(crate) val_active_group_id: Option<AItemGrpId>,
-    pub(crate) disallowed_in_wspace: bool,
-    // Fields derived from adapted data
     pub(crate) is_ice_harvester: bool,
+    pub(crate) disallowed_in_wspace: bool,
     // Fields which depend on slab keys
     pub(crate) attrs: RMap<RAttrKey, AAttrVal>,
     pub(crate) effect_datas: RMap<REffectKey, RItemEffectData>,
@@ -48,9 +47,8 @@ impl RItem {
             val_fitted_group_id: a_item.val_fitted_group_id,
             val_online_group_id: a_item.val_online_group_id,
             val_active_group_id: a_item.val_active_group_id,
+            is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
-            // Fields derived from adapted data
-            is_ice_harvester: is_ice_harvester(&a_item.srqs),
             // Fields which depend on slab keys
             attrs: Default::default(),
             effect_datas: Default::default(),
@@ -148,10 +146,6 @@ fn has_effect(
         None => return false,
     };
     item_effects.contains_key(effect_key)
-}
-
-fn is_ice_harvester(item_srqs: &RMap<AItemId, ASkillLevel>) -> bool {
-    item_srqs.contains_key(&ac::items::ICE_HARVESTING)
 }
 
 fn get_ship_kind(item_cat_id: AItemCatId, item_srqs: &RMap<AItemId, ASkillLevel>) -> Option<RShipKind> {
