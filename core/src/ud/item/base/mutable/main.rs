@@ -626,7 +626,6 @@ fn get_combined_attr_value<'a>(
                 None => None,
             },
             None => {
-                // TODO: if items are moved to slab, get rid of cache logic and just fetch via key
                 let opt_base_r_item = src.get_item(base_type_id);
                 base_r_item_cache.replace(opt_base_r_item);
                 match opt_base_r_item {
