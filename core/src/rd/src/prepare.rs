@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(in crate::rd::src) fn prepare_adapted_data(
-    ed_handler: &Box<dyn EveDataHandler>,
+    ed_handler: &dyn EveDataHandler,
     ad_cacher: Option<&mut Box<dyn AdaptedDataCacher>>,
 ) -> Result<AData, SrcInitError> {
     match ad_cacher {
@@ -28,13 +28,13 @@ pub(in crate::rd::src) fn prepare_adapted_data(
         }
         None => {
             tracing::info!("initializing new source with {ed_handler:?} without caching");
-            adapt_data(&ed_handler)
+            adapt_data(ed_handler)
         }
     }
 }
 
 #[allow(clippy::borrowed_box)]
-fn get_ed_version(ed_handler: &Box<dyn EveDataHandler>) -> Option<String> {
+fn get_ed_version(ed_handler: &dyn EveDataHandler) -> Option<String> {
     match ed_handler.get_data_version() {
         Ok(ed_version) => Some(ed_version),
         Err(e) => {
@@ -78,7 +78,7 @@ fn get_relevant_a_data(ed_version: Option<String>, ad_cacher: &mut Box<dyn Adapt
 }
 
 #[allow(clippy::borrowed_box)]
-fn adapt_data(ed_handler: &Box<dyn EveDataHandler>) -> Result<AData, SrcInitError> {
+fn adapt_data(ed_handler: &dyn EveDataHandler) -> Result<AData, SrcInitError> {
     tracing::info!("generating adapted data...");
-    generate_adapted_data(ed_handler.as_ref())
+    generate_adapted_data(ed_handler)
 }

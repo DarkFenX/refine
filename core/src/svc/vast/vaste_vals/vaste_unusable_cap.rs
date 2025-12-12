@@ -60,10 +60,7 @@ impl VastFitData {
             return None;
         }
         // Pass validation if ship is not loaded
-        let max_cap = match calc.get_item_oattr_afb_oextra(ctx, ship_key, ctx.ac().capacitor_capacity, OF(0.0)) {
-            Some(max_cap) => max_cap,
-            None => return None,
-        };
+        let max_cap = calc.get_item_oattr_afb_oextra(ctx, ship_key, ctx.ac().capacitor_capacity, OF(0.0))?;
         let mut items = HashMap::new();
         for (&item_key, attr_keys) in self.cap_consumers_all.iter() {
             let max_item_use = match attr_keys
