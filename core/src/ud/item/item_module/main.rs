@@ -87,6 +87,9 @@ impl UModule {
     pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_val_active_group_id()
     }
+    pub(crate) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrKey>> {
+        self.base.get_cap_use_attr_keys()
+    }
     pub(crate) fn takes_turret_hardpoint(&self) -> bool {
         self.base.takes_turret_hardpoint()
     }

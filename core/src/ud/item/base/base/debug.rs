@@ -15,6 +15,11 @@ impl UItemBase {
                 check_effect_key(u_data, effect_key)?;
             }
         }
+        if let Some(attr_keys) = self.get_cap_use_attr_keys() {
+            for &attr_key in attr_keys.iter() {
+                check_attr_key(u_data, attr_key)?;
+            }
+        }
         if let Some(axt) = self.get_axt() {
             axt.consistency_check(u_data)?;
         }

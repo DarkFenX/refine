@@ -324,6 +324,12 @@ impl VastFitData {
                 check_effect_key(u_data, projector_espec.effect_key)?;
             }
         }
+        for (&item_key, attr_keys) in self.cap_consumers_all.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &attr_key in attr_keys {
+                check_attr_key(u_data, attr_key)?;
+            }
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - damage output
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -432,7 +438,7 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - cap
         ////////////////////////////////////////////////////////////////////////////////////////////
-        for (&item_key, item_data) in self.cap_consumers.iter() {
+        for (&item_key, item_data) in self.cap_consumers_active.iter() {
             check_item_key(u_data, item_key, true)?;
             for (&effect_key, &attr_key) in item_data.iter() {
                 check_effect_key(u_data, effect_key)?;

@@ -117,6 +117,9 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base_get_r_item().and_then(|v| v.val_active_group_id)
     }
+    pub(in crate::ud::item) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrKey>> {
+        self.base_get_r_item().map(|v| &v.cap_use_attr_keys)
+    }
     pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
         self.base_get_r_item().and_then(|v| v.ship_kind)
     }

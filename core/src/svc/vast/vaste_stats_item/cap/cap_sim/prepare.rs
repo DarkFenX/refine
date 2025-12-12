@@ -47,7 +47,7 @@ fn fill_consumers(
     fit_data: &VastFitData,
 ) {
     let mut stagger_map = RMapVec::new();
-    for (&item_key, item_data) in fit_data.cap_consumers.iter() {
+    for (&item_key, item_data) in fit_data.cap_consumers_active.iter() {
         let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,

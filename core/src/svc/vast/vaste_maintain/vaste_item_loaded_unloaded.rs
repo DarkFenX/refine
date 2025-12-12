@@ -178,6 +178,11 @@ impl Vast {
                 if item_axt.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_key);
                 }
+                if let Some(cap_attr_keys) = module.get_cap_use_attr_keys()
+                    && !cap_attr_keys.is_empty()
+                {
+                    fit_data.cap_consumers_all.insert(item_key, cap_attr_keys.clone());
+                }
                 item_vs_ship_kind_add(
                     u_data,
                     fit_data,
@@ -454,6 +459,11 @@ impl Vast {
                     fit_data.sec_zone_unactivable.remove(item_key);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.remove(item_key);
+                if let Some(cap_attr_keys) = module.get_cap_use_attr_keys()
+                    && !cap_attr_keys.is_empty()
+                {
+                    fit_data.cap_consumers_all.remove(item_key);
+                }
             }
             UItem::Rig(rig) => {
                 let item_axt = rig.get_axt().unwrap();

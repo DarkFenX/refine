@@ -146,7 +146,7 @@ fn get_cap_consumed(
         true => CYCLE_OPTIONS_SIM,
         false => CYCLE_OPTIONS_BURST,
     };
-    for (&item_key, item_data) in fit_data.cap_consumers.iter() {
+    for (&item_key, item_data) in fit_data.cap_consumers_active.iter() {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
             Some(cycle_map) => cycle_map,
             None => continue,

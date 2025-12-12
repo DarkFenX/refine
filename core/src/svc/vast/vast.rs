@@ -55,7 +55,7 @@ impl Vast {
 }
 
 // TODO: check if some of data containers can be merged to save time and memory (e.g. drone
-// TODO: bandwidth, active drone count)
+// TODO: bandwidth, active drone count), reorder validations
 #[derive(Clone)]
 pub(in crate::svc) struct VastFitData {
     // Validation-related
@@ -119,6 +119,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemKey, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
     pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemKey, RItemListKey>,
+    pub(in crate::svc::vast) cap_consumers_all: RMap<UItemKey, Vec<RAttrKey>>,
     // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, REffectKey, NNormalDmgGetter>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, REffectKey, NBreacherDmgGetter>,
@@ -140,7 +141,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
     // Stats-related - cap
-    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemKey, REffectKey, RAttrKey>,
+    pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemKey, REffectKey, RAttrKey>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
 }
 impl VastFitData {
@@ -207,6 +208,7 @@ impl VastFitData {
             blockable_assistance: RMapRSet::new(),
             blockable_offense: RMapRSet::new(),
             resist_immunity: RMapRSet::new(),
+            cap_consumers_all: RMap::new(),
             // Stats-related - damage output
             dmg_normal: RMapRMap::new(),
             dmg_breacher: RMapRMap::new(),
@@ -228,7 +230,7 @@ impl VastFitData {
             lr_armor_limitable: RMapRMap::new(),
             lr_hull: RMapRMap::new(),
             // Stats-related - cap
-            cap_consumers: RMapRMap::new(),
+            cap_consumers_active: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
         }
     }

@@ -27,7 +27,7 @@ impl VastFitData {
             Some(ship_key) => ship_key,
             None => return true,
         };
-        if self.cap_consumers.is_empty() {
+        if self.cap_consumers_all.is_empty() {
             return true;
         }
         // Pass validation if ship is not loaded
@@ -35,8 +35,8 @@ impl VastFitData {
             Some(max_cap) => max_cap,
             None => return true,
         };
-        for (&item_key, item_data) in self.cap_consumers.iter() {
-            for &attr_key in item_data.values() {
+        for (&item_key, attr_keys) in self.cap_consumers_all.iter() {
+            for &attr_key in attr_keys.iter() {
                 if let Some(cap_use) = calc.get_item_attr_oextra(ctx, item_key, attr_key)
                     && cap_use > max_cap
                     && !kfs.contains(&item_key)
@@ -56,7 +56,7 @@ impl VastFitData {
         ship_key: Option<UItemKey>,
     ) -> Option<ValUnusableCapFail> {
         let ship_key = ship_key?;
-        if self.cap_consumers.is_empty() {
+        if self.cap_consumers_all.is_empty() {
             return None;
         }
         // Pass validation if ship is not loaded
@@ -65,9 +65,9 @@ impl VastFitData {
             None => return None,
         };
         let mut items = HashMap::new();
-        for (&item_key, item_data) in self.cap_consumers.iter() {
-            let max_item_use = match item_data
-                .values()
+        for (&item_key, attr_keys) in self.cap_consumers_all.iter() {
+            let max_item_use = match attr_keys
+                .iter()
                 .filter_map(|&attr_key| calc.get_item_attr_oextra(ctx, item_key, attr_key))
                 .max()
             {

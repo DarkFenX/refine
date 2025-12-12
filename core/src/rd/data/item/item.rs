@@ -29,6 +29,7 @@ pub(crate) struct RItem {
     pub(crate) defeff_key: Option<REffectKey>,
     pub(crate) proj_buff_item_list_keys: Vec<RItemListKey>,
     pub(crate) fleet_buff_item_list_keys: Vec<RItemListKey>,
+    pub(crate) cap_use_attr_keys: Vec<RAttrKey>,
     pub(crate) ship_kind: Option<RShipKind>,
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
@@ -55,6 +56,7 @@ impl RItem {
             defeff_key: Default::default(),
             proj_buff_item_list_keys: Default::default(),
             fleet_buff_item_list_keys: Default::default(),
+            cap_use_attr_keys: Default::default(),
             ship_kind: Default::default(),
             has_online_effect: Default::default(),
             takes_turret_hardpoint: Default::default(),
@@ -95,6 +97,12 @@ impl RItem {
                 .fleet_buff_item_list_ids
                 .iter()
                 .filter_map(|v| item_list_id_key_map.get(v).copied()),
+        );
+        self.cap_use_attr_keys.extend(
+            a_item
+                .cap_use_attr_ids
+                .iter()
+                .filter_map(|v| attr_id_key_map.get(v).copied()),
         );
         self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
         self.has_online_effect = has_online_effect(&self.effect_datas, effect_id_key_map);
