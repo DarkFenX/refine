@@ -14,14 +14,14 @@ pub use vaste_stats_item::{
     StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen,
 };
 pub use vaste_vals::{
-    ValActivationBlockedFail, ValCapUseFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
+    ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,
     ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail,
     ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemVsShipKindFail, ValMaxGroupFail,
     ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo,
     ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValRigSizeFail,
     ValSecZoneFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
-    ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableResFail, ValUnusableSlotFail,
+    ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
 };
 
 mod shared;

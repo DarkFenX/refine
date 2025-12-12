@@ -7,7 +7,7 @@ use crate::{
     util::RSet,
 };
 
-pub struct ValCapUseFail {
+pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: AttrVal,
     /// List of items breaking validation, and their cap uses.
@@ -16,7 +16,7 @@ pub struct ValCapUseFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_cap_use_fast(
+    pub(in crate::svc::vast) fn validate_unusable_cap_fast(
         &self,
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
@@ -48,13 +48,13 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_cap_use_verbose(
+    pub(in crate::svc::vast) fn validate_unusable_cap_verbose(
         &self,
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
         ship_key: Option<UItemKey>,
-    ) -> Option<ValCapUseFail> {
+    ) -> Option<ValUnusableCapFail> {
         let ship_key = ship_key?;
         if self.cap_consumers.is_empty() {
             return None;
@@ -80,7 +80,7 @@ impl VastFitData {
         }
         match items.is_empty() {
             true => None,
-            false => Some(ValCapUseFail { max_cap, items }),
+            false => Some(ValUnusableCapFail { max_cap, items }),
         }
     }
 }

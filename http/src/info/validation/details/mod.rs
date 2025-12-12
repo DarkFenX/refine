@@ -1,5 +1,4 @@
 pub(in crate::info::validation) use activation_blocked::HValActivationBlockedFail;
-pub(in crate::info::validation) use cap_use::HValCapUseFail;
 pub(in crate::info::validation) use capital_module::HValCapitalModFail;
 pub(in crate::info::validation) use charge_group::HValChargeGroupFail;
 pub(in crate::info::validation) use charge_parent_group::HValChargeParentGroupFail;
@@ -25,11 +24,11 @@ pub(in crate::info::validation) use ship_stance::HValShipStanceFail;
 pub(in crate::info::validation) use skill_reqs::HValSrqFail;
 pub(in crate::info::validation) use slot_count::HValSlotCountFail;
 pub(in crate::info::validation) use slot_index::HValSlotIndexFail;
+pub(in crate::info::validation) use unusable_cap::HValUnusableCapFail;
 pub(in crate::info::validation) use unusable_resource::HValUnusableResFail;
 pub(in crate::info::validation) use unusable_slot::HValUnusableSlotFail;
 
 mod activation_blocked;
-mod cap_use;
 mod capital_module;
 mod charge_group;
 mod charge_parent_group;
@@ -55,5 +54,6 @@ mod ship_stance;
 mod skill_reqs;
 mod slot_count;
 mod slot_index;
+mod unusable_cap;
 mod unusable_resource;
 mod unusable_slot;

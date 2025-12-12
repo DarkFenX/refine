@@ -25,6 +25,7 @@ from .val_ship_stance import ValShipStanceFail
 from .val_skill_reqs import ValSrqFail
 from .val_slot_count import ValSlotCountFail
 from .val_slot_index import ValSlotIndexFail
+from .val_unusable_cap import ValUnusableCapFail
 from .val_unusable_resource import ValUnusableResFail
 from .val_unusable_slot import ValUnusableSlotFail
 
@@ -83,6 +84,7 @@ class FitValDetails(AttrDict):
             'module_state': AttrHookDef(func=lambda d: ValModuleStateFail(data=d)),
             'capital_module': AttrHookDef(func=lambda d: ValCapModuleFail(data=d)),
             'overload_skill': AttrHookDef(func=lambda d: ValOverloadSkillFail(data=d)),
+            'unusable_cap': AttrHookDef(func=lambda d: ValUnusableCapFail(data=d)),
             # Charges
             'charge_group': AttrHookDef(func=lambda d: ValChargeGroupFail(data=d)),
             'charge_parent_group': AttrHookDef(func=lambda d: ValChargeParentGroupFail(data=d)),

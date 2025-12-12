@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use crate::{
     def::FitId,
     svc::vast::{
-        ValActivationBlockedFail, ValCapUseFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail,
-        ValChargeSizeFail, ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail,
-        ValItemKindFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail,
-        ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValRigSizeFail,
-        ValSecZoneFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail,
+        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
+        ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
+        ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
+        ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail,
+        ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableCapFail,
         ValUnusableResFail, ValUnusableSlotFail,
     },
 };
@@ -59,7 +59,7 @@ pub struct ValResultFit {
     pub module_state: Option<ValModuleStateFail>,
     pub capital_module: Option<ValCapitalModFail>,
     pub overload_skill: Option<ValOverloadSkillFail>,
-    pub cap_use: Option<ValCapUseFail>,
+    pub unusable_cap: Option<ValUnusableCapFail>,
     // Charges
     pub charge_group: Option<ValChargeGroupFail>,
     pub charge_parent_group: Option<ValChargeParentGroupFail>,
@@ -142,7 +142,7 @@ impl ValResultFit {
             module_state: None,
             capital_module: None,
             overload_skill: None,
-            cap_use: None,
+            unusable_cap: None,
             // Charges
             charge_group: None,
             charge_parent_group: None,
@@ -224,7 +224,7 @@ impl ValResultFit {
             && self.module_state.is_none()
             && self.capital_module.is_none()
             && self.overload_skill.is_none()
-            && self.cap_use.is_none()
+            && self.unusable_cap.is_none()
             // Charges
             && self.charge_group.is_none()
             && self.charge_parent_group.is_none()

@@ -34,6 +34,7 @@ class ValOptions:
     module_state: ValOption = Absent
     capital_module: ValOption = Absent
     overload_skill: ValOption = Absent
+    unusable_cap: ValOption = Absent
     # Charges
     charge_group: ValOption = Absent
     charge_parent_group: ValOption = Absent

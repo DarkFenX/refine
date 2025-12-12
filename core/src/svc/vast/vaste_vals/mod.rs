@@ -1,5 +1,4 @@
 pub use vaste_activation_blocked::ValActivationBlockedFail;
-pub use vaste_cap_use::ValCapUseFail;
 pub use vaste_capital_module::ValCapitalModFail;
 pub use vaste_charge_cont_group::{ValChargeParentGroupFail, ValChargeParentGroupInfo};
 pub use vaste_charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
@@ -25,12 +24,12 @@ pub use vaste_ship_stance::ValShipStanceFail;
 pub use vaste_skill_reqs::{ValSrqFail, ValSrqSkillInfo};
 pub use vaste_slot_count::ValSlotCountFail;
 pub use vaste_slot_index::ValSlotIndexFail;
+pub use vaste_unusable_cap::ValUnusableCapFail;
 pub use vaste_unusable_resource::ValUnusableResFail;
 pub use vaste_unusable_slot::ValUnusableSlotFail;
 
 mod shared;
 mod vaste_activation_blocked;
-mod vaste_cap_use;
 mod vaste_capital_module;
 mod vaste_charge_cont_group;
 mod vaste_charge_group;
@@ -56,5 +55,6 @@ mod vaste_ship_stance;
 mod vaste_skill_reqs;
 mod vaste_slot_count;
 mod vaste_slot_index;
+mod vaste_unusable_cap;
 mod vaste_unusable_resource;
 mod vaste_unusable_slot;

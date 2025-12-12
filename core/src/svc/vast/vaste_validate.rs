@@ -472,7 +472,9 @@ impl Vast {
             return false;
         }
         // Expensive check which rarely fails
-        if options.cap_use.enabled && !fit_data.validate_cap_use_fast(&options.cap_use.kfs, ctx, calc, fit.ship) {
+        if options.unusable_cap.enabled
+            && !fit_data.validate_unusable_cap_fast(&options.unusable_cap.kfs, ctx, calc, fit.ship)
+        {
             return false;
         }
         // No known items use it, only fighter drones used to have it
@@ -578,8 +580,9 @@ impl Vast {
         if options.overload_skill.enabled {
             result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, ctx, fit);
         }
-        if options.cap_use.enabled {
-            result.cap_use = fit_data.validate_cap_use_verbose(&options.cap_use.kfs, ctx, calc, fit.ship);
+        if options.unusable_cap.enabled {
+            result.unusable_cap =
+                fit_data.validate_unusable_cap_verbose(&options.unusable_cap.kfs, ctx, calc, fit.ship);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Charges

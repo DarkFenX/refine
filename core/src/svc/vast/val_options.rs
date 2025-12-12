@@ -60,7 +60,7 @@ pub struct ValOptions {
     pub module_state: ValOption,
     pub capital_module: ValOption,
     pub overload_skill: ValOption,
-    pub cap_use: ValOption,
+    pub unusable_cap: ValOption,
     // Charges
     pub charge_group: ValOption,
     pub charge_parent_group: ValOption,
@@ -144,7 +144,7 @@ impl ValOptions {
             module_state: ValOption::new_enabled(),
             capital_module: ValOption::new_enabled(),
             overload_skill: ValOption::new_enabled(),
-            cap_use: ValOption::new_enabled(),
+            unusable_cap: ValOption::new_enabled(),
             // Charges
             charge_group: ValOption::new_enabled(),
             charge_parent_group: ValOption::new_enabled(),
@@ -228,7 +228,7 @@ impl ValOptions {
             module_state: ValOption::new_disabled(),
             capital_module: ValOption::new_disabled(),
             overload_skill: ValOption::new_disabled(),
-            cap_use: ValOption::new_disabled(),
+            unusable_cap: ValOption::new_disabled(),
             // Charges
             charge_group: ValOption::new_disabled(),
             charge_parent_group: ValOption::new_disabled(),
@@ -359,7 +359,7 @@ pub(crate) struct ValOptionsInt {
     pub(in crate::svc::vast) module_state: ValOptionInt,
     pub(in crate::svc::vast) capital_module: ValOptionInt,
     pub(in crate::svc::vast) overload_skill: ValOptionInt,
-    pub(in crate::svc::vast) cap_use: ValOptionInt,
+    pub(in crate::svc::vast) unusable_cap: ValOptionInt,
     // Charges
     pub(in crate::svc::vast) charge_group: ValOptionInt,
     pub(in crate::svc::vast) charge_parent_group: ValOptionInt,
@@ -442,7 +442,7 @@ impl ValOptionsInt {
             module_state: ValOptionInt::from_pub(sol, &pub_opts.module_state),
             capital_module: ValOptionInt::from_pub(sol, &pub_opts.capital_module),
             overload_skill: ValOptionInt::from_pub(sol, &pub_opts.overload_skill),
-            cap_use: ValOptionInt::from_pub(sol, &pub_opts.cap_use),
+            unusable_cap: ValOptionInt::from_pub(sol, &pub_opts.unusable_cap),
             // Charges
             charge_group: ValOptionInt::from_pub(sol, &pub_opts.charge_group),
             charge_parent_group: ValOptionInt::from_pub(sol, &pub_opts.charge_parent_group),
