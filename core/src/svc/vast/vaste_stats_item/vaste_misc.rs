@@ -37,6 +37,15 @@ impl Vast {
         let scram_status = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
             .unwrap();
-        scram_status < FLOAT_TOLERANCE
+        if scram_status > FLOAT_TOLERANCE {
+            return false;
+        }
+        // Prevent warp if speed is 0, except for the case when speed attribute is not defined
+        if let Some(max_speed) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().max_velocity)
+            && max_speed < FLOAT_TOLERANCE
+        {
+            return false;
+        }
+        true
     }
 }
