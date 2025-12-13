@@ -40,7 +40,7 @@ fn make_effect() -> AEffect {
         buff: Some(AEffectBuff {
             full: vec![
                 // Prevent projected targets within range from warping. Intentionally do not prevent
-                // carrying ship itself from warping automatically
+                // the carrying ship itself from warping automatically
                 AEffectBuffFull {
                     buff_id: ac::buffs::WARP_PENALTY,
                     strength: AEffectBuffStrength::Hardcoded(OF(100.0)),

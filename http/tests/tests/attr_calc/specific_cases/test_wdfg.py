@@ -1,5 +1,5 @@
 from tests import Effect, approx, check_no_field
-from tests.fw.api import ValOptions
+from tests.fw.api import FitStatsOptions, ValOptions
 
 
 def test_bubble_sig_local(client, consts):
@@ -105,14 +105,20 @@ def test_warp_scram_status_dscript(client, consts):
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is True
 
 
 def test_warp_scram_status_sscript(client, consts):
@@ -140,14 +146,20 @@ def test_warp_scram_status_sscript(client, consts):
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is True
 
 
 def test_gate_scram_status_dscript(client, consts):
