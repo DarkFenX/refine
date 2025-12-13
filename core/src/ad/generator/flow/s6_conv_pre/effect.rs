@@ -102,7 +102,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             None => (),
             Some(flags) => match flags.len() {
                 1 => {
-                    a_effect.is_usable_in_hisec = Some(!*flags.iter().next().unwrap());
+                    a_effect.banned_in_hisec = *flags.iter().next().unwrap();
                 }
                 _ => {
                     let msg = format!(
@@ -119,7 +119,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             None => (),
             Some(flags) => match flags.len() {
                 1 => {
-                    a_effect.is_usable_in_lowsec = Some(!*flags.iter().next().unwrap());
+                    a_effect.banned_in_lowsec = *flags.iter().next().unwrap();
                 }
                 _ => {
                     let msg = format!(
