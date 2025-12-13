@@ -37,6 +37,6 @@ impl Vast {
         let scram_status = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
             .unwrap();
-        scram_status > FLOAT_TOLERANCE
+        scram_status < FLOAT_TOLERANCE
     }
 }
