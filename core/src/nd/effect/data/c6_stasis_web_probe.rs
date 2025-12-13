@@ -15,7 +15,6 @@ use crate::{
     util::RMap,
 };
 
-const WEB_BUBBLE: AItemId = ac::items::STASIS_WEBIFICATION_PROBE;
 const A_EFFECT_ID: AEffectId = ac::effects::STASIS_WEB_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
@@ -51,7 +50,7 @@ fn make_effect() -> AEffect {
 }
 
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
-    match a_items.get_mut(&WEB_BUBBLE) {
+    match a_items.get_mut(&ac::items::STASIS_WEBIFICATION_PROBE) {
         Some(a_item) => {
             a_item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
             a_item.defeff_id = Some(A_EFFECT_ID);

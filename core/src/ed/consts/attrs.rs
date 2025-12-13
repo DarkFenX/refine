@@ -30,6 +30,7 @@ pub(crate) const ENERGY_NEUT_AMOUNT: EAttrId = 97;
 pub(crate) const EMP_FIELD_RANGE: EAttrId = 99;
 pub(crate) const LAUNCHER_SLOTS_LEFT: EAttrId = 101;
 pub(crate) const TURRET_SLOTS_LEFT: EAttrId = 102;
+pub(crate) const WARP_SCRAMBLE_RANGE: EAttrId = 103;
 pub(crate) const WARP_SCRAMBLE_STATUS: EAttrId = 104;
 pub(crate) const WARP_SCRAMBLE_STRENGTH: EAttrId = 105;
 pub(crate) const KIN_DMG_RESONANCE: EAttrId = 109;

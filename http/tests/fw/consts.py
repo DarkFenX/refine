@@ -499,7 +499,7 @@ class EveAttrUnit(IntEnum):
 class CustomEffect(IntEnum):
     char_missile_dmg = 1
     aar_paste_boost = 2
-    missile_flight_time = 4
+    missile_flight_time = 3
 
 
 @unique
