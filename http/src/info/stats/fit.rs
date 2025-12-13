@@ -123,6 +123,8 @@ pub(crate) struct HFitStats {
     // Ship misc stats
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) drone_control_range: TriStateField<rc::AttrVal>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) can_warp: TriStateField<bool>,
 }
 impl HFitStats {
     pub(crate) fn new() -> Self {
@@ -188,6 +190,7 @@ impl HFitStats {
             max_warp_range: TriStateField::default(),
             // Ship misc stats
             drone_control_range: TriStateField::default(),
+            can_warp: TriStateField::default(),
         }
     }
 }

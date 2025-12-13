@@ -2,11 +2,7 @@ use ordered_float::Float;
 
 use crate::def::{OF, SERVER_TICK_HZ};
 
-pub(crate) fn vec_push_opt<T>(vec: &mut Vec<T>, opt: Option<T>) {
-    if let Some(v) = opt {
-        vec.push(v);
-    };
-}
+pub(crate) const FLOAT_TOLERANCE: OF<f64> = OF(0.0000000001);
 
 /// Round number to a specified significant digit.
 pub(crate) fn sig_round(val: OF<f64>, sig_digits: u32) -> OF<f64> {

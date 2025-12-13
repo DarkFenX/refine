@@ -62,6 +62,7 @@ pub(crate) struct HGetItemStatsCmd {
     max_warp_range: Option<bool>,
     // Misc
     drone_control_range: Option<bool>,
+    can_warp: Option<bool>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(
@@ -192,6 +193,9 @@ impl HGetItemStatsCmd {
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.unwrap_or(self.default) {
             stats.drone_control_range = core_item.get_stat_drone_control_range().into();
+        }
+        if self.can_warp.unwrap_or(self.default) {
+            stats.can_warp = core_item.get_stat_can_warp().into();
         }
         Ok(stats)
     }

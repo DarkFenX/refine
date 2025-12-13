@@ -208,6 +208,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) upgrade_slots_left: Option<RAttrKey>,
     pub(crate) volume: Option<RAttrKey>,
     pub(crate) warp_capacitor_need: Option<RAttrKey>,
+    pub(crate) warp_scramble_status: Option<RAttrKey>,
     pub(crate) warp_speed_mult: Option<RAttrKey>,
     // Derived data
     pub(crate) limited_precision: Vec<RAttrKey>,
@@ -446,6 +447,7 @@ impl RAttrConsts {
             upgrade_slots_left: attr_id_key_map.get(&ac::attrs::UPGRADE_SLOTS_LEFT).copied(),
             volume: attr_id_key_map.get(&ac::attrs::VOLUME).copied(),
             warp_capacitor_need: attr_id_key_map.get(&ac::attrs::WARP_CAPACITOR_NEED).copied(),
+            warp_scramble_status: attr_id_key_map.get(&ac::attrs::WARP_SCRAMBLE_STATUS).copied(),
             warp_speed_mult: attr_id_key_map.get(&ac::attrs::WARP_SPEED_MULT).copied(),
             // Derived data
             limited_precision,

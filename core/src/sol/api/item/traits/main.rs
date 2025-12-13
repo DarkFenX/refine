@@ -454,6 +454,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_drone_control_range(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
+    fn get_stat_can_warp(&mut self) -> Result<bool, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_can_warp(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
 }
 
 fn get_stat_applied_projectee_key(
