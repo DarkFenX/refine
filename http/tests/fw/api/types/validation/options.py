@@ -88,6 +88,7 @@ class ValOptions:
     sec_zone_active: ValOption = Absent
     sec_zone_unonlineable: ValOption = Absent
     sec_zone_unactivable: ValOption = Absent
+    sec_zone_effect: ValOption = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)

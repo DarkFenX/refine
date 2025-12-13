@@ -128,6 +128,7 @@ class EveEffect(IntEnum):
     struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
     ftr_abil_missiles = 6431
+    ftr_abil_ab = 6440
     ftr_abil_mwd = 6441
     ftr_abil_mjd = 6442
     point_defense = 6443
@@ -244,6 +245,7 @@ class EveBuffOp(StrEnum):
 @unique
 class EveAbil(IntEnum):
     launch_bomb = 7
+    ab = 9
     pulse_cannon = 22
     heavy_rocket_salvo = 33
 

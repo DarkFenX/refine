@@ -19,7 +19,8 @@ from .val_proj_immunity import ValProjImmunityFail
 from .val_projectee_filter import ValProjFilterFail
 from .val_resources import ValResourceFail
 from .val_rig_size import ValRigSizeFail
-from .val_sec_zone import ValSecZoneFail
+from .val_sec_zone_effect import ValEffectSecZoneFail
+from .val_sec_zone_item import ValItemSecZoneFail
 from .val_ship_limit import ValShipLimitFail
 from .val_ship_stance import ValShipStanceFail
 from .val_skill_reqs import ValSrqFail
@@ -133,8 +134,9 @@ class FitValDetails(AttrDict):
             'offense_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
             'resist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
             # Sec zone
-            'sec_zone_fitted': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'sec_zone_online': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'sec_zone_active': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d)),
-            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValSecZoneFail(data=d))})
+            'sec_zone_fitted': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_online': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_active': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_effect': AttrHookDef(func=lambda d: ValEffectSecZoneFail(data=d))})
