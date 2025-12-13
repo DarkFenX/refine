@@ -37,6 +37,7 @@ fn make_effect() -> AEffect {
         is_offense: true,
         range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
         buff: Some(AEffectBuff {
+            // Slowdown debuff. Intentionally do not slow carrying ship down automatically
             full: vec![AEffectBuffFull {
                 buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,
                 strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),

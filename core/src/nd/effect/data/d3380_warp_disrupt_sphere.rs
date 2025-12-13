@@ -1,15 +1,15 @@
 // WDFG effect seems to have lots of special handling in EVE. In the library, effects are adjusted
 // to work within regular dogma framework. It includes:
 // - blocking MJD with both focused scripts. According to CCP Kestrel, scripts decide that they
-// block MJD based on its graphical effect, not based on regular dogma group ID or skill
-// requirement. In the library, it's changed to use conventional attributes;
+//   block MJD based on its graphical effect, not based on regular dogma group ID or skill
+//   requirement. In the library, it's changed to use conventional attributes;
 // - attributes used by focused scripts are defined on parent item, not on script itself, while
-// dogma (at least in the lib's implementation) assumes that source attributes are always defined
-// on item which carries the effect;
+//   dogma (at least in the lib's implementation) assumes that source attributes are always defined
+//   on item which carries the effect;
 // - range used by focused scripts uses maxRange attribute which is defined on parent item; unlike
-// other attributes, it's transferred over by an existing WDFG effect, into maxRangeHidden
-// attribute. Here, we switch scripts to use this attribute, instead of transferring maxRange as
-// well (although transferring would also work).
+//   other attributes, it's transferred over by an existing WDFG effect, into maxRangeHidden
+//   attribute. Here, we switch scripts to use this attribute, instead of transferring maxRange as
+//   well (although transferring would also work).
 // Script effects are defined in other files.
 
 use crate::{
