@@ -1,4 +1,5 @@
 use crate::{
+    misc::EffectSpec,
     rd::RcEffect,
     svc::vast::{Vast, vaste_vals::EffectSecZoneInfo},
     ud::{UFitKey, UItem, UItemKey},
@@ -9,6 +10,7 @@ impl Vast {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
+                    self.handle_aggr_start(effect, item_key, &autocharge.get_fit_key());
                     if effect.is_active() {
                         self.handle_dmg_start(effect, item_key, &autocharge.get_fit_key());
                     }
@@ -16,6 +18,7 @@ impl Vast {
             }
             UItem::Charge(charge) => {
                 for effect in effects {
+                    self.handle_aggr_start(effect, item_key, &charge.get_fit_key());
                     if effect.is_active() {
                         self.handle_dmg_start(effect, item_key, &charge.get_fit_key());
                         self.handle_neut_start(effect, item_key, &charge.get_fit_key());
@@ -24,6 +27,7 @@ impl Vast {
             }
             UItem::Drone(drone) => {
                 for effect in effects {
+                    self.handle_aggr_start(effect, item_key, &drone.get_fit_key());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_key, &drone.get_fit_key());
                         self.handle_mining_start(effect, item_key, &drone.get_fit_key());
@@ -34,6 +38,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
+                    self.handle_aggr_start(effect, item_key, &fighter.get_fit_key());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &fighter.get_fit_key());
@@ -54,6 +59,7 @@ impl Vast {
             }
             UItem::Module(module) => {
                 for effect in effects {
+                    self.handle_aggr_start(effect, item_key, &module.get_fit_key());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_key, &module.get_fit_key());
                         self.handle_mining_start(effect, item_key, &module.get_fit_key());
@@ -100,6 +106,7 @@ impl Vast {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
+                    self.handle_aggr_stop(effect, item_key, &autocharge.get_fit_key());
                     if effect.is_active() {
                         self.handle_dmg_stop(effect, item_key, &autocharge.get_fit_key());
                     }
@@ -107,6 +114,7 @@ impl Vast {
             }
             UItem::Charge(charge) => {
                 for effect in effects {
+                    self.handle_aggr_stop(effect, item_key, &charge.get_fit_key());
                     if effect.is_active() {
                         self.handle_dmg_stop(effect, item_key, &charge.get_fit_key());
                         self.handle_neut_stop(effect, item_key, &charge.get_fit_key());
@@ -115,6 +123,7 @@ impl Vast {
             }
             UItem::Drone(drone) => {
                 for effect in effects {
+                    self.handle_aggr_stop(effect, item_key, &drone.get_fit_key());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_key, &drone.get_fit_key());
                         self.handle_mining_stop(effect, item_key, &drone.get_fit_key());
@@ -125,6 +134,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
+                    self.handle_aggr_stop(effect, item_key, &fighter.get_fit_key());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &fighter.get_fit_key());
@@ -140,6 +150,7 @@ impl Vast {
             }
             UItem::Module(module) => {
                 for effect in effects {
+                    self.handle_aggr_stop(effect, item_key, &module.get_fit_key());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_key, &module.get_fit_key());
                         self.handle_mining_stop(effect, item_key, &module.get_fit_key());
@@ -178,6 +189,18 @@ impl Vast {
                 }
             }
             _ => (),
+        }
+    }
+    fn handle_aggr_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if effect.is_offense {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.aggro_effects.insert(EffectSpec::new(item_key, effect.key));
+        }
+    }
+    fn handle_aggr_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+        if effect.is_offense {
+            let fit_data = self.get_fit_data_mut(fit_key);
+            fit_data.aggro_effects.remove(&EffectSpec::new(item_key, effect.key));
         }
     }
     fn handle_dmg_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {

@@ -145,6 +145,8 @@ pub(in crate::svc) struct VastFitData {
     // Stats-related - cap
     pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemKey, REffectKey, RAttrKey>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
+    // Stats-related - misc
+    pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -235,6 +237,8 @@ impl VastFitData {
             // Stats-related - cap
             cap_consumers_active: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
+            // Stats-related - misc
+            aggro_effects: RSet::new(),
         }
     }
 }

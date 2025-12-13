@@ -457,6 +457,13 @@ impl VastFitData {
                 check_effect_key(u_data, effect_key)?;
             }
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - misc
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for espec in self.aggro_effects.iter() {
+            check_item_key(u_data, espec.item_key, true)?;
+            check_effect_key(u_data, espec.effect_key)?;
+        }
         Ok(())
     }
 }
