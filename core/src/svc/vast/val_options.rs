@@ -114,6 +114,7 @@ pub struct ValOptions {
     pub sec_zone_active: ValOption,
     pub sec_zone_unonlineable: ValOption,
     pub sec_zone_unactivable: ValOption,
+    pub sec_zone_effect: ValOption,
 }
 impl ValOptions {
     /// Initialize with all validations enabled.
@@ -198,6 +199,7 @@ impl ValOptions {
             sec_zone_active: ValOption::new_enabled(),
             sec_zone_unonlineable: ValOption::new_enabled(),
             sec_zone_unactivable: ValOption::new_enabled(),
+            sec_zone_effect: ValOption::new_enabled(),
         }
     }
     /// Initialize with all validations disabled.
@@ -282,6 +284,7 @@ impl ValOptions {
             sec_zone_active: ValOption::new_disabled(),
             sec_zone_unonlineable: ValOption::new_disabled(),
             sec_zone_unactivable: ValOption::new_disabled(),
+            sec_zone_effect: ValOption::new_disabled(),
         }
     }
 }
@@ -413,6 +416,7 @@ pub(crate) struct ValOptionsInt {
     pub(in crate::svc::vast) sec_zone_active: ValOptionInt,
     pub(in crate::svc::vast) sec_zone_unonlineable: ValOptionInt,
     pub(in crate::svc::vast) sec_zone_unactivable: ValOptionInt,
+    pub(in crate::svc::vast) sec_zone_effect: ValOptionInt,
 }
 impl ValOptionsInt {
     pub(crate) fn from_pub(sol: &SolarSystem, pub_opts: &ValOptions) -> Self {
@@ -496,6 +500,7 @@ impl ValOptionsInt {
             sec_zone_active: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_active),
             sec_zone_unonlineable: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_unonlineable),
             sec_zone_unactivable: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_unactivable),
+            sec_zone_effect: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_effect),
         }
     }
 }

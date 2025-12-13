@@ -9,6 +9,7 @@ use crate::{
     rd::{RAttrKey, REffectKey, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
+        vaste_vals::EffectSecZoneInfo,
     },
     ud::{UFitKey, UItemKey},
     util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet},
@@ -112,6 +113,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) sec_zone_active: RSet<UItemKey>,
     pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemKey, AAttrVal>,
     pub(in crate::svc::vast) sec_zone_unactivable: RSet<UItemKey>,
+    pub(in crate::svc::vast) sec_zone_effect: RMapRMap<UItemKey, REffectKey, EffectSecZoneInfo>,
     pub(in crate::svc::vast) mods_active: RSet<UItemKey>,
     pub(in crate::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<UItemKey, ValShipKind>,
     pub(in crate::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
@@ -201,6 +203,7 @@ impl VastFitData {
             sec_zone_active: RSet::new(),
             sec_zone_unonlineable_class: RMap::new(),
             sec_zone_unactivable: RSet::new(),
+            sec_zone_effect: RMapRMap::new(),
             mods_active: RSet::new(),
             mods_rigs_svcs_vs_ship_kind: RMap::new(),
             stopped_effects: RMapRSet::new(),

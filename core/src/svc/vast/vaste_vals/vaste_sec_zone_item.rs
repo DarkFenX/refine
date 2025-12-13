@@ -10,7 +10,7 @@ use crate::{
     util::{RMap, RSet},
 };
 
-pub struct ValSecZoneFail {
+pub struct ValItemSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
     /// Map between IDs of items which cannot be used in current security zone, and a list of
@@ -62,7 +62,7 @@ impl VastFitData {
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValSecZoneFail> {
+    ) -> Option<ValItemSecZoneFail> {
         flags_check_verbose(
             kfs,
             ctx,
@@ -75,7 +75,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
-    ) -> Option<ValSecZoneFail> {
+    ) -> Option<ValItemSecZoneFail> {
         class_check_verbose(kfs, ctx, &self.sec_zone_online_class)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_active_verbose(
@@ -83,14 +83,14 @@ impl VastFitData {
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValSecZoneFail> {
+    ) -> Option<ValItemSecZoneFail> {
         flags_check_verbose(kfs, ctx, calc, &self.sec_zone_active, None)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_unonlineable_verbose(
         &self,
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
-    ) -> Option<ValSecZoneFail> {
+    ) -> Option<ValItemSecZoneFail> {
         class_check_verbose(kfs, ctx, &self.sec_zone_unonlineable_class)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_unactivable_verbose(
@@ -98,7 +98,7 @@ impl VastFitData {
         kfs: &RSet<UItemKey>,
         ctx: SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValSecZoneFail> {
+    ) -> Option<ValItemSecZoneFail> {
         flags_check_verbose(kfs, ctx, calc, &self.sec_zone_unactivable, None)
     }
 }
@@ -187,7 +187,7 @@ fn flags_check_verbose(
     calc: &mut Calc,
     items_main: &RSet<UItemKey>,
     items_wspace_banned: Option<&RSet<UItemKey>>,
-) -> Option<ValSecZoneFail> {
+) -> Option<ValItemSecZoneFail> {
     let mut failed_item_keys = Vec::new();
     match ctx.u_data.sec_zone {
         SecZone::HiSec(corruption) => {
@@ -254,7 +254,7 @@ fn flags_check_verbose(
     };
     match failed_item_keys.is_empty() {
         true => None,
-        false => Some(ValSecZoneFail {
+        false => Some(ValItemSecZoneFail {
             zone: ctx.u_data.sec_zone,
             items: failed_item_keys
                 .iter()
@@ -327,7 +327,7 @@ fn class_check_verbose(
     kfs: &RSet<UItemKey>,
     ctx: SvcCtx,
     limitable_items: &RMap<UItemKey, ad::AAttrVal>,
-) -> Option<ValSecZoneFail> {
+) -> Option<ValItemSecZoneFail> {
     if limitable_items.is_empty() {
         return None;
     }
@@ -344,7 +344,7 @@ fn class_check_verbose(
         .collect();
     match items.is_empty() {
         true => None,
-        false => Some(ValSecZoneFail {
+        false => Some(ValItemSecZoneFail {
             zone: ctx.u_data.sec_zone,
             items,
         }),

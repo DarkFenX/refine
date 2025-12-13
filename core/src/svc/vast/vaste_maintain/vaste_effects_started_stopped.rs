@@ -1,6 +1,6 @@
 use crate::{
     rd::RcEffect,
-    svc::vast::Vast,
+    svc::vast::{Vast, vaste_vals::EffectSecZoneInfo},
     ud::{UFitKey, UItem, UItemKey},
 };
 
@@ -38,6 +38,17 @@ impl Vast {
                         self.handle_dmg_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_start(effect, item_key, &fighter.get_fit_key());
                         self.handle_neut_start(effect, item_key, &fighter.get_fit_key());
+                    }
+                    if effect.banned_in_hisec || effect.banned_in_lowsec {
+                        let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
+                        fit_data.sec_zone_effect.add_entry(
+                            item_key,
+                            effect.key,
+                            EffectSecZoneInfo {
+                                banned_in_hisec: effect.banned_in_hisec,
+                                banned_in_lowsec: effect.banned_in_lowsec,
+                            },
+                        )
                     }
                 }
             }
@@ -118,6 +129,12 @@ impl Vast {
                         self.handle_dmg_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_orrs_stop(effect, item_key, &fighter.get_fit_key());
                         self.handle_neut_stop(effect, item_key, &fighter.get_fit_key());
+                    }
+                    for effect in effects {
+                        if effect.banned_in_hisec || effect.banned_in_lowsec {
+                            let fit_data = self.get_fit_data_mut(&fighter.get_fit_key());
+                            fit_data.sec_zone_effect.remove_l2(item_key, &effect.key);
+                        }
                     }
                 }
             }

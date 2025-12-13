@@ -278,6 +278,12 @@ impl VastFitData {
         for &item_key in self.sec_zone_unactivable.iter() {
             check_item_key(u_data, item_key, true)?;
         }
+        for (&item_key, item_data) in self.sec_zone_effect.iter() {
+            check_item_key(u_data, item_key, true)?;
+            for &effect_key in item_data.keys() {
+                check_effect_key(u_data, effect_key)?;
+            }
+        }
         for &item_key in self.mods_active.iter() {
             check_item_key(u_data, item_key, true)?;
         }

@@ -2,11 +2,11 @@ use std::collections::HashMap;
 
 use crate::info::validation::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
-    HValChargeVolumeFail, HValDroneGroupFail, HValEffectStopperFail, HValFighterSquadSizeFail, HValItemKindFail,
-    HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail,
-    HValOverloadSkillFail, HValProjFilterFail, HValProjImmunityFail, HValResFail, HValRigSizeFail, HValSecZoneFail,
-    HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableCapFail,
-    HValUnusableResFail, HValUnusableSlotFail,
+    HValChargeVolumeFail, HValDroneGroupFail, HValEffectSecZoneFail, HValEffectStopperFail, HValFighterSquadSizeFail,
+    HValItemKindFail, HValItemSecZoneFail, HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail,
+    HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail, HValProjFilterFail, HValProjImmunityFail,
+    HValResFail, HValRigSizeFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail,
+    HValSrqFail, HValUnusableCapFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 // Sol-specific
@@ -208,15 +208,17 @@ struct HValFitInfo {
     resist_immunity: Option<HValProjImmunityFail>,
     // Sec zone
     #[serde(skip_serializing_if = "Option::is_none")]
-    sec_zone_fitted: Option<HValSecZoneFail>,
+    sec_zone_fitted: Option<HValItemSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    sec_zone_online: Option<HValSecZoneFail>,
+    sec_zone_online: Option<HValItemSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    sec_zone_active: Option<HValSecZoneFail>,
+    sec_zone_active: Option<HValItemSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    sec_zone_unonlineable: Option<HValSecZoneFail>,
+    sec_zone_unonlineable: Option<HValItemSecZoneFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    sec_zone_unactivable: Option<HValSecZoneFail>,
+    sec_zone_unactivable: Option<HValItemSecZoneFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sec_zone_effect: Option<HValEffectSecZoneFail>,
 }
 impl HValFitInfo {
     fn is_empty(&self) -> bool {
@@ -299,6 +301,7 @@ impl HValFitInfo {
             && self.sec_zone_active.is_none()
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
+            && self.sec_zone_effect.is_none()
     }
 }
 impl From<&rc::val::ValResultFit> for HValFitInfo {
@@ -383,6 +386,7 @@ impl From<&rc::val::ValResultFit> for HValFitInfo {
             sec_zone_active: conv(&core_val_result.sec_zone_active),
             sec_zone_unonlineable: conv(&core_val_result.sec_zone_unonlineable),
             sec_zone_unactivable: conv(&core_val_result.sec_zone_unactivable),
+            sec_zone_effect: conv(&core_val_result.sec_zone_effect),
         }
     }
 }

@@ -151,6 +151,8 @@ pub(in crate::cmd) struct HValOptions {
     sec_zone_unonlineable: Option<HValOption>,
     #[serde(default)]
     sec_zone_unactivable: Option<HValOption>,
+    #[serde(default)]
+    sec_zone_effect: Option<HValOption>,
 }
 impl From<&HValOptions> for rc::val::ValOptions {
     fn from(h_options: &HValOptions) -> Self {
@@ -285,6 +287,7 @@ impl From<&HValOptions> for rc::val::ValOptions {
             &mut core_options.sec_zone_unonlineable,
         );
         process_option(&h_options.sec_zone_unactivable, &mut core_options.sec_zone_unactivable);
+        process_option(&h_options.sec_zone_effect, &mut core_options.sec_zone_effect);
         core_options
     }
 }

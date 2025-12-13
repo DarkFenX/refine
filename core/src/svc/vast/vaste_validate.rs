@@ -105,7 +105,23 @@ impl Vast {
         {
             return false;
         }
-        // Relatively expensive check, but price scales with amount of limited items
+        // Cheap checks related to charges; try-fit items functionality attempts to fit those now,
+        // and quantity of charges is high, so those validations are close to the top
+        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs) {
+            return false;
+        }
+        if options.charge_parent_group.enabled
+            && !fit_data.validate_charge_cont_group_fast(&options.charge_parent_group.kfs)
+        {
+            return false;
+        }
+        if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs) {
+            return false;
+        }
+        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs) {
+            return false;
+        }
+        // Relatively expensive check, but cost scales with amount of limited items
         if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(&options.ship_limit.kfs, ship) {
             return false;
         }
@@ -403,6 +419,10 @@ impl Vast {
         {
             return false;
         }
+        if options.sec_zone_effect.enabled && !fit_data.validate_sec_zone_effect_fast(&options.sec_zone_effect.kfs, ctx)
+        {
+            return false;
+        }
         // Incoming projection - effect stopper shouldn't fail for tried items, since there are no
         // indirect ways to stop item effects for now.
         if options.effect_stopper.enabled
@@ -433,21 +453,6 @@ impl Vast {
             return false;
         }
         // Misc checks - rarely used, or unlikely to fail
-        // Charge checks are not related to fit optimizations so far
-        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs) {
-            return false;
-        }
-        if options.charge_parent_group.enabled
-            && !fit_data.validate_charge_cont_group_fast(&options.charge_parent_group.kfs)
-        {
-            return false;
-        }
-        if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs) {
-            return false;
-        }
-        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs) {
-            return false;
-        }
         // Majority of fits are supposed to have thermodynamics 1 trained, and not every fit has
         // overloaded modules.
         if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.overload_skill.kfs, fit) {
@@ -822,6 +827,9 @@ impl Vast {
         if options.sec_zone_unactivable.enabled {
             result.sec_zone_unactivable =
                 fit_data.validate_sec_zone_unactivable_verbose(&options.sec_zone_unactivable.kfs, ctx, calc);
+        }
+        if options.sec_zone_effect.enabled {
+            result.sec_zone_effect = fit_data.validate_sec_zone_effect_verbose(&options.sec_zone_effect.kfs, ctx);
         }
         result
     }

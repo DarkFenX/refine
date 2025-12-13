@@ -4,11 +4,11 @@ use crate::{
     def::FitId,
     svc::vast::{
         ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
-        ValChargeVolumeFail, ValDroneGroupFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValItemKindFail,
-        ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail,
-        ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResFail, ValRigSizeFail, ValSecZoneFail,
-        ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableCapFail,
-        ValUnusableResFail, ValUnusableSlotFail,
+        ValChargeVolumeFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
+        ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail,
+        ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail,
+        ValResFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
+        ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
     },
 };
 
@@ -108,11 +108,12 @@ pub struct ValResultFit {
     pub offense_immunity: Option<ValProjImmunityFail>,
     pub resist_immunity: Option<ValProjImmunityFail>,
     // Sec zone
-    pub sec_zone_fitted: Option<ValSecZoneFail>,
-    pub sec_zone_online: Option<ValSecZoneFail>,
-    pub sec_zone_active: Option<ValSecZoneFail>,
-    pub sec_zone_unonlineable: Option<ValSecZoneFail>,
-    pub sec_zone_unactivable: Option<ValSecZoneFail>,
+    pub sec_zone_fitted: Option<ValItemSecZoneFail>,
+    pub sec_zone_online: Option<ValItemSecZoneFail>,
+    pub sec_zone_active: Option<ValItemSecZoneFail>,
+    pub sec_zone_unonlineable: Option<ValItemSecZoneFail>,
+    pub sec_zone_unactivable: Option<ValItemSecZoneFail>,
+    pub sec_zone_effect: Option<ValEffectSecZoneFail>,
 }
 impl ValResultFit {
     pub(in crate::svc::vast) fn new() -> Self {
@@ -196,6 +197,7 @@ impl ValResultFit {
             sec_zone_active: None,
             sec_zone_unonlineable: None,
             sec_zone_unactivable: None,
+            sec_zone_effect: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -278,5 +280,6 @@ impl ValResultFit {
             && self.sec_zone_active.is_none()
             && self.sec_zone_unonlineable.is_none()
             && self.sec_zone_unactivable.is_none()
+            && self.sec_zone_effect.is_none()
     }
 }
