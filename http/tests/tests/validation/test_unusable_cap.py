@@ -1,3 +1,8 @@
+"""
+Main use-case of this validation is not to allow cap-restricted modules on some ships, e.g. tackle
+or ewar modules on sieged FAXes.
+"""
+
 from tests import Muta, approx, check_no_field
 from tests.fw.api import ValOptions
 
