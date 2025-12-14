@@ -1,7 +1,8 @@
 //! ND stands for eNtity Data.
 //!
 //! This module is a place for almost all the hardcoded customizations applied to various EVE
-//! entities, and entities derived from them.
+//! entities, and entities derived from them. It should've been called customization data, but
+//! prefix "C" is used by cacheable entities (the ones stored in adapted data cacher).
 
 pub(crate) use effect::{
     N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect,
