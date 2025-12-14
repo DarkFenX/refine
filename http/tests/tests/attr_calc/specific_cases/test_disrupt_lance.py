@@ -1,4 +1,5 @@
 from tests import approx
+from tests.fw.api import FitStatsOptions
 
 
 def test_debuff_rr(client, consts):
@@ -49,7 +50,7 @@ def test_debuff_rr(client, consts):
 
 
 def test_debuff_warp(client, consts):
-    eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, stackable=True)
     client.mk_eve_buff(
         id_=consts.EveBuff.warp_penalty,
         aggr_mode=consts.EveBuffAggrMode.max,
@@ -68,6 +69,8 @@ def test_debuff_warp(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
     # Verification
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -84,6 +87,8 @@ def test_debuff_warp(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_affectee_fit_stats.can_warp is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -96,8 +101,8 @@ def test_debuff_warp(client, consts):
 
 
 def test_debuff_dock_jump(client, consts):
-    eve_affectee_dock_attr_id = client.mk_eve_attr(stackable=True)
-    eve_affectee_jump_attr_id = client.mk_eve_attr(stackable=True)
+    eve_affectee_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking, stackable=True)
+    eve_affectee_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping, stackable=True)
     client.mk_eve_buff(
         id_=consts.EveBuff.disallow_dock_jump,
         aggr_mode=consts.EveBuffAggrMode.max,
@@ -118,6 +123,12 @@ def test_debuff_dock_jump(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
     # Verification
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_dock_station=True, can_dock_citadel=True, can_jump_gate=True, can_jump_drive=True))
+    assert api_affectee_fit_stats.can_dock_station is False
+    assert api_affectee_fit_stats.can_dock_citadel is False
+    assert api_affectee_fit_stats.can_jump_gate is False
+    assert api_affectee_fit_stats.can_jump_drive is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].dogma == approx(1)
     assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].dogma == approx(1)
@@ -142,6 +153,12 @@ def test_debuff_dock_jump(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_dock_station=True, can_dock_citadel=True, can_jump_gate=True, can_jump_drive=True))
+    assert api_affectee_fit_stats.can_dock_station is False
+    assert api_affectee_fit_stats.can_dock_citadel is False
+    assert api_affectee_fit_stats.can_jump_gate is False
+    assert api_affectee_fit_stats.can_jump_drive is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].dogma == approx(1)
     assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].dogma == approx(1)
@@ -162,7 +179,7 @@ def test_debuff_dock_jump(client, consts):
 
 
 def test_debuff_tether(client, consts):
-    eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering, stackable=True)
     client.mk_eve_buff(
         id_=consts.EveBuff.disallow_tether,
         aggr_mode=consts.EveBuffAggrMode.max,
@@ -181,6 +198,8 @@ def test_debuff_tether(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
     # Verification
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
+    assert api_affectee_fit_stats.can_tether is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -197,6 +216,8 @@ def test_debuff_tether(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
+    assert api_affectee_fit_stats.can_tether is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
