@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTankRegen, Vast},
     },
-    ud::{UItem, UItemKey},
+    ud::UItemKey,
     util::UnitInterval,
 };
 

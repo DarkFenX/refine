@@ -2,6 +2,7 @@ pub(crate) use abil::RAbil;
 pub(crate) use attr::{RAttr, RAttrConsts};
 pub(crate) use buff::{RBuff, RBuffModifier};
 pub(in crate::rd) use data::RData;
+pub(crate) use data::{RcEffect, RcItem, RcMuta};
 pub(crate) use effect::{
     REffect, REffectBuff, REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge,
     REffectChargeLoc, REffectConsts, REffectModifier, REffectProjecteeFilter,
@@ -11,9 +12,7 @@ pub(crate) use item::{
 };
 pub(crate) use item_list::RItemList;
 pub(crate) use muta::RMuta;
-pub(crate) use primitives::{
-    RAttrKey, RBuffKey, REffectKey, RItemListKey, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcItemList, RcMuta,
-};
+pub(crate) use primitives::{RAttrKey, RBuffKey, REffectKey, RItemListKey};
 
 mod abil;
 mod attr;

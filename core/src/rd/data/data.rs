@@ -1,7 +1,4 @@
-use std::{
-    hash::{BuildHasher, Hash},
-    sync::Arc,
-};
+use std::sync::Arc;
 
 use slab::Slab;
 
@@ -9,32 +6,47 @@ use crate::{
     ad::{AAbilId, AAttrId, ABuffId, AData, AEffectId, AItemId, AItemListId},
     rd::{
         RAbil, RAttr, RAttrConsts, RAttrKey, RBuff, RBuffKey, REffect, REffectConsts, REffectKey, RItem, RItemList,
-        RItemListKey, RMuta, RcAbil, RcAttr, RcBuff, RcEffect, RcItem, RcItemList, RcMuta,
+        RItemListKey, RMuta,
     },
-    util::{GetId, Map, RMap},
+    util::RMap,
 };
 
-#[derive(Clone)]
+pub(crate) type RcItem = Arc<RItem>;
+pub(crate) type RcEffect = Arc<REffect>;
+pub(crate) type RcMuta = Arc<RMuta>;
+
 pub(in crate::rd) struct RData {
     pub(in crate::rd) items: RMap<AItemId, RcItem>,
-    pub(in crate::rd) item_lists: Slab<RcItemList>,
+    pub(in crate::rd) item_lists: Slab<RItemList>,
     pub(in crate::rd) item_list_id_key_map: RMap<AItemListId, RItemListKey>,
-    pub(in crate::rd) attrs: Slab<RcAttr>,
+    pub(in crate::rd) attrs: Slab<RAttr>,
     pub(in crate::rd) attr_id_key_map: RMap<AAttrId, RAttrKey>,
     pub(in crate::rd) attr_consts: RAttrConsts,
     pub(in crate::rd) effects: Slab<RcEffect>,
     pub(in crate::rd) effect_id_key_map: RMap<AEffectId, REffectKey>,
     pub(in crate::rd) effect_consts: REffectConsts,
-    pub(in crate::rd) buffs: Slab<RcBuff>,
+    pub(in crate::rd) buffs: Slab<RBuff>,
     pub(in crate::rd) buff_id_key_map: RMap<ABuffId, RBuffKey>,
     pub(in crate::rd) mutas: RMap<AItemId, RcMuta>,
-    pub(in crate::rd) abils: RMap<AAbilId, RcAbil>,
+    pub(in crate::rd) abils: RMap<AAbilId, RAbil>,
 }
 impl From<AData> for RData {
     fn from(a_data: AData) -> Self {
-        let mut items = move_to_arcmap(a_data.items.values().map(RItem::from_a_item));
-        let mut mutas = move_to_arcmap(a_data.mutas.values().map(RMuta::from_a_muta));
-        let mut abils = move_to_arcmap(a_data.abils.values().map(RAbil::from_a_abil));
+        let mut items: RMap<_, _> = a_data
+            .items
+            .values()
+            .map(|a_item| (a_item.id, Arc::new(RItem::from_a_item(a_item))))
+            .collect();
+        let mut mutas: RMap<_, _> = a_data
+            .mutas
+            .values()
+            .map(|a_muta| (a_muta.id, Arc::new(RMuta::from_a_muta(a_muta))))
+            .collect();
+        let mut abils: RMap<_, _> = a_data
+            .abils
+            .values()
+            .map(|a_abil| (a_abil.id, RAbil::from_a_abil(a_abil)))
+            .collect();
         // Slab item lists
         let mut item_list_id_key_map = RMap::with_capacity(a_data.item_lists.len());
         let mut item_lists = Slab::with_capacity(a_data.item_lists.len());
@@ -42,7 +54,7 @@ impl From<AData> for RData {
             let entry = item_lists.vacant_entry();
             let item_list_key = entry.key();
             let r_item_list = RItemList::from_a_item_list(item_list_key, a_item_list);
-            entry.insert(Arc::new(r_item_list));
+            entry.insert(r_item_list);
             item_list_id_key_map.insert(a_item_list_id, item_list_key);
         }
         // Slab attributes
@@ -52,7 +64,7 @@ impl From<AData> for RData {
             let entry = attrs.vacant_entry();
             let attr_key = entry.key();
             let r_attr = RAttr::from_a_attr(attr_key, a_attr);
-            entry.insert(Arc::new(r_attr));
+            entry.insert(r_attr);
             attr_id_key_map.insert(a_attr_id, attr_key);
         }
         // Slab effects
@@ -72,7 +84,7 @@ impl From<AData> for RData {
             let entry = buffs.vacant_entry();
             let buff_key = entry.key();
             let r_buff = RBuff::from_a_buff(buff_key, a_buff);
-            entry.insert(Arc::new(r_buff));
+            entry.insert(r_buff);
             buff_id_key_map.insert(a_buff_id, buff_key);
         }
         // Create runtime "constants"
@@ -90,9 +102,7 @@ impl From<AData> for RData {
             );
         }
         for (_, r_attr) in attrs.iter_mut() {
-            Arc::get_mut(r_attr)
-                .unwrap()
-                .fill_key_dependents(&a_data.attrs, &attr_id_key_map);
+            r_attr.fill_key_dependents(&a_data.attrs, &attr_id_key_map);
         }
         for (_, r_effect) in effects.iter_mut() {
             Arc::get_mut(r_effect).unwrap().fill_key_dependents(
@@ -104,9 +114,7 @@ impl From<AData> for RData {
             );
         }
         for (_, r_buff) in buffs.iter_mut() {
-            Arc::get_mut(r_buff)
-                .unwrap()
-                .fill_key_dependents(&a_data.buffs, &attr_id_key_map);
+            r_buff.fill_key_dependents(&a_data.buffs, &attr_id_key_map);
         }
         for r_muta in mutas.values_mut() {
             Arc::get_mut(r_muta)
@@ -114,7 +122,7 @@ impl From<AData> for RData {
                 .fill_key_dependents(&a_data.mutas, &attr_id_key_map);
         }
         for r_abil in abils.values_mut() {
-            Arc::get_mut(r_abil).unwrap().fill_key_dependents(&effect_id_key_map);
+            r_abil.fill_key_dependents(&effect_id_key_map);
         }
         Self {
             items,
@@ -132,13 +140,4 @@ impl From<AData> for RData {
             abils,
         }
     }
-}
-
-fn move_to_arcmap<K, V, H>(entities: impl ExactSizeIterator<Item = V>) -> Map<K, Arc<V>, H>
-where
-    K: Eq + PartialEq + Hash,
-    V: GetId<K>,
-    H: BuildHasher + Default,
-{
-    entities.map(|v| (v.get_id(), Arc::new(v))).collect()
 }
