@@ -26,27 +26,10 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_charge_drone_fighter_module(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_outgoing_nps_unchecked(
-            ctx,
-            calc,
-            item_key,
-            include_charges,
-            ignore_state,
-            projectee_key,
-        ))
-    }
-    fn internal_get_stat_item_outgoing_nps_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_key: Option<UItemKey>,
-    ) -> AttrVal {
         let mut item_nps = OF(0.0);
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
-            None => return item_nps,
+            None => return Ok(item_nps),
         };
         for (effect_key, effect_cycle) in cycle_map {
             if !effect_cycle.is_infinite() {
@@ -68,6 +51,6 @@ impl Vast {
                 }
             }
         }
-        item_nps
+        Ok(item_nps)
     }
 }

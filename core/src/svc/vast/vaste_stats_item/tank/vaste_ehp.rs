@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatLayerHp, StatTank, Vast},
     },
-    ud::{UItem, UItemKey},
+    ud::UItemKey,
 };
 
 pub struct StatLayerEhp {
@@ -27,23 +27,14 @@ impl Vast {
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(self.get_stat_item_ehp_unchecked(ctx, calc, item_key, item, incoming_dps))
-    }
-    fn get_stat_item_ehp_unchecked(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        item: &UItem,
-        incoming_dps: Option<DpsProfile>,
-    ) -> StatTank<Option<StatLayerEhp>> {
         let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, item);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);
         let armor_mult = get_tanking_efficiency(&resists.armor, incoming_dps);
         let hull_mult = get_tanking_efficiency(&resists.hull, incoming_dps);
-        make_ehp(hp, shield_mult, armor_mult, hull_mult)
+        let ehp = make_ehp(hp, shield_mult, armor_mult, hull_mult);
+        Ok(ehp)
     }
     pub(in crate::svc) fn get_stat_item_wc_ehp(
         &self,
@@ -52,30 +43,23 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(self.get_stat_item_wc_ehp_unchecked(ctx, calc, item_key, item))
-    }
-    fn get_stat_item_wc_ehp_unchecked(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        item: &UItem,
-    ) -> StatTank<Option<StatLayerEhp>> {
         let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, item);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
-        let shield_mult = Vast::get_worst_case_tanking_efficiency(&resists.shield);
-        let armor_mult = Vast::get_worst_case_tanking_efficiency(&resists.armor);
-        let hull_mult = Vast::get_worst_case_tanking_efficiency(&resists.hull);
-        make_ehp(hp, shield_mult, armor_mult, hull_mult)
+        let shield_mult = get_worst_case_tanking_efficiency(&resists.shield);
+        let armor_mult = get_worst_case_tanking_efficiency(&resists.armor);
+        let hull_mult = get_worst_case_tanking_efficiency(&resists.hull);
+        let wc_ehp = make_ehp(hp, shield_mult, armor_mult, hull_mult);
+        Ok(wc_ehp)
     }
-    fn get_worst_case_tanking_efficiency(resists: &DmgKinds<AttrVal>) -> Option<AttrVal> {
-        let dealt = OF(1.0);
-        let absorbed = resists.iter().copied().min().unwrap();
-        let received = dealt - absorbed;
-        match received > OF(0.0) {
-            true => Some(dealt / received),
-            false => None,
-        }
+}
+
+fn get_worst_case_tanking_efficiency(resists: &DmgKinds<AttrVal>) -> Option<AttrVal> {
+    let dealt = OF(1.0);
+    let absorbed = resists.iter().copied().min().unwrap();
+    let received = dealt - absorbed;
+    match received > OF(0.0) {
+        true => Some(dealt / received),
+        false => None,
     }
 }
 

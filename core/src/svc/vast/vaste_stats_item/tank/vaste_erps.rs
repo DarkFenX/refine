@@ -38,25 +38,13 @@ impl Vast {
         spool: Option<Spool>,
     ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, item, incoming_dps, shield_perc, spool))
-    }
-    fn get_stat_item_erps_unchecked(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        item: &UItem,
-        incoming_dps: Option<DpsProfile>,
-        shield_perc: UnitInterval,
-        spool: Option<Spool>,
-    ) -> StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>> {
         let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, shield_perc, spool);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);
         let armor_mult = get_tanking_efficiency(&resists.armor, incoming_dps);
         let hull_mult = get_tanking_efficiency(&resists.hull, incoming_dps);
-        StatTankRegen {
+        let erps = StatTankRegen {
             shield: shield_mult.map(|mult| StatLayerErpsRegen {
                 local: rps.shield.local * mult,
                 remote: rps.shield.remote * mult,
@@ -76,6 +64,7 @@ impl Vast {
                 remote_penalized: rps.hull.remote_penalized * mult,
                 mult,
             }),
-        }
+        };
+        Ok(erps)
     }
 }

@@ -100,32 +100,6 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
-        Vast::internal_get_stat_item_dps_unchecked(
-            ctx,
-            calc,
-            dps_normal,
-            breacher_accum,
-            item_key,
-            reload,
-            spool,
-            include_charges,
-            ignore_state,
-            projectee_key,
-        );
-        Ok(())
-    }
-    fn internal_get_stat_item_dps_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        dps_normal: &mut DmgKinds<AttrVal>,
-        breacher_accum: &mut BreacherAccum,
-        item_key: UItemKey,
-        reload: bool,
-        spool: Option<Spool>,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_key: Option<UItemKey>,
-    ) {
         let options = CycleOptions {
             reload_mode: match reload {
                 true => CycleOptionReload::Sim,
@@ -135,7 +109,7 @@ impl Vast {
         };
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
             Some(cycle_map) => cycle_map,
-            None => return,
+            None => return Ok(()),
         };
         for (effect_key, cycle) in cycle_map {
             if !cycle.is_infinite() {
@@ -169,6 +143,7 @@ impl Vast {
                 );
             }
         }
+        Ok(())
     }
     pub(in crate::svc) fn get_stat_item_volley_raw(
         ctx: SvcCtx,
@@ -243,33 +218,9 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
-        Vast::internal_get_stat_item_volley_unchecked(
-            ctx,
-            calc,
-            volley_normal,
-            volley_breacher,
-            item_key,
-            spool,
-            include_charges,
-            ignore_state,
-            projectee_key,
-        );
-        Ok(())
-    }
-    fn internal_get_stat_item_volley_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        volley_normal: &mut DmgKinds<AttrVal>,
-        volley_breacher: &mut StatDmgBreacher,
-        item_key: UItemKey,
-        spool: Option<Spool>,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_key: Option<UItemKey>,
-    ) {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
-            None => return,
+            None => return Ok(()),
         };
         for (effect_key, _cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
@@ -299,5 +250,6 @@ impl Vast {
                 );
             }
         }
+        Ok(())
     }
 }

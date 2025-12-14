@@ -21,24 +21,17 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
-    ) -> Result<StatJamApplied, StatItemCheckError> {
-        check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(self.internal_get_stat_item_incoming_jam_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_incoming_jam_unchecked(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
         projectee_item_key: UItemKey,
-    ) -> StatJamApplied {
+    ) -> Result<StatJamApplied, StatItemCheckError> {
+        check_drone_fighter_ship(ctx.u_data, projectee_item_key)?;
         let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_key) {
             Some(incoming_ecms) => incoming_ecms,
             None => {
-                return StatJamApplied {
+                let jam = StatJamApplied {
                     chance: OF(0.0),
                     uptime: OF(0.0),
                 };
+                return Ok(jam);
             }
         };
         let sensors = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_key);
@@ -81,9 +74,10 @@ impl Vast {
                 }
             }
         }
-        StatJamApplied {
+        let jam = StatJamApplied {
             chance: OF(1.0) - item_unjam_chance,
             uptime: OF(1.0) - item_unjam_uptime,
-        }
+        };
+        Ok(jam)
     }
 }

@@ -31,30 +31,16 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_key)?;
-        Ok(Vast::get_stat_item_mps_unchecked(
-            ctx,
-            calc,
-            item_key,
-            reload,
-            ignore_state,
-        ))
-    }
-    fn get_stat_item_mps_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        reload: bool,
-        ignore_state: bool,
-    ) -> StatMining {
         let cycle_options = match reload {
             true => CYCLE_OPTIONS_SIM,
             false => CYCLE_OPTIONS_BURST,
         };
-        StatMining {
+        let mps = StatMining {
             ore: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ore),
             ice: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ice),
             gas: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_gas),
-        }
+        };
+        Ok(mps)
     }
 }
 

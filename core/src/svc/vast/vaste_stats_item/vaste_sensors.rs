@@ -19,9 +19,6 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<Count, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_locks(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_locks(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Count {
         let attr_consts = ctx.ac();
         let mut item_locks = calc
             .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.max_locked_targets, OF(0.0))
@@ -41,7 +38,8 @@ impl Vast {
             }
         }
         // Non-integer locks can happen in Pochven where locks are halved, halves are rounded up
-        round_unerr(item_locks).into_inner() as Count
+        let locks = round_unerr(item_locks).into_inner() as Count;
+        Ok(locks)
     }
     pub(in crate::svc) fn get_stat_item_lock_range(
         ctx: SvcCtx,
@@ -49,11 +47,10 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_fighter_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_lock_range_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_lock_range_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().max_target_range, OF(0.0))
-            .unwrap()
+        let lock_range = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().max_target_range, OF(0.0))
+            .unwrap();
+        Ok(lock_range)
     }
     pub(in crate::svc) fn get_stat_item_scan_res(
         ctx: SvcCtx,
@@ -61,11 +58,10 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_fighter_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_scan_res_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_scan_res_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().scan_resolution, OF(0.0))
-            .unwrap()
+        let scan_res = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().scan_resolution, OF(0.0))
+            .unwrap();
+        Ok(scan_res)
     }
     pub(in crate::svc) fn get_stat_item_sensors(
         ctx: SvcCtx,
@@ -119,12 +115,11 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_dscan_range_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_dscan_range_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().max_directional_scan_range, OF(0.0))
+        let dscan_range = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().max_directional_scan_range, OF(0.0))
             .unwrap()
-            / ac::extras::AU
+            / ac::extras::AU;
+        Ok(dscan_range)
     }
     pub(in crate::svc) fn get_stat_item_probing_size(
         ctx: SvcCtx,
@@ -132,19 +127,13 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_probing_size_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_probing_size_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-    ) -> Option<AttrVal> {
         let sensor_str = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_key).strength;
         let sig_radius = Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key);
         let ratio = sig_radius / sensor_str;
-        match ratio.is_finite() {
+        let probing_size = match ratio.is_finite() {
             true => Some(ratio.max(OF(1.08))),
             false => None,
-        }
+        };
+        Ok(probing_size)
     }
 }

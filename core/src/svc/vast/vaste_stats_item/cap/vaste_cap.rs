@@ -14,7 +14,7 @@ impl Vast {
         check_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key))
     }
-    pub(in crate::svc::vast) fn internal_get_stat_item_cap_unchecked(
+    pub(in crate::svc::vast::vaste_stats_item) fn internal_get_stat_item_cap_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
@@ -28,12 +28,10 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_neut_resist_unchecked(ctx, calc, item_key))
-    }
-    fn internal_get_stat_item_neut_resist_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
-        OF(1.0)
+        let neut_resist = OF(1.0)
             - calc
                 .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().energy_warfare_resist, OF(0.0))
-                .unwrap()
+                .unwrap();
+        Ok(neut_resist)
     }
 }

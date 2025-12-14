@@ -23,26 +23,12 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
-        Ok(Vast::get_stat_item_outgoing_rps_unchecked(
-            ctx,
-            calc,
-            item_key,
-            spool,
-            ignore_state,
-        ))
-    }
-    fn get_stat_item_outgoing_rps_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        spool: Option<Spool>,
-        ignore_state: bool,
-    ) -> StatTank<AttrVal> {
-        StatTank {
+        let orps = StatTank {
             shield: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_shield),
             armor: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_armor),
             hull: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_hull),
-        }
+        };
+        Ok(orps)
     }
     pub(in crate::svc) fn get_stat_item_outgoing_cps(
         ctx: SvcCtx,
@@ -51,20 +37,8 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
-        Ok(Vast::get_stat_item_outgoing_cps_unchecked(
-            ctx,
-            calc,
-            item_key,
-            ignore_state,
-        ))
-    }
-    fn get_stat_item_outgoing_cps_unchecked(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        ignore_state: bool,
-    ) -> AttrVal {
-        get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap)
+        let ocps = get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap);
+        Ok(ocps)
     }
 }
 
