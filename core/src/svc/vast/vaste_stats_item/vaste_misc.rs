@@ -150,9 +150,14 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
         // Tether is blocked by either of:
         // - having any aggro effects active
+        // - any drones or fighters being outside
         // - warp scram status
         // - special attribute which disallows tethering
-        if self.is_fit_aggroed(ship.get_fit_key()) {
+        let fit_data = self.fit_datas.get(&ship.get_fit_key()).unwrap();
+        if !fit_data.aggro_effects.is_empty() {
+            return Ok(false);
+        }
+        if fit_data.get_launched_drone_count() > 0 || fit_data.get_launched_fighter_count() > 0 {
             return Ok(false);
         }
         let warp_status = calc

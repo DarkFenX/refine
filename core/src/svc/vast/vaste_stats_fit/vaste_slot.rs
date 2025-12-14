@@ -60,15 +60,21 @@ impl VastFitData {
     }
     // Drones
     pub(in crate::svc) fn get_stat_launched_drones(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatSlot {
-        let used = self.drones_online_bandwidth.len() as Count;
+        let used = self.get_launched_drone_count();
         let total = get_attr_as_count(ctx, calc, fit.character, ctx.ac().max_active_drones);
         StatSlot { used, total }
+    }
+    pub(in crate::svc::vast) fn get_launched_drone_count(&self) -> Count {
+        self.drones_online_bandwidth.len() as Count
     }
     // Fighters
     pub(in crate::svc) fn get_stat_launched_fighters(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatSlot {
         let used = self.fighters_online.len() as Count;
         let total = get_attr_as_count(ctx, calc, fit.ship, ctx.ac().ftr_tubes);
         StatSlot { used, total }
+    }
+    pub(in crate::svc::vast) fn get_launched_fighter_count(&self) -> Count {
+        self.fighters_online.len() as Count
     }
     pub(in crate::svc) fn get_stat_launched_light_fighters(
         &self,
