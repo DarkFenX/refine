@@ -79,6 +79,7 @@ class FitStatsOptions:
     # Ship misc stats
     drone_control_range: bool | type[Absent] = Absent
     can_warp: bool | type[Absent] = Absent
+    can_dock: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
         return dc_to_dict(data=self)
