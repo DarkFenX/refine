@@ -1,4 +1,4 @@
-use super::checks::check_item_key_autocharge_charge_drone_fighter_module;
+use super::checks::check_autocharge_charge_drone_fighter_module;
 use crate::{
     def::AttrVal,
     misc::{DmgKinds, Spool},
@@ -99,7 +99,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
-        check_item_key_autocharge_charge_drone_fighter_module(ctx, item_key)?;
+        check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
         Vast::internal_get_stat_item_dps_unchecked(
             ctx,
             calc,
@@ -242,7 +242,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
-        check_item_key_autocharge_charge_drone_fighter_module(ctx, item_key)?;
+        check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
         Vast::internal_get_stat_item_volley_unchecked(
             ctx,
             calc,

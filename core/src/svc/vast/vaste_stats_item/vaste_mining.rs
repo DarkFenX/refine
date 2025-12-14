@@ -1,4 +1,4 @@
-use super::checks::check_item_key_drone_module;
+use super::checks::check_drone_module;
 use crate::{
     misc::MiningAmount,
     nd::NMiningGetter,
@@ -30,7 +30,7 @@ impl Vast {
         reload: bool,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
-        check_item_key_drone_module(ctx, item_key)?;
+        check_drone_module(ctx.u_data, item_key)?;
         Ok(Vast::get_stat_item_mps_unchecked(
             ctx,
             calc,

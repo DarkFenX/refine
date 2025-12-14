@@ -63,6 +63,7 @@ pub(crate) struct HGetItemStatsCmd {
     // Misc
     drone_control_range: Option<bool>,
     can_warp: Option<bool>,
+    can_dock: Option<bool>,
 }
 impl HGetItemStatsCmd {
     pub(crate) fn execute(
@@ -196,6 +197,9 @@ impl HGetItemStatsCmd {
         }
         if self.can_warp.unwrap_or(self.default) {
             stats.can_warp = core_item.get_stat_can_warp().into();
+        }
+        if self.can_dock.unwrap_or(self.default) {
+            stats.can_dock = core_item.get_stat_can_dock().into();
         }
         Ok(stats)
     }

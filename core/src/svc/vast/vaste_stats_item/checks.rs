@@ -1,13 +1,10 @@
 use crate::{
-    svc::{
-        SvcCtx,
-        err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
-    },
-    ud::{UItem, UItemKey, UShipKind},
+    svc::err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+    ud::{UData, UItem, UItemKey, UShip, UShipKind},
 };
 
-pub(super) fn check_item_key_character(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_character(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
         UItem::Character(u_character) => u_character.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
@@ -18,14 +15,38 @@ pub(super) fn check_item_key_character(ctx: SvcCtx, item_key: UItemKey) -> Resul
     }
 }
 
-pub(super) fn check_item_key_ship(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
-    check_item_ship(item_key, item)
+pub(super) fn check_ship(u_data: &UData, item_key: UItemKey) -> Result<&UShip, StatItemCheckError> {
+    let item = u_data.items.get(item_key);
+    let ship = match item {
+        UItem::Ship(ship) => ship,
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match ship.is_loaded() {
+        true => Ok(ship),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
+    }
 }
 
-pub(super) fn check_item_ship(item_key: UItemKey, item: &UItem) -> Result<(), StatItemCheckError> {
+pub(super) fn check_ship_no_struct(u_data: &UData, item_key: UItemKey) -> Result<&UShip, StatItemCheckError> {
+    let item = u_data.items.get(item_key);
+    let ship = match item {
+        UItem::Ship(ship) => match ship.get_kind() {
+            UShipKind::Ship | UShipKind::Unknown => ship,
+            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
+        },
+        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
+    };
+    match ship.is_loaded() {
+        true => Ok(ship),
+        false => Err(KeyedItemLoadedError { item_key }.into()),
+    }
+}
+
+pub(super) fn check_fighter_ship(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
-        UItem::Ship(u_ship) => u_ship.is_loaded(),
+        UItem::Fighter(fighter) => fighter.is_loaded(),
+        UItem::Ship(ship) => ship.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };
     match is_loaded {
@@ -34,11 +55,12 @@ pub(super) fn check_item_ship(item_key: UItemKey, item: &UItem) -> Result<(), St
     }
 }
 
-pub(super) fn check_item_key_ship_no_struct(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
-        UItem::Ship(u_ship) => match u_ship.get_kind() {
-            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
+        UItem::Fighter(fighter) => fighter.is_loaded(),
+        UItem::Ship(ship) => match ship.get_kind() {
+            UShipKind::Ship | UShipKind::Unknown => ship.is_loaded(),
             UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
         },
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
@@ -49,25 +71,27 @@ pub(super) fn check_item_key_ship_no_struct(ctx: SvcCtx, item_key: UItemKey) -> 
     }
 }
 
-pub(super) fn check_item_key_fighter_ship(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_drone_fighter_ship(u_data: &UData, item_key: UItemKey) -> Result<&UItem, StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => u_ship.is_loaded(),
+        UItem::Drone(drone) => drone.is_loaded(),
+        UItem::Fighter(fighter) => fighter.is_loaded(),
+        UItem::Ship(ship) => ship.is_loaded(),
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
     };
     match is_loaded {
-        true => Ok(()),
+        true => Ok(item),
         false => Err(KeyedItemLoadedError { item_key }.into()),
     }
 }
 
-pub(super) fn check_item_key_fighter_ship_no_struct(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_drone_fighter_ship_no_struct(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => match u_ship.get_kind() {
-            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
+        UItem::Drone(drone) => drone.is_loaded(),
+        UItem::Fighter(fighter) => fighter.is_loaded(),
+        UItem::Ship(ship) => match ship.get_kind() {
+            UShipKind::Ship | UShipKind::Unknown => ship.is_loaded(),
             UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
         },
         _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
@@ -78,46 +102,8 @@ pub(super) fn check_item_key_fighter_ship_no_struct(ctx: SvcCtx, item_key: UItem
     }
 }
 
-pub(super) fn check_item_key_drone_fighter_ship(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
-    check_item_drone_fighter_ship(item_key, item)
-}
-
-pub(super) fn check_item_drone_fighter_ship(item_key: UItemKey, item: &UItem) -> Result<(), StatItemCheckError> {
-    let is_loaded = match item {
-        UItem::Drone(u_drone) => u_drone.is_loaded(),
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => u_ship.is_loaded(),
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
-    }
-}
-
-pub(super) fn check_item_key_drone_fighter_ship_no_struct(
-    ctx: SvcCtx,
-    item_key: UItemKey,
-) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
-    let is_loaded = match item {
-        UItem::Drone(u_drone) => u_drone.is_loaded(),
-        UItem::Fighter(u_fighter) => u_fighter.is_loaded(),
-        UItem::Ship(u_ship) => match u_ship.get_kind() {
-            UShipKind::Ship | UShipKind::Unknown => u_ship.is_loaded(),
-            UShipKind::Structure => return Err(KeyedItemKindVsStatError { item_key }.into()),
-        },
-        _ => return Err(KeyedItemKindVsStatError { item_key }.into()),
-    };
-    match is_loaded {
-        true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
-    }
-}
-
-pub(super) fn check_item_key_drone_fighter_module(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_drone_fighter_module(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
         UItem::Drone(drone) => drone.is_loaded(),
         UItem::Fighter(fighter) => fighter.is_loaded(),
@@ -130,8 +116,8 @@ pub(super) fn check_item_key_drone_fighter_module(ctx: SvcCtx, item_key: UItemKe
     }
 }
 
-pub(super) fn check_item_key_drone_module(ctx: SvcCtx, item_key: UItemKey) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_drone_module(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
         UItem::Drone(drone) => drone.is_loaded(),
         UItem::Module(module) => module.is_loaded(),
@@ -143,11 +129,8 @@ pub(super) fn check_item_key_drone_module(ctx: SvcCtx, item_key: UItemKey) -> Re
     }
 }
 
-pub(super) fn check_item_key_charge_drone_fighter_module(
-    ctx: SvcCtx,
-    item_key: UItemKey,
-) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+pub(super) fn check_charge_drone_fighter_module(u_data: &UData, item_key: UItemKey) -> Result<(), StatItemCheckError> {
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
         UItem::Charge(charge) => charge.is_loaded(),
         UItem::Drone(drone) => drone.is_loaded(),
@@ -161,11 +144,11 @@ pub(super) fn check_item_key_charge_drone_fighter_module(
     }
 }
 
-pub(super) fn check_item_key_autocharge_charge_drone_fighter_module(
-    ctx: SvcCtx,
+pub(super) fn check_autocharge_charge_drone_fighter_module(
+    u_data: &UData,
     item_key: UItemKey,
 ) -> Result<(), StatItemCheckError> {
-    let item = ctx.u_data.items.get(item_key);
+    let item = u_data.items.get(item_key);
     let is_loaded = match item {
         UItem::Autocharge(autocharge) => autocharge.is_loaded(),
         UItem::Charge(charge) => charge.is_loaded(),

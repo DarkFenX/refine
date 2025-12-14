@@ -19,4 +19,12 @@ impl Svc {
     ) -> Result<bool, StatItemCheckError> {
         Vast::get_stat_item_can_warp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_item_can_dock(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<bool, StatItemCheckError> {
+        self.vast
+            .get_stat_item_can_dock(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
 }

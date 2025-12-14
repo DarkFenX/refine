@@ -1,4 +1,4 @@
-use super::checks::check_item_key_drone_fighter_ship;
+use super::checks::check_drone_fighter_ship;
 use crate::{
     def::OF,
     svc::{
@@ -23,7 +23,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<StatJamApplied, StatItemCheckError> {
-        check_item_key_drone_fighter_ship(ctx, item_key)?;
+        check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(self.internal_get_stat_item_incoming_jam_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_incoming_jam_unchecked(

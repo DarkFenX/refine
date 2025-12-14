@@ -85,6 +85,7 @@ pub(crate) struct HGetFitStatsCmd {
     // Ship misc stats
     drone_control_range: Option<bool>,
     can_warp: Option<bool>,
+    can_dock: Option<bool>,
 }
 impl HGetFitStatsCmd {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HFitStats, HExecError> {
@@ -285,6 +286,9 @@ impl HGetFitStatsCmd {
         }
         if self.can_warp.unwrap_or(self.default) {
             stats.can_warp = core_fit.get_stat_can_warp().into();
+        }
+        if self.can_dock.unwrap_or(self.default) {
+            stats.can_dock = core_fit.get_stat_can_dock().into();
         }
         Ok(stats)
     }

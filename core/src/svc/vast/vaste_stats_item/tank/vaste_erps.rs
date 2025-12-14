@@ -1,4 +1,4 @@
-use super::{super::checks::check_item_drone_fighter_ship, shared::get_tanking_efficiency};
+use super::{super::checks::check_drone_fighter_ship, shared::get_tanking_efficiency};
 use crate::{
     def::AttrVal,
     misc::{DpsProfile, Spool},
@@ -37,21 +37,20 @@ impl Vast {
         shield_perc: UnitInterval,
         spool: Option<Spool>,
     ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, StatItemCheckError> {
-        let u_item = ctx.u_data.items.get(item_key);
-        check_item_drone_fighter_ship(item_key, u_item)?;
-        Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, u_item, incoming_dps, shield_perc, spool))
+        let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
+        Ok(self.get_stat_item_erps_unchecked(ctx, calc, item_key, item, incoming_dps, shield_perc, spool))
     }
     fn get_stat_item_erps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        u_item: &UItem,
+        item: &UItem,
         incoming_dps: Option<DpsProfile>,
         shield_perc: UnitInterval,
         spool: Option<Spool>,
     ) -> StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>> {
-        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, u_item, shield_perc, spool);
+        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, shield_perc, spool);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);

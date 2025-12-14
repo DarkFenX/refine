@@ -1,4 +1,4 @@
-use super::super::checks::check_item_key_ship;
+use super::super::checks::check_ship;
 use crate::{
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
@@ -11,7 +11,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_ship(ctx, item_key)?;
+        check_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key))
     }
     pub(in crate::svc::vast) fn internal_get_stat_item_cap_unchecked(
@@ -27,7 +27,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_ship(ctx, item_key)?;
+        check_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_neut_resist_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_neut_resist_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {

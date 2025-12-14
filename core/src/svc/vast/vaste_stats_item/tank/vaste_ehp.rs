@@ -1,4 +1,4 @@
-use super::{super::checks::check_item_drone_fighter_ship, shared::get_tanking_efficiency};
+use super::{super::checks::check_drone_fighter_ship, shared::get_tanking_efficiency};
 use crate::{
     def::{AttrVal, OF},
     misc::{DmgKinds, DpsProfile},
@@ -26,19 +26,18 @@ impl Vast {
         item_key: UItemKey,
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
-        let u_item = ctx.u_data.items.get(item_key);
-        check_item_drone_fighter_ship(item_key, u_item)?;
-        Ok(self.get_stat_item_ehp_unchecked(ctx, calc, item_key, u_item, incoming_dps))
+        let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
+        Ok(self.get_stat_item_ehp_unchecked(ctx, calc, item_key, item, incoming_dps))
     }
     fn get_stat_item_ehp_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        u_item: &UItem,
+        item: &UItem,
         incoming_dps: Option<DpsProfile>,
     ) -> StatTank<Option<StatLayerEhp>> {
-        let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, u_item);
+        let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, item);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);
@@ -52,18 +51,17 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
-        let u_item = ctx.u_data.items.get(item_key);
-        check_item_drone_fighter_ship(item_key, u_item)?;
-        Ok(self.get_stat_item_wc_ehp_unchecked(ctx, calc, item_key, u_item))
+        let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
+        Ok(self.get_stat_item_wc_ehp_unchecked(ctx, calc, item_key, item))
     }
     fn get_stat_item_wc_ehp_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        u_item: &UItem,
+        item: &UItem,
     ) -> StatTank<Option<StatLayerEhp>> {
-        let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, u_item);
+        let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, item);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let shield_mult = Vast::get_worst_case_tanking_efficiency(&resists.shield);
         let armor_mult = Vast::get_worst_case_tanking_efficiency(&resists.armor);

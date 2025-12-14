@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use super::{
-    super::checks::check_item_ship,
+    super::checks::check_ship,
     shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
 };
 use crate::{
@@ -72,9 +72,8 @@ impl Vast {
         item_key: UItemKey,
         src_kinds: StatCapSrcKinds,
     ) -> Result<AttrVal, StatItemCheckError> {
-        let item = ctx.u_data.items.get(item_key);
-        check_item_ship(item_key, item)?;
-        let fit_data = self.fit_datas.get(&item.dc_ship().unwrap().get_fit_key()).unwrap();
+        let ship = check_ship(ctx.u_data, item_key)?;
+        let fit_data = self.fit_datas.get(&ship.get_fit_key()).unwrap();
         let mut balance = OF(0.0);
         if src_kinds.regen.enabled {
             balance += get_cap_regen(ctx, calc, item_key, src_kinds.regen.cap_perc);

@@ -1,4 +1,4 @@
-use super::super::checks::check_item_drone_fighter_ship;
+use super::super::checks::check_drone_fighter_ship;
 use crate::{
     def::{AttrVal, OF},
     nd::{NLocalRepGetter, NOutgoingRepGetter},
@@ -27,16 +27,15 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
-        let u_item = ctx.u_data.items.get(item_key);
-        check_item_drone_fighter_ship(item_key, u_item)?;
-        Ok(self.get_stat_item_hp_unchecked(ctx, calc, item_key, u_item))
+        let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
+        Ok(self.get_stat_item_hp_unchecked(ctx, calc, item_key, item))
     }
     pub(super) fn get_stat_item_hp_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        u_item: &UItem,
+        item: &UItem,
     ) -> StatTank<StatLayerHp> {
         let attr_consts = ctx.ac();
         // Buffer - if item is not loaded, fetching those will fail
@@ -50,7 +49,7 @@ impl Vast {
             .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.hp, OF(0.0))
             .unwrap();
         // Local ancillary repairs
-        let (local_asb, local_aar) = match u_item {
+        let (local_asb, local_aar) = match item {
             UItem::Ship(u_ship) => {
                 let fit_data = self.get_fit_data(&u_ship.get_fit_key());
                 let local_asb = get_local_ancil_hp(ctx, calc, &fit_data.lr_shield_limitable);

@@ -1,4 +1,4 @@
-use super::checks::check_item_key_charge_drone_fighter_module;
+use super::checks::check_charge_drone_fighter_module;
 use crate::{
     def::{AttrVal, OF},
     svc::{
@@ -25,7 +25,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_charge_drone_fighter_module(ctx, item_key)?;
+        check_charge_drone_fighter_module(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_outgoing_nps_unchecked(
             ctx,
             calc,

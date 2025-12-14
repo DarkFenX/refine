@@ -1,6 +1,5 @@
 use super::checks::{
-    check_item_key_drone_fighter_ship, check_item_key_drone_fighter_ship_no_struct,
-    check_item_key_fighter_ship_no_struct, check_item_key_ship_no_struct,
+    check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct, check_ship_no_struct,
 };
 use crate::{
     def::{AttrVal, OF},
@@ -18,7 +17,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_drone_fighter_ship_no_struct(ctx, item_key)?;
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_speed_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_speed_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -29,7 +28,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_item_key_drone_fighter_ship_no_struct(ctx, item_key)?;
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
@@ -53,7 +52,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_item_key_drone_fighter_ship_no_struct(ctx, item_key)?;
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_align_time_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_align_time_unchecked(
@@ -68,7 +67,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_drone_fighter_ship(ctx, item_key)?;
+        check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key))
     }
     pub(super) fn internal_get_stat_item_sig_radius_unchecked(
@@ -83,7 +82,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
-        check_item_key_drone_fighter_ship(ctx, item_key)?;
+        check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -95,7 +94,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_item_key_fighter_ship_no_struct(ctx, item_key)?;
+        check_fighter_ship_no_struct(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_warp_speed_unchecked(ctx, calc, item_key))
     }
     fn internal_get_stat_item_warp_speed_unchecked(
@@ -116,7 +115,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_item_key_ship_no_struct(ctx, item_key)?;
+        check_ship_no_struct(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_max_warp_range_unchecked(
             ctx, calc, item_key,
         ))

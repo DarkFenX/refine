@@ -1,4 +1,4 @@
-use super::super::checks::check_item_drone_fighter_ship;
+use super::super::checks::check_drone_fighter_ship;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
@@ -37,21 +37,20 @@ impl Vast {
         shield_perc: UnitInterval,
         spool: Option<Spool>,
     ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
-        let u_item = ctx.u_data.items.get(item_key);
-        check_item_drone_fighter_ship(item_key, u_item)?;
-        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, u_item, shield_perc, spool))
+        let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
+        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, shield_perc, spool))
     }
     pub(super) fn get_stat_item_rps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        u_item: &UItem,
+        item: &UItem,
         shield_perc: UnitInterval,
         spool: Option<Spool>,
     ) -> StatTankRegen<StatLayerRps, StatLayerRpsRegen> {
         // Local reps
-        let (local_shield, local_armor, local_hull) = match u_item {
+        let (local_shield, local_armor, local_hull) = match item {
             UItem::Ship(u_ship) => {
                 let fit_data = self.get_fit_data(&u_ship.get_fit_key());
                 let local_shield = get_local_rps(ctx, calc, &fit_data.lr_shield);
