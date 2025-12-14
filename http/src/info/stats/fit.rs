@@ -126,11 +126,13 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_warp: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_gate_jump: TriStateField<bool>,
+    pub(crate) can_jump_gate: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_drive_jump: TriStateField<bool>,
+    pub(crate) can_jump_drive: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_dock: TriStateField<bool>,
+    pub(crate) can_dock_station: TriStateField<bool>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) can_dock_citadel: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_tether: TriStateField<bool>,
 }
@@ -199,9 +201,10 @@ impl HFitStats {
             // Ship misc stats
             drone_control_range: TriStateField::default(),
             can_warp: TriStateField::default(),
-            can_gate_jump: TriStateField::default(),
-            can_drive_jump: TriStateField::default(),
-            can_dock: TriStateField::default(),
+            can_jump_gate: TriStateField::default(),
+            can_jump_drive: TriStateField::default(),
+            can_dock_station: TriStateField::default(),
+            can_dock_citadel: TriStateField::default(),
             can_tether: TriStateField::default(),
         }
     }

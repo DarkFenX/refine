@@ -24,7 +24,9 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<bool, StatItemCheckError> {
         check_fighter_ship_no_struct(ctx.u_data, item_key)?;
-        // Warping is blocked by warp scram status and having no max velocity
+        // Warping is blocked by either of:
+        // - warp scram status
+        // - having no max velocity
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
             .unwrap();
@@ -39,15 +41,17 @@ impl Vast {
         }
         Ok(true)
     }
-    pub(in crate::svc) fn get_stat_item_can_gate_jump(
+    pub(in crate::svc) fn get_stat_item_can_jump_gate(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
-        // Gating is blocked by having aggro modules active, gate scram status, and a special
-        // docking attribute (which seems to be used by disruptive lances)
+        // Gating is blocked by either of:
+        // - having aggro modules active
+        // - gate scram status (scripted HIC ray)
+        // - special attribute which disallows docking (disruptive lance)
         if self.is_fit_aggroed(ship.get_fit_key()) {
             return Ok(false);
         }
@@ -65,13 +69,15 @@ impl Vast {
         }
         Ok(true)
     }
-    pub(in crate::svc) fn get_stat_item_can_drive_jump(
+    pub(in crate::svc) fn get_stat_item_can_jump_drive(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<bool, StatItemCheckError> {
         check_ship_no_struct(ctx.u_data, item_key)?;
-        // Jumping is blocked by warp scram status and attribute specific to drive jumping
+        // Jumping (with a jump drive) is blocked by either of:
+        // - warp scram status
+        // - special attribute which disallows jumping
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
             .unwrap();
@@ -86,15 +92,45 @@ impl Vast {
         }
         Ok(true)
     }
-    pub(in crate::svc) fn get_stat_item_can_dock(
+    pub(in crate::svc) fn get_stat_item_can_dock_station(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
-        // Docking is blocked by having any aggro effects active and a special attribute
+        // Station docking is blocked by either of:
+        // - having any aggro effects active
+        // - special attribute which disallows docking (scripted HIC ray)
         if self.is_fit_aggroed(ship.get_fit_key()) {
+            return Ok(false);
+        }
+        let dock_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().disallow_docking, OF(0.0))
+            .unwrap();
+        if dock_status > FLOAT_TOLERANCE {
+            return Ok(false);
+        }
+        Ok(true)
+    }
+    pub(in crate::svc) fn get_stat_item_can_dock_citadel(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> Result<bool, StatItemCheckError> {
+        let ship = check_ship_no_struct(ctx.u_data, item_key)?;
+        // Citadel docking is blocked by either of:
+        // - having any aggro effects active
+        // - scramble status
+        // - special attribute which disallows docking
+        if self.is_fit_aggroed(ship.get_fit_key()) {
+            return Ok(false);
+        }
+        let warp_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
+            .unwrap();
+        if warp_status > FLOAT_TOLERANCE {
             return Ok(false);
         }
         let dock_status = calc
@@ -112,8 +148,17 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
-        // Tether is blocked by having any aggro effects active and a special attribute
+        // Tether is blocked by either of:
+        // - having any aggro effects active
+        // - warp scram status
+        // - special attribute which disallows tethering
         if self.is_fit_aggroed(ship.get_fit_key()) {
+            return Ok(false);
+        }
+        let warp_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
+            .unwrap();
+        if warp_status > FLOAT_TOLERANCE {
             return Ok(false);
         }
         let tether_status = calc

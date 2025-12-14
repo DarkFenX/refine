@@ -430,6 +430,8 @@ class EveAttr(IntEnum):
     doomsday_aoe_sig_radius = 2281
     doomsday_aoe_duration = 2280
     ftr_abil_launch_bomb_type = 2324
+    disallow_tethering = 2343
+    disallow_drive_jumping = 2353
     disallow_docking = 2354
     hisec_modifier = 2355
     lowsec_modifier = 2356

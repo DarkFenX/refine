@@ -85,9 +85,10 @@ pub(crate) struct HGetFitStatsCmd {
     // Ship misc stats
     drone_control_range: Option<bool>,
     can_warp: Option<bool>,
-    can_gate_jump: Option<bool>,
-    can_drive_jump: Option<bool>,
-    can_dock: Option<bool>,
+    can_jump_gate: Option<bool>,
+    can_jump_drive: Option<bool>,
+    can_dock_station: Option<bool>,
+    can_dock_citadel: Option<bool>,
     can_tether: Option<bool>,
 }
 impl HGetFitStatsCmd {
@@ -290,14 +291,17 @@ impl HGetFitStatsCmd {
         if self.can_warp.unwrap_or(self.default) {
             stats.can_warp = core_fit.get_stat_can_warp().into();
         }
-        if self.can_gate_jump.unwrap_or(self.default) {
-            stats.can_gate_jump = core_fit.get_stat_can_gate_jump().into();
+        if self.can_jump_gate.unwrap_or(self.default) {
+            stats.can_jump_gate = core_fit.get_stat_can_jump_gate().into();
         }
-        if self.can_drive_jump.unwrap_or(self.default) {
-            stats.can_drive_jump = core_fit.get_stat_can_drive_jump().into();
+        if self.can_jump_drive.unwrap_or(self.default) {
+            stats.can_jump_drive = core_fit.get_stat_can_jump_drive().into();
         }
-        if self.can_dock.unwrap_or(self.default) {
-            stats.can_dock = core_fit.get_stat_can_dock().into();
+        if self.can_dock_station.unwrap_or(self.default) {
+            stats.can_dock_station = core_fit.get_stat_can_dock_station().into();
+        }
+        if self.can_dock_citadel.unwrap_or(self.default) {
+            stats.can_dock_citadel = core_fit.get_stat_can_dock_citadel().into();
         }
         if self.can_tether.unwrap_or(self.default) {
             stats.can_tether = core_fit.get_stat_can_tether().into();

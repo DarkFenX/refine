@@ -461,25 +461,32 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_can_warp(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_can_gate_jump(&mut self) -> Result<bool, ItemStatError> {
+    fn get_stat_can_jump_gate(&mut self) -> Result<bool, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_can_gate_jump(&sol.u_data, item_key)
+            .get_stat_item_can_jump_gate(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_can_drive_jump(&mut self) -> Result<bool, ItemStatError> {
+    fn get_stat_can_jump_drive(&mut self) -> Result<bool, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_can_drive_jump(&sol.u_data, item_key)
+            .get_stat_item_can_jump_drive(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_can_dock(&mut self) -> Result<bool, ItemStatError> {
+    fn get_stat_can_dock_station(&mut self) -> Result<bool, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_can_dock(&sol.u_data, item_key)
+            .get_stat_item_can_dock_station(&sol.u_data, item_key)
+            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_can_dock_citadel(&mut self) -> Result<bool, ItemStatError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_can_dock_citadel(&sol.u_data, item_key)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_can_tether(&mut self) -> Result<bool, ItemStatError> {

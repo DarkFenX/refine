@@ -2,8 +2,8 @@ from tests import check_no_field
 from tests.fw.api import FitStatsOptions, ItemStatsOptions
 
 
-def test_ship_modified(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+def test_ship_warp_modified(client, consts):
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -11,10 +11,10 @@ def test_ship_modified(client, consts):
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_status_attr_id)
+        affectee_attr_id=eve_warp_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1}, eff_ids=[eve_mod_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_speed_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0, eve_speed_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -40,14 +40,38 @@ def test_ship_modified(client, consts):
     assert api_ship_stats.can_warp is True
 
 
-def test_ship_status_no_value(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+def test_ship_warp_values(client, consts):
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1})
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1, eve_warp_attr_id: -100})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1, eve_warp_attr_id: 0})
+    eve_ship3_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1, eve_warp_attr_id: 100})
+    eve_ship4_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_fit_stats.can_warp is True
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_ship_stats.can_warp is True
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_fit_stats.can_warp is True
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_ship_stats.can_warp is True
+    # Action
+    api_ship.change_ship(type_id=eve_ship3_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_fit_stats.can_warp is False
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_ship_stats.can_warp is False
+    # Action
+    api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
     assert api_fit_stats.can_warp is True
@@ -55,29 +79,53 @@ def test_ship_status_no_value(client, consts):
     assert api_ship_stats.can_warp is True
 
 
-def test_ship_status_no_attr(client, consts):
-    eve_status_attr_id = consts.EveAttr.warp_scramble_status
+def test_ship_warp_no_attr(client, consts):
+    eve_warp_attr_id = consts.EveAttr.warp_scramble_status
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_speed_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 1, eve_speed_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
+    # Verification - value is ignored if attribute does not exist
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
     assert api_fit_stats.can_warp is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
     assert api_ship_stats.can_warp is True
 
 
-def test_ship_speed_no_value(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
-    client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+def test_ship_speed_values(client, consts):
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0, eve_speed_attr_id: -100})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0, eve_speed_attr_id: 0})
+    eve_ship3_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0, eve_speed_attr_id: 1})
+    eve_ship4_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_fit_stats.can_warp is False
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_ship_stats.can_warp is False
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_fit_stats.can_warp is False
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_ship_stats.can_warp is False
+    # Action
+    api_ship.change_ship(type_id=eve_ship3_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    assert api_fit_stats.can_warp is True
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_ship_stats.can_warp is True
+    # Action
+    api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
     assert api_fit_stats.can_warp is False
@@ -86,14 +134,14 @@ def test_ship_speed_no_value(client, consts):
 
 
 def test_ship_speed_no_attr(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = consts.EveAttr.max_velocity
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_speed_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0, eve_speed_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
+    # Verification - value is ignored if attribute does not exist
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_warp=True))
     assert api_fit_stats.can_warp is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_warp=True))
@@ -126,8 +174,8 @@ def test_ship_not_loaded(client, consts):
     assert api_ship_stats.can_warp is None
 
 
-def test_fighter_modified(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+def test_fighter_warp_modified(client, consts):
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -135,13 +183,13 @@ def test_fighter_modified(client, consts):
     eve_buff_id = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_status_attr_id)])
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_warp_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 100},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_fighter_id = client.mk_eve_fighter(
-        attrs={eve_status_attr_id: 0, eve_speed_attr_id: 1, eve_max_count_attr_id: 9})
+        attrs={eve_warp_attr_id: 0, eve_speed_attr_id: 1, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -162,9 +210,9 @@ def test_fighter_modified(client, consts):
 
 
 def test_struct(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_struct_id = client.mk_eve_struct(attrs={eve_status_attr_id: 1, eve_speed_attr_id: 1})
+    eve_struct_id = client.mk_eve_struct(attrs={eve_warp_attr_id: 1, eve_speed_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -177,9 +225,9 @@ def test_struct(client, consts):
 
 
 def test_other(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_drone_id = client.mk_eve_drone(attrs={eve_status_attr_id: 100, eve_speed_attr_id: 1})
+    eve_drone_id = client.mk_eve_drone(attrs={eve_warp_attr_id: 100, eve_speed_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -190,9 +238,9 @@ def test_other(client, consts):
 
 
 def test_not_requested(client, consts):
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 100, eve_speed_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 100, eve_speed_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

@@ -56,9 +56,10 @@ class ItemStatsOptions:
     # Misc
     drone_control_range: bool | type[Absent] = Absent
     can_warp: bool | type[Absent] = Absent
-    can_gate_jump: bool | type[Absent] = Absent
-    can_drive_jump: bool | type[Absent] = Absent
-    can_dock: bool | type[Absent] = Absent
+    can_jump_gate: bool | type[Absent] = Absent
+    can_jump_drive: bool | type[Absent] = Absent
+    can_dock_station: bool | type[Absent] = Absent
+    can_dock_citadel: bool | type[Absent] = Absent
     can_tether: bool | type[Absent] = Absent
 
     def to_dict(self) -> dict:
