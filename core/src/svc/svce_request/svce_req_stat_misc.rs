@@ -19,6 +19,21 @@ impl Svc {
     ) -> Result<bool, StatItemCheckError> {
         Vast::get_stat_item_can_warp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
+    pub(crate) fn get_stat_item_can_gate_jump(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<bool, StatItemCheckError> {
+        self.vast
+            .get_stat_item_can_gate_jump(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
+    pub(crate) fn get_stat_item_can_drive_jump(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<bool, StatItemCheckError> {
+        Vast::get_stat_item_can_drive_jump(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
     pub(crate) fn get_stat_item_can_dock(
         &mut self,
         u_data: &UData,
@@ -26,5 +41,13 @@ impl Svc {
     ) -> Result<bool, StatItemCheckError> {
         self.vast
             .get_stat_item_can_dock(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+    }
+    pub(crate) fn get_stat_item_can_tether(
+        &mut self,
+        u_data: &UData,
+        item_key: UItemKey,
+    ) -> Result<bool, StatItemCheckError> {
+        self.vast
+            .get_stat_item_can_tether(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
 }

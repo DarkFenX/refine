@@ -218,6 +218,7 @@ pub(crate) const DOOMSDAY_AOE_DURATION: EAttrId = 2280;
 pub(crate) const DOOMSDAY_AOE_SIG_RADIUS: EAttrId = 2281;
 pub(crate) const FTR_ABIL_BOMB_TYPE: EAttrId = 2324;
 pub(crate) const DISALLOW_TETHERING: EAttrId = 2343;
+pub(crate) const DISALLOW_DRIVE_JUMPING: EAttrId = 2353;
 pub(crate) const DISALLOW_DOCKING: EAttrId = 2354;
 pub(crate) const HISEC_MODIFIER: EAttrId = 2355;
 pub(crate) const LOWSEC_MODIFIER: EAttrId = 2356;
