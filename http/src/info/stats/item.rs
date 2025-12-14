@@ -79,7 +79,13 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_warp: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) can_gate_jump: TriStateField<bool>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) can_drive_jump: TriStateField<bool>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_dock: TriStateField<bool>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) can_tether: TriStateField<bool>,
 }
 impl HItemStats {
     pub(crate) fn new() -> Self {
@@ -122,7 +128,10 @@ impl HItemStats {
             // Misc
             drone_control_range: TriStateField::default(),
             can_warp: TriStateField::default(),
+            can_gate_jump: TriStateField::default(),
+            can_drive_jump: TriStateField::default(),
             can_dock: TriStateField::default(),
+            can_tether: TriStateField::default(),
         }
     }
 }
