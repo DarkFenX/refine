@@ -84,18 +84,23 @@ def test_warp_scram_status_dscript(client, consts):
     # Disruption script disables warp for target it's projected on
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 100},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(
         eff_ids=[eve_script_effect_id],
         defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -104,6 +109,8 @@ def test_warp_scram_status_dscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
@@ -112,7 +119,9 @@ def test_warp_scram_status_dscript(client, consts):
     assert api_affectee_fit_stats.can_tether is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is False
@@ -122,6 +131,8 @@ def test_warp_scram_status_dscript(client, consts):
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
@@ -134,18 +145,23 @@ def test_warp_scram_status_sscript(client, consts):
     # Scrambling script disables warp for target it's projected on
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 100},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(
         eff_ids=[eve_script_effect_id],
         defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -154,6 +170,8 @@ def test_warp_scram_status_sscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
@@ -162,7 +180,9 @@ def test_warp_scram_status_sscript(client, consts):
     assert api_affectee_fit_stats.can_tether is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is False
@@ -172,6 +192,8 @@ def test_warp_scram_status_sscript(client, consts):
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
@@ -185,15 +207,20 @@ def test_gate_scram_status_dscript(client, consts):
     # works on capitals only is that caps have base strength set to 0 while default value is -1000
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=-1000)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(
         eff_ids=[eve_script_effect_id],
         defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -202,16 +229,22 @@ def test_gate_scram_status_dscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
     assert api_affectee_fit_stats.can_jump_gate is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
     assert api_affectee_fit_stats.can_jump_gate is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
     assert api_affectee_fit_stats.can_jump_gate is True
 
@@ -221,15 +254,20 @@ def test_gate_scram_status_sscript(client, consts):
     # works on capitals only is that caps have base strength set to 0 while default value is -1000
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=-1000)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(
         eff_ids=[eve_script_effect_id],
         defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
@@ -238,16 +276,22 @@ def test_gate_scram_status_sscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
     assert api_affectee_fit_stats.can_jump_gate is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
     assert api_affectee_fit_stats.can_jump_gate is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
     assert api_affectee_fit_stats.can_jump_gate is True
 
@@ -257,16 +301,21 @@ def test_module_mwd_block_dscript(client, consts):
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.high_speed_maneuvering)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 1},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     eve_mwd_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -277,13 +326,17 @@ def test_module_mwd_block_dscript(client, consts):
     api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
@@ -291,6 +344,8 @@ def test_module_mwd_block_dscript(client, consts):
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
@@ -302,16 +357,21 @@ def test_module_mwd_block_sscript(client, consts):
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.high_speed_maneuvering)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 1},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     eve_mwd_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -322,19 +382,25 @@ def test_module_mwd_block_sscript(client, consts):
     api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_mwd.id]
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
@@ -348,16 +414,21 @@ def test_module_mjd_block_dscript(client, consts):
     eve_skill_cap_id = client.mk_eve_item(id_=consts.EveItem.capital_micro_jump_drive_operation)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 1},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     eve_mjd_sub_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_sub_id: 1})
     eve_mjd_cap_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_cap_id: 1})
     client.create_sources()
@@ -370,19 +441,25 @@ def test_module_mjd_block_dscript(client, consts):
     api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
@@ -396,16 +473,21 @@ def test_module_mjd_block_sscript(client, consts):
     eve_skill_cap_id = client.mk_eve_item(id_=consts.EveItem.capital_micro_jump_drive_operation)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
     eve_wdfg_id = client.mk_eve_item(
         attrs={eve_str_attr_id: 1},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target)
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     eve_mjd_sub_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_sub_id: 1})
     eve_mjd_cap_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_cap_id: 1})
     client.create_sources()
@@ -418,19 +500,25 @@ def test_module_mjd_block_sscript(client, consts):
     api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification
+    # Verification - script should be successfully applied even to ewar immune target
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
+    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_affector_val.passed is True
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():

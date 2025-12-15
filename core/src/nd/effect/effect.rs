@@ -52,6 +52,7 @@ pub(crate) struct NEffect {
     // General info which is not available elsewhere
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
+    pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) kills_item: bool = false,
     pub(crate) spool_resolver: Option<NSpoolResolver> = None,
     // Effect modifier customization function ran during runtime in calculator service

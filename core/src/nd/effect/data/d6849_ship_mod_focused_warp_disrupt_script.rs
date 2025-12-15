@@ -19,6 +19,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         adg_update_effect_fn: Some(update_effect),
+        ignore_offmod_immunity: true,
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
         ..
