@@ -1,4 +1,3 @@
-mod cache;
 mod vaste_effect_projected_unprojected;
 mod vaste_effects_started_stopped;
 mod vaste_fit_added_removed;
