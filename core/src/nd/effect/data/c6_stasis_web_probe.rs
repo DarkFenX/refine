@@ -34,7 +34,6 @@ fn make_effect() -> AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: AState::Active,
-        is_offense: true,
         range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
         buff: Some(AEffectBuff {
             // Slowdown debuff. Intentionally do not slow the carrying ship down automatically

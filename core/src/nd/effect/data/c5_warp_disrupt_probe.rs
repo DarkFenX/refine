@@ -16,7 +16,7 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: AEffectId = ac::effects::STASIS_WEB_PROBE;
+const A_EFFECT_ID: AEffectId = ac::effects::WARP_DISRUPT_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -35,7 +35,6 @@ fn make_effect() -> AEffect {
         id: A_EFFECT_ID,
         category: ac::effcats::ACTIVE,
         state: AState::Active,
-        is_offense: true,
         range_attr_id: Some(ac::attrs::WARP_SCRAMBLE_RANGE),
         buff: Some(AEffectBuff {
             full: vec![

@@ -8,8 +8,10 @@ class EveItem(IntEnum):
     micro_jump_drive_operation = 4385
     ice_harvesting = 16281
     capital_ships = 20533
+    warp_disrupt_probe = 22778
     thermodynamics = 28164
     nanite_repair_paste = 28668
+    surgical_warp_disrupt_probe = 34260
     confessor = 34317
     confessor_defense_mode = 34319
     confessor_sharpshooter_mode = 34321

@@ -1,8 +1,8 @@
 from tests import approx
+from tests.fw.api import ItemStatsOptions
 
 
 def test_module_self(client, consts):
-    # Shouldn't affect ship of owner even if activated
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     client.mk_eve_buff(
@@ -19,8 +19,23 @@ def test_module_self(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    # Verification - bubble effect is intentionally is not applied to ship itself automatically, and
+    # it does break even tether (tested on 2025-12-15)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    assert api_ship_stats.speed == approx(1000)
+    assert api_ship_stats.can_warp is True
+    assert api_ship_stats.can_jump_gate is True
+    assert api_ship_stats.can_jump_drive is True
+    assert api_ship_stats.can_dock_station is True
+    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_tether is True
 
 
 def test_module_charge_uncharge(client, consts):
@@ -44,15 +59,18 @@ def test_module_charge_uncharge(client, consts):
     api_affector_module = api_affector_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(1000)
     # Action
     api_affector_module.change_module(charge_type_id=eve_charge_id)
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(600)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(600)
     # Action
     api_affector_module.change_module(charge_type_id=None)
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(1000)
 
 
 def test_module_state_up_state_down(client, consts):
@@ -79,15 +97,18 @@ def test_module_state_up_state_down(client, consts):
         charge_type_id=eve_charge_id)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(1000)
     # Action
     api_affector_module.change_module(state=consts.ApiModuleState.active)
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(600)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(600)
     # Action
     api_affector_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(1000)
 
 
 def test_module_range(client, consts):
@@ -121,15 +142,18 @@ def test_module_range(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(15501, 0, 0))
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(1000)
     # Action
-    api_affectee_ship.change_ship(coordinates=(15500, 0, 0))
+    api_affectee_ship.change_ship(coordinates=(15499, 0, 0))
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(600)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(600)
     # Action
     api_affectee_ship.change_ship(coordinates=(15501, 0, 0))
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(1000)
 
 
 def test_charge_proj_effect(client, consts):
@@ -150,4 +174,5 @@ def test_charge_proj_effect(client, consts):
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_charge_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(600)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_ship_stats.speed == approx(600)
