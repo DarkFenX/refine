@@ -104,21 +104,30 @@ def test_warp_scram_status_dscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
+    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_dock_citadel is True
+    assert api_affectee_fit_stats.can_tether is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
+    assert api_affectee_fit_stats.can_dock_citadel is False
+    assert api_affectee_fit_stats.can_tether is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
+    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_dock_citadel is True
+    assert api_affectee_fit_stats.can_tether is True
 
 
 def test_warp_scram_status_sscript(client, consts):
@@ -145,27 +154,37 @@ def test_warp_scram_status_sscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
+    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_dock_citadel is True
+    assert api_affectee_fit_stats.can_tether is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
+    assert api_affectee_fit_stats.can_dock_citadel is False
+    assert api_affectee_fit_stats.can_tether is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_affectee_fit_stats.can_warp is True
+    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_dock_citadel is True
+    assert api_affectee_fit_stats.can_tether is True
 
 
 def test_gate_scram_status_dscript(client, consts):
-    # Disruption script disables gate jumps for target capitals it's projected onto
+    # Disruption script disables gate jumps for target capitals it's projected onto. The way it
+    # works on capitals only is that caps have base strength set to 0 while default value is -1000
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=0)
+    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=-1000)
     eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
@@ -183,21 +202,25 @@ def test_gate_scram_status_dscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_affectee_fit_stats.can_jump_gate is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(1)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_affectee_fit_stats.can_jump_gate is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_affectee_fit_stats.can_jump_gate is True
 
 
 def test_gate_scram_status_sscript(client, consts):
-    # Scrambling script disables gate jumps for target capitals it's projected onto
+    # Scrambling script disables gate jumps for target capitals it's projected onto. The way it
+    # works on capitals only is that caps have base strength set to 0 while default value is -1000
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=0)
+    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=-1000)
     eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
@@ -215,15 +238,18 @@ def test_gate_scram_status_sscript(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_affectee_fit_stats.can_jump_gate is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(1)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_affectee_fit_stats.can_jump_gate is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_affectee_fit_stats.can_jump_gate is True
 
 
 def test_module_mwd_block_dscript(client, consts):

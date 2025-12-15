@@ -69,8 +69,11 @@ def test_debuff_warp(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
     # Verification
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True))
     assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
+    assert api_affectee_fit_stats.can_dock_citadel is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -87,8 +90,11 @@ def test_debuff_warp(client, consts):
         state=consts.ApiModuleState.active)
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_warp=True))
+    api_affectee_fit_stats = api_affectee_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True))
     assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
+    assert api_affectee_fit_stats.can_dock_citadel is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
