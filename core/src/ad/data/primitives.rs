@@ -1,16 +1,19 @@
-use crate::def::OF;
+use crate::{
+    def::OF,
+    ed::{EAbilId, EAttrId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
+};
 
 // Entity IDs
-pub type AAbilId = i32;
-pub type AAttrId = i32;
-pub type ABuffId = i32;
-pub type ADogmaEffectId = i32;
+pub type AAbilId = EAbilId;
+pub type AAttrId = EAttrId;
+pub type ABuffId = EBuffId;
+pub type ADogmaEffectId = EEffectId;
 pub type ACustomEffectId = i32;
-pub type AEffectCatId = i32;
-pub type AItemId = i32;
-pub type AItemGrpId = i32;
-pub type AItemCatId = i32;
-pub type AEveItemListId = i32;
+pub type AEffectCatId = EEffectCatId;
+pub type AItemId = EItemId;
+pub type AItemGrpId = EItemGrpId;
+pub type AItemCatId = EItemCatId;
+pub type AEveItemListId = EItemListId;
 pub type ACustomItemListId = i32;
 // Misc
 pub type AAttrVal = OF<f64>;
