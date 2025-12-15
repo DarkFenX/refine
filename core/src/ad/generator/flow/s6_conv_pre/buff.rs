@@ -49,7 +49,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_buffs(e_data: &EData) ->
             });
         }
         let a_buff = ABuff {
-            id: e_buff.id,
+            id: ABuffId::Eve(e_buff.id),
             aggr_mode,
             op,
             mods: a_mods,

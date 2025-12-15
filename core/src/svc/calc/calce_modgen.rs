@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrVal, ABuffId},
+    ad::{AAttrVal, ABuffId, AEveBuffId},
     misc::EffectSpec,
     rd::{RAttrKey, RBuff, REffect, REffectBuffScope, REffectBuffStrength, REffectKey},
     svc::{
@@ -33,7 +33,7 @@ impl Calc {
             if let Some(buff_attr_merge) = &effect_buff.attr_merge {
                 for (buff_type_attr_key, buff_str_attr_key) in ctx.ac().buff_merge_ids_strs.iter() {
                     if let Ok(buff_id) = self.get_item_attr_rfull(ctx, item_key, *buff_type_attr_key) {
-                        let buff_id = buff_id.extra.round() as ABuffId;
+                        let buff_id = ABuffId::Eve(buff_id.extra.round() as AEveBuffId);
                         let buff = match ctx.u_data.src.get_buff_by_id(&buff_id) {
                             Some(buff) => buff,
                             None => continue,
@@ -110,7 +110,7 @@ impl Calc {
                 && let Some(buff_attr_merge) = &effect_buff.attr_merge
                 && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_key, buff_type_attr_key)
             {
-                let buff_id = buff_id_cval.extra.round() as ABuffId;
+                let buff_id = ABuffId::Eve(buff_id_cval.extra.round() as AEveBuffId);
                 let buff = match ctx.u_data.src.get_buff_by_id(&buff_id) {
                     Some(buff) => buff,
                     None => continue,

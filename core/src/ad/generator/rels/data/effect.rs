@@ -58,7 +58,7 @@ impl Fk for EEffect {
     fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(effect_buff.iter_a_buff_ids());
+            vec.extend(effect_buff.iter_e_buff_ids());
         }
         vec
     }

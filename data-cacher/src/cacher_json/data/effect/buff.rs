@@ -54,7 +54,7 @@ pub(in crate::cacher_json) struct CEffectBuffFull {
 impl From<&rc::ad::AEffectBuffFull> for CEffectBuffFull {
     fn from(a_buff_full: &rc::ad::AEffectBuffFull) -> Self {
         Self {
-            buff_id: a_buff_full.buff_id,
+            buff_id: (&a_buff_full.buff_id).into(),
             strength: (&a_buff_full.strength).into(),
             duration: (&a_buff_full.duration).into(),
             scope: (&a_buff_full.scope).into(),
@@ -64,7 +64,7 @@ impl From<&rc::ad::AEffectBuffFull> for CEffectBuffFull {
 impl From<&CEffectBuffFull> for rc::ad::AEffectBuffFull {
     fn from(c_buff_full: &CEffectBuffFull) -> Self {
         Self {
-            buff_id: c_buff_full.buff_id,
+            buff_id: (&c_buff_full.buff_id).into(),
             strength: (&c_buff_full.strength).into(),
             duration: (&c_buff_full.duration).into(),
             scope: (&c_buff_full.scope).into(),

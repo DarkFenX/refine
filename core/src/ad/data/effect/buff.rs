@@ -1,4 +1,7 @@
-use crate::ad::{AAttrId, AAttrVal, ABuffId, AItemListId};
+use crate::{
+    ad::{AAttrId, AAttrVal, ABuffId, AItemListId},
+    ed::EBuffId,
+};
 
 #[derive(Clone)]
 pub struct AEffectBuff {
@@ -15,8 +18,11 @@ impl AEffectBuff {
         let full_dur = self.full.iter().filter_map(|v| v.duration.get_a_attr_id());
         attr_merges.chain(full_str).chain(full_dur)
     }
-    pub(crate) fn iter_a_buff_ids(&self) -> impl Iterator<Item = ABuffId> {
-        self.full.iter().map(|v| v.buff_id)
+    pub(crate) fn iter_e_buff_ids(&self) -> impl Iterator<Item = EBuffId> {
+        self.full.iter().filter_map(|v| match v.buff_id {
+            ABuffId::Eve(buff_id) => Some(buff_id),
+            ABuffId::Custom(_) => None,
+        })
     }
     pub(crate) fn iter_a_scopes(&self) -> impl Iterator<Item = AEffectBuffScope> {
         let attr_merges = self.attr_merge.map(|v| v.scope).into_iter();

@@ -10,7 +10,7 @@ pub(in crate::cacher_json) struct CBuff {
 impl From<&rc::ad::ABuff> for CBuff {
     fn from(a_buff: &rc::ad::ABuff) -> Self {
         Self {
-            id: a_buff.id,
+            id: (&a_buff.id).into(),
             aggr_mode: (&a_buff.aggr_mode).into(),
             op: (&a_buff.op).into(),
             mods: a_buff.mods.iter().map(Into::into).collect(),
@@ -20,7 +20,7 @@ impl From<&rc::ad::ABuff> for CBuff {
 impl From<&CBuff> for rc::ad::ABuff {
     fn from(c_buff: &CBuff) -> Self {
         Self {
-            id: c_buff.id,
+            id: (&c_buff.id).into(),
             aggr_mode: (&c_buff.aggr_mode).into(),
             op: (&c_buff.op).into(),
             mods: c_buff.mods.iter().map(Into::into).collect(),

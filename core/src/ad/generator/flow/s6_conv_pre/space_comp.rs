@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{
-        AAttrVal, AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
+        AAttrVal, ABuffId, AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
         AEffectBuffStrength, AEffectId, AItemEffectData, AItemId, AItemListId, AState,
     },
     ed::{EData, EItemSpaceCompBuffData},
@@ -60,7 +60,7 @@ fn process_buffs(
     let valid_buffs = e_sc_buff_data
         .buffs
         .iter()
-        .filter(|v| a_data.buffs.contains_key(&v.id))
+        .filter(|v| a_data.buffs.contains_key(&ABuffId::Eve(v.id)))
         .collect_vec();
     if valid_buffs.is_empty() {
         return;
@@ -73,7 +73,7 @@ fn process_buffs(
         full: valid_buffs
             .iter()
             .map(|v| AEffectBuffFull {
-                buff_id: v.id,
+                buff_id: ABuffId::Eve(v.id),
                 strength: AEffectBuffStrength::Hardcoded(AAttrVal::from(v.value)),
                 duration: AEffectBuffDuration::None,
                 scope: AEffectBuffScope::Projected(e_item_list_id),

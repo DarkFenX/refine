@@ -79,7 +79,7 @@ impl KeyDb {
     fn process_standalone_buffs(&mut self, g_supp: &GSupport) {
         for a_effect_buff in g_supp.standalone_buffs.iter() {
             self.attrs.extend(a_effect_buff.iter_a_attr_ids());
-            self.buffs.extend(a_effect_buff.iter_a_buff_ids());
+            self.buffs.extend(a_effect_buff.iter_e_buff_ids());
             self.item_lists
                 .extend(a_effect_buff.iter_a_item_list_ids().filter_map(|v| v.dc_eve()));
         }
