@@ -1,5 +1,9 @@
-// WDFG effect seems to have lots of special handling in EVE. In the library, effects are adjusted
-// to work within regular dogma framework. It includes:
+// WDFG effect seems to have lots of special handling in EVE. In the library, a bunch of tools
+// specific to the library are used to make it work in a similar way. It includes:
+// - in EVE, upon warping/jumping ships seem to check if they are in a bubble. Here, it is handled
+//   via custom/hardcoded attribute, which is modified via custom/hardcoded buff, which affects
+//   carrying ship, as well as targets it is projected upon. When a WDFG script is loaded, it does
+//   not remove the buff, but makes its strength 0;
 // - blocking MJD with both focused scripts. According to CCP Kestrel, scripts decide that they
 //   block MJD based on its graphical effect, not based on regular dogma group ID or skill
 //   requirement. In the library, it's changed to use conventional attributes;
@@ -14,7 +18,10 @@
 
 use crate::{
     ac,
-    ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
+        AEffectBuffStrength, AEffectId, AEffectLocation, AEffectModifier, AOp,
+    },
     ec,
     ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc},
@@ -27,6 +34,24 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
+        adg_buff: Some(AEffectBuff {
+            full: vec![
+                // Disallows warping and jumping for everything in range, including self
+                AEffectBuffFull {
+                    buff_id: ac::buffs::DISALLOW_WARP_JUMP,
+                    strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_WARPING_JUMPING),
+                    duration: AEffectBuffDuration::None,
+                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                },
+                AEffectBuffFull {
+                    buff_id: ac::buffs::DISALLOW_WARP_JUMP,
+                    strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_WARPING_JUMPING),
+                    duration: AEffectBuffDuration::None,
+                    scope: AEffectBuffScope::Carrier,
+                },
+            ],
+            ..
+        }),
         adg_update_effect_fn: Some(update_effect),
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::None),
