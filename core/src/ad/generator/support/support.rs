@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttr, ABuff, AEffectBuff},
+    ad::{AAttr, ABuff, AEffect, AEffectBuff},
     ed::{EAttrId, EAttrUnitId, EData, EEffectId, EItemCatId, EItemGrpId},
     nd::{N_ATTR_MAP, N_BUFF_MAP, N_EFFECT_MAP},
     util::RMap,
@@ -13,7 +13,7 @@ pub(in crate::ad::generator) struct GSupport {
     // Standalone containers are for entities which do not exist in data yet, but will be put into
     // it later
     pub(in crate::ad::generator) standalone_attrs: Vec<AAttr>,
-    pub(in crate::ad::generator) standalone_effect_buffs: Vec<AEffectBuff>,
+    pub(in crate::ad::generator) standalone_effects: Vec<AEffect>,
     pub(in crate::ad::generator) standalone_buffs: Vec<ABuff>,
 }
 impl GSupport {
@@ -23,7 +23,7 @@ impl GSupport {
             attr_unit_map: RMap::new(),
             eff_buff_map: RMap::new(),
             standalone_attrs: Vec::new(),
-            standalone_effect_buffs: Vec::new(),
+            standalone_effects: Vec::new(),
             standalone_buffs: Vec::new(),
         }
     }
@@ -65,9 +65,8 @@ impl GSupport {
         for n_effect in N_EFFECT_MAP.values() {
             if n_effect.eid.is_none()
                 && let Some(effect_maker) = n_effect.adg_make_effect_fn
-                && let Some(effect_buff) = effect_maker().buff
             {
-                self.standalone_effect_buffs.push(effect_buff);
+                self.standalone_effects.push(effect_maker());
             }
         }
         for n_buff in N_BUFF_MAP.values() {

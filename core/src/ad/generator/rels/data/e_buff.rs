@@ -1,12 +1,9 @@
 use crate::{
-    ad::{
-        ABuff, ABuffModifier,
-        generator::{
-            GSupport,
-            rels::{Fk, KeyPart, Pk},
-        },
+    ad::generator::{
+        GSupport,
+        rels::{Fk, KeyPart, Pk},
     },
-    ed::{EAttrId, EBuff},
+    ed::EBuff,
 };
 
 impl Pk for EBuff {
@@ -29,17 +26,5 @@ impl Fk for EBuff {
         vec.extend(self.locgroup_mods.iter().map(|v| v.attr_id));
         vec.extend(self.locsrq_mods.iter().map(|v| v.attr_id));
         vec
-    }
-}
-
-impl ABuff {
-    pub(in crate::ad::generator::rels) fn iter_e_attr_ids(&self) -> impl Iterator<Item = EAttrId> {
-        self.mods.iter().filter_map(|v| v.get_e_attr_id())
-    }
-}
-
-impl ABuffModifier {
-    fn get_e_attr_id(&self) -> Option<EAttrId> {
-        self.affectee_attr_id.dc_eve()
     }
 }
