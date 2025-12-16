@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AAttrVal, ABuffId, AItemListId},
-    ed::{EAttrId, EBuffId},
+    ed::{EAttrId, EBuffId, EItemListId},
 };
 
 #[derive(Clone)]
@@ -9,8 +9,8 @@ pub struct AEffectBuff {
     pub full: Vec<AEffectBuffFull> = Vec::new(),
 }
 impl AEffectBuff {
-    pub(crate) fn iter_a_item_list_ids(&self) -> impl Iterator<Item = AItemListId> {
-        self.iter_a_scopes().filter_map(|v| v.get_a_item_list_id())
+    pub(crate) fn iter_e_item_list_ids(&self) -> impl Iterator<Item = EItemListId> {
+        self.iter_a_scopes().filter_map(|v| v.get_e_item_list_id())
     }
     pub(crate) fn iter_e_attr_ids(&self) -> impl Iterator<Item = EAttrId> {
         let attr_merges = self.attr_merge.and_then(|v| v.duration.get_e_attr_id()).into_iter();
@@ -80,11 +80,11 @@ pub enum AEffectBuffScope {
     Fleet(AItemListId),
 }
 impl AEffectBuffScope {
-    pub(crate) fn get_a_item_list_id(&self) -> Option<AItemListId> {
+    pub(crate) fn get_e_item_list_id(&self) -> Option<EItemListId> {
         match self {
             Self::Carrier => None,
-            Self::Projected(item_list_id) => Some(*item_list_id),
-            Self::Fleet(item_list_id) => Some(*item_list_id),
+            Self::Projected(item_list_id) => item_list_id.dc_eve(),
+            Self::Fleet(item_list_id) => item_list_id.dc_eve(),
         }
     }
 }

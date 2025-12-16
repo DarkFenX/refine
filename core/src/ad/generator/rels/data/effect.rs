@@ -27,7 +27,7 @@ impl Fk for EEffect {
     fn get_item_list_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(effect_buff.iter_a_item_list_ids().filter_map(|v| v.dc_eve()));
+            vec.extend(effect_buff.iter_e_item_list_ids());
         }
         vec
     }
