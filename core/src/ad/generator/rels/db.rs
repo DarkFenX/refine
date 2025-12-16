@@ -62,7 +62,7 @@ impl KeyDb {
         fkdb.extend_fk_vec(&e_data.item_srqs, g_supp);
         fkdb.extend_fk_vec(&e_data.muta_items, g_supp);
         fkdb.extend_fk_vec(&e_data.muta_attrs, g_supp);
-        fkdb.process_standalone_buffs(g_supp);
+        fkdb.process_standalone_data(g_supp);
         fkdb
     }
     fn extend_fk_vec<T: Fk>(&mut self, cont: &EDataCont<T>, g_supp: &GSupport) {
@@ -76,11 +76,17 @@ impl KeyDb {
             self.buffs.extend(v.get_buff_fks(g_supp));
         }
     }
-    fn process_standalone_buffs(&mut self, g_supp: &GSupport) {
-        for a_effect_buff in g_supp.standalone_buffs.iter() {
+    fn process_standalone_data(&mut self, g_supp: &GSupport) {
+        for a_attr in g_supp.standalone_attrs.iter() {
+            self.attrs.extend(a_attr.iter_e_attr_ids());
+        }
+        for a_effect_buff in g_supp.standalone_effect_buffs.iter() {
             self.attrs.extend(a_effect_buff.iter_e_attr_ids());
             self.buffs.extend(a_effect_buff.iter_e_buff_ids());
             self.item_lists.extend(a_effect_buff.iter_e_item_list_ids());
+        }
+        for a_buff in g_supp.standalone_buffs.iter() {
+            self.attrs.extend(a_buff.iter_e_attr_ids());
         }
     }
 }

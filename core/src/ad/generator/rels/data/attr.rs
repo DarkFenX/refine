@@ -1,10 +1,13 @@
 use crate::{
-    ad::generator::{
-        GSupport,
-        rels::{Fk, KeyPart, Pk, attr_val_to_fk},
+    ad::{
+        AAttr, AAttrId,
+        generator::{
+            GSupport,
+            rels::{Fk, KeyPart, Pk, attr_val_to_fk},
+        },
     },
     ec,
-    ed::{EAttr, EAttrUnitId},
+    ed::{EAttr, EAttrId, EAttrUnitId},
     util::vec_push_opt,
 };
 
@@ -62,6 +65,23 @@ impl EAttr {
         match (self.unit_id, attr_val_to_fk(self.default_value)) {
             (Some(u), Some(dv_fk)) if u == unit => Some(dv_fk),
             _ => None,
+        }
+    }
+}
+
+impl AAttr {
+    pub(in crate::ad::generator::rels) fn iter_e_attr_ids(&self) -> impl Iterator<Item = EAttrId> {
+        let min = self.min_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let max = self.max_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        min.chain(max)
+    }
+}
+
+impl AAttrId {
+    pub(super) fn dc_eve(&self) -> Option<EAttrId> {
+        match self {
+            AAttrId::Eve(eve_attr_id) => Some(*eve_attr_id),
+            AAttrId::Custom(_) => None,
         }
     }
 }
