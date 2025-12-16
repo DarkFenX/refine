@@ -46,9 +46,8 @@ impl Fk for EEffect {
             vec.extend(effect_buff.iter_e_attr_ids());
         }
         // Hardcoded charge info can reference attributes
-        // TODO: check if this logic should be moved elsewhere
         if let Some(n_effect) = N_EFFECT_MAP.get(&AEffectId::Dogma(self.id)) {
-            vec.extend(n_effect.extract_e_attr_ids());
+            vec.extend(n_effect.iter_e_attr_ids());
         }
         vec
     }

@@ -1,6 +1,6 @@
 use crate::{
-    ad::{AData, AItemId},
-    nd::N_EFFECT_MAP,
+    ad::{AAttrId, AData, AItemId},
+    nd::{N_EFFECT_MAP, NEffectChargeLoc},
 };
 
 pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
@@ -16,6 +16,16 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_autocharges(a_da
                     a_item_id => a_effect_data.autocharge = Some(a_item_id),
                 }
             }
+        }
+    }
+}
+
+impl NEffectChargeLoc {
+    pub(in crate::ad::generator) fn get_autocharge_attr_id(&self) -> Option<AAttrId> {
+        match self {
+            Self::Loaded(_) => None,
+            Self::Autocharge(attr_id) => Some(*attr_id),
+            Self::TargetAttack(attr_id) => Some(*attr_id),
         }
     }
 }

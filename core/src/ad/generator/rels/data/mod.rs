@@ -16,3 +16,4 @@ mod e_item_space_comp;
 mod e_item_srq;
 mod e_muta_attr_mod;
 mod e_muta_item_conv;
+mod n_effect;

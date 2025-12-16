@@ -8,7 +8,6 @@ use crate::{
 };
 
 mod eff_abil;
-mod external_exts;
 mod flow;
 mod rels;
 mod support;
