@@ -595,11 +595,6 @@ class ApiModOp(StrEnum):
 
 
 @unique
-class ApiAggrMode(StrEnum):
-    stack = 'stack'
-
-
-@unique
 class ApiModAddMode(StrEnum):
     append = 'append'
     equip = 'equip'

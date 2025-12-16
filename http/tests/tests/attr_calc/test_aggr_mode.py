@@ -23,7 +23,7 @@ def test_add_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
-    api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
+    api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
@@ -33,6 +33,8 @@ def test_add_max(client, consts):
     assert api_mod.initial_val == approx(30)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(30)
+    assert api_mod.affectors.one().item_id == api_sw_effect2.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_add_min(client, consts):
@@ -54,7 +56,7 @@ def test_add_min(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
-    api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
+    api_sw_effect1 = api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
     api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -65,6 +67,8 @@ def test_add_min(client, consts):
     assert api_mod.initial_val == approx(-40)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(-40)
+    assert api_mod.affectors.one().item_id == api_sw_effect1.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_postmul_max(client, consts):
@@ -87,7 +91,7 @@ def test_postmul_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
-    api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
+    api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
@@ -97,6 +101,8 @@ def test_postmul_max(client, consts):
     assert api_mod.initial_val == approx(1.3)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(1.3)
+    assert api_mod.affectors.one().item_id == api_sw_effect2.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_postmul_min(client, consts):
@@ -118,7 +124,7 @@ def test_postmul_min(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
-    api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
+    api_sw_effect1 = api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
     api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -129,6 +135,8 @@ def test_postmul_min(client, consts):
     assert api_mod.initial_val == approx(0.6)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(0.6)
+    assert api_mod.affectors.one().item_id == api_sw_effect1.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_postperc_max(client, consts):
@@ -151,7 +159,7 @@ def test_postperc_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
-    api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
+    api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
@@ -161,6 +169,8 @@ def test_postperc_max(client, consts):
     assert api_mod.initial_val == approx(30)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(30)
+    assert api_mod.affectors.one().item_id == api_sw_effect2.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_postperc_min(client, consts):
@@ -182,7 +192,7 @@ def test_postperc_min(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
-    api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
+    api_sw_effect1 = api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
     api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -193,6 +203,8 @@ def test_postperc_min(client, consts):
     assert api_mod.initial_val == approx(-40)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(-40)
+    assert api_mod.affectors.one().item_id == api_sw_effect1.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_postassign_max(client, consts):
@@ -215,7 +227,7 @@ def test_postassign_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
-    api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
+    api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
@@ -225,6 +237,8 @@ def test_postassign_max(client, consts):
     assert api_mod.initial_val == approx(30)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(30)
+    assert api_mod.affectors.one().item_id == api_sw_effect2.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_postassign_min(client, consts):
@@ -246,7 +260,7 @@ def test_postassign_min(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
-    api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
+    api_sw_effect1 = api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
     api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -257,6 +271,8 @@ def test_postassign_min(client, consts):
     assert api_mod.initial_val == approx(-40)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(-40)
+    assert api_mod.affectors.one().item_id == api_sw_effect1.id
+    assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
 def test_different_buffs(client, consts):
@@ -283,7 +299,7 @@ def test_different_buffs(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
-    api_sol.add_sw_effect(type_id=eve_sw_effect_id)
+    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
@@ -295,11 +311,15 @@ def test_different_buffs(client, consts):
     assert api_mod1.initial_val == approx(-40)
     assert api_mod1.stacking_mult is None
     assert api_mod1.applied_val == approx(-40)
+    assert api_mod1.affectors.one().item_id == api_sw_effect.id
+    assert api_mod1.affectors.one().attr_id == eve_buff_val_attr1_id
     api_mod2 = api_mods.find_by_affector_attr(affector_attr_id=eve_buff_val_attr2_id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
     assert api_mod2.initial_val == approx(30)
     assert api_mod2.stacking_mult is None
     assert api_mod2.applied_val == approx(30)
+    assert api_mod2.affectors.one().item_id == api_sw_effect.id
+    assert api_mod2.affectors.one().attr_id == eve_buff_val_attr2_id
 
 
 def test_different_sources(client, consts):
