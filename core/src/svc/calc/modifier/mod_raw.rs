@@ -5,6 +5,7 @@ use smallvec::SmallVec;
 use super::AffectorValue;
 use crate::{
     ac,
+    ad::AEffectCatId,
     def::AttrVal,
     misc::EffectSpec,
     nd::NProjMultGetter,
@@ -68,7 +69,7 @@ impl RawModifier {
         effect_mod: &REffectModifier,
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
-        let kind = get_effect_mod_kind(effect, &affectee_filter)?;
+        let kind = get_effect_mod_kind(effect.category, &affectee_filter)?;
         // Only targeted effects can be affected by resists
         let resist_attr_key = match kind {
             ModifierKind::Targeted => eff_funcs::get_resist_attr_key(affector_item, effect),
@@ -217,18 +218,18 @@ impl RawModifier {
     }
 }
 
-fn get_effect_mod_kind(effect: &REffect, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
+fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {
     if let AffecteeFilter::Direct(loc) = affectee_filter
         && let Location::Item | Location::Other = loc
     {
         return Some(ModifierKind::Local);
     }
-    match (effect.category, &effect.buff) {
-        (ac::effcats::PASSIVE | ac::effcats::ONLINE | ac::effcats::ACTIVE | ac::effcats::OVERLOAD, None) => {
+    match effect_cat {
+        ac::effcats::PASSIVE | ac::effcats::ONLINE | ac::effcats::ACTIVE | ac::effcats::OVERLOAD => {
             Some(ModifierKind::Local)
         }
-        (ac::effcats::SYSTEM, None) => Some(ModifierKind::System),
-        (ac::effcats::TARGET, None) => Some(ModifierKind::Targeted),
+        ac::effcats::SYSTEM => Some(ModifierKind::System),
+        ac::effcats::TARGET => Some(ModifierKind::Targeted),
         _ => None,
     }
 }

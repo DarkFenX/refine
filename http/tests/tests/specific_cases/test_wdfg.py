@@ -108,13 +108,13 @@ def test_warp_scram_status_dscript(client, consts):
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
-    # Verification
+    # Verification - without a script bubble still disables warp and jump drive
     api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is True
-    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
     assert api_affectee_fit_stats.can_dock_citadel is True
     assert api_affectee_fit_stats.can_tether is True
     # Action
@@ -135,8 +135,8 @@ def test_warp_scram_status_dscript(client, consts):
     assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is True
-    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
     assert api_affectee_fit_stats.can_dock_citadel is True
     assert api_affectee_fit_stats.can_tether is True
 
@@ -169,13 +169,13 @@ def test_warp_scram_status_sscript(client, consts):
     api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
-    # Verification
+    # Verification - without a script bubble still disables warp and jump drive
     api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is True
-    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
     assert api_affectee_fit_stats.can_dock_citadel is True
     assert api_affectee_fit_stats.can_tether is True
     # Action
@@ -196,8 +196,8 @@ def test_warp_scram_status_sscript(client, consts):
     assert api_affector_val.passed is True
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is True
-    assert api_affectee_fit_stats.can_jump_drive is True
+    assert api_affectee_fit_stats.can_warp is False
+    assert api_affectee_fit_stats.can_jump_drive is False
     assert api_affectee_fit_stats.can_dock_citadel is True
     assert api_affectee_fit_stats.can_tether is True
 
