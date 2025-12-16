@@ -288,3 +288,6 @@ pub(crate) const MAX_DIRECTIONAL_SCAN_RANGE: AAttrId = AAttrId::Eve(eca::MAX_DIR
 pub(crate) const CAN_FIT_SHIP_TYPE12: AAttrId = AAttrId::Eve(eca::CAN_FIT_SHIP_TYPE12);
 pub(crate) const MINING_CRIT_CHANCE: AAttrId = AAttrId::Eve(eca::MINING_CRIT_CHANCE);
 pub(crate) const MINING_CRIT_BONUS_YIELD: AAttrId = AAttrId::Eve(eca::MINING_CRIT_BONUS_YIELD);
+
+// Library-specific attributes
+pub(crate) const DISALLOW_WARP_JUMP: AAttrId = AAttrId::Custom(1);
