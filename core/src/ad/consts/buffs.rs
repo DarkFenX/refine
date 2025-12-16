@@ -37,4 +37,4 @@ pub(crate) const SOV_SMOD_SHIELD_BOOSTER_BONUS: ABuffId = ABuffId::Eve(ecb::SOV_
 pub(crate) const SOV_SMOD_ARMOR_REPAIRER_BONUS: ABuffId = ABuffId::Eve(ecb::SOV_SMOD_ARMOR_REPAIRER_BONUS);
 
 // Library-specific buffs
-pub(crate) const DISALLOW_WARP_JUMP_DRIVE: ABuffId = ABuffId::Custom(1);
+pub(crate) const DISALLOW_WARP_JUMP: ABuffId = ABuffId::Custom(1);

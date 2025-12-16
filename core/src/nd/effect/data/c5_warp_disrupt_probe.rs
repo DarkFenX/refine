@@ -38,11 +38,12 @@ fn make_effect() -> AEffect {
         range_attr_id: Some(ac::attrs::WARP_SCRAMBLE_RANGE),
         buff: Some(AEffectBuff {
             full: vec![
-                // Prevent projected targets within range from warping. Intentionally do not prevent
-                // the carrying ship itself from warping automatically
+                // Prevent projected targets within range from warping and jumping. Use custom buff
+                // for this, since using warp status attribute prevents targets from e.g. docking to
+                // citadels too. Intentionally do not apply effects onto ship which launches buff
                 AEffectBuffFull {
-                    buff_id: ac::buffs::WARP_PENALTY,
-                    strength: AEffectBuffStrength::Hardcoded(OF(100.0)),
+                    buff_id: ac::buffs::DISALLOW_WARP_JUMP,
+                    strength: AEffectBuffStrength::Hardcoded(OF(1.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
                 },

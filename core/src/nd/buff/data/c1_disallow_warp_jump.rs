@@ -4,7 +4,7 @@ use crate::{
     nd::NBuff,
 };
 
-const A_BUFF_ID: ABuffId = ac::buffs::DISALLOW_WARP_JUMP_DRIVE;
+const A_BUFF_ID: ABuffId = ac::buffs::DISALLOW_WARP_JUMP;
 
 pub(in crate::nd::buff) fn mk_n_buff() -> NBuff {
     NBuff {
@@ -22,7 +22,7 @@ fn make_buff() -> ABuff {
         op: AOp::Add,
         mods: vec![ABuffModifier {
             affectee_filter: ABuffAffecteeFilter::Direct,
-            affectee_attr_id: ac::attrs::DISALLOW_WARP_JUMP_DRIVE,
+            affectee_attr_id: ac::attrs::DISALLOW_WARPING_JUMPING,
         }],
     }
 }

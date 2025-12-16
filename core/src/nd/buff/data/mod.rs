@@ -1,1 +1,1 @@
-pub(in crate::nd::buff) mod c1_disallow_warp_jump_drive;
+pub(in crate::nd::buff) mod c1_disallow_warp_jump;

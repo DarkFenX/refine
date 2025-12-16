@@ -57,18 +57,12 @@ def test_module_self(client, consts):
 
 
 def test_module_charge_uncharge(client, consts):
-    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
-    client.mk_eve_buff(
-        id_=consts.EveBuff.warp_penalty,
-        aggr_mode=consts.EveBuffAggrMode.max,
-        op=consts.EveBuffOp.mod_add,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_warp_attr_id)])
     eve_charge1_id = client.mk_eve_item(id_=consts.EveItem.warp_disrupt_probe)
     eve_charge2_id = client.mk_eve_item(id_=consts.EveItem.surgical_warp_disrupt_probe)
     eve_module_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_module_effect_id], defeff_id=eve_module_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_warp_attr_id: 0, eve_tether_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_tether_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()
@@ -104,8 +98,8 @@ def test_module_charge_uncharge(client, consts):
     assert api_afectee_ship_stats.can_jump_gate is True
     assert api_afectee_ship_stats.can_jump_drive is False
     assert api_afectee_ship_stats.can_dock_station is True
-    assert api_afectee_ship_stats.can_dock_citadel is False
-    assert api_afectee_ship_stats.can_tether is False
+    assert api_afectee_ship_stats.can_dock_citadel is True
+    assert api_afectee_ship_stats.can_tether is True
     # Action
     api_affector_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
@@ -120,8 +114,8 @@ def test_module_charge_uncharge(client, consts):
     assert api_afectee_ship_stats.can_jump_gate is True
     assert api_afectee_ship_stats.can_jump_drive is False
     assert api_afectee_ship_stats.can_dock_station is True
-    assert api_afectee_ship_stats.can_dock_citadel is False
-    assert api_afectee_ship_stats.can_tether is False
+    assert api_afectee_ship_stats.can_dock_citadel is True
+    assert api_afectee_ship_stats.can_tether is True
     # Action
     api_affector_module.change_module(charge_type_id=None)
     # Verification

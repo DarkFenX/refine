@@ -26,6 +26,7 @@ impl Vast {
         check_fighter_ship_no_struct(ctx.u_data, item_key)?;
         // Warping is blocked by either of:
         // - warp scram status
+        // - special attribute which disallows warping and jumping
         // - having no max velocity
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
@@ -37,6 +38,12 @@ impl Vast {
         if let Some(max_speed) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().max_velocity)
             && max_speed < FLOAT_TOLERANCE
         {
+            return Ok(false);
+        }
+        let warp_jump_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().disallow_warping_jumping, OF(0.0))
+            .unwrap();
+        if warp_jump_status > FLOAT_TOLERANCE {
             return Ok(false);
         }
         Ok(true)
@@ -78,6 +85,7 @@ impl Vast {
         // Jumping (with a jump drive) is blocked by either of:
         // - warp scram status
         // - special attribute which disallows jumping
+        // - special attribute which disallows warping and jumping
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_scramble_status, OF(0.0))
             .unwrap();
@@ -88,6 +96,12 @@ impl Vast {
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().disallow_drive_jumping, OF(0.0))
             .unwrap();
         if jump_status > FLOAT_TOLERANCE {
+            return Ok(false);
+        }
+        let warp_jump_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().disallow_warping_jumping, OF(0.0))
+            .unwrap();
+        if warp_jump_status > FLOAT_TOLERANCE {
             return Ok(false);
         }
         Ok(true)
