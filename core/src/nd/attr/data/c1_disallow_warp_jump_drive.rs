@@ -5,7 +5,7 @@ use crate::{
     nd::NAttr,
 };
 
-const A_ATTR_ID: AAttrId = ac::attrs::DISALLOW_WARP_JUMP;
+const A_ATTR_ID: AAttrId = ac::attrs::DISALLOW_WARP_JUMP_DRIVE;
 
 pub(in crate::nd::attr) fn mk_n_attr() -> NAttr {
     NAttr {

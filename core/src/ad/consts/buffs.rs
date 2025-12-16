@@ -35,3 +35,6 @@ pub(crate) const SOV_SMOD_SCAN_RESOLUTION_BONUS: ABuffId = ABuffId::Eve(ecb::SOV
 pub(crate) const SOV_SMOD_WARP_SPEED_ADD: ABuffId = ABuffId::Eve(ecb::SOV_SMOD_WARP_SPEED_ADD);
 pub(crate) const SOV_SMOD_SHIELD_BOOSTER_BONUS: ABuffId = ABuffId::Eve(ecb::SOV_SMOD_SHIELD_BOOSTER_BONUS);
 pub(crate) const SOV_SMOD_ARMOR_REPAIRER_BONUS: ABuffId = ABuffId::Eve(ecb::SOV_SMOD_ARMOR_REPAIRER_BONUS);
+
+// Library-specific buffs
+pub(crate) const DISALLOW_WARP_JUMP_DRIVE: ABuffId = ABuffId::Custom(1);

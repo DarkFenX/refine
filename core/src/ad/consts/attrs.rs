@@ -290,4 +290,4 @@ pub(crate) const MINING_CRIT_CHANCE: AAttrId = AAttrId::Eve(eca::MINING_CRIT_CHA
 pub(crate) const MINING_CRIT_BONUS_YIELD: AAttrId = AAttrId::Eve(eca::MINING_CRIT_BONUS_YIELD);
 
 // Library-specific attributes
-pub(crate) const DISALLOW_WARP_JUMP: AAttrId = AAttrId::Custom(1);
+pub(crate) const DISALLOW_WARP_JUMP_DRIVE: AAttrId = AAttrId::Custom(1);
