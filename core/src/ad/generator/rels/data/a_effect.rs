@@ -8,14 +8,10 @@ impl AEffect {
         self.id.dc_eve_item().into_iter()
     }
     pub(in crate::ad::generator::rels) fn iter_e_item_list_ids(&self) -> impl Iterator<Item = EItemListId> {
-        self.buff
-            .as_ref()
-            .into_iter()
-            .map(|v| v.iter_e_item_list_ids())
-            .flatten()
+        self.buff.as_ref().into_iter().flat_map(|v| v.iter_e_item_list_ids())
     }
     pub(in crate::ad::generator::rels) fn iter_e_attr_ids(&self) -> impl Iterator<Item = EAttrId> {
-        let buff = self.buff.as_ref().into_iter().map(|v| v.iter_e_attr_ids()).flatten();
+        let buff = self.buff.as_ref().into_iter().flat_map(|v| v.iter_e_attr_ids());
         let discharge = self.discharge_attr_id.and_then(|v| v.dc_eve()).into_iter();
         let duration = self.duration_attr_id.and_then(|v| v.dc_eve()).into_iter();
         let range = self.range_attr_id.and_then(|v| v.dc_eve()).into_iter();
@@ -37,7 +33,7 @@ impl AEffect {
         id.chain(stopped)
     }
     pub(in crate::ad::generator::rels) fn iter_e_buff_ids(&self) -> impl Iterator<Item = EBuffId> {
-        self.buff.as_ref().into_iter().map(|v| v.iter_e_buff_ids()).flatten()
+        self.buff.as_ref().into_iter().flat_map(|v| v.iter_e_buff_ids())
     }
 }
 
