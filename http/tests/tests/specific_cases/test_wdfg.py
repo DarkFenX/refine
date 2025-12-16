@@ -33,54 +33,16 @@ def test_bubble_sig_projected(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_sig_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_sig_attr_id].dogma == approx(100)
 
 
-def test_bubble_assist_local(client, consts):
-    # Bubble disables assistance on the ship it's running on
-    eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
-    eve_wdfg_id = client.mk_eve_item(
-        attrs={eve_assist_attr_id: 1},
-        eff_ids=[eve_wdfg_effect_id],
-        defeff_id=eve_wdfg_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
-
-
-def test_bubble_assist_projected(client, consts):
-    # Bubble doesn't disable assistance on any other ships
-    eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
-    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
-    eve_wdfg_id = client.mk_eve_item(
-        attrs={eve_assist_attr_id: 1},
-        eff_ids=[eve_wdfg_effect_id],
-        defeff_id=eve_wdfg_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
-    # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
-
-
-def test_warp_scram_status_dscript(client, consts):
+def test_warp_dscript(client, consts):
     # Disruption script disables warp for target it's projected on
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
@@ -103,45 +65,66 @@ def test_warp_scram_status_dscript(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id)
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
-    # Verification - without a script bubble still disables warp and jump drive
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(
+    # Verification - without a script bubble disables warp and jump drive of the HIC itself and its
+    # target
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is True
-    assert api_affectee_fit_stats.can_tether is True
+    assert api_src_stats.can_warp is False
+    assert api_src_stats.can_jump_drive is False
+    assert api_src_stats.can_dock_citadel is False
+    assert api_src_stats.can_tether is False
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
-    # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(
+    # Verification - script should be successfully applied even to ewar immune target, HIC should be
+    # able to warp
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is False
-    assert api_affectee_fit_stats.can_tether is False
+    assert api_src_stats.can_warp is True
+    assert api_src_stats.can_jump_drive is True
+    assert api_src_stats.can_dock_citadel is False
+    assert api_src_stats.can_tether is False
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is False
+    assert api_tgt_stats.can_tether is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is True
-    assert api_affectee_fit_stats.can_tether is True
+    assert api_src_stats.can_warp is False
+    assert api_src_stats.can_jump_drive is False
+    assert api_src_stats.can_dock_citadel is False
+    assert api_src_stats.can_tether is False
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
 
 
-def test_warp_scram_status_sscript(client, consts):
+def test_warp_sscript(client, consts):
     # Scrambling script disables warp for target it's projected on
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
@@ -164,45 +147,64 @@ def test_warp_scram_status_sscript(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id)
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification - without a script bubble still disables warp and jump drive
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is True
-    assert api_affectee_fit_stats.can_tether is True
+    assert api_src_stats.can_warp is False
+    assert api_src_stats.can_jump_drive is False
+    assert api_src_stats.can_dock_citadel is False
+    assert api_src_stats.can_tether is False
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is False
-    assert api_affectee_fit_stats.can_tether is False
+    assert api_src_stats.can_warp is True
+    assert api_src_stats.can_jump_drive is True
+    assert api_src_stats.can_dock_citadel is False
+    assert api_src_stats.can_tether is False
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is False
+    assert api_tgt_stats.can_tether is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is True
-    assert api_affectee_fit_stats.can_tether is True
+    assert api_src_stats.can_warp is False
+    assert api_src_stats.can_jump_drive is False
+    assert api_src_stats.can_dock_citadel is False
+    assert api_src_stats.can_tether is False
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
 
 
-def test_gate_scram_status_dscript(client, consts):
+def test_gate_dscript(client, consts):
     # Disruption script disables gate jumps for target capitals it's projected onto. The way it
     # works on capitals only is that caps have base strength set to 0 while default value is -1000
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
@@ -223,33 +225,40 @@ def test_gate_scram_status_dscript(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id)
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_affectee_fit_stats.can_jump_gate is True
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_src_stats.can_jump_gate is False
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_tgt_stats.can_jump_gate is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_affectee_fit_stats.can_jump_gate is False
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_src_stats.can_jump_gate is False
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_tgt_stats.can_jump_gate is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_affectee_fit_stats.can_jump_gate is True
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_src_stats.can_jump_gate is False
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_tgt_stats.can_jump_gate is True
 
 
-def test_gate_scram_status_sscript(client, consts):
+def test_gate_sscript(client, consts):
     # Scrambling script disables gate jumps for target capitals it's projected onto. The way it
     # works on capitals only is that caps have base strength set to 0 while default value is -1000
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
@@ -270,33 +279,40 @@ def test_gate_scram_status_sscript(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id)
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_affectee_fit_stats.can_jump_gate is True
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_src_stats.can_jump_gate is False
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_tgt_stats.can_jump_gate is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_affectee_fit_stats.can_jump_gate is False
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_src_stats.can_jump_gate is False
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_tgt_stats.can_jump_gate is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_affectee_fit_stats.can_jump_gate is True
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_src_stats.can_jump_gate is False
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
+    assert api_tgt_stats.can_jump_gate is True
 
 
-def test_module_mwd_block_dscript(client, consts):
+def test_block_module_mwd_dscript(client, consts):
     # Disruption script doesn't disable micro warp drives
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.high_speed_maneuvering)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
@@ -319,40 +335,40 @@ def test_module_mwd_block_dscript(client, consts):
     eve_mwd_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
 
 
-def test_module_mwd_block_sscript(client, consts):
+def test_block_module_mwd_sscript(client, consts):
     # Scrambling script disables micro warp drives
     eve_skill_id = client.mk_eve_item(id_=consts.EveItem.high_speed_maneuvering)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked_strength, def_val=0)
@@ -375,39 +391,39 @@ def test_module_mwd_block_sscript(client, consts):
     eve_mwd_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mwd = api_tgt_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_mwd.id]
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
 
 
-def test_module_mjd_block_dscript(client, consts):
+def test_block_module_mjd_dscript(client, consts):
     # Disruption script disables micro jump drives
     eve_skill_sub_id = client.mk_eve_item(id_=consts.EveItem.micro_jump_drive_operation)
     # Capital MJFG doesn't use regular skill, so test capital skill separately
@@ -433,40 +449,40 @@ def test_module_mjd_block_dscript(client, consts):
     eve_mjd_cap_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_cap_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
-    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mjd_sub = api_tgt_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
+    api_mjd_cap = api_tgt_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
 
 
-def test_module_mjd_block_sscript(client, consts):
+def test_block_module_mjd_sscript(client, consts):
     # Scrambling script disables micro jump drives
     eve_skill_sub_id = client.mk_eve_item(id_=consts.EveItem.micro_jump_drive_operation)
     # Capital MJFG doesn't use regular skill, so test capital skill separately
@@ -492,40 +508,40 @@ def test_module_mjd_block_sscript(client, consts):
     eve_mjd_cap_id = client.mk_eve_item(attrs={eve_block_attr_id: 0}, srqs={eve_skill_cap_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
-    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mjd_sub = api_tgt_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
+    api_mjd_cap = api_tgt_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
-    api_affector_val = api_affector_fit.validate(options=ValOptions(offense_immunity=True))
-    assert api_affector_val.passed is True
-    api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
+    api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
+    assert api_src_val.passed is True
+    api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
 
 
-def test_fighter_mwd_mjd_block_dscript(client, consts):
+def test_block_fighter_mwd_mjd_dscript(client, consts):
     # As of 2024-11-05, even disruption script disables fighter MWD and MJD abilities
     eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
@@ -544,28 +560,28 @@ def test_fighter_mwd_mjd_block_dscript(client, consts):
     api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
     api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_fighter = api_affectee_fit.add_fighter(type_id=eve_fighter_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.change_fighter(effect_modes={
         api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
         api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
     api_wdfg.change_module(add_projs=[api_fighter.id])
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
 
 
-def test_fighter_mwd_mjd_block_sscript(client, consts):
+def test_block_fighter_mwd_mjd_sscript(client, consts):
     eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg_id = client.mk_eve_item(eff_ids=[eve_wdfg_effect_id], defeff_id=eve_wdfg_effect_id)
     eve_script_effect_id = client.mk_eve_effect(
@@ -583,25 +599,64 @@ def test_fighter_mwd_mjd_block_sscript(client, consts):
     api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
     api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_fighter = api_affectee_fit.add_fighter(type_id=eve_fighter_id)
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.change_fighter(effect_modes={
         api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
         api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
     api_wdfg.change_module(add_projs=[api_fighter.id])
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
-    api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+
+
+def test_range_bubble(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
+    eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
+    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        range_attr_id=eve_range_attr_id)
+    eve_wdfg_id = client.mk_eve_item(
+        attrs={eve_range_attr_id: 20000, eve_str_attr_id: 100},
+        eff_ids=[eve_wdfg_effect_id],
+        defeff_id=eve_wdfg_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(19999, 0, 0))
+    api_wdfg.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
+    # Action
+    api_tgt_ship.change_ship(coordinates=(20001, 0, 0))
+    # Verification
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is True
+    assert api_tgt_stats.can_jump_drive is True
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
 
 
 def test_range_dscript(client, consts):
@@ -649,21 +704,31 @@ def test_range_dscript(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(30000, 0, 0))
-    api_wdfg.change_module(add_projs=[api_affectee_ship.id])
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(29999, 0, 0))
+    api_wdfg.change_module(add_projs=[api_tgt_ship.id])
     # Verification - range should be 30k (20k base from module +50% from script)
-    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is False
+    assert api_tgt_stats.can_jump_drive is False
+    assert api_tgt_stats.can_dock_citadel is False
+    assert api_tgt_stats.can_tether is False
     # Action
-    api_affectee_ship.change_ship(coordinates=(30001, 0, 0))
+    api_tgt_ship.change_ship(coordinates=(30001, 0, 0))
     # Verification
-    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    api_tgt_stats = api_tgt_fit.get_stats(
+        options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
+    assert api_tgt_stats.can_warp is True
+    assert api_tgt_stats.can_jump_drive is True
+    assert api_tgt_stats.can_dock_citadel is True
+    assert api_tgt_stats.can_tether is True
 
 
 def test_range_sscript(client, consts):
@@ -711,21 +776,63 @@ def test_range_sscript(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affector_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
-    api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_module(
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(16000, 0, 0))
-    api_wdfg.change_module(add_projs=[api_affectee_ship.id])
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(16000, 0, 0))
+    api_wdfg.change_module(add_projs=[api_tgt_ship.id])
     # Verification - range should be 16k (20k base from module -20% from script)
-    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    assert api_tgt_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_affectee_ship.change_ship(coordinates=(16001, 0, 0))
+    api_tgt_ship.change_ship(coordinates=(16001, 0, 0))
     # Verification
-    assert api_affectee_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    assert api_tgt_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+
+
+def test_assist_bubble_local(client, consts):
+    # Bubble disables assistance on the ship it's running on
+    eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg_id = client.mk_eve_item(
+        attrs={eve_assist_attr_id: 1},
+        eff_ids=[eve_wdfg_effect_id],
+        defeff_id=eve_wdfg_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
+    # Action
+    api_module.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
+
+
+def test_assist_bubble_projected(client, consts):
+    # Bubble doesn't disable assistance on any other ships
+    eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_wdfg_effect_id = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg_id = client.mk_eve_item(
+        attrs={eve_assist_attr_id: 1},
+        eff_ids=[eve_wdfg_effect_id],
+        defeff_id=eve_wdfg_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_wdfg.change_module(add_projs=[api_ship.id])
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
 
 
 def test_assist_dscript(client, consts):
