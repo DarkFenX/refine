@@ -10,20 +10,20 @@ pub(in crate::cacher_json) struct CEffectModifier {
 impl From<&rc::ad::AEffectModifier> for CEffectModifier {
     fn from(a_modifier: &rc::ad::AEffectModifier) -> Self {
         Self {
-            affector_attr_id: a_modifier.affector_attr_id,
+            affector_attr_id: (&a_modifier.affector_attr_id).into(),
             op: (&a_modifier.op).into(),
             affectee_filter: (&a_modifier.affectee_filter).into(),
-            affectee_attr_id: a_modifier.affectee_attr_id,
+            affectee_attr_id: (&a_modifier.affectee_attr_id).into(),
         }
     }
 }
 impl From<&CEffectModifier> for rc::ad::AEffectModifier {
     fn from(c_modifier: &CEffectModifier) -> Self {
         Self {
-            affector_attr_id: c_modifier.affector_attr_id,
+            affector_attr_id: (&c_modifier.affector_attr_id).into(),
             op: (&c_modifier.op).into(),
             affectee_filter: (&c_modifier.affectee_filter).into(),
-            affectee_attr_id: c_modifier.affectee_attr_id,
+            affectee_attr_id: (&c_modifier.affectee_attr_id).into(),
         }
     }
 }

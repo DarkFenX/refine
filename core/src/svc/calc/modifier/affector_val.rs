@@ -34,7 +34,7 @@ impl AffectorValue {
         match self {
             Self::Attr(attr_key) => smallvec![AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(item_key),
-                attr_id: Some(ctx.u_data.src.get_attr(*attr_key).id)
+                attr_id: Some(ctx.u_data.src.get_attr(*attr_key).id.into()),
             }],
             Self::Hardcoded(_) => smallvec![AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(item_key),

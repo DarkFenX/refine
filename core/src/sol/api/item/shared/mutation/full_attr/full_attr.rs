@@ -1,4 +1,4 @@
-use crate::{ad, def::AttrId, sol::SolarSystem, ud::UItemKey};
+use crate::{ad, misc::AttrId, sol::SolarSystem, ud::UItemKey};
 
 /// Full mutated attribute.
 ///
@@ -18,7 +18,7 @@ impl<'a> FullMAttr<'a> {
     }
     /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
-        self.a_attr_id
+        self.a_attr_id.into()
     }
 }
 
@@ -40,6 +40,6 @@ impl<'a> FullMAttrMut<'a> {
     }
     /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
-        self.a_attr_id
+        self.a_attr_id.into()
     }
 }

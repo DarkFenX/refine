@@ -81,7 +81,7 @@ pub(in crate::cacher_json) enum CEffectBuffStrength {
 impl From<&rc::ad::AEffectBuffStrength> for CEffectBuffStrength {
     fn from(a_buff_str: &rc::ad::AEffectBuffStrength) -> Self {
         match a_buff_str {
-            rc::ad::AEffectBuffStrength::Attr(attr_id) => Self::Attr(*attr_id),
+            rc::ad::AEffectBuffStrength::Attr(attr_id) => Self::Attr(attr_id.into()),
             rc::ad::AEffectBuffStrength::Hardcoded(buff_val) => Self::Hardcoded(*buff_val),
         }
     }
@@ -89,7 +89,7 @@ impl From<&rc::ad::AEffectBuffStrength> for CEffectBuffStrength {
 impl From<&CEffectBuffStrength> for rc::ad::AEffectBuffStrength {
     fn from(c_buff_str: &CEffectBuffStrength) -> Self {
         match c_buff_str {
-            CEffectBuffStrength::Attr(attr_id) => Self::Attr(*attr_id),
+            CEffectBuffStrength::Attr(attr_id) => Self::Attr(attr_id.into()),
             CEffectBuffStrength::Hardcoded(buff_val) => Self::Hardcoded(*buff_val),
         }
     }
@@ -105,7 +105,7 @@ impl From<&rc::ad::AEffectBuffDuration> for CEffectBuffDuration {
     fn from(a_buff_dur: &rc::ad::AEffectBuffDuration) -> Self {
         match a_buff_dur {
             rc::ad::AEffectBuffDuration::None => Self::None,
-            rc::ad::AEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
+            rc::ad::AEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(attr_id.into()),
         }
     }
 }
@@ -113,7 +113,7 @@ impl From<&CEffectBuffDuration> for rc::ad::AEffectBuffDuration {
     fn from(c_buff_dur: &CEffectBuffDuration) -> Self {
         match c_buff_dur {
             CEffectBuffDuration::None => Self::None,
-            CEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
+            CEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(attr_id.into()),
         }
     }
 }

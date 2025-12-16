@@ -2,7 +2,7 @@
 // when repairs actually happen. However, here we apply it to "extra" value of rep amount attribute
 // for usability and simplicity of effect itself.
 
-use smallvec::{SmallVec, smallvec};
+use smallvec::SmallVec;
 
 use crate::{
     ac,
@@ -96,13 +96,14 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
 }
 
 fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
-    match ctx.ac().charged_armor_dmg_mult {
-        Some(charged_armor_dmg_mult_key) => smallvec![AffectorInfo {
+    let mut info = SmallVec::new();
+    if let Some(charged_armor_dmg_mult_key) = ctx.ac().charged_armor_dmg_mult {
+        info.push(AffectorInfo {
             item_id: ctx.u_data.items.id_by_key(item_key),
-            attr_id: Some(ctx.u_data.src.get_attr(charged_armor_dmg_mult_key).id)
-        }],
-        None => SmallVec::new(),
+            attr_id: Some(ctx.u_data.src.get_attr(charged_armor_dmg_mult_key).id.into()),
+        });
     }
+    info
 }
 
 fn revise_on_item_add_removal(

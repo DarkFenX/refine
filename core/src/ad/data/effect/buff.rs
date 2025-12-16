@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AAttrVal, ABuffId, AItemListId},
-    ed::EBuffId,
+    ed::{EAttrId, EBuffId},
 };
 
 #[derive(Clone)]
@@ -12,10 +12,10 @@ impl AEffectBuff {
     pub(crate) fn iter_a_item_list_ids(&self) -> impl Iterator<Item = AItemListId> {
         self.iter_a_scopes().filter_map(|v| v.get_a_item_list_id())
     }
-    pub(crate) fn iter_a_attr_ids(&self) -> impl Iterator<Item = AAttrId> {
-        let attr_merges = self.attr_merge.and_then(|v| v.duration.get_a_attr_id()).into_iter();
-        let full_str = self.full.iter().filter_map(|v| v.strength.get_a_attr_id());
-        let full_dur = self.full.iter().filter_map(|v| v.duration.get_a_attr_id());
+    pub(crate) fn iter_e_attr_ids(&self) -> impl Iterator<Item = EAttrId> {
+        let attr_merges = self.attr_merge.and_then(|v| v.duration.get_e_attr_id()).into_iter();
+        let full_str = self.full.iter().filter_map(|v| v.strength.get_e_attr_id());
+        let full_dur = self.full.iter().filter_map(|v| v.duration.get_e_attr_id());
         attr_merges.chain(full_str).chain(full_dur)
     }
     pub(crate) fn iter_e_buff_ids(&self) -> impl Iterator<Item = EBuffId> {
@@ -51,9 +51,9 @@ pub enum AEffectBuffStrength {
     Hardcoded(AAttrVal),
 }
 impl AEffectBuffStrength {
-    fn get_a_attr_id(&self) -> Option<AAttrId> {
+    fn get_e_attr_id(&self) -> Option<EAttrId> {
         match self {
-            Self::Attr(attr_id) => Some(*attr_id),
+            Self::Attr(a_attr_id) => a_attr_id.get_e_attr_id(),
             Self::Hardcoded(_) => None,
         }
     }
@@ -65,10 +65,10 @@ pub enum AEffectBuffDuration {
     AttrMs(AAttrId),
 }
 impl AEffectBuffDuration {
-    fn get_a_attr_id(&self) -> Option<AAttrId> {
+    fn get_e_attr_id(&self) -> Option<EAttrId> {
         match self {
             Self::None => None,
-            Self::AttrMs(attr_id) => Some(*attr_id),
+            Self::AttrMs(a_attr_id) => a_attr_id.get_e_attr_id(),
         }
     }
 }

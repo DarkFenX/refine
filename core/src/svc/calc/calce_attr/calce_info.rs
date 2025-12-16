@@ -6,8 +6,7 @@ use smallvec::SmallVec;
 
 use super::calce_shared::get_base_attr_value;
 use crate::{
-    ad::AAttrId,
-    misc::{OpInfo, SecZone},
+    misc::{AttrId, OpInfo, SecZone},
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,
@@ -31,7 +30,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (AAttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_key in self.iter_item_attr_keys(ctx, item_key)? {
             let mut attr_info = self.calc_item_attr_info(ctx, item_key, attr_key);
@@ -39,7 +38,7 @@ impl Calc {
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = ctx.u_data.src.get_attr(attr_key).id;
+                let attr_id = ctx.u_data.src.get_attr(attr_key).id.into();
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
         }
@@ -134,7 +133,7 @@ impl Calc {
                     applied_val: limiter_val.dogma,
                     affectors: vec![AffectorInfo {
                         item_id: ctx.u_data.items.id_by_key(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id),
+                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
                     }],
                 })
             }
@@ -155,7 +154,7 @@ impl Calc {
                     applied_val: limiter_val.dogma,
                     affectors: vec![AffectorInfo {
                         item_id: ctx.u_data.items.id_by_key(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id),
+                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
                     }],
                 })
             }
@@ -206,7 +205,7 @@ impl Calc {
                     applied_val: security_full_val.dogma,
                     affectors: vec![AffectorInfo {
                         item_id: ctx.u_data.items.id_by_key(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).id),
+                        attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).id.into()),
                     }],
                 });
                 return base_attr_info;

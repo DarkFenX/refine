@@ -1,4 +1,7 @@
-use crate::def::{AttrId, ItemId, ItemTypeId};
+use crate::{
+    def::{ItemId, ItemTypeId},
+    misc::AttrId,
+};
 
 #[derive(thiserror::Error, Debug)]
 #[error("attribute {attr_id} is not mutable according to mutator {mutator_id} on item {item_id}")]

@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::{
-        AEffectId, AItem, AItemEffectData, AItemId, ASkillLevel, AState,
+        AAttrId, AEffectId, AItem, AItemEffectData, AItemId, ASkillLevel, AState,
         generator::{GSupport, get_abil_effect},
     },
     def::OF,
@@ -57,7 +57,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(
     for e_item_attr in e_data.item_attrs.data.iter() {
         a_items
             .get_mut(&e_item_attr.item_id)
-            .and_then(|v| v.attrs.insert(e_item_attr.attr_id, OF(e_item_attr.value)));
+            .and_then(|v| v.attrs.insert(AAttrId::Eve(e_item_attr.attr_id), OF(e_item_attr.value)));
     }
     // Item effects & extended effect data from abilities
     for e_item_effect in e_data.item_effects.data.iter() {

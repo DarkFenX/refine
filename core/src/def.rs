@@ -7,7 +7,8 @@ pub(crate) const SERVER_TICK_S: AttrVal = OF(1.0 / SERVER_TICK_HZ as f64);
 
 // Entity IDs
 pub type AbilId = i32;
-pub type AttrId = i32;
+pub type EveAttrId = i32;
+pub type CustomAttrId = i32;
 pub type ItemId = u32;
 pub type ItemTypeId = i32;
 pub type ItemGrpId = i32;

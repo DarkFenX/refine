@@ -1,19 +1,20 @@
 use crate::{
-    def::{AttrId, AttrVal},
+    def::AttrVal,
+    misc::AttrId,
     sol::api::{FullSideEffect, FullSideEffectMut},
 };
 
 impl<'a> FullSideEffect<'a> {
     /// Get side effect chance attribute ID.
     pub fn get_chance_attr_id(&self) -> AttrId {
-        self.chance_attr_id
+        self.chance_attr_id.into()
     }
 }
 
 impl<'a> FullSideEffectMut<'a> {
     /// Get side effect chance attribute ID.
     pub fn get_chance_attr_id(&self) -> AttrId {
-        self.chance_attr_id
+        self.chance_attr_id.into()
     }
     /// Get side effect chance.
     ///

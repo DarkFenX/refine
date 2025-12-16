@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, AAttrVal, ACount, ASkillLevel},
+    ad::{AAttrId, AAttrVal, ACount, AEveAttrId, ASkillLevel},
     def::OF,
     rd::{RAttrConsts, RAttrKey},
     util::RMap,
@@ -86,7 +86,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_remote_resist_attr_id(
         .and_then(|v| match v {
             OF(0.0) => None,
             v => {
-                let attr_id = v.into_inner().round() as AAttrId;
+                let attr_id = AAttrId::Eve(v.into_inner().round() as AEveAttrId);
                 attr_id_key_map.get(&attr_id).copied()
             }
         })

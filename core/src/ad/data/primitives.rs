@@ -5,7 +5,8 @@ use crate::{
 
 // Entity IDs
 pub type AAbilId = EAbilId;
-pub type AAttrId = EAttrId;
+pub type AEveAttrId = EAttrId;
+pub type ACustomAttrId = i32;
 pub type AEveBuffId = EBuffId;
 pub type ACustomBuffId = i32;
 pub type ADogmaEffectId = EEffectId;

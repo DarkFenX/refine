@@ -43,11 +43,11 @@ impl Fk for EEffect {
         vec.extend(self.get_fks_from_mod_args("modifyingAttributeID"));
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
         if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
-            vec.extend(effect_buff.iter_a_attr_ids());
+            vec.extend(effect_buff.iter_e_attr_ids());
         }
         // Hardcoded charge info can reference attributes
         if let Some(n_effect) = N_EFFECT_MAP.get(&AEffectId::Dogma(self.id)) {
-            vec.extend(n_effect.extract_a_attr_ids());
+            vec.extend(n_effect.extract_e_attr_ids());
         }
         vec
     }

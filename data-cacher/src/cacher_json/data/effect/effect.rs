@@ -33,13 +33,13 @@ impl From<&rc::ad::AEffect> for CEffect {
             is_offense: a_effect.is_offense,
             banned_in_hisec: a_effect.banned_in_hisec,
             banned_in_lowsec: a_effect.banned_in_lowsec,
-            discharge_attr_id: a_effect.discharge_attr_id,
-            duration_attr_id: a_effect.duration_attr_id,
-            range_attr_id: a_effect.range_attr_id,
-            falloff_attr_id: a_effect.falloff_attr_id,
-            track_attr_id: a_effect.track_attr_id,
-            chance_attr_id: a_effect.chance_attr_id,
-            resist_attr_id: a_effect.resist_attr_id,
+            discharge_attr_id: a_effect.discharge_attr_id.as_ref().map(Into::into),
+            duration_attr_id: a_effect.duration_attr_id.as_ref().map(Into::into),
+            range_attr_id: a_effect.range_attr_id.as_ref().map(Into::into),
+            falloff_attr_id: a_effect.falloff_attr_id.as_ref().map(Into::into),
+            track_attr_id: a_effect.track_attr_id.as_ref().map(Into::into),
+            chance_attr_id: a_effect.chance_attr_id.as_ref().map(Into::into),
+            resist_attr_id: a_effect.resist_attr_id.as_ref().map(Into::into),
         }
     }
 }
@@ -56,13 +56,13 @@ impl From<&CEffect> for rc::ad::AEffect {
             is_offense: c_effect.is_offense,
             banned_in_hisec: c_effect.banned_in_hisec,
             banned_in_lowsec: c_effect.banned_in_lowsec,
-            discharge_attr_id: c_effect.discharge_attr_id,
-            duration_attr_id: c_effect.duration_attr_id,
-            range_attr_id: c_effect.range_attr_id,
-            falloff_attr_id: c_effect.falloff_attr_id,
-            track_attr_id: c_effect.track_attr_id,
-            chance_attr_id: c_effect.chance_attr_id,
-            resist_attr_id: c_effect.resist_attr_id,
+            discharge_attr_id: c_effect.discharge_attr_id.as_ref().map(Into::into),
+            duration_attr_id: c_effect.duration_attr_id.as_ref().map(Into::into),
+            range_attr_id: c_effect.range_attr_id.as_ref().map(Into::into),
+            falloff_attr_id: c_effect.falloff_attr_id.as_ref().map(Into::into),
+            track_attr_id: c_effect.track_attr_id.as_ref().map(Into::into),
+            chance_attr_id: c_effect.chance_attr_id.as_ref().map(Into::into),
+            resist_attr_id: c_effect.resist_attr_id.as_ref().map(Into::into),
         }
     }
 }

@@ -12,24 +12,24 @@ pub(in crate::cacher_json) struct CAttr {
 impl From<&rc::ad::AAttr> for CAttr {
     fn from(a_attr: &rc::ad::AAttr) -> Self {
         CAttr {
-            id: a_attr.id,
+            id: (&a_attr.id).into(),
             penalizable: a_attr.penalizable,
             hig: a_attr.hig,
             def_val: a_attr.def_val,
-            min_attr_id: a_attr.min_attr_id,
-            max_attr_id: a_attr.max_attr_id,
+            min_attr_id: a_attr.min_attr_id.as_ref().map(Into::into),
+            max_attr_id: a_attr.max_attr_id.as_ref().map(Into::into),
         }
     }
 }
 impl From<&CAttr> for rc::ad::AAttr {
     fn from(c_attr: &CAttr) -> Self {
         Self {
-            id: c_attr.id,
+            id: (&c_attr.id).into(),
             penalizable: c_attr.penalizable,
             hig: c_attr.hig,
             def_val: c_attr.def_val,
-            min_attr_id: c_attr.min_attr_id,
-            max_attr_id: c_attr.max_attr_id,
+            min_attr_id: c_attr.min_attr_id.as_ref().map(Into::into),
+            max_attr_id: c_attr.max_attr_id.as_ref().map(Into::into),
         }
     }
 }

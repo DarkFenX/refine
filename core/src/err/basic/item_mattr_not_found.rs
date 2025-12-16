@@ -1,4 +1,4 @@
-use crate::def::{AttrId, ItemId};
+use crate::{def::ItemId, misc::AttrId};
 
 #[derive(thiserror::Error, Debug)]
 #[error("attribute {attr_id} on item {item_id} already contains mutation data")]

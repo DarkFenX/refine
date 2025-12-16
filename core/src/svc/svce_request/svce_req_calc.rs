@@ -1,5 +1,5 @@
 use crate::{
-    ad::AAttrId,
+    misc::AttrId,
     rd::RAttrKey,
     svc::{
         Svc, SvcCtx,
@@ -31,7 +31,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (AAttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
         self.calc.iter_item_mods(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
 }

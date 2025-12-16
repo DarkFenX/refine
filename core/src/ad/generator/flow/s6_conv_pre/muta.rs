@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AItemId, AMuta, AMutaAttrRange},
+    ad::{AAttrId, AItemId, AMuta, AMutaAttrRange},
     def::OF,
     ed::EData,
     util::RMap,
@@ -18,7 +18,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_mutas(e_data: &EData) ->
         // definitions
         if let Some(a_muta) = a_mutas.get_mut(&e_attr_data.muta_id) {
             a_muta.attr_mods.insert(
-                e_attr_data.attr_id,
+                AAttrId::Eve(e_attr_data.attr_id),
                 AMutaAttrRange {
                     min_mult: OF(e_attr_data.min_attr_mult),
                     max_mult: OF(e_attr_data.max_attr_mult),

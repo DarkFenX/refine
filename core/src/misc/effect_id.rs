@@ -1,5 +1,5 @@
 use crate::{
-    ad,
+    ad::AEffectId,
     def::{CustomEffectId, DogmaEffectId, ItemTypeId},
 };
 
@@ -34,33 +34,33 @@ impl std::fmt::Display for EffectId {
         }
     }
 }
-impl From<ad::AEffectId> for EffectId {
-    fn from(a_effect_id: ad::AEffectId) -> Self {
+impl From<AEffectId> for EffectId {
+    fn from(a_effect_id: AEffectId) -> Self {
         match a_effect_id {
-            ad::AEffectId::Dogma(id) => Self::Dogma(id),
-            ad::AEffectId::ScSystemWide(id) => Self::ScSystemWide(id),
-            ad::AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id),
-            ad::AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(id),
-            ad::AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(id),
-            ad::AEffectId::ScShipLink(id) => Self::ScShipLink(id),
-            ad::AEffectId::Custom(id) => Self::Custom(id),
+            AEffectId::Dogma(id) => Self::Dogma(id),
+            AEffectId::ScSystemWide(id) => Self::ScSystemWide(id),
+            AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id),
+            AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(id),
+            AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(id),
+            AEffectId::ScShipLink(id) => Self::ScShipLink(id),
+            AEffectId::Custom(id) => Self::Custom(id),
         }
     }
 }
-impl From<&ad::AEffectId> for EffectId {
-    fn from(a_effect_id: &ad::AEffectId) -> Self {
+impl From<&AEffectId> for EffectId {
+    fn from(a_effect_id: &AEffectId) -> Self {
         match a_effect_id {
-            ad::AEffectId::Dogma(id) => Self::Dogma(*id),
-            ad::AEffectId::ScSystemWide(id) => Self::ScSystemWide(*id),
-            ad::AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
-            ad::AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
-            ad::AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
-            ad::AEffectId::ScShipLink(id) => Self::ScShipLink(*id),
-            ad::AEffectId::Custom(id) => Self::Custom(*id),
+            AEffectId::Dogma(id) => Self::Dogma(*id),
+            AEffectId::ScSystemWide(id) => Self::ScSystemWide(*id),
+            AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(*id),
+            AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(*id),
+            AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(*id),
+            AEffectId::ScShipLink(id) => Self::ScShipLink(*id),
+            AEffectId::Custom(id) => Self::Custom(*id),
         }
     }
 }
-impl From<EffectId> for ad::AEffectId {
+impl From<EffectId> for AEffectId {
     fn from(effect_id: EffectId) -> Self {
         match effect_id {
             EffectId::Dogma(id) => Self::Dogma(id),
@@ -73,7 +73,7 @@ impl From<EffectId> for ad::AEffectId {
         }
     }
 }
-impl From<&EffectId> for ad::AEffectId {
+impl From<&EffectId> for AEffectId {
     fn from(effect_id: &EffectId) -> Self {
         match effect_id {
             EffectId::Dogma(id) => Self::Dogma(*id),

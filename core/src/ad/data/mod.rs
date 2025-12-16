@@ -1,5 +1,5 @@
 pub use abil::AAbil;
-pub use attr::AAttr;
+pub use attr::{AAttr, AAttrId};
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier};
 pub use data::AData;
 pub use effect::{
@@ -11,8 +11,8 @@ pub use item_list::{AItemList, AItemListId};
 pub use muta::{AMuta, AMutaAttrRange};
 pub(crate) use primitives::ASlotIndex;
 pub use primitives::{
-    AAbilId, AAttrId, AAttrVal, ACount, ACustomBuffId, ACustomEffectId, ACustomItemListId, ADogmaEffectId,
-    AEffectCatId, AEveBuffId, AEveItemListId, AItemCatId, AItemGrpId, AItemId,
+    AAbilId, AAttrVal, ACount, ACustomAttrId, ACustomBuffId, ACustomEffectId, ACustomItemListId, ADogmaEffectId,
+    AEffectCatId, AEveAttrId, AEveBuffId, AEveItemListId, AItemCatId, AItemGrpId, AItemId,
 };
 pub use shared::{AModifierSrq, AOp, AState};
 

@@ -1,4 +1,5 @@
 pub use adj_count::AdjustableCount;
+pub use attr_id::AttrId;
 pub(crate) use attr_spec::AttrSpec;
 pub use breacher_info::{BreacherInfo, BreacherInfoError};
 pub use coordinates::Coordinates;
@@ -27,6 +28,7 @@ pub use spool::Spool;
 pub use states::{MinionState, ModuleState, ServiceState};
 
 mod adj_count;
+mod attr_id;
 mod attr_spec;
 mod breacher_info;
 mod coordinates;

@@ -1,4 +1,4 @@
-use smallvec::{SmallVec, smallvec};
+use smallvec::SmallVec;
 
 use crate::{
     ac,
@@ -77,28 +77,29 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
 }
 
 fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
+    let mut info = SmallVec::new();
     if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
         && let Some(speed_factor_key) = ctx.ac().speed_factor
         && let Some(speed_boost_factor_key) = ctx.ac().speed_boost_factor
         && let Some(mass_key) = ctx.ac().mass
     {
         let item_id = ctx.u_data.items.id_by_key(item_key);
-        return smallvec![
+        info.extend([
             AffectorInfo {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr(speed_factor_key).id),
+                attr_id: Some(ctx.u_data.src.get_attr(speed_factor_key).id.into()),
             },
             AffectorInfo {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_key).id),
+                attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_key).id.into()),
             },
             AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(ship_key),
-                attr_id: Some(ctx.u_data.src.get_attr(mass_key).id),
-            }
-        ];
+                attr_id: Some(ctx.u_data.src.get_attr(mass_key).id.into()),
+            },
+        ]);
     }
-    SmallVec::new()
+    info
 }
 
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {

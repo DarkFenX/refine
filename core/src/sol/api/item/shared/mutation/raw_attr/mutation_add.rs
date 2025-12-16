@@ -1,7 +1,7 @@
 use crate::{
     ad::AAttrId,
-    def::AttrId,
     err::basic::ItemMAttrNotFoundError,
+    misc::AttrId,
     sol::{
         SolarSystem,
         api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut, RawMAttrMut},
@@ -29,7 +29,7 @@ impl<'a> EffectiveMutationMut<'a> {
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
     pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
-        mutate_raw(self.sol, self.item_key, attr_id, roll)
+        mutate_raw(self.sol, self.item_key, attr_id.into(), roll)
     }
 }
 
@@ -39,7 +39,7 @@ impl<'a> IncompleteMutationMut<'a> {
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
     pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
-        mutate_raw(self.sol, self.item_key, attr_id, roll)
+        mutate_raw(self.sol, self.item_key, attr_id.into(), roll)
     }
 }
 
@@ -60,7 +60,7 @@ fn mutate_raw(
     {
         Some(_) => Err(ItemMAttrNotFoundError {
             item_id: sol.u_data.items.id_by_key(item_key),
-            attr_id: a_attr_id,
+            attr_id: a_attr_id.into(),
         }
         .into()),
         None => {

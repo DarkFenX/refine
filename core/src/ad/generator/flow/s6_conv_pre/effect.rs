@@ -3,11 +3,12 @@ use std::hash::Hash;
 use crate::{
     ac,
     ad::{
-        AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp,
+        AState,
         generator::{GSupport, get_abil_effect},
     },
     ec,
-    ed::{EAttrId, EData, EEffectId, EEffectMod, EFighterAbil, EItemGrpId, EItemId, EPrimitive},
+    ed::{EData, EEffectId, EEffectMod, EFighterAbil, EItemGrpId, EItemId, EPrimitive},
     util::{RMap, RSet, StrMsgError},
 };
 
@@ -46,13 +47,13 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
-            discharge_attr_id: e_effect.discharge_attr_id,
-            duration_attr_id: e_effect.duration_attr_id,
-            range_attr_id: e_effect.range_attr_id,
-            falloff_attr_id: e_effect.falloff_attr_id,
-            track_attr_id: e_effect.tracking_attr_id,
-            chance_attr_id: e_effect.usage_chance_attr_id,
-            resist_attr_id: e_effect.resist_attr_id,
+            discharge_attr_id: e_effect.discharge_attr_id.map(AAttrId::Eve),
+            duration_attr_id: e_effect.duration_attr_id.map(AAttrId::Eve),
+            range_attr_id: e_effect.range_attr_id.map(AAttrId::Eve),
+            falloff_attr_id: e_effect.falloff_attr_id.map(AAttrId::Eve),
+            track_attr_id: e_effect.tracking_attr_id.map(AAttrId::Eve),
+            chance_attr_id: e_effect.usage_chance_attr_id.map(AAttrId::Eve),
+            resist_attr_id: e_effect.resist_attr_id.map(AAttrId::Eve),
             ..
         };
         for e_modifier in e_effect.mods.iter() {
@@ -212,12 +213,12 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
     })
 }
 
-fn get_mod_src_attr_id(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifyingAttributeID")
+fn get_mod_src_attr_id(e_modifier: &EEffectMod) -> Result<AAttrId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "modifyingAttributeID").map(AAttrId::Eve)
 }
 
-fn get_mod_affectee_attr_id(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifiedAttributeID")
+fn get_mod_affectee_attr_id(e_modifier: &EEffectMod) -> Result<AAttrId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "modifiedAttributeID").map(AAttrId::Eve)
 }
 
 fn get_mod_location(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectLocation, StrMsgError> {

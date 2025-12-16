@@ -12,14 +12,14 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_attrs(e_data: &EData) ->
         .iter()
         .map(|v| {
             (
-                v.id,
+                AAttrId::Eve(v.id),
                 AAttr {
-                    id: v.id,
+                    id: AAttrId::Eve(v.id),
                     penalizable: !v.stackable,
                     hig: v.high_is_good,
                     def_val: OF(v.default_value),
-                    min_attr_id: v.min_attr_id,
-                    max_attr_id: v.max_attr_id,
+                    min_attr_id: v.min_attr_id.map(AAttrId::Eve),
+                    max_attr_id: v.max_attr_id.map(AAttrId::Eve),
                 },
             )
         })

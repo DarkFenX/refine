@@ -3,7 +3,7 @@
 // their theoretical range, CCP added hidden flight time bonus, which depends on radius of the
 // attacking ship. This effect implements it.
 
-use smallvec::{SmallVec, smallvec};
+use smallvec::SmallVec;
 
 use crate::{
     ac,
@@ -104,24 +104,25 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
 }
 
 fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
+    let mut info = SmallVec::new();
     if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
         && let Some(max_velocity_key) = ctx.ac().max_velocity
         && let Some(radius_key) = ctx.ac().radius
     {
-        return smallvec![
+        info.extend([
             AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(item_key),
-                attr_id: Some(ctx.u_data.src.get_attr(max_velocity_key).id),
+                attr_id: Some(ctx.u_data.src.get_attr(max_velocity_key).id.into()),
             },
             // There is no dependency on modified ship radius, but we add it for informational
             // purposes nevertheless
             AffectorInfo {
                 item_id: ctx.u_data.items.id_by_key(ship_key),
-                attr_id: Some(ctx.u_data.src.get_attr(radius_key).id),
-            }
-        ];
+                attr_id: Some(ctx.u_data.src.get_attr(radius_key).id.into()),
+            },
+        ]);
     };
-    SmallVec::new()
+    info
 }
 
 fn revise_on_item_add_removal(

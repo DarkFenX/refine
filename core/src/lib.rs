@@ -20,14 +20,15 @@
 //!   items, and fetch data and stats
 
 pub use def::{
-    AbilId, AttrId, AttrVal, Count, CustomEffectId, DogmaEffectId, FitId, FleetId, Idx, ItemGrpId, ItemId, ItemTypeId,
-    SlotIndex, VERSION,
+    AbilId, AttrVal, Count, CustomAttrId, CustomEffectId, DogmaEffectId, EveAttrId, FitId, FleetId, Idx, ItemGrpId,
+    ItemId, ItemTypeId, SlotIndex, VERSION,
 };
 pub use lender::Lender;
 pub use misc::{
-    AddMode, AdjustableCount, BreacherInfo, BreacherInfoError, Coordinates, Direction, DpsProfile, Ecm, EffectId,
-    EffectInfo, EffectMode, FighterCountOverride, FitSecStatus, MiningAmount, MinionState, ModRack, ModuleState,
-    Movement, NpcProp, OpInfo, ProjRange, RmMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, Spool,
+    AddMode, AdjustableCount, AttrId, BreacherInfo, BreacherInfoError, Coordinates, Direction, DpsProfile, Ecm,
+    EffectId, EffectInfo, EffectMode, FighterCountOverride, FitSecStatus, MiningAmount, MinionState, ModRack,
+    ModuleState, Movement, NpcProp, OpInfo, ProjRange, RmMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
+    Spool,
 };
 pub use rd::Src;
 pub use sol::{

@@ -5,9 +5,9 @@ use super::err::{
     IterItemModifiersError,
 };
 use crate::{
-    def::{AttrId, AttrVal, Count, ItemId, ItemTypeId},
+    def::{AttrVal, Count, ItemId, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
+    misc::{AttrId, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{
@@ -69,7 +69,8 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_attr(&mut self, attr_id: &AttrId) -> Result<CalcAttrVal, GetItemAttrError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
-        let attr_key = match sol.u_data.src.get_attr_key_by_id(attr_id) {
+        let a_attr_id = attr_id.into();
+        let attr_key = match sol.u_data.src.get_attr_key_by_id(&a_attr_id) {
             Some(attr_key) => attr_key,
             None => return Err(AttrFoundError { attr_id: *attr_id }.into()),
         };
@@ -85,7 +86,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_key) {
-            Ok(attr_iter) => Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).id, val))),
+            Ok(attr_iter) => Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).id.into(), val))),
             Err(error) => Err(ItemLoadedError {
                 item_id: sol.u_data.items.id_by_key(error.item_key),
             }
@@ -100,7 +101,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_mods(&sol.u_data, item_key) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.id_by_key(err.item_key),
+                item_id: sol.u_data.items.id_by_key(err.item_key).into(),
             }
             .into()),
         }
