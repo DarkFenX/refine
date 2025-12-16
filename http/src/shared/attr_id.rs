@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+const E_PREFIX: &str = "e";
 const C_PREFIX: &str = "c";
 
 #[derive(Eq, PartialEq, Hash)]
@@ -62,20 +63,84 @@ impl<'de> serde::Deserialize<'de> for HAttrId {
             type Value = HAttrId;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                formatter.write_str("attr type-prefixed int HAttrId")
+                formatter.write_str("number or string with number with optional type prefix")
+            }
+
+            fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_u16<E>(self, v: u16) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v))
+            }
+            fn visit_u32<E>(self, v: u32) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_i128<E>(self, v: i128) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
+            }
+            fn visit_u128<E>(self, v: u128) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Self::Value::Eve(v as i32))
             }
 
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
             {
+                if let Some(id_str) = v.strip_prefix(E_PREFIX) {
+                    let id = rc::CustomAttrId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
+                    return Ok(Self::Value::Eve(id));
+                }
                 if let Some(id_str) = v.strip_prefix(C_PREFIX) {
-                    let id = rc::CustomAttrId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::CustomAttrId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Custom(id));
                 }
-
-                let msg = format!("expected an int, or int prefixed by \"{C_PREFIX}\", got \"{v}\"");
-                Err(serde::de::Error::custom(msg))
+                let id = rc::CustomAttrId::from_str(v).map_err(|e| serde::de::Error::custom(e))?;
+                Ok(Self::Value::Eve(id))
             }
         }
         deserializer.deserialize_str(HAttrIdVisitor)

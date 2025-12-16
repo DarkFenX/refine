@@ -57,11 +57,11 @@ impl<'de> serde::Deserialize<'de> for CBuffId {
                 E: serde::de::Error,
             {
                 if let Some(id_str) = v.strip_prefix(E_PREFIX) {
-                    let id = CEveBuffId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = CEveBuffId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Eve(id));
                 }
                 if let Some(id_str) = v.strip_prefix(C_PREFIX) {
-                    let id = CCustomBuffId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = CCustomBuffId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Custom(id));
                 }
                 let msg = format!("expected an int prefixed by \"{E_PREFIX}\" or \"{C_PREFIX}\", got \"{v}\"");

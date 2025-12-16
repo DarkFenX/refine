@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from tests.fw.util import cast_to_int
+
 
 class AttrModInfoMap(dict):
 
@@ -13,7 +15,7 @@ class AttrModInfoMap(dict):
                     resist_mult=m[3],
                     stacking_mult=m[4],
                     applied_val=m[5],
-                    affectors=ModAffectorInfoList(ModAffectorInfo(item_id=n[0], attr_id=n[1]) for n in m[6]))
+                    affectors=ModAffectorInfoList(ModAffectorInfo(data=n) for n in m[6]))
                 for m in v)
             for k, v in data.items()})
 
@@ -91,4 +93,8 @@ class ModAffectorInfoList(list):
 class ModAffectorInfo:
 
     item_id: str
-    attr_id: int | None
+    attr_id: int | str | None
+
+    def __init__(self, *, data: tuple) -> None:
+        self.item_id, attr_id = data
+        self.attr_id = cast_to_int(val=attr_id)

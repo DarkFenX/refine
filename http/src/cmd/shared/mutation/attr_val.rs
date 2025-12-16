@@ -104,14 +104,14 @@ impl<'de> serde::Deserialize<'de> for HItemAttrMutationValue {
                 E: serde::de::Error,
             {
                 if let Some(roll_str) = v.strip_prefix(ROLL_PREFIX) {
-                    let roll = HMutaRoll::from_str(roll_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let roll = HMutaRoll::from_str(roll_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Roll(roll));
                 }
                 if let Some(abs_str) = v.strip_prefix(ABS_PREFIX) {
-                    let abs = rc::AttrVal::from_str(abs_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let abs = rc::AttrVal::from_str(abs_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Absolute(abs));
                 }
-                let prange = rc::AttrVal::from_str(v).map_err(|v| serde::de::Error::custom(v))?;
+                let prange = rc::AttrVal::from_str(v).map_err(|e| serde::de::Error::custom(e))?;
                 Ok(Self::Value::Absolute(prange))
             }
         }

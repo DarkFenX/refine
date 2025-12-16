@@ -1,4 +1,5 @@
 from .attr_dict import AttrDict, AttrHookDef
+from .cast import cast_to_int
 from .dc_conv import dc_to_dict
 from .insert import conditional_insert
 from .ntt_list import NttList

@@ -65,19 +65,19 @@ impl<'de> serde::Deserialize<'de> for HSpool {
                 E: serde::de::Error,
             {
                 if let Some(value_str) = v.strip_prefix(SPOOL_SCALE_PREFIX) {
-                    let value = rc::AttrVal::from_str(value_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let value = rc::AttrVal::from_str(value_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::SpoolScale(value));
                 }
                 if let Some(value_str) = v.strip_prefix(CYCLE_SCALE_PREFIX) {
-                    let value = rc::AttrVal::from_str(value_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let value = rc::AttrVal::from_str(value_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::CycleScale(value));
                 }
                 if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
-                    let count = rc::Count::from_str(count_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let count = rc::Count::from_str(count_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Cycles(count));
                 }
                 if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {
-                    let time = rc::AttrVal::from_str(time_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let time = rc::AttrVal::from_str(time_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Time(time));
                 }
                 let msg = format!(

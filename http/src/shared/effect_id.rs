@@ -93,31 +93,31 @@ impl<'de> serde::Deserialize<'de> for HEffectId {
                 E: serde::de::Error,
             {
                 if let Some(id_str) = v.strip_prefix(D_PREFIX) {
-                    let id = rc::DogmaEffectId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::DogmaEffectId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Dogma(id));
                 }
                 if let Some(id_str) = v.strip_prefix(SCSW_PREFIX) {
-                    let id = rc::ItemTypeId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::ItemTypeId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::ScSystemWide(id));
                 }
                 if let Some(id_str) = v.strip_prefix(SCSE_PREFIX) {
-                    let id = rc::ItemTypeId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::ItemTypeId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::ScSystemEmitter(id));
                 }
                 if let Some(id_str) = v.strip_prefix(SCPE_PREFIX) {
-                    let id = rc::ItemTypeId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::ItemTypeId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::ScProxyEffect(id));
                 }
                 if let Some(id_str) = v.strip_prefix(SCPT_PREFIX) {
-                    let id = rc::ItemTypeId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::ItemTypeId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::ScProxyTrap(id));
                 }
                 if let Some(id_str) = v.strip_prefix(SCSL_PREFIX) {
-                    let id = rc::ItemTypeId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::ItemTypeId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::ScShipLink(id));
                 }
                 if let Some(id_str) = v.strip_prefix(C_PREFIX) {
-                    let id = rc::CustomEffectId::from_str(id_str).map_err(|v| serde::de::Error::custom(v))?;
+                    let id = rc::CustomEffectId::from_str(id_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Custom(id));
                 }
                 let msg = format!(
