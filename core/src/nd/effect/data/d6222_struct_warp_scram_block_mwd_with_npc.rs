@@ -67,6 +67,6 @@ fn update_effect(a_effect: &mut AEffect) {
     ]);
     // Fighter MWD and MJD stoppers
     a_effect
-        .stoped_effect_ids
+        .stopped_effect_ids
         .extend([ac::effects::FTR_ABIL_MWD, ac::effects::FTR_ABIL_MJD]);
 }

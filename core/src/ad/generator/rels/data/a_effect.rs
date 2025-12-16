@@ -1,7 +1,69 @@
 use crate::{
-    ad::{ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffScope, AEffectBuffStrength},
-    ed::{EAttrId, EBuffId, EItemListId},
+    ad::{ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffScope, AEffectBuffStrength, AEffectId},
+    ed::{EAttrId, EBuffId, EEffectId, EItemId, EItemListId},
 };
+
+impl AEffect {
+    pub(in crate::ad::generator::rels) fn iter_e_item_ids(&self) -> impl Iterator<Item = EItemId> {
+        self.id.dc_eve_item().into_iter()
+    }
+    pub(in crate::ad::generator::rels) fn iter_e_item_list_ids(&self) -> impl Iterator<Item = EItemListId> {
+        self.buff
+            .as_ref()
+            .into_iter()
+            .map(|v| v.iter_e_item_list_ids())
+            .flatten()
+    }
+    pub(in crate::ad::generator::rels) fn iter_e_attr_ids(&self) -> impl Iterator<Item = EAttrId> {
+        let buff = self.buff.as_ref().into_iter().map(|v| v.iter_e_attr_ids()).flatten();
+        let discharge = self.discharge_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let duration = self.duration_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let range = self.range_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let falloff = self.falloff_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let track = self.track_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let chance = self.chance_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        let resist = self.resist_attr_id.and_then(|v| v.dc_eve()).into_iter();
+        buff.chain(discharge)
+            .chain(duration)
+            .chain(range)
+            .chain(falloff)
+            .chain(track)
+            .chain(chance)
+            .chain(resist)
+    }
+    pub(in crate::ad::generator::rels) fn iter_e_effect_ids(&self) -> impl Iterator<Item = EEffectId> {
+        let id = self.id.dc_eve_effect().into_iter();
+        let stopped = self.stopped_effect_ids.iter().filter_map(|v| v.dc_eve_effect());
+        id.chain(stopped)
+    }
+    pub(in crate::ad::generator::rels) fn iter_e_buff_ids(&self) -> impl Iterator<Item = EBuffId> {
+        self.buff.as_ref().into_iter().map(|v| v.iter_e_buff_ids()).flatten()
+    }
+}
+
+impl AEffectId {
+    fn dc_eve_item(&self) -> Option<EItemId> {
+        match self {
+            Self::ScSystemWide(e_item_id)
+            | Self::ScSystemEmitter(e_item_id)
+            | Self::ScProxyEffect(e_item_id)
+            | Self::ScProxyTrap(e_item_id)
+            | Self::ScShipLink(e_item_id) => Some(*e_item_id),
+            Self::Dogma(_) | Self::Custom(_) => None,
+        }
+    }
+    fn dc_eve_effect(&self) -> Option<EEffectId> {
+        match self {
+            Self::Dogma(e_effect_id) => Some(*e_effect_id),
+            Self::ScSystemWide(_)
+            | Self::ScSystemEmitter(_)
+            | Self::ScProxyEffect(_)
+            | Self::ScProxyTrap(_)
+            | Self::ScShipLink(_)
+            | Self::Custom(_) => None,
+        }
+    }
+}
 
 impl AEffectBuff {
     pub(in crate::ad::generator::rels) fn iter_e_item_list_ids(&self) -> impl Iterator<Item = EItemListId> {

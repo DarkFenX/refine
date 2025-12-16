@@ -6,7 +6,7 @@ pub struct AEffect {
     pub category: AEffectCatId,
     pub state: AState,
     pub modifiers: Vec<AEffectModifier> = Vec::new(),
-    pub stoped_effect_ids: Vec<AEffectId> = Vec::new(),
+    pub stopped_effect_ids: Vec<AEffectId> = Vec::new(),
     pub buff: Option<AEffectBuff> = None,
     pub is_assist: bool = false,
     pub is_offense: bool = false,

@@ -60,8 +60,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             // Process effect stoppers first
             match extract_stopper(e_modifier) {
                 Ok(Some(effect_id)) => {
-                    if !a_effect.stoped_effect_ids.contains(&AEffectId::Dogma(effect_id)) {
-                        a_effect.stoped_effect_ids.push(AEffectId::Dogma(effect_id))
+                    if !a_effect.stopped_effect_ids.contains(&AEffectId::Dogma(effect_id)) {
+                        a_effect.stopped_effect_ids.push(AEffectId::Dogma(effect_id))
                     };
                     continue;
                 }

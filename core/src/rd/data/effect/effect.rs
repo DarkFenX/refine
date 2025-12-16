@@ -155,7 +155,7 @@ impl REffect {
         );
         self.stopped_effect_keys.extend(
             a_effect
-                .stoped_effect_ids
+                .stopped_effect_ids
                 .iter()
                 .filter_map(|v| effect_id_key_map.get(v)),
         );

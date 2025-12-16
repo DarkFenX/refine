@@ -78,11 +78,7 @@ fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
         ec::itemcats::STRUCTURE_MODULE,
         ec::itemcats::SUBSYSTEM,
     ];
-    let mut grps = vec![
-        ec::itemgrps::CHARACTER,
-        ec::itemgrps::EFFECT_BEACON,
-        ec::itemgrps::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES,
-    ];
+    let mut grps = vec![ec::itemgrps::CHARACTER, ec::itemgrps::EFFECT_BEACON];
     for (&grp, cat) in g_supp.grp_cat_map.iter() {
         if cats.contains(cat) {
             grps.push(grp);

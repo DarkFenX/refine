@@ -81,14 +81,16 @@ impl KeyDb {
             self.attrs.extend(a_attr.iter_e_attr_ids());
         }
         for a_effect in g_supp.standalone_effects.iter() {
-            if let Some(a_effect_buff) = &a_effect.buff {
-                self.attrs.extend(a_effect_buff.iter_e_attr_ids());
-                self.buffs.extend(a_effect_buff.iter_e_buff_ids());
-                self.item_lists.extend(a_effect_buff.iter_e_item_list_ids());
-            }
+            self.items.extend(a_effect.iter_e_item_ids());
+            self.attrs.extend(a_effect.iter_e_attr_ids());
+            self.effects.extend(a_effect.iter_e_effect_ids());
+            self.buffs.extend(a_effect.iter_e_buff_ids());
+            self.item_lists.extend(a_effect.iter_e_item_list_ids());
         }
         for a_buff in g_supp.standalone_buffs.iter() {
+            self.groups.extend(a_buff.iter_e_group_ids());
             self.attrs.extend(a_buff.iter_e_attr_ids());
+            self.buffs.extend(a_buff.iter_e_buff_ids())
         }
     }
 }

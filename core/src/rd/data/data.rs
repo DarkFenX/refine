@@ -83,7 +83,7 @@ impl From<AData> for RData {
         for (&a_buff_id, a_buff) in a_data.buffs.iter() {
             let entry = buffs.vacant_entry();
             let buff_key = entry.key();
-            let r_buff = RBuff::from_a_buff(buff_key, a_buff);
+            let r_buff = RBuff::from_a_buff(a_buff);
             entry.insert(r_buff);
             buff_id_key_map.insert(a_buff_id, buff_key);
         }
