@@ -101,7 +101,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_mods(&sol.u_data, item_key) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.id_by_key(err.item_key).into(),
+                item_id: sol.u_data.items.id_by_key(err.item_key),
             }
             .into()),
         }
