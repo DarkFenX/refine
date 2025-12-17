@@ -48,18 +48,18 @@ fn setup_logger() -> () {
 
 fn main() {
     setup_logger();
-    let dh = Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let ch = Box::new(radc::JsonZfileAdc::new(
+    let edh: Box<dyn EveDataHandler> = Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
+    let mut adc: Box<dyn AdaptedDataCacher> = Box::new(radc::JsonZfileAdc::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    // test_random(dh, ch);
-    // test_crusader(dh, ch);
-    test_nphoon(dh, ch);
+    // test_random(&edh, &mut adc);
+    // test_crusader(&edh, &mut adc);
+    test_nphoon(&edh, &mut adc);
 }
 
-fn test_random(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
-    let src = Src::new(dh, Some(ch)).unwrap();
+fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
+    let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let mut fit = sol_sys.add_fit();
     let mut fighter = fit.add_fighter(40562, MinionState::InBay, None, None);
@@ -70,9 +70,9 @@ fn test_random(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     println!("{:?}", autocharges);
 }
 
-fn test_crusader(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
-    let skill_ids = get_skill_ids(&dh);
-    let src = Src::new(dh, Some(ch)).unwrap();
+fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
+    let skill_ids = get_skill_ids(&edh);
+    let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let mut fit = sol_sys.add_fit();
     let ship_id = fit.set_ship(11184, None, None).get_item_id();
@@ -129,9 +129,9 @@ fn test_crusader(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn test_nphoon(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
-    let skill_ids = get_skill_ids(&dh);
-    let src = Src::new(dh, Some(ch)).unwrap();
+fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
+    let skill_ids = get_skill_ids(&edh);
+    let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
 
     let mut sol_sys = SolarSystem::new(src);
     sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
@@ -631,8 +631,8 @@ fn test_nphoon(dh: Box<redh::PhbFileEdh>, ch: Box<radc::JsonZfileAdc>) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn get_skill_ids(dh: &Box<redh::PhbFileEdh>) -> Vec<rc::ed::EItemId> {
-    let eve_data = dh.get_data().unwrap();
+fn get_skill_ids(edh: &Box<dyn EveDataHandler>) -> Vec<rc::ed::EItemId> {
+    let eve_data = edh.get_data().unwrap();
     let grp_ids = eve_data
         .groups
         .data
