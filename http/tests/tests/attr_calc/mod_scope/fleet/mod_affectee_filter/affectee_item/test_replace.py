@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def test_root_self(client, consts):

@@ -2,7 +2,7 @@
 Check that multiple types of projected modifiers are processed when switching ship type.
 """
 
-from tests import approx
+from fw import approx
 
 
 def setup_test(*, client, consts):

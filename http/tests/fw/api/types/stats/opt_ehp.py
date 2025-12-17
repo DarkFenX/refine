@@ -1,10 +1,10 @@
 import dataclasses
 import typing
 
-from tests.fw.util import Absent, dc_to_dict
+from fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfile
 
 
 @dataclasses.dataclass(kw_only=True)

@@ -1,6 +1,6 @@
-from tests import ANY_VALUE, Spool, approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
-from tests.tests.stats.tank import (
+from fw import ANY_VALUE, Spool, approx
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
+from tests.stats.tank import (
     make_eve_remote_ar,
     make_eve_remote_hr,
     make_eve_remote_sar,

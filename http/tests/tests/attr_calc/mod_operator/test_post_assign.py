@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def setup_hig_test(*, client, consts, high_is_good):

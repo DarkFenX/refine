@@ -1,4 +1,4 @@
-from tests import Effect
+from fw import Effect
 
 
 def test_switch_state_invalid_reference(client, consts):

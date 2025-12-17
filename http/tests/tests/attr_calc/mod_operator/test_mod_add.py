@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def setup_penalization_test(*, client, consts, stackable):

@@ -1,15 +1,15 @@
 import typing
 
-from tests.fw import eve
-from tests.fw.api.types import SolarSystem, ValOptions
-from tests.fw.consts import ApiSolInfoMode
-from tests.fw.request import Request
-from tests.fw.util import Absent, Default, conditional_insert
+from fw import eve
+from fw.api.types import SolarSystem, ValOptions
+from fw.consts import ApiSolInfoMode
+from fw.request import Request
+from fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.aliases import DpsProfile
-    from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone, ApiValInfoMode
+    from fw.api.aliases import DpsProfile
+    from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone, ApiValInfoMode
 
 
 class ApiSolCheckError(Exception):

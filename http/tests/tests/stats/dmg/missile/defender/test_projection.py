@@ -1,4 +1,4 @@
-from tests.fw.api import (
+from fw.api import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
@@ -7,7 +7,7 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import make_eve_launcher, make_eve_missile_defender, make_eve_ship, setup_dmg_basics
+from tests.stats.dmg import make_eve_launcher, make_eve_missile_defender, make_eve_ship, setup_dmg_basics
 
 
 def test_ship(client, consts):

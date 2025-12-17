@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.api import FitStatsOptions
+from fw import approx
+from fw.api import FitStatsOptions
 
 
 def test_debuff_rr(client, consts):
@@ -45,7 +45,7 @@ def test_debuff_rr(client, consts):
     assert api_mod.initial_val == approx(-50)
     assert api_mod.stacking_mult is None
     assert api_mod.initial_val == approx(-50)
-    assert api_mod.affectors.one().item_id in (api_affector_module1.id, api_affector_module2.id)
+    assert api_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_mod.affectors.one().attr_id is None
 
 
@@ -102,7 +102,7 @@ def test_debuff_warp(client, consts):
     assert api_mod.initial_val == approx(100)
     assert api_mod.stacking_mult is None
     assert api_mod.initial_val == approx(100)
-    assert api_mod.affectors.one().item_id in (api_affector_module1.id, api_affector_module2.id)
+    assert api_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_mod.affectors.one().attr_id is None
 
 
@@ -173,14 +173,14 @@ def test_debuff_dock_jump(client, consts):
     assert api_dock_mod.initial_val == approx(1)
     assert api_dock_mod.stacking_mult is None
     assert api_dock_mod.initial_val == approx(1)
-    assert api_dock_mod.affectors.one().item_id in (api_affector_module1.id, api_affector_module2.id)
+    assert api_dock_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_dock_mod.affectors.one().attr_id is None
     api_jump_mod = api_affectee_ship.mods[eve_affectee_jump_attr_id].one()
     assert api_jump_mod.op == consts.ApiModOp.mod_add
     assert api_jump_mod.initial_val == approx(1)
     assert api_jump_mod.stacking_mult is None
     assert api_jump_mod.initial_val == approx(1)
-    assert api_jump_mod.affectors.one().item_id in (api_affector_module1.id, api_affector_module2.id)
+    assert api_jump_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_jump_mod.affectors.one().attr_id is None
 
 
@@ -231,7 +231,7 @@ def test_debuff_tether(client, consts):
     assert api_mod.initial_val == approx(1)
     assert api_mod.stacking_mult is None
     assert api_mod.initial_val == approx(1)
-    assert api_mod.affectors.one().item_id in (api_affector_module1.id, api_affector_module2.id)
+    assert api_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_mod.affectors.one().attr_id is None
 
 

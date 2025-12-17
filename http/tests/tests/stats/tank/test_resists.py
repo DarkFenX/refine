@@ -1,6 +1,6 @@
-from tests import Muta, approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
-from tests.tests.stats.tank import make_eve_tankable, setup_tank_basics
+from fw import Muta, approx, check_no_field
+from fw.api import FitStatsOptions, ItemStatsOptions
+from tests.stats.tank import make_eve_tankable, setup_tank_basics
 
 
 def test_ship_modified(client, consts):

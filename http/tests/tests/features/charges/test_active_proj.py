@@ -3,7 +3,7 @@ Some charges have active projectable effects (e.g. wubbles, HIC rays), here we c
 effects are applied/removed in different circumstances.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_bundled_proj_unproj(client, consts):

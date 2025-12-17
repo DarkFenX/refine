@@ -1,7 +1,7 @@
 import typing
 
-from tests.fw.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
-from tests.fw.util import Absent, Default
+from fw.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
+from fw.util import Absent, Default
 from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier, ItemAbilityData
 
@@ -89,7 +89,7 @@ class EveTypeFactory(EveDataManager):
             cat_id: int | type[Absent | Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | None | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
             abils: list[ItemAbilityData] | type[Absent] = Absent,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
@@ -140,7 +140,7 @@ class EveTypeFactory(EveDataManager):
             grp_id: int | type[Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | None | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
             mass: float | type[Absent | Default] = Default,
@@ -168,7 +168,7 @@ class EveTypeFactory(EveDataManager):
             grp_id: int | type[Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | None | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
             mass: float | type[Absent | Default] = Default,
@@ -196,7 +196,7 @@ class EveTypeFactory(EveDataManager):
             grp_id: int | type[Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | None | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
             mass: float | type[Absent | Default] = Default,
@@ -224,7 +224,7 @@ class EveTypeFactory(EveDataManager):
             grp_id: int | type[Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | None | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
             abils: list[ItemAbilityData] | type[Absent] = Absent,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
@@ -501,9 +501,9 @@ class EveTypeFactory(EveDataManager):
     def mk_eve_item_abil(
             *,
             id_: int,
-            cooldown: float | None | type[Absent] = Absent,
-            charge_count: int | None | type[Absent] = Absent,
-            charge_rearm_time: float | None | type[Absent] = Absent,
+            cooldown: float | type[Absent] | None = Absent,
+            charge_count: int | type[Absent] | None = Absent,
+            charge_rearm_time: float | type[Absent] | None = Absent,
     ) -> ItemAbilityData:
         return ItemAbilityData(
             id=id_,

@@ -1,9 +1,10 @@
+from collections import UserDict, UserList
 from dataclasses import dataclass
 
-from tests.fw.util import cast_to_int
+from fw.util import cast_to_int
 
 
-class AttrModInfoMap(dict):
+class AttrModInfoMap(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({
@@ -34,7 +35,7 @@ class AttrModInfoMap(dict):
         return f'{class_name}({super_repr})'
 
 
-class ModInfoList(list):
+class ModInfoList(UserList):
 
     def find_by_op(self, *, op: str) -> ModInfoList:
         return ModInfoList(i for i in self if i.op == op)
@@ -69,7 +70,7 @@ class ModInfo:
     affectors: list[ModAffectorInfo]
 
 
-class ModAffectorInfoList(list):
+class ModAffectorInfoList(UserList):
 
     def find_by_item(self, *, item_id: str) -> ModAffectorInfoList:
         return ModAffectorInfoList(i for i in self if i.item_id == item_id)

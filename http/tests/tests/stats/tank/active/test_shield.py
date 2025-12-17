@@ -1,6 +1,6 @@
-from tests import ANY_VALUE, approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
-from tests.tests.stats.tank import (
+from fw import ANY_VALUE, approx
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
+from tests.stats.tank import (
     make_eve_drone_shield,
     make_eve_local_asb,
     make_eve_local_sb,

@@ -2,8 +2,8 @@
 Here we check availability of info of various items via fit info endpoint.
 """
 
-from tests import check_no_field
-from tests.fw.util import Absent
+from fw import check_no_field
+from fw.util import Absent
 
 
 def test_fleet(client):

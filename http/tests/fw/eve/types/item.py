@@ -1,11 +1,11 @@
 import typing
 from dataclasses import dataclass
 
-from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.util import Absent, conditional_insert
+from fw.eve.exception import TestDataConsistencyError
+from fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
-    from tests.fw.eve.containers.primitives import EvePrimitives
+    from fw.eve.containers.primitives import EvePrimitives
     from .item_ability import ItemAbilityData
 
 

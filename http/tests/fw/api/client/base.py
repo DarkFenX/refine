@@ -2,11 +2,11 @@ import typing
 
 import requests
 
-from tests.fw.response import Response
+from fw.response import Response
 
 if typing.TYPE_CHECKING:
-    from tests.fw.log import LogReader
-    from tests.fw.request import Request
+    from fw.log import LogReader
+    from fw.request import Request
 
 
 class ApiClientBase:

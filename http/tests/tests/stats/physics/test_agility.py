@@ -1,5 +1,5 @@
-from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from fw import approx, check_no_field
+from fw.api import FitStatsOptions, ItemStatsOptions
 
 
 def test_ship_modified_mass(client, consts):

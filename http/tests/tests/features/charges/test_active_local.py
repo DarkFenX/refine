@@ -3,7 +3,7 @@ There are no charges with active effects which affect fit-local items, but it is
 the lib, so we check it nevertheless.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_bundled_remove(client, consts):

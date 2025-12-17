@@ -1,5 +1,5 @@
-from tests import Effect, approx, check_no_field
-from tests.fw.api import FitStatsOptions, ValOptions
+from fw import Effect, approx, check_no_field
+from fw.api import FitStatsOptions, ValOptions
 
 
 def test_bubble_sig_local(client, consts):

@@ -17,6 +17,7 @@ line-length = 120
 indent-width = 4
 
 [tool.ruff.lint]
+preview = true
 select = [
     "F",  # Pyflakes
     "E", "W",  # pycodestyle
@@ -65,6 +66,8 @@ no-lines-before = ["local-folder"]
 
 [tool.ruff.lint.pylint]
 max-args = 15
+max-locals = 100
+max-public-methods = 50
 max-statements = 150
 
 [tool.ruff.lint.mccabe]

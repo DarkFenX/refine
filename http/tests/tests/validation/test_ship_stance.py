@@ -3,8 +3,8 @@ This validator takes role similar to "max subsystem slots" for tech 3 cruisers -
 when non-t3d ship has a stance set.
 """
 
-from tests import check_no_field
-from tests.fw.api import ValOptions
+from fw import check_no_field
+from fw.api import ValOptions
 
 
 def test_switch_ship(client, consts):

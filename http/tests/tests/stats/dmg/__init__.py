@@ -1,10 +1,10 @@
 import typing
 from dataclasses import dataclass
 
-from tests.fw.util import Default
+from fw.util import Default
 
 if typing.TYPE_CHECKING:
-    from tests.fw.client import TestClient
+    from fw.client import TestClient
 
 
 @dataclass(kw_only=True)

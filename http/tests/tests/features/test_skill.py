@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from fw import approx, check_no_field
 
 
 def test_level_switch_loaded(client, consts):

@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.util import Default
+from fw import approx
+from fw.util import Default
 
 
 def get_value_simple(*, client, attr_id, base_value):

@@ -1,23 +1,21 @@
 import typing
-from pathlib import Path
 
 import pytest
 
-from tests.fw import consts as eve_consts
-from tests.fw.client import TestClient
-from tests.fw.log import LogReader
-from tests.fw.server import build_config, build_server, kill_server, run_server
-from tests.fw.util import next_free_port
+from fw import consts as eve_consts
+from fw.client import TestClient
+from fw.log import LogReader
+from fw.server import build_config, build_server, kill_server, run_server
+from fw.util import PROJECT_ROOT, next_free_port
 
 if typing.TYPE_CHECKING:
     from collections.abc import Generator
+    from pathlib import Path
 
     import pytest_httpserver
 
-    from tests.fw.log import LogCollector
-    from tests.fw.server import ConfigInfo, ServerInfo
-
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+    from fw.log import LogCollector
+    from fw.server import ConfigInfo, ServerInfo
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:

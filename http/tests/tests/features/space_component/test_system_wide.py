@@ -4,7 +4,7 @@ to EVE's static data only with release of the Odysseus ship, to facilitate ship-
 some systems.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_affectee_filter_item_list(client, consts):

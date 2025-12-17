@@ -1,8 +1,9 @@
 import dataclasses
 import typing
+from collections import UserDict
 
 
-class ValMaxGroupFail(dict):
+class ValMaxGroupFail(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({int(k): ValMaxGroupGroup(data=v) for k, v in data.items()})

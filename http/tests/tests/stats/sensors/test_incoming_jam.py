@@ -1,6 +1,6 @@
 
-from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from fw import approx
+from fw.api import FitStatsOptions, ItemStatsOptions
 
 
 def test_module_targeted_ship(client, consts):

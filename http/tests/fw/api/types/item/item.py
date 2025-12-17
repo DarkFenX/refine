@@ -1,8 +1,8 @@
 import typing
 
-from tests.fw.api.types.stats import ItemStats
-from tests.fw.consts import ApiItemInfoMode
-from tests.fw.util import Absent, AttrDict, AttrHookDef
+from fw.api.types.stats import ItemStats
+from fw.consts import ApiItemInfoMode
+from fw.util import Absent, AttrDict, AttrHookDef
 from .ability_info import AbilityInfo
 from .adj_count import AdjustableCount
 from .attr_vals import AttrVals
@@ -15,10 +15,10 @@ from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api import ApiClient
-    from tests.fw.api.aliases import MutaAdd, MutaChange
-    from tests.fw.api.types import ItemStatsOptions
-    from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
+    from fw.api import ApiClient
+    from fw.api.aliases import MutaAdd, MutaChange
+    from fw.api.types import ItemStatsOptions
+    from fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
 
 
 class Item(AttrDict):
@@ -170,7 +170,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
-            mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
@@ -204,7 +204,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
-            count: int | None | type[Absent] = Absent,
+            count: int | type[Absent] | None = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
@@ -282,9 +282,9 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: ApiModuleState | type[Absent] = Absent,
-            mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
-            charge_type_id: int | None | type[Absent] = Absent,
-            spool: str | None | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
+            charge_type_id: int | type[Absent] | None = Absent,
+            spool: str | type[Absent] | None = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,

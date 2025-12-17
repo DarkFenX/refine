@@ -1,8 +1,9 @@
 import dataclasses
 import typing
+from collections import UserDict
 
 
-class ValSrqFail(dict):
+class ValSrqFail(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({

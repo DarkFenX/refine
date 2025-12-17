@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from fw import approx, check_no_field
 
 
 def setup_penalization_test(*, client, consts, stackable):
@@ -558,4 +558,4 @@ def test_insignificant_chain_values_penalized(client, consts):
     assert api_mod.applied_val == approx(0)
     # Since both affector1 and affector3 can be exposed as significant modification, check for ID
     # of either
-    assert api_mod.affectors.one().item_id in (api_affector1.id, api_affector3.id)
+    assert api_mod.affectors.one().item_id in {api_affector1.id, api_affector3.id}

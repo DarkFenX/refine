@@ -1,7 +1,7 @@
 import typing
 
-from tests.fw.eve.exception import TestDataConsistencyError
-from tests.fw.eve.types import (
+from fw.eve.exception import TestDataConsistencyError
+from fw.eve.types import (
     Ability,
     Attribute,
     Buff,
@@ -14,11 +14,11 @@ from tests.fw.eve.types import (
     SpaceComponent,
     SpaceComponentBuffData,
 )
-from tests.fw.util import Absent
+from fw.util import Absent
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
-    from tests.fw.eve.types import BuffModifier, EffectModifier
+    from fw.eve.types import BuffModifier, EffectModifier
     from .strings import EveStrings
 
 
@@ -136,7 +136,7 @@ class EveObjects:
             grp_id: int,
             attrs: dict[int, float] | type[Absent],
             eff_ids: list[int] | type[Absent],
-            defeff_id: int | None | type[Absent],
+            defeff_id: int | type[Absent] | None,
             abils: list[ItemAbilityData] | type[Absent],
             srqs: dict[int, int] | type[Absent],
             capacity: float | type[Absent],

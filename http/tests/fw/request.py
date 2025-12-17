@@ -4,8 +4,8 @@ import typing
 import requests
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.client.base import ApiClientBase
-    from tests.fw.response import Response
+    from fw.api.client.base import ApiClientBase
+    from fw.response import Response
 
 
 class Request(requests.PreparedRequest):

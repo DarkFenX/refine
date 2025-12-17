@@ -6,7 +6,7 @@ As of 2025-03-28, proxy effects do not affect non-ship targets like drones (test
 so proxy effects use built-in ship type list ID to apply their modifications.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_affectee_filter_item(client, consts):

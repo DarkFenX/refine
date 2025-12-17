@@ -1,13 +1,13 @@
 import typing
 
-from tests.fw.request import Request
-from tests.fw.util import Absent, conditional_insert
+from fw.request import Request
+from fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.aliases import MutaAdd, MutaChange
-    from tests.fw.api.types import ItemStatsOptions
-    from tests.fw.consts import (
+    from fw.api.aliases import MutaAdd, MutaChange
+    from fw.api.types import ItemStatsOptions
+    from fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,
         ApiMinionState,
@@ -222,7 +222,7 @@ class ApiClientItem(ApiClientBase):
             item_id: int,
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
-            mutation: MutaAdd | MutaChange | None | type[Absent],
+            mutation: MutaAdd | MutaChange | type[Absent] | None,
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
@@ -257,7 +257,7 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: ApiMinionState,
-            count: int | None | type[Absent],
+            count: int | type[Absent] | None,
             abilities: dict[int, bool] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
@@ -287,7 +287,7 @@ class ApiClientItem(ApiClientBase):
             item_id: int,
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
-            count: int | None | type[Absent],
+            count: int | type[Absent] | None,
             abilities: dict[int, bool] | type[Absent],
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
@@ -424,9 +424,9 @@ class ApiClientItem(ApiClientBase):
             item_id: str,
             type_id: int | type[Absent],
             state: ApiModuleState | type[Absent],
-            mutation: MutaAdd | MutaChange | None | type[Absent],
-            charge_type_id: int | None | type[Absent],
-            spool: str | None | type[Absent],
+            mutation: MutaAdd | MutaChange | type[Absent] | None,
+            charge_type_id: int | type[Absent] | None,
+            spool: str | type[Absent] | None,
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],

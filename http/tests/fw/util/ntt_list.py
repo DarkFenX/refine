@@ -1,6 +1,8 @@
+from collections import UserList
+
 
 # Entity list with a few extra access methods
-class NttList(list):
+class NttList(UserList):
 
     def first(self):  # noqa: ANN201
         assert len(self) >= 1

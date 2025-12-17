@@ -2,8 +2,8 @@
 Check which damage types RAH chooses when receiving equal damage.
 """
 
-from tests import approx
-from tests.tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
+from fw import approx
+from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
 
 
 def test_multi(client, consts):

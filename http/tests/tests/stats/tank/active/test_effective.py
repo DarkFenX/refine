@@ -1,6 +1,6 @@
-from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionErps
-from tests.tests.stats.tank import (
+from fw import approx
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionErps
+from tests.stats.tank import (
     make_eve_local_ar,
     make_eve_local_hr,
     make_eve_local_sb,

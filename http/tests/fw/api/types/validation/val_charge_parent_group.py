@@ -1,8 +1,9 @@
 import dataclasses
 import typing
+from collections import UserDict
 
 
-class ValChargeParentGroupFail(dict):
+class ValChargeParentGroupFail(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({k: ValChargeParentGroupInfo(data=v) for k, v in data.items()})

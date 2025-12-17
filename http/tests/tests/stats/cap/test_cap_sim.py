@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapSim
+from fw import approx
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapSim
 
 
 def test_stability_high_fluctuation(client, consts):

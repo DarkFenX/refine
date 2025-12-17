@@ -1,5 +1,5 @@
-from tests import check_no_field
-from tests.fw.api import ValOptions
+from fw import check_no_field
+from fw.api import ValOptions
 
 
 def test_booster(client):

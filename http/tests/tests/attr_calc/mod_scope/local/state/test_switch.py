@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def get_value_after_switch(*, client, consts, state_from, state_to):

@@ -35,8 +35,8 @@ Griffin with 4 rainbow Panola jams (~9.84 primary jam strength, ~3.28 secondary)
 diplomatic shuttle (9.6 strength of all types): only yellow is consistently jamming.
 """
 
-from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from fw import approx, check_no_field
+from fw.api import FitStatsOptions, ItemStatsOptions
 
 
 def test_ship_modified_radar(client, consts):

@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def test_root_add_fw_item_remove_fw_item(client, consts):

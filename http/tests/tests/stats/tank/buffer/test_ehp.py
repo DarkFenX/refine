@@ -1,6 +1,6 @@
-from tests import approx, check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionEhp
-from tests.tests.stats.tank import (
+from fw import approx, check_no_field
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionEhp
+from tests.stats.tank import (
     make_eve_local_aar,
     make_eve_local_asb,
     make_eve_remote_aar,

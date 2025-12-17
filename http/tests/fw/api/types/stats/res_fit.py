@@ -1,4 +1,4 @@
-from tests.fw.util import AttrDict, AttrHookDef, NttList
+from fw.util import AttrDict, AttrHookDef, NttList
 from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps

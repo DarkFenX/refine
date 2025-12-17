@@ -2,7 +2,7 @@ import dataclasses
 import typing
 
 if typing.TYPE_CHECKING:
-    from tests.fw.consts import ApiEffMode
+    from fw.consts import ApiEffMode
 
 
 @dataclasses.dataclass

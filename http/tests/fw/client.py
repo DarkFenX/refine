@@ -1,12 +1,12 @@
 import typing
 
-from tests.fw.api import ApiClient
-from tests.fw.eve import EveDataManager, EveTypeFactory
+from fw.api import ApiClient
+from fw.eve import EveDataManager, EveTypeFactory
 
 if typing.TYPE_CHECKING:
     import pytest_httpserver
 
-    from tests.fw.log import LogReader
+    from fw.log import LogReader
 
 
 class TestClient(ApiClient, EveTypeFactory, EveDataManager):

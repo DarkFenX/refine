@@ -1,6 +1,6 @@
-from tests import check_no_field
-from tests.fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
-from tests.tests.stats.dmg import make_eve_smartbomb, setup_dmg_basics
+from fw import check_no_field
+from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
+from tests.stats.dmg import make_eve_smartbomb, setup_dmg_basics
 
 
 def test_not_loaded(client, consts):

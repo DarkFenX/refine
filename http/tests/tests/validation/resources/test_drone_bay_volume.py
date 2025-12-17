@@ -1,5 +1,5 @@
-from tests import Muta, approx, check_no_field
-from tests.fw.api import FitStatsOptions, ValOptions
+from fw import Muta, approx, check_no_field
+from fw.api import FitStatsOptions, ValOptions
 
 
 def test_fail_single(client, consts):

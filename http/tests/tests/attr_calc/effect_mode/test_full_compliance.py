@@ -1,4 +1,4 @@
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_state_offline(client, consts):

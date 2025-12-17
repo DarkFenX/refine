@@ -2,12 +2,12 @@ import typing
 from dataclasses import dataclass
 from itertools import chain
 
-from tests import Effect
-from tests.fw.util import Default
+from fw import Effect
+from fw.util import Default
 
 if typing.TYPE_CHECKING:
-    from tests.fw.client import TestClient
-    from tests.fw.eve import EveObjects
+    from fw.client import TestClient
+    from fw.eve import EveObjects
 
 
 @dataclass(kw_only=True)

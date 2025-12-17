@@ -1,8 +1,9 @@
 import dataclasses
 import typing
+from collections import UserDict
 
 
-class ValMaxTypeFail(dict):
+class ValMaxTypeFail(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({int(k): ValMaxTypeType(data=v) for k, v in data.items()})

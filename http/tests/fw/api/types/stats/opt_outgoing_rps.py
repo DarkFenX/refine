@@ -1,6 +1,6 @@
 import dataclasses
 
-from tests.fw.util import Absent, dc_to_dict
+from fw.util import Absent, dc_to_dict
 
 
 @dataclasses.dataclass(kw_only=True)

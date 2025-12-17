@@ -1,12 +1,12 @@
 import typing
 
-from tests.fw.consts import ApiFleetInfoMode
-from tests.fw.util import AttrDict, AttrHookDef
+from fw.consts import ApiFleetInfoMode
+from fw.util import AttrDict, AttrHookDef
 from .stats import FleetStats
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api import ApiClient
-    from tests.fw.util import Absent
+    from fw.api import ApiClient
+    from fw.util import Absent
     from .stats import FleetStatsOptions
 
 

@@ -1,5 +1,5 @@
-from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from fw import approx, check_no_field
+from fw.api import ValOptions
 
 
 def test_ship(client, consts):

@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import StrEnum, unique
 from threading import Thread
 
-from tests.fw.util import Timer
+from fw.util import Timer
 
 if typing.TYPE_CHECKING:
     from collections.abc import Generator

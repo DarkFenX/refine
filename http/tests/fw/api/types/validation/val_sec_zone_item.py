@@ -2,7 +2,7 @@ import dataclasses
 import typing
 
 if typing.TYPE_CHECKING:
-    from tests.fw.consts import ApiSecZone
+    from fw.consts import ApiSecZone
 
 
 @dataclasses.dataclass

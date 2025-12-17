@@ -1,7 +1,7 @@
 import typing
 
-from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
-from tests.fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
+from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
+from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
 from .dmg_types import DmgTypes
 from .fit import Fit
 from .fleet import Fleet
@@ -9,11 +9,11 @@ from .item import Item
 from .validation import FitValResult, SolValResult
 
 if typing.TYPE_CHECKING:
-    from tests.fw import eve
-    from tests.fw.api import ApiClient
-    from tests.fw.api.aliases import DpsProfile
-    from tests.fw.consts import ApiSecZone
-    from tests.fw.response import Response
+    from fw import eve
+    from fw.api import ApiClient
+    from fw.api.aliases import DpsProfile
+    from fw.consts import ApiSecZone
+    from fw.response import Response
     from .validation import ValOptions
 
 

@@ -1,5 +1,5 @@
-from tests import Effect, check_no_field
-from tests.fw.api import ValOptions
+from fw import Effect, check_no_field
+from fw.api import ValOptions
 
 
 def test_module_project_unproject(client, consts):

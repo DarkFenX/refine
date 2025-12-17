@@ -1,4 +1,4 @@
-from tests.fw.api import ItemStatsOptions
+from fw.api import ItemStatsOptions
 
 
 def test_module_self(client, consts):

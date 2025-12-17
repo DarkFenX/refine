@@ -1,8 +1,9 @@
 import dataclasses
 import typing
+from collections import UserDict
 
 
-class ValChargeVolumeFail(dict):
+class ValChargeVolumeFail(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({k: ValChargeVolumeInfo(data=v) for k, v in data.items()})

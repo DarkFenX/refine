@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def test_optimal_unavailable(client, consts):

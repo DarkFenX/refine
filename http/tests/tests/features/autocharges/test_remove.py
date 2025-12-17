@@ -1,4 +1,4 @@
-from tests import Effect
+from fw import Effect
 
 
 def test_remove_item(client, consts):

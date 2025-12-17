@@ -1,7 +1,9 @@
 import inspect
 from pathlib import Path
 
-from tests import TEST_FOLDER_SPLIT
+from .paths import TESTS_ROOT
+
+TEST_FOLDER_SPLIT = TESTS_ROOT.parts
 
 
 class TestKey(tuple):

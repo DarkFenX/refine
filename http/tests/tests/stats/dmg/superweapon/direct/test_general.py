@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.api import (
+from fw import approx
+from fw.api import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
@@ -9,7 +9,7 @@ from tests.fw.api import (
     StatsOptionItemDps,
     StatsOptionItemVolley,
 )
-from tests.tests.stats.dmg import (
+from tests.stats.dmg import (
     make_eve_dd_direct_amarr,
     make_eve_dd_direct_caldari,
     make_eve_dd_direct_gallente,

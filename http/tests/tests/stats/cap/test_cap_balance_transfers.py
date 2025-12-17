@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from fw import approx
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
 
 
 def test_state(client, consts):

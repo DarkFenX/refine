@@ -1,5 +1,5 @@
-from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from fw import approx, check_no_field
+from fw.api import ValOptions
 
 
 def test_bundled(client, consts):
@@ -399,7 +399,6 @@ def test_no_attr(client, consts):
     assert api_val.passed is False
     assert api_val.details.charge_group == {
         api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
-
 
 
 def test_not_loaded_module(client, consts):

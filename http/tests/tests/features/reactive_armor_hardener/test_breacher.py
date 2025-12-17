@@ -3,8 +3,8 @@ As of 2025-02-07, breacher damage dealt to armor counted as EM damage for RAH pu
 test all the interactions between breacher pods and RAH.
 """
 
-from tests import approx
-from tests.tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
+from fw import approx
+from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
 
 
 def test_damage_kind(client, consts):

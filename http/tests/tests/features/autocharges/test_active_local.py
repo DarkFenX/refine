@@ -4,7 +4,7 @@ with the lib, so we check it nevertheless (just hope it doesn't crash or doesn't
 inconsistent).
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_add_remove(client, consts):

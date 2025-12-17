@@ -1,6 +1,6 @@
-from tests import check_no_field
-from tests.fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
-from tests.tests.stats.tank import make_eve_remote_ar, setup_tank_basics
+from fw import check_no_field
+from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
+from tests.stats.tank import make_eve_remote_ar, setup_tank_basics
 
 
 def test_not_requested(client, consts):

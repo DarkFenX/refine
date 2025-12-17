@@ -1,5 +1,5 @@
-from tests import Effect, Muta, approx, check_no_field
-from tests.fw.api import ValOptions
+from fw import Effect, Muta, approx, check_no_field
+from fw.api import ValOptions
 
 
 def test_offense_src_module_tgt_ship_project_unproject(client, consts):

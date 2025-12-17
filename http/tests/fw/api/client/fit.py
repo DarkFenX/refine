@@ -1,14 +1,14 @@
 import typing
 
-from tests.fw.api.types import ValOptions
-from tests.fw.request import Request
-from tests.fw.util import Absent, conditional_insert
+from fw.api.types import ValOptions
+from fw.request import Request
+from fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.aliases import DpsProfile
-    from tests.fw.api.types import FitStatsOptions
-    from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
+    from fw.api.aliases import DpsProfile
+    from fw.api.types import FitStatsOptions
+    from fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
 
 
 class ApiClientFit(ApiClientBase):
@@ -109,9 +109,9 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            fleet_id: str | None | type[Absent],
+            fleet_id: str | type[Absent] | None,
             sec_status: float | type[Absent],
-            rah_incoming_dps: DpsProfile | None | type[Absent],
+            rah_incoming_dps: DpsProfile | type[Absent] | None,
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:

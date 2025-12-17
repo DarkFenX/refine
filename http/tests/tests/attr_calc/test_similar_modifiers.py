@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def test_same_item_different_effects_attrs(client, consts):

@@ -1,5 +1,5 @@
-from tests import Spool, approx, check_no_field
-from tests.fw.api import ItemStatsOptions
+from fw import Spool, approx, check_no_field
+from fw.api import ItemStatsOptions
 
 
 def test_cycles_basic(client, consts):

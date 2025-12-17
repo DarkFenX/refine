@@ -1,6 +1,6 @@
 import typing
 
-from tests.fw.consts import (
+from fw.consts import (
     ApiFitInfoMode,
     ApiItemInfoMode,
     ApiMinionState,
@@ -11,16 +11,16 @@ from tests.fw.consts import (
     ApiServiceState,
     ApiValInfoMode,
 )
-from tests.fw.util import Absent, AttrDict, AttrHookDef, is_subset
+from fw.util import Absent, AttrDict, AttrHookDef, is_subset
 from .dmg_types import DmgTypes
 from .item import Item
 from .stats import FitStats
 from .validation import FitValResult, SolValResult
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api import ApiClient
-    from tests.fw.api.aliases import DpsProfile, MutaAdd
-    from tests.fw.response import Response
+    from fw.api import ApiClient
+    from fw.api.aliases import DpsProfile, MutaAdd
+    from fw.response import Response
     from .stats import FitStatsOptions
     from .validation import ValOptions
 
@@ -164,9 +164,9 @@ class Fit(AttrDict):
 
     def change(
             self, *,
-            fleet_id: str | None | type[Absent] = Absent,
+            fleet_id: str | type[Absent] | None = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: DpsProfile | None | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfile | type[Absent] | None = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -286,7 +286,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: ApiMinionState = ApiMinionState.in_bay,
-            count: int | None | type[Absent] = Absent,
+            count: int | type[Absent] | None = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,

@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from fw import approx, check_no_field
 
 
 def test_basic_not_damaged(client, consts):

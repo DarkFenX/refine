@@ -1,6 +1,6 @@
-from tests import ANY_VALUE, approx
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
-from tests.tests.stats.tank import (
+from fw import ANY_VALUE, approx
+from fw.api import FitStatsOptions, ItemStatsOptions
+from tests.stats.tank import (
     make_eve_drone_hull,
     make_eve_local_hr,
     make_eve_remote_hr,

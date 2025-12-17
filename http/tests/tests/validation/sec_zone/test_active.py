@@ -1,5 +1,5 @@
-from tests import Muta, approx, check_no_field
-from tests.fw.api import ValOptions
+from fw import Muta, approx, check_no_field
+from fw.api import ValOptions
 
 
 def test_main_module(client, consts):

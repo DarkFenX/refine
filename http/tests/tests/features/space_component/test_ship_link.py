@@ -7,7 +7,7 @@ Ship links have a list of items which are allowed to link to them. The library u
 define if an item can receive ship link effect or not.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_affectee_filter_item_list(client, consts):

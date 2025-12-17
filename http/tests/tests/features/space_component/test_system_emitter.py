@@ -7,7 +7,7 @@ In EVE, it uses a function named "FW_OCCUPIER_FACTIONS" to filter targets. Libra
 parameters like this, so buffs are just applied to all the ships instead.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_affectee_filter_item(client, consts):

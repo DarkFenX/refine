@@ -1,10 +1,10 @@
 import typing
 from dataclasses import dataclass
 
-from tests.fw.util import conditional_insert
+from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
-    from tests.fw.util import Absent
+    from fw.util import Absent
 
 
 @dataclass(kw_only=True)

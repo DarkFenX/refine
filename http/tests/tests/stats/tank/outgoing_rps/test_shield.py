@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.api import (
+from fw import approx
+from fw.api import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
@@ -7,7 +7,7 @@ from tests.fw.api import (
     StatsOptionFitOutRps,
     StatsOptionItemOutRps,
 )
-from tests.tests.stats.tank import make_eve_drone_shield, make_eve_remote_asb, make_eve_remote_sb, setup_tank_basics
+from tests.stats.tank import make_eve_drone_shield, make_eve_remote_asb, make_eve_remote_sb, setup_tank_basics
 
 
 def test_state(client, consts):

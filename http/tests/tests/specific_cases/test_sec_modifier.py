@@ -6,7 +6,7 @@ attribute. However, tests cover more complex cases, since exact details on how i
 by looking at code of decompiled EVE client.
 """
 
-from tests import approx
+from fw import approx
 
 
 def test_sec_zones(client, consts):

@@ -4,7 +4,7 @@ But autocharges inherit that ability from charges, so test it here nevertheless 
 doesn't crash or doesn't make solar system inconsistent).
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_proj_unproj(client, consts):

@@ -1,10 +1,10 @@
 import typing
 
-from tests.fw.util import get_test_key
+from fw.util import get_test_key
 from .containers import EveObjects
 
 if typing.TYPE_CHECKING:
-    from tests.fw.util import TestKey
+    from fw.util import TestKey
 
 data_id: int = 10000
 

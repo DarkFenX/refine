@@ -23,7 +23,6 @@ class ItemMutation:
         return [self.base_type_id, self.mutator_id, self.attrs] == other
 
 
-
 @dataclasses.dataclass
 class AttrMutation:
 

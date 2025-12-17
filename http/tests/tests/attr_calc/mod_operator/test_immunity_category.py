@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def setup_immunity_test(*, client, consts, cat_id):

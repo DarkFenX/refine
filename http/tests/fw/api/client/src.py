@@ -1,9 +1,9 @@
 import pytest
 
-from tests.fw import eve
-from tests.fw.log import LogEntryNotFoundError
-from tests.fw.request import Request
-from tests.fw.util import Default
+from fw import eve
+from fw.log import LogEntryNotFoundError
+from fw.request import Request
+from fw.util import Default
 from .base import ApiClientBase
 
 

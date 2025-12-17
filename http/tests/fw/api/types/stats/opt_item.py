@@ -1,7 +1,7 @@
 import dataclasses
 import typing
 
-from tests.fw.util import Absent, dc_to_dict
+from fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
     from .opt_cap import StatsOptionCapBalance, StatsOptionCapSim

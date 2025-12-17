@@ -5,8 +5,8 @@ fighters as we know them today. Nevertheless, the lib supports this validation, 
 gets back.
 """
 
-from tests import approx, check_no_field
-from tests.fw.api import ValOptions
+from fw import approx, check_no_field
+from fw.api import ValOptions
 
 
 def test_drone_add_remove(client, consts):

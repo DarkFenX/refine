@@ -1,4 +1,4 @@
-from tests import check_no_field
+from fw import check_no_field
 
 
 def test_no_effect(client, consts):

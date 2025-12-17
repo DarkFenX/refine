@@ -7,8 +7,8 @@ import typing
 from pathlib import Path
 from time import time
 
-from tests import approx
-from tests.fw.api import (
+from fw import approx
+from fw.api import (
     FitStatsOptions,
     StatCapSrcKinds,
     StatsOptionCapBalance,
@@ -19,7 +19,7 @@ from tests.fw.api import (
 )
 
 if typing.TYPE_CHECKING:
-    from tests.fw.api.types.item import Item
+    from fw.api.types.item import Item
 
 SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()

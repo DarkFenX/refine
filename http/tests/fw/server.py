@@ -40,7 +40,7 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
         f'folder = "{log_folder}"',
         'level = "debug"',
         'rotate = false']
-    with config_path.open(mode='w') as f:
+    with config_path.open(mode='w', encoding='utf-8') as f:
         f.write('\n'.join(contents))
     return ConfigInfo(config_path=config_path, port=port)
 

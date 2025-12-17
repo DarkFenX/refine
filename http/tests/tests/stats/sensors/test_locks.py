@@ -1,5 +1,5 @@
-from tests import check_no_field
-from tests.fw.api import FitStatsOptions, ItemStatsOptions
+from fw import check_no_field
+from fw.api import FitStatsOptions, ItemStatsOptions
 
 
 def test_ship_modified_limit_ship(client, consts):

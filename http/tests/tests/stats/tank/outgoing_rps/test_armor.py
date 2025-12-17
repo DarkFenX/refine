@@ -1,5 +1,5 @@
-from tests import Spool, approx
-from tests.fw.api import (
+from fw import Spool, approx
+from fw.api import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
@@ -7,7 +7,7 @@ from tests.fw.api import (
     StatsOptionFitOutRps,
     StatsOptionItemOutRps,
 )
-from tests.tests.stats.tank import (
+from tests.stats.tank import (
     make_eve_drone_armor,
     make_eve_remote_aar,
     make_eve_remote_ar,

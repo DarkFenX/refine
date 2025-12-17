@@ -1,5 +1,5 @@
-from tests import approx
-from tests.fw.api import (
+from fw import approx
+from fw.api import (
     FitStatsOptions,
     ItemStatsOptions,
     StatCapConsumerOptions,

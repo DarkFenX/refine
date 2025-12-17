@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def test_affected_multiple(client, consts):
@@ -130,7 +130,7 @@ def setup_switch_type_id_root_test(*, client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item_id)
-    api_sw_effect =  api_sol.add_sw_effect(type_id=eve_affector_item_id)
+    api_sw_effect = api_sol.add_sw_effect(type_id=eve_affector_item_id)
     return eve_affectee_attr_id, eve_char_loaded_id, eve_char_not_loaded_id, api_fit, api_sw_effect, api_affectee_item
 
 

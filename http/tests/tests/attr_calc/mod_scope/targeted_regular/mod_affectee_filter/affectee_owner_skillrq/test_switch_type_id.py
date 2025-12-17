@@ -1,4 +1,4 @@
-from tests import approx
+from fw import approx
 
 
 def setup_ship_test(*, client, consts):

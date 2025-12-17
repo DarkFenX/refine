@@ -10,7 +10,7 @@ as well. The library uses this list to filter modifications, i.e. anything which
 trap can't receive its buffs.
 """
 
-from tests import Effect, approx
+from fw import Effect, approx
 
 
 def test_affectee_filter_item_list(client, consts):
