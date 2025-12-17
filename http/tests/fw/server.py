@@ -22,7 +22,7 @@ def build_server(*, proj_root: Path, optimized: bool) -> None:
     http_path = proj_root / 'http'
     os.chdir(http_path)
     subprocess.run(
-        ['cargo', 'build', '--package=reefast-http', f'--profile={get_profile_name(optimized=optimized)}'],
+        ['cargo', 'build', '--package=refine-http', f'--profile={get_profile_name(optimized=optimized)}'],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True)
@@ -46,7 +46,7 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
 
 
 def run_server(*, proj_root: Path, config_path: Path, optimized: bool) -> ServerInfo:
-    binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'reefast-http'
+    binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'refine-http'
     return ServerInfo(popen=subprocess.Popen(
         [binary_path, config_path],
         stdout=subprocess.DEVNULL,

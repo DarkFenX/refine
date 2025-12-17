@@ -1,8 +1,8 @@
 #![feature(default_field_values)]
 #![feature(if_let_guard)]
 
-//! # Reefast
-//! Reefast is a library built to simulate EVE Online ship and structure fits.
+//! # refine
+//! Refine is a library built to simulate EVE Online ship and citadel fits.
 //!
 //! It exposes various endpoints to fetch aggregated stats and conduct fit optimizations. Initial
 //! setup consists of the following steps:

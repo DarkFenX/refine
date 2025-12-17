@@ -1,9 +1,9 @@
 [package]
-name = "reefast-core"
+name = "refine-core"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
-description = "Rust Engine for Eve Fit Analysis, Statistics and Theorycrafting."
+description = "Rust Eve FIttiNg Engine."
 license = "LGPL-3.0-or-later"
 
 [dependencies]

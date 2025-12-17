@@ -1,14 +1,14 @@
-# reefast
-Rust Engine for Eve Fit Analysis, Statistics and Theorycrafting
+# refine
+Rust Eve FIttiNg Engine
 
 # Crate layout
-### reefast-core
+### refine-core
 Core calculation library with Rust interface.
-### reefast-edh
+### refine-edh
 Data handlers for core library, which provide access to EVE data.
-### reefast-adc
+### refine-adc
 Data cachers for core library, which allow it to cache adapted data. Adapted data is processed EVE data, adapted for needs of the library.
-### reefast-http
+### refine-http
 HTTP interface to the library.
 
 # Documentation

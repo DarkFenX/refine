@@ -32,27 +32,27 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
 
 @pytest.fixture(scope='session')
-def reefast_tmp_folder(tmp_path_factory: pytest.TempPathFactory) -> Path:
-    return tmp_path_factory.mktemp('reefast_test')
+def run_tmp_folder(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    return tmp_path_factory.mktemp('refine_test')
 
 
 @pytest.fixture(scope='session')
-def reefast_config(reefast_tmp_folder: Path) -> ConfigInfo:
-    config_path = reefast_tmp_folder / 'config.toml'
+def run_config(run_tmp_folder: Path) -> ConfigInfo:
+    config_path = run_tmp_folder / 'config.toml'
     port = next_free_port(start_port=8000)
-    return build_config(config_path=config_path, port=port, log_folder=reefast_tmp_folder)
+    return build_config(config_path=config_path, port=port, log_folder=run_tmp_folder)
 
 
 @pytest.fixture(scope='session', autouse=True)
-def reefast_server(
+def refine_server(
         pytestconfig: pytest.Config,
-        reefast_config: ConfigInfo,
+        run_config: ConfigInfo,
         log_reader: LogReader,
 ) -> Generator[ServerInfo]:
     optimized = pytestconfig.getoption('optimized')
     build_server(proj_root=PROJECT_ROOT, optimized=optimized)
     with log_reader.get_collector() as log_collector:
-        server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path, optimized=optimized)
+        server_info = run_server(proj_root=PROJECT_ROOT, config_path=run_config.config_path, optimized=optimized)
         try:
             # Wait for server to confirm it's up before yielding
             log_collector.wait_log_entry(msg='re:listening on.+', timeout=10)
@@ -71,12 +71,12 @@ def reefast_server(
 def client(
         pytestconfig: pytest.Config,
         httpserver: pytest_httpserver.HTTPServer,
-        reefast_config: ConfigInfo,
+        run_config: ConfigInfo,
         log_reader: LogReader,
 ) -> Generator[TestClient]:
     test_client = TestClient(
         eve_data_server=httpserver,
-        api_port=reefast_config.port,
+        api_port=run_config.port,
         log_reader=log_reader,
         fast_cleanup_check=pytestconfig.getoption('fast_cleanup_check'))
     yield test_client
@@ -90,8 +90,8 @@ def consts():  # noqa: ANN201
 
 
 @pytest.fixture(scope='session')
-def log_reader(reefast_tmp_folder: Path) -> Generator[LogReader]:
-    log_path = reefast_tmp_folder / 'reefast-http.log'
+def log_reader(run_tmp_folder: Path) -> Generator[LogReader]:
+    log_path = run_tmp_folder / 'refine-http.log'
     reader = LogReader(path=log_path)
     reader.run()
     yield reader

@@ -9,7 +9,7 @@ use crate::{
     util::{Named, RMap, RSet},
 };
 
-/// Ensure that assumptions reefast makes about the data are true.
+/// Ensure that assumptions refine makes about the data are true.
 pub(in crate::ad::generator) fn validate(e_data: &mut EData, g_supp: &GSupport) {
     fk_check(e_data, g_supp);
     default_effects(e_data);

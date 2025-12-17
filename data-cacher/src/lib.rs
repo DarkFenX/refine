@@ -1,4 +1,4 @@
-//! Adapted data cachers for `reefast-core`. They implement persistent for adapted data.
+//! Adapted data cachers for `refine-core`. They implement persistent for adapted data.
 //!
 //! ## Feature flags
 //!

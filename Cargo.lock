@@ -1429,94 +1429,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "reefast-adc"
-version = "0.1.0"
-dependencies = [
- "ordered-float",
- "reefast-core",
- "serde",
- "serde_json",
- "serde_repr",
- "serde_tuple",
- "thiserror",
- "tracing",
- "zstd",
-]
-
-[[package]]
-name = "reefast-core"
-version = "0.1.0"
-dependencies = [
- "angle-sc",
- "either",
- "itertools",
- "lender",
- "num-integer",
- "ordered-float",
- "rustc-hash",
- "slab",
- "smallvec 2.0.0-alpha.12",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "reefast-edh"
-version = "0.1.0"
-dependencies = [
- "itertools",
- "reefast-core",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "url",
-]
-
-[[package]]
-name = "reefast-example-playground"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "itertools",
- "rand 0.9.2",
- "reefast-adc",
- "reefast-core",
- "reefast-edh",
- "time",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "reefast-http"
-version = "0.1.0"
-dependencies = [
- "axum",
- "chrono",
- "config",
- "educe",
- "parking_lot",
- "reefast-adc",
- "reefast-core",
- "reefast-edh",
- "serde",
- "serde_tuple",
- "serde_with",
- "thiserror",
- "time",
- "tokio",
- "tokio-rayon",
- "tower",
- "tower-http",
- "tower-request-id",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "uuid",
-]
-
-[[package]]
 name = "ref-cast"
 version = "1.0.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1534,6 +1446,94 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "refine-adc"
+version = "0.1.0"
+dependencies = [
+ "ordered-float",
+ "refine-core",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "serde_tuple",
+ "thiserror",
+ "tracing",
+ "zstd",
+]
+
+[[package]]
+name = "refine-core"
+version = "0.1.0"
+dependencies = [
+ "angle-sc",
+ "either",
+ "itertools",
+ "lender",
+ "num-integer",
+ "ordered-float",
+ "rustc-hash",
+ "slab",
+ "smallvec 2.0.0-alpha.12",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "refine-edh"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+ "refine-core",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "url",
+]
+
+[[package]]
+name = "refine-example-playground"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "itertools",
+ "rand 0.9.2",
+ "refine-adc",
+ "refine-core",
+ "refine-edh",
+ "time",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "refine-http"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "chrono",
+ "config",
+ "educe",
+ "parking_lot",
+ "refine-adc",
+ "refine-core",
+ "refine-edh",
+ "serde",
+ "serde_tuple",
+ "serde_with",
+ "thiserror",
+ "time",
+ "tokio",
+ "tokio-rayon",
+ "tower",
+ "tower-http",
+ "tower-request-id",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

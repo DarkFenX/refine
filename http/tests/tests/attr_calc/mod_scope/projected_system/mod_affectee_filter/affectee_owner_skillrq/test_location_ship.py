@@ -3,7 +3,7 @@ from tests import approx
 
 def test_unaffected(client, consts):
     # EVE does not use effects with "shipID" location with owner modifiable filter, so it's an
-    # undefined behavior. Reefast just discards this modification as invalid
+    # undefined behavior. Refine just discards this modification as invalid
     eve_skill_id = client.mk_eve_item()
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()

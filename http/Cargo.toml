@@ -1,13 +1,13 @@
 [package]
-name = "reefast-http"
+name = "refine-http"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
-rc = { package = "reefast-core", path = "../core" }
-redh = { package = "reefast-edh", path = "../data-handler", features = ["phb-http"] }
-radc = { package = "reefast-adc", path = "../data-cacher", features = ["json-zfile"] }
+rc = { package = "refine-core", path = "../core" }
+redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http"] }
+radc = { package = "refine-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.7", features = ["query"] }
 chrono = ">=0.4.42"
 config = { version = ">=0.15.19", features = ["toml"] }

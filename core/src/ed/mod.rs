@@ -4,7 +4,7 @@
 //! Whenever CCP significantly change the EVE data format, the interface has to change as well.
 //!
 //! # Assumptions about data
-//! Reefast verifies data integrity and makes several assumptions about it. If those assumptions are
+//! Refine verifies data integrity and makes several assumptions about it. If those assumptions are
 //! broken, offending entries will be adjusted or ignored during conversion of the data into
 //! [adapted data](crate::ad).
 //!
@@ -20,7 +20,7 @@
 //! first seen entry.
 //!
 //! ### Ability-to-effect data transfer
-//! Reefast assumes that dogma effects which power fighter abilities are used only by those
+//! Refine assumes that dogma effects which power fighter abilities are used only by those
 //! abilities and nothing else. During data adaptation, this assumption allows to move all the
 //! fighter ability data to data structures related to dogma effects.
 //!

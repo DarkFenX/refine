@@ -149,7 +149,7 @@ wheels = [
 ]
 
 [[package]]
-name = "reefast-tests"
+name = "refine-tests"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [

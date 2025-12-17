@@ -1,9 +1,9 @@
 [package]
-name = "reefast-adc"
+name = "refine-adc"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
-description = "Adapted data cachers for reefast-core crate"
+description = "Adapted data cachers for refine-core crate"
 license = "LGPL-3.0-or-later"
 
 [features]
@@ -11,7 +11,7 @@ full = ["json-zfile"]
 json-zfile = ["dep:ordered-float", "dep:serde", "dep:serde_repr", "dep:serde_tuple", "dep:serde_json", "dep:tracing", "dep:zstd"]
 
 [dependencies]
-rc = { package = "reefast-core", path = "../core" }
+rc = { package = "refine-core", path = "../core" }
 ordered-float = { version = ">=5.1.0", features = ["serde"], optional = true }
 serde = { version = ">=1.0.228", features = ["derive"], optional = true }
 serde_repr = { version = ">=0.1.20", optional = true }

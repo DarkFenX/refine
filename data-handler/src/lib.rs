@@ -1,5 +1,5 @@
 //! EVE data handlers which use JSON produced by
-//! [Phobos](https://github.com/pyfa-org/Phobos) as a data source. They enable `reefast-core`
+//! [Phobos](https://github.com/pyfa-org/Phobos) as a data source. They enable `refine-core`
 //! library to access EVE data and process it for its needs.
 //!
 //! ## Feature flags

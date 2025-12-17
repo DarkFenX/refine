@@ -1,9 +1,9 @@
 [package]
-name = "reefast-edh"
+name = "refine-edh"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
-description = "EVE data handlers for reefast-core crate, which use Phobos dump as data source"
+description = "EVE data handlers for refine-core crate, which use Phobos dump as data source"
 license = "LGPL-3.0-or-later"
 
 [features]
@@ -12,7 +12,7 @@ phb-http = ["dep:reqwest", "dep:url"]
 phb-file = []
 
 [dependencies]
-rc = { package = "reefast-core", path = "../core" }
+rc = { package = "refine-core", path = "../core" }
 itertools = ">=0.14.0"
 reqwest = { version = ">=0.12.26", features = ["blocking", "json"], optional = true }
 serde = { version = ">=1.0.228", features = ["derive"] }

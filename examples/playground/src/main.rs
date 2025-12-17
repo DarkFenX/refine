@@ -39,9 +39,9 @@ fn setup_logger() -> () {
         .with(
             tracing_subscriber::filter::Targets::new()
                 .with_default(tracing::Level::ERROR)
-                .with_target("reefast_core", tracing::Level::TRACE)
-                .with_target("reefast_dh_eve", tracing::Level::TRACE)
-                .with_target("reefast_dh_adapted", tracing::Level::TRACE),
+                .with_target("refine_core", tracing::Level::TRACE)
+                .with_target("refine_dh_eve", tracing::Level::TRACE)
+                .with_target("refine_dh_adapted", tracing::Level::TRACE),
         )
         .init();
 }
@@ -50,7 +50,7 @@ fn main() {
     setup_logger();
     let edh: Box<dyn EveDataHandler> = Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     let mut adc: Box<dyn AdaptedDataCacher> = Box::new(radc::JsonZfileAdc::new(
-        PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
+        PathBuf::from("/home/dfx/Workspace/eve/refine/examples/playground/cache/"),
         "tq".to_string(),
     ));
     // test_random(&edh, &mut adc);

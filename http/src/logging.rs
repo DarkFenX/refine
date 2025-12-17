@@ -32,7 +32,7 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
                 ),
                 false => (tracing_appender::rolling::Rotation::NEVER, time_format_full),
             };
-            let appender = RollingFileAppender::new(rotation, folder_path, "reefast-http.log");
+            let appender = RollingFileAppender::new(rotation, folder_path, "refine-http.log");
             let (file_writer, file_guard) = tracing_appender::non_blocking(appender);
             let file_log = fmt::layer()
                 .with_writer(file_writer.with_max_level(max_level))
@@ -49,10 +49,10 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
         .with(
             Targets::new()
                 .with_default(None)
-                .with_target("reefast_core", Level::TRACE)
-                .with_target("reefast_dh_eve", Level::TRACE)
-                .with_target("reefast_dh_adapted", Level::TRACE)
-                .with_target("reefast_http", Level::TRACE),
+                .with_target("refine_core", Level::TRACE)
+                .with_target("refine_dh_eve", Level::TRACE)
+                .with_target("refine_dh_adapted", Level::TRACE)
+                .with_target("refine_http", Level::TRACE),
         )
         .init();
     file_guard
