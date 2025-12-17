@@ -1,6 +1,8 @@
 # refine
 Rust Eve FIttiNg Engine
 
+The engine's purpose is validation of fits and calculation of item/fit/fleet stats. It does not do much else - i.e. there is no fit persistence, or anything related to UI (for instance, it is not aware of item/fit names). 
+
 # Crate layout
 ### refine-core
 Core calculation library with Rust interface.
