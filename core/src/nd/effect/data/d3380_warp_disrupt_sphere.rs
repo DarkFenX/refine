@@ -82,7 +82,7 @@ fn update_effect(a_effect: &mut AEffect) {
         // Disallow assistance
         AEffectModifier {
             affector_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
-            op: AOp::PostAssign,
+            op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
         },
