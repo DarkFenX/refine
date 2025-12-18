@@ -2,9 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     ad::AEffectId,
-    api::{FullSideEffect, FullSideEffectMut},
+    api::{AttrId, FullSideEffect, FullSideEffectMut},
     def::AttrVal,
-    misc::{AttrId, OpInfo},
+    misc::OpInfo,
     rd::{RAttrKey, Src},
 };
 

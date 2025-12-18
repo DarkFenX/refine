@@ -5,9 +5,10 @@ use super::err::{
     IterItemModifiersError,
 };
 use crate::{
+    api::{AttrId, EffectId},
     def::{AttrVal, Count, ItemId, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{AttrId, DmgKinds, DpsProfile, EffectId, EffectInfo, EffectMode, Spool},
+    misc::{DmgKinds, DpsProfile, EffectInfo, EffectMode, Spool},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{

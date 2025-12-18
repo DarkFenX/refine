@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
+    api::EffectId,
     def::ItemId,
-    misc::{EffectId, SecZone, SecZoneCorruption},
+    misc::{SecZone, SecZoneCorruption},
     rd::REffectKey,
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UItemKey},

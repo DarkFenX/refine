@@ -20,6 +20,7 @@ pub use item::{
     SwEffect, SwEffectMut,
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_keys, iter_ranged_projs};
+pub use misc::{AttrId, EffectId};
 pub use util::MutIter;
 
 mod default_incoming_dps;
@@ -28,6 +29,7 @@ mod dev;
 mod fit;
 mod fleet;
 mod item;
+mod misc;
 mod sec_zone;
 mod sol_set_src;
 mod sol_validate;

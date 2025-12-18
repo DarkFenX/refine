@@ -1,4 +1,4 @@
-use crate::{def::ItemId, misc::AttrId};
+use crate::{api::AttrId, def::ItemId};
 
 pub struct AffectorInfo {
     pub item_id: ItemId,

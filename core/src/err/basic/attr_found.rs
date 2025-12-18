@@ -1,4 +1,4 @@
-use crate::misc::AttrId;
+use crate::api::AttrId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("attribute {attr_id} not found")]

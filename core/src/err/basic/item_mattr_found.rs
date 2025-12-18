@@ -1,4 +1,4 @@
-use crate::{def::ItemId, misc::AttrId};
+use crate::{api::AttrId, def::ItemId};
 
 #[derive(thiserror::Error, Debug)]
 #[error("attribute {attr_id} on item {item_id} contains no mutation data")]

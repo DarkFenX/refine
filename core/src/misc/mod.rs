@@ -1,12 +1,10 @@
 pub use adj_count::AdjustableCount;
-pub use attr_id::AttrId;
 pub(crate) use attr_spec::AttrSpec;
 pub use breacher_info::{BreacherInfo, BreacherInfoError};
 pub use coordinates::Coordinates;
 pub use dmg_kinds::DmgKinds;
 pub use dps_profile::{DpsProfile, DpsProfileError};
 pub use ecm::Ecm;
-pub use effect_id::EffectId;
 pub use effect_info::EffectInfo;
 pub use effect_mode::EffectMode;
 pub(crate) use effect_spec::EffectSpec;
@@ -28,14 +26,12 @@ pub use spool::Spool;
 pub use states::{MinionState, ModuleState, ServiceState};
 
 mod adj_count;
-mod attr_id;
 mod attr_spec;
 mod breacher_info;
 mod coordinates;
 mod dmg_kinds;
 mod dps_profile;
 mod ecm;
-mod effect_id;
 mod effect_info;
 mod effect_mode;
 mod effect_spec;

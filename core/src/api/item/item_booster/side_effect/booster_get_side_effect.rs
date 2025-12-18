@@ -5,10 +5,9 @@ use super::shared::get_se_chance_attr_id_by_effect_id;
 use crate::{
     ad::AEffectId,
     api::{
-        Booster, BoosterMut, FullSideEffect, FullSideEffectMut, SideEffect, SideEffectMut, StubSideEffect,
+        Booster, BoosterMut, EffectId, FullSideEffect, FullSideEffectMut, SideEffect, SideEffectMut, StubSideEffect,
         StubSideEffectMut,
     },
-    misc::EffectId,
     sol::SolarSystem,
     ud::UItemKey,
 };

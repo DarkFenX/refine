@@ -1,7 +1,6 @@
 use crate::{
-    api::{FullSideEffect, FullSideEffectMut},
+    api::{AttrId, FullSideEffect, FullSideEffectMut},
     def::AttrVal,
-    misc::AttrId,
 };
 
 impl<'a> FullSideEffect<'a> {

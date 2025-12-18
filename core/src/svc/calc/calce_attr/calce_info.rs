@@ -6,7 +6,8 @@ use smallvec::SmallVec;
 
 use super::calce_shared::get_base_attr_value;
 use crate::{
-    misc::{AttrId, OpInfo, SecZone},
+    api::AttrId,
+    misc::{OpInfo, SecZone},
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,

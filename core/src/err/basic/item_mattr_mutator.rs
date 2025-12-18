@@ -1,6 +1,6 @@
 use crate::{
+    api::AttrId,
     def::{ItemId, ItemTypeId},
-    misc::AttrId,
 };
 
 #[derive(thiserror::Error, Debug)]
