@@ -5,9 +5,10 @@ use crate::{
     },
     def::{ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
+    misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItem, RItemAXt, RItemEffectData, RItemListKey, RMuta, RcItem, RcMuta, Src},
     ud::{
+        UAttrMutationRequest, UItemMutationRequest,
         err::ItemMutatedError,
         item::base::{UEffectUpdates, UItemBase},
     },
@@ -33,7 +34,7 @@ impl UItemBaseMutable {
         item_id: ItemId,
         type_id: AItemId,
         state: AState,
-        mutation_request: Option<ItemMutationRequest>,
+        mutation_request: Option<UItemMutationRequest>,
         src: &Src,
     ) -> Self {
         let mutation_request = match mutation_request {
@@ -299,7 +300,7 @@ impl UItemBaseMutable {
     }
     pub(in crate::ud::item) fn mutate(
         &mut self,
-        mutation_request: ItemMutationRequest,
+        mutation_request: UItemMutationRequest,
         src: &Src,
     ) -> Result<(), ItemNotMutatedError> {
         if self.get_mutation_data().is_some() {
@@ -347,7 +348,7 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutation_requests: Vec<AttrMutationRequest>,
+        attr_mutation_requests: Vec<UAttrMutationRequest>,
     ) -> Result<Vec<RAttrKey>, ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
@@ -552,7 +553,7 @@ impl ItemMutationDataCache {
     }
 }
 
-fn convert_request_to_data(mutation_request: ItemMutationRequest) -> ItemMutationData {
+fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutationData {
     ItemMutationData::new_with_attrs(
         mutation_request.mutator_id,
         mutation_request

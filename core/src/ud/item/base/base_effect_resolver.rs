@@ -3,7 +3,7 @@ use crate::{
     ad::{AEffectId, AState},
     misc::EffectMode,
     rd::{REffect, REffectKey, RItem, RcEffect, Src},
-    ud::item::misc::EffectModes,
+    ud::item::misc::UEffectModes,
     util::RSet,
 };
 
@@ -44,7 +44,7 @@ pub(super) fn process_effects(
     src: &Src,
     item: &RItem,
     item_state: AState,
-    item_effect_modes: &EffectModes,
+    item_effect_modes: &UEffectModes,
 ) {
     match item_state {
         AState::Ghost => stop_all_effects(reuse_eupdates, reffs, src, item),
@@ -80,7 +80,7 @@ fn update_running_effects(
     src: &Src,
     item: &RItem,
     item_state: AState,
-    item_effect_modes: &EffectModes,
+    item_effect_modes: &UEffectModes,
 ) {
     // Separate handling for the online effect
     let online_should_run = resolve_online_effect_status(item, item_effect_modes, item_state);
@@ -139,7 +139,7 @@ fn update_running_effects(
     }
 }
 
-fn resolve_online_effect_status(item: &RItem, item_effect_modes: &EffectModes, item_state: AState) -> bool {
+fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, item_state: AState) -> bool {
     if !item.has_online_effect {
         return false;
     }
@@ -154,7 +154,7 @@ fn resolve_online_effect_status(item: &RItem, item_effect_modes: &EffectModes, i
 }
 
 fn resolve_regular_effect_status(
-    item_effect_modes: &EffectModes,
+    item_effect_modes: &UEffectModes,
     item_defeff_key: Option<REffectKey>,
     item_state: AState,
     online_running: bool,

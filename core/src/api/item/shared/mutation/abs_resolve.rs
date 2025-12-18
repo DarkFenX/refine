@@ -1,9 +1,8 @@
 use crate::{
     ad::{AAttrId, AAttrVal, AItemId, AMutaAttrRange},
     def::AttrVal,
-    misc::AttrMutationRequest,
     rd::{RAttrKey, RMuta, RcItem, Src},
-    ud::get_combined_attr_values,
+    ud::{UAttrMutationRequest, get_combined_attr_values},
     util::{RMap, UnitInterval},
 };
 
@@ -12,7 +11,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
     base_type_id: &AItemId,
     mutator_id: &AItemId,
     values: &[(AAttrId, AttrVal)],
-) -> Vec<AttrMutationRequest> {
+) -> Vec<UAttrMutationRequest> {
     let r_mutator = match src.get_mutator(mutator_id) {
         Some(a_mutator) => a_mutator,
         None => return Vec::new(),
@@ -32,7 +31,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
     mutated_r_item: Option<&RcItem>,
     r_mutator: &RMuta,
     values: &[(AAttrId, AttrVal)],
-) -> Vec<AttrMutationRequest> {
+) -> Vec<UAttrMutationRequest> {
     match (base_r_item, mutated_r_item) {
         (Some(base_r_item), Some(mutated_r_item)) => {
             let combined_attrs = get_combined_attr_values(Some(base_r_item), mutated_r_item);
@@ -53,7 +52,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
     unmutated_attrs: &RMap<RAttrKey, AAttrVal>,
     r_mutator: &RMuta,
     values: &[(AAttrId, AttrVal)],
-) -> Vec<AttrMutationRequest> {
+) -> Vec<UAttrMutationRequest> {
     let mut result = Vec::with_capacity(values.len());
     for (a_attr_id, absolute_value) in values {
         let attr_key = match src.get_attr_key_by_id(a_attr_id) {
@@ -69,7 +68,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
             None => continue,
         };
         if let Some(roll) = resolve_absolute_into_roll(*absolute_value, *unmutated_a_value, a_mutation_range) {
-            result.push(AttrMutationRequest {
+            result.push(UAttrMutationRequest {
                 attr_id: *a_attr_id,
                 value: Some(roll),
             })

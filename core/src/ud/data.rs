@@ -2,7 +2,7 @@ use crate::{
     def::OF,
     misc::{DpsProfile, SecZone, Spool},
     rd::Src,
-    ud::{UItemKey, fit::UFits, fleet::UFleets, item::UItems},
+    ud::{UFits, UFleets, UItemKey, UItems},
     util::{RSet, UnitInterval},
 };
 

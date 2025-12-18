@@ -4,10 +4,10 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(crate) struct Projs {
+pub(crate) struct UProjs {
     pub(super) data: RMap<UItemKey, Option<UProjData>>,
 }
-impl Projs {
+impl UProjs {
     pub(in crate::ud::item) fn new() -> Self {
         Self { data: RMap::new() }
     }

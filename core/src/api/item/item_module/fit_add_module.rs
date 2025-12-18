@@ -3,9 +3,9 @@ use crate::{
     ad::AItemId,
     api::{AddMode, FitMut, ModuleMut, ModuleState, RmMode},
     def::ItemTypeId,
-    misc::{ItemMutationRequest, ModRack},
+    misc::ModRack,
     sol::SolarSystem,
-    ud::{UCharge, UEffectUpdates, UFitKey, UItem, UItemKey, UModule},
+    ud::{UCharge, UEffectUpdates, UFitKey, UItem, UItemKey, UItemMutationRequest, UModule},
 };
 
 impl SolarSystem {
@@ -16,7 +16,7 @@ impl SolarSystem {
         pos_mode: AddMode,
         type_id: AItemId,
         state: ModuleState,
-        mutation: Option<ItemMutationRequest>,
+        mutation: Option<UItemMutationRequest>,
         charge_type_id: Option<AItemId>,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemKey {

@@ -2,16 +2,15 @@ use crate::{
     api::{AddMutationError, ModuleMut, MutationMut},
     def::ItemTypeId,
     err::basic::ItemNotMutatedError,
-    misc::ItemMutationRequest,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemKey, UItemMutationRequest},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_module_mutation(
         &mut self,
         module_key: UItemKey,
-        mutation: ItemMutationRequest,
+        mutation: UItemMutationRequest,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {
         SolarSystem::util_remove_module_with_charge_act(&mut self.u_data, &mut self.svc, module_key, reuse_eupdates);
@@ -27,7 +26,7 @@ impl SolarSystem {
 
 impl<'a> ModuleMut<'a> {
     pub fn mutate(&mut self, mutator_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
-        let mutation = ItemMutationRequest {
+        let mutation = UItemMutationRequest {
             mutator_id,
             attrs: Vec::new(),
         };

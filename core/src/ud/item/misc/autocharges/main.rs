@@ -1,10 +1,10 @@
 use crate::{rd::REffectKey, ud::UItemKey, util::RMap};
 
 #[derive(Clone)]
-pub(crate) struct Autocharges {
+pub(crate) struct UAutocharges {
     data: RMap<REffectKey, UItemKey>,
 }
-impl Autocharges {
+impl UAutocharges {
     pub(in crate::ud::item) fn new() -> Self {
         Self { data: RMap::new() }
     }

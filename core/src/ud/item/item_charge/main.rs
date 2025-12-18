@@ -5,7 +5,7 @@ use crate::{
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
         UFitKey, UItemKey,
-        item::{Projs, UEffectUpdates, UItemBase},
+        item::{UEffectUpdates, UItemBase, UProjs},
     },
     util::{Named, RMap, RSet},
 };
@@ -15,7 +15,7 @@ pub(crate) struct UCharge {
     pub(super) base: UItemBase,
     fit_key: UFitKey,
     cont_item_key: UItemKey,
-    projs: Projs,
+    projs: UProjs,
     activated: bool,
     force_disabled: bool,
 }
@@ -33,7 +33,7 @@ impl UCharge {
             base: UItemBase::new(item_id, type_id, get_state(activated, force_disabled), src),
             fit_key,
             cont_item_key,
-            projs: Projs::new(),
+            projs: UProjs::new(),
             activated,
             force_disabled,
         }
@@ -132,10 +132,10 @@ impl UCharge {
     pub(crate) fn get_cont_item_key(&self) -> UItemKey {
         self.cont_item_key
     }
-    pub(crate) fn get_projs(&self) -> &Projs {
+    pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
     }
-    pub(crate) fn get_projs_mut(&mut self) -> &mut Projs {
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
 }

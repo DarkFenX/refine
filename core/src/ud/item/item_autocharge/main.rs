@@ -5,7 +5,7 @@ use crate::{
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
         UFitKey, UItemKey,
-        item::{Projs, UEffectUpdates, UItemBase},
+        item::{UEffectUpdates, UItemBase, UProjs},
     },
     util::{Named, RMap, RSet},
 };
@@ -16,7 +16,7 @@ pub(crate) struct UAutocharge {
     fit_key: UFitKey,
     cont_item_key: UItemKey,
     cont_effect_key: REffectKey,
-    projs: Projs,
+    projs: UProjs,
     activated: bool,
     force_disabled: bool,
 }
@@ -36,7 +36,7 @@ impl UAutocharge {
             fit_key,
             cont_item_key,
             cont_effect_key,
-            projs: Projs::new(),
+            projs: UProjs::new(),
             activated,
             force_disabled,
         }
@@ -134,10 +134,10 @@ impl UAutocharge {
     pub(crate) fn get_cont_effect_key(&self) -> REffectKey {
         self.cont_effect_key
     }
-    pub(crate) fn get_projs(&self) -> &Projs {
+    pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
     }
-    pub(crate) fn get_projs_mut(&mut self) -> &mut Projs {
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
 }

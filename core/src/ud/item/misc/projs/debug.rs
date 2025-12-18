@@ -1,9 +1,9 @@
 use crate::{
     dbg::{DebugResult, check_item_key},
-    ud::{UData, item::misc::Projs},
+    ud::{UData, item::misc::UProjs},
 };
 
-impl Projs {
+impl UProjs {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for (projectee_key, proj_data) in self.data.iter() {
             // Projectee is not necessarily loaded

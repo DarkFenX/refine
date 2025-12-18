@@ -3,12 +3,12 @@ use crate::{
     api::MinionState,
     def::{AttrVal, ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
+    misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, Src},
     ud::{
-        UFitKey,
+        UAttrMutationRequest, UFitKey, UItemMutationRequest,
         err::ItemMutatedError,
-        item::{ItemMutationData, Projs, UEffectUpdates, UItemBaseMutable, UNpcProp, UPhysics},
+        item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UNpcProp, UPhysics, UProjs},
     },
     util::{Named, RMap, RSet},
 };
@@ -19,7 +19,7 @@ pub(crate) struct UDrone {
     fit_key: UFitKey,
     physics: UPhysics,
     prop: UNpcProp,
-    projs: Projs,
+    projs: UProjs,
 }
 impl UDrone {
     pub(crate) fn new(
@@ -27,7 +27,7 @@ impl UDrone {
         type_id: AItemId,
         fit_key: UFitKey,
         drone_state: MinionState,
-        mutation: Option<ItemMutationRequest>,
+        mutation: Option<UItemMutationRequest>,
         physics: UPhysics,
         prop: UNpcProp,
         src: &Src,
@@ -37,7 +37,7 @@ impl UDrone {
             fit_key,
             physics,
             prop,
-            projs: Projs::new(),
+            projs: UProjs::new(),
         }
     }
     // Item base methods
@@ -112,13 +112,13 @@ impl UDrone {
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
-    pub(crate) fn mutate(&mut self, mutation: ItemMutationRequest, src: &Src) -> Result<(), ItemNotMutatedError> {
+    pub(crate) fn mutate(&mut self, mutation: UItemMutationRequest, src: &Src) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(mutation, src)
     }
     pub(crate) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutations: Vec<AttrMutationRequest>,
+        attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<Vec<RAttrKey>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
@@ -156,10 +156,10 @@ impl UDrone {
     pub(crate) fn set_prop_mode(&mut self, prop: UNpcProp) {
         self.prop = prop
     }
-    pub(crate) fn get_projs(&self) -> &Projs {
+    pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
     }
-    pub(crate) fn get_projs_mut(&mut self) -> &mut Projs {
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
 }

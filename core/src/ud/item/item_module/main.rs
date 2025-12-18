@@ -3,12 +3,12 @@ use crate::{
     api::ModuleState,
     def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, Spool},
+    misc::{EffectMode, ModRack, Spool},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
-        UData, UFitKey, UItemKey,
+        UAttrMutationRequest, UData, UFitKey, UItemKey, UItemMutationRequest,
         err::ItemMutatedError,
-        item::{ItemMutationData, Projs, UEffectUpdates, UItemBaseMutable},
+        item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UProjs},
     },
     util::{Named, RMap, RSet, trunc_unerr},
 };
@@ -21,7 +21,7 @@ pub(crate) struct UModule {
     pos: Idx,
     charge_key: Option<UItemKey>,
     spool: Option<Spool>,
-    projs: Projs,
+    projs: UProjs,
 }
 impl UModule {
     pub(crate) fn new(
@@ -31,7 +31,7 @@ impl UModule {
         module_state: ModuleState,
         rack: ModRack,
         pos: Idx,
-        mutation: Option<ItemMutationRequest>,
+        mutation: Option<UItemMutationRequest>,
         charge_key: Option<UItemKey>,
         src: &Src,
     ) -> Self {
@@ -42,7 +42,7 @@ impl UModule {
             pos,
             charge_key,
             spool: None,
-            projs: Projs::new(),
+            projs: UProjs::new(),
         }
     }
     // Item base methods
@@ -135,13 +135,13 @@ impl UModule {
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
-    pub(crate) fn mutate(&mut self, mutation: ItemMutationRequest, src: &Src) -> Result<(), ItemNotMutatedError> {
+    pub(crate) fn mutate(&mut self, mutation: UItemMutationRequest, src: &Src) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(mutation, src)
     }
     pub(crate) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutations: Vec<AttrMutationRequest>,
+        attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<Vec<RAttrKey>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
@@ -203,10 +203,10 @@ impl UModule {
     pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
         self.spool = spool
     }
-    pub(crate) fn get_projs(&self) -> &Projs {
+    pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
     }
-    pub(crate) fn get_projs_mut(&mut self) -> &mut Projs {
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
 }

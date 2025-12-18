@@ -2,9 +2,9 @@ use crate::{
     ad::AItemId,
     api::{Coordinates, DroneMut, FitMut, MinionState, Movement},
     def::ItemTypeId,
-    misc::{ItemMutationRequest, NpcProp},
+    misc::NpcProp,
     sol::SolarSystem,
-    ud::{UDrone, UEffectUpdates, UFitKey, UItem, UItemKey, UNpcProp, UPhysics},
+    ud::{UDrone, UEffectUpdates, UFitKey, UItem, UItemKey, UItemMutationRequest, UNpcProp, UPhysics},
 };
 
 impl SolarSystem {
@@ -13,7 +13,7 @@ impl SolarSystem {
         fit_key: UFitKey,
         type_id: AItemId,
         state: MinionState,
-        mutation: Option<ItemMutationRequest>,
+        mutation: Option<UItemMutationRequest>,
         physics: UPhysics,
         prop_mode: UNpcProp,
         reuse_eupdates: &mut UEffectUpdates,

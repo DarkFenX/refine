@@ -8,7 +8,7 @@ use crate::{
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitKey, UFwEffect, UImplant, UItemKey,
         UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
-        item::{Autocharges, ItemMutationData, Projs, UEffectUpdates, UProjData},
+        item::{ItemMutationData, UAutocharges, UEffectUpdates, UProjData, UProjs},
     },
     util::{GetId, Named, RMap, RSet},
 };
@@ -545,7 +545,7 @@ impl UItem {
             Self::SwEffect(_) => AttrVal::default(),
         }
     }
-    pub(crate) fn get_projs(&self) -> Option<&Projs> {
+    pub(crate) fn get_projs(&self) -> Option<&UProjs> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs()),
             Self::Charge(charge) => Some(charge.get_projs()),
@@ -556,7 +556,7 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_projs_mut(&mut self) -> Option<&mut Projs> {
+    pub(crate) fn get_projs_mut(&mut self) -> Option<&mut UProjs> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs_mut()),
             Self::Charge(charge) => Some(charge.get_projs_mut()),
@@ -579,13 +579,13 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_autocharges(&self) -> Option<&Autocharges> {
+    pub(crate) fn get_autocharges(&self) -> Option<&UAutocharges> {
         match self {
             Self::Fighter(fighter) => Some(fighter.get_autocharges()),
             _ => None,
         }
     }
-    pub(crate) fn get_autocharges_mut(&mut self) -> Option<&mut Autocharges> {
+    pub(crate) fn get_autocharges_mut(&mut self) -> Option<&mut UAutocharges> {
         match self {
             Self::Fighter(fighter) => Some(fighter.get_autocharges_mut()),
             _ => None,

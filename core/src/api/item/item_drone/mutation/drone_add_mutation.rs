@@ -2,16 +2,15 @@ use crate::{
     api::{AddMutationError, DroneMut, MutationMut},
     def::ItemTypeId,
     err::basic::ItemNotMutatedError,
-    misc::ItemMutationRequest,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemKey, UItemMutationRequest},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_drone_mutation(
         &mut self,
         drone_key: UItemKey,
-        mutation: ItemMutationRequest,
+        mutation: UItemMutationRequest,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {
         SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
@@ -28,7 +27,7 @@ impl SolarSystem {
 
 impl<'a> DroneMut<'a> {
     pub fn mutate(&mut self, mutator_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
-        let mutation = ItemMutationRequest {
+        let mutation = UItemMutationRequest {
             mutator_id,
             attrs: Vec::new(),
         };

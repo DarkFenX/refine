@@ -5,7 +5,7 @@ use crate::{
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind, RcItem, Src},
     ud::item::{
         base::{UEffectUpdates, process_effects},
-        misc::EffectModes,
+        misc::UEffectModes,
     },
     util::{RMap, RSet},
 };
@@ -17,7 +17,7 @@ pub(in crate::ud::item) struct UItemBase {
     item_id: ItemId,
     type_id: AItemId,
     state: AState,
-    pub(super) effect_modes: EffectModes,
+    pub(super) effect_modes: UEffectModes,
     // Source-dependent data
     cache: Option<ItemBaseCache>,
 }
@@ -28,7 +28,7 @@ impl UItemBase {
             item_id,
             type_id,
             state,
-            effect_modes: EffectModes::new(),
+            effect_modes: UEffectModes::new(),
             cache: src.get_item(&type_id).map(|r_item| ItemBaseCache {
                 r_item: r_item.clone(),
                 reffs: RSet::new(),
@@ -44,7 +44,7 @@ impl UItemBase {
             item_id,
             type_id,
             state,
-            effect_modes: EffectModes::new(),
+            effect_modes: UEffectModes::new(),
             cache: None,
         }
     }
@@ -53,7 +53,7 @@ impl UItemBase {
             item_id,
             type_id: r_item.id,
             state,
-            effect_modes: EffectModes::new(),
+            effect_modes: UEffectModes::new(),
             cache: Some(ItemBaseCache {
                 r_item,
                 reffs: RSet::new(),

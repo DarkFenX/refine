@@ -1,14 +1,13 @@
 use crate::{
-    misc::AttrMutationRequest,
     sol::SolarSystem,
-    ud::{UItem, UItemKey, err::ItemMutatedError},
+    ud::{UAttrMutationRequest, UItem, UItemKey, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_change_item_mutation_attrs(
         &mut self,
         item_key: UItemKey,
-        attr_mutations: Vec<AttrMutationRequest>,
+        attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<(), ItemMutatedError> {
         let u_item = self.u_data.items.get_mut(item_key);
         match u_item {

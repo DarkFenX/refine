@@ -8,11 +8,11 @@ use crate::{
 const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
 
 #[derive(Clone)]
-pub(in crate::ud::item) struct EffectModes {
+pub(in crate::ud::item) struct UEffectModes {
     by_id: RMap<AEffectId, EffectMode>,
     pub(super) by_key: RMap<REffectKey, EffectMode>,
 }
-impl EffectModes {
+impl UEffectModes {
     pub(in crate::ud::item) fn new() -> Self {
         Self {
             by_id: RMap::new(),

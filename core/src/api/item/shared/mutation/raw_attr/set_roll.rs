@@ -1,9 +1,9 @@
-use crate::{api::RawMAttrMut, misc::AttrMutationRequest, util::UnitInterval};
+use crate::{api::RawMAttrMut, ud::UAttrMutationRequest, util::UnitInterval};
 
 impl<'a> RawMAttrMut<'a> {
     /// Set roll for the attribute.
     pub fn set_roll(&mut self, roll: UnitInterval) {
-        let attr_mutations = vec![AttrMutationRequest {
+        let attr_mutations = vec![UAttrMutationRequest {
             attr_id: self.a_attr_id,
             value: Some(roll),
         }];

@@ -5,8 +5,8 @@ use crate::{
     misc::{EffectMode, FighterCountOverride},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, Src},
     ud::{
-        UFitKey,
-        item::{Autocharges, Projs, UEffectUpdates, UItemBase, UPhysics},
+        UEffectUpdates, UFitKey, UPhysics, UProjs,
+        item::{UAutocharges, UItemBase},
     },
     util::{Named, RMap, RSet},
 };
@@ -16,9 +16,9 @@ pub(crate) struct UFighter {
     pub(super) base: UItemBase,
     fit_key: UFitKey,
     count_override: Option<FighterCountOverride>,
-    autocharges: Autocharges,
+    autocharges: UAutocharges,
     physics: UPhysics,
-    projs: Projs,
+    projs: UProjs,
 }
 impl UFighter {
     pub(crate) fn new(
@@ -33,9 +33,9 @@ impl UFighter {
             base: UItemBase::new(item_id, type_id, fighter_state.into(), src),
             fit_key,
             count_override: None,
-            autocharges: Autocharges::new(),
+            autocharges: UAutocharges::new(),
             physics,
-            projs: Projs::new(),
+            projs: UProjs::new(),
         }
     }
     // Item base methods
@@ -140,10 +140,10 @@ impl UFighter {
     pub(crate) fn set_count_override(&mut self, count_override: Option<FighterCountOverride>) {
         self.count_override = count_override
     }
-    pub(crate) fn get_autocharges(&self) -> &Autocharges {
+    pub(crate) fn get_autocharges(&self) -> &UAutocharges {
         &self.autocharges
     }
-    pub(crate) fn get_autocharges_mut(&mut self) -> &mut Autocharges {
+    pub(crate) fn get_autocharges_mut(&mut self) -> &mut UAutocharges {
         &mut self.autocharges
     }
     pub(crate) fn get_physics(&self) -> &UPhysics {
@@ -158,10 +158,10 @@ impl UFighter {
     pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
         &mut self.physics
     }
-    pub(crate) fn get_projs(&self) -> &Projs {
+    pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
     }
-    pub(crate) fn get_projs_mut(&mut self) -> &mut Projs {
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
 }

@@ -3,20 +3,20 @@ use crate::{
     def::ItemId,
     misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
-    ud::item::{Projs, UEffectUpdates, UItemBase, bool_to_state_active, state_to_bool},
+    ud::item::{UEffectUpdates, UItemBase, UProjs, bool_to_state_active, state_to_bool},
     util::{Named, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UProjEffect {
     pub(super) base: UItemBase,
-    projs: Projs,
+    projs: UProjs,
 }
 impl UProjEffect {
     pub(crate) fn new(item_id: ItemId, type_id: AItemId, proj_effect_state: bool, src: &Src) -> Self {
         Self {
             base: UItemBase::new(item_id, type_id, bool_to_state_active(proj_effect_state), src),
-            projs: Projs::new(),
+            projs: UProjs::new(),
         }
     }
     // Item base methods
@@ -91,10 +91,10 @@ impl UProjEffect {
     pub(crate) fn set_proj_effect_state(&mut self, state: bool) {
         self.base.set_state(bool_to_state_active(state))
     }
-    pub(crate) fn get_projs(&self) -> &Projs {
+    pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
     }
-    pub(crate) fn get_projs_mut(&mut self) -> &mut Projs {
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
 }
