@@ -1,4 +1,4 @@
-pub(in crate::sol) use main::RevProjs;
+pub(crate) use main::RevProjs;
 
 mod debug;
 mod main;

@@ -1,8 +1,6 @@
 pub mod basic;
 pub use crate::{
-    misc::{BreacherInfoError, DpsProfileError, FighterCountOverrideError, FitSecStatusError, SkillLevelError},
-    rd::SrcInitError,
-    sol::api::{
+    api::{
         AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, FitCharacterStatError, FitShipStatError,
         FitStatAppliedError, FleetAddFitError, FleetRemoveFitError, FleetStatAppliedError, GetAbilityError,
         GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError, GetFighterError,
@@ -12,5 +10,7 @@ pub use crate::{
         ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, RemoveFitRahIncomingDpsError,
         RemoveItemError, SetFitFleetError, SetSkillTypeIdError, UnsetFitFleetError,
     },
+    misc::{BreacherInfoError, DpsProfileError, FighterCountOverrideError, FitSecStatusError, SkillLevelError},
+    rd::SrcInitError,
     util::UnitIntervalError,
 };

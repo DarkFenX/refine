@@ -1,7 +1,7 @@
 use crate::{dbg::DebugResult, sol::SolarSystem};
 
 impl SolarSystem {
-    pub(in crate::sol) fn internal_consistency_check(&self) -> DebugResult {
+    pub(crate) fn internal_consistency_check(&self) -> DebugResult {
         // Check solar system structure
         self.u_data.consistency_check()?;
         // Check services

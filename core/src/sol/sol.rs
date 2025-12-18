@@ -6,7 +6,7 @@ use crate::{rd::Src, sol::rev_projs::RevProjs, svc::Svc, ud::UData};
 pub struct SolarSystem {
     pub(crate) u_data: UData,
     pub(crate) svc: Svc,
-    pub(in crate::sol) rev_projs: RevProjs,
+    pub(crate) rev_projs: RevProjs,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {

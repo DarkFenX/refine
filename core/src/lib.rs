@@ -19,6 +19,16 @@
 //! - you create [`SolarSystem`](SolarSystem), and manipulate it to create fits with ships and
 //!   items, and fetch data and stats
 
+pub use api::{
+    Ability, AbilityIter, AbilityMut, Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge,
+    ChargeMut, Drone, DroneMut, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet,
+    FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut,
+    Implant, ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, Module,
+    ModuleIter, ModuleMut, MutIter, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut,
+    RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, Rig, RigMut, Service, ServiceMut,
+    Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut,
+    Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+};
 pub use def::{
     AbilId, AttrVal, Count, CustomAttrId, CustomEffectId, DogmaEffectId, EveAttrId, FitId, FleetId, Idx, ItemGrpId,
     ItemId, ItemTypeId, SlotIndex, VERSION,
@@ -31,25 +41,13 @@ pub use misc::{
     Spool,
 };
 pub use rd::Src;
-pub use sol::{
-    SolarSystem,
-    api::{
-        Ability, AbilityIter, AbilityMut, Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut,
-        Charge, ChargeMut, Drone, DroneMut, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut,
-        Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect,
-        FwEffectMut, Implant, ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut,
-        ItemMutCommon, Module, ModuleIter, ModuleMut, MutIter, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut,
-        ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, Rig, RigMut,
-        Service, ServiceMut, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr,
-        SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut,
-        SwEffect, SwEffectMut,
-    },
-};
+pub use sol::SolarSystem;
 pub use svc::calc::{AffectorInfo, CalcAttrVal, ModificationInfo};
 pub use util::UnitInterval;
 
 mod ac;
 pub mod ad;
+mod api;
 mod dbg;
 mod def;
 mod ec;
