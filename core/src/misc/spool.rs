@@ -1,13 +1,7 @@
 use crate::{
-    def::{AttrVal, Count, OF},
-    util::{UnitInterval, ceil_unerr, floor_unerr},
+    def::{AttrVal, Count},
+    util::UnitInterval,
 };
-
-pub(crate) struct ResolvedSpool {
-    pub(crate) cycles: Count,
-    pub(crate) cycles_max: Count,
-    pub(crate) mult: AttrVal,
-}
 
 /// Controls on which spool cycle spoolable modules will be set.
 #[derive(Copy, Clone)]
@@ -33,34 +27,4 @@ pub enum Spool {
     /// remainder, due to cycle scale being wider. If there is no remainder, spool and cycle range
     /// effectively match.
     CycleScale(UnitInterval),
-}
-impl Spool {
-    pub(crate) fn resolve(&self, max: AttrVal, step: AttrVal, cycle_time: AttrVal) -> Option<ResolvedSpool> {
-        // Step is used as divisor when calculating all spool types
-        if step == OF(0.0) {
-            return None;
-        }
-        let cycles_max = ceil_unerr(max / step).into_inner() as Count;
-        let cycles = match self {
-            Spool::Cycles(cycles_opt) => {
-                // Limit requested count by max spool cycles
-                cycles_max.min(*cycles_opt)
-            }
-            Spool::Time(time) => {
-                // Choose count of cycles finished by specified time, and limit by max spool cycles
-                let cycles_by_time = floor_unerr((*time).max(OF(0.0)) / cycle_time).into_inner() as Count;
-                cycles_max.min(cycles_by_time)
-            }
-            Spool::SpoolScale(range_value) => ceil_unerr(range_value.get_inner() * max / step).into_inner() as Count,
-            Spool::CycleScale(range_value) => {
-                ceil_unerr(range_value.get_inner() * cycles_max as f64).into_inner() as Count
-            }
-        };
-        let mult = OF(1.0) + max.min(step * cycles as f64);
-        Some(ResolvedSpool {
-            cycles,
-            cycles_max,
-            mult,
-        })
-    }
 }

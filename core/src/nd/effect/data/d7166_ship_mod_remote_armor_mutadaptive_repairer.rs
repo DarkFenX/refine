@@ -4,11 +4,12 @@ use crate::{
     def::AttrVal,
     ec,
     ed::EEffectId,
-    misc::{ResolvedSpool, Spool},
+    misc::Spool,
     nd::{
         NEffect,
-        effect::data::shared::{
-            opc::get_outgoing_armor_rep_opc, proj_mult::get_simple_s2s_noapp_proj_mult, spool::get_resolved_spool,
+        effect::{
+            ResolvedSpool,
+            data::shared::{opc::get_outgoing_armor_rep_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
         },
     },
     rd::REffect,
@@ -36,7 +37,7 @@ fn internal_get_resolved_spool(
     effect: &REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
-    get_resolved_spool(
+    ResolvedSpool::try_build(
         ctx,
         calc,
         item_key,

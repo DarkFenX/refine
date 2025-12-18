@@ -13,7 +13,6 @@ pub(crate) use mutation_request::{AttrMutationRequest, ItemMutationRequest};
 pub use npc_behavior::NpcProp;
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use skill_level::{SkillLevel, SkillLevelError};
-pub(crate) use spool::ResolvedSpool;
 pub use spool::Spool;
 
 mod attr_spec;

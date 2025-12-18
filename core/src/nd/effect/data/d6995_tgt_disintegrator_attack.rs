@@ -4,10 +4,10 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, EffectSpec, ResolvedSpool, Spool},
+    misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind,
-        effect::data::shared::{proj_mult::get_disintegrator_proj_mult, spool::get_resolved_spool},
+        effect::{ResolvedSpool, data::shared::proj_mult::get_disintegrator_proj_mult},
     },
     rd::REffect,
     svc::{
@@ -49,7 +49,7 @@ fn internal_get_resolved_spool(
     r_effect: &REffect,
     spool: Option<Spool>,
 ) -> Option<ResolvedSpool> {
-    get_resolved_spool(
+    ResolvedSpool::try_build(
         ctx,
         calc,
         item_key,

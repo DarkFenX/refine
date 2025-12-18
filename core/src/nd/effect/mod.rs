@@ -6,6 +6,7 @@ pub(crate) use effect::{
     NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
+pub(crate) use spool::ResolvedSpool;
 
 mod charge;
 mod container;
@@ -13,3 +14,4 @@ mod data;
 mod dmg_kind;
 mod effect;
 mod projectee_filter;
+mod spool;

@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     def::AttrVal,
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, ResolvedSpool, Spool},
-    nd::{NEffectCharge, NEffectDmgKind, NEffectProjecteeFilter},
+    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, Spool},
+    nd::{NEffectCharge, NEffectDmgKind, NEffectProjecteeFilter, effect::ResolvedSpool},
     rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
