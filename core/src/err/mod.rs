@@ -10,7 +10,7 @@ pub use crate::{
         ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, RemoveFitRahIncomingDpsError,
         RemoveItemError, SetFitFleetError, SetSkillTypeIdError, UnsetFitFleetError,
     },
-    misc::{BreacherInfoError, DpsProfileError, FighterCountOverrideError, FitSecStatusError, SkillLevelError},
+    misc::{BreacherError, DpsProfileError, FighterCountOverrideError, FitSecStatusError, SkillLevelError},
     rd::SrcInitError,
     util::UnitIntervalError,
 };

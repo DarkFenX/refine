@@ -53,7 +53,7 @@ impl From<HDpsProfile> for rc::DpsProfile {
     fn from(h_dps_profile: HDpsProfile) -> Self {
         let breacher_info = h_dps_profile
             .get_breacher()
-            .map(|(br_abs, br_rel)| rc::BreacherInfo::new_clamped(br_abs, br_rel));
+            .map(|(br_abs, br_rel)| rc::Breacher::new_clamped(br_abs, br_rel));
         rc::DpsProfile::new_clamped(
             h_dps_profile.get_em(),
             h_dps_profile.get_thermal(),

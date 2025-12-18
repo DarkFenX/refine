@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     err::basic::DmgError,
-    misc::BreacherInfo,
+    misc::Breacher,
 };
 
 const DPS_MIN: AttrVal = OF(0.0);
@@ -12,7 +12,7 @@ pub struct DpsProfile {
     thermal: AttrVal,
     kinetic: AttrVal,
     explosive: AttrVal,
-    breacher: Option<BreacherInfo>,
+    breacher: Option<Breacher>,
 }
 impl DpsProfile {
     pub fn new_clamped(
@@ -20,7 +20,7 @@ impl DpsProfile {
         thermal: impl Into<f64>,
         kinetic: impl Into<f64>,
         explosive: impl Into<f64>,
-        breacher: Option<BreacherInfo>,
+        breacher: Option<Breacher>,
     ) -> Self {
         Self {
             em: OF(em.into()).max(DPS_MIN),
@@ -35,7 +35,7 @@ impl DpsProfile {
         thermal: impl Into<f64>,
         kinetic: impl Into<f64>,
         explosive: impl Into<f64>,
-        breacher: Option<BreacherInfo>,
+        breacher: Option<Breacher>,
     ) -> Result<Self, DpsProfileError> {
         let em = OF(em.into());
         let thermal = OF(thermal.into());
@@ -73,7 +73,7 @@ impl DpsProfile {
     pub fn get_explosive(&self) -> AttrVal {
         self.explosive
     }
-    pub fn get_breacher(&self) -> Option<BreacherInfo> {
+    pub fn get_breacher(&self) -> Option<Breacher> {
         self.breacher
     }
     pub(crate) fn deals_breacher_dps(&self) -> bool {

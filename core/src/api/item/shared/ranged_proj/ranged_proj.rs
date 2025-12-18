@@ -1,4 +1,4 @@
-use crate::{def::ItemId, misc::ProjRange, sol::SolarSystem, ud::UItemKey};
+use crate::{api::ProjRange, def::ItemId, sol::SolarSystem, ud::UItemKey};
 
 /// Projection which allows to set range.
 pub struct RangedProj<'a> {
