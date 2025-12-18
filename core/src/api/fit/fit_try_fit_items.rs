@@ -1,8 +1,8 @@
 use crate::{
     ad::AState,
-    api::{FitMut, MinionState, ModuleState, ServiceState},
+    api::{AddMode, FitMut, MinionState, ModuleState, RmMode, ServiceState},
     def::{ItemTypeId, OF},
-    misc::{AddMode, ItemKind, ModRack, RmMode},
+    misc::{ItemKind, ModRack},
     sol::SolarSystem,
     svc::vast::{ValOptions, ValOptionsInt},
     ud::{UData, UEffectUpdates, UFitKey, UItemKey, UNpcProp, UPhysics},

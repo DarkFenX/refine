@@ -2,8 +2,9 @@ use itertools::chain;
 
 use crate::{
     ad,
+    api::FitSecStatus,
     def::FitId,
-    misc::{DpsProfile, FitSecStatus},
+    misc::DpsProfile,
     ud::{
         UFleetKey, UItemKey,
         fit::{UFitSkill, UItemVec},

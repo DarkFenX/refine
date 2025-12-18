@@ -1,9 +1,9 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     ad::AItemId,
-    api::{FitMut, ModuleMut, ModuleState},
+    api::{AddMode, FitMut, ModuleMut, ModuleState, RmMode},
     def::ItemTypeId,
-    misc::{AddMode, ItemMutationRequest, ModRack, RmMode},
+    misc::{ItemMutationRequest, ModRack},
     sol::SolarSystem,
     ud::{UCharge, UEffectUpdates, UFitKey, UItem, UItemKey, UModule},
 };

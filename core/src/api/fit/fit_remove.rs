@@ -1,6 +1,5 @@
 use crate::{
-    api::FitMut,
-    misc::RmMode,
+    api::{FitMut, RmMode},
     sol::SolarSystem,
     ud::{UEffectUpdates, UFitKey},
 };

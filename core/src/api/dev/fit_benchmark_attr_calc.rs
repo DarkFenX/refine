@@ -1,7 +1,7 @@
 use crate::{
-    api::{FitMut, ModuleState},
+    api::{AddMode, FitMut, ModuleState, RmMode},
     def::ItemTypeId,
-    misc::{AddMode, ModRack, RmMode},
+    misc::ModRack,
     ud::UEffectUpdates,
 };
 
