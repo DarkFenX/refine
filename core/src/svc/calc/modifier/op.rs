@@ -1,7 +1,7 @@
-use crate::{ad, misc::OpInfo};
+use crate::ad;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum Op {
+pub(crate) enum CalcOp {
     PreAssign,
     PreMul,
     PreDiv,
@@ -16,9 +16,9 @@ pub(crate) enum Op {
     ExtraAdd,
     ExtraMul,
 }
-impl From<&ad::AOp> for Op {
-    fn from(a_mod_op: &ad::AOp) -> Self {
-        match a_mod_op {
+impl From<&ad::AOp> for CalcOp {
+    fn from(a_op: &ad::AOp) -> Self {
+        match a_op {
             ad::AOp::PreAssign => Self::PreAssign,
             ad::AOp::PreMul => Self::PreMul,
             ad::AOp::PreDiv => Self::PreDiv,
@@ -30,29 +30,6 @@ impl From<&ad::AOp> for Op {
             ad::AOp::PostPerc => Self::PostPerc,
             ad::AOp::PostPercImmune => Self::PostPercImmune,
             ad::AOp::PostAssign => Self::PostAssign,
-        }
-    }
-}
-impl From<Op> for OpInfo {
-    fn from(mod_op: Op) -> Self {
-        match mod_op {
-            Op::PreAssign => Self::PreAssign,
-            Op::PreMul => Self::PreMul,
-            Op::PreDiv => Self::PreDiv,
-            Op::Add => Self::Add,
-            Op::Sub => Self::Sub,
-            Op::PostMul => Self::PostMul,
-            // Since info already exposes if modification is penalized or not, we don't need to have
-            // this operator to be part of the info
-            Op::PostMulImmune => Self::PostMul,
-            Op::PostDiv => Self::PostDiv,
-            Op::PostPerc => Self::PostPerc,
-            // Since info already exposes if modification is penalized or not, we don't need to have
-            // this operator to be part of the info
-            Op::PostPercImmune => Self::PostPerc,
-            Op::PostAssign => Self::PostAssign,
-            Op::ExtraAdd => Self::ExtraAdd,
-            Op::ExtraMul => Self::ExtraMul,
         }
     }
 }

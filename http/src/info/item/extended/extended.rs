@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use rc::ItemMutCommon;
 
-use super::{HAttrVal, HEffect, HModificationInfo};
+use super::{HAttrVal, HEffect, HModification};
 use crate::shared::{HAttrId, HEffectId};
 
 #[derive(serde::Serialize)]
@@ -12,7 +12,7 @@ pub(in crate::info::item) struct HItemExtendedInfo {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     effects: HashMap<HEffectId, HEffect>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    mods: HashMap<HAttrId, Vec<HModificationInfo>>,
+    mods: HashMap<HAttrId, Vec<HModification>>,
 }
 impl<T> From<&mut T> for HItemExtendedInfo
 where
@@ -29,7 +29,7 @@ where
         };
         let mods = match core_item.iter_modifiers() {
             Ok(iter_mods) => iter_mods
-                .map(|(k, v)| (k.into(), v.into_iter().map(|m| HModificationInfo::from(&m)).collect()))
+                .map(|(k, v)| (k.into(), v.into_iter().map(|m| HModification::from(&m)).collect()))
                 .collect(),
             Err(_) => HashMap::new(),
         };

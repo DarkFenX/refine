@@ -12,14 +12,14 @@ use super::shared::{
 use crate::{
     ad::AItemCatId,
     def::{AttrVal, OF},
-    svc::calc::{AffectorInfo, AggrKey, AggrMode, ModificationInfo, Op},
+    svc::calc::{Affector, AggrKey, AggrMode, CalcOp, Modification},
     util::RMap,
 };
 
 pub(in crate::svc::calc) struct AttrValInfo {
     pub(in crate::svc::calc) value: AttrVal,
-    pub(in crate::svc::calc) effective_infos: Vec<ModificationInfo>,
-    pub(in crate::svc::calc) filtered_infos: Vec<ModificationInfo>,
+    pub(in crate::svc::calc) effective_infos: Vec<Modification>,
+    pub(in crate::svc::calc) filtered_infos: Vec<Modification>,
 }
 impl AttrValInfo {
     pub(in crate::svc::calc) fn new(value: AttrVal) -> Self {
@@ -29,7 +29,7 @@ impl AttrValInfo {
             filtered_infos: Vec::new(),
         }
     }
-    fn from_effective_info(value: AttrVal, info: ModificationInfo) -> Self {
+    fn from_effective_info(value: AttrVal, info: Modification) -> Self {
         Self {
             value,
             effective_infos: vec![info],
@@ -87,19 +87,19 @@ impl ModAccumInfo {
         val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
-        op: &Op,
+        op: &CalcOp,
         attr_pen: bool,
         item_cat: &AItemCatId,
         aggr_mode: &AggrMode,
-        affectors: SmallVec<AffectorInfo, 1>,
+        affectors: SmallVec<Affector, 1>,
     ) {
         match op {
-            Op::PreAssign => {
+            CalcOp::PreAssign => {
                 if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
                     && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
                 {
                     self.pre_assign.add_val(
-                        Op::PreAssign,
+                        CalcOp::PreAssign,
                         val,
                         proj_mult,
                         res_mult,
@@ -111,8 +111,8 @@ impl ModAccumInfo {
                     )
                 }
             }
-            Op::PreMul => self.pre_mul.add_val(
-                Op::PreMul,
+            CalcOp::PreMul => self.pre_mul.add_val(
+                CalcOp::PreMul,
                 val,
                 proj_mult,
                 res_mult,
@@ -123,8 +123,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PreDiv => self.pre_div.add_val(
-                Op::PreDiv,
+            CalcOp::PreDiv => self.pre_div.add_val(
+                CalcOp::PreDiv,
                 val,
                 proj_mult,
                 res_mult,
@@ -135,8 +135,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::Add => self.add.add_val(
-                Op::Add,
+            CalcOp::Add => self.add.add_val(
+                CalcOp::Add,
                 val,
                 proj_mult,
                 res_mult,
@@ -146,8 +146,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::Sub => self.sub.add_val(
-                Op::Sub,
+            CalcOp::Sub => self.sub.add_val(
+                CalcOp::Sub,
                 val,
                 proj_mult,
                 res_mult,
@@ -157,8 +157,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostMul => self.post_mul.add_val(
-                Op::PostMul,
+            CalcOp::PostMul => self.post_mul.add_val(
+                CalcOp::PostMul,
                 val,
                 proj_mult,
                 res_mult,
@@ -169,8 +169,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostMulImmune => self.post_mul.add_val(
-                Op::PostMulImmune,
+            CalcOp::PostMulImmune => self.post_mul.add_val(
+                CalcOp::PostMulImmune,
                 val,
                 proj_mult,
                 res_mult,
@@ -181,8 +181,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostDiv => self.post_div.add_val(
-                Op::PostDiv,
+            CalcOp::PostDiv => self.post_div.add_val(
+                CalcOp::PostDiv,
                 val,
                 proj_mult,
                 res_mult,
@@ -193,8 +193,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostPerc => self.post_perc.add_val(
-                Op::PostPerc,
+            CalcOp::PostPerc => self.post_perc.add_val(
+                CalcOp::PostPerc,
                 val,
                 proj_mult,
                 res_mult,
@@ -205,8 +205,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostPercImmune => self.post_perc.add_val(
-                Op::PostPerc,
+            CalcOp::PostPercImmune => self.post_perc.add_val(
+                CalcOp::PostPerc,
                 val,
                 proj_mult,
                 res_mult,
@@ -217,12 +217,12 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::PostAssign => {
+            CalcOp::PostAssign => {
                 if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
                     && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
                 {
                     self.post_assign.add_val(
-                        Op::PostAssign,
+                        CalcOp::PostAssign,
                         val,
                         proj_mult,
                         res_mult,
@@ -234,8 +234,8 @@ impl ModAccumInfo {
                     )
                 }
             }
-            Op::ExtraAdd => self.extra_add.add_val(
-                Op::ExtraAdd,
+            CalcOp::ExtraAdd => self.extra_add.add_val(
+                CalcOp::ExtraAdd,
                 val,
                 proj_mult,
                 res_mult,
@@ -245,8 +245,8 @@ impl ModAccumInfo {
                 aggr_mode,
                 affectors,
             ),
-            Op::ExtraMul => self.extra_mul.add_val(
-                Op::ExtraMul,
+            CalcOp::ExtraMul => self.extra_mul.add_val(
+                CalcOp::ExtraMul,
                 val,
                 proj_mult,
                 res_mult,
@@ -320,7 +320,7 @@ impl AttrStack {
     }
     fn add_val<N, D, R>(
         &mut self,
-        op: Op,
+        op: CalcOp,
         initial_val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
@@ -329,7 +329,7 @@ impl AttrStack {
         revert_func: &R,
         penalizable: bool,
         aggr_mode: &AggrMode,
-        affectors: SmallVec<AffectorInfo, 1>,
+        affectors: SmallVec<Affector, 1>,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -385,7 +385,7 @@ impl AttrAggr {
     }
     fn add_val<N, D, R>(
         &mut self,
-        op: Op,
+        op: CalcOp,
         initial_val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
@@ -393,7 +393,7 @@ impl AttrAggr {
         diminish_func: &D,
         revert_func: &R,
         aggr_mode: &AggrMode,
-        affectors: SmallVec<AffectorInfo, 1>,
+        affectors: SmallVec<Affector, 1>,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -404,7 +404,7 @@ impl AttrAggr {
             None => return,
         };
         let diminished_val = diminish_func(normalized_val, proj_mult, res_mult);
-        let info = ModificationInfo {
+        let info = Modification {
             op: op.into(),
             initial_val,
             range_mult: proj_mult,

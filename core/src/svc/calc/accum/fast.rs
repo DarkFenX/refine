@@ -11,7 +11,7 @@ use super::shared::{
 use crate::{
     ad::AItemCatId,
     def::{AttrVal, OF},
-    svc::calc::{AggrKey, AggrMode, Op},
+    svc::calc::{AggrKey, AggrMode, CalcOp},
     util::RMap,
 };
 
@@ -51,13 +51,13 @@ impl ModAccumFast {
         val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
-        op: &Op,
+        op: &CalcOp,
         attr_pen: bool,
         item_cat: &AItemCatId,
         aggr_mode: &AggrMode,
     ) {
         match op {
-            Op::PreAssign => {
+            CalcOp::PreAssign => {
                 if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
                     && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
                 {
@@ -65,7 +65,7 @@ impl ModAccumFast {
                         .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
                 }
             }
-            Op::PreMul => self.pre_mul.add_val(
+            CalcOp::PreMul => self.pre_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
@@ -74,7 +74,7 @@ impl ModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            Op::PreDiv => self.pre_div.add_val(
+            CalcOp::PreDiv => self.pre_div.add_val(
                 val,
                 proj_mult,
                 res_mult,
@@ -83,13 +83,13 @@ impl ModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            Op::Add => self
+            CalcOp::Add => self
                 .add
                 .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
-            Op::Sub => self
+            CalcOp::Sub => self
                 .sub
                 .add_val(val, proj_mult, res_mult, normalize_sub, diminish_basic, aggr_mode),
-            Op::PostMul => self.post_mul.add_val(
+            CalcOp::PostMul => self.post_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
@@ -98,11 +98,11 @@ impl ModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            Op::PostMulImmune => {
+            CalcOp::PostMulImmune => {
                 self.post_mul
                     .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, false, aggr_mode)
             }
-            Op::PostDiv => self.post_div.add_val(
+            CalcOp::PostDiv => self.post_div.add_val(
                 val,
                 proj_mult,
                 res_mult,
@@ -111,7 +111,7 @@ impl ModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            Op::PostPerc => self.post_perc.add_val(
+            CalcOp::PostPerc => self.post_perc.add_val(
                 val,
                 proj_mult,
                 res_mult,
@@ -120,11 +120,11 @@ impl ModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            Op::PostPercImmune => {
+            CalcOp::PostPercImmune => {
                 self.post_perc
                     .add_val(val, proj_mult, res_mult, normalize_perc, diminish_mul, false, aggr_mode)
             }
-            Op::PostAssign => {
+            CalcOp::PostAssign => {
                 if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
                     && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
                 {
@@ -132,12 +132,14 @@ impl ModAccumFast {
                         .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
                 }
             }
-            Op::ExtraAdd => self
-                .extra_add
-                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
-            Op::ExtraMul => self
-                .extra_mul
-                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode),
+            CalcOp::ExtraAdd => {
+                self.extra_add
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
+            }
+            CalcOp::ExtraMul => {
+                self.extra_mul
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
+            }
         };
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {

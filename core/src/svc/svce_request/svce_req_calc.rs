@@ -3,7 +3,7 @@ use crate::{
     rd::RAttrKey,
     svc::{
         Svc, SvcCtx,
-        calc::{CalcAttrVal, ModificationInfo},
+        calc::{CalcAttrVal, Modification},
         err::KeyedItemLoadedError,
     },
     ud::{UData, UItemKey},
@@ -31,7 +31,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)>, KeyedItemLoadedError> {
         self.calc.iter_item_mods(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
 }

@@ -10,8 +10,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, CustomAffectorValueKind,
-            Location, ModifierKind, Op, RawModifier,
+            AffecteeFilter, Affector, AffectorValue, AggrMode, Calc, CalcOp, CustomAffectorValue,
+            CustomAffectorValueKind, Location, ModifierKind, RawModifier,
         },
     },
     ud::UItemKey,
@@ -66,7 +66,7 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
                 mod_val_getter: get_mod_val,
                 ..
             }),
-            op: Op::PostMul,
+            op: CalcOp::PostMul,
             aggr_mode: AggrMode::Stack,
             affectee_filter: AffecteeFilter::Direct(Location::Ship),
             affectee_attr_key: max_velocity_key,
@@ -76,7 +76,7 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
     }
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
         && let Some(speed_factor_key) = ctx.ac().speed_factor
@@ -85,15 +85,15 @@ fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 
     {
         let item_id = ctx.u_data.items.id_by_key(item_key);
         info.extend([
-            AffectorInfo {
+            Affector {
                 item_id,
                 attr_id: Some(ctx.u_data.src.get_attr(speed_factor_key).id.into()),
             },
-            AffectorInfo {
+            Affector {
                 item_id,
                 attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_key).id.into()),
             },
-            AffectorInfo {
+            Affector {
                 item_id: ctx.u_data.items.id_by_key(ship_key),
                 attr_id: Some(ctx.u_data.src.get_attr(mass_key).id.into()),
             },

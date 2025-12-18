@@ -2,20 +2,19 @@ use itertools::Itertools;
 
 use crate::{
     ad::AEffectId,
-    api::{AttrId, FullSideEffect, FullSideEffectMut},
+    api::{AttrId, FullSideEffect, FullSideEffectMut, Op},
     def::AttrVal,
-    misc::OpInfo,
     rd::{RAttrKey, Src},
 };
 
 pub struct SideEffectPartialStr {
-    op: OpInfo,
+    op: Op,
     attr_id: AttrId,
     // Used only to generate full side effect strength with modification value
     attr_key: RAttrKey,
 }
 impl SideEffectPartialStr {
-    pub fn get_op(&self) -> OpInfo {
+    pub fn get_op(&self) -> Op {
         self.op
     }
     pub fn get_attr_id(&self) -> AttrId {
@@ -24,12 +23,12 @@ impl SideEffectPartialStr {
 }
 
 pub struct SideEffectStr {
-    op: OpInfo,
+    op: Op,
     attr_id: AttrId,
     value: AttrVal,
 }
 impl SideEffectStr {
-    pub fn get_op(&self) -> OpInfo {
+    pub fn get_op(&self) -> Op {
         self.op
     }
     pub fn get_attr_id(&self) -> AttrId {

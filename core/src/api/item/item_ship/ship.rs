@@ -1,6 +1,5 @@
 use crate::{
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    misc::{Coordinates, Movement},
+    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, Movement},
     sol::SolarSystem,
     ud::{UItemKey, UShip},
 };

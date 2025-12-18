@@ -6,12 +6,12 @@ use smallvec::SmallVec;
 
 use super::calce_shared::get_base_attr_value;
 use crate::{
-    api::AttrId,
-    misc::{OpInfo, SecZone},
+    api::{AttrId, Op},
+    misc::SecZone,
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,
-        calc::{AffectorInfo, AttrValInfo, Calc, ModAccumInfo, Modification, ModificationInfo, ModificationKey},
+        calc::{Affector, AttrValInfo, Calc, CalcModification, CalcModificationKey, ModAccumInfo, Modification},
         err::KeyedItemLoadedError,
     },
     ud::{UItem, UItemKey},
@@ -19,8 +19,8 @@ use crate::{
 };
 
 struct Affection {
-    modification: Modification,
-    affectors: SmallVec<AffectorInfo, 1>,
+    modification: CalcModification,
+    affectors: SmallVec<Affector, 1>,
 }
 
 impl Calc {
@@ -31,7 +31,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_key in self.iter_item_attr_keys(ctx, item_key)? {
             let mut attr_info = self.calc_item_attr_info(ctx, item_key, attr_key);
@@ -83,8 +83,8 @@ impl Calc {
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
-            let mod_key = ModificationKey::from(cmod);
-            let modification = Modification {
+            let mod_key = CalcModificationKey::from(cmod);
+            let modification = CalcModification {
                 op: cmod.raw.op,
                 val,
                 res_mult: self.calc_resist_mult(ctx, cmod),
@@ -125,14 +125,14 @@ impl Calc {
             self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
             if limiter_val.dogma > dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
-                dogma_attr_info.effective_infos.push(ModificationInfo {
-                    op: OpInfo::MinLimit,
+                dogma_attr_info.effective_infos.push(Modification {
+                    op: Op::MinLimit,
                     initial_val: limiter_val.dogma,
                     range_mult: None,
                     resist_mult: None,
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
-                    affectors: vec![AffectorInfo {
+                    affectors: vec![Affector {
                         item_id: ctx.u_data.items.id_by_key(item_key),
                         attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
                     }],
@@ -146,14 +146,14 @@ impl Calc {
             self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
             if limiter_val.dogma < dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
-                dogma_attr_info.effective_infos.push(ModificationInfo {
-                    op: OpInfo::MaxLimit,
+                dogma_attr_info.effective_infos.push(Modification {
+                    op: Op::MaxLimit,
                     initial_val: limiter_val.dogma,
                     range_mult: None,
                     resist_mult: None,
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
-                    affectors: vec![AffectorInfo {
+                    affectors: vec![Affector {
                         item_id: ctx.u_data.items.id_by_key(item_key),
                         attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
                     }],
@@ -193,18 +193,18 @@ impl Calc {
                 // recalculation of generic security attribute value
                 self.deps.add_anonymous(item_key, security_attr_key, attr.key);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
-                base_attr_info.effective_infos.push(ModificationInfo {
+                base_attr_info.effective_infos.push(Modification {
                     // Technically this modification is not pre-assignment, it is base value
                     // overwrite (which later will be overwritten by any other pre-assignment
                     // regardless of its value), but pre-assignment is still used in info for
                     // simplicity. In any EVE scenario there is no pre-assignment for this attribute
-                    op: OpInfo::BaseAssign,
+                    op: Op::BaseAssign,
                     initial_val: security_full_val.dogma,
                     range_mult: None,
                     resist_mult: None,
                     stacking_mult: None,
                     applied_val: security_full_val.dogma,
-                    affectors: vec![AffectorInfo {
+                    affectors: vec![Affector {
                         item_id: ctx.u_data.items.id_by_key(item_key),
                         attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).id.into()),
                     }],

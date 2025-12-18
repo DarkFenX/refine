@@ -1,11 +1,11 @@
 use crate::{
     ad::AItemCatId,
     def::AttrVal,
-    svc::calc::{AggrMode, Op},
+    svc::calc::{AggrMode, CalcOp},
 };
 
-pub(in crate::svc::calc) struct Modification {
-    pub(in crate::svc::calc) op: Op,
+pub(in crate::svc::calc) struct CalcModification {
+    pub(in crate::svc::calc) op: CalcOp,
     pub(in crate::svc::calc) val: AttrVal,
     pub(in crate::svc::calc) proj_mult: Option<AttrVal>,
     pub(in crate::svc::calc) res_mult: Option<AttrVal>,

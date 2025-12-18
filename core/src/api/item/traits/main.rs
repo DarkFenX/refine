@@ -12,7 +12,7 @@ use crate::{
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{
-        calc::{CalcAttrVal, ModificationInfo},
+        calc::{CalcAttrVal, Modification},
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
             StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensors,
@@ -96,7 +96,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn iter_modifiers(
         &mut self,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<ModificationInfo>)>, IterItemModifiersError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)>, IterItemModifiersError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_mods(&sol.u_data, item_key) {

@@ -7,7 +7,7 @@ use crate::{
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcAttrVal, ModAccumFast, Modification, ModificationKey},
+        calc::{Calc, CalcAttrVal, CalcModification, CalcModificationKey, ModAccumFast},
         err::KeyedItemLoadedError,
     },
     ud::{UItem, UItemKey},
@@ -271,7 +271,7 @@ impl Calc {
         item_key: &UItemKey,
         item: &UItem,
         attr_key: RAttrKey,
-    ) -> impl Iterator<Item = Modification> {
+    ) -> impl Iterator<Item = CalcModification> {
         let mut mods = RMap::new();
         for cmod in self
             .std
@@ -284,8 +284,8 @@ impl Calc {
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
-            let mod_key = ModificationKey::from(cmod);
-            let modification = Modification {
+            let mod_key = CalcModificationKey::from(cmod);
+            let modification = CalcModification {
                 op: cmod.raw.op,
                 val,
                 proj_mult: self.calc_proj_mult(ctx, cmod),

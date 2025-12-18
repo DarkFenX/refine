@@ -13,7 +13,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, AffectorInfo, AggrMode, Calc, ItemAddReviser, ItemRemoveReviser, Location, ModifierKind, Op,
+            AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser, Location, ModifierKind,
         },
         eff_funcs,
     },
@@ -25,7 +25,7 @@ pub(crate) struct RawModifier {
     pub(crate) kind: ModifierKind,
     pub(crate) affector_espec: EffectSpec,
     pub(crate) affector_value: AffectorValue,
-    pub(crate) op: Op,
+    pub(crate) op: CalcOp,
     pub(crate) aggr_mode: AggrMode,
     pub(crate) affectee_filter: AffecteeFilter,
     pub(crate) affectee_attr_key: RAttrKey,
@@ -203,7 +203,7 @@ impl RawModifier {
     pub(in crate::svc::calc) fn get_affector_attr_key(&self) -> Option<RAttrKey> {
         self.affector_value.get_affector_attr_key()
     }
-    pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<AffectorInfo, 1> {
+    pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<Affector, 1> {
         self.affector_value.get_affector_info(ctx, self.affector_espec.item_key)
     }
     pub(in crate::svc::calc) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx) -> Option<AttrVal> {

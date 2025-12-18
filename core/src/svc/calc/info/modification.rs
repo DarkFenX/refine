@@ -1,11 +1,11 @@
-use crate::{def::AttrVal, misc::OpInfo, svc::calc::AffectorInfo};
+use crate::{api::Op, def::AttrVal, svc::calc::Affector};
 
-pub struct ModificationInfo {
-    pub op: OpInfo,
+pub struct Modification {
+    pub op: Op,
     pub initial_val: AttrVal,
     pub range_mult: Option<AttrVal>,
     pub resist_mult: Option<AttrVal>,
     pub stacking_mult: Option<AttrVal>,
     pub applied_val: AttrVal,
-    pub affectors: Vec<AffectorInfo>,
+    pub affectors: Vec<Affector>,
 }

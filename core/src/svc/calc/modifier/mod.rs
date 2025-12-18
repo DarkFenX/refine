@@ -7,7 +7,7 @@ pub(crate) use kind::ModifierKind;
 pub(crate) use location::Location;
 pub(in crate::svc::calc) use mod_ctx::CtxModifier;
 pub(crate) use mod_raw::RawModifier;
-pub(crate) use op::Op;
+pub(crate) use op::CalcOp;
 
 mod affectee_filter;
 mod affector_val;

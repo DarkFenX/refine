@@ -1,4 +1,9 @@
-use crate::{api::DroneMut, misc::Coordinates, sol::SolarSystem, ud::UItemKey, util::Xyz};
+use crate::{
+    api::{Coordinates, DroneMut},
+    sol::SolarSystem,
+    ud::UItemKey,
+    util::Xyz,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_coordinates(&mut self, drone_key: UItemKey, coordinates: Xyz) {

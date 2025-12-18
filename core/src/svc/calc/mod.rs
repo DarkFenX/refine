@@ -32,12 +32,12 @@
 
 use accum::{AttrValInfo, ModAccumFast, ModAccumInfo};
 pub(crate) use calc::Calc;
+pub use info::{Affector, Modification};
 pub use misc::CalcAttrVal;
-use misc::{ItemAttrPostprocs, LocationKind, Modification, ModificationKey};
-pub use mod_info::{AffectorInfo, ModificationInfo};
+use misc::{CalcModification, CalcModificationKey, ItemAttrPostprocs, LocationKind};
 pub(crate) use modifier::{
-    AffecteeFilter, AffectorValue, AggrKey, AggrMode, CustomAffectorValue, CustomAffectorValueKind, ItemAddReviser,
-    ItemRemoveReviser, Location, ModifierKind, Op, RawModifier,
+    AffecteeFilter, AffectorValue, AggrKey, AggrMode, CalcOp, CustomAffectorValue, CustomAffectorValueKind,
+    ItemAddReviser, ItemRemoveReviser, Location, ModifierKind, RawModifier,
 };
 use modifier::{Context, CtxModifier, debug};
 
@@ -48,7 +48,7 @@ mod calce_debug;
 mod calce_maintain;
 mod calce_modgen;
 mod calce_rah;
+mod info;
 mod misc;
-mod mod_info;
 mod modifier;
 mod registers;

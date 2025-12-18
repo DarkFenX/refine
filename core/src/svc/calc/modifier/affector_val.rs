@@ -7,7 +7,7 @@ use crate::{
     rd::RAttrKey,
     svc::{
         SvcCtx,
-        calc::{AffectorInfo, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
+        calc::{Affector, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
     },
     ud::UItemKey,
 };
@@ -30,13 +30,13 @@ impl AffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
+    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
         match self {
-            Self::Attr(attr_key) => smallvec![AffectorInfo {
+            Self::Attr(attr_key) => smallvec![Affector {
                 item_id: ctx.u_data.items.id_by_key(item_key),
                 attr_id: Some(ctx.u_data.src.get_attr(*attr_key).id.into()),
             }],
-            Self::Hardcoded(_) => smallvec![AffectorInfo {
+            Self::Hardcoded(_) => smallvec![Affector {
                 item_id: ctx.u_data.items.id_by_key(item_key),
                 attr_id: None
             }],

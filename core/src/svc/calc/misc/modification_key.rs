@@ -1,6 +1,6 @@
 use crate::{
     rd::RAttrKey,
-    svc::calc::{CtxModifier, Op},
+    svc::calc::{CalcOp, CtxModifier},
     ud::UItemKey,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 // sense. For EVE scenarios which prompt for existence of key and what's in it, see tests in
 // test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
-pub(in crate::svc::calc) struct ModificationKey {
+pub(in crate::svc::calc) struct CalcModificationKey {
     pub(in crate::svc::calc) affector_key: UItemKey,
     pub(in crate::svc::calc) affector_attr_key: Option<RAttrKey>,
-    pub(in crate::svc::calc) op: Op,
+    pub(in crate::svc::calc) op: CalcOp,
 }
-impl From<&CtxModifier> for ModificationKey {
+impl From<&CtxModifier> for CalcModificationKey {
     fn from(cmod: &CtxModifier) -> Self {
-        ModificationKey {
+        CalcModificationKey {
             affector_key: cmod.raw.affector_espec.item_key,
             affector_attr_key: cmod.raw.get_affector_attr_key(),
             op: cmod.raw.op,

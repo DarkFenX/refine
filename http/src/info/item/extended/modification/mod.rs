@@ -1,4 +1,4 @@
-pub(in crate::info::item::extended) use modification::HModificationInfo;
+pub(in crate::info::item::extended) use modification::HModification;
 
 mod affector;
 mod modification;

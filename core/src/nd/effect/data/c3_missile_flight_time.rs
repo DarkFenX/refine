@@ -15,8 +15,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, AffectorInfo, AffectorValue, AggrMode, Calc, CustomAffectorValue, CustomAffectorValueKind,
-            Location, ModifierKind, Op, RawModifier,
+            AffecteeFilter, Affector, AffectorValue, AggrMode, Calc, CalcOp, CustomAffectorValue,
+            CustomAffectorValueKind, Location, ModifierKind, RawModifier,
         },
     },
     ud::{UItem, UItemKey},
@@ -77,7 +77,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
                 item_add_reviser: Some(revise_on_item_add_removal),
                 item_remove_reviser: Some(revise_on_item_add_removal),
             }),
-            op: Op::ExtraAdd,
+            op: CalcOp::ExtraAdd,
             aggr_mode: AggrMode::Stack,
             affectee_filter: AffecteeFilter::Direct(Location::Item),
             affectee_attr_key: explosion_delay_key,
@@ -103,20 +103,20 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<AffectorInfo, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
         && let Some(max_velocity_key) = ctx.ac().max_velocity
         && let Some(radius_key) = ctx.ac().radius
     {
         info.extend([
-            AffectorInfo {
+            Affector {
                 item_id: ctx.u_data.items.id_by_key(item_key),
                 attr_id: Some(ctx.u_data.src.get_attr(max_velocity_key).id.into()),
             },
             // There is no dependency on modified ship radius, but we add it for informational
             // purposes nevertheless
-            AffectorInfo {
+            Affector {
                 item_id: ctx.u_data.items.id_by_key(ship_key),
                 attr_id: Some(ctx.u_data.src.get_attr(radius_key).id.into()),
             },

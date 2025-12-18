@@ -1,8 +1,7 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ShipMut},
+    api::{Coordinates, FitMut, Movement, ShipMut},
     def::{ItemTypeId, OF},
-    misc::{Coordinates, Movement},
     sol::SolarSystem,
     ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UPhysics, UShip},
 };

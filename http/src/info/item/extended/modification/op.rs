@@ -16,23 +16,23 @@ pub(in crate::info::item::extended::modification) enum HModOp {
     ExtraAdd,
     ExtraMul,
 }
-impl From<&rc::OpInfo> for HModOp {
-    fn from(core_op: &rc::OpInfo) -> Self {
+impl From<&rc::Op> for HModOp {
+    fn from(core_op: &rc::Op) -> Self {
         match core_op {
-            rc::OpInfo::BaseAssign => Self::BaseAssign,
-            rc::OpInfo::PreAssign => Self::PreAssign,
-            rc::OpInfo::PreMul => Self::PreMul,
-            rc::OpInfo::PreDiv => Self::PreDiv,
-            rc::OpInfo::Add => Self::Add,
-            rc::OpInfo::Sub => Self::Sub,
-            rc::OpInfo::PostMul => Self::PostMul,
-            rc::OpInfo::PostDiv => Self::PostDiv,
-            rc::OpInfo::PostPerc => Self::PostPerc,
-            rc::OpInfo::PostAssign => Self::PostAssign,
-            rc::OpInfo::MinLimit => Self::MinLimit,
-            rc::OpInfo::MaxLimit => Self::MaxLimit,
-            rc::OpInfo::ExtraAdd => Self::ExtraAdd,
-            rc::OpInfo::ExtraMul => Self::ExtraMul,
+            rc::Op::BaseAssign => Self::BaseAssign,
+            rc::Op::PreAssign => Self::PreAssign,
+            rc::Op::PreMul => Self::PreMul,
+            rc::Op::PreDiv => Self::PreDiv,
+            rc::Op::Add => Self::Add,
+            rc::Op::Sub => Self::Sub,
+            rc::Op::PostMul => Self::PostMul,
+            rc::Op::PostDiv => Self::PostDiv,
+            rc::Op::PostPerc => Self::PostPerc,
+            rc::Op::PostAssign => Self::PostAssign,
+            rc::Op::MinLimit => Self::MinLimit,
+            rc::Op::MaxLimit => Self::MaxLimit,
+            rc::Op::ExtraAdd => Self::ExtraAdd,
+            rc::Op::ExtraMul => Self::ExtraMul,
         }
     }
 }

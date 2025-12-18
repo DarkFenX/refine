@@ -1,4 +1,10 @@
-use crate::{api::FighterMut, def::AttrVal, misc::Movement, sol::SolarSystem, ud::UItemKey, util::Xyz};
+use crate::{
+    api::{FighterMut, Movement},
+    def::AttrVal,
+    sol::SolarSystem,
+    ud::UItemKey,
+    util::Xyz,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_movement(
