@@ -1,8 +1,9 @@
 use crate::{
     ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
+    api::MinionState,
     def::{AttrVal, ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, MinionState},
+    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, Src},
     ud::{
         UFitKey,

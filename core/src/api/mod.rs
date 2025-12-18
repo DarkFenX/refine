@@ -20,7 +20,7 @@ pub use item::{
     SwEffect, SwEffectMut,
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_keys, iter_ranged_projs};
-pub use misc::{AttrId, EffectId};
+pub use misc::{AttrId, EffectId, MinionState, ModuleState, ServiceState};
 pub use util::MutIter;
 
 mod default_incoming_dps;

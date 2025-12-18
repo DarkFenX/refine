@@ -1,7 +1,8 @@
 use crate::{
     ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
+    api::ServiceState,
     def::ItemId,
-    misc::{EffectMode, ServiceState},
+    misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
         UFitKey,

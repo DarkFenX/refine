@@ -1,6 +1,6 @@
 use crate::{
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    misc::{Coordinates, MinionState, Movement, NpcProp},
+    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState},
+    misc::{Coordinates, Movement, NpcProp},
     sol::SolarSystem,
     ud::{UDrone, UItemKey},
 };

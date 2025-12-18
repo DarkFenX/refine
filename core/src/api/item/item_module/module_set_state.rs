@@ -1,6 +1,5 @@
 use crate::{
-    api::ModuleMut,
-    misc::ModuleState,
+    api::{ModuleMut, ModuleState},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemKey},
 };

@@ -23,7 +23,6 @@ pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use skill_level::{SkillLevel, SkillLevelError};
 pub(crate) use spool::ResolvedSpool;
 pub use spool::Spool;
-pub use states::{MinionState, ModuleState, ServiceState};
 
 mod adj_count;
 mod attr_spec;
@@ -49,4 +48,3 @@ mod proj_range;
 mod sec_zone;
 mod skill_level;
 mod spool;
-mod states;

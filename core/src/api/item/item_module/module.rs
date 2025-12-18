@@ -1,7 +1,7 @@
 use crate::{
-    api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ModuleState},
     def::{Count, Idx},
-    misc::{AdjustableCount, ModRack, ModuleState},
+    misc::{AdjustableCount, ModRack},
     sol::SolarSystem,
     ud::{UItemKey, UModule},
     util::InfCount,

@@ -1,6 +1,6 @@
 use crate::{
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    misc::{AdjustableCount, Coordinates, MinionState, Movement},
+    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState},
+    misc::{AdjustableCount, Coordinates, Movement},
     sol::SolarSystem,
     ud::{UFighter, UItemKey},
 };

@@ -1,8 +1,9 @@
 use crate::{
     ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
+    api::ModuleState,
     def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
-    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, ModuleState, Spool},
+    misc::{AttrMutationRequest, EffectMode, ItemMutationRequest, ModRack, Spool},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
         UData, UFitKey, UItemKey,

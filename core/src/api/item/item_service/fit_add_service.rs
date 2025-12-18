@@ -1,8 +1,7 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ServiceMut},
+    api::{FitMut, ServiceMut, ServiceState},
     def::ItemTypeId,
-    misc::ServiceState,
     sol::SolarSystem,
     ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UService},
 };

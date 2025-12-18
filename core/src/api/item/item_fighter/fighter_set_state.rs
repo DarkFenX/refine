@@ -1,8 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::FighterMut,
-    misc::MinionState,
+    api::{FighterMut, MinionState},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemKey},
 };

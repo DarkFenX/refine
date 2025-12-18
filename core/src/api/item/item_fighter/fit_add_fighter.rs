@@ -1,8 +1,8 @@
 use crate::{
     ad::AItemId,
-    api::{FighterMut, FitMut},
+    api::{FighterMut, FitMut, MinionState},
     def::ItemTypeId,
-    misc::{Coordinates, MinionState, Movement},
+    misc::{Coordinates, Movement},
     sol::SolarSystem,
     ud::{UEffectUpdates, UFighter, UFitKey, UItem, UItemKey, UPhysics},
 };
