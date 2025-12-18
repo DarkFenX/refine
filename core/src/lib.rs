@@ -22,8 +22,8 @@
 pub use api::{
     Ability, AbilityIter, AbilityMut, AddMode, AdjustableCount, AttrId, Autocharge, AutochargeMut, Booster, BoosterMut,
     Character, CharacterMut, Charge, ChargeMut, Coordinates, Direction, Drone, DroneMut, EffectId, EffectiveMutation,
-    EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, FitSecStatus, Fleet, FleetMut, FullMAttr, FullMAttrIter,
-    FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, Implant, ImplantMut, IncompleteMutation,
+    EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut,
+    FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, Implant, ImplantMut, IncompleteMutation,
     IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, MinionState, Module, ModuleIter, ModuleMut,
     ModuleState, Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut,
     RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, Rig, RigMut, RmMode, Service,
@@ -37,8 +37,8 @@ pub use def::{
 };
 pub use lender::Lender;
 pub use misc::{
-    BreacherInfo, DpsProfile, Ecm, EffectInfo, EffectMode, FighterCountOverride, MiningAmount, ModRack, NpcProp,
-    ProjRange, SecZone, SecZoneCorruption, SkillLevel, Spool,
+    BreacherInfo, DpsProfile, Ecm, EffectInfo, EffectMode, FighterCountOverride, FitSecStatus, MiningAmount, ModRack,
+    NpcProp, ProjRange, SecZone, SecZoneCorruption, SkillLevel, Spool,
 };
 pub use rd::Src;
 pub use sol::SolarSystem;

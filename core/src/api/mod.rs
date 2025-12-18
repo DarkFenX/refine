@@ -21,8 +21,8 @@ pub use item::{
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_keys, iter_ranged_projs};
 pub use misc::{
-    AddMode, AdjustableCount, AttrId, Coordinates, Direction, EffectId, FitSecStatus, FitSecStatusError, MinionState,
-    ModuleState, Movement, Op, RmMode, ServiceState,
+    AddMode, AdjustableCount, AttrId, Coordinates, Direction, EffectId, MinionState, ModuleState, Movement, Op, RmMode,
+    ServiceState,
 };
 pub use util::MutIter;
 

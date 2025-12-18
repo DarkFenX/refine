@@ -1,8 +1,4 @@
-use crate::{
-    api::{FitMut, FitSecStatus},
-    sol::SolarSystem,
-    ud::UFitKey,
-};
+use crate::{api::FitMut, misc::FitSecStatus, sol::SolarSystem, ud::UFitKey};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_key: UFitKey, sec_status: FitSecStatus) {
