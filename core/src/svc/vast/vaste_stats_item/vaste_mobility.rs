@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, item_funcs, vast::Vast},
     ud::UItemKey,
-    util::ceil_tick,
+    util::{FLOAT_TOLERANCE, ceil_tick},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -91,7 +91,7 @@ impl Vast {
         let warp_speed = calc
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_speed_mult, OF(0.0))
             .unwrap();
-        let warp_speed = match warp_speed > OF(0.0) {
+        let warp_speed = match warp_speed > FLOAT_TOLERANCE {
             true => Some(warp_speed),
             false => None,
         };
@@ -109,7 +109,7 @@ impl Vast {
             .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_capacitor_need, OF(0.0))
             .unwrap();
         let warp_range = cap / mass / cap_need;
-        let warp_range = match warp_range.is_finite() && warp_range > OF(0.0) {
+        let warp_range = match warp_range.is_finite() && warp_range > FLOAT_TOLERANCE {
             true => Some(warp_range),
             false => None,
         };

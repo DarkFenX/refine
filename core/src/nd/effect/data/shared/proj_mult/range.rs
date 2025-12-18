@@ -3,7 +3,7 @@ use crate::{
     rd::{RAttrKey, REffect},
     svc::{SvcCtx, calc::Calc},
     ud::{UItemKey, UProjData},
-    util::{ceil_tick, floor_tick},
+    util::{FLOAT_TOLERANCE, ceil_tick, floor_tick},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ fn get_full_range_mult(
     let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.range_attr_key);
     let affector_falloff = get_effect_range(ctx, calc, projector_key, projector_effect.falloff_attr_key);
     // Calculate actual range multiplier after collecting all the data
-    match affector_falloff > OF(0.0) {
+    match affector_falloff > FLOAT_TOLERANCE {
         true => match restricted && proj_range > affector_optimal + OF(3.0) * affector_falloff {
             true => OF(0.0),
             false => ordered_float::Float::powf(

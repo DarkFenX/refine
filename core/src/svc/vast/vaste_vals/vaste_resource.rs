@@ -7,7 +7,7 @@ use crate::{
     rd::RAttrKey,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemKey},
-    util::{RSet, round},
+    util::{FLOAT_TOLERANCE, RSet, round},
 };
 
 pub struct ValResFail {
@@ -207,7 +207,7 @@ fn validate_fast_fitting<'a>(
         let item_use = calc
             .get_item_oattr_afb_oextra(ctx, item_key, use_attr_key, OF(0.0))
             .unwrap();
-        if force_pass && item_use > OF(0.0) && !kfs.contains(&item_key) {
+        if force_pass && item_use > FLOAT_TOLERANCE && !kfs.contains(&item_key) {
             force_pass = false;
         }
         total_use += item_use;
@@ -229,7 +229,7 @@ fn validate_fast_other<'a>(
     let mut total_use = OF(0.0);
     let mut force_pass = true;
     for (item_key, &item_use) in items {
-        if force_pass && item_use > OF(0.0) && !kfs.contains(item_key) {
+        if force_pass && item_use > FLOAT_TOLERANCE && !kfs.contains(item_key) {
             force_pass = false;
         }
         total_use += item_use;
@@ -257,7 +257,7 @@ fn validate_verbose_fitting<'a>(
             .get_item_oattr_afb_oextra(ctx, item_key, use_attr_key, OF(0.0))
             .unwrap();
         total_use += item_use;
-        if item_use > OF(0.0) && !kfs.contains(&item_key) {
+        if item_use > FLOAT_TOLERANCE && !kfs.contains(&item_key) {
             users.insert(ctx.u_data.items.id_by_key(item_key), item_use);
         }
     }
@@ -287,7 +287,7 @@ fn validate_verbose_other<'a>(
     let mut users = HashMap::with_capacity(items.len());
     for (item_key, &item_use) in items {
         total_use += item_use;
-        if item_use > OF(0.0) && !kfs.contains(item_key) {
+        if item_use > FLOAT_TOLERANCE && !kfs.contains(item_key) {
             users.insert(ctx.u_data.items.id_by_key(*item_key), item_use);
         }
     }

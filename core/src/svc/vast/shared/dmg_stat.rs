@@ -2,6 +2,7 @@ use crate::{
     def::{AttrVal, OF},
     misc::DmgKinds,
     svc::output::OutputDmgBreacher,
+    util::FLOAT_TOLERANCE,
 };
 
 pub struct StatDmg {
@@ -61,7 +62,7 @@ impl StatDmgBreacher {
         self.relative_max = self.relative_max.max(other.relative_max);
     }
     pub(in crate::svc::vast) fn nullify(self) -> Option<Self> {
-        match self.absolute_max > OF(0.0) && self.relative_max > OF(0.0) {
+        match self.absolute_max > FLOAT_TOLERANCE && self.relative_max > FLOAT_TOLERANCE {
             true => Some(self),
             false => None,
         }

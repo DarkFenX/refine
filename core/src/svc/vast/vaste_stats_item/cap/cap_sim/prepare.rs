@@ -1,5 +1,7 @@
 use std::collections::BinaryHeap;
 
+use ordered_float::Float;
+
 use super::{
     aggregate::Aggregator,
     event::{CapSimEvent, CapSimEventInjector},
@@ -18,7 +20,7 @@ use crate::{
         },
     },
     ud::UItemKey,
-    util::RMapVec,
+    util::{FLOAT_TOLERANCE, RMapVec},
 };
 
 pub(super) fn prepare_events(
@@ -55,7 +57,7 @@ fn fill_consumers(
         for (&effect_key, &attr_key) in item_data.iter() {
             let cap_consumed = match calc.get_item_attr_oextra(ctx, item_key, attr_key) {
                 // Cap consumed can be negative value, e.g. for nosfs
-                Some(cap_consumed) if cap_consumed != OF(0.0) => cap_consumed,
+                Some(cap_consumed) if cap_consumed.abs() > FLOAT_TOLERANCE => cap_consumed,
                 _ => continue,
             };
             let effect_cycles = match cycle_map.remove(&effect_key) {
@@ -170,7 +172,7 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
             let cap_injected = match cap_getter(ctx, calc, item_key) {
                 // Even if some injector has negative value, player doesn't have to use it, so it is
                 // just ignored
-                Some(cap_injected) if cap_injected > OF(0.0) => cap_injected,
+                Some(cap_injected) if cap_injected > FLOAT_TOLERANCE => cap_injected,
                 _ => continue,
             };
             let effect_cycles = match cycle_map.remove(&effect_key) {

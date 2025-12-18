@@ -15,7 +15,7 @@ use crate::{
     rd::{REffectChargeLoc, REffectKey},
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UItem, UItemKey, UModule},
-    util::{InfCount, RMap},
+    util::{FLOAT_TOLERANCE, InfCount, RMap},
 };
 
 pub(super) fn get_module_cycle_info(
@@ -138,7 +138,7 @@ fn fill_module_effect_info(
                         .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
                         .unwrap()
                         / 1000.0;
-                    match reload_time_s > OF(0.0) {
+                    match reload_time_s > FLOAT_TOLERANCE {
                         // If reload time is defined and positive, ensure it takes at least 1 tick
                         true => reload_time_s.max(SERVER_TICK_S),
                         false => OF(0.0),

@@ -9,6 +9,7 @@ use crate::{
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
+    util::FLOAT_TOLERANCE,
 };
 
 pub(in crate::nd::effect::data) fn get_mining_opc(
@@ -34,7 +35,7 @@ pub(in crate::nd::effect::data) fn get_mining_values(
     let attr_consts = ctx.ac();
     let yield_ = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_amount, OF(0.0))?;
     let waste_chance = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_waste_probability, OF(0.0))?;
-    let waste = match waste_chance > OF(0.0) {
+    let waste = match waste_chance > FLOAT_TOLERANCE {
         true => {
             let waste_mult =
                 calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_wasted_volume_mult, OF(0.0))?;

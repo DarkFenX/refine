@@ -9,7 +9,7 @@ use crate::{
         output::{Output, OutputComplex, OutputSimple},
     },
     ud::UItemKey,
-    util::floor_unerr,
+    util::{FLOAT_TOLERANCE, floor_unerr},
 };
 
 pub(in crate::nd::effect::data) fn get_direct_dd_dmg_opc(
@@ -68,7 +68,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc(
         dmg_expl *= mult;
     }
     if let Some(interval_ms) = calc.get_item_oattr_oextra(ctx, projector_key, attr_consts.doomsday_dmg_cycle_time)
-        && interval_ms > OF(0.0)
+        && interval_ms > FLOAT_TOLERANCE
         && let Some(duration_ms) = calc.get_item_oattr_oextra(ctx, projector_key, attr_consts.doomsday_dmg_duration)
     {
         let repeats = floor_unerr(duration_ms / interval_ms).into_inner() as Count;

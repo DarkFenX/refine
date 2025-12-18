@@ -1,6 +1,6 @@
 use ordered_float::Float;
 
-use crate::def::{AttrVal, OF};
+use crate::{def::AttrVal, util::FLOAT_TOLERANCE};
 
 pub(crate) struct OutputSimple<T>
 where
@@ -28,7 +28,7 @@ where
 }
 impl OutputSimple<AttrVal> {
     pub(super) fn has_impact(&self) -> bool {
-        self.amount != OF(0.0)
+        self.amount.abs() > FLOAT_TOLERANCE
     }
     pub(super) fn absolute_impact(&self) -> AttrVal {
         self.amount.abs()

@@ -4,6 +4,7 @@ use crate::{
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
     ud::UItemKey,
+    util::FLOAT_TOLERANCE,
 };
 
 pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
@@ -19,7 +20,7 @@ pub(crate) fn get_effect_duration_s(
 ) -> Option<AttrVal> {
     let val = calc.get_item_oattr_oextra(ctx, item_key, effect.duration_attr_key)?;
     // Discard negative cycle time as invalid
-    match val > OF(0.0) {
+    match val > FLOAT_TOLERANCE {
         true => Some(val / OF(1000.0)),
         false => None,
     }

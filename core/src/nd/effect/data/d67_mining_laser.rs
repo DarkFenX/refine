@@ -13,6 +13,7 @@ use crate::{
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
+    util::FLOAT_TOLERANCE,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MINING_LASER;
@@ -64,7 +65,7 @@ fn get_mining_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, effect: &REf
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
     let attr_consts = ctx.ac();
     let crit_chance = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_chance, OF(0.0))?;
-    let yield_ = match crit_chance > OF(0.0) {
+    let yield_ = match crit_chance > FLOAT_TOLERANCE {
         true => {
             let crit_bonus =
                 calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_bonus_yield, OF(0.0))?;
