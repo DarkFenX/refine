@@ -24,6 +24,7 @@ struct FtrEffectInfo {
 #[derive(Copy, Clone)]
 struct FtrEffectRearmInfo {
     time_until_rearm_s: AttrVal,
+    full_rearm_time_s: AttrVal,
     charge_rearm_time_s: AttrVal,
 }
 
@@ -153,11 +154,12 @@ fn fill_fighter_effect_info(
                 },
             );
         }
-        // Recalling fighter into fighter bay starts rearm process, which resets current effect
-        // cycles and cooldowns. Here, for deciding when to recall, we let effect cycle to complete
-        // (since some effects are not applied instantly, e.g. micro bomb from LR fighters
-        // disappears when fighter is recalled), but ignore ongoing cooldowns.
+        // Recalling and releasing fighter resets current effect cycles and cooldowns. Here, for
+        // deciding when to recall, we let effect cycle to complete (since some effects are not
+        // applied instantly, e.g. micro bomb from LR fighters disappears when fighter is recalled),
+        // but ignore ongoing cooldowns.
         CycleOptionReload::Sim => {
+            let full_rearm_time_s = effect_data.charge_reload_time_s * count_until_rearm as f64;
             match count_until_rearm {
                 // 1 charge - 1 simple cycle, go into rearm as soon as cycle completes
                 1 => {
@@ -173,6 +175,7 @@ fn fill_fighter_effect_info(
                             }),
                             rearm: Some(FtrEffectRearmInfo {
                                 time_until_rearm_s: duration_s,
+                                full_rearm_time_s,
                                 charge_rearm_time_s: effect_data.charge_reload_time_s,
                             }),
                         },
@@ -198,6 +201,7 @@ fn fill_fighter_effect_info(
                             rearm: Some(FtrEffectRearmInfo {
                                 time_until_rearm_s: (duration_s + cd_inactivity_s) * early_cycle_count as f64
                                     + duration_s,
+                                full_rearm_time_s,
                                 charge_rearm_time_s: effect_data.charge_reload_time_s,
                             }),
                         },
@@ -233,5 +237,7 @@ fn process_refuel(mut effect_infos: RMap<REffectKey, FtrEffectInfo>) -> RMap<REf
             return cycle_infos;
         }
     };
+    // Time it takes to rearm just abilities
+    let mut max_rearm_time_s = rearm.full_rearm_time_s;
     cycle_infos
 }
