@@ -11,6 +11,7 @@ mod info;
 mod info_autocharge;
 mod info_charge;
 mod info_drone;
+mod info_fighter;
 mod info_module;
 mod info_shared;
 mod until_reload;

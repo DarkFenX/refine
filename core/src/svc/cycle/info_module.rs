@@ -127,62 +127,9 @@ fn fill_module_effect_info(
         .unwrap()
         / 1000.0)
         .max(OF(0.0));
-    match cycle_count {
-        // When we have to handle reload, result is a bit complex
-        InfCount::Count(count_until_reload) => {
-            let reload_time_s = match options.reload_mode {
-                // When considering burst calculations, just set reload to 0
-                CycleOptionReload::Burst => OF(0.0),
-                CycleOptionReload::Sim => {
-                    let reload_time_s = calc
-                        .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
-                        .unwrap()
-                        / 1000.0;
-                    match reload_time_s > FLOAT_TOLERANCE {
-                        // If reload time is defined and positive, ensure it takes at least 1 tick
-                        true => reload_time_s.max(SERVER_TICK_S),
-                        false => OF(0.0),
-                    }
-                }
-            };
-            // Module can be reloaded during reactivation delay
-            let final_inactive_time = reload_time_s.max(reactivation_delay_s);
-            let final_cycle_count = 1;
-            let early_cycle_count = count_until_reload - final_cycle_count;
-            match early_cycle_count {
-                // When module can do only one cycle per clip - return reloadable cycle, with
-                // inner cycle count of 1
-                0 => {
-                    let inner = CycleInner {
-                        active_time: duration_s,
-                        inactive_time: final_inactive_time,
-                        repeat_count: final_cycle_count,
-                    };
-                    cycle_infos.insert(effect_key, Cycle::Reload1(CycleReload1 { inner }));
-                }
-                // When it does more than one cycle per clip - mark final cycle as reload
-                _ => {
-                    let inner_early = CycleInner {
-                        active_time: duration_s,
-                        inactive_time: reactivation_delay_s,
-                        repeat_count: early_cycle_count,
-                    };
-                    let inner_final = CycleInner {
-                        active_time: duration_s,
-                        inactive_time: final_inactive_time,
-                        repeat_count: final_cycle_count,
-                    };
-                    cycle_infos.insert(
-                        effect_key,
-                        Cycle::Reload2(CycleReload2 {
-                            inner_early,
-                            inner_final,
-                        }),
-                    );
-                }
-            }
-        }
-        // Infinitely cycling - return simple infinitely repeating cycle
+    let count_until_reload = match cycle_count {
+        InfCount::Count(count_until_reload) => count_until_reload,
+        // No need for complex logic when module is infinitely cycling
         InfCount::Infinite => {
             cycle_infos.insert(
                 effect_key,
@@ -192,6 +139,66 @@ fn fill_module_effect_info(
                     repeat_count: InfCount::Infinite,
                 }),
             );
+            return;
         }
+    };
+    let reload_time_s = match options.reload_mode {
+        // When considering burst calculations, just set reload to 0
+        CycleOptionReload::Burst => OF(0.0),
+        CycleOptionReload::Sim => {
+            let reload_time_s = calc
+                .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
+                .unwrap()
+                / 1000.0;
+            match reload_time_s > FLOAT_TOLERANCE {
+                // If reload time is defined and positive, ensure it takes at least 1 tick
+                true => reload_time_s.max(SERVER_TICK_S),
+                false => OF(0.0),
+            }
+        }
+    };
+    // Module can be reloaded during reactivation delay; if reactivation delay is longer, return
+    // simple cycle
+    if reactivation_delay_s >= reload_time_s {
+        cycle_infos.insert(
+            effect_key,
+            Cycle::Reload1(CycleReload1 {
+                inner: CycleInner {
+                    active_time: duration_s,
+                    inactive_time: reactivation_delay_s,
+                    repeat_count: count_until_reload,
+                },
+            }),
+        );
+        return;
     }
+    // If effect can cycle just 1 time, return simpler cycle as well
+    if count_until_reload == 1 {
+        cycle_infos.insert(
+            effect_key,
+            Cycle::Reload1(CycleReload1 {
+                inner: CycleInner {
+                    active_time: duration_s,
+                    inactive_time: reload_time_s,
+                    repeat_count: count_until_reload,
+                },
+            }),
+        );
+        return;
+    }
+    cycle_infos.insert(
+        effect_key,
+        Cycle::Reload2(CycleReload2 {
+            inner_early: CycleInner {
+                active_time: duration_s,
+                inactive_time: reactivation_delay_s,
+                repeat_count: count_until_reload - 1,
+            },
+            inner_final: CycleInner {
+                active_time: duration_s,
+                inactive_time: reload_time_s,
+                repeat_count: 1,
+            },
+        }),
+    );
 }

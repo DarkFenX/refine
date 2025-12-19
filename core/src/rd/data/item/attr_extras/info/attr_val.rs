@@ -128,7 +128,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
     }
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_fighter_refuel_time(
+pub(in crate::rd::data::item::attr_extras) fn get_fighter_refuel_time_s(
     item_attrs: &RMap<RAttrKey, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> AAttrVal {

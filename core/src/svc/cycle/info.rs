@@ -1,6 +1,7 @@
 use super::{
     cycle::Cycle, info_autocharge::get_autocharge_cycle_info, info_charge::get_charge_cycle_info,
-    info_drone::get_drone_cycle_info, info_module::get_module_cycle_info, info_shared::CycleOptions,
+    info_drone::get_drone_cycle_info, info_fighter::get_fighter_cycle_info, info_module::get_module_cycle_info,
+    info_shared::CycleOptions,
 };
 use crate::{
     rd::REffectKey,
@@ -21,12 +22,7 @@ pub(in crate::svc) fn get_item_cycle_info(
         UItem::Autocharge(autocharge) => get_autocharge_cycle_info(ctx, calc, autocharge, options, ignore_state),
         UItem::Charge(charge) => get_charge_cycle_info(ctx, calc, charge, options, ignore_state),
         UItem::Drone(drone) => get_drone_cycle_info(ctx, calc, item_key, drone, ignore_state),
-        UItem::Fighter(fighter) => {
-            if !fighter.is_loaded() {
-                return None;
-            };
-            Some(RMap::new())
-        }
+        UItem::Fighter(fighter) => get_fighter_cycle_info(ctx, calc, item_key, fighter, options, ignore_state),
         UItem::Module(module) => get_module_cycle_info(ctx, calc, item_key, item, module, options, ignore_state),
         _ => None,
     }
