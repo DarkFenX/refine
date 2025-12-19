@@ -21,6 +21,7 @@ struct FtrEffectInfo {
     rearm: Option<FtrEffectRearmInfo>,
 }
 
+#[derive(Copy, Clone)]
 struct FtrEffectRearmInfo {
     time_until_rearm_s: AttrVal,
     charge_rearm_time_s: AttrVal,
@@ -207,7 +208,30 @@ fn fill_fighter_effect_info(
     }
 }
 
-fn process_refuel(effect_infos: RMap<REffectKey, FtrEffectInfo>) -> RMap<REffectKey, Cycle> {
+fn process_refuel(mut effect_infos: RMap<REffectKey, FtrEffectInfo>) -> RMap<REffectKey, Cycle> {
     let mut cycle_infos = RMap::with_capacity(effect_infos.len());
+    // Get effect which runs out of its charges fastest
+    let (effect_key, cycle, rearm) = match effect_infos
+        .iter()
+        .filter_map(|(effect_key, effect_info)| match effect_info.rearm {
+            Some(rearm_info) => Some((*effect_key, effect_info.cycle, rearm_info)),
+            None => None,
+        })
+        .min_by_key(|(_, _, rearm)| rearm.time_until_rearm_s)
+    {
+        Some((effect_key, cycle, rearm)) => {
+            // Remove it from source map, since we extracted the data we needed anyway
+            effect_infos.remove(&effect_key);
+            (effect_key, cycle, rearm)
+        }
+        None => {
+            // No rearm data means all effects can cycle infinitely, just return everything we
+            // received in this case
+            for (effect_key, effect_info) in effect_infos.into_iter() {
+                cycle_infos.insert(effect_key, effect_info.cycle);
+            }
+            return cycle_infos;
+        }
+    };
     cycle_infos
 }
