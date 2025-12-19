@@ -127,3 +127,13 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
         None => 1,
     }
 }
+
+pub(in crate::rd::data::item::attr_extras) fn get_fighter_refuel_time(
+    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    attr_consts: &RAttrConsts,
+) -> AAttrVal {
+    match attr_consts.ftr_refueling_time.and_then(|v| item_attrs.get(&v)) {
+        Some(value) => value.max(&OF(0.0)) / OF(1000.0),
+        None => OF(0.0),
+    }
+}

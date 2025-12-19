@@ -7,8 +7,8 @@ use crate::{
         data::item::attr_extras::info::{
             attr_val::{
                 get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size,
-                get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
-                get_radius, get_remote_resist_attr_id, get_rig_size, get_volume,
+                get_fighter_refuel_time, get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class,
+                get_overload_td_lvl, get_radius, get_remote_resist_attr_id, get_rig_size, get_volume,
             },
             charge_limit::get_item_charge_limit,
             container_limit::get_item_container_limit,
@@ -104,6 +104,8 @@ pub(crate) struct RItemAXt {
     pub(crate) max_group_active_limited: bool,
     // Size of a rig, or rig size used by a ship
     pub(crate) rig_size: Option<AAttrVal>,
+    // Base time it takes to refuel a fighter, even if it did not spend any charges
+    pub(crate) fighter_refuel_time: AAttrVal,
 }
 impl RItemAXt {
     pub(crate) fn fill(
@@ -158,5 +160,6 @@ impl RItemAXt {
         self.max_group_online_limited = get_max_group_online_limited(item_attrs, attr_consts);
         self.max_group_active_limited = get_max_group_active_limited(item_attrs, attr_consts);
         self.rig_size = get_rig_size(item_attrs, attr_consts);
+        self.fighter_refuel_time = get_fighter_refuel_time(item_attrs, attr_consts);
     }
 }

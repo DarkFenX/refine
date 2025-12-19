@@ -225,6 +225,7 @@ pub(crate) const LOWSEC_MODIFIER: EAttrId = 2356;
 pub(crate) const NULLSEC_MODIFIER: EAttrId = 2357;
 pub(crate) const SECURITY_MODIFIER: EAttrId = 2358;
 pub(crate) const CAN_FIT_SHIP_GROUP10: EAttrId = 2396;
+pub(crate) const FTR_REFUELING_TIME: EAttrId = 2426;
 pub(crate) const DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION: EAttrId = 2427;
 pub(crate) const DOOMSDAY_IMMOBILITY_DURATION: EAttrId = 2428;
 pub(crate) const MAX_TYPE_FITTED: EAttrId = 2431;

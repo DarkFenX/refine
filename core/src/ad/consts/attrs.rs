@@ -231,6 +231,7 @@ pub(crate) const LOWSEC_MODIFIER: AAttrId = AAttrId::Eve(eca::LOWSEC_MODIFIER);
 pub(crate) const NULLSEC_MODIFIER: AAttrId = AAttrId::Eve(eca::NULLSEC_MODIFIER);
 pub(crate) const SECURITY_MODIFIER: AAttrId = AAttrId::Eve(eca::SECURITY_MODIFIER);
 pub(crate) const CAN_FIT_SHIP_GROUP10: AAttrId = AAttrId::Eve(eca::CAN_FIT_SHIP_GROUP10);
+pub(crate) const FTR_REFUELING_TIME: AAttrId = AAttrId::Eve(eca::FTR_REFUELING_TIME);
 pub(crate) const DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION: AAttrId = AAttrId::Eve(eca::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION);
 pub(crate) const DOOMSDAY_IMMOBILITY_DURATION: AAttrId = AAttrId::Eve(eca::DOOMSDAY_IMMOBILITY_DURATION);
 pub(crate) const MAX_TYPE_FITTED: AAttrId = AAttrId::Eve(eca::MAX_TYPE_FITTED);
