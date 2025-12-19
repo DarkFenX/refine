@@ -55,7 +55,6 @@ pub(super) fn get_fighter_cycle_info(
             options,
         );
     }
-    let mut cycle_infos = RMap::new();
     // If there are any self-killer effects, choose the fastest one, and discard all other effects
     if !self_killers.is_empty() {
         let fastest_sk_effect_key = self_killers
@@ -64,9 +63,11 @@ pub(super) fn get_fighter_cycle_info(
             .unwrap()
             .effect_key;
         let effect_cycle = effect_infos.get(&fastest_sk_effect_key).unwrap().cycle;
+        let mut cycle_infos = RMap::new();
         cycle_infos.insert(fastest_sk_effect_key, effect_cycle);
+        return Some(cycle_infos);
     }
-    Some(cycle_infos)
+    Some(process_refuel(effect_infos))
 }
 
 fn fill_fighter_effect_info(
@@ -204,4 +205,9 @@ fn fill_fighter_effect_info(
             }
         }
     }
+}
+
+fn process_refuel(effect_infos: RMap<REffectKey, FtrEffectInfo>) -> RMap<REffectKey, Cycle> {
+    let mut cycle_infos = RMap::with_capacity(effect_infos.len());
+    cycle_infos
 }
