@@ -1,0 +1,19 @@
+pub(crate) use item_cap::StatCapSimStaggerInt;
+pub use item_cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
+pub use item_tank::{StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen};
+pub use vaste_fit_resource::StatRes;
+pub use vaste_fit_slot::StatSlot;
+
+mod dmg;
+mod item_cap;
+mod item_checks;
+mod item_tank;
+mod mining;
+mod neut;
+mod orps;
+mod vaste_fit_resource;
+mod vaste_fit_slot;
+mod vaste_item_jam;
+mod vaste_item_misc;
+mod vaste_item_mobility;
+mod vaste_item_sensors;

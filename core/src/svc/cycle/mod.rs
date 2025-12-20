@@ -1,6 +1,6 @@
 pub(in crate::svc) use cycle::{Cycle, CycleIter};
 pub(in crate::svc) use info::get_item_cycle_info;
-pub(in crate::svc) use info_shared::{CycleOptionReload, CycleOptions};
+pub(in crate::svc) use info_shared::{CycleOptions, CycleOptionsSim};
 
 mod cycle;
 mod cycle_reload1;

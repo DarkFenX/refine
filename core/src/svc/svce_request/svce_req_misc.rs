@@ -2,19 +2,16 @@ use crate::{
     api::AdjustableCount,
     svc::{
         Svc, SvcCtx,
-        cycle::{CycleOptionReload, CycleOptions, get_item_cycle_info},
+        cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
     },
     ud::{UData, UItemKey},
     util::InfCount,
 };
 
-const CUR_CYCLE_OPTIONS: CycleOptions = CycleOptions {
-    // Should return the same count of cycles until reload regardless of options, but burst is
-    // easier to calculate
-    reload_mode: CycleOptionReload::Burst,
-    // Use this to return cycle count for modules like ancillary reps
-    reload_optionals: true,
-};
+const CYCLE_COUNT_OPTIONS: CycleOptions = CycleOptions::Sim(CycleOptionsSim {
+    reload_optionals: Some(true),
+    ..
+});
 
 impl Svc {
     pub(crate) fn get_item_cycles_until_empty(&mut self, u_data: &UData, item_key: UItemKey) -> Option<InfCount> {
@@ -24,7 +21,7 @@ impl Svc {
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
-            CUR_CYCLE_OPTIONS,
+            CYCLE_COUNT_OPTIONS,
             true,
         )?;
         Some(cycle_info.get(&defeff_key)?.get_cycles_until_empty())

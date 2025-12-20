@@ -7,11 +7,10 @@ pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
-pub use vaste_stats_fit::{StatRes, StatSlot};
-pub(crate) use vaste_stats_item::StatCapSimStaggerInt;
-pub use vaste_stats_item::{
+pub(crate) use vaste_stats::StatCapSimStaggerInt;
+pub use vaste_stats::{
     StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatLayerEhp,
-    StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen,
+    StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatRes, StatSlot,
 };
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
@@ -31,7 +30,6 @@ mod val_result;
 mod vast;
 mod vaste_debug;
 mod vaste_maintain;
-mod vaste_stats_fit;
-mod vaste_stats_item;
+mod vaste_stats;
 mod vaste_validate;
 mod vaste_vals;
