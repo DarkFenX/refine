@@ -26,8 +26,7 @@ pub use misc::{
 };
 pub use util::MutIter;
 
-mod default_incoming_dps;
-mod default_spool;
+mod default;
 mod dev;
 mod fit;
 mod fleet;

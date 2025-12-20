@@ -17,8 +17,12 @@ pub(crate) struct UData {
     pub(crate) proj_effects: RSet<UItemKey>,
     pub(crate) items: UItems,
     pub(crate) sec_zone: SecZone,
-    pub(crate) default_spool: Spool,
+    // Default setting used in stats / RAH sim
     pub(crate) default_incoming_dps: DpsProfile,
+    // Default settings related to item cycles
+    pub(crate) default_spool: Spool,
+    pub(crate) default_reload_optionals: bool,
+    pub(crate) default_refuel_fighters: bool,
 }
 impl UData {
     pub(crate) fn new(src: Src) -> Self {
@@ -30,8 +34,10 @@ impl UData {
             proj_effects: RSet::new(),
             items: UItems::new(10000),
             sec_zone: SecZone::NullSec,
-            default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
             default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
+            default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
+            default_reload_optionals: true,
+            default_refuel_fighters: false,
         }
     }
 }
