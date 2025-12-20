@@ -59,7 +59,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
         modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
         charge: Some(NEffectCharge {
-            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::None),
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::Undepletable),
             activates_charge: true,
         }),
         ..

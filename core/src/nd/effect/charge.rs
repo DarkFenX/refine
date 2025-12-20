@@ -22,7 +22,7 @@ pub(crate) enum NEffectChargeLoc {
 #[derive(Copy, Clone)]
 pub(crate) enum NEffectChargeDepl {
     // Charge is not depleted if loaded
-    None,
+    Undepletable,
     // Each module cycle removes chargeRate attr value count from count of loaded charges
     ChargeRate(NEffectChargeDeplChargeRate),
     // Only 1 charge is loaded, and used until it is destroyed

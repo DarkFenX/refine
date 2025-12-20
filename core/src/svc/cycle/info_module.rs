@@ -1,15 +1,18 @@
 use either::Either;
 
 use super::{
+    charged_cycles::{
+        get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count, get_uncharged_cycle_count,
+        get_undepletable_cycle_count,
+    },
     cycle::Cycle,
     cycle_inner_limited::CycleInnerLimited,
     cycle_reload2::CycleReload2,
     info_shared::{CycleOptions, SelfKillerInfo},
-    until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
 use crate::{
     def::{OF, SERVER_TICK_S},
-    nd::NEffectChargeDepl,
+    nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     rd::{REffectChargeLoc, REffectKey},
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UItem, UItemKey, UModule},
@@ -80,28 +83,26 @@ fn fill_module_effect_info(
         None => return,
     };
     // Charge count info
-    let cycle_count = match &effect.charge {
-        Some(charge_info) => match charge_info.location {
-            REffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect),
-            REffectChargeLoc::Loaded(charge_depletion) => match charge_depletion {
-                NEffectChargeDepl::ChargeRate { can_run_uncharged } => {
-                    get_charge_rate_cycle_count(ctx, module, can_run_uncharged, options.reload_optionals)
+    let charged_cycle_count = match &effect.charge {
+        Some(n_charge) => match n_charge.location {
+            REffectChargeLoc::Autocharge(_) => get_autocharge_cycle_count(item, effect.key),
+            REffectChargeLoc::Loaded(n_charge_depletion) => match n_charge_depletion {
+                NEffectChargeDepl::ChargeRate(n_charge_rate) => get_charge_rate_cycle_count(ctx, module, n_charge_rate),
+                NEffectChargeDepl::Crystal(n_charge_crystal) => {
+                    get_crystal_cycle_count(ctx, calc, module, n_charge_crystal)
                 }
-                NEffectChargeDepl::Crystal { can_run_uncharged } => {
-                    get_crystal_cycle_count(ctx, calc, module, can_run_uncharged, options.reload_optionals)
-                }
-                NEffectChargeDepl::None => InfCount::Infinite,
+                NEffectChargeDepl::Undepletable => get_undepletable_cycle_count(),
             },
             // targetAttack effect has 2 distinct options for modules:
             // - lasers: regular crystal cycle getter
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
             REffectChargeLoc::TargetAttack => match module.get_axt().unwrap().capacity > OF(0.0) {
-                true => get_crystal_cycle_count(ctx, calc, module, false, options.reload_optionals),
-                false => InfCount::Infinite,
+                true => get_crystal_cycle_count(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
+                false => get_undepletable_cycle_count(),
             },
         },
-        None => InfCount::Infinite,
+        None => get_uncharged_cycle_count(),
     };
     // Completely skip effects which can't cycle
     if cycle_count == InfCount::Count(0) {

@@ -3,6 +3,7 @@ pub(in crate::svc) use cycle_iter_item::CycleIterItem;
 pub(in crate::svc) use info::get_item_cycle_info;
 pub(in crate::svc) use info_shared::{CycleOptions, CycleOptionsSim};
 
+mod charged_cycles;
 mod cycle;
 mod cycle_infinite1;
 mod cycle_infinite2;
@@ -21,4 +22,3 @@ mod info_drone;
 mod info_fighter;
 mod info_module;
 mod info_shared;
-mod until_reload;
