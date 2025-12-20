@@ -579,6 +579,18 @@ impl UItem {
             _ => None,
         }
     }
+    pub(crate) fn get_reload_optionals(&self) -> Option<bool> {
+        match self {
+            Self::Module(module) => module.get_reload_optionals(),
+            _ => None,
+        }
+    }
+    pub(crate) fn get_rearm_minions(&self) -> Option<bool> {
+        match self {
+            Self::Fighter(fighter) => fighter.get_rearm_minions(),
+            _ => None,
+        }
+    }
     pub(crate) fn get_autocharges(&self) -> Option<&UAutocharges> {
         match self {
             Self::Fighter(fighter) => Some(fighter.get_autocharges()),

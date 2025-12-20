@@ -36,6 +36,9 @@ impl<'a> Module<'a> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.key)
     }
+    pub fn get_reload_optionals(&self) -> Option<bool> {
+        get_reload_optionals(self.sol, self.key)
+    }
 }
 impl<'a> ItemSealed for Module<'a> {
     fn get_sol(&self) -> &SolarSystem {
@@ -81,6 +84,9 @@ impl<'a> ModuleMut<'a> {
     }
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.key)
+    }
+    pub fn get_reload_optionals(&self) -> Option<bool> {
+        get_reload_optionals(self.sol, self.key)
     }
     pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
         match self.sol.svc.get_item_cycles_until_empty(&self.sol.u_data, self.key) {
@@ -128,6 +134,9 @@ fn get_charge(sol: &SolarSystem, module_key: UItemKey) -> Option<Charge<'_>> {
 }
 fn get_charge_count(sol: &SolarSystem, module_key: UItemKey) -> Option<Count> {
     get_u_module(sol, module_key).get_charge_count(&sol.u_data)
+}
+fn get_reload_optionals(sol: &SolarSystem, module_key: UItemKey) -> Option<bool> {
+    get_u_module(sol, module_key).get_reload_optionals()
 }
 fn get_u_module(sol: &SolarSystem, module_key: UItemKey) -> &UModule {
     sol.u_data.items.get(module_key).dc_module().unwrap()

@@ -9,6 +9,7 @@ mod fighter_remove;
 mod fighter_set_coordinates;
 mod fighter_set_count_override;
 mod fighter_set_movement;
+mod fighter_set_rearm_minions;
 mod fighter_set_state;
 mod fighter_set_type_id;
 mod fit_add_fighter;

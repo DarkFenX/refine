@@ -27,6 +27,30 @@ impl UData {
             }
         }
     }
+    pub(crate) fn get_item_key_reload_optionals(&self, item_key: UItemKey, reload_optionals: Option<bool>) -> bool {
+        match reload_optionals {
+            Some(reload_optionals) => reload_optionals,
+            None => {
+                let u_item = self.items.get(item_key);
+                match u_item.get_reload_optionals() {
+                    Some(reload_optionals) => reload_optionals,
+                    None => self.default_reload_optionals,
+                }
+            }
+        }
+    }
+    pub(crate) fn get_item_key_rearm_minions(&self, item_key: UItemKey, rearm_minions: Option<bool>) -> bool {
+        match rearm_minions {
+            Some(rearm_minions) => rearm_minions,
+            None => {
+                let u_item = self.items.get(item_key);
+                match u_item.get_rearm_minions() {
+                    Some(rearm_minions) => rearm_minions,
+                    None => self.default_rearm_minions,
+                }
+            }
+        }
+    }
     // Projection-related
     pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: UFitKey) -> AttrVal {
         let ship_key = match self.fits.get(fit_key).ship {
