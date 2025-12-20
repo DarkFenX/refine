@@ -178,11 +178,11 @@ fn aggregate_breacher(opc: OutputDmgBreacher, cycle: Cycle) -> Option<AggrBreach
         }
         Cycle::Reload2(reload2) => {
             let early_full_cycle_ticks =
-                ceil_unerr((reload2.inner_early.active_time + reload2.inner_early.inactive_time) / SERVER_TICK_S)
-                    .into_inner() as Count;
+                ceil_unerr((reload2.inner1.active_time + reload2.inner1.inactive_time) / SERVER_TICK_S).into_inner()
+                    as Count;
             let final_full_cycle_ticks =
-                ceil_unerr((reload2.inner_final.active_time + reload2.inner_final.inactive_time) / SERVER_TICK_S)
-                    .into_inner() as Count;
+                ceil_unerr((reload2.inner2.active_time + reload2.inner2.inactive_time) / SERVER_TICK_S).into_inner()
+                    as Count;
             if opc.tick_count >= early_full_cycle_ticks {
                 // Breacher duration covers all possible gaps
                 if opc.tick_count >= final_full_cycle_ticks {
@@ -192,12 +192,12 @@ fn aggregate_breacher(opc: OutputDmgBreacher, cycle: Cycle) -> Option<AggrBreach
                         ticks: AggrBreacherTicks::Simple(InfCount::Infinite),
                     });
                 }
-                if reload2.inner_final.repeat_count == 1 {
+                if reload2.inner2.repeat_count == 1 {
                     return Some(AggrBreacher {
                         absolute_max: opc.absolute_max,
                         relative_max: opc.relative_max,
                         ticks: AggrBreacherTicks::Complex1(AggrBreacherTicksComplex1 {
-                            dmg_tick_count: early_full_cycle_ticks * reload2.inner_early.repeat_count + opc.tick_count,
+                            dmg_tick_count: early_full_cycle_ticks * reload2.inner1.repeat_count + opc.tick_count,
                             inactive_tick_count: final_full_cycle_ticks - opc.tick_count,
                             repeat_count: InfCount::Infinite,
                         }),
@@ -213,12 +213,12 @@ fn aggregate_breacher(opc: OutputDmgBreacher, cycle: Cycle) -> Option<AggrBreach
                     inner_early: AggrBreacherTicksInner {
                         dmg_tick_count: early_dmg_tick_count,
                         inactive_tick_count: early_full_cycle_ticks - early_dmg_tick_count,
-                        repeat_count: reload2.inner_early.repeat_count,
+                        repeat_count: reload2.inner1.repeat_count,
                     },
                     inner_final: AggrBreacherTicksInner {
                         dmg_tick_count: final_dmg_tick_count,
                         inactive_tick_count: final_full_cycle_ticks - final_dmg_tick_count,
-                        repeat_count: reload2.inner_final.repeat_count,
+                        repeat_count: reload2.inner2.repeat_count,
                     },
                 }),
             })

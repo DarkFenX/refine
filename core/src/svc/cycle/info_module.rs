@@ -2,10 +2,10 @@ use either::Either;
 
 use super::{
     cycle::Cycle,
-    cycle_reload1::CycleReload1,
+    cycle_inner_limited::CycleInnerLimited,
+    cycle_old_reload1::CycleReload1,
+    cycle_old_simple::CycleSimple,
     cycle_reload2::CycleReload2,
-    cycle_shared::CycleInner,
-    cycle_simple::CycleSimple,
     info_shared::{CycleOptionReload, CycleOptions, SelfKillerInfo},
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
@@ -163,7 +163,7 @@ fn fill_module_effect_info(
         cycle_infos.insert(
             effect_key,
             Cycle::Reload1(CycleReload1 {
-                inner: CycleInner {
+                inner: CycleInnerLimited {
                     active_time: duration_s,
                     inactive_time: reactivation_delay_s,
                     repeat_count: count_until_reload,
@@ -177,7 +177,7 @@ fn fill_module_effect_info(
         cycle_infos.insert(
             effect_key,
             Cycle::Reload1(CycleReload1 {
-                inner: CycleInner {
+                inner: CycleInnerLimited {
                     active_time: duration_s,
                     inactive_time: reload_time_s,
                     repeat_count: count_until_reload,
@@ -189,12 +189,12 @@ fn fill_module_effect_info(
     cycle_infos.insert(
         effect_key,
         Cycle::Reload2(CycleReload2 {
-            inner_early: CycleInner {
+            inner1: CycleInnerLimited {
                 active_time: duration_s,
                 inactive_time: reactivation_delay_s,
                 repeat_count: count_until_reload - 1,
             },
-            inner_final: CycleInner {
+            inner2: CycleInnerLimited {
                 active_time: duration_s,
                 inactive_time: reload_time_s,
                 repeat_count: 1,

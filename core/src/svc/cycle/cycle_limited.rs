@@ -8,18 +8,21 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleReload1 {
+pub(in crate::svc) struct CycleLimited {
     pub(in crate::svc) inner: CycleInnerLimited,
 }
-impl CycleReload1 {
+impl CycleLimited {
     pub(super) fn get_charged_cycles(&self) -> InfCount {
-        InfCount::Count(self.inner.repeat_count)
+        match self.inner.charged {
+            Some(_) => InfCount::Count(self.inner.repeat_count),
+            None => InfCount::Count(0),
+        }
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.inner.get_total_time()
     }
-    pub(super) fn iter_cycles(&self) -> CycleReload1Iter {
-        CycleReload1Iter::new(self)
+    pub(super) fn iter_cycles(&self) -> CycleLimitedIter {
+        CycleLimitedIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -32,28 +35,20 @@ impl CycleReload1 {
     }
 }
 
-pub(in crate::svc) struct CycleReload1Iter {
+pub(in crate::svc) struct CycleLimitedIter {
     inner: CycleInnerLimitedIter,
 }
-impl CycleReload1Iter {
-    fn new(cycle: &CycleReload1) -> Self {
+impl CycleLimitedIter {
+    fn new(cycle: &CycleLimited) -> Self {
         Self {
-            inner: cycle.inner.iter_cycles(true),
+            inner: cycle.inner.iter_cycles(false),
         }
     }
 }
-impl Iterator for CycleReload1Iter {
+impl Iterator for CycleLimitedIter {
     type Item = CycleIterItem;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.inner.next() {
-            Some(time) => Some(time),
-            // Even if inner iterator first response is None, worst-case we will get the same after
-            // the reset
-            None => {
-                self.inner.reset();
-                self.inner.next()
-            }
-        }
+        self.inner.next()
     }
 }

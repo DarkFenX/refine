@@ -2,10 +2,10 @@ use either::Either;
 
 use super::{
     cycle::Cycle,
-    cycle_reload1::CycleReload1,
+    cycle_inner_limited::CycleInnerLimited,
+    cycle_old_reload1::CycleReload1,
+    cycle_old_simple::CycleSimple,
     cycle_reload2::CycleReload2,
-    cycle_shared::CycleInner,
-    cycle_simple::CycleSimple,
     info_shared::{CycleOptionReload, CycleOptions, SelfKillerInfo},
 };
 use crate::{
@@ -144,7 +144,7 @@ fn fill_fighter_effect_info(
                 effect_key,
                 FtrEffectInfo {
                     cycle: Cycle::Reload1(CycleReload1 {
-                        inner: CycleInner {
+                        inner: CycleInnerLimited {
                             active_time: duration_s,
                             inactive_time: cd_inactivity_s,
                             repeat_count: count_until_rearm,
@@ -167,7 +167,7 @@ fn fill_fighter_effect_info(
                         effect_key,
                         FtrEffectInfo {
                             cycle: Cycle::Reload1(CycleReload1 {
-                                inner: CycleInner {
+                                inner: CycleInnerLimited {
                                     active_time: duration_s,
                                     inactive_time: OF(0.0),
                                     repeat_count: count_until_rearm,
@@ -187,12 +187,12 @@ fn fill_fighter_effect_info(
                         effect_key,
                         FtrEffectInfo {
                             cycle: Cycle::Reload2(CycleReload2 {
-                                inner_early: CycleInner {
+                                inner1: CycleInnerLimited {
                                     active_time: duration_s,
                                     inactive_time: cd_inactivity_s,
                                     repeat_count: early_cycle_count,
                                 },
-                                inner_final: CycleInner {
+                                inner2: CycleInnerLimited {
                                     active_time: duration_s,
                                     inactive_time: OF(0.0),
                                     repeat_count: 1,
