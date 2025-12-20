@@ -1,0 +1,2 @@
+mod sol_get_default_rearm_minions;
+mod sol_set_default_rearm_minions;

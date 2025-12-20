@@ -22,7 +22,7 @@ pub(crate) struct UData {
     // Default settings related to item cycles
     pub(crate) default_spool: Spool,
     pub(crate) default_reload_optionals: bool,
-    pub(crate) default_refuel_fighters: bool,
+    pub(crate) default_rearm_minions: bool,
 }
 impl UData {
     pub(crate) fn new(src: Src) -> Self {
@@ -37,7 +37,7 @@ impl UData {
             default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
             default_spool: Spool::SpoolScale(UnitInterval::new_clamped_of64(OF(1.0))),
             default_reload_optionals: true,
-            default_refuel_fighters: false,
+            default_rearm_minions: false,
         }
     }
 }
