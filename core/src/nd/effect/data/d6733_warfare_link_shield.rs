@@ -3,7 +3,7 @@ use crate::{
     ad::{AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId},
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc},
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_SHIELD;
@@ -21,9 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         charge: Some(NEffectCharge {
-            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                can_run_uncharged: false,
-            }),
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
         }),
         ..

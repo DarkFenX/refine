@@ -8,8 +8,9 @@ pub(crate) use attr::{N_ATTR_MAP, NAttr};
 pub(crate) use buff::{N_BUFF_MAP, NBuff};
 pub(crate) use effect::{
     N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect,
-    NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind, NEffectProjecteeFilter, NLocalRepGetter,
-    NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
+    NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,
+    NEffectDmgKind, NEffectProjecteeFilter, NLocalRepGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter,
+    NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 

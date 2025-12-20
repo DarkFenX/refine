@@ -1,4 +1,6 @@
-pub(crate) use charge::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
+pub(crate) use charge::{
+    NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,
+};
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect::{

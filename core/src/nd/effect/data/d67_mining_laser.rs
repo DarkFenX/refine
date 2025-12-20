@@ -5,7 +5,10 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::MiningAmount,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, effect::data::shared::opc::get_mining_values},
+    nd::{
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc,
+        effect::data::shared::opc::get_mining_values,
+    },
     rd::REffect,
     svc::{
         SvcCtx,
@@ -24,9 +27,9 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         charge: Some(NEffectCharge {
-            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::Crystal {
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::Crystal(NEffectChargeDeplCrystal {
                 can_run_uncharged: true,
-            }),
+            })),
             activates_charge: false,
         }),
         mining_ore_opc_getter: Some(get_mining_ore_opc),

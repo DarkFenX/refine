@@ -1,12 +1,12 @@
 use either::Either;
 
-use super::{cycle::Cycle, cycle_simple::CycleSimple};
+use super::{cycle::Cycle, cycle_infinite1::CycleInfinite1, cycle_inner_infinite::CycleInnerInfinite};
 use crate::{
     def::OF,
     rd::REffectKey,
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::{UDrone, UItemKey},
-    util::{InfCount, RMap},
+    util::RMap,
 };
 
 pub(super) fn get_drone_cycle_info(
@@ -37,10 +37,13 @@ pub(super) fn get_drone_cycle_info(
         // flags, limited charges & reloads
         cycle_infos.insert(
             effect_key,
-            Cycle::Simple(CycleSimple {
-                active_time: duration_s,
-                inactive_time: OF(0.0),
-                repeat_count: InfCount::Infinite,
+            Cycle::Infinite1(CycleInfinite1 {
+                inner: CycleInnerInfinite {
+                    active_time: duration_s,
+                    inactive_time: OF(0.0),
+                    interrupt: false,
+                    charged: None,
+                },
             }),
         );
     }

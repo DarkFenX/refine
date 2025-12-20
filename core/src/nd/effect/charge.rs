@@ -24,7 +24,18 @@ pub(crate) enum NEffectChargeDepl {
     // Charge is not depleted if loaded
     None,
     // Each module cycle removes chargeRate attr value count from count of loaded charges
-    ChargeRate { can_run_uncharged: bool },
+    ChargeRate(NEffectChargeDeplChargeRate),
     // Only 1 charge is loaded, and used until it is destroyed
-    Crystal { can_run_uncharged: bool },
+    Crystal(NEffectChargeDeplCrystal),
+}
+
+#[derive(Copy, Clone)]
+pub(crate) struct NEffectChargeDeplChargeRate {
+    pub(crate) can_run_uncharged: bool = false,
+    pub(crate) can_run_part_charged: bool = false,
+}
+
+#[derive(Copy, Clone)]
+pub(crate) struct NEffectChargeDeplCrystal {
+    pub(crate) can_run_uncharged: bool = false,
 }

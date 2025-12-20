@@ -3,10 +3,8 @@ use either::Either;
 use super::{
     cycle::Cycle,
     cycle_inner_limited::CycleInnerLimited,
-    cycle_old_reload1::CycleReload1,
-    cycle_old_simple::CycleSimple,
     cycle_reload2::CycleReload2,
-    info_shared::{CycleOptionReload, CycleOptions, SelfKillerInfo},
+    info_shared::{CycleOptions, SelfKillerInfo},
     until_reload::{get_autocharge_cycle_count, get_charge_rate_cycle_count, get_crystal_cycle_count},
 };
 use crate::{

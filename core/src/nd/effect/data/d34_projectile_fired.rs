@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectDmgKind,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKind,
         effect::data::shared::proj_mult::get_turret_proj_mult,
     },
     rd::REffect,
@@ -26,9 +26,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         charge: Some(NEffectCharge {
-            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate {
-                can_run_uncharged: false,
-            }),
+            location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
         }),
         dmg_kind_getter: Some(internal_get_dmg_kind),
