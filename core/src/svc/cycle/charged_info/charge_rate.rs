@@ -1,20 +1,20 @@
 use crate::{
     def::OF,
     nd::NEffectChargeDeplChargeRate,
-    svc::{SvcCtx, cycle::charged_cycles::ChargedCycleCount},
+    svc::{SvcCtx, cycle::charged_info::EffectChargedInfo},
     ud::UModule,
     util::InfCount,
 };
 
-pub(in crate::svc::cycle) fn get_charge_rate_cycle_count(
+pub(in crate::svc::cycle) fn get_charge_rate_charged_info(
     ctx: SvcCtx,
     module: &UModule,
     n_charge_rate: NEffectChargeDeplChargeRate,
-) -> ChargedCycleCount {
+) -> EffectChargedInfo {
     let charge_count = match module.get_charge_count(ctx.u_data) {
         Some(charge_count) => charge_count,
         None => {
-            return ChargedCycleCount {
+            return EffectChargedInfo {
                 fully_charged: InfCount::Count(0),
                 part_charged: None,
                 can_run_uncharged: n_charge_rate.can_run_uncharged,
@@ -22,7 +22,7 @@ pub(in crate::svc::cycle) fn get_charge_rate_cycle_count(
         }
     };
     if charge_count == 0 {
-        return ChargedCycleCount {
+        return EffectChargedInfo {
             fully_charged: InfCount::Count(0),
             part_charged: None,
             can_run_uncharged: n_charge_rate.can_run_uncharged,
@@ -30,7 +30,7 @@ pub(in crate::svc::cycle) fn get_charge_rate_cycle_count(
     }
     let charges_per_cycle = module.get_axt().unwrap().charge_rate;
     if charges_per_cycle == 0 {
-        return ChargedCycleCount {
+        return EffectChargedInfo {
             fully_charged: InfCount::Infinite,
             part_charged: None,
             can_run_uncharged: n_charge_rate.can_run_uncharged,
@@ -47,7 +47,7 @@ pub(in crate::svc::cycle) fn get_charge_rate_cycle_count(
         }
         false => None,
     };
-    ChargedCycleCount {
+    EffectChargedInfo {
         fully_charged: InfCount::Count(fully_charged),
         part_charged,
         can_run_uncharged: n_charge_rate.can_run_uncharged,
