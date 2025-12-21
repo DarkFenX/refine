@@ -1,9 +1,7 @@
 pub(in crate::svc) use cycle::{Cycle, CycleIter};
 pub(in crate::svc) use cycle_iter_item::CycleIterItem;
-pub(in crate::svc) use info::get_item_cycle_info;
-pub(in crate::svc) use info_shared::{CycleOptions, CycleOptionsSim};
+pub(in crate::svc) use item_info::{CycleOptions, CycleOptionsSim, get_item_cycle_info};
 
-mod charged_info;
 mod cycle;
 mod cycle_infinite1;
 mod cycle_infinite2;
@@ -14,10 +12,5 @@ mod cycle_inner_single;
 mod cycle_iter_item;
 mod cycle_limited;
 mod cycle_looped2;
-mod info;
-mod info_autocharge;
-mod info_charge;
-mod info_drone;
-mod info_fighter;
-mod info_module;
-mod info_shared;
+mod effect_charge_info;
+mod item_info;

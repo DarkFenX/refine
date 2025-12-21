@@ -1,11 +1,10 @@
 use super::{
-    cycle::Cycle, info_autocharge::get_autocharge_cycle_info, info_charge::get_charge_cycle_info,
-    info_drone::get_drone_cycle_info, info_fighter::get_fighter_cycle_info, info_module::get_module_cycle_info,
-    info_shared::CycleOptions,
+    item_autocharge::get_autocharge_cycle_info, item_charge::get_charge_cycle_info, item_drone::get_drone_cycle_info,
+    item_fighter::get_fighter_cycle_info, item_module::get_module_cycle_info, shared::CycleOptions,
 };
 use crate::{
     rd::REffectKey,
-    svc::{SvcCtx, calc::Calc},
+    svc::{SvcCtx, calc::Calc, cycle::Cycle},
     ud::{UItem, UItemKey},
     util::RMap,
 };

@@ -1,9 +1,9 @@
 use either::Either;
 
-use super::{cycle::Cycle, info::get_item_cycle_info, info_shared::CycleOptions};
+use super::{item::get_item_cycle_info, shared::CycleOptions};
 use crate::{
     rd::REffectKey,
-    svc::{SvcCtx, calc::Calc},
+    svc::{SvcCtx, calc::Calc, cycle::Cycle},
     ud::UAutocharge,
     util::RMap,
 };

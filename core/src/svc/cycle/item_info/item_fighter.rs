@@ -1,8 +1,8 @@
-use super::{cycle::Cycle, info_shared::CycleOptions};
+use super::shared::CycleOptions;
 use crate::{
     def::AttrVal,
     rd::REffectKey,
-    svc::{SvcCtx, calc::Calc},
+    svc::{SvcCtx, calc::Calc, cycle::Cycle},
     ud::{UFighter, UItemKey},
     util::RMap,
 };

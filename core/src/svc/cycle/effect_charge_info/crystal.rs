@@ -3,25 +3,25 @@ use ordered_float::Float;
 use crate::{
     def::{Count, OF},
     nd::NEffectChargeDeplCrystal,
-    svc::{SvcCtx, calc::Calc, cycle::charged_info::EffectChargedInfo},
+    svc::{SvcCtx, calc::Calc, cycle::effect_charge_info::EffectChargeInfo},
     ud::UModule,
     util::{FLOAT_TOLERANCE, InfCount, ceil_unerr, trunc_unerr},
 };
 
-pub(in crate::svc::cycle) fn get_crystal_charged_info(
+pub(in crate::svc::cycle) fn get_eci_crystal(
     ctx: SvcCtx,
     calc: &mut Calc,
     module: &UModule,
     n_charge_crystal: NEffectChargeDeplCrystal,
-) -> EffectChargedInfo {
-    EffectChargedInfo {
-        fully_charged: internal_get_crystal_charged_count(ctx, calc, module),
+) -> EffectChargeInfo {
+    EffectChargeInfo {
+        fully_charged: internal_cycle_count(ctx, calc, module),
         part_charged: None,
         can_run_uncharged: n_charge_crystal.can_run_uncharged,
     }
 }
 
-fn internal_get_crystal_charged_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCount {
+fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCount {
     let charge_count = match module.get_charge_count(ctx.u_data) {
         Some(charge_count) => charge_count,
         None => return InfCount::Count(0),

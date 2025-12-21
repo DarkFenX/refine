@@ -1,14 +1,14 @@
-use crate::{rd::REffectKey, svc::cycle::charged_info::EffectChargedInfo, ud::UItem, util::InfCount};
+use crate::{rd::REffectKey, svc::cycle::effect_charge_info::EffectChargeInfo, ud::UItem, util::InfCount};
 
-pub(in crate::svc::cycle) fn get_autocharge_charged_info(item: &UItem, effect_key: REffectKey) -> EffectChargedInfo {
-    EffectChargedInfo {
-        fully_charged: internal_get_autocharge_charged_count(item, effect_key),
+pub(in crate::svc::cycle) fn get_eci_autocharge(item: &UItem, effect_key: REffectKey) -> EffectChargeInfo {
+    EffectChargeInfo {
+        fully_charged: internal_cycle_count(item, effect_key),
         part_charged: None,
         can_run_uncharged: false,
     }
 }
 
-fn internal_get_autocharge_charged_count(item: &UItem, effect_key: REffectKey) -> InfCount {
+fn internal_cycle_count(item: &UItem, effect_key: REffectKey) -> InfCount {
     let autocharges = match item.get_autocharges() {
         Some(autocharges) => autocharges,
         // Effect wants autocharge, but item does not support autocharges -> can't cycle

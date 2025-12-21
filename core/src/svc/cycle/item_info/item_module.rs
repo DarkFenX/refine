@@ -1,27 +1,30 @@
 use either::Either;
 use ordered_float::Float;
 
-use super::{
-    charged_info::{
-        get_autocharge_charged_info, get_charge_rate_charged_info, get_crystal_charged_info,
-        get_uncharged_charged_info, get_undepletable_charged_info,
-    },
-    cycle::Cycle,
-    cycle_infinite1::CycleInfinite1,
-    cycle_infinite2::CycleInfinite2,
-    cycle_infinite3::CycleInfinite3,
-    cycle_inner_infinite::CycleInnerInfinite,
-    cycle_inner_limited::CycleInnerLimited,
-    cycle_inner_single::CycleInnerSingle,
-    cycle_limited::CycleLimited,
-    cycle_looped2::CycleLooped2,
-    info_shared::{CycleOptions, SelfKillerInfo},
-};
+use super::shared::{CycleOptions, SelfKillerInfo};
 use crate::{
     def::{AttrVal, Count, OF, SERVER_TICK_S},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     rd::{REffectChargeLoc, REffectKey},
-    svc::{SvcCtx, calc::Calc, eff_funcs},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{
+            Cycle,
+            cycle_infinite1::CycleInfinite1,
+            cycle_infinite2::CycleInfinite2,
+            cycle_infinite3::CycleInfinite3,
+            cycle_inner_infinite::CycleInnerInfinite,
+            cycle_inner_limited::CycleInnerLimited,
+            cycle_inner_single::CycleInnerSingle,
+            cycle_limited::CycleLimited,
+            cycle_looped2::CycleLooped2,
+            effect_charge_info::{
+                get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
+            },
+        },
+        eff_funcs,
+    },
     ud::{UItem, UItemKey, UModule},
     util::{FLOAT_TOLERANCE, InfCount, RMap},
 };
@@ -92,26 +95,22 @@ fn fill_module_effect_info(
     // Charge count info
     let charge_info = match &effect.charge {
         Some(n_charge) => match n_charge.location {
-            REffectChargeLoc::Autocharge(_) => get_autocharge_charged_info(item, effect.key),
+            REffectChargeLoc::Autocharge(_) => get_eci_autocharge(item, effect.key),
             REffectChargeLoc::Loaded(n_charge_depletion) => match n_charge_depletion {
-                NEffectChargeDepl::ChargeRate(n_charge_rate) => {
-                    get_charge_rate_charged_info(ctx, module, n_charge_rate)
-                }
-                NEffectChargeDepl::Crystal(n_charge_crystal) => {
-                    get_crystal_charged_info(ctx, calc, module, n_charge_crystal)
-                }
-                NEffectChargeDepl::Undepletable => get_undepletable_charged_info(),
+                NEffectChargeDepl::ChargeRate(n_charge_rate) => get_eci_charge_rate(ctx, module, n_charge_rate),
+                NEffectChargeDepl::Crystal(n_charge_crystal) => get_eci_crystal(ctx, calc, module, n_charge_crystal),
+                NEffectChargeDepl::Undepletable => get_eci_undepletable(),
             },
             // targetAttack effect has 2 distinct options for modules:
             // - lasers: regular crystal cycle getter
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
             REffectChargeLoc::TargetAttack => match module.get_axt().unwrap().capacity > OF(0.0) {
-                true => get_crystal_charged_info(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
-                false => get_undepletable_charged_info(),
+                true => get_eci_crystal(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
+                false => get_eci_undepletable(),
             },
         },
-        None => get_uncharged_charged_info(),
+        None => get_eci_uncharged(),
     };
     // Completely skip effects which can't cycle
     if charge_info.is_unrunnable() {
