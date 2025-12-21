@@ -64,7 +64,7 @@ impl CapSim {
             match event {
                 CapSimEvent::CycleCheck(mut event) => {
                     // Check if it can cycle altogether
-                    if let Some(next_cycle_delay) = event.cycle_iter.next() {
+                    if let Some(cycle_iter_info) = event.cycle_iter.next() {
                         // Add outputs for this cycle
                         let mut output_delay = OF(0.0);
                         for (output_interval, output_value) in event.output.iter_output() {
@@ -77,7 +77,7 @@ impl CapSim {
                         }
                         // Schedule next cycle check
                         let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                            time: event.time + next_cycle_delay,
+                            time: event.time + cycle_iter_info.time,
                             cycle_iter: event.cycle_iter,
                             output: event.output,
                         });
@@ -184,11 +184,11 @@ impl CapSim {
     }
     fn use_injector(&mut self, mut injector_event: CapSimEventInjector) {
         // Check if injector can cycle
-        if let Some(next_cycle_delay) = injector_event.cycle_iter.next() {
+        if let Some(cycle_iter_info) = injector_event.cycle_iter.next() {
             // If it can, update cap value
             self.increase_cap(injector_event.output);
             // Schedule next cycle
-            injector_event.time = self.time + next_cycle_delay;
+            injector_event.time = self.time + cycle_iter_info.time;
             self.events.push(CapSimEvent::InjectorReady(injector_event));
         }
     }
