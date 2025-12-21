@@ -1,4 +1,5 @@
 use either::Either;
+use ordered_float::Float;
 
 use super::{
     charged_info::{
@@ -6,6 +7,8 @@ use super::{
         get_uncharged_charged_info, get_undepletable_charged_info,
     },
     cycle::Cycle,
+    cycle_infinite1::CycleInfinite1,
+    cycle_inner_infinite::CycleInnerInfinite,
     cycle_inner_limited::CycleInnerLimited,
     cycle_limited::CycleLimited,
     cycle_reload2::CycleReload2,
@@ -111,7 +114,7 @@ fn fill_module_effect_info(
     if charged_cycle_count.is_unrunnable() {
         return;
     }
-    // Self-killers are fairly trivial. Record info about them and go to next effect
+    // Record info about self-killers and bail, those do not depend on cycling options
     if effect.kills_item {
         self_killers.push(SelfKillerInfo { effect_key, duration_s });
         cycle_infos.insert(
@@ -133,21 +136,42 @@ fn fill_module_effect_info(
         .unwrap()
         / 1000.0)
         .max(OF(0.0));
-    let count_until_reload = match cycle_count {
-        InfCount::Count(count_until_reload) => count_until_reload,
-        // No need for complex logic when module is infinitely cycling
+    let interruption_every_cycle = reactivation_delay_s.abs() > FLOAT_TOLERANCE;
+    let fully_charged_count = match charged_cycle_count.fully_charged {
+        InfCount::Count(fully_charged_count) => fully_charged_count,
+        // When effect can infinitely cycle fully charged, result does not depend on requested cycle
+        // options
         InfCount::Infinite => {
             cycle_infos.insert(
                 effect_key,
-                Cycle::Simple(CycleSimple {
-                    active_time: duration_s,
-                    inactive_time: reactivation_delay_s,
-                    repeat_count: InfCount::Infinite,
+                Cycle::Infinite1(CycleInfinite1 {
+                    inner: CycleInnerInfinite {
+                        active_time: duration_s,
+                        inactive_time: reactivation_delay_s,
+                        interrupt: interruption_every_cycle,
+                        charged: Some(OF(1.0)),
+                    },
                 }),
             );
             return;
         }
     };
+    // If burst cycle mode was requested, just assume first cycle is the best, and infinitely repeat
+    // it
+    if let CycleOptions::Burst = cycle_infos {
+        cycle_infos.insert(
+            effect_key,
+            Cycle::Infinite1(CycleInfinite1 {
+                inner: CycleInnerInfinite {
+                    active_time: duration_s,
+                    inactive_time: reactivation_delay_s,
+                    interrupt: interruption_every_cycle,
+                    charged: charged_cycle_count.get_first_cycle_chargeness(),
+                },
+            }),
+        );
+        return;
+    }
     let reload_time_s = match options.reload_mode {
         // When considering burst calculations, just set reload to 0
         CycleOptionReload::Burst => OF(0.0),

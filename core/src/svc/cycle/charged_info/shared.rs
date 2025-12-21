@@ -14,8 +14,8 @@ impl EffectChargedInfo {
     }
     pub(in crate::svc::cycle) fn get_first_cycle_chargeness(&self) -> Option<AttrVal> {
         match self.fully_charged {
-            InfCount::Count(count) if count > 0 => Some(OF(0.0)),
-            InfCount::Infinite => Some(OF(0.0)),
+            InfCount::Count(count) if count > 0 => Some(OF(1.0)),
+            InfCount::Infinite => Some(OF(1.0)),
             _ => self.part_charged,
         }
     }
