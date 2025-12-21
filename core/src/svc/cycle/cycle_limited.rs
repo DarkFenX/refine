@@ -41,7 +41,7 @@ pub(in crate::svc) struct CycleLimitedIter {
 impl CycleLimitedIter {
     fn new(cycle: &CycleLimited) -> Self {
         Self {
-            inner: cycle.inner.iter_cycles(false),
+            inner: cycle.inner.iter_cycles(),
         }
     }
 }

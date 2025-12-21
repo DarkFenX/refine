@@ -8,14 +8,17 @@ use super::{
     },
     cycle::Cycle,
     cycle_infinite1::CycleInfinite1,
+    cycle_infinite2::CycleInfinite2,
+    cycle_infinite3::CycleInfinite3,
     cycle_inner_infinite::CycleInnerInfinite,
     cycle_inner_limited::CycleInnerLimited,
+    cycle_inner_single::CycleInnerSingle,
     cycle_limited::CycleLimited,
     cycle_reload2::CycleReload2,
     info_shared::{CycleOptions, SelfKillerInfo},
 };
 use crate::{
-    def::{OF, SERVER_TICK_S},
+    def::{AttrVal, Count, OF, SERVER_TICK_S},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     rd::{REffectChargeLoc, REffectKey},
     svc::{SvcCtx, calc::Calc, eff_funcs},
@@ -82,12 +85,12 @@ fn fill_module_effect_info(
         return;
     }
     // No appropriate duration - no info
-    let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
-        Some(duration_s) => duration_s,
+    let duration = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
+        Some(duration) => duration,
         None => return,
     };
     // Charge count info
-    let charged_cycle_count = match &effect.charge {
+    let charge_info = match &effect.charge {
         Some(n_charge) => match n_charge.location {
             REffectChargeLoc::Autocharge(_) => get_autocharge_charged_info(item, effect.key),
             REffectChargeLoc::Loaded(n_charge_depletion) => match n_charge_depletion {
@@ -111,44 +114,66 @@ fn fill_module_effect_info(
         None => get_uncharged_charged_info(),
     };
     // Completely skip effects which can't cycle
-    if charged_cycle_count.is_unrunnable() {
+    if charge_info.is_unrunnable() {
         return;
     }
     // Record info about self-killers and bail, those do not depend on cycling options
     if effect.kills_item {
-        self_killers.push(SelfKillerInfo { effect_key, duration_s });
+        self_killers.push(SelfKillerInfo {
+            effect_key,
+            duration_s: duration,
+        });
         cycle_infos.insert(
             effect_key,
             Cycle::Limited(CycleLimited {
                 inner: CycleInnerLimited {
-                    active_time: duration_s,
+                    active_time: duration,
                     inactive_time: OF(0.0),
                     interrupt: true,
-                    charged: charged_cycle_count.get_first_cycle_chargeness(),
+                    charged: charge_info.get_first_cycle_chargeness(),
                     repeat_count: 1,
                 },
             }),
         );
         return;
     }
-    let reactivation_delay_s = (calc
-        .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mod_reactivation_delay, OF(0.0))
-        .unwrap()
-        / 1000.0)
-        .max(OF(0.0));
-    let interruption_every_cycle = reactivation_delay_s.abs() > FLOAT_TOLERANCE;
-    let fully_charged_count = match charged_cycle_count.fully_charged {
-        InfCount::Count(fully_charged_count) => fully_charged_count,
-        // When effect can infinitely cycle fully charged, result does not depend on requested cycle
-        // options
+    let cycle_dt = Float::max(
+        OF(0.0),
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mod_reactivation_delay, OF(0.0))
+            .unwrap()
+            / 1000.0,
+    );
+    // Decide if interruptions happen every cycle based on reactivation delay value
+    let force_int = cycle_dt > FLOAT_TOLERANCE;
+    let sim_options = match options {
+        CycleOptions::Sim(sim_options) => sim_options,
+        // If burst cycle mode was requested, just assume first cycle is the "most charged", and
+        // infinitely repeat it
+        CycleOptions::Burst => {
+            cycle_infos.insert(
+                effect_key,
+                Cycle::Infinite1(CycleInfinite1 {
+                    inner: CycleInnerInfinite {
+                        active_time: duration,
+                        inactive_time: cycle_dt,
+                        interrupt: force_int,
+                        charged: charge_info.get_first_cycle_chargeness(),
+                    },
+                }),
+            );
+            return;
+        }
+    };
+    let full_count = match charge_info.fully_charged {
+        InfCount::Count(full_count) => full_count,
         InfCount::Infinite => {
             cycle_infos.insert(
                 effect_key,
                 Cycle::Infinite1(CycleInfinite1 {
                     inner: CycleInnerInfinite {
-                        active_time: duration_s,
-                        inactive_time: reactivation_delay_s,
-                        interrupt: interruption_every_cycle,
+                        active_time: duration,
+                        inactive_time: cycle_dt,
+                        interrupt: force_int,
                         charged: Some(OF(1.0)),
                     },
                 }),
@@ -156,79 +181,212 @@ fn fill_module_effect_info(
             return;
         }
     };
-    // If burst cycle mode was requested, just assume first cycle is the best, and infinitely repeat
-    // it
-    if let CycleOptions::Burst = cycle_infos {
-        cycle_infos.insert(
-            effect_key,
-            Cycle::Infinite1(CycleInfinite1 {
-                inner: CycleInnerInfinite {
-                    active_time: duration_s,
-                    inactive_time: reactivation_delay_s,
-                    interrupt: interruption_every_cycle,
-                    charged: charged_cycle_count.get_first_cycle_chargeness(),
+    let cycle = match (
+        full_count > 0,
+        charge_info.part_charged.is_some(),
+        charge_info.can_run_uncharged,
+    ) {
+        // Can't cycle at all, should've been handled earlier
+        (false, false, false) => return,
+        // Infinitely cycling modules without charge
+        (false, false, true) => Cycle::Infinite1(CycleInfinite1 {
+            inner: CycleInnerInfinite {
+                active_time: duration,
+                inactive_time: cycle_dt,
+                interrupt: force_int,
+                charged: None,
+            },
+        }),
+        // Only partially charged, has to reload every cycle
+        (false, true, false) => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
+        // Only partially charged cycle, but can cycle without charges
+        (false, true, true) => match ctx
+            .u_data
+            .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
+        {
+            true => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
+            false => Cycle::Infinite2(CycleInfinite2 {
+                inner1: CycleInnerLimited {
+                    active_time: duration,
+                    inactive_time: cycle_dt,
+                    interrupt: force_int,
+                    charged: charge_info.part_charged,
+                    repeat_count: 1,
+                },
+                inner2: CycleInnerInfinite {
+                    active_time: duration,
+                    inactive_time: cycle_dt,
+                    interrupt: force_int,
+                    charged: None,
                 },
             }),
-        );
-        return;
-    }
-    let reload_time_s = match options.reload_mode {
-        // When considering burst calculations, just set reload to 0
-        CycleOptionReload::Burst => OF(0.0),
-        CycleOptionReload::Sim => {
-            let reload_time_s = calc
-                .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
-                .unwrap()
-                / 1000.0;
-            match reload_time_s > FLOAT_TOLERANCE {
-                // If reload time is defined and positive, ensure it takes at least 1 tick
-                true => reload_time_s.max(SERVER_TICK_S),
-                false => OF(0.0),
+        },
+        // Only fully charged, has to reload after charges are out
+        (true, false, false) => full_r(ctx, calc, item_key, duration, cycle_dt, force_int, full_count),
+        // Only fully charged, but can cycle without charges
+        (true, false, true) => match ctx
+            .u_data
+            .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
+        {
+            true => full_r(ctx, calc, item_key, duration, cycle_dt, force_int, full_count),
+            false => Cycle::Infinite2(CycleInfinite2 {
+                inner1: CycleInnerLimited {
+                    active_time: duration,
+                    inactive_time: cycle_dt,
+                    interrupt: force_int,
+                    charged: Some(OF(1.0)),
+                    repeat_count: full_count,
+                },
+                inner2: CycleInnerInfinite {
+                    active_time: duration,
+                    inactive_time: cycle_dt,
+                    interrupt: force_int,
+                    charged: None,
+                },
+            }),
+        },
+        // Fully charged + partially charged + can't run uncharged
+        (true, true, false) => both_r(
+            ctx,
+            calc,
+            item_key,
+            duration,
+            cycle_dt,
+            force_int,
+            full_count,
+            charge_info.part_charged,
+        ),
+        // Fully charged + partially charged + can cycle uncharged
+        (true, true, true) => {
+            match ctx
+                .u_data
+                .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
+            {
+                true => both_r(
+                    ctx,
+                    calc,
+                    item_key,
+                    duration,
+                    cycle_dt,
+                    force_int,
+                    full_count,
+                    charge_info.part_charged,
+                ),
+                false => Cycle::Infinite3(CycleInfinite3 {
+                    inner1: CycleInnerLimited {
+                        active_time: duration,
+                        inactive_time: cycle_dt,
+                        interrupt: force_int,
+                        charged: Some(OF(1.0)),
+                        repeat_count: full_count,
+                    },
+                    inner2: CycleInnerSingle {
+                        active_time: duration,
+                        inactive_time: cycle_dt,
+                        interrupt: force_int,
+                        charged: charge_info.part_charged,
+                    },
+                    inner3: CycleInnerInfinite {
+                        active_time: duration,
+                        inactive_time: cycle_dt,
+                        interrupt: force_int,
+                        charged: None,
+                    },
+                }),
             }
         }
     };
-    // Module can be reloaded during reactivation delay; if reactivation delay is longer, return
-    // simple cycle
-    if reactivation_delay_s >= reload_time_s {
-        cycle_infos.insert(
-            effect_key,
-            Cycle::Reload1(CycleReload1 {
-                inner: CycleInnerLimited {
-                    active_time: duration_s,
-                    inactive_time: reactivation_delay_s,
-                    repeat_count: count_until_reload,
-                },
-            }),
-        );
-        return;
-    }
-    // If effect can cycle just 1 time, return simpler cycle as well
-    if count_until_reload == 1 {
-        cycle_infos.insert(
-            effect_key,
-            Cycle::Reload1(CycleReload1 {
-                inner: CycleInnerLimited {
-                    active_time: duration_s,
-                    inactive_time: reload_time_s,
-                    repeat_count: count_until_reload,
-                },
-            }),
-        );
-        return;
-    }
-    cycle_infos.insert(
-        effect_key,
-        Cycle::Reload2(CycleReload2 {
-            inner1: CycleInnerLimited {
-                active_time: duration_s,
-                inactive_time: reactivation_delay_s,
-                repeat_count: count_until_reload - 1,
-            },
-            inner2: CycleInnerLimited {
-                active_time: duration_s,
-                inactive_time: reload_time_s,
-                repeat_count: 1,
+    cycle_infos.insert(effect_key, cycle);
+}
+
+fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+    // All reloads can't take less than server tick realistically. E.g. lasers have almost 0 reload
+    // time but take 1-2 seconds to reload
+    Float::max(
+        SERVER_TICK_S,
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
+            .unwrap()
+            / 1000.0,
+    )
+}
+
+fn part_r(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    duration: AttrVal,
+    cycle_dt: AttrVal,
+    part_value: Option<AttrVal>,
+) -> Cycle {
+    Cycle::Infinite1(CycleInfinite1 {
+        inner: CycleInnerInfinite {
+            active_time: duration,
+            inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+            interrupt: true,
+            charged: part_value,
+        },
+    })
+}
+
+fn full_r(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    duration: AttrVal,
+    cycle_dt: AttrVal,
+    force_int: bool,
+    full_count: Count,
+) -> Cycle {
+    match full_count {
+        1 => Cycle::Infinite1(CycleInfinite1 {
+            inner: CycleInnerInfinite {
+                active_time: duration,
+                inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+                interrupt: true,
+                charged: Some(OF(1.0)),
             },
         }),
-    );
+        _ => Cycle::Reload2(CycleReload2 {
+            inner1: CycleInnerLimited {
+                active_time: duration,
+                inactive_time: cycle_dt,
+                interrupt: force_int,
+                charged: Some(OF(1.0)),
+                repeat_count: full_count - 1,
+            },
+            inner2: CycleInnerSingle {
+                active_time: duration,
+                inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+                interrupt: true,
+                charged: Some(OF(1.0)),
+            },
+        }),
+    }
+}
+
+fn both_r(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    duration: AttrVal,
+    cycle_dt: AttrVal,
+    force_int: bool,
+    full_count: Count,
+    part_value: Option<AttrVal>,
+) -> Cycle {
+    Cycle::Reload2(CycleReload2 {
+        inner1: CycleInnerLimited {
+            active_time: duration,
+            inactive_time: cycle_dt,
+            interrupt: force_int,
+            charged: Some(OF(1.0)),
+            repeat_count: full_count,
+        },
+        inner2: CycleInnerSingle {
+            active_time: duration,
+            inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+            interrupt: true,
+            charged: part_value,
+        },
+    })
 }

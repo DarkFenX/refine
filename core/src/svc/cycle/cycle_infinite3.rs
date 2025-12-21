@@ -57,8 +57,8 @@ pub(in crate::svc) struct CycleInfinite3Iter {
 impl CycleInfinite3Iter {
     fn new(cycle: &CycleInfinite3) -> Self {
         Self {
-            inner1: cycle.inner1.iter_cycles(false),
-            inner2: cycle.inner2.iter_cycles(false),
+            inner1: cycle.inner1.iter_cycles(),
+            inner2: cycle.inner2.iter_cycles(),
             inner3: cycle.inner3.iter_cycles(),
             index: 0,
         }

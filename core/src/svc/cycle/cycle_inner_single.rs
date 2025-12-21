@@ -11,8 +11,8 @@ impl CycleInnerSingle {
     pub(super) fn get_total_time(&self) -> AttrVal {
         self.active_time + self.inactive_time
     }
-    pub(super) fn iter_cycles(&self, force_interrupt: bool) -> CycleInnerSingleIter {
-        CycleInnerSingleIter::new(self, force_interrupt)
+    pub(super) fn iter_cycles(&self) -> CycleInnerSingleIter {
+        CycleInnerSingleIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -33,13 +33,9 @@ pub(super) struct CycleInnerSingleIter {
     done: bool,
 }
 impl CycleInnerSingleIter {
-    fn new(cycle: &CycleInnerSingle, force_interrupt: bool) -> Self {
+    fn new(cycle: &CycleInnerSingle) -> Self {
         Self {
-            item: CycleIterItem::new(
-                cycle.active_time + cycle.inactive_time,
-                cycle.interrupt || force_interrupt,
-                cycle.charged,
-            ),
+            item: CycleIterItem::new(cycle.active_time + cycle.inactive_time, cycle.interrupt, cycle.charged),
             done: false,
         }
     }

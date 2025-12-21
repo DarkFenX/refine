@@ -13,7 +13,6 @@ mod cycle_inner_limited;
 mod cycle_inner_single;
 mod cycle_iter_item;
 mod cycle_limited;
-mod cycle_reload1;
 mod cycle_reload2;
 mod info;
 mod info_autocharge;

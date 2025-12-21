@@ -44,8 +44,8 @@ pub(in crate::svc) struct CycleReload2Iter {
 impl CycleReload2Iter {
     fn new(cycle: &CycleReload2) -> Self {
         Self {
-            inner1: cycle.inner1.iter_cycles(false),
-            inner2: cycle.inner2.iter_cycles(true),
+            inner1: cycle.inner1.iter_cycles(),
+            inner2: cycle.inner2.iter_cycles(),
             index: 0,
             yielded: false,
         }

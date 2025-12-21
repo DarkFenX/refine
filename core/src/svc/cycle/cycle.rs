@@ -4,7 +4,6 @@ use super::{
     cycle_infinite3::{CycleInfinite3, CycleInfinite3Iter},
     cycle_iter_item::CycleIterItem,
     cycle_limited::{CycleLimited, CycleLimitedIter},
-    cycle_reload1::{CycleReload1, CycleReload1Iter},
     cycle_reload2::{CycleReload2, CycleReload2Iter},
 };
 use crate::{def::AttrVal, util::InfCount};
@@ -15,14 +14,13 @@ pub(in crate::svc) enum Cycle {
     Infinite1(CycleInfinite1),
     Infinite2(CycleInfinite2),
     Infinite3(CycleInfinite3),
-    Reload1(CycleReload1),
     Reload2(CycleReload2),
 }
 impl Cycle {
     pub(in crate::svc) fn is_infinite(&self) -> bool {
         match &self {
             Self::Limited(_) => false,
-            Self::Infinite1(_) | Self::Infinite2(_) | Self::Infinite3(_) | Self::Reload1(_) | Self::Reload2(_) => true,
+            Self::Infinite1(_) | Self::Infinite2(_) | Self::Infinite3(_) | Self::Reload2(_) => true,
         }
     }
     pub(in crate::svc) fn get_charged_cycles(&self) -> InfCount {
@@ -31,7 +29,6 @@ impl Cycle {
             Self::Infinite1(infinite1) => infinite1.get_charged_cycles(),
             Self::Infinite2(infinite2) => infinite2.get_charged_cycles(),
             Self::Infinite3(infinite3) => infinite3.get_charged_cycles(),
-            Self::Reload1(reload1) => reload1.get_charged_cycles(),
             Self::Reload2(reload2) => reload2.get_charged_cycles(),
         }
     }
@@ -41,7 +38,6 @@ impl Cycle {
             Self::Infinite1(infinite1) => infinite1.get_average_cycle_time(),
             Self::Infinite2(infinite2) => infinite2.get_average_cycle_time(),
             Self::Infinite3(infinite3) => infinite3.get_average_cycle_time(),
-            Self::Reload1(reload1) => reload1.get_average_cycle_time(),
             Self::Reload2(reload2) => reload2.get_average_cycle_time(),
         }
     }
@@ -51,7 +47,6 @@ impl Cycle {
             Self::Infinite1(infinite1) => CycleIter::Infinite1(infinite1.iter_cycles()),
             Self::Infinite2(infinite2) => CycleIter::Infinite2(infinite2.iter_cycles()),
             Self::Infinite3(infinite3) => CycleIter::Infinite3(infinite3.iter_cycles()),
-            Self::Reload1(reload1) => CycleIter::Reload1(reload1.iter_cycles()),
             Self::Reload2(reload2) => CycleIter::Reload2(reload2.iter_cycles()),
         }
     }
@@ -62,7 +57,6 @@ impl Cycle {
             Self::Infinite1(infinite1) => Self::Infinite1(infinite1.copy_rounded()),
             Self::Infinite2(infinite2) => Self::Infinite2(infinite2.copy_rounded()),
             Self::Infinite3(infinite3) => Self::Infinite3(infinite3.copy_rounded()),
-            Self::Reload1(reload1) => Self::Reload1(reload1.copy_rounded()),
             Self::Reload2(reload2) => Self::Reload2(reload2.copy_rounded()),
         }
     }
@@ -72,7 +66,6 @@ impl Cycle {
             Self::Infinite1(infinite1) => infinite1.get_cycle_time_for_stagger(),
             Self::Infinite2(infinite2) => infinite2.get_cycle_time_for_stagger(),
             Self::Infinite3(infinite3) => infinite3.get_cycle_time_for_stagger(),
-            Self::Reload1(reload1) => reload1.get_cycle_time_for_stagger(),
             Self::Reload2(reload2) => reload2.get_cycle_time_for_stagger(),
         }
     }
@@ -83,7 +76,6 @@ pub(in crate::svc) enum CycleIter {
     Infinite1(CycleInfinite1Iter),
     Infinite2(CycleInfinite2Iter),
     Infinite3(CycleInfinite3Iter),
-    Reload1(CycleReload1Iter),
     Reload2(CycleReload2Iter),
 }
 impl Iterator for CycleIter {
@@ -95,7 +87,6 @@ impl Iterator for CycleIter {
             Self::Infinite1(infinite1) => infinite1.next(),
             Self::Infinite2(infinite2) => infinite2.next(),
             Self::Infinite3(infinite3) => infinite3.next(),
-            Self::Reload1(reload1) => reload1.next(),
             Self::Reload2(reload2) => reload2.next(),
         }
     }
