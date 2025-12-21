@@ -1,0 +1,119 @@
+use super::ticks::{
+    AbtInfiniteComplex1, AbtInfiniteComplex2, AbtInfiniteSimple, AbtLimitedComplex, AbtLimitedSimple, AbtLoopedComplex,
+    AbtLoopedSimple, AggrBreacherTicks,
+};
+use crate::{
+    def::{AttrVal, Count, SERVER_TICK_HZ},
+    svc::cycle::Cycle,
+    util::ceil_unerr,
+};
+
+// Process breacher module cycle data + output per cycle into some kind of aggregated value, which
+// discards all overlapping instances and aligns everything to ticks, which is needed for further
+// processing
+pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBreacherTicks> {
+    if output_ticks < 1 {
+        return None;
+    }
+    match cycle {
+        Cycle::Limited(limited) => {
+            if limited.inner.repeat_count == 0 {
+                return None;
+            }
+            let cycle_ticks = time_to_ticks(limited.inner.active_time + limited.inner.inactive_time);
+            match output_ticks >= cycle_ticks {
+                true => {
+                    let last_cycle_start_ts = (limited.inner.active_time + limited.inner.inactive_time)
+                        * (limited.inner.repeat_count - 1) as f64;
+                    let last_cycle_start_tick = time_to_ticks(last_cycle_start_ts);
+                    Some(AggrBreacherTicks::LimitedSimple(AbtLimitedSimple {
+                        count: last_cycle_start_tick + output_ticks,
+                    }))
+                }
+                false => Some(AggrBreacherTicks::LimitedComplex(AbtLimitedComplex {
+                    dmg_tick_count: output_ticks,
+                    inactive_tick_count: cycle_ticks - output_ticks,
+                    repeat_count: limited.inner.repeat_count,
+                })),
+            }
+        }
+        Cycle::Infinite1(infinite1) => {
+            let cycle_ticks = time_to_ticks(infinite1.inner.active_time + infinite1.inner.inactive_time);
+            match output_ticks >= cycle_ticks {
+                true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
+                false => Some(AggrBreacherTicks::LoopedSimple(AbtLoopedSimple {
+                    dmg_tick_count: output_ticks,
+                    inactive_tick_count: cycle_ticks - output_ticks,
+                })),
+            }
+        }
+        Cycle::Infinite2(infinite2) => {
+            let p1_ticks = time_to_ticks(infinite2.inner1.active_time + infinite2.inner1.inactive_time);
+            let p2_ticks = time_to_ticks(infinite2.inner2.active_time + infinite2.inner2.inactive_time);
+            match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
+                true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
+                false => {
+                    let p1_dmg_ticks = output_ticks.min(p1_ticks);
+                    let p2_dmg_ticks = output_ticks.min(p2_ticks);
+                    Some(AggrBreacherTicks::InfiniteComplex1(AbtInfiniteComplex1 {
+                        p1_dmg_tick_count: p1_dmg_ticks,
+                        p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
+                        p1_repeat_count: infinite2.inner1.repeat_count,
+                        p2_dmg_tick_count: p2_dmg_ticks,
+                        p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
+                    }))
+                }
+            }
+        }
+        Cycle::Infinite3(infinite3) => {
+            let p1_ticks = time_to_ticks(infinite3.inner1.active_time + infinite3.inner1.inactive_time);
+            let p2_ticks = time_to_ticks(infinite3.inner2.active_time + infinite3.inner2.inactive_time);
+            let p3_ticks = time_to_ticks(infinite3.inner3.active_time + infinite3.inner3.inactive_time);
+            match output_ticks >= p1_ticks && output_ticks >= p2_ticks && output_ticks > p3_ticks {
+                true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
+                false => {
+                    let p1_dmg_ticks = output_ticks.min(p1_ticks);
+                    let p2_dmg_ticks = output_ticks.min(p2_ticks);
+                    let p3_dmg_ticks = output_ticks.min(p3_ticks);
+                    Some(AggrBreacherTicks::InfiniteComplex2(AbtInfiniteComplex2 {
+                        p1_dmg_tick_count: p1_dmg_ticks,
+                        p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
+                        p1_repeat_count: infinite3.inner1.repeat_count,
+                        p2_dmg_tick_count: p2_dmg_ticks,
+                        p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
+                        p2_repeat_count: 1,
+                        p3_dmg_tick_count: p3_dmg_ticks,
+                        p3_inactive_tick_count: p3_ticks - p3_dmg_ticks,
+                    }))
+                }
+            }
+        }
+        Cycle::Looped2(looped2) => {
+            let p1_ticks =
+                ceil_unerr((looped2.inner1.active_time + looped2.inner1.inactive_time) * SERVER_TICK_HZ as f64)
+                    .into_inner() as Count;
+            let p2_ticks =
+                ceil_unerr((looped2.inner2.active_time + looped2.inner2.inactive_time) * SERVER_TICK_HZ as f64)
+                    .into_inner() as Count;
+            match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
+                true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
+                false => {
+                    let p1_dmg_ticks = output_ticks.min(p1_ticks);
+                    let p2_dmg_ticks = output_ticks.min(p2_ticks);
+                    Some(AggrBreacherTicks::LoopedComplex(AbtLoopedComplex {
+                        p1_dmg_tick_count: p1_dmg_ticks,
+                        p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
+                        p1_repeat_count: looped2.inner1.repeat_count,
+                        p2_dmg_tick_count: p2_dmg_ticks,
+                        p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
+                        p2_repeat_count: 1,
+                    }))
+                }
+            }
+        }
+    }
+}
+
+fn time_to_ticks(time: AttrVal) -> Count {
+    ceil_unerr(time * SERVER_TICK_HZ as f64).into_inner() as Count
+}

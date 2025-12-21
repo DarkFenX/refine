@@ -14,7 +14,7 @@ use super::{
     cycle_inner_limited::CycleInnerLimited,
     cycle_inner_single::CycleInnerSingle,
     cycle_limited::CycleLimited,
-    cycle_reload2::CycleReload2,
+    cycle_looped2::CycleLooped2,
     info_shared::{CycleOptions, SelfKillerInfo},
 };
 use crate::{
@@ -346,7 +346,7 @@ fn full_r(
                 charged: Some(OF(1.0)),
             },
         }),
-        _ => Cycle::Reload2(CycleReload2 {
+        _ => Cycle::Looped2(CycleLooped2 {
             inner1: CycleInnerLimited {
                 active_time: duration,
                 inactive_time: cycle_dt,
@@ -374,7 +374,7 @@ fn both_r(
     full_count: Count,
     part_value: Option<AttrVal>,
 ) -> Cycle {
-    Cycle::Reload2(CycleReload2 {
+    Cycle::Looped2(CycleLooped2 {
         inner1: CycleInnerLimited {
             active_time: duration,
             inactive_time: cycle_dt,

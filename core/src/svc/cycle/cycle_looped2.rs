@@ -9,19 +9,19 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleReload2 {
+pub(in crate::svc) struct CycleLooped2 {
     pub(in crate::svc) inner1: CycleInnerLimited,
     pub(in crate::svc) inner2: CycleInnerSingle,
 }
-impl CycleReload2 {
+impl CycleLooped2 {
     pub(super) fn get_charged_cycles(&self) -> InfCount {
         InfCount::Count(self.inner1.repeat_count + 1)
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         (self.inner1.get_total_time() + self.inner2.get_total_time()) / (self.inner1.repeat_count + 1) as f64
     }
-    pub(super) fn iter_cycles(&self) -> CycleReload2Iter {
-        CycleReload2Iter::new(self)
+    pub(super) fn iter_cycles(&self) -> CycleLooped2Iter {
+        CycleLooped2Iter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -35,14 +35,14 @@ impl CycleReload2 {
     }
 }
 
-pub(in crate::svc) struct CycleReload2Iter {
+pub(in crate::svc) struct CycleLooped2Iter {
     inner1: CycleInnerLimitedIter,
     inner2: CycleInnerSingleIter,
     index: u8,
     yielded: bool,
 }
-impl CycleReload2Iter {
-    fn new(cycle: &CycleReload2) -> Self {
+impl CycleLooped2Iter {
+    fn new(cycle: &CycleLooped2) -> Self {
         Self {
             inner1: cycle.inner1.iter_cycles(),
             inner2: cycle.inner2.iter_cycles(),
@@ -51,7 +51,7 @@ impl CycleReload2Iter {
         }
     }
 }
-impl Iterator for CycleReload2Iter {
+impl Iterator for CycleLooped2Iter {
     type Item = CycleIterItem;
 
     fn next(&mut self) -> Option<Self::Item> {

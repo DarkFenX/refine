@@ -168,7 +168,7 @@ impl Vast {
         Ok(StatDmgApplied::from((
             volley_normal,
             volley_breacher
-                .nullify()
+                .nullified()
                 .map(|breacher_raw| apply_breacher(ctx, calc, breacher_raw, projectee_key)),
         )))
     }

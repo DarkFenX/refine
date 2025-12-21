@@ -20,7 +20,7 @@ impl From<(DmgKinds<AttrVal>, Option<StatDmgBreacher>)> for StatDmg {
             kinetic: dmg_kinds.kinetic,
             explosive: dmg_kinds.explosive,
             breacher: match breacher {
-                Some(breacher) => breacher.nullify(),
+                Some(breacher) => breacher.nullified(),
                 _ => None,
             },
         }
@@ -61,7 +61,7 @@ impl StatDmgBreacher {
         self.absolute_max = self.absolute_max.max(other.absolute_max);
         self.relative_max = self.relative_max.max(other.relative_max);
     }
-    pub(in crate::svc::vast) fn nullify(self) -> Option<Self> {
+    pub(in crate::svc::vast) fn nullified(self) -> Option<Self> {
         match self.absolute_max > FLOAT_TOLERANCE && self.relative_max > FLOAT_TOLERANCE {
             true => Some(self),
             false => None,
