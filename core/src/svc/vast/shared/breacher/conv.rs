@@ -89,8 +89,8 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::Looped2(looped2) => {
-            let p1_ticks = time_to_ticks(looped2.inner1.active_time + looped2.inner1.inactive_time);
-            let p2_ticks = time_to_ticks(looped2.inner2.active_time + looped2.inner2.inactive_time);
+            let p1_ticks = time_to_ticks(looped2.p1_active_time + looped2.p1_inactive_time);
+            let p2_ticks = time_to_ticks(looped2.p2_active_time + looped2.p2_inactive_time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
                 false => {
@@ -99,7 +99,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                     Some(AggrBreacherTicks::LoopedComplex(AbtLoopedComplex {
                         p1_dmg_tick_count: p1_dmg_ticks,
                         p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
-                        p1_repeat_count: looped2.inner1.repeat_count,
+                        p1_repeat_count: looped2.p1_repeat_count,
                         p2_dmg_tick_count: p2_dmg_ticks,
                         p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
                         p2_repeat_count: 1,

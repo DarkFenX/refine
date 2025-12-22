@@ -14,9 +14,6 @@ use crate::{
             cycle_infinite1::CycleInfinite1,
             cycle_infinite2::CycleInfinite2,
             cycle_infinite3::CycleInfinite3,
-            cycle_inner_infinite::CycleInnerInfinite,
-            cycle_inner_limited::CycleInnerLimited,
-            cycle_inner_single::CycleInnerSingle,
             cycle_limited::CycleLimited,
             cycle_looped2::CycleLooped2,
             effect_charge_info::{
@@ -320,19 +317,15 @@ fn full_r(
             charged: Some(OF(1.0)),
         }),
         _ => Cycle::Looped2(CycleLooped2 {
-            inner1: CycleInnerLimited {
-                active_time: duration,
-                inactive_time: cycle_dt,
-                interrupt: force_int,
-                charged: Some(OF(1.0)),
-                repeat_count: full_count - 1,
-            },
-            inner2: CycleInnerSingle {
-                active_time: duration,
-                inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-                interrupt: true,
-                charged: Some(OF(1.0)),
-            },
+            p1_active_time: duration,
+            p1_inactive_time: cycle_dt,
+            p1_interrupt: force_int,
+            p1_charged: Some(OF(1.0)),
+            p1_repeat_count: full_count - 1,
+            p2_active_time: duration,
+            p2_inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+            p2_interrupt: true,
+            p2_charged: Some(OF(1.0)),
         }),
     }
 }
@@ -348,18 +341,14 @@ fn both_r(
     part_value: Option<AttrVal>,
 ) -> Cycle {
     Cycle::Looped2(CycleLooped2 {
-        inner1: CycleInnerLimited {
-            active_time: duration,
-            inactive_time: cycle_dt,
-            interrupt: force_int,
-            charged: Some(OF(1.0)),
-            repeat_count: full_count,
-        },
-        inner2: CycleInnerSingle {
-            active_time: duration,
-            inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-            interrupt: true,
-            charged: part_value,
-        },
+        p1_active_time: duration,
+        p1_inactive_time: cycle_dt,
+        p1_interrupt: force_int,
+        p1_charged: Some(OF(1.0)),
+        p1_repeat_count: full_count,
+        p2_active_time: duration,
+        p2_inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+        p2_interrupt: true,
+        p2_charged: part_value,
     })
 }
