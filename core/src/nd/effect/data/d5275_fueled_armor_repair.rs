@@ -19,7 +19,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate {
                 can_run_uncharged: true,
-                can_run_part_charged: true,
             })),
             activates_charge: false,
         }),

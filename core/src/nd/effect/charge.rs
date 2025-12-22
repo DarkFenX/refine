@@ -32,7 +32,6 @@ pub(crate) enum NEffectChargeDepl {
 #[derive(Copy, Clone)]
 pub(crate) struct NEffectChargeDeplChargeRate {
     pub(crate) can_run_uncharged: bool = false,
-    pub(crate) can_run_part_charged: bool = false,
 }
 
 #[derive(Copy, Clone)]

@@ -37,7 +37,8 @@ pub(in crate::svc::cycle) fn get_eci_charge_rate(
         };
     }
     let fully_charged = charge_count / charges_per_cycle;
-    let part_charged = match n_charge_rate.can_run_part_charged {
+    // Modules which can run uncharged are assumed to be able to run off partial charges
+    let part_charged = match n_charge_rate.can_run_uncharged {
         true => {
             let remaining = charge_count % charges_per_cycle;
             match remaining > 0 {
