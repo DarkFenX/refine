@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -29,8 +29,8 @@ impl CycleLim {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.active_time + self.inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleLimIter {
-        CycleLimIter::new(self)
+    pub(super) fn iter_events(&self) -> CycleLimEventIter {
+        CycleLimEventIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -47,22 +47,22 @@ impl CycleLim {
     }
 }
 
-pub(in crate::svc) struct CycleLimIter {
-    item: CycleIterItem,
+pub(in crate::svc) struct CycleLimEventIter {
+    item: CycleEventItem,
     repeat_count: Count,
     cycles_done: Count,
 }
-impl CycleLimIter {
+impl CycleLimEventIter {
     fn new(cycle: &CycleLim) -> Self {
         Self {
-            item: CycleIterItem::new(cycle.active_time + cycle.inactive_time, cycle.interrupt, cycle.charged),
+            item: CycleEventItem::new(cycle.active_time + cycle.inactive_time, cycle.interrupt, cycle.charged),
             repeat_count: cycle.repeat_count,
             cycles_done: 0,
         }
     }
 }
-impl Iterator for CycleLimIter {
-    type Item = CycleIterItem;
+impl Iterator for CycleLimEventIter {
+    type Item = CycleEventItem;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.cycles_done >= self.repeat_count {

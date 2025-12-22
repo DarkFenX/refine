@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -43,8 +43,8 @@ impl CycleLoopLimSin {
         let p2_total_time = self.p2_active_time + self.p2_inactive_time;
         (p1_total_time + p2_total_time) / (self.p1_repeat_count + 1) as f64
     }
-    pub(super) fn iter_cycles(&self) -> CycleLoopLimSinIter {
-        CycleLoopLimSinIter::new(self)
+    pub(super) fn iter_events(&self) -> CycleLoopLimSinEventIter {
+        CycleLoopLimSinEventIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -65,23 +65,23 @@ impl CycleLoopLimSin {
     }
 }
 
-pub(in crate::svc) struct CycleLoopLimSinIter {
-    p1_item: CycleIterItem,
+pub(in crate::svc) struct CycleLoopLimSinEventIter {
+    p1_item: CycleEventItem,
     p1_repeat_count: Count,
     p1_cycles_done: Count,
-    p2_item: CycleIterItem,
+    p2_item: CycleEventItem,
 }
-impl CycleLoopLimSinIter {
+impl CycleLoopLimSinEventIter {
     fn new(cycle: &CycleLoopLimSin) -> Self {
         Self {
-            p1_item: CycleIterItem::new(
+            p1_item: CycleEventItem::new(
                 cycle.p1_active_time + cycle.p1_inactive_time,
                 cycle.p1_interrupt,
                 cycle.p1_charged,
             ),
             p1_repeat_count: cycle.p1_repeat_count,
             p1_cycles_done: 0,
-            p2_item: CycleIterItem::new(
+            p2_item: CycleEventItem::new(
                 cycle.p2_active_time + cycle.p2_inactive_time,
                 cycle.p2_interrupt,
                 cycle.p2_charged,
@@ -89,8 +89,8 @@ impl CycleLoopLimSinIter {
         }
     }
 }
-impl Iterator for CycleLoopLimSinIter {
-    type Item = CycleIterItem;
+impl Iterator for CycleLoopLimSinEventIter {
+    type Item = CycleEventItem;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.p1_cycles_done >= self.p1_repeat_count {

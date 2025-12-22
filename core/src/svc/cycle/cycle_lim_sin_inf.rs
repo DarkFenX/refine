@@ -1,7 +1,7 @@
 use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -55,8 +55,8 @@ impl CycleLimSinInf {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.p1_active_time + self.p1_inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleLimSinInfIter {
-        CycleLimSinInfIter::new(self)
+    pub(super) fn iter_events(&self) -> CycleLimSinInfEventIter {
+        CycleLimSinInfEventIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -81,31 +81,31 @@ impl CycleLimSinInf {
     }
 }
 
-pub(in crate::svc) struct CycleLimSinInfIter {
+pub(in crate::svc) struct CycleLimSinInfEventIter {
     index: u8,
-    p1_item: CycleIterItem,
+    p1_item: CycleEventItem,
     p1_repeat_count: Count,
     p1_cycles_done: Count,
-    p2_item: CycleIterItem,
-    p3_item: CycleIterItem,
+    p2_item: CycleEventItem,
+    p3_item: CycleEventItem,
 }
-impl CycleLimSinInfIter {
+impl CycleLimSinInfEventIter {
     fn new(cycle: &CycleLimSinInf) -> Self {
         Self {
             index: 0,
-            p1_item: CycleIterItem::new(
+            p1_item: CycleEventItem::new(
                 cycle.p1_active_time + cycle.p1_inactive_time,
                 cycle.p1_interrupt,
                 cycle.p1_charged,
             ),
             p1_repeat_count: cycle.p1_repeat_count,
             p1_cycles_done: 0,
-            p2_item: CycleIterItem::new(
+            p2_item: CycleEventItem::new(
                 cycle.p2_active_time + cycle.p2_inactive_time,
                 cycle.p2_interrupt,
                 cycle.p2_charged,
             ),
-            p3_item: CycleIterItem::new(
+            p3_item: CycleEventItem::new(
                 cycle.p3_active_time + cycle.p3_inactive_time,
                 cycle.p3_interrupt,
                 cycle.p3_charged,
@@ -113,8 +113,8 @@ impl CycleLimSinInfIter {
         }
     }
 }
-impl Iterator for CycleLimSinInfIter {
-    type Item = CycleIterItem;
+impl Iterator for CycleLimSinInfEventIter {
+    type Item = CycleEventItem;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {

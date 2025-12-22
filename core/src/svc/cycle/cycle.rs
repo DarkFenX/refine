@@ -1,14 +1,8 @@
 use super::{
-    cycle_inf::{CycleInf, CycleInfIter},
-    cycle_lim::{CycleLim, CycleLimIter},
-    cycle_lim_inf::{CycleLimInf, CycleLimInfIter},
-    cycle_lim_sin_inf::{CycleLimSinInf, CycleLimSinInfIter},
-    cycle_loop_lim_sin::{CycleLoopLimSin, CycleLoopLimSinIter},
+    cycle_inf::CycleInf, cycle_lim::CycleLim, cycle_lim_inf::CycleLimInf, cycle_lim_sin_inf::CycleLimSinInf,
+    cycle_loop_lim_sin::CycleLoopLimSin,
 };
-use crate::{
-    def::AttrVal,
-    svc::cycle::{CycleChargedInfoIter, CycleIterItem},
-};
+use crate::{def::AttrVal, svc::cycle::CycleChargedInfoIter};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum Cycle {
@@ -46,15 +40,6 @@ impl Cycle {
             Self::LoopLimSin(inner) => inner.get_average_cycle_time(),
         }
     }
-    pub(in crate::svc) fn iter_cycles(&self) -> CycleIter {
-        match self {
-            Self::Lim(inner) => CycleIter::Lim(inner.iter_cycles()),
-            Self::Inf(inner) => CycleIter::Inf(inner.iter_cycles()),
-            Self::LimInf(inner) => CycleIter::LimInf(inner.iter_cycles()),
-            Self::LimSinInf(inner) => CycleIter::LimSinInf(inner.iter_cycles()),
-            Self::LoopLimSin(inner) => CycleIter::LoopLimSin(inner.iter_cycles()),
-        }
-    }
     // Methods used in cycle staggering
     pub(in crate::svc) fn copy_rounded(&self) -> Self {
         match self {
@@ -85,27 +70,6 @@ impl CycleLooped {
         match self {
             Self::Inf(inner) => inner.get_average_cycle_time(),
             Self::LoopLimSin(inner) => inner.get_average_cycle_time(),
-        }
-    }
-}
-
-pub(in crate::svc) enum CycleIter {
-    Lim(CycleLimIter),
-    Inf(CycleInfIter),
-    LimInf(CycleLimInfIter),
-    LimSinInf(CycleLimSinInfIter),
-    LoopLimSin(CycleLoopLimSinIter),
-}
-impl Iterator for CycleIter {
-    type Item = CycleIterItem;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self {
-            Self::Lim(inner) => inner.next(),
-            Self::Inf(inner) => inner.next(),
-            Self::LimInf(inner) => inner.next(),
-            Self::LimSinInf(inner) => inner.next(),
-            Self::LoopLimSin(inner) => inner.next(),
         }
     }
 }

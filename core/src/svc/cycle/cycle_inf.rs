@@ -1,6 +1,6 @@
 use crate::{
     def::AttrVal,
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -28,8 +28,8 @@ impl CycleInf {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.active_time + self.inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleInfIter {
-        CycleInfIter::new(self)
+    pub(super) fn iter_events(&self) -> CycleInfEventIter {
+        CycleInfEventIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -45,18 +45,18 @@ impl CycleInf {
     }
 }
 
-pub(in crate::svc) struct CycleInfIter {
-    item: CycleIterItem,
+pub(in crate::svc) struct CycleInfEventIter {
+    item: CycleEventItem,
 }
-impl CycleInfIter {
+impl CycleInfEventIter {
     fn new(cycle: &CycleInf) -> Self {
         Self {
-            item: CycleIterItem::new(cycle.active_time + cycle.inactive_time, cycle.interrupt, cycle.charged),
+            item: CycleEventItem::new(cycle.active_time + cycle.inactive_time, cycle.interrupt, cycle.charged),
         }
     }
 }
-impl Iterator for CycleInfIter {
-    type Item = CycleIterItem;
+impl Iterator for CycleInfEventIter {
+    type Item = CycleEventItem;
 
     fn next(&mut self) -> Option<Self::Item> {
         Some(self.item)

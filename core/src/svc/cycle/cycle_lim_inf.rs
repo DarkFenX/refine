@@ -1,7 +1,7 @@
 use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -46,8 +46,8 @@ impl CycleLimInf {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.p1_active_time + self.p1_inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleLimInfIter {
-        CycleLimInfIter::new(self)
+    pub(super) fn iter_events(&self) -> CycleLimInfEventIter {
+        CycleLimInfEventIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -68,25 +68,25 @@ impl CycleLimInf {
     }
 }
 
-pub(in crate::svc) struct CycleLimInfIter {
+pub(in crate::svc) struct CycleLimInfEventIter {
     index: u8,
-    p1_item: CycleIterItem,
+    p1_item: CycleEventItem,
     p1_repeat_count: Count,
     p1_cycles_done: Count,
-    p2_item: CycleIterItem,
+    p2_item: CycleEventItem,
 }
-impl CycleLimInfIter {
+impl CycleLimInfEventIter {
     fn new(cycle: &CycleLimInf) -> Self {
         Self {
             index: 0,
-            p1_item: CycleIterItem::new(
+            p1_item: CycleEventItem::new(
                 cycle.p1_active_time + cycle.p1_inactive_time,
                 cycle.p1_interrupt,
                 cycle.p1_charged,
             ),
             p1_repeat_count: cycle.p1_repeat_count,
             p1_cycles_done: 0,
-            p2_item: CycleIterItem::new(
+            p2_item: CycleEventItem::new(
                 cycle.p2_active_time + cycle.p2_inactive_time,
                 cycle.p2_interrupt,
                 cycle.p2_charged,
@@ -94,8 +94,8 @@ impl CycleLimInfIter {
         }
     }
 }
-impl Iterator for CycleLimInfIter {
-    type Item = CycleIterItem;
+impl Iterator for CycleLimInfEventIter {
+    type Item = CycleEventItem;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {

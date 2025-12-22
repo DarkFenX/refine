@@ -181,7 +181,7 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
             };
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),
-                cycle_iter: effect_cycles.iter_cycles(),
+                cycle_iter: effect_cycles.iter_events(),
                 output: cap_injected,
             }));
         }
