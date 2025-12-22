@@ -7,8 +7,7 @@ use super::{
 };
 use crate::{
     def::AttrVal,
-    svc::cycle::{CycleChargedInfo, CycleIterItem},
-    util::InfCount,
+    svc::cycle::{CycleChargedInfoIter, CycleIterItem},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -29,11 +28,11 @@ impl Cycle {
             Self::LoopLimSin(inner) => inner.get_looped_part(),
         }
     }
-    pub(in crate::svc) fn get_charged_info(&self) -> InfCount {
+    pub(in crate::svc) fn iter_charged_info(&self) -> CycleChargedInfoIter {
         match self {
-            Self::Lim(inner) => inner.get_charged_info(),
-            Self::Inf(inner) => inner.get_charged_info(),
-            Self::LimInf(inner) => inner.get_charged_info(),
+            Self::Lim(inner) => inner.iter_charged_info(),
+            Self::Inf(inner) => inner.iter_charged_info(),
+            Self::LimInf(inner) => inner.iter_charged_info(),
             Self::LimSinInf(inner) => inner.get_charged_info(),
             Self::LoopLimSin(inner) => inner.get_charged_info(),
         }

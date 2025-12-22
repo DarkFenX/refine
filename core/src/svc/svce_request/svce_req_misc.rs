@@ -24,7 +24,17 @@ impl Svc {
             CYCLE_COUNT_OPTIONS,
             true,
         )?;
-        Some(cycle_info.get(&defeff_key)?.get_charged_info())
+        let mut charged_cycles = 0;
+        for charged_info in cycle_info.get(&defeff_key)?.iter_charged_info() {
+            match charged_info.charged {
+                Some(_) => match charged_info.repeat_count {
+                    InfCount::Count(count) => charged_cycles += count,
+                    InfCount::Infinite => return Some(InfCount::Infinite),
+                },
+                None => break,
+            }
+        }
+        Some(InfCount::Count(charged_cycles))
     }
     pub(crate) fn get_effect_spool_cycle_count(
         &mut self,

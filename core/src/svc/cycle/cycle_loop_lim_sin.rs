@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -23,15 +23,20 @@ impl CycleLoopLimSin {
     pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
         Some(CycleLooped::LoopLimSin(*self))
     }
-    pub(super) fn get_charged_info(&self) -> InfCount {
-        let mut cycles = match self.p1_charged {
-            Some(_) => self.p1_repeat_count,
-            None => 0,
-        };
-        if self.p2_charged.is_some() {
-            cycles += 1;
-        }
-        InfCount::Count(cycles)
+    pub(super) fn get_charged_info(&self) -> CycleChargedInfoIter {
+        CycleChargedInfoIter::Two(
+            [
+                CycleChargedInfo {
+                    repeat_count: InfCount::Count(self.p1_repeat_count),
+                    charged: self.p1_charged,
+                },
+                CycleChargedInfo {
+                    repeat_count: InfCount::Count(1),
+                    charged: self.p2_charged,
+                },
+            ]
+            .into_iter(),
+        )
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         let p1_total_time = (self.p1_active_time + self.p1_inactive_time) * self.p1_repeat_count as f64;
