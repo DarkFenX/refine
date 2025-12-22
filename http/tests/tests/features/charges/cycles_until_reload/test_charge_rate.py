@@ -51,22 +51,32 @@ def test_rounding_cycles_aar(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.UtilEffect.cycle_charge_rate,
+    eve_local_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fueled_armor_repair,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_remote_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_ancillary_remote_armor_repairer,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.01})
-    eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.79, eve_charge_rate_attr_id: 8, eve_cycle_time_attr_id: 1000},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
+    eve_local_aar_id = client.mk_eve_item(
+        attrs={eve_capacity_attr_id: 0.73, eve_charge_rate_attr_id: 8, eve_cycle_time_attr_id: 1000},
+        eff_ids=[eve_local_effect_id],
+        defeff_id=eve_local_effect_id)
+    eve_remote_aar_id = client.mk_eve_item(
+        attrs={eve_capacity_attr_id: 0.74, eve_charge_rate_attr_id: 8, eve_cycle_time_attr_id: 1000},
+        eff_ids=[eve_remote_effect_id],
+        defeff_id=eve_remote_effect_id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    api_local_aar = api_fit.add_module(type_id=eve_local_aar_id, charge_type_id=eve_charge_id)
+    api_remote_aar = api_fit.add_module(type_id=eve_remote_aar_id, charge_type_id=eve_charge_id)
     # Verification - armor ancillary modules are an exception to this rule and can run on partial
     # stack of charges
-    assert api_module.update().cycles_until_empty == 9
+    assert api_local_aar.update().cycles_until_empty == 10
+    assert api_remote_aar.update().cycles_until_empty == 10
 
 
 def test_rounding_charge_rate(client, consts):
