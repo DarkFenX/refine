@@ -197,19 +197,15 @@ fn fill_module_effect_info(
         {
             true => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
             false => Cycle::Infinite2(CycleInfinite2 {
-                inner1: CycleInnerLimited {
-                    active_time: duration,
-                    inactive_time: cycle_dt,
-                    interrupt: force_int,
-                    charged: charge_info.part_charged,
-                    repeat_count: 1,
-                },
-                inner2: CycleInnerInfinite {
-                    active_time: duration,
-                    inactive_time: cycle_dt,
-                    interrupt: force_int,
-                    charged: None,
-                },
+                p1_active_time: duration,
+                p1_inactive_time: cycle_dt,
+                p1_interrupt: force_int,
+                p1_charged: charge_info.part_charged,
+                p1_repeat_count: 1,
+                p2_active_time: duration,
+                p2_inactive_time: cycle_dt,
+                p2_interrupt: force_int,
+                p2_charged: None,
             }),
         },
         // Only fully charged, has to reload after charges are out
@@ -221,19 +217,15 @@ fn fill_module_effect_info(
         {
             true => full_r(ctx, calc, item_key, duration, cycle_dt, force_int, full_count),
             false => Cycle::Infinite2(CycleInfinite2 {
-                inner1: CycleInnerLimited {
-                    active_time: duration,
-                    inactive_time: cycle_dt,
-                    interrupt: force_int,
-                    charged: Some(OF(1.0)),
-                    repeat_count: full_count,
-                },
-                inner2: CycleInnerInfinite {
-                    active_time: duration,
-                    inactive_time: cycle_dt,
-                    interrupt: force_int,
-                    charged: None,
-                },
+                p1_active_time: duration,
+                p1_inactive_time: cycle_dt,
+                p1_interrupt: force_int,
+                p1_charged: Some(OF(1.0)),
+                p1_repeat_count: full_count,
+                p2_active_time: duration,
+                p2_inactive_time: cycle_dt,
+                p2_interrupt: force_int,
+                p2_charged: None,
             }),
         },
         // Fully charged + partially charged + can't run uncharged
@@ -264,25 +256,19 @@ fn fill_module_effect_info(
                     charge_info.part_charged,
                 ),
                 false => Cycle::Infinite3(CycleInfinite3 {
-                    inner1: CycleInnerLimited {
-                        active_time: duration,
-                        inactive_time: cycle_dt,
-                        interrupt: force_int,
-                        charged: Some(OF(1.0)),
-                        repeat_count: full_count,
-                    },
-                    inner2: CycleInnerSingle {
-                        active_time: duration,
-                        inactive_time: cycle_dt,
-                        interrupt: force_int,
-                        charged: charge_info.part_charged,
-                    },
-                    inner3: CycleInnerInfinite {
-                        active_time: duration,
-                        inactive_time: cycle_dt,
-                        interrupt: force_int,
-                        charged: None,
-                    },
+                    p1_active_time: duration,
+                    p1_inactive_time: cycle_dt,
+                    p1_interrupt: force_int,
+                    p1_charged: Some(OF(1.0)),
+                    p1_repeat_count: full_count,
+                    p2_active_time: duration,
+                    p2_inactive_time: cycle_dt,
+                    p2_interrupt: force_int,
+                    p2_charged: charge_info.part_charged,
+                    p3_active_time: duration,
+                    p3_inactive_time: cycle_dt,
+                    p3_interrupt: force_int,
+                    p3_charged: None,
                 }),
             }
         }

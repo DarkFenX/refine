@@ -4,6 +4,7 @@ use crate::{
     util::{InfCount, sig_round},
 };
 
+// Part 1: repeats infinitely
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleInfinite1 {
     pub(in crate::svc) active_time: AttrVal,

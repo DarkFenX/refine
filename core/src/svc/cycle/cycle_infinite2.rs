@@ -1,30 +1,35 @@
 use crate::{
-    def::AttrVal,
-    svc::cycle::{
-        CycleIterItem,
-        cycle_inner_infinite::{CycleInnerInfinite, CycleInnerInfiniteIter},
-        cycle_inner_limited::{CycleInnerLimited, CycleInnerLimitedIter},
-    },
-    util::InfCount,
+    def::{AttrVal, Count},
+    svc::cycle::CycleIterItem,
+    util::{InfCount, sig_round},
 };
 
+// Part 1: runs specified number of times
+// Part 2: repeats infinitely
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleInfinite2 {
-    pub(in crate::svc) inner1: CycleInnerLimited,
-    pub(in crate::svc) inner2: CycleInnerInfinite,
+    pub(in crate::svc) p1_active_time: AttrVal,
+    pub(in crate::svc) p1_inactive_time: AttrVal,
+    pub(in crate::svc) p1_interrupt: bool,
+    pub(in crate::svc) p1_charged: Option<AttrVal>,
+    pub(in crate::svc) p1_repeat_count: Count,
+    pub(in crate::svc) p2_active_time: AttrVal,
+    pub(in crate::svc) p2_inactive_time: AttrVal,
+    pub(in crate::svc) p2_interrupt: bool,
+    pub(in crate::svc) p2_charged: Option<AttrVal>,
 }
 impl CycleInfinite2 {
     pub(super) fn get_charged_cycles(&self) -> InfCount {
-        if self.inner2.charged.is_some() {
+        if self.p2_charged.is_some() {
             return InfCount::Infinite;
         }
-        match self.inner1.charged {
-            Some(_) => InfCount::Count(self.inner1.repeat_count),
+        match self.p1_charged {
+            Some(_) => InfCount::Count(self.p1_repeat_count),
             None => InfCount::Count(0),
         }
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
-        self.inner2.get_total_time()
+        self.p1_active_time + self.p1_inactive_time
     }
     pub(super) fn iter_cycles(&self) -> CycleInfinite2Iter {
         CycleInfinite2Iter::new(self)
@@ -32,26 +37,45 @@ impl CycleInfinite2 {
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            inner1: self.inner1.copy_rounded(),
-            inner2: self.inner2.copy_rounded(),
+            p1_active_time: sig_round(self.p1_active_time, 10),
+            p1_inactive_time: sig_round(self.p1_inactive_time, 10),
+            p1_repeat_count: self.p1_repeat_count,
+            p1_interrupt: self.p1_interrupt,
+            p1_charged: self.p1_charged.map(|v| sig_round(v, 10)),
+            p2_active_time: sig_round(self.p2_active_time, 10),
+            p2_inactive_time: sig_round(self.p2_inactive_time, 10),
+            p2_interrupt: self.p2_interrupt,
+            p2_charged: self.p2_charged.map(|v| sig_round(v, 10)),
         }
     }
     pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
-        self.inner1.get_cycle_time_for_stagger()
+        self.p1_active_time + self.p1_inactive_time
     }
 }
 
 pub(in crate::svc) struct CycleInfinite2Iter {
-    inner1: CycleInnerLimitedIter,
-    inner2: CycleInnerInfiniteIter,
     index: u8,
+    p1_item: CycleIterItem,
+    p1_repeat_count: Count,
+    p1_cycles_done: Count,
+    p2_item: CycleIterItem,
 }
 impl CycleInfinite2Iter {
     fn new(cycle: &CycleInfinite2) -> Self {
         Self {
-            inner1: cycle.inner1.iter_cycles(),
-            inner2: cycle.inner2.iter_cycles(),
             index: 0,
+            p1_item: CycleIterItem::new(
+                cycle.p1_active_time + cycle.p1_inactive_time,
+                cycle.p1_interrupt,
+                cycle.p1_charged,
+            ),
+            p1_repeat_count: cycle.p1_repeat_count,
+            p1_cycles_done: 0,
+            p2_item: CycleIterItem::new(
+                cycle.p2_active_time + cycle.p2_inactive_time,
+                cycle.p2_interrupt,
+                cycle.p2_charged,
+            ),
         }
     }
 }
@@ -60,14 +84,15 @@ impl Iterator for CycleInfinite2Iter {
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
-            0 => match self.inner1.next() {
-                Some(item) => Some(item),
-                None => {
+            0 => {
+                if self.p1_cycles_done >= self.p1_repeat_count {
                     self.index = 1;
-                    self.next()
+                    return Some(self.p2_item);
                 }
-            },
-            1 => self.inner2.next(),
+                self.p1_cycles_done += 1;
+                Some(self.p1_item)
+            }
+            1 => Some(self.p2_item),
             _ => unreachable!(),
         }
     }

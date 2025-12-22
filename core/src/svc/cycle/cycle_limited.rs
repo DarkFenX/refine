@@ -4,6 +4,7 @@ use crate::{
     util::{InfCount, sig_round},
 };
 
+// Part 1: runs specified number of times
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLimited {
     pub(in crate::svc) active_time: AttrVal,

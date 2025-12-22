@@ -48,8 +48,8 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::Infinite2(infinite2) => {
-            let p1_ticks = time_to_ticks(infinite2.inner1.active_time + infinite2.inner1.inactive_time);
-            let p2_ticks = time_to_ticks(infinite2.inner2.active_time + infinite2.inner2.inactive_time);
+            let p1_ticks = time_to_ticks(infinite2.p1_active_time + infinite2.p1_inactive_time);
+            let p2_ticks = time_to_ticks(infinite2.p2_active_time + infinite2.p2_inactive_time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
                 false => {
@@ -58,7 +58,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                     Some(AggrBreacherTicks::InfiniteComplex1(AbtInfiniteComplex1 {
                         p1_dmg_tick_count: p1_dmg_ticks,
                         p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
-                        p1_repeat_count: infinite2.inner1.repeat_count,
+                        p1_repeat_count: infinite2.p1_repeat_count,
                         p2_dmg_tick_count: p2_dmg_ticks,
                         p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
                     }))
@@ -66,9 +66,9 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::Infinite3(infinite3) => {
-            let p1_ticks = time_to_ticks(infinite3.inner1.active_time + infinite3.inner1.inactive_time);
-            let p2_ticks = time_to_ticks(infinite3.inner2.active_time + infinite3.inner2.inactive_time);
-            let p3_ticks = time_to_ticks(infinite3.inner3.active_time + infinite3.inner3.inactive_time);
+            let p1_ticks = time_to_ticks(infinite3.p1_active_time + infinite3.p1_inactive_time);
+            let p2_ticks = time_to_ticks(infinite3.p2_active_time + infinite3.p2_inactive_time);
+            let p3_ticks = time_to_ticks(infinite3.p3_active_time + infinite3.p3_inactive_time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks && output_ticks > p3_ticks {
                 true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
                 false => {
@@ -78,7 +78,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                     Some(AggrBreacherTicks::InfiniteComplex2(AbtInfiniteComplex2 {
                         p1_dmg_tick_count: p1_dmg_ticks,
                         p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
-                        p1_repeat_count: infinite3.inner1.repeat_count,
+                        p1_repeat_count: infinite3.p1_repeat_count,
                         p2_dmg_tick_count: p2_dmg_ticks,
                         p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
                         p2_repeat_count: 1,
@@ -89,12 +89,8 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::Looped2(looped2) => {
-            let p1_ticks =
-                ceil_unerr((looped2.inner1.active_time + looped2.inner1.inactive_time) * SERVER_TICK_HZ as f64)
-                    .into_inner() as Count;
-            let p2_ticks =
-                ceil_unerr((looped2.inner2.active_time + looped2.inner2.inactive_time) * SERVER_TICK_HZ as f64)
-                    .into_inner() as Count;
+            let p1_ticks = time_to_ticks(looped2.inner1.active_time + looped2.inner1.inactive_time);
+            let p2_ticks = time_to_ticks(looped2.inner2.active_time + looped2.inner2.inactive_time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
                 false => {
