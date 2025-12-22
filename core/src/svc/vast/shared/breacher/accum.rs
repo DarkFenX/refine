@@ -49,11 +49,12 @@ impl BreacherAccum {
         if self.data.is_empty() {
             return None;
         };
-        // If breachers with max damage are infinitely cycling, no complex calcs needed
+        // If breachers with max damage is applying its damage without downtime, no complex calcs
+        // needed
         let best_breacher_abs = self.data.keys().max_by_key(|v| v.absolute_max).unwrap();
-        if matches!(best_breacher_abs.ticks, AggrBreacherTicksLooped::InfiniteSimple(_)) {
+        if matches!(best_breacher_abs.ticks, AggrBreacherTicksLooped::Is(_)) {
             let best_breacher_rel = self.data.keys().max_by_key(|v| v.relative_max).unwrap();
-            if matches!(best_breacher_rel.ticks, AggrBreacherTicksLooped::InfiniteSimple(_)) {
+            if matches!(best_breacher_rel.ticks, AggrBreacherTicksLooped::Is(_)) {
                 return StatDmgBreacher {
                     absolute_max: best_breacher_abs.absolute_max * SERVER_TICK_HZ as f64,
                     relative_max: best_breacher_rel.relative_max * SERVER_TICK_HZ as f64,
