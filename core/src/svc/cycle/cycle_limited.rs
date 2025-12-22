@@ -1,25 +1,26 @@
 use crate::{
-    def::AttrVal,
-    svc::cycle::{
-        CycleIterItem,
-        cycle_inner_limited::{CycleInnerLimited, CycleInnerLimitedIter},
-    },
-    util::InfCount,
+    def::{AttrVal, Count},
+    svc::cycle::CycleIterItem,
+    util::{InfCount, sig_round},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLimited {
-    pub(in crate::svc) inner: CycleInnerLimited,
+    pub(in crate::svc) active_time: AttrVal,
+    pub(in crate::svc) inactive_time: AttrVal,
+    pub(in crate::svc) interrupt: bool,
+    pub(in crate::svc) charged: Option<AttrVal>,
+    pub(in crate::svc) repeat_count: Count,
 }
 impl CycleLimited {
     pub(super) fn get_charged_cycles(&self) -> InfCount {
-        match self.inner.charged {
-            Some(_) => InfCount::Count(self.inner.repeat_count),
+        match self.charged {
+            Some(_) => InfCount::Count(self.repeat_count),
             None => InfCount::Count(0),
         }
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
-        self.inner.get_total_time()
+        self.active_time + self.inactive_time
     }
     pub(super) fn iter_cycles(&self) -> CycleLimitedIter {
         CycleLimitedIter::new(self)
@@ -27,21 +28,29 @@ impl CycleLimited {
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            inner: self.inner.copy_rounded(),
+            active_time: sig_round(self.active_time, 10),
+            inactive_time: sig_round(self.inactive_time, 10),
+            repeat_count: self.repeat_count,
+            interrupt: self.interrupt,
+            charged: self.charged.map(|v| sig_round(v, 10)),
         }
     }
     pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
-        self.inner.get_cycle_time_for_stagger()
+        self.active_time + self.inactive_time
     }
 }
 
 pub(in crate::svc) struct CycleLimitedIter {
-    inner: CycleInnerLimitedIter,
+    item: CycleIterItem,
+    repeat_count: Count,
+    cycles_done: Count,
 }
 impl CycleLimitedIter {
     fn new(cycle: &CycleLimited) -> Self {
         Self {
-            inner: cycle.inner.iter_cycles(),
+            item: CycleIterItem::new(cycle.active_time + cycle.inactive_time, cycle.interrupt, cycle.charged),
+            repeat_count: cycle.repeat_count,
+            cycles_done: 0,
         }
     }
 }
@@ -49,6 +58,10 @@ impl Iterator for CycleLimitedIter {
     type Item = CycleIterItem;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.inner.next()
+        if self.cycles_done >= self.repeat_count {
+            return None;
+        }
+        self.cycles_done += 1;
+        Some(self.item)
     }
 }

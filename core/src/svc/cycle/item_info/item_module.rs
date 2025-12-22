@@ -125,13 +125,11 @@ fn fill_module_effect_info(
         cycle_infos.insert(
             effect_key,
             Cycle::Limited(CycleLimited {
-                inner: CycleInnerLimited {
-                    active_time: duration,
-                    inactive_time: OF(0.0),
-                    interrupt: true,
-                    charged: charge_info.get_first_cycle_chargeness(),
-                    repeat_count: 1,
-                },
+                active_time: duration,
+                inactive_time: OF(0.0),
+                interrupt: true,
+                charged: charge_info.get_first_cycle_chargeness(),
+                repeat_count: 1,
             }),
         );
         return;
@@ -152,12 +150,10 @@ fn fill_module_effect_info(
             cycle_infos.insert(
                 effect_key,
                 Cycle::Infinite1(CycleInfinite1 {
-                    inner: CycleInnerInfinite {
-                        active_time: duration,
-                        inactive_time: cycle_dt,
-                        interrupt: force_int,
-                        charged: charge_info.get_first_cycle_chargeness(),
-                    },
+                    active_time: duration,
+                    inactive_time: cycle_dt,
+                    interrupt: force_int,
+                    charged: charge_info.get_first_cycle_chargeness(),
                 }),
             );
             return;
@@ -169,12 +165,10 @@ fn fill_module_effect_info(
             cycle_infos.insert(
                 effect_key,
                 Cycle::Infinite1(CycleInfinite1 {
-                    inner: CycleInnerInfinite {
-                        active_time: duration,
-                        inactive_time: cycle_dt,
-                        interrupt: force_int,
-                        charged: Some(OF(1.0)),
-                    },
+                    active_time: duration,
+                    inactive_time: cycle_dt,
+                    interrupt: force_int,
+                    charged: Some(OF(1.0)),
                 }),
             );
             return;
@@ -189,12 +183,10 @@ fn fill_module_effect_info(
         (false, false, false) => return,
         // Infinitely cycling modules without charge
         (false, false, true) => Cycle::Infinite1(CycleInfinite1 {
-            inner: CycleInnerInfinite {
-                active_time: duration,
-                inactive_time: cycle_dt,
-                interrupt: force_int,
-                charged: None,
-            },
+            active_time: duration,
+            inactive_time: cycle_dt,
+            interrupt: force_int,
+            charged: None,
         }),
         // Only partially charged, has to reload every cycle
         (false, true, false) => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
@@ -318,12 +310,10 @@ fn part_r(
     part_value: Option<AttrVal>,
 ) -> Cycle {
     Cycle::Infinite1(CycleInfinite1 {
-        inner: CycleInnerInfinite {
-            active_time: duration,
-            inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-            interrupt: true,
-            charged: part_value,
-        },
+        active_time: duration,
+        inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+        interrupt: true,
+        charged: part_value,
     })
 }
 
@@ -338,12 +328,10 @@ fn full_r(
 ) -> Cycle {
     match full_count {
         1 => Cycle::Infinite1(CycleInfinite1 {
-            inner: CycleInnerInfinite {
-                active_time: duration,
-                inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-                interrupt: true,
-                charged: Some(OF(1.0)),
-            },
+            active_time: duration,
+            inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+            interrupt: true,
+            charged: Some(OF(1.0)),
         }),
         _ => Cycle::Looped2(CycleLooped2 {
             inner1: CycleInnerLimited {

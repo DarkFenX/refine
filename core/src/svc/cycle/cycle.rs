@@ -2,9 +2,9 @@ use super::{
     cycle_infinite1::{CycleInfinite1, CycleInfinite1Iter},
     cycle_infinite2::{CycleInfinite2, CycleInfinite2Iter},
     cycle_infinite3::{CycleInfinite3, CycleInfinite3Iter},
-    cycle_iter_item::CycleIterItem,
     cycle_limited::{CycleLimited, CycleLimitedIter},
     cycle_looped2::{CycleLooped2, CycleLooped2Iter},
+    iter_item::CycleIterItem,
 };
 use crate::{def::AttrVal, util::InfCount};
 

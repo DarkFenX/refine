@@ -17,14 +17,14 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
     }
     match cycle {
         Cycle::Limited(limited) => {
-            if limited.inner.repeat_count == 0 {
+            if limited.repeat_count == 0 {
                 return None;
             }
-            let cycle_ticks = time_to_ticks(limited.inner.active_time + limited.inner.inactive_time);
+            let cycle_ticks = time_to_ticks(limited.active_time + limited.inactive_time);
             match output_ticks >= cycle_ticks {
                 true => {
-                    let last_cycle_start_ts = (limited.inner.active_time + limited.inner.inactive_time)
-                        * (limited.inner.repeat_count - 1) as f64;
+                    let last_cycle_start_ts =
+                        (limited.active_time + limited.inactive_time) * (limited.repeat_count - 1) as f64;
                     let last_cycle_start_tick = time_to_ticks(last_cycle_start_ts);
                     Some(AggrBreacherTicks::LimitedSimple(AbtLimitedSimple {
                         count: last_cycle_start_tick + output_ticks,
@@ -33,12 +33,12 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                 false => Some(AggrBreacherTicks::LimitedComplex(AbtLimitedComplex {
                     dmg_tick_count: output_ticks,
                     inactive_tick_count: cycle_ticks - output_ticks,
-                    repeat_count: limited.inner.repeat_count,
+                    repeat_count: limited.repeat_count,
                 })),
             }
         }
         Cycle::Infinite1(infinite1) => {
-            let cycle_ticks = time_to_ticks(infinite1.inner.active_time + infinite1.inner.inactive_time);
+            let cycle_ticks = time_to_ticks(infinite1.active_time + infinite1.inactive_time);
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::InfiniteSimple(AbtInfiniteSimple {})),
                 false => Some(AggrBreacherTicks::LoopedSimple(AbtLoopedSimple {
