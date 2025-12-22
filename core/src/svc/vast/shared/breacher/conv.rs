@@ -13,7 +13,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
         return None;
     }
     match cycle {
-        Cycle::Limited(limited) => {
+        Cycle::Lim(limited) => {
             if limited.repeat_count == 0 {
                 return None;
             }
@@ -34,7 +34,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                 })),
             }
         }
-        Cycle::Infinite1(infinite1) => {
+        Cycle::Inf(infinite1) => {
             let cycle_ticks = time_to_ticks(infinite1.active_time + infinite1.inactive_time);
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
@@ -44,7 +44,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                 })),
             }
         }
-        Cycle::Infinite2(infinite2) => {
+        Cycle::LimInf(infinite2) => {
             let p1_ticks = time_to_ticks(infinite2.p1_active_time + infinite2.p1_inactive_time);
             let p2_ticks = time_to_ticks(infinite2.p2_active_time + infinite2.p2_inactive_time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
@@ -62,7 +62,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                 }
             }
         }
-        Cycle::Infinite3(infinite3) => {
+        Cycle::LimSinInf(infinite3) => {
             let p1_ticks = time_to_ticks(infinite3.p1_active_time + infinite3.p1_inactive_time);
             let p2_ticks = time_to_ticks(infinite3.p2_active_time + infinite3.p2_inactive_time);
             let p3_ticks = time_to_ticks(infinite3.p3_active_time + infinite3.p3_inactive_time);
@@ -85,7 +85,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
                 }
             }
         }
-        Cycle::Looped2(looped2) => {
+        Cycle::LoopLimSin(looped2) => {
             let p1_ticks = time_to_ticks(looped2.p1_active_time + looped2.p1_inactive_time);
             let p2_ticks = time_to_ticks(looped2.p2_active_time + looped2.p2_inactive_time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {

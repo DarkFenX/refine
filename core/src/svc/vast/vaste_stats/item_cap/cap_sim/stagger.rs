@@ -71,7 +71,7 @@ pub(super) fn process_staggers(
             continue;
         }
         // Sort by output value, from highest to lowest
-        let stagger_period = stagger_key.cycle.get_cycle_time_for_stagger() / stagger_group.len() as f64;
+        let stagger_period = stagger_key.cycle.get_first_cycle_time() / stagger_group.len() as f64;
         for (i, (cycle, output)) in stagger_group
             .into_iter()
             .sorted_by_key(|(_, o)| -o.absolute_impact())

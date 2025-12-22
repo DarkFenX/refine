@@ -1,9 +1,9 @@
 use super::{
-    cycle_infinite1::{CycleInfinite1, CycleInfinite1Iter},
-    cycle_infinite2::{CycleInfinite2, CycleInfinite2Iter},
-    cycle_infinite3::{CycleInfinite3, CycleInfinite3Iter},
-    cycle_limited::{CycleLimited, CycleLimitedIter},
-    cycle_looped2::{CycleLooped2, CycleLooped2Iter},
+    cycle_inf::{CycleInf, CycleInfIter},
+    cycle_lim::{CycleLim, CycleLimIter},
+    cycle_lim_inf::{CycleLimInf, CycleLimInfIter},
+    cycle_lim_sin_inf::{CycleLimSinInf, CycleLimSinInfIter},
+    cycle_loop_lim_sin::{CycleLoopLimSin, CycleLoopLimSinIter},
 };
 use crate::{
     def::AttrVal,
@@ -13,100 +13,100 @@ use crate::{
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum Cycle {
-    Limited(CycleLimited),
-    Infinite1(CycleInfinite1),
-    Infinite2(CycleInfinite2),
-    Infinite3(CycleInfinite3),
-    Looped2(CycleLooped2),
+    Lim(CycleLim),
+    Inf(CycleInf),
+    LimInf(CycleLimInf),
+    LimSinInf(CycleLimSinInf),
+    LoopLimSin(CycleLoopLimSin),
 }
 impl Cycle {
     pub(in crate::svc) fn get_looped_part(&self) -> Option<CycleLooped> {
         match self {
-            Self::Limited(inner) => inner.get_looped_part(),
-            Self::Infinite1(inner) => inner.get_looped_part(),
-            Self::Infinite2(inner) => inner.get_looped_part(),
-            Self::Infinite3(inner) => inner.get_looped_part(),
-            Self::Looped2(inner) => inner.get_looped_part(),
+            Self::Lim(inner) => inner.get_looped_part(),
+            Self::Inf(inner) => inner.get_looped_part(),
+            Self::LimInf(inner) => inner.get_looped_part(),
+            Self::LimSinInf(inner) => inner.get_looped_part(),
+            Self::LoopLimSin(inner) => inner.get_looped_part(),
         }
     }
     pub(in crate::svc) fn get_charged_info(&self) -> InfCount {
         match self {
-            Self::Limited(inner) => inner.get_charged_info(),
-            Self::Infinite1(inner) => inner.get_charged_info(),
-            Self::Infinite2(inner) => inner.get_charged_info(),
-            Self::Infinite3(inner) => inner.get_charged_info(),
-            Self::Looped2(inner) => inner.get_charged_info(),
+            Self::Lim(inner) => inner.get_charged_info(),
+            Self::Inf(inner) => inner.get_charged_info(),
+            Self::LimInf(inner) => inner.get_charged_info(),
+            Self::LimSinInf(inner) => inner.get_charged_info(),
+            Self::LoopLimSin(inner) => inner.get_charged_info(),
         }
     }
     pub(in crate::svc) fn get_average_cycle_time(&self) -> AttrVal {
         match self {
-            Self::Limited(inner) => inner.get_average_cycle_time(),
-            Self::Infinite1(inner) => inner.get_average_cycle_time(),
-            Self::Infinite2(inner) => inner.get_average_cycle_time(),
-            Self::Infinite3(inner) => inner.get_average_cycle_time(),
-            Self::Looped2(inner) => inner.get_average_cycle_time(),
+            Self::Lim(inner) => inner.get_average_cycle_time(),
+            Self::Inf(inner) => inner.get_average_cycle_time(),
+            Self::LimInf(inner) => inner.get_average_cycle_time(),
+            Self::LimSinInf(inner) => inner.get_average_cycle_time(),
+            Self::LoopLimSin(inner) => inner.get_average_cycle_time(),
         }
     }
     pub(in crate::svc) fn iter_cycles(&self) -> CycleIter {
         match self {
-            Self::Limited(inner) => CycleIter::Limited(inner.iter_cycles()),
-            Self::Infinite1(inner) => CycleIter::Infinite1(inner.iter_cycles()),
-            Self::Infinite2(inner) => CycleIter::Infinite2(inner.iter_cycles()),
-            Self::Infinite3(inner) => CycleIter::Infinite3(inner.iter_cycles()),
-            Self::Looped2(inner) => CycleIter::Looped2(inner.iter_cycles()),
+            Self::Lim(inner) => CycleIter::Lim(inner.iter_cycles()),
+            Self::Inf(inner) => CycleIter::Inf(inner.iter_cycles()),
+            Self::LimInf(inner) => CycleIter::LimInf(inner.iter_cycles()),
+            Self::LimSinInf(inner) => CycleIter::LimSinInf(inner.iter_cycles()),
+            Self::LoopLimSin(inner) => CycleIter::LoopLimSin(inner.iter_cycles()),
         }
     }
     // Methods used in cycle staggering
     pub(in crate::svc) fn copy_rounded(&self) -> Self {
         match self {
-            Self::Limited(inner) => Self::Limited(inner.copy_rounded()),
-            Self::Infinite1(inner) => Self::Infinite1(inner.copy_rounded()),
-            Self::Infinite2(inner) => Self::Infinite2(inner.copy_rounded()),
-            Self::Infinite3(inner) => Self::Infinite3(inner.copy_rounded()),
-            Self::Looped2(inner) => Self::Looped2(inner.copy_rounded()),
+            Self::Lim(inner) => Self::Lim(inner.copy_rounded()),
+            Self::Inf(inner) => Self::Inf(inner.copy_rounded()),
+            Self::LimInf(inner) => Self::LimInf(inner.copy_rounded()),
+            Self::LimSinInf(inner) => Self::LimSinInf(inner.copy_rounded()),
+            Self::LoopLimSin(inner) => Self::LoopLimSin(inner.copy_rounded()),
         }
     }
-    pub(in crate::svc) fn get_cycle_time_for_stagger(&self) -> AttrVal {
+    pub(in crate::svc) fn get_first_cycle_time(&self) -> AttrVal {
         match self {
-            Self::Limited(inner) => inner.get_cycle_time_for_stagger(),
-            Self::Infinite1(inner) => inner.get_cycle_time_for_stagger(),
-            Self::Infinite2(inner) => inner.get_cycle_time_for_stagger(),
-            Self::Infinite3(inner) => inner.get_cycle_time_for_stagger(),
-            Self::Looped2(inner) => inner.get_cycle_time_for_stagger(),
+            Self::Lim(inner) => inner.get_first_cycle_time(),
+            Self::Inf(inner) => inner.get_first_cycle_time(),
+            Self::LimInf(inner) => inner.get_first_cycle_time(),
+            Self::LimSinInf(inner) => inner.get_first_cycle_time(),
+            Self::LoopLimSin(inner) => inner.get_first_cycle_time(),
         }
     }
 }
 
 pub(in crate::svc) enum CycleLooped {
-    Infinite1(CycleInfinite1),
-    Looped2(CycleLooped2),
+    Inf(CycleInf),
+    LoopLimSin(CycleLoopLimSin),
 }
 impl CycleLooped {
     pub(in crate::svc) fn get_average_cycle_time(&self) -> AttrVal {
         match self {
-            Self::Infinite1(inner) => inner.get_average_cycle_time(),
-            Self::Looped2(inner) => inner.get_average_cycle_time(),
+            Self::Inf(inner) => inner.get_average_cycle_time(),
+            Self::LoopLimSin(inner) => inner.get_average_cycle_time(),
         }
     }
 }
 
 pub(in crate::svc) enum CycleIter {
-    Limited(CycleLimitedIter),
-    Infinite1(CycleInfinite1Iter),
-    Infinite2(CycleInfinite2Iter),
-    Infinite3(CycleInfinite3Iter),
-    Looped2(CycleLooped2Iter),
+    Lim(CycleLimIter),
+    Inf(CycleInfIter),
+    LimInf(CycleLimInfIter),
+    LimSinInf(CycleLimSinInfIter),
+    LoopLimSin(CycleLoopLimSinIter),
 }
 impl Iterator for CycleIter {
     type Item = CycleIterItem;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
-            Self::Limited(inner) => inner.next(),
-            Self::Infinite1(inner) => inner.next(),
-            Self::Infinite2(inner) => inner.next(),
-            Self::Infinite3(inner) => inner.next(),
-            Self::Looped2(inner) => inner.next(),
+            Self::Lim(inner) => inner.next(),
+            Self::Inf(inner) => inner.next(),
+            Self::LimInf(inner) => inner.next(),
+            Self::LimSinInf(inner) => inner.next(),
+            Self::LoopLimSin(inner) => inner.next(),
         }
     }
 }

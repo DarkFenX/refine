@@ -5,11 +5,11 @@ pub(in crate::svc) use iter_item::CycleIterItem;
 
 mod charged_info;
 mod cycle;
-mod cycle_infinite1;
-mod cycle_infinite2;
-mod cycle_infinite3;
-mod cycle_limited;
-mod cycle_looped2;
+mod cycle_inf;
+mod cycle_lim;
+mod cycle_lim_inf;
+mod cycle_lim_sin_inf;
+mod cycle_loop_lim_sin;
 mod effect_charge_info;
 mod item_info;
 mod iter_item;

@@ -1,14 +1,15 @@
+use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
     svc::cycle::{CycleChargedInfo, CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
-// Following parts are lopped:
 // Part 1: runs specified number of times
 // Part 2: runs once
+// Part 3: repeats infinitely
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleLooped2 {
+pub(in crate::svc) struct CycleLimSinInf {
     pub(in crate::svc) p1_active_time: AttrVal,
     pub(in crate::svc) p1_inactive_time: AttrVal,
     pub(in crate::svc) p1_interrupt: bool,
@@ -18,12 +19,24 @@ pub(in crate::svc) struct CycleLooped2 {
     pub(in crate::svc) p2_inactive_time: AttrVal,
     pub(in crate::svc) p2_interrupt: bool,
     pub(in crate::svc) p2_charged: Option<AttrVal>,
+    pub(in crate::svc) p3_active_time: AttrVal,
+    pub(in crate::svc) p3_inactive_time: AttrVal,
+    pub(in crate::svc) p3_interrupt: bool,
+    pub(in crate::svc) p3_charged: Option<AttrVal>,
 }
-impl CycleLooped2 {
+impl CycleLimSinInf {
     pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
-        Some(CycleLooped::Looped2(*self))
+        Some(CycleLooped::Inf(CycleInf {
+            active_time: self.p3_active_time,
+            inactive_time: self.p3_inactive_time,
+            interrupt: self.p3_interrupt,
+            charged: self.p3_charged,
+        }))
     }
     pub(super) fn get_charged_info(&self) -> InfCount {
+        if self.p3_charged.is_some() {
+            return InfCount::Infinite;
+        }
         let mut cycles = match self.p1_charged {
             Some(_) => self.p1_repeat_count,
             None => 0,
@@ -34,12 +47,10 @@ impl CycleLooped2 {
         InfCount::Count(cycles)
     }
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
-        let p1_total_time = (self.p1_active_time + self.p1_inactive_time) * self.p1_repeat_count as f64;
-        let p2_total_time = self.p2_active_time + self.p2_inactive_time;
-        (p1_total_time + p2_total_time) / (self.p1_repeat_count + 1) as f64
+        self.p1_active_time + self.p1_inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleLooped2Iter {
-        CycleLooped2Iter::new(self)
+    pub(super) fn iter_cycles(&self) -> CycleLimSinInfIter {
+        CycleLimSinInfIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -53,22 +64,29 @@ impl CycleLooped2 {
             p2_inactive_time: sig_round(self.p2_inactive_time, 10),
             p2_interrupt: self.p2_interrupt,
             p2_charged: self.p2_charged.map(|v| sig_round(v, 10)),
+            p3_active_time: sig_round(self.p3_active_time, 10),
+            p3_inactive_time: sig_round(self.p3_inactive_time, 10),
+            p3_interrupt: self.p3_interrupt,
+            p3_charged: self.p3_charged.map(|v| sig_round(v, 10)),
         }
     }
-    pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
+    pub(super) fn get_first_cycle_time(&self) -> AttrVal {
         self.p1_active_time + self.p1_inactive_time
     }
 }
 
-pub(in crate::svc) struct CycleLooped2Iter {
+pub(in crate::svc) struct CycleLimSinInfIter {
+    index: u8,
     p1_item: CycleIterItem,
     p1_repeat_count: Count,
     p1_cycles_done: Count,
     p2_item: CycleIterItem,
+    p3_item: CycleIterItem,
 }
-impl CycleLooped2Iter {
-    fn new(cycle: &CycleLooped2) -> Self {
+impl CycleLimSinInfIter {
+    fn new(cycle: &CycleLimSinInf) -> Self {
         Self {
+            index: 0,
             p1_item: CycleIterItem::new(
                 cycle.p1_active_time + cycle.p1_inactive_time,
                 cycle.p1_interrupt,
@@ -81,18 +99,29 @@ impl CycleLooped2Iter {
                 cycle.p2_interrupt,
                 cycle.p2_charged,
             ),
+            p3_item: CycleIterItem::new(
+                cycle.p3_active_time + cycle.p3_inactive_time,
+                cycle.p3_interrupt,
+                cycle.p3_charged,
+            ),
         }
     }
 }
-impl Iterator for CycleLooped2Iter {
+impl Iterator for CycleLimSinInfIter {
     type Item = CycleIterItem;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.p1_cycles_done >= self.p1_repeat_count {
-            self.p1_cycles_done = 0;
-            return Some(self.p2_item);
+        match self.index {
+            0 => {
+                if self.p1_cycles_done >= self.p1_repeat_count {
+                    self.index = 1;
+                    return Some(self.p2_item);
+                }
+                self.p1_cycles_done += 1;
+                Some(self.p1_item)
+            }
+            1 => Some(self.p3_item),
+            _ => unreachable!(),
         }
-        self.p1_cycles_done += 1;
-        Some(self.p1_item)
     }
 }

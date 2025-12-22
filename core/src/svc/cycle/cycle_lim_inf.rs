@@ -1,4 +1,4 @@
-use super::cycle_infinite1::CycleInfinite1;
+use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
     svc::cycle::{CycleChargedInfo, CycleIterItem, CycleLooped},
@@ -8,7 +8,7 @@ use crate::{
 // Part 1: runs specified number of times
 // Part 2: repeats infinitely
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleInfinite2 {
+pub(in crate::svc) struct CycleLimInf {
     pub(in crate::svc) p1_active_time: AttrVal,
     pub(in crate::svc) p1_inactive_time: AttrVal,
     pub(in crate::svc) p1_interrupt: bool,
@@ -19,9 +19,9 @@ pub(in crate::svc) struct CycleInfinite2 {
     pub(in crate::svc) p2_interrupt: bool,
     pub(in crate::svc) p2_charged: Option<AttrVal>,
 }
-impl CycleInfinite2 {
+impl CycleLimInf {
     pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
-        Some(CycleLooped::Infinite1(CycleInfinite1 {
+        Some(CycleLooped::Inf(CycleInf {
             active_time: self.p2_active_time,
             inactive_time: self.p2_inactive_time,
             interrupt: self.p2_interrupt,
@@ -40,8 +40,8 @@ impl CycleInfinite2 {
     pub(super) fn get_average_cycle_time(&self) -> AttrVal {
         self.p1_active_time + self.p1_inactive_time
     }
-    pub(super) fn iter_cycles(&self) -> CycleInfinite2Iter {
-        CycleInfinite2Iter::new(self)
+    pub(super) fn iter_cycles(&self) -> CycleLimInfIter {
+        CycleLimInfIter::new(self)
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
@@ -57,20 +57,20 @@ impl CycleInfinite2 {
             p2_charged: self.p2_charged.map(|v| sig_round(v, 10)),
         }
     }
-    pub(super) fn get_cycle_time_for_stagger(&self) -> AttrVal {
+    pub(super) fn get_first_cycle_time(&self) -> AttrVal {
         self.p1_active_time + self.p1_inactive_time
     }
 }
 
-pub(in crate::svc) struct CycleInfinite2Iter {
+pub(in crate::svc) struct CycleLimInfIter {
     index: u8,
     p1_item: CycleIterItem,
     p1_repeat_count: Count,
     p1_cycles_done: Count,
     p2_item: CycleIterItem,
 }
-impl CycleInfinite2Iter {
-    fn new(cycle: &CycleInfinite2) -> Self {
+impl CycleLimInfIter {
+    fn new(cycle: &CycleLimInf) -> Self {
         Self {
             index: 0,
             p1_item: CycleIterItem::new(
@@ -88,7 +88,7 @@ impl CycleInfinite2Iter {
         }
     }
 }
-impl Iterator for CycleInfinite2Iter {
+impl Iterator for CycleLimInfIter {
     type Item = CycleIterItem;
 
     fn next(&mut self) -> Option<Self::Item> {

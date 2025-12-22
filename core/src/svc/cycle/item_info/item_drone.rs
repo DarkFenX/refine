@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, cycle_infinite1::CycleInfinite1},
+        cycle::{Cycle, cycle_inf::CycleInf},
         eff_funcs,
     },
     ud::{UDrone, UItemKey},
@@ -41,7 +41,7 @@ pub(super) fn get_drone_cycle_info(
         // flags, limited charges & reloads
         cycle_infos.insert(
             effect_key,
-            Cycle::Infinite1(CycleInfinite1 {
+            Cycle::Inf(CycleInf {
                 active_time: duration_s,
                 inactive_time: OF(0.0),
                 interrupt: false,
