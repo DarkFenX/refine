@@ -1,4 +1,4 @@
-pub(in crate::svc) use cycle::{Cycle, CycleIter};
+pub(in crate::svc) use cycle::{Cycle, CycleIter, CycleLooped};
 pub(in crate::svc) use item_info::{CycleOptions, CycleOptionsSim, get_item_cycle_info};
 pub(in crate::svc) use iter_item::CycleIterItem;
 

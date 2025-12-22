@@ -17,6 +17,15 @@ pub(in crate::svc) enum Cycle {
     Looped2(CycleLooped2),
 }
 impl Cycle {
+    pub(in crate::svc) fn get_looped_part(&self) -> Option<CycleLooped> {
+        match self {
+            Self::Limited(inner) => inner.get_looped_part(),
+            Self::Infinite1(inner) => inner.get_looped_part(),
+            Self::Infinite2(inner) => inner.get_looped_part(),
+            Self::Infinite3(inner) => inner.get_looped_part(),
+            Self::Looped2(inner) => inner.get_looped_part(),
+        }
+    }
     pub(in crate::svc) fn is_infinite(&self) -> bool {
         match &self {
             Self::Limited(_) => false,
@@ -69,6 +78,11 @@ impl Cycle {
             Self::Looped2(inner) => inner.get_cycle_time_for_stagger(),
         }
     }
+}
+
+pub(in crate::svc) enum CycleLooped {
+    Infinite1(CycleInfinite1),
+    Looped2(CycleLooped2),
 }
 
 pub(in crate::svc) enum CycleIter {

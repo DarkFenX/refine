@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::CycleIterItem,
+    svc::cycle::{CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -14,6 +14,9 @@ pub(in crate::svc) struct CycleLimited {
     pub(in crate::svc) repeat_count: Count,
 }
 impl CycleLimited {
+    pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
+        None
+    }
     pub(super) fn get_charged_cycles(&self) -> InfCount {
         match self.charged {
             Some(_) => InfCount::Count(self.repeat_count),

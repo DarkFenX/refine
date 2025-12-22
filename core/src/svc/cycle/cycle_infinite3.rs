@@ -1,6 +1,7 @@
+use super::cycle_infinite1::CycleInfinite1;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::CycleIterItem,
+    svc::cycle::{CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -24,6 +25,14 @@ pub(in crate::svc) struct CycleInfinite3 {
     pub(in crate::svc) p3_charged: Option<AttrVal>,
 }
 impl CycleInfinite3 {
+    pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
+        Some(CycleLooped::Infinite1(CycleInfinite1 {
+            active_time: self.p3_active_time,
+            inactive_time: self.p3_inactive_time,
+            interrupt: self.p3_interrupt,
+            charged: self.p3_charged,
+        }))
+    }
     pub(super) fn get_charged_cycles(&self) -> InfCount {
         if self.p3_charged.is_some() {
             return InfCount::Infinite;
