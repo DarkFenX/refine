@@ -24,7 +24,7 @@ impl Svc {
             CYCLE_COUNT_OPTIONS,
             true,
         )?;
-        Some(cycle_info.get(&defeff_key)?.get_charged_cycles())
+        Some(cycle_info.get(&defeff_key)?.get_charged_info())
     }
     pub(crate) fn get_effect_spool_cycle_count(
         &mut self,

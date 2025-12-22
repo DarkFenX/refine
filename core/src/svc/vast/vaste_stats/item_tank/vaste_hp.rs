@@ -106,7 +106,7 @@ fn get_local_ancil_hp(
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
-            let cycle_count = match effect_cycles.get_charged_cycles() {
+            let cycle_count = match effect_cycles.get_charged_info() {
                 InfCount::Count(cycle_count) => cycle_count,
                 InfCount::Infinite => continue,
             };
@@ -143,7 +143,7 @@ fn get_remote_ancil_hp(
                     Some(hp_per_cycle) => hp_per_cycle,
                     None => continue,
                 };
-            let cycle_count = match effect_cycles.get_charged_cycles() {
+            let cycle_count = match effect_cycles.get_charged_info() {
                 InfCount::Count(cycle_count) => cycle_count,
                 InfCount::Infinite => continue,
             };

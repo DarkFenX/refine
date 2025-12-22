@@ -4,9 +4,12 @@ use super::{
     cycle_infinite3::{CycleInfinite3, CycleInfinite3Iter},
     cycle_limited::{CycleLimited, CycleLimitedIter},
     cycle_looped2::{CycleLooped2, CycleLooped2Iter},
-    iter_item::CycleIterItem,
 };
-use crate::{def::AttrVal, util::InfCount};
+use crate::{
+    def::AttrVal,
+    svc::cycle::{CycleChargedInfo, CycleIterItem},
+    util::InfCount,
+};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum Cycle {
@@ -26,13 +29,13 @@ impl Cycle {
             Self::Looped2(inner) => inner.get_looped_part(),
         }
     }
-    pub(in crate::svc) fn get_charged_cycles(&self) -> InfCount {
+    pub(in crate::svc) fn get_charged_info(&self) -> InfCount {
         match self {
-            Self::Limited(inner) => inner.get_charged_cycles(),
-            Self::Infinite1(inner) => inner.get_charged_cycles(),
-            Self::Infinite2(inner) => inner.get_charged_cycles(),
-            Self::Infinite3(inner) => inner.get_charged_cycles(),
-            Self::Looped2(inner) => inner.get_charged_cycles(),
+            Self::Limited(inner) => inner.get_charged_info(),
+            Self::Infinite1(inner) => inner.get_charged_info(),
+            Self::Infinite2(inner) => inner.get_charged_info(),
+            Self::Infinite3(inner) => inner.get_charged_info(),
+            Self::Looped2(inner) => inner.get_charged_info(),
         }
     }
     pub(in crate::svc) fn get_average_cycle_time(&self) -> AttrVal {

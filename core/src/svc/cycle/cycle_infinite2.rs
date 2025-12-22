@@ -1,7 +1,7 @@
 use super::cycle_infinite1::CycleInfinite1;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -28,7 +28,7 @@ impl CycleInfinite2 {
             charged: self.p2_charged,
         }))
     }
-    pub(super) fn get_charged_cycles(&self) -> InfCount {
+    pub(super) fn get_charged_info(&self) -> InfCount {
         if self.p2_charged.is_some() {
             return InfCount::Infinite;
         }

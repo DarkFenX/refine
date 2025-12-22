@@ -1,6 +1,6 @@
 use crate::{
     def::AttrVal,
-    svc::cycle::{CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -16,7 +16,7 @@ impl CycleInfinite1 {
     pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
         Some(CycleLooped::Infinite1(*self))
     }
-    pub(super) fn get_charged_cycles(&self) -> InfCount {
+    pub(super) fn get_charged_info(&self) -> InfCount {
         match self.charged {
             Some(_) => InfCount::Infinite,
             None => InfCount::Count(0),

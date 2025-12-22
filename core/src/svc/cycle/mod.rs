@@ -1,7 +1,9 @@
+pub(in crate::svc) use charged_info::CycleChargedInfo;
 pub(in crate::svc) use cycle::{Cycle, CycleIter, CycleLooped};
 pub(in crate::svc) use item_info::{CycleOptions, CycleOptionsSim, get_item_cycle_info};
 pub(in crate::svc) use iter_item::CycleIterItem;
 
+mod charged_info;
 mod cycle;
 mod cycle_infinite1;
 mod cycle_infinite2;

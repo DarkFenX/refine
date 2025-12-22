@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleIterItem, CycleLooped},
+    svc::cycle::{CycleChargedInfo, CycleIterItem, CycleLooped},
     util::{InfCount, sig_round},
 };
 
@@ -23,7 +23,7 @@ impl CycleLooped2 {
     pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
         Some(CycleLooped::Looped2(*self))
     }
-    pub(super) fn get_charged_cycles(&self) -> InfCount {
+    pub(super) fn get_charged_info(&self) -> InfCount {
         let mut cycles = match self.p1_charged {
             Some(_) => self.p1_repeat_count,
             None => 0,
