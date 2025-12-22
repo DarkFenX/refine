@@ -26,12 +26,6 @@ impl Cycle {
             Self::Looped2(inner) => inner.get_looped_part(),
         }
     }
-    pub(in crate::svc) fn is_infinite(&self) -> bool {
-        match &self {
-            Self::Limited(_) => false,
-            Self::Infinite1(_) | Self::Infinite2(_) | Self::Infinite3(_) | Self::Looped2(_) => true,
-        }
-    }
     pub(in crate::svc) fn get_charged_cycles(&self) -> InfCount {
         match self {
             Self::Limited(inner) => inner.get_charged_cycles(),
@@ -83,6 +77,14 @@ impl Cycle {
 pub(in crate::svc) enum CycleLooped {
     Infinite1(CycleInfinite1),
     Looped2(CycleLooped2),
+}
+impl CycleLooped {
+    pub(in crate::svc) fn get_average_cycle_time(&self) -> AttrVal {
+        match self {
+            Self::Infinite1(inner) => inner.get_average_cycle_time(),
+            Self::Looped2(inner) => inner.get_average_cycle_time(),
+        }
+    }
 }
 
 pub(in crate::svc) enum CycleIter {

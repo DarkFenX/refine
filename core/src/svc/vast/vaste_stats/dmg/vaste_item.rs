@@ -102,14 +102,12 @@ impl Vast {
             None => return Ok(()),
         };
         for (effect_key, cycle) in cycle_map {
-            if !cycle.is_infinite() {
-                continue;
-            }
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(dmg_getter) = effect.normal_dmg_opc_getter
+                && let Some(cycle_looped) = cycle.get_looped_part()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
-                *dps_normal += dmg_opc.get_total() / cycle.get_average_cycle_time();
+                *dps_normal += dmg_opc.get_total() / cycle_looped.get_average_cycle_time();
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)

@@ -96,13 +96,10 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REf
             None => continue,
         };
         for (&effect_key, rep_getter) in item_data.iter() {
-            let effect_cycles = match cycle_map.get(&effect_key) {
+            let effect_cycles = match cycle_map.get(&effect_key).and_then(|v| v.get_looped_part()) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            if !effect_cycles.is_infinite() {
-                continue;
-            }
             let effect = ctx.u_data.src.get_effect(effect_key);
             let output_per_cycle = match rep_getter(ctx, calc, item_key, effect) {
                 Some(hp_per_cycle) => hp_per_cycle,

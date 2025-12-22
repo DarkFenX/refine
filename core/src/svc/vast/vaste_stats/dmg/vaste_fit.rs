@@ -266,13 +266,10 @@ impl VastFitData {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
                 };
-                let effect_cycles = match cycle_map.get(&effect_key) {
+                let effect_cycles = match cycle_map.get(&effect_key).and_then(|v| v.get_looped_part()) {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                if !effect_cycles.is_infinite() {
-                    continue;
-                }
                 *dps_normal += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
             }
         }
@@ -295,9 +292,6 @@ impl VastFitData {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                if !effect_cycles.is_infinite() {
-                    continue;
-                }
                 breacher_accum.add(output_per_cycle, *effect_cycles);
             }
         }

@@ -62,10 +62,8 @@ fn get_mps_effect(
     effect_cycle: Cycle,
     mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
 ) -> Option<MiningAmount> {
-    if !effect_cycle.is_infinite() {
-        return None;
-    }
     let mining_getter = mining_getter_getter(effect)?;
+    let effect_cycle = effect_cycle.get_looped_part()?;
     let mining_amount = mining_getter(ctx, calc, item_key, effect)?;
     Some(mining_amount.get_total() / effect_cycle.get_average_cycle_time())
 }

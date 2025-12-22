@@ -55,8 +55,7 @@ impl Vast {
                 item_unjam_chance *= OF(1.0) - ecm_jam_chance;
                 // Jam uptime
                 if let Some(cycle_map) = get_item_cycle_info(ctx, calc, projector_item_key, JAM_OPTIONS, false)
-                    && let Some(effect_cycle) = cycle_map.get(&effect_key)
-                    && effect_cycle.is_infinite()
+                    && let Some(effect_cycle) = cycle_map.get(&effect_key).and_then(|v| v.get_looped_part())
                 {
                     // Theoretically, it is possible to have overlapping cycles with some items
                     // (e.g. if ECM burst projectors had super short cycle). This stat deliberately

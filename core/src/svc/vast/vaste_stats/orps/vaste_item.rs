@@ -75,10 +75,8 @@ fn get_orr_effect(
     spool: Option<Spool>,
     rep_getter_getter: fn(&REffect) -> Option<NOutgoingRepGetter>,
 ) -> Option<AttrVal> {
-    if !effect_cycle.is_infinite() {
-        return None;
-    }
     let rep_getter = rep_getter_getter(effect)?;
+    let effect_cycle = effect_cycle.get_looped_part()?;
     let rep_amount = rep_getter(ctx, calc, item_key, effect, spool, None)?;
     Some(rep_amount.get_total() / effect_cycle.get_average_cycle_time())
 }
