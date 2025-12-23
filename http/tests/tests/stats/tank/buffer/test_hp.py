@@ -436,7 +436,8 @@ def test_local_aar_ship_chargedness_and_state_switch(client, consts):
         type_id=eve_rep_item_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
-    # Verification - count of cycles is floored (i.e. forced to reload on partially charged cycles)
+    # Verification - AAR HP scales with how much "charged" cycle is, 3/4 of paste charges yields a
+    # cycle of 250 instead of 300
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.shield == (approx(3000), 0, 0)
     assert api_fit_stats.hp.armor == (approx(2000), approx(1150), 0)
@@ -917,8 +918,7 @@ def test_remote_aar_ship_accuracy_and_charge_switch(client, consts):
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_remote_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
-    # Rounding in this case means the way lib considers not-fully-charged-cycle
+def test_remote_aar_ship_chargedness_and_state_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
         client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), maker=client.mk_eve_ship)
@@ -936,14 +936,15 @@ def test_remote_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_raar.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - count of cycles is floored (i.e. forced to reload on partially charged cycles)
+    # Verification - AAR HP scales with how much "charged" cycle is, 3/4 of paste charges yields a
+    # cycle of 250 instead of 300
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_tgt_fit_stats.hp.armor == (approx(2000), 0, approx(900))
+    assert api_tgt_fit_stats.hp.armor == (approx(2000), 0, approx(1150))
     assert api_tgt_fit_stats.hp.hull == (approx(1000), 0, 0)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(hp=True))
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, approx(900))
+    assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, approx(1150))
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.change_module(state=consts.ApiModuleState.online)
@@ -961,11 +962,11 @@ def test_remote_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_tgt_fit_stats.hp.armor == (approx(2000), 0, approx(900))
+    assert api_tgt_fit_stats.hp.armor == (approx(2000), 0, approx(1150))
     assert api_tgt_fit_stats.hp.hull == (approx(1000), 0, 0)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(hp=True))
     assert api_tgt_ship_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, approx(900))
+    assert api_tgt_ship_stats.hp.armor == (approx(2000), 0, approx(1150))
     assert api_tgt_ship_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_raar.remove()
