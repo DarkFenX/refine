@@ -33,14 +33,14 @@ impl BreacherAccum {
             None => return,
         };
         // Discard all finite effects here, since for now accumulator is used just for dps calcs
-        let looped_ticks = match ticks.get_looped_part() {
-            Some(looped_ticks) => looped_ticks,
+        let ticks_loop = match ticks.get_loop() {
+            Some(ticks_loop) => ticks_loop,
             None => return,
         };
         let aggr = AggrBreacher {
             absolute_max: opc.absolute_max,
             relative_max: opc.relative_max,
-            ticks: looped_ticks,
+            ticks: ticks_loop,
         };
         match self.data.entry(aggr) {
             Entry::Occupied(_) => (),

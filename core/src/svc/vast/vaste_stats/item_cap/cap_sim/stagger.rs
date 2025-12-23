@@ -48,6 +48,8 @@ impl StatCapSimStaggerInt {
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct StaggerKey {
+    // Out of all cycle parameters, only time between cycles is used to decide what goes into a
+    // stagger group
     pub(super) cycle: Cycle<CycleDataTime>,
     delay: AttrVal,
 }
