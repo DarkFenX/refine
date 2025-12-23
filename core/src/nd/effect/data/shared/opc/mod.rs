@@ -3,8 +3,9 @@ pub(in crate::nd::effect::data) use dmg_missile::get_missile_dmg_opc;
 pub(in crate::nd::effect::data) use mining::{get_mining_opc, get_mining_values};
 pub(in crate::nd::effect::data) use neut::{get_aoe_dd_side_neut_opc, get_generic_neut_opc};
 pub(in crate::nd::effect::data) use rep::{
-    get_local_armor_rep_opc, get_local_hull_rep_opc, get_local_rep_opc, get_local_shield_rep_opc,
-    get_outgoing_armor_rep_opc, get_outgoing_cap_rep_opc, get_outgoing_hull_rep_opc, get_outgoing_shield_rep_opc,
+    get_ancillary_armor_mult, get_local_armor_rep_opc, get_local_hull_rep_opc, get_local_rep_opc,
+    get_local_shield_rep_opc, get_outgoing_armor_rep_opc, get_outgoing_cap_rep_opc, get_outgoing_hull_rep_opc,
+    get_outgoing_rep_opc, get_outgoing_shield_rep_opc,
 };
 
 mod dmg_dd;

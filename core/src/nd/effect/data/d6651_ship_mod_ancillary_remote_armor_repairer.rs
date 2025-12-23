@@ -7,7 +7,10 @@ use crate::{
     misc::Spool,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        effect::data::shared::{opc::get_outgoing_armor_rep_opc, proj_mult::get_full_noapp_proj_mult},
+        effect::data::shared::{
+            opc::{get_ancillary_armor_mult, get_outgoing_rep_opc},
+            proj_mult::get_full_noapp_proj_mult,
+        },
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -37,11 +40,12 @@ fn internal_get_outgoing_rep_opc(
     calc: &mut Calc,
     projector_key: UItemKey,
     projector_effect: &REffect,
-    _chargedness: Option<AttrVal>,
+    chargedness: Option<AttrVal>,
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
-    get_outgoing_armor_rep_opc(
+    let extra_mult = get_ancillary_armor_mult(ctx, calc, projector_key, chargedness);
+    get_outgoing_rep_opc(
         ctx,
         calc,
         projector_key,
@@ -50,5 +54,9 @@ fn internal_get_outgoing_rep_opc(
         None,
         projectee_key,
         get_full_noapp_proj_mult,
+        ctx.ac().armor_dmg_amount,
+        ctx.ac().armor_hp,
+        extra_mult,
+        false,
     )
 }

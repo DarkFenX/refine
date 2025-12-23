@@ -1,12 +1,12 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::{AttrVal, OF},
+    def::AttrVal,
     ec,
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        effect::data::shared::opc::get_local_rep_opc,
+        effect::data::shared::opc::{get_ancillary_armor_mult, get_local_rep_opc},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -38,15 +38,7 @@ fn internal_get_local_rep_opc(
     effect: &REffect,
     chargedness: Option<AttrVal>,
 ) -> Option<Output<AttrVal>> {
-    let extra_mult = if let Some(chargedness) = chargedness
-        && let Some(charge_key) = ctx.u_data.items.get(item_key).get_charge_key()
-        && ctx.u_data.items.get(charge_key).get_type_id() == ac::items::NANITE_REPAIR_PASTE
-        && let Some(rep_mult) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().charged_armor_dmg_mult)
-    {
-        Some((rep_mult - OF(1.0)) * chargedness + OF(1.0))
-    } else {
-        None
-    };
+    let extra_mult = get_ancillary_armor_mult(ctx, calc, item_key, chargedness);
     get_local_rep_opc(
         ctx,
         calc,
