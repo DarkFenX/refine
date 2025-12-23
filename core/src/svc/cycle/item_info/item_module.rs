@@ -10,7 +10,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            Cycle, CycleDataFull,
+            Cycle, CycleDataFull, CycleInterrupt,
             cycle_inf::CycleInf,
             cycle_lim::CycleLim,
             cycle_lim_inf::CycleLimInf,
@@ -124,7 +124,7 @@ fn fill_module_effect_info(
             Cycle::Lim(CycleLim {
                 data: CycleDataFull {
                     time: duration,
-                    interrupt: true,
+                    interrupt: None,
                     charged: charge_info.get_first_cycle_chargeness(),
                 },
                 repeat_count: 1,
@@ -132,14 +132,14 @@ fn fill_module_effect_info(
         );
         return;
     }
-    let cycle_dt = Float::max(
+    let cooldown = Float::max(
         OF(0.0),
         calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mod_reactivation_delay, OF(0.0))
             .unwrap()
             / 1000.0,
     );
     // Decide if interruptions happen every cycle based on reactivation delay value
-    let force_int = cycle_dt > FLOAT_TOLERANCE;
+    let int_cd = cooldown > FLOAT_TOLERANCE;
     let sim_options = match options {
         CycleOptions::Sim(sim_options) => sim_options,
         // If burst cycle mode was requested, just assume first cycle is the "most charged", and
@@ -149,8 +149,8 @@ fn fill_module_effect_info(
                 effect_key,
                 Cycle::Inf(CycleInf {
                     data: CycleDataFull {
-                        time: duration + cycle_dt,
-                        interrupt: force_int,
+                        time: duration + cooldown,
+                        interrupt: CycleInterrupt::try_new(int_cd, false),
                         charged: charge_info.get_first_cycle_chargeness(),
                     },
                 }),
@@ -165,8 +165,8 @@ fn fill_module_effect_info(
                 effect_key,
                 Cycle::Inf(CycleInf {
                     data: CycleDataFull {
-                        time: duration + cycle_dt,
-                        interrupt: force_int,
+                        time: duration + cooldown,
+                        interrupt: CycleInterrupt::try_new(int_cd, false),
                         charged: Some(OF(1.0)),
                     },
                 }),
@@ -184,51 +184,67 @@ fn fill_module_effect_info(
         // Infinitely cycling modules without charge
         (false, false, true) => Cycle::Inf(CycleInf {
             data: CycleDataFull {
-                time: duration + cycle_dt,
-                interrupt: force_int,
+                time: duration + cooldown,
+                interrupt: CycleInterrupt::try_new(int_cd, false),
                 charged: None,
             },
         }),
         // Only partially charged, has to reload every cycle
-        (false, true, false) => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
+        (false, true, false) => part_r(
+            ctx,
+            calc,
+            item_key,
+            duration,
+            cooldown,
+            int_cd,
+            charge_info.part_charged,
+        ),
         // Only partially charged cycle, but can cycle without charges
         (false, true, true) => match ctx
             .u_data
             .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
         {
-            true => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
+            true => part_r(
+                ctx,
+                calc,
+                item_key,
+                duration,
+                cooldown,
+                int_cd,
+                charge_info.part_charged,
+            ),
             false => Cycle::LimInf(CycleLimInf {
                 p1_data: CycleDataFull {
-                    time: duration + cycle_dt,
-                    interrupt: force_int,
+                    time: duration + cooldown,
+                    interrupt: CycleInterrupt::try_new(int_cd, false),
                     charged: charge_info.part_charged,
                 },
                 p1_repeat_count: 1,
                 p2_data: CycleDataFull {
-                    time: duration + cycle_dt,
-                    interrupt: force_int,
+                    time: duration + cooldown,
+                    interrupt: CycleInterrupt::try_new(int_cd, false),
                     charged: None,
                 },
             }),
         },
         // Only fully charged, has to reload after charges are out
-        (true, false, false) => full_r(ctx, calc, item_key, duration, cycle_dt, force_int, full_count),
+        (true, false, false) => full_r(ctx, calc, item_key, duration, cooldown, int_cd, full_count),
         // Only fully charged, but can cycle without charges
         (true, false, true) => match ctx
             .u_data
             .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
         {
-            true => full_r(ctx, calc, item_key, duration, cycle_dt, force_int, full_count),
+            true => full_r(ctx, calc, item_key, duration, cooldown, int_cd, full_count),
             false => Cycle::LimInf(CycleLimInf {
                 p1_data: CycleDataFull {
-                    time: duration + cycle_dt,
-                    interrupt: force_int,
+                    time: duration + cooldown,
+                    interrupt: CycleInterrupt::try_new(int_cd, false),
                     charged: Some(OF(1.0)),
                 },
                 p1_repeat_count: full_count,
                 p2_data: CycleDataFull {
-                    time: duration + cycle_dt,
-                    interrupt: force_int,
+                    time: duration + cooldown,
+                    interrupt: CycleInterrupt::try_new(int_cd, false),
                     charged: None,
                 },
             }),
@@ -239,8 +255,8 @@ fn fill_module_effect_info(
             calc,
             item_key,
             duration,
-            cycle_dt,
-            force_int,
+            cooldown,
+            int_cd,
             full_count,
             charge_info.part_charged,
         ),
@@ -255,26 +271,26 @@ fn fill_module_effect_info(
                     calc,
                     item_key,
                     duration,
-                    cycle_dt,
-                    force_int,
+                    cooldown,
+                    int_cd,
                     full_count,
                     charge_info.part_charged,
                 ),
                 false => Cycle::LimSinInf(CycleLimSinInf {
                     p1_data: CycleDataFull {
-                        time: duration + cycle_dt,
-                        interrupt: force_int,
+                        time: duration + cooldown,
+                        interrupt: CycleInterrupt::try_new(int_cd, false),
                         charged: Some(OF(1.0)),
                     },
                     p1_repeat_count: full_count,
                     p2_data: CycleDataFull {
-                        time: duration + cycle_dt,
-                        interrupt: force_int,
+                        time: duration + cooldown,
+                        interrupt: CycleInterrupt::try_new(int_cd, false),
                         charged: charge_info.part_charged,
                     },
                     p3_data: CycleDataFull {
-                        time: duration + cycle_dt,
-                        interrupt: force_int,
+                        time: duration + cooldown,
+                        interrupt: CycleInterrupt::try_new(int_cd, false),
                         charged: None,
                     },
                 }),
@@ -300,13 +316,14 @@ fn part_r(
     calc: &mut Calc,
     item_key: UItemKey,
     duration: AttrVal,
-    cycle_dt: AttrVal,
+    cooldown: AttrVal,
+    int_cd: bool,
     part_value: Option<AttrVal>,
 ) -> Cycle {
     Cycle::Inf(CycleInf {
         data: CycleDataFull {
-            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-            interrupt: true,
+            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+            interrupt: CycleInterrupt::try_new(int_cd, true),
             charged: part_value,
         },
     })
@@ -317,28 +334,28 @@ fn full_r(
     calc: &mut Calc,
     item_key: UItemKey,
     duration: AttrVal,
-    cycle_dt: AttrVal,
-    force_int: bool,
+    cooldown: AttrVal,
+    int_cd: bool,
     full_count: Count,
 ) -> Cycle {
     match full_count {
         1 => Cycle::Inf(CycleInf {
             data: CycleDataFull {
-                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-                interrupt: true,
+                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+                interrupt: CycleInterrupt::try_new(int_cd, true),
                 charged: Some(OF(1.0)),
             },
         }),
         _ => Cycle::LoopLimSin(CycleLoopLimSin {
             p1_data: CycleDataFull {
-                time: duration + cycle_dt,
-                interrupt: force_int,
+                time: duration + cooldown,
+                interrupt: CycleInterrupt::try_new(int_cd, false),
                 charged: Some(OF(1.0)),
             },
             p1_repeat_count: full_count - 1,
             p2_data: CycleDataFull {
-                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-                interrupt: true,
+                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+                interrupt: CycleInterrupt::try_new(int_cd, true),
                 charged: Some(OF(1.0)),
             },
         }),
@@ -350,21 +367,21 @@ fn both_r(
     calc: &mut Calc,
     item_key: UItemKey,
     duration: AttrVal,
-    cycle_dt: AttrVal,
-    force_int: bool,
+    cooldown: AttrVal,
+    int_cd: bool,
     full_count: Count,
     part_value: Option<AttrVal>,
 ) -> Cycle {
     Cycle::LoopLimSin(CycleLoopLimSin {
         p1_data: CycleDataFull {
-            time: duration + cycle_dt,
-            interrupt: force_int,
+            time: duration + cooldown,
+            interrupt: CycleInterrupt::try_new(int_cd, false),
             charged: Some(OF(1.0)),
         },
         p1_repeat_count: full_count,
         p2_data: CycleDataFull {
-            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-            interrupt: true,
+            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+            interrupt: CycleInterrupt::try_new(int_cd, true),
             charged: part_value,
         },
     })

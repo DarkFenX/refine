@@ -43,7 +43,7 @@ pub(super) fn get_drone_cycle_info(
             Cycle::Inf(CycleInf {
                 data: CycleDataFull {
                     time: duration_s,
-                    interrupt: false,
+                    interrupt: None,
                     charged: None,
                 },
             }),
