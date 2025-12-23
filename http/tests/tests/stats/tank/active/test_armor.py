@@ -16,13 +16,17 @@ def test_state_ship(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
     eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=538, cycle_time=12000)
-    eve_module_laar_id = make_eve_local_aar(client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000)
+    eve_module_laar_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000, capacity=0.32, charge_rate=4)
     eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
-    eve_module_raar_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_raar_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000, capacity=0.32, charge_rate=4)
     eve_module_rsar_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, cycle_time=6000, spool_step=0.12, spool_max=1.8)
     eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -88,13 +92,17 @@ def test_drone(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_tgt_drone_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
     eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=538, cycle_time=12000)
-    eve_module_laar_id = make_eve_local_aar(client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000)
+    eve_module_laar_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000, capacity=0.32, charge_rate=4)
     eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
-    eve_module_raar_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_raar_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000, capacity=0.32, charge_rate=4)
     eve_module_rsar_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, cycle_time=6000, spool_step=0.12, spool_max=1.8)
     eve_src_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -123,13 +131,17 @@ def test_hp_limit_and_resist(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 210, 600), rr_resist=0.5)
     eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=538, cycle_time=12000)
-    eve_module_laar_id = make_eve_local_aar(client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000)
+    eve_module_laar_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000, capacity=0.32, charge_rate=4)
     eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
-    eve_module_raar_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_raar_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000, capacity=0.32, charge_rate=4)
     eve_module_rsar_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, cycle_time=6000, spool_step=0.12, spool_max=1.8)
     eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -164,7 +176,8 @@ def test_hp_limit_and_range(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 210, 1000))
     eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=538, cycle_time=12000)
-    eve_module_laar_id = make_eve_local_aar(client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000)
+    eve_module_laar_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000, capacity=0.32, charge_rate=4)
     eve_module_rar_id = make_eve_remote_ar(
         client=client,
         basic_info=eve_basic_info,
@@ -177,6 +190,8 @@ def test_hp_limit_and_range(client, consts):
         basic_info=eve_basic_info,
         rep_amount=145,
         cycle_time=6000,
+        capacity=0.32,
+        charge_rate=4,
         optimal_range=10000,
         falloff_range=5000)
     eve_module_rsar_id = make_eve_remote_sar(
@@ -193,7 +208,9 @@ def test_hp_limit_and_range(client, consts):
         rep_amount=72,
         cycle_time=5000,
         optimal_range=10000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -254,13 +271,17 @@ def test_zero_cycle_time(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
     eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=538, cycle_time=0)
-    eve_module_laar_id = make_eve_local_aar(client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=0)
+    eve_module_laar_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=0, capacity=0.32, charge_rate=4)
     eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=0)
-    eve_module_raar_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=0)
+    eve_module_raar_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=0, capacity=0.32, charge_rate=4)
     eve_module_rsar_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, cycle_time=0, spool_step=0.12, spool_max=1.8)
     eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=0)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -293,13 +314,17 @@ def test_no_cycle_time(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts, effect_duration=False)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
     eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=538, cycle_time=12000)
-    eve_module_laar_id = make_eve_local_aar(client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000)
+    eve_module_laar_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=207, cycle_time=12000, capacity=0.32, charge_rate=4)
     eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
-    eve_module_raar_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_raar_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000, capacity=0.32, charge_rate=4)
     eve_module_rsar_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, cycle_time=6000, spool_step=0.12, spool_max=1.8)
     eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()

@@ -19,11 +19,14 @@ from tests.stats.tank import (
 def test_state(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_module_normal_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
-    eve_module_ancil_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_ancil_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000, capacity=0.32, charge_rate=4)
     eve_module_spool_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
     eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -95,11 +98,14 @@ def test_state(client, consts):
 def test_item_kind(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_module_normal_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
-    eve_module_ancil_id = make_eve_remote_aar(client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000)
+    eve_module_ancil_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=145, cycle_time=6000, capacity=0.32, charge_rate=4)
     eve_module_spool_id = make_eve_remote_sar(
         client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
     eve_drone_id = make_eve_drone_armor(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
-    eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
