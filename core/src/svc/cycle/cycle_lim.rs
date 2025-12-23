@@ -1,25 +1,36 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Part 1: runs specified number of times
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleLim<T = CycleDataFull> {
     pub(in crate::svc) data: T,
     pub(in crate::svc) repeat_count: Count,
+}
+impl<T> CycleLim<T> {
+    pub(super) fn get_first(&self) -> &T {
+        &self.data
+    }
+    pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
+        None
+    }
+    pub(super) fn convert<'a, U>(&'a self) -> Cycle<U>
+    where
+        U: From<&'a T>,
+    {
+        Cycle::Lim(CycleLim {
+            data: (&self.data).into(),
+            repeat_count: self.repeat_count,
+        })
+    }
 }
 impl<T> CycleLim<T>
 where
     T: Copy,
 {
-    pub(super) fn get_loop(&self) -> Option<CycleLooped<T>> {
-        None
-    }
-    pub(super) fn get_first(&self) -> &T {
-        &self.data
-    }
     pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
         CyclePartIter::One(
             [CyclePart {

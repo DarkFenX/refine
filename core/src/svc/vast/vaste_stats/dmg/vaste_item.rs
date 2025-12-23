@@ -104,7 +104,7 @@ impl Vast {
         for (effect_key, cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(dmg_getter) = effect.normal_dmg_opc_getter
-                && let Some(cycle_loop) = cycle.get_loop()
+                && let Some(cycle_loop) = cycle.try_get_loop()
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
                 *dps_normal += dmg_opc.get_total() / cycle_loop.get_average_time();

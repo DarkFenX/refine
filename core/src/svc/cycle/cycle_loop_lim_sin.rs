@@ -1,28 +1,43 @@
+use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Following parts are lopped:
 // Part 1: runs specified number of times
 // Part 2: runs once
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleLoopLimSin<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
 }
+impl<T> CycleLoopLimSin<T> {
+    pub(super) fn get_first(&self) -> &T {
+        &self.p1_data
+    }
+    pub(super) fn convert<'a, U>(&'a self) -> Cycle<U>
+    where
+        U: From<&'a T> + Eq,
+    {
+        let p1_data = U::from(&self.p1_data);
+        let p2_data = U::from(&self.p2_data);
+        match p1_data == p2_data {
+            true => Cycle::Inf(CycleInf { data: p1_data }),
+            false => Cycle::LoopLimSin(CycleLoopLimSin {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data,
+            }),
+        }
+    }
+}
 impl<T> CycleLoopLimSin<T>
 where
     T: Copy,
 {
-    pub(super) fn get_loop(&self) -> Option<CycleLooped<T>> {
-        Some(CycleLooped::LoopLimSin(*self))
-    }
-    pub(super) fn get_first(&self) -> &T {
-        &self.p1_data
-    }
     pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
         CyclePartIter::Two(
             [
@@ -40,6 +55,9 @@ where
     }
     pub(super) fn iter_events(&self) -> CycleLoopLimSinEventIter<T> {
         CycleLoopLimSinEventIter::new(*self)
+    }
+    pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
+        Some(CycleLooped::LoopLimSin(*self))
     }
 }
 impl CycleLoopLimSin {

@@ -72,7 +72,7 @@ fn get_mps(
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.get_loop()) {
+            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
                 Some(effect_cycle_loop) => effect_cycle_loop,
                 None => continue,
             };

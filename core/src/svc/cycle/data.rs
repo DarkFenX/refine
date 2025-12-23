@@ -23,7 +23,7 @@ impl CycleDataFull {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc) struct CycleDataTime {
     pub(in crate::svc) time: AttrVal,
 }

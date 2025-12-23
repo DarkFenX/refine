@@ -1,30 +1,60 @@
-use super::cycle_inf::CycleInf;
+use super::{cycle_inf::CycleInf, cycle_lim_inf::CycleLimInf};
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Part 1: runs specified number of times
 // Part 2: runs once
 // Part 3: repeats infinitely
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleLimSinInf<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
     pub(in crate::svc) p3_data: T,
 }
+impl<T> CycleLimSinInf<T> {
+    pub(super) fn get_first(&self) -> &T {
+        &self.p1_data
+    }
+    pub(super) fn convert<'a, U>(&'a self) -> Cycle<U>
+    where
+        U: From<&'a T> + Eq,
+    {
+        let p1_data = U::from(&self.p1_data);
+        let p2_data = U::from(&self.p2_data);
+        let p3_data = U::from(&self.p2_data);
+        match (p1_data == p2_data, p2_data == p3_data) {
+            // Nothing to merge
+            (false, false) => Cycle::LimSinInf(CycleLimSinInf {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data,
+                p3_data,
+            }),
+            // Merge part 2 into tail
+            (false, true) => Cycle::LimInf(CycleLimInf {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data: p3_data,
+            }),
+            // Merge part 2 into head
+            (true, false) => Cycle::LimInf(CycleLimInf {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count + 1,
+                p2_data: p3_data,
+            }),
+            // Whole sequence becomes simple infinity
+            (true, true) => Cycle::Inf(CycleInf { data: p1_data }),
+        }
+    }
+}
 impl<T> CycleLimSinInf<T>
 where
     T: Copy,
 {
-    pub(super) fn get_loop(&self) -> Option<CycleLooped<T>> {
-        Some(CycleLooped::Inf(CycleInf { data: self.p3_data }))
-    }
-    pub(super) fn get_first(&self) -> &T {
-        &self.p1_data
-    }
     pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
         CyclePartIter::Three(
             [
@@ -46,6 +76,9 @@ where
     }
     pub(super) fn iter_events(&self) -> CycleLimSinInfEventIter<T> {
         CycleLimSinInfEventIter::new(*self)
+    }
+    pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
+        Some(CycleLooped::Inf(CycleInf { data: self.p3_data }))
     }
 }
 impl CycleLimSinInf {

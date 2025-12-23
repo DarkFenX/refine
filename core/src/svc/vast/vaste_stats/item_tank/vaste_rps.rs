@@ -96,7 +96,7 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REf
             None => continue,
         };
         for (&effect_key, rep_getter) in item_data.iter() {
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.get_loop()) {
+            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
                 Some(effect_cycle_loop) => effect_cycle_loop,
                 None => continue,
             };

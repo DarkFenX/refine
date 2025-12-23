@@ -1,24 +1,31 @@
 use crate::{
     def::AttrVal,
-    svc::cycle::{CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Part 1: repeats infinitely
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleInf<T = CycleDataFull> {
     pub(in crate::svc) data: T,
+}
+impl<T> CycleInf<T> {
+    pub(super) fn get_first(&self) -> &T {
+        &self.data
+    }
+    pub(super) fn convert<'a, U>(&'a self) -> Cycle<U>
+    where
+        U: From<&'a T>,
+    {
+        Cycle::Inf(CycleInf {
+            data: (&self.data).into(),
+        })
+    }
 }
 impl<T> CycleInf<T>
 where
     T: Copy,
 {
-    pub(super) fn get_loop(&self) -> Option<CycleLooped<T>> {
-        Some(CycleLooped::Inf(*self))
-    }
-    pub(super) fn get_first(&self) -> &T {
-        &self.data
-    }
     pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
         CyclePartIter::One(
             [CyclePart {
@@ -30,6 +37,9 @@ where
     }
     pub(super) fn iter_events(&self) -> CycleInfEventIter<T> {
         CycleInfEventIter::new(*self)
+    }
+    pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
+        Some(CycleLooped::Inf(*self))
     }
 }
 impl CycleInf {

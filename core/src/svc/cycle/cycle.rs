@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{def::AttrVal, svc::cycle::CycleDataFull};
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(in crate::svc) enum Cycle<T = CycleDataFull> {
     Lim(CycleLim<T>),
     Inf(CycleInf<T>),
@@ -16,15 +16,6 @@ impl<T> Cycle<T>
 where
     T: Copy,
 {
-    pub(in crate::svc) fn get_loop(&self) -> Option<CycleLooped<T>> {
-        match self {
-            Self::Lim(inner) => inner.get_loop(),
-            Self::Inf(inner) => inner.get_loop(),
-            Self::LimInf(inner) => inner.get_loop(),
-            Self::LimSinInf(inner) => inner.get_loop(),
-            Self::LoopLimSin(inner) => inner.get_loop(),
-        }
-    }
     pub(in crate::svc) fn get_first(&self) -> &T {
         match self {
             Self::Lim(inner) => inner.get_first(),
@@ -32,6 +23,15 @@ where
             Self::LimInf(inner) => inner.get_first(),
             Self::LimSinInf(inner) => inner.get_first(),
             Self::LoopLimSin(inner) => inner.get_first(),
+        }
+    }
+    pub(in crate::svc) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
+        match self {
+            Self::Lim(inner) => inner.try_get_loop(),
+            Self::Inf(inner) => inner.try_get_loop(),
+            Self::LimInf(inner) => inner.try_get_loop(),
+            Self::LimSinInf(inner) => inner.try_get_loop(),
+            Self::LoopLimSin(inner) => inner.try_get_loop(),
         }
     }
 }
@@ -52,6 +52,20 @@ impl Cycle {
             Self::LimInf(inner) => Self::LimInf(inner.copy_rounded()),
             Self::LimSinInf(inner) => Self::LimSinInf(inner.copy_rounded()),
             Self::LoopLimSin(inner) => Self::LoopLimSin(inner.copy_rounded()),
+        }
+    }
+}
+impl<T, U> From<&Cycle<T>> for Cycle<U>
+where
+    U: Eq + for<'a> From<&'a T>,
+{
+    fn from(cycle: &Cycle<T>) -> Self {
+        match cycle {
+            Cycle::Lim(inner) => inner.convert(),
+            Cycle::Inf(inner) => inner.convert(),
+            Cycle::LimInf(inner) => inner.convert(),
+            Cycle::LimSinInf(inner) => inner.convert(),
+            Cycle::LoopLimSin(inner) => inner.convert(),
         }
     }
 }
