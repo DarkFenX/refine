@@ -15,4 +15,3 @@ pub(crate) const BLOCKADE_RUNNER: EItemGrpId = 1202;
 pub(crate) const EXPEDITION_FRIGATE: EItemGrpId = 1283;
 pub(crate) const SHIP_MODIFIER: EItemGrpId = 1306;
 pub(crate) const GUIDED_BOMB: EItemGrpId = 1548;
-pub(crate) const SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES: EItemGrpId = 4839;
