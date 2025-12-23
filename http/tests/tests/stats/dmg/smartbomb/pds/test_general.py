@@ -145,15 +145,17 @@ def test_item_kind(client, consts):
 
 def test_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_module_id = make_eve_pds(
+    eve_module1_id = make_eve_pds(
         client=client, basic_info=eve_basic_info, dmg_mult=1.25, cycle_time=12000, capacity=1000, reload_time=180000)
+    eve_module2_id = make_eve_pds(
+        client=client, basic_info=eve_basic_info, dmg_mult=1.25, cycle_time=12000, capacity=999, reload_time=180000)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(250, 250, 250, 250), volume=1)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
@@ -174,3 +176,22 @@ def test_reload(client, consts):
     api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
     assert api_module_dps_burst == [approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
     assert api_module_dps_reload == [approx(6.510417), approx(6.510417), approx(6.510417), approx(6.510417)]
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification - PDS refuses to cycle when count of loaded charges is lower than it needs.
+    # Tested on Tranquility on 2025-12-19
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
+    assert api_fleet_dps_burst == [approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
+    assert api_fleet_dps_reload == [approx(5.482456), approx(5.482456), approx(5.482456), approx(5.482456)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
+    assert api_fit_dps_burst == [approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
+    assert api_fit_dps_reload == [approx(5.482456), approx(5.482456), approx(5.482456), approx(5.482456)]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
+    assert api_module_dps_burst == [approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
+    assert api_module_dps_reload == [approx(5.482456), approx(5.482456), approx(5.482456), approx(5.482456)]
