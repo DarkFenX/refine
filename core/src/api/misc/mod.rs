@@ -1,5 +1,6 @@
 pub use adj_count::AdjustableCount;
 pub use attr_id::AttrId;
+pub use attr_vals::AttrVals;
 pub use effect_id::EffectId;
 pub use effect_info::EffectInfo;
 pub use op::Op;
@@ -10,6 +11,7 @@ pub use states::{MinionState, ModuleState, ServiceState};
 
 mod adj_count;
 mod attr_id;
+mod attr_vals;
 mod effect_id;
 mod effect_info;
 mod op;

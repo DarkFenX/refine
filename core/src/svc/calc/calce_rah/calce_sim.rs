@@ -17,14 +17,14 @@ use crate::{
     misc::{DmgKinds, EffectSpec},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcAttrVal},
+        calc::{Calc, CalcAttrVals},
         eff_funcs,
     },
     ud::{UFitKey, UItemKey},
     util::{RMap, RSet},
 };
 
-const FALLBACK_RESONANCE: CalcAttrVal = CalcAttrVal {
+const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {
     base: OF(1.0),
     dogma: OF(1.0),
     extra: OF(1.0),
@@ -246,7 +246,7 @@ impl Calc {
         self.set_rah_result(ctx, item_key, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(&mut self, ctx: SvcCtx, item_key: UItemKey, resos: DmgKinds<CalcAttrVal>, notify: bool) {
+    fn set_rah_result(&mut self, ctx: SvcCtx, item_key: UItemKey, resos: DmgKinds<CalcAttrVals>, notify: bool) {
         self.rah.resonances.get_mut(&item_key).unwrap().replace(resos);
         if notify {
             let attr_consts = ctx.ac();
@@ -268,22 +268,22 @@ impl Calc {
             // might happen. For safety, just use unadapted values if that happens
             let item_resos = match resos.get(&item_key) {
                 Some(item_avg_resos) => DmgKinds {
-                    em: CalcAttrVal {
+                    em: CalcAttrVals {
                         base: item_sim_data.info.resos.em.base,
                         dogma: item_avg_resos.em,
                         extra: item_avg_resos.em,
                     },
-                    thermal: CalcAttrVal {
+                    thermal: CalcAttrVals {
                         base: item_sim_data.info.resos.thermal.base,
                         dogma: item_avg_resos.thermal,
                         extra: item_avg_resos.thermal,
                     },
-                    kinetic: CalcAttrVal {
+                    kinetic: CalcAttrVals {
                         base: item_sim_data.info.resos.kinetic.base,
                         dogma: item_avg_resos.kinetic,
                         extra: item_avg_resos.kinetic,
                     },
-                    explosive: CalcAttrVal {
+                    explosive: CalcAttrVals {
                         base: item_sim_data.info.resos.explosive.base,
                         dogma: item_avg_resos.explosive,
                         extra: item_avg_resos.explosive,
@@ -297,10 +297,10 @@ impl Calc {
 }
 
 fn get_next_resonances(
-    mut resonances: DmgKinds<CalcAttrVal>,
+    mut resonances: DmgKinds<CalcAttrVals>,
     taken_dmg: DmgKinds<AttrVal>,
     shift_amount: AttrVal,
-) -> DmgKinds<CalcAttrVal> {
+) -> DmgKinds<CalcAttrVals> {
     // Rounding in this function to avoid float errors serves two purposes:
     // 1) it helps in history loop detection;
     // 2) it helps to avoid weird results in unrealistic edge cases, e.g. RAH which starts 0/0/100/0
@@ -329,7 +329,7 @@ fn get_next_resonances(
         let to_donate = rah_round(Float::min(shift_amount, OF(1.0) - current_value.dogma));
         total_transferred += to_donate;
         let new_value = rah_round(current_value.dogma + to_donate);
-        resonances[*index] = CalcAttrVal {
+        resonances[*index] = CalcAttrVals {
             base: current_value.base,
             dogma: new_value,
             extra: new_value,
@@ -350,7 +350,7 @@ fn get_next_resonances(
         .unwrap();
         to_distribute -= to_take;
         let new_value = rah_round(current_value.dogma - to_take);
-        resonances[*index] = CalcAttrVal {
+        resonances[*index] = CalcAttrVals {
             base: current_value.base,
             dogma: new_value,
             extra: new_value,

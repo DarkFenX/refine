@@ -6,7 +6,7 @@ use crate::{
     rd::RcEffect,
     svc::{
         SvcCtx,
-        calc::{AttrValInfo, Calc, CalcAttrVal, ItemAttrPostprocs},
+        calc::{AttrValInfo, Calc, CalcAttrVals, ItemAttrPostprocs},
     },
     ud::{UFitKey, UItem, UItemKey},
 };
@@ -203,7 +203,7 @@ impl Calc {
             self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_expl_dmg_resonance);
         }
     }
-    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_key: UItemKey) -> DmgKinds<CalcAttrVal> {
+    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_key: UItemKey) -> DmgKinds<CalcAttrVals> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.rah.resonances.get(&item_key).unwrap() {
             return *val;
@@ -219,31 +219,36 @@ impl Calc {
     }
 }
 
-fn rah_em_resonance_postproc_fast(calc: &mut Calc, ctx: SvcCtx, item_key: UItemKey, _cval: CalcAttrVal) -> CalcAttrVal {
+fn rah_em_resonance_postproc_fast(
+    calc: &mut Calc,
+    ctx: SvcCtx,
+    item_key: UItemKey,
+    _cval: CalcAttrVals,
+) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).em
 }
 fn rah_therm_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
     item_key: UItemKey,
-    _cval: CalcAttrVal,
-) -> CalcAttrVal {
+    _cval: CalcAttrVals,
+) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).thermal
 }
 fn rah_kin_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
     item_key: UItemKey,
-    _cval: CalcAttrVal,
-) -> CalcAttrVal {
+    _cval: CalcAttrVals,
+) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).kinetic
 }
 fn rah_expl_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
     item_key: UItemKey,
-    _cval: CalcAttrVal,
-) -> CalcAttrVal {
+    _cval: CalcAttrVals,
+) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).explosive
 }
 

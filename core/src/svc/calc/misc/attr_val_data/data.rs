@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use super::attr::AttrEntry;
 use crate::{
     rd::RAttrKey,
-    svc::calc::{CalcAttrVal, ItemAttrPostprocs},
+    svc::calc::{CalcAttrVals, ItemAttrPostprocs},
     util::RMap,
 };
 
@@ -30,7 +30,7 @@ impl ItemAttrData {
     pub(in crate::svc::calc) fn set_value_and_get_pp(
         &mut self,
         attr_key: RAttrKey,
-        value: CalcAttrVal,
+        value: CalcAttrVals,
     ) -> Option<&ItemAttrPostprocs> {
         match self.data.entry(attr_key) {
             Entry::Occupied(entry) => {

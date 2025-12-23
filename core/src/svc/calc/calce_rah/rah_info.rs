@@ -1,18 +1,18 @@
-use crate::{def::AttrVal, misc::DmgKinds, svc::calc::CalcAttrVal};
+use crate::{def::AttrVal, misc::DmgKinds, svc::calc::CalcAttrVals};
 
 // Initial values of a RAH, non-rounded
 #[derive(Copy, Clone)]
 pub(super) struct RahInfo {
-    pub(super) resos: DmgKinds<CalcAttrVal>,
+    pub(super) resos: DmgKinds<CalcAttrVals>,
     pub(super) cycle_time: AttrVal,
     pub(super) shift_amount: AttrVal,
 }
 impl RahInfo {
     pub(super) fn new(
-        res_em: CalcAttrVal,
-        res_therm: CalcAttrVal,
-        res_kin: CalcAttrVal,
-        res_expl: CalcAttrVal,
+        res_em: CalcAttrVals,
+        res_therm: CalcAttrVals,
+        res_kin: CalcAttrVals,
+        res_expl: CalcAttrVals,
         cycle_time: AttrVal,
         shift_amount: AttrVal,
     ) -> Self {

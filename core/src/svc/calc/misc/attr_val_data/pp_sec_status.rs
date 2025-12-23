@@ -1,7 +1,7 @@
 use crate::{
     svc::{
         SvcCtx,
-        calc::{AttrValInfo, Calc, CalcAttrVal},
+        calc::{AttrValInfo, Calc, CalcAttrVals},
     },
     ud::UItemKey,
 };
@@ -10,8 +10,8 @@ pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
     item_key: UItemKey,
-    mut val: CalcAttrVal,
-) -> CalcAttrVal {
+    mut val: CalcAttrVals,
+) -> CalcAttrVals {
     let fit_key = ctx.u_data.items.get(item_key).dc_ship().unwrap().get_fit_key();
     let fit = ctx.u_data.fits.get(fit_key);
     val.dogma = fit.sec_status.get_inner();

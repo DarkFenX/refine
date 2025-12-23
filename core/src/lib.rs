@@ -20,9 +20,9 @@
 //!   items, and fetch data and stats
 
 pub use api::{
-    Ability, AbilityIter, AbilityMut, AddMode, AdjustableCount, AttrId, Autocharge, AutochargeMut, Booster, BoosterMut,
-    Character, CharacterMut, Charge, ChargeMut, Coordinates, Direction, Drone, DroneMut, EffectId, EffectInfo,
-    EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr,
+    Ability, AbilityIter, AbilityMut, AddMode, AdjustableCount, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
+    BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, Direction, Drone, DroneMut, EffectId,
+    EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr,
     FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, Implant, ImplantMut,
     IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, MinionState, Module,
     ModuleIter, ModuleMut, ModuleState, Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut,
@@ -42,7 +42,7 @@ pub use misc::{
 };
 pub use rd::Src;
 pub use sol::SolarSystem;
-pub use svc::calc::{Affector, CalcAttrVal, Modification};
+pub use svc::calc::{Affector, Modification};
 pub use util::UnitInterval;
 
 mod ac;

@@ -5,14 +5,14 @@ use super::err::{
     IterItemModifiersError,
 };
 use crate::{
-    api::{AttrId, EffectId, EffectInfo},
+    api::{AttrId, AttrVals, EffectId, EffectInfo},
     def::{AttrVal, Count, ItemId, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
     misc::{DmgKinds, DpsProfile, EffectMode, Spool},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{
-        calc::{CalcAttrVal, Modification},
+        calc::Modification,
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
             StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensors,
@@ -67,7 +67,7 @@ pub trait ItemCommon: ItemSealed {
 }
 
 pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
-    fn get_attr(&mut self, attr_id: &AttrId) -> Result<CalcAttrVal, GetItemAttrError> {
+    fn get_attr(&mut self, attr_id: &AttrId) -> Result<AttrVals, GetItemAttrError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         let a_attr_id = attr_id.into();
@@ -76,18 +76,20 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             None => return Err(AttrFoundError { attr_id: *attr_id }.into()),
         };
         match sol.internal_get_item_attr(item_key, attr_key) {
-            Ok(calc_val) => Ok(calc_val),
+            Ok(calc_val) => Ok(calc_val.into()),
             Err(error) => Err(ItemLoadedError {
                 item_id: self.get_sol().u_data.items.id_by_key(error.item_key),
             }
             .into()),
         }
     }
-    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, CalcAttrVal)>, IterItemAttrsError> {
+    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, AttrVals)>, IterItemAttrsError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_key) {
-            Ok(attr_iter) => Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).id.into(), val))),
+            Ok(attr_iter) => {
+                Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).id.into(), val.into())))
+            }
             Err(error) => Err(ItemLoadedError {
                 item_id: sol.u_data.items.id_by_key(error.item_key),
             }

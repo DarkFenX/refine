@@ -1,8 +1,7 @@
 use crate::def::AttrVal;
 
 #[derive(Copy, Clone)]
-pub struct CalcAttrVal {
+pub struct AttrVals {
     pub base: AttrVal,
-    pub dogma: AttrVal,
-    pub extra: AttrVal,
+    pub modified: AttrVal,
 }

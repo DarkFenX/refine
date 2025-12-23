@@ -2,7 +2,7 @@ use crate::{
     def::OF,
     svc::{
         SvcCtx,
-        calc::{AttrValInfo, Calc, CalcAttrVal},
+        calc::{AttrValInfo, Calc, CalcAttrVals},
     },
     ud::UItemKey,
 };
@@ -11,8 +11,8 @@ pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
     item_key: UItemKey,
-    mut val: CalcAttrVal,
-) -> CalcAttrVal {
+    mut val: CalcAttrVals,
+) -> CalcAttrVals {
     let count = ctx
         .u_data
         .items

@@ -7,7 +7,7 @@ use crate::{
     rd::{RAttr, RAttrKey},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcAttrVal, CalcModification, CalcModificationKey, ModAccumFast},
+        calc::{Calc, CalcAttrVals, CalcModification, CalcModificationKey, ModAccumFast},
         err::KeyedItemLoadedError,
     },
     ud::{UItem, UItemKey},
@@ -145,7 +145,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
         attr_key: RAttrKey,
-    ) -> Result<CalcAttrVal, KeyedItemLoadedError> {
+    ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
         if let Some(attr_entry) = item_attr_data.get(&attr_key)
@@ -174,7 +174,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
         attr_key: Option<RAttrKey>,
-    ) -> Result<CalcAttrVal, GetOAttrError> {
+    ) -> Result<CalcAttrVals, GetOAttrError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
         let attr_key = match attr_key {
@@ -207,7 +207,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemKey,
         attr_key: Option<RAttrKey>,
-    ) -> Option<CalcAttrVal> {
+    ) -> Option<CalcAttrVals> {
         let attr_key = attr_key?;
         let item_attr_data = self.attrs.get_item_attr_data(&item_key)?;
         if let Some(attr_entry) = item_attr_data.get(&attr_key)
@@ -226,7 +226,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVal)> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVals)> + use<>, KeyedItemLoadedError> {
         // Items can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
@@ -297,7 +297,7 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemKey, attr_key: RAttrKey) -> CalcAttrVal {
+    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemKey, attr_key: RAttrKey) -> CalcAttrVals {
         let item = ctx.u_data.items.get(item_key);
         let attr = ctx.u_data.src.get_attr(attr_key);
         let base_val = self.calc_item_base_attr_value(ctx, item_key, item, attr);
@@ -333,7 +333,7 @@ impl Calc {
         }
         // Post-dogma calculations
         let extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
-        CalcAttrVal {
+        CalcAttrVals {
             base: base_val,
             dogma: dogma_val,
             extra: extra_val,
