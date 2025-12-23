@@ -17,15 +17,15 @@ def test_full(client, consts):
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(1)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(1)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.5)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.65)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.51)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.65)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.51)
 
 
 def test_excess_slow_stable(client, consts):
@@ -53,15 +53,15 @@ def test_excess_slow_stable(client, consts):
     # but distributes excess into next resistance from the end, kinetic (which depends on the order
     # of resonances, ship being shot from kinetic damage sources is irrelevant here)
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.7)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.9)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.7)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.9)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.35)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.459)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.35)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.459)
 
 
 def test_excess_slow_loop(client, consts):
@@ -91,15 +91,15 @@ def test_excess_slow_loop(client, consts):
     # For donating, EM is the most preferred and thermal is the least preferred (assuming equal
     # damage taken), for receiving donated resistances it's reverse
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.5)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.05)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.05)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.5)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.05)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.05)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.5)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.325)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.0295)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.0255)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.325)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.0295)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.0255)
 
 
 def test_excess_max_takers_no_limit(client, consts):
@@ -123,15 +123,15 @@ def test_excess_max_takers_no_limit(client, consts):
     # ---loop---
     # 1 0.6 0.0 0.0 0.0
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.6)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.6)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.3)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0)
 
 
 def test_excess_max_takers_limited(client, consts):
@@ -157,12 +157,12 @@ def test_excess_max_takers_limited(client, consts):
     # In this case therm couldn't take more than 0.4 because it's the limit - total pool of values
     # to distribute, divided by count of resists which take damage - (0.5 + 0.3) / 2 = 0.4
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.8)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.6)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.8)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.6)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.39)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.4)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.39)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0)

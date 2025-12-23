@@ -45,15 +45,15 @@ def test_root_ship_to_struct_remove(client, consts):
     api_root = api_fit2.set_ship(type_id=eve_affectee_ship_id)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_root.change_ship(type_id=eve_affectee_struct_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-1)
     # Action
     api_module.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-4)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-4)
 
 
 def test_root_ship_to_unknown_remove(client, consts):
@@ -67,15 +67,15 @@ def test_root_ship_to_unknown_remove(client, consts):
     api_root = api_fit2.set_ship(type_id=eve_affectee_ship_id)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_root.change_ship(type_id=eve_affectee_unknown_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-3)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-3)
     # Action
     api_module.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-6)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-6)
 
 
 def test_root_ship_to_not_loaded_remove(client, consts):
@@ -89,7 +89,7 @@ def test_root_ship_to_not_loaded_remove(client, consts):
     api_root = api_fit2.set_ship(type_id=eve_affectee_ship_id)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_root.change_ship(type_id=eve_affectee_not_loaded_id)
     # Verification
@@ -115,15 +115,15 @@ def test_root_struct_to_ship_remove(client, consts):
     api_root = api_fit2.set_ship(type_id=eve_affectee_struct_id)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-1)
     # Action
     api_root.change_ship(type_id=eve_affectee_ship_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_module.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-2)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-2)
 
 
 def test_root_unknown_to_ship_remove(client, consts):
@@ -137,15 +137,15 @@ def test_root_unknown_to_ship_remove(client, consts):
     api_root = api_fit2.set_ship(type_id=eve_affectee_unknown_id)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-3)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-3)
     # Action
     api_root.change_ship(type_id=eve_affectee_ship_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_module.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-2)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-2)
 
 
 def test_root_not_loaded_to_ship_remove(client, consts):
@@ -165,11 +165,11 @@ def test_root_not_loaded_to_ship_remove(client, consts):
     # Action
     api_root.change_ship(type_id=eve_affectee_ship_id)
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_module.remove()
     # Verification
-    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(-2)
+    assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(-2)
 
 
 def test_child_drone(client, consts):
@@ -194,11 +194,11 @@ def test_child_drone(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_module(add_projs=[api_drone.id])
     # Verification
-    assert api_drone.update().attrs[eve_attr2_id].dogma == approx(1)
+    assert api_drone.update().attrs[eve_attr2_id].modified == approx(1)
     # Action
     api_drone.change_drone(type_id=eve_drone2_id)
     # Verification
-    assert api_drone.update().attrs[eve_attr2_id].dogma == approx(-1)
+    assert api_drone.update().attrs[eve_attr2_id].modified == approx(-1)
     # Action
     api_drone.change_drone(type_id=eve_drone3_id)
     # Verification
@@ -208,4 +208,4 @@ def test_child_drone(client, consts):
     # Action
     api_drone.change_drone(type_id=eve_drone1_id)
     # Verification
-    assert api_drone.update().attrs[eve_attr2_id].dogma == approx(1)
+    assert api_drone.update().attrs[eve_attr2_id].modified == approx(1)

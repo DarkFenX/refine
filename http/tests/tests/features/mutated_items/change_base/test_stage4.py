@@ -289,11 +289,11 @@ def test_projection(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee1_ship.id])
     api_affector_drone.change_drone(add_projs=[api_affectee2_ship.id])
     # Verification
-    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].dogma == approx(120)
-    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
+    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_affector_module.change_module(type_id=eve_base_item2_id)
     api_affector_drone.change_drone(type_id=eve_base_item2_id)
     # Verification
-    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].dogma == approx(150)
-    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].dogma == approx(150)
+    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].modified == approx(150)
+    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].modified == approx(150)

@@ -185,7 +185,7 @@ def test_modified(client, consts):
     api_fit.add_rig(type_id=eve_rig_id)
     api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
     # Verification - modification is ignored for the validation purposes
-    assert api_service.update().attrs[eve_attr_id].extra == approx(2)
+    assert api_service.update().attrs[eve_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
@@ -212,7 +212,7 @@ def test_mutation_limit_priority(client, consts):
         state=consts.ApiServiceState.online,
         mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(3)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
@@ -224,7 +224,7 @@ def test_mutation_limit_priority(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
@@ -248,7 +248,7 @@ def test_mutation_limit_inheritance(client, consts):
         state=consts.ApiServiceState.online,
         mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(3)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
@@ -260,7 +260,7 @@ def test_mutation_limit_inheritance(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(1)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec

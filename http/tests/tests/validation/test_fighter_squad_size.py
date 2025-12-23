@@ -146,7 +146,7 @@ def test_modified_max(client, consts):
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(6)
+    assert api_fighter.update().attrs[eve_count_attr_id].modified == approx(6)
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
@@ -154,21 +154,21 @@ def test_modified_max(client, consts):
     # Action
     api_fighter.change_fighter(count=10)
     # Verification
-    assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(6)
+    assert api_fighter.update().attrs[eve_count_attr_id].modified == approx(6)
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
     assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
     api_implant.remove()
     # Verification
-    assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(9)
+    assert api_fighter.update().attrs[eve_count_attr_id].modified == approx(9)
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
     assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
     api_fighter.change_fighter(count=None)
     # Verification
-    assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(9)
+    assert api_fighter.update().attrs[eve_count_attr_id].modified == approx(9)
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():

@@ -21,9 +21,9 @@ def test_affected_child_of_ship_ship_self(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_affected_child_of_ship_ship_fleeted(client, consts):
@@ -49,9 +49,9 @@ def test_affected_child_of_ship_ship_fleeted(client, consts):
     api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_affected_child_of_ship_struct_self(client, consts):
@@ -75,9 +75,9 @@ def test_affected_child_of_ship_struct_self(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_affected_child_of_ship_struct_fleeted(client, consts):
@@ -104,9 +104,9 @@ def test_affected_child_of_ship_struct_fleeted(client, consts):
     api_fit2.set_ship(type_id=eve_struct_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_child_of_offlist_ship_ship_self(client, consts):
@@ -130,9 +130,9 @@ def test_unaffected_child_of_offlist_ship_ship_self(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_child_of_offlist_ship_ship_fleeted(client, consts):
@@ -159,9 +159,9 @@ def test_unaffected_child_of_offlist_ship_ship_fleeted(client, consts):
     api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_child_of_offlist_ship_struct_self(client, consts):
@@ -184,9 +184,9 @@ def test_unaffected_child_of_offlist_ship_struct_self(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_child_of_offlist_ship_struct_fleeted(client, consts):
@@ -212,9 +212,9 @@ def test_unaffected_child_of_offlist_ship_struct_fleeted(client, consts):
     api_fit2.set_ship(type_id=eve_struct_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_other_fit(client, consts):
@@ -238,9 +238,9 @@ def test_unaffected_other_fit(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_other_fleet(client, consts):
@@ -268,9 +268,9 @@ def test_unaffected_other_fleet(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_unaffected_projectee(client, consts):
@@ -295,6 +295,6 @@ def test_unaffected_projectee(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)

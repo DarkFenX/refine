@@ -43,15 +43,15 @@ def test_root_loaded_onlist_to_loaded_offlist_remove(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_root.change_ship(type_id=eve_loaded_offlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_root_loaded_onlist_to_unloaded_onlist(client, consts):
@@ -65,15 +65,15 @@ def test_root_loaded_onlist_to_unloaded_onlist(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_root.change_ship(type_id=eve_unloaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_root_loaded_onlist_to_unloaded_offlist_remove(client, consts):
@@ -87,15 +87,15 @@ def test_root_loaded_onlist_to_unloaded_offlist_remove(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_root.change_ship(type_id=eve_unloaded_offlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_root_loaded_offlist_to_loaded_onlist_remove(client, consts):
@@ -109,15 +109,15 @@ def test_root_loaded_offlist_to_loaded_onlist_remove(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_loaded_offlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_root_unloaded_onlist_to_loaded_onlist_remove(client, consts):
@@ -131,15 +131,15 @@ def test_root_unloaded_onlist_to_loaded_onlist_remove(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_unloaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_root_unloaded_offlist_to_loaded_onlist_remove(client, consts):
@@ -153,15 +153,15 @@ def test_root_unloaded_offlist_to_loaded_onlist_remove(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_unloaded_offlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_root_not_loaded_to_ship_remove(client, consts):
@@ -175,15 +175,15 @@ def test_root_not_loaded_to_ship_remove(client, consts):
      api_module) = setup_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_not_loaded_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_sw_effect.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
 
 
 def test_child_module(client, consts):
@@ -210,11 +210,11 @@ def test_child_module(client, consts):
     api_module = api_fit.add_module(type_id=eve_module1_id)
     api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(25)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(25)
     # Action
     api_module.change_module(type_id=eve_module3_id)
     # Verification
@@ -224,4 +224,4 @@ def test_child_module(client, consts):
     # Action
     api_module.change_module(type_id=eve_module1_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(37.5)

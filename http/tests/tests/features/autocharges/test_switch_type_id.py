@@ -25,7 +25,7 @@ def test_specified_same(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge_id
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(50)
     # Action
     api_fighter.change_fighter(type_id=eve_fighter2_id)
     # Verification
@@ -33,7 +33,7 @@ def test_specified_same(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge_id
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(50)
 
 
 def test_specified_different(client, consts):
@@ -58,7 +58,7 @@ def test_specified_different(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge1_id
-    assert api_autocharge.attrs[eve_attr1_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr1_id].modified == approx(50)
     # Action
     api_fighter.change_fighter(type_id=eve_fighter2_id)
     # Verification
@@ -66,7 +66,7 @@ def test_specified_different(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge2_id
-    assert api_autocharge.attrs[eve_attr2_id].dogma == approx(70)
+    assert api_autocharge.attrs[eve_attr2_id].modified == approx(70)
 
 
 def test_valid_to_invalid_reference_to_valid(client, consts):
@@ -89,7 +89,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge1_id
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(50)
     # Action
     api_fighter.change_fighter(type_id=eve_fighter2_id)
     # Verification
@@ -103,7 +103,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge1_id
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(50)
 
 
 def test_valid_to_no_reference_to_valid(client, consts):
@@ -125,7 +125,7 @@ def test_valid_to_no_reference_to_valid(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge1_id
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(50)
     # Action
     api_fighter.change_fighter(type_id=eve_fighter2_id)
     # Verification
@@ -139,4 +139,4 @@ def test_valid_to_no_reference_to_valid(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.type_id == eve_autocharge1_id
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(50)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(50)

@@ -48,7 +48,7 @@ def get_value_for_state(*, client, consts, state):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_item_id, state=state)
-    return api_item.update().attrs[eve_affectee_attr_id].dogma
+    return api_item.update().attrs[eve_affectee_attr_id].modified
 
 
 def test_fit_offline(client, consts):

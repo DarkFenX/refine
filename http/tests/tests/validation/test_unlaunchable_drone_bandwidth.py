@@ -149,7 +149,7 @@ def test_modified_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(20)
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(20)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
@@ -157,7 +157,7 @@ def test_modified_use(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(40)
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(40)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
@@ -184,7 +184,7 @@ def test_modified_max(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(40)
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(40)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(40)
@@ -192,7 +192,7 @@ def test_modified_max(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(60)
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(60)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -214,7 +214,7 @@ def test_mutation_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_base_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(25)
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(25)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
@@ -222,7 +222,7 @@ def test_mutation_use(client, consts):
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(56)
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(56)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
@@ -230,7 +230,7 @@ def test_mutation_use(client, consts):
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(50)
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(50)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)

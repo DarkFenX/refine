@@ -235,8 +235,8 @@ def test_offense_buff(client, consts):
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification - check that effect is applied, and check that validation is passed
     api_tgt_ship.update()
-    assert api_tgt_ship.attrs[eve_affectee_attr_id].dogma == approx(0.5)
-    assert api_tgt_ship.attrs[eve_immunity_attr_id].dogma == approx(1)
+    assert api_tgt_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
+    assert api_tgt_ship.attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -306,7 +306,7 @@ def test_offense_tgt_modified(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -314,14 +314,14 @@ def test_offense_tgt_modified(client, consts):
     # Action
     api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(1)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_mod_item.remove()
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -352,7 +352,7 @@ def test_offense_tgt_mutation(client, consts):
     api_tgt_item = api_tgt_fit.add_drone(type_id=eve_tgt_base_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -360,14 +360,14 @@ def test_offense_tgt_mutation(client, consts):
     # Action
     api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(1)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation={eve_immunity_attr_id: Muta.roll_to_api(val=0)})
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -375,14 +375,14 @@ def test_offense_tgt_mutation(client, consts):
     # Action
     api_tgt_item.change_drone(mutation={eve_immunity_attr_id: Muta.roll_to_api(val=0.1)})
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0.2)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -663,7 +663,7 @@ def test_assist_src_mutation_add(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification - validation fails, since unmutated value is used to determine behavior
-    assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(0)
+    assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
@@ -694,7 +694,7 @@ def test_assist_src_mutation_change(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(0)
+    assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -702,21 +702,21 @@ def test_assist_src_mutation_change(client, consts):
     # Action
     api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: Muta.roll_to_api(val=0)}))
     # Verification
-    assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(0)
+    assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: Muta.roll_to_api(val=0.5)}))
     # Verification
-    assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(1)
+    assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(mutation=None)
     # Verification
-    assert api_src_item.update().attrs[eve_assist_attr_id].extra == approx(0)
+    assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
     with check_no_field():

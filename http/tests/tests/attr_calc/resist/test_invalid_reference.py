@@ -31,7 +31,7 @@ def test_on_effect(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification - attribute which does not exist cannot be used to define resistances
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(200)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-60)
@@ -83,7 +83,7 @@ def test_on_affector_item(client, consts):
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - attribute which does not exist cannot be used to define resistances
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(171)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(171)
     api_mods = api_affectee_ship.mods[eve_affectee_attr_id]
     assert len(api_mods) == 2
     api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()

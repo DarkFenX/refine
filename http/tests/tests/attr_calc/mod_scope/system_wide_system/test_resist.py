@@ -23,4 +23,4 @@ def test_unresisted(client, consts):
     api_fit = api_sol.create_fit()
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_ship_id)
     api_sol.add_sw_effect(type_id=eve_affector_sw_effect_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)

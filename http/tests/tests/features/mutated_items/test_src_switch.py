@@ -156,8 +156,8 @@ def test_to_stage4_different_group(client, consts):
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
     assert api_item.mutation.base_type_id == eve_base_item_id
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(120)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(100)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(120)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(100)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - by checking that different attribute is affected, we check that new group is
@@ -165,8 +165,8 @@ def test_to_stage4_different_group(client, consts):
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
     assert api_item.mutation.base_type_id == eve_base_item_id
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(120)
 
 
 def test_to_stage4_different_id(client):
@@ -306,9 +306,9 @@ def test_to_stage3_different_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(110.4)
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(92)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - 2nd attribute is modified because base item group ID is used
@@ -316,8 +316,8 @@ def test_to_stage3_different_group(client, consts):
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(120)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -330,9 +330,9 @@ def test_to_stage3_different_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(110.4)
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(92)
 
 
 def test_to_stage2_different_group(client, consts):
@@ -399,9 +399,9 @@ def test_to_stage2_different_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(110.4)
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(92)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - 2nd attribute is modified because base item group ID is used
@@ -409,8 +409,8 @@ def test_to_stage2_different_group(client, consts):
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(120)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -423,9 +423,9 @@ def test_to_stage2_different_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(110.4)
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(92)
 
 
 def test_to_stage2_no_base_item(client):
@@ -541,9 +541,9 @@ def test_to_stage1_different_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(110.4)
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(92)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - 2nd attribute is modified because base item group ID is used
@@ -551,8 +551,8 @@ def test_to_stage1_different_group(client, consts):
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(120)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -565,9 +565,9 @@ def test_to_stage1_different_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(110.4)
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(92)
 
 
 def test_to_stage1_no_base_item(client):

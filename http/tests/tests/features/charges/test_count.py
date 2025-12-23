@@ -61,7 +61,7 @@ def test_modified_capacity(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - unmodified capacity is used
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].extra == approx(0.98)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.98)
     assert api_module.charge_count == 9
 
 
@@ -86,7 +86,7 @@ def test_modified_volume(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - unmodified capacity is used
     api_module.update()
-    assert api_module.charge.attrs[eve_volume_attr_id].extra == approx(0.1)
+    assert api_module.charge.attrs[eve_volume_attr_id].modified == approx(0.1)
     assert api_module.charge_count == 9
 
 
@@ -105,25 +105,25 @@ def test_mutation_capacity(client, consts):
     api_module = api_fit.add_module(type_id=eve_base_module_id, charge_type_id=eve_charge_id)
     # Verification
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].extra == approx(0.5)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.5)
     assert api_module.charge_count == 10
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification - volume of mutated item is used
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].extra == approx(0.75)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.75)
     assert api_module.charge_count == 15
     # Action
     api_module.change_module(mutation={eve_capacity_attr_id: Muta.roll_to_api(val=1)})
     # Verification - unmutated capacity attribute value of mutated item is used
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].extra == approx(1.125)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(1.125)
     assert api_module.charge_count == 15
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].extra == approx(0.5)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.5)
     assert api_module.charge_count == 10
 
 

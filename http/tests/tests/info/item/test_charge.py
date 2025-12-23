@@ -48,11 +48,11 @@ def test_bundled(client, consts):
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
-    assert api_charge.attrs[eve_attr_id].dogma == approx(10)
+    assert api_charge.attrs[eve_attr_id].modified == approx(10)
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
-    assert api_charge.attrs[eve_attr_id].dogma == approx(10)
+    assert api_charge.attrs[eve_attr_id].modified == approx(10)
 
 
 def test_separate(client, consts):
@@ -118,11 +118,11 @@ def test_separate(client, consts):
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
-    assert api_charge.attrs[eve_attr_id].dogma == approx(10)
+    assert api_charge.attrs[eve_attr_id].modified == approx(10)
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
-    assert api_charge.attrs[eve_attr_id].dogma == approx(10)
+    assert api_charge.attrs[eve_attr_id].modified == approx(10)
 
 
 def test_not_loaded(client, consts):

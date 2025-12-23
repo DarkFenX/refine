@@ -23,7 +23,7 @@ def test_default_max(client, consts):
     api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification - should be 3 * 6 = 18 without limit, but 5 with
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(5)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(5)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.max_limit
@@ -56,7 +56,7 @@ def test_default_min(client, consts):
     api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification - should be 3 * 6 = 18 without limit, but 20 with
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(20)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(20)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.min_limit
@@ -88,7 +88,7 @@ def test_unmodified_max(client, consts):
     api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification - should be 3 * 6 = 18 without limit, but 2 with
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(2)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(2)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.max_limit
@@ -120,7 +120,7 @@ def test_unmodified_min(client, consts):
     api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification - should be 3 * 6 = 18 without limit, but 25 with
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(25)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(25)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.min_limit
@@ -158,7 +158,7 @@ def test_modified(client, consts):
     api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification - should be 3 * 6 = 18 without limit, but 0.1 * 6 = 0.6 with
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(0.6)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(0.6)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.max_limit
@@ -201,7 +201,7 @@ def test_update(client, consts):
     # Verification - request limitee attribute value before adding limiter item, to make sure
     # limitee attribute value is calculated
     api_limitee_item.update()
-    assert api_limitee_item.attrs[eve_limitee_attr_id].dogma == approx(2)
+    assert api_limitee_item.attrs[eve_limitee_attr_id].modified == approx(2)
     assert api_limitee_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_val == approx(2)
     # Action
@@ -209,14 +209,14 @@ def test_update(client, consts):
     # Verification - here, limiter attribute should be multiplied by 3.5 (2 * 3.5 = 7), which is
     # still below unlimited value of limitee attribute (18)
     api_limitee_item.update()
-    assert api_limitee_item.attrs[eve_limitee_attr_id].dogma == approx(7)
+    assert api_limitee_item.attrs[eve_limitee_attr_id].modified == approx(7)
     assert api_limitee_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_val == approx(7)
     # Action
     api_limiter_item.remove()
     # Verification - should revert back to base value after change of limiter attribute
     api_limitee_item.update()
-    assert api_limitee_item.attrs[eve_limitee_attr_id].dogma == approx(2)
+    assert api_limitee_item.attrs[eve_limitee_attr_id].modified == approx(2)
     assert api_limitee_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_val == approx(2)
 
@@ -243,7 +243,7 @@ def test_unlimited(client, consts):
     # Verification - should be 3 * 6 = 18 without max limit, and max limit is higher - 20, so 18 is
     # exposed
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(18)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(18)
     assert len(api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id)) == 0
 
@@ -262,14 +262,14 @@ def test_switch_src(client):
     api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification - limited on first source, because max attr ID is defined
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(2)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(2)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - not limited on second source, since it doesn't specify max attr ID
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(3)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(3)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification - switch back and check that it's limited again
     api_item.update()
-    assert api_item.attrs[eve_limitee_attr_id].dogma == approx(2)
+    assert api_item.attrs[eve_limitee_attr_id].modified == approx(2)

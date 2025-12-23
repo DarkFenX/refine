@@ -214,14 +214,14 @@ def test_modified_module(client, consts):
     api_fit.set_ship(type_id=eve_ship)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
     # Verification
-    assert api_module.update().attrs[eve_size_attr_id].extra == approx(2)
+    assert api_module.update().attrs[eve_size_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
     assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
-    assert api_module.update().attrs[eve_size_attr_id].extra == approx(2)
+    assert api_module.update().attrs[eve_size_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
     with check_no_field():
@@ -229,7 +229,7 @@ def test_modified_module(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_module.update().attrs[eve_size_attr_id].extra == approx(1)
+    assert api_module.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
     with check_no_field():
@@ -237,7 +237,7 @@ def test_modified_module(client, consts):
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
-    assert api_module.update().attrs[eve_size_attr_id].extra == approx(1)
+    assert api_module.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
     assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
@@ -265,14 +265,14 @@ def test_modified_charge(client, consts):
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
     # Verification
-    assert api_module.charge.update().attrs[eve_size_attr_id].extra == approx(1)
+    assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
     assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
-    assert api_module.charge.update().attrs[eve_size_attr_id].extra == approx(1)
+    assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
     with check_no_field():
@@ -280,7 +280,7 @@ def test_modified_charge(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_module.charge.update().attrs[eve_size_attr_id].extra == approx(1)
+    assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
     with check_no_field():
@@ -288,7 +288,7 @@ def test_modified_charge(client, consts):
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
-    assert api_module.charge.update().attrs[eve_size_attr_id].extra == approx(2)
+    assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
     assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}

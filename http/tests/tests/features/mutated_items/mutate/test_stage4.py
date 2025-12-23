@@ -542,9 +542,9 @@ def test_modification(client, consts):
     with check_no_field():
         api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_affector_attr_id].base == approx(20)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(20)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(20)
     assert api_item.attrs[eve_affectee_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
         eve_affector_attr_id: Muta.roll_to_api(val=0.2),
@@ -557,9 +557,9 @@ def test_modification(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_attr_id].absolute == approx(224)
     assert api_item.attrs[eve_affector_attr_id].base == approx(17.6)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(17.6)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(17.6)
     assert api_item.attrs[eve_affectee_attr_id].base == approx(224)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(263.424)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(263.424)
 
 
 def test_item_type_id(client):
@@ -623,9 +623,9 @@ def test_item_group(client, consts):
     with check_no_field():
         api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(100)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(120)  # Modified
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(100)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(100)  # Not modified
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: Muta.roll_to_api(val=0.2),
@@ -638,9 +638,9 @@ def test_item_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(112)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(88)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(88)  # Not modified
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(88)  # Not modified
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(112)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(134.4)  # Modified
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(134.4)  # Modified
 
 
 def test_item_category(client, consts):
@@ -670,14 +670,14 @@ def test_item_category(client, consts):
     # Verification - base item is not from stacking penalty immune category, so calculation is
     # stacking penalized.
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(140.85888)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(140.85888)
     # Action
     api_item1.change_module(mutation=eve_mutator_id)
     api_item2.change_module(mutation=eve_mutator_id)
     # Verification - value is 144 because change is non-penalized thanks to implant category of
     # mutated item.
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(144)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(144)
 
 
 def test_item_skillreqs(client, consts):
@@ -722,9 +722,9 @@ def test_item_skillreqs(client, consts):
     with check_no_field():
         api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(100)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(120)  # Modified
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(100)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(100)  # Not modified
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: Muta.roll_to_api(val=0.2),
@@ -737,9 +737,9 @@ def test_item_skillreqs(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(112)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(88)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(88)  # Not modified
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(88)  # Not modified
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(112)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(134.4)  # Modified
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(134.4)  # Modified
 
 
 def test_item_effects(client, consts):
@@ -772,14 +772,14 @@ def test_item_effects(client, consts):
     api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(120)  # Modified
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(100)  # Not modified
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)  # Not modified
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)  # Modified
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(100)  # Not modified
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(120)  # Modified
 
 
 def test_item_default_effect(client, consts):
@@ -815,14 +815,14 @@ def test_item_default_effect(client, consts):
     api_item = api_fit.add_module(type_id=eve_base_item_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(120)  # Modified
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(100)  # Not modified
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)  # Not modified
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)  # Modified
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(100)  # Not modified
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(120)  # Modified
 
 
 def test_projection(client, consts):
@@ -863,14 +863,14 @@ def test_projection(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee1_ship.id])
     api_affector_drone.change_drone(add_projs=[api_affectee2_ship.id])
     # Verification
-    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].dogma == approx(120)
-    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
+    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_affector_module.change_module(mutation=eve_mutator_id)
     api_affector_drone.change_drone(mutation=eve_mutator_id)
     # Verification
-    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].dogma == approx(130)
-    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].dogma == approx(130)
+    assert api_affectee1_ship.update().attrs[eve_affectee_attr_id].modified == approx(130)
+    assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].modified == approx(130)
 
 
 def test_drone(client):

@@ -48,9 +48,9 @@ def test_influence(client, consts):
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_primary_affectee_attr_id].dogma == approx(12)
-    assert api_ship.attrs[eve_side1_affectee_attr_id].dogma == approx(250)
-    assert api_ship.attrs[eve_side2_affectee_attr_id].dogma == approx(100)
+    assert api_ship.attrs[eve_primary_affectee_attr_id].modified == approx(12)
+    assert api_ship.attrs[eve_side1_affectee_attr_id].modified == approx(250)
+    assert api_ship.attrs[eve_side2_affectee_attr_id].modified == approx(100)
     assert len(api_ship.mods) == 1
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
@@ -67,9 +67,9 @@ def test_influence(client, consts):
     api_booster.change_booster(side_effects={api_side1_effect_id: True})
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_primary_affectee_attr_id].dogma == approx(12)
-    assert api_ship.attrs[eve_side1_affectee_attr_id].dogma == approx(312.5)
-    assert api_ship.attrs[eve_side2_affectee_attr_id].dogma == approx(100)
+    assert api_ship.attrs[eve_primary_affectee_attr_id].modified == approx(12)
+    assert api_ship.attrs[eve_side1_affectee_attr_id].modified == approx(312.5)
+    assert api_ship.attrs[eve_side2_affectee_attr_id].modified == approx(100)
     assert len(api_ship.mods) == 2
     api_mod1 = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_side1_affectee_attr_id,
@@ -93,9 +93,9 @@ def test_influence(client, consts):
     api_booster.change_booster(side_effects={api_side2_effect_id: True})
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_primary_affectee_attr_id].dogma == approx(12)
-    assert api_ship.attrs[eve_side1_affectee_attr_id].dogma == approx(312.5)
-    assert api_ship.attrs[eve_side2_affectee_attr_id].dogma == approx(110)
+    assert api_ship.attrs[eve_primary_affectee_attr_id].modified == approx(12)
+    assert api_ship.attrs[eve_side1_affectee_attr_id].modified == approx(312.5)
+    assert api_ship.attrs[eve_side2_affectee_attr_id].modified == approx(110)
     assert len(api_ship.mods) == 3
     api_mod1 = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_side1_affectee_attr_id,
@@ -126,9 +126,9 @@ def test_influence(client, consts):
     api_booster.change_booster(side_effects={api_side1_effect_id: False})
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_primary_affectee_attr_id].dogma == approx(12)
-    assert api_ship.attrs[eve_side1_affectee_attr_id].dogma == approx(250)
-    assert api_ship.attrs[eve_side2_affectee_attr_id].dogma == approx(110)
+    assert api_ship.attrs[eve_primary_affectee_attr_id].modified == approx(12)
+    assert api_ship.attrs[eve_side1_affectee_attr_id].modified == approx(250)
+    assert api_ship.attrs[eve_side2_affectee_attr_id].modified == approx(110)
     assert len(api_ship.mods) == 2
     api_mod2 = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_side2_affectee_attr_id,
@@ -152,9 +152,9 @@ def test_influence(client, consts):
     api_booster.change_booster(side_effects={api_side2_effect_id: False})
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_primary_affectee_attr_id].dogma == approx(12)
-    assert api_ship.attrs[eve_side1_affectee_attr_id].dogma == approx(250)
-    assert api_ship.attrs[eve_side2_affectee_attr_id].dogma == approx(100)
+    assert api_ship.attrs[eve_primary_affectee_attr_id].modified == approx(12)
+    assert api_ship.attrs[eve_side1_affectee_attr_id].modified == approx(250)
+    assert api_ship.attrs[eve_side2_affectee_attr_id].modified == approx(100)
     assert len(api_ship.mods) == 1
     api_booster.update()
     api_side1 = api_booster.side_effects[api_side1_effect_id]
@@ -191,7 +191,7 @@ def test_booster_state(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id, side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -201,7 +201,7 @@ def test_booster_state(client, consts):
     api_booster.change_booster(state=False)
     # Verification
     # Side effect modification is disabled, because parent booster is disabled
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     # Side effect status is reported regardless of if effect is running or not

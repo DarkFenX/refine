@@ -186,7 +186,7 @@ def test_modified_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    assert api_rig.update().attrs[eve_use_attr_id].extra == approx(75)
+    assert api_rig.update().attrs[eve_use_attr_id].modified == approx(75)
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
@@ -197,7 +197,7 @@ def test_modified_use(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_rig.update().attrs[eve_use_attr_id].extra == approx(150)
+    assert api_rig.update().attrs[eve_use_attr_id].modified == approx(150)
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
@@ -227,7 +227,7 @@ def test_modified_max(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(120)
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(120)
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration == (approx(150), approx(120))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
@@ -238,7 +238,7 @@ def test_modified_max(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(180)
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(180)
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration == (approx(150), approx(180))
     api_val = api_fit.validate(options=ValOptions(calibration=True))

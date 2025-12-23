@@ -36,13 +36,13 @@ def test_add_with_change_without_remove(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(15000, 0, 0))
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(500)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(350)
     api_affectee_ship.change_ship(coordinates=(0, 0, 0))
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(500)
 
 
 def test_add_without_change_with_remove(client, consts):
@@ -80,13 +80,13 @@ def test_add_without_change_with_remove(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(500)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_affectee_ship.change_ship(coordinates=(15000, 0, 0))
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(350)
     api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(500)
 
 
 def test_add_with_change_with_remove(client, consts):
@@ -124,13 +124,13 @@ def test_add_with_change_with_remove(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_struct_id, coordinates=(15000, 0, 0))
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(500)
     api_affector_module.change_module(add_projs=[api_affectee_struct.id])
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(350)
     api_affectee_struct.change_ship(coordinates=(20000, 0, 0))
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(481.25)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(481.25)
     api_affector_module.change_module(rm_projs=[api_affectee_struct.id])
-    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_rig.update().attrs[eve_affectee_attr_id].modified == approx(500)
 
 
 def test_value_change_optimal(client, consts):
@@ -177,11 +177,11 @@ def test_value_change_optimal(client, consts):
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct_id, coordinates=(15000, 0, 0))
     api_affectee_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id)
     api_affector_module.change_module(add_projs=[api_affectee_struct.id])
-    assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(350)
     api_affector_rig = api_affector_fit.add_rig(type_id=eve_affector_rig_id)
-    assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(247.731075)
+    assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(247.731075)
     api_affector_rig.remove()
-    assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(350)
 
 
 def test_value_change_falloff(client, consts):
@@ -227,8 +227,8 @@ def test_value_change_falloff(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(15000, 0, 0))
     api_affectee_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
-    assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(350)
     api_affector_rig = api_affector_fit.add_rig(type_id=eve_affector_rig_id)
-    assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(279.539826)
+    assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(279.539826)
     api_affector_rig.remove()
-    assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(350)

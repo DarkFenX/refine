@@ -19,7 +19,7 @@ def test_unaffected_self(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_fw_effect(type_id=eve_item_id)
-    assert api_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_root(client, consts):
@@ -40,7 +40,7 @@ def test_unaffected_root(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_child(client, consts):
@@ -65,5 +65,5 @@ def test_unaffected_child(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_affectee_item = api_fit.add_module(type_id=eve_affectee_module_id, charge_type_id=eve_affectee_charge_id)
     api_affectee_item.update()
-    assert api_affectee_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_affectee_item.charge.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.attrs[eve_affectee_attr_id].modified == approx(100)
+    assert api_affectee_item.charge.attrs[eve_affectee_attr_id].modified == approx(100)

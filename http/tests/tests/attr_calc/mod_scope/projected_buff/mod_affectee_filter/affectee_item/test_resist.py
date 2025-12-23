@@ -33,11 +33,11 @@ def test_resisted_value_change_root(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(19.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(19.5)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(16.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(16.5)
     api_rig.remove()
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(19.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(19.5)
 
 
 def test_resisted_value_change_child(client, consts):
@@ -76,8 +76,8 @@ def test_resisted_value_change_child(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_drone.id])
-    assert api_drone.update().attrs[eve_affectee_attr_id].dogma == approx(19.5)
+    assert api_drone.update().attrs[eve_affectee_attr_id].modified == approx(19.5)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    assert api_drone.update().attrs[eve_affectee_attr_id].dogma == approx(16.5)
+    assert api_drone.update().attrs[eve_affectee_attr_id].modified == approx(16.5)
     api_rig.remove()
-    assert api_drone.update().attrs[eve_affectee_attr_id].dogma == approx(19.5)
+    assert api_drone.update().attrs[eve_affectee_attr_id].modified == approx(19.5)

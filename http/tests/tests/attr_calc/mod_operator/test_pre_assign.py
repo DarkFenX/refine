@@ -24,7 +24,7 @@ def setup_hig_test(*, client, consts, high_is_good):
     api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee_id)
     api_item_affectee.update()
     return (
-        api_item_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_item_affectee.attrs[eve_affectee_attr_id].modified,
         api_item_affectee.mods[eve_affectee_attr_id],
         api_item_affector2,
         api_item_affector3)

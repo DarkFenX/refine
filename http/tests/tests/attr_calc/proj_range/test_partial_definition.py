@@ -32,7 +32,7 @@ def test_optimal_undefined(client, consts):
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_struct_id, coordinates=(0, 0, 0))
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
     # Action
@@ -40,18 +40,18 @@ def test_optimal_undefined(client, consts):
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult == approx(1)
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
     api_affectee_struct.change_ship(coordinates=(5000, 0, 0))
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(350)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(350)
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult == approx(0.5)
     # Action
     api_affector_module.change_module(rm_projs=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
 
@@ -87,26 +87,26 @@ def test_falloff_undefined(client, consts):
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_struct_id, coordinates=(0, 0, 0))
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
     # Action
     api_affector_module.change_module(add_projs=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(200)
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult == approx(1)
     # Action
     api_affectee_struct.change_ship(coordinates=(10000, 0, 0))
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(200)
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult == approx(1)
     # Action
     api_affectee_struct.change_ship(coordinates=(10000.01, 0, 0))
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     # Here, modification was filtered out as ineffective
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
@@ -114,6 +114,6 @@ def test_falloff_undefined(client, consts):
     api_affector_module.change_module(rm_projs=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
-    assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018

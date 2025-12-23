@@ -34,12 +34,12 @@ def test_onlist_to_offlist_to_onlist(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)

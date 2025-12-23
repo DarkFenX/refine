@@ -710,8 +710,8 @@ def test_modified(client, consts):
     api_service1 = api_fit.add_service(type_id=eve_service1_id)
     api_service2 = api_fit.add_service(type_id=eve_service2_id)
     # Verification
-    assert api_service1.update().attrs[eve_attr_id].extra == approx(0)
-    assert api_service2.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_service1.update().attrs[eve_attr_id].modified == approx(0)
+    assert api_service2.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
@@ -720,8 +720,8 @@ def test_modified(client, consts):
     api_rig1.remove()
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    assert api_service1.update().attrs[eve_attr_id].extra == approx(1)
-    assert api_service2.update().attrs[eve_attr_id].extra == approx(1)
+    assert api_service1.update().attrs[eve_attr_id].modified == approx(1)
+    assert api_service2.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec

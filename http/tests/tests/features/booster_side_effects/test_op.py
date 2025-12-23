@@ -23,7 +23,7 @@ def test_preassign(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -31,7 +31,7 @@ def test_preassign(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification - effect is applied, just its strength info is not exposed
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(25)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(25)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -60,7 +60,7 @@ def test_premul(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -69,7 +69,7 @@ def test_premul(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -99,7 +99,7 @@ def test_prediv(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -108,7 +108,7 @@ def test_prediv(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -138,7 +138,7 @@ def test_prediv_zero(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -146,7 +146,7 @@ def test_prediv_zero(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -175,7 +175,7 @@ def test_add(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -184,7 +184,7 @@ def test_add(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(225)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(225)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -214,7 +214,7 @@ def test_sub(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -223,7 +223,7 @@ def test_sub(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(175)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(175)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -253,7 +253,7 @@ def test_postmul(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -262,7 +262,7 @@ def test_postmul(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -292,7 +292,7 @@ def test_postdiv(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -301,7 +301,7 @@ def test_postdiv(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -331,7 +331,7 @@ def test_postdiv_zero(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -339,7 +339,7 @@ def test_postdiv_zero(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -368,7 +368,7 @@ def test_postperc(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -377,7 +377,7 @@ def test_postperc(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -407,7 +407,7 @@ def test_postassign(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -415,7 +415,7 @@ def test_postassign(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification - effect is applied, just its strength info is not exposed
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(25)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(25)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True

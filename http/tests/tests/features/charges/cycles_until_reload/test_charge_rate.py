@@ -159,7 +159,7 @@ def test_modified_charge_rate(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - unmodified charge rate is still used
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(2)
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
     assert api_module.cycles_until_empty == 10
 
 
@@ -190,25 +190,25 @@ def test_mutation_charge_rate(client, consts):
     api_module = api_fit.add_module(type_id=eve_base_module_id, charge_type_id=eve_charge_id)
     # Verification
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(1)
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(1)
     assert api_module.cycles_until_empty == 10
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification - value from mutated item is used
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(2)
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
     assert api_module.cycles_until_empty == 5
     # Action
     api_module.change_module(mutation={eve_charge_rate_attr_id: Muta.roll_to_api(val=1)})
     # Verification - but attribute mutation is ignored
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(3)
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(3)
     assert api_module.cycles_until_empty == 5
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].extra == approx(1)
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(1)
     assert api_module.cycles_until_empty == 10
 
 

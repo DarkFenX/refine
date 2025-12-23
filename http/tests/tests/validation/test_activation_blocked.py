@@ -162,7 +162,7 @@ def test_mutation(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
@@ -170,14 +170,14 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(1)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=0)})
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
@@ -185,14 +185,14 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=1)})
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(1)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():

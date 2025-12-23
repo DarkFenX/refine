@@ -35,7 +35,7 @@ def test_valid_to_valid_matching(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -44,7 +44,7 @@ def test_valid_to_valid_matching(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.5)
     assert api_side.state is False
@@ -53,7 +53,7 @@ def test_valid_to_valid_matching(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.5)
     assert api_side.state is True
@@ -62,7 +62,7 @@ def test_valid_to_valid_matching(client, consts):
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(125)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(125)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -125,7 +125,7 @@ def test_valid_to_valid_different(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_d1_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_d1_affectee_attr_id].modified == approx(100)
     api_module.update()
     with check_no_field():
         api_module.attrs  # noqa: B018
@@ -140,7 +140,7 @@ def test_valid_to_valid_different(client, consts):
     api_ship.update()
     with check_no_field():
         api_ship.attrs  # noqa: B018
-    assert api_module.update().attrs[eve_d2_affectee_attr_id].extra == approx(150)
+    assert api_module.update().attrs[eve_d2_affectee_attr_id].modified == approx(150)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.5)
     assert api_side.state is False
@@ -152,7 +152,7 @@ def test_valid_to_valid_different(client, consts):
     api_ship.update()
     with check_no_field():
         api_ship.attrs  # noqa: B018
-    assert api_module.update().attrs[eve_d2_affectee_attr_id].extra == approx(195)
+    assert api_module.update().attrs[eve_d2_affectee_attr_id].modified == approx(195)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.5)
     assert api_side.state is True
@@ -161,7 +161,7 @@ def test_valid_to_valid_different(client, consts):
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_d1_affectee_attr_id].extra == approx(125)
+    assert api_ship.update().attrs[eve_d1_affectee_attr_id].modified == approx(125)
     api_module.update()
     with check_no_field():
         api_module.attrs  # noqa: B018
@@ -208,7 +208,7 @@ def test_regular_effect_toggle(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -217,21 +217,21 @@ def test_regular_effect_toggle(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action - attempt to switch state of an effect which is not a side effect
     api_booster.change_booster(side_effects={api_effect_id: False})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -240,21 +240,21 @@ def test_regular_effect_toggle(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action - attempt to switch state of an effect which is not a side effect
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(125)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(125)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -293,7 +293,7 @@ def test_absent_to_valid(client, consts):
     api_booster1 = api_fit.add_booster(type_id=eve_booster_id)
     api_booster2 = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster1.update()
     with check_no_field():
         api_booster1.side_effects  # noqa: B018
@@ -303,7 +303,7 @@ def test_absent_to_valid(client, consts):
     # Action
     api_booster1.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster1.update()
     with check_no_field():
         api_booster1.side_effects  # noqa: B018
@@ -313,7 +313,7 @@ def test_absent_to_valid(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_side1 = api_booster1.update().side_effects[api_effect_id]
     assert api_side1.chance == approx(0.5)
     assert api_side1.state is True
@@ -327,7 +327,7 @@ def test_absent_to_valid(client, consts):
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster1.update()
     with check_no_field():
         api_booster1.side_effects  # noqa: B018
@@ -337,7 +337,7 @@ def test_absent_to_valid(client, consts):
     # Action
     api_booster2.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster1.update()
     with check_no_field():
         api_booster1.side_effects  # noqa: B018
@@ -347,7 +347,7 @@ def test_absent_to_valid(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(338)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(338)
     api_side1 = api_booster1.update().side_effects[api_effect_id]
     assert api_side1.chance == approx(0.5)
     assert api_side1.state is True

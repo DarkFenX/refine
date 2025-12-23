@@ -36,7 +36,7 @@ def test_pre_assign(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
     assert api_mod.initial_val == approx(100)
@@ -46,7 +46,7 @@ def test_pre_assign(client, consts):
     api_affectee_ship.change_ship(coordinates=(1500, 0, 0))
     # Verification - value is not getting reduced despite target being in falloff
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
     assert api_mod.initial_val == approx(100)
@@ -56,7 +56,7 @@ def test_pre_assign(client, consts):
     api_affectee_ship.change_ship(coordinates=(300000, 0, 0))
     # Verification - when multiplier reaches 0, assignment is not applied altogether
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_ship.mods  # noqa: B018
 
@@ -96,7 +96,7 @@ def test_pre_mul(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(287.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_mul
     assert api_mod.initial_val == approx(0.15)
@@ -139,7 +139,7 @@ def test_pre_div(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(287.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_div
     assert api_mod.initial_val == approx(6.66666666666667)
@@ -183,7 +183,7 @@ def test_add(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(450)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(450)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(-100)
@@ -227,7 +227,7 @@ def test_sub(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(550)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(550)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_sub
     assert api_mod.initial_val == approx(-100)
@@ -270,7 +270,7 @@ def test_post_mul(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(287.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
     assert api_mod.initial_val == approx(0.15)
@@ -313,7 +313,7 @@ def test_post_div(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(287.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_div
     assert api_mod.initial_val == approx(6.66666666666667)
@@ -355,7 +355,7 @@ def test_post_percent(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(287.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(287.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-85)
@@ -398,7 +398,7 @@ def test_post_assign(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
     assert api_mod.initial_val == approx(100)
@@ -408,7 +408,7 @@ def test_post_assign(client, consts):
     api_affectee_ship.change_ship(coordinates=(1500, 0, 0))
     # Verification - value is not getting reduced despite target being in falloff
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
     assert api_mod.initial_val == approx(100)
@@ -418,6 +418,6 @@ def test_post_assign(client, consts):
     api_affectee_ship.change_ship(coordinates=(300000, 0, 0))
     # Verification - when multiplier reaches 0, assignment is not applied altogether
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_ship.mods  # noqa: B018

@@ -57,11 +57,11 @@ def test_autocharge(client, consts):
     api_autocharge = api_fighter.autocharges[api_effect_id]
     assert api_autocharge.id == api_autocharge_id
     assert api_autocharge.kind == consts.ApiItemKind.autocharge
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(10)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(10)
     api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert api_autocharge.id == api_autocharge_id
     assert api_autocharge.kind == consts.ApiItemKind.autocharge
-    assert api_autocharge.attrs[eve_attr_id].dogma == approx(10)
+    assert api_autocharge.attrs[eve_attr_id].modified == approx(10)
 
 
 def test_invalid_reference(client, consts):

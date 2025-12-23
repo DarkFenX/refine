@@ -39,22 +39,22 @@ def test_cutoff(client, consts):
     # Verification - only drones 2 and 3 have resist below threshold, drone 1 and 4 completely
     # nullify effect
     api_affectee_drone1.update()
-    assert api_affectee_drone1.attrs[eve_affectee_attr_id].dogma == approx(500.033)
+    assert api_affectee_drone1.attrs[eve_affectee_attr_id].modified == approx(500.033)
     api_mod = api_affectee_drone1.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-60)
     assert api_mod.resist_mult == approx(-0.00011)
     assert api_mod.applied_val == approx(0.0066)
     api_affectee_drone2.update()
-    assert api_affectee_drone2.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_drone2.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_drone2.mods  # noqa: B018
     api_affectee_drone3.update()
-    assert api_affectee_drone3.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_affectee_drone3.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
         api_affectee_drone3.mods  # noqa: B018
     api_affectee_drone4.update()
-    assert api_affectee_drone4.attrs[eve_affectee_attr_id].dogma == approx(499.967)
+    assert api_affectee_drone4.attrs[eve_affectee_attr_id].modified == approx(499.967)
     api_mod = api_affectee_drone4.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-60)

@@ -24,12 +24,12 @@ def test_unaffected_self(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    assert api_proj_effect.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_proj_effect.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_fit = api_sol.create_fit()
     api_fit.set_character(type_id=eve_char_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_proj_effect.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_proj_effect.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_root(client, consts):
@@ -56,7 +56,7 @@ def test_unaffected_root(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_char.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_child(client, consts):
@@ -85,4 +85,4 @@ def test_unaffected_child(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_drone.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_drone.update().attrs[eve_affectee_attr_id].modified == approx(100)

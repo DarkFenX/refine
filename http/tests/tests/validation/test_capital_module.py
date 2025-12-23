@@ -110,7 +110,7 @@ def test_modified(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    assert api_module.update().attrs[eve_vol_attr_id].extra == approx(4000)
+    assert api_module.update().attrs[eve_vol_attr_id].modified == approx(4000)
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
@@ -118,7 +118,7 @@ def test_modified(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_module.update().attrs[eve_vol_attr_id].extra == approx(3000)
+    assert api_module.update().attrs[eve_vol_attr_id].modified == approx(3000)
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():

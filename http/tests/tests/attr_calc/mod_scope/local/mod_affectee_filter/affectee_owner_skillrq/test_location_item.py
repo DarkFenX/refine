@@ -23,7 +23,7 @@ def test_unaffected_self(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item_id)
-    assert api_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_location_owner(client, consts):
@@ -47,7 +47,7 @@ def test_unaffected_location_owner(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.set_character(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_child(client, consts):
@@ -71,4 +71,4 @@ def test_unaffected_child(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_drone(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)

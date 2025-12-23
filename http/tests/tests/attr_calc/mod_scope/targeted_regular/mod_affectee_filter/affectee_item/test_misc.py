@@ -35,11 +35,11 @@ def test_propagation(client, consts):
     api_affectee_item = api_fit2.set_ship(type_id=eve_affectee_item_id)
     api_middle_item = api_fit1.add_module(type_id=eve_middle_item_id, state=consts.ApiModuleState.active)
     api_middle_item.change_module(add_projs=[api_affectee_item.id])
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(1)
     api_affector_item = api_fit1.add_rig(type_id=eve_affector_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(2.5)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(2.5)
     api_affector_item.remove()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(1)
 
 
 def test_replace_proj(client, consts):
@@ -62,8 +62,8 @@ def test_replace_proj(client, consts):
     api_ship1 = api_fit2.set_ship(type_id=eve_ship1_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_module(add_projs=[api_ship1.id])
-    assert api_ship1.update().attrs[eve_attr2_id].dogma == approx(1)
+    assert api_ship1.update().attrs[eve_attr2_id].modified == approx(1)
     api_ship2 = api_fit2.set_ship(type_id=eve_ship2_id)
-    assert api_ship2.update().attrs[eve_attr2_id].dogma == approx(-4)
+    assert api_ship2.update().attrs[eve_attr2_id].modified == approx(-4)
     api_module.change_module(add_projs=[api_ship2.id])
-    assert api_ship2.update().attrs[eve_attr2_id].dogma == approx(-1)
+    assert api_ship2.update().attrs[eve_attr2_id].modified == approx(-1)

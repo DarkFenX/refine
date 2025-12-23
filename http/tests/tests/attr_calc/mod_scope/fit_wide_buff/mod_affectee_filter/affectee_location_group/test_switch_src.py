@@ -33,12 +33,12 @@ def test_onlist_to_offlist_to_onlist(client, consts):
     api_fit.set_ship(type_id=eve_root_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)

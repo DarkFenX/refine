@@ -27,7 +27,7 @@ def test_add_max(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(180)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(180)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(30)
@@ -61,7 +61,7 @@ def test_add_min(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(110)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(110)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(-40)
@@ -95,7 +95,7 @@ def test_postmul_max(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(195)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(195)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
     assert api_mod.initial_val == approx(1.3)
@@ -129,7 +129,7 @@ def test_postmul_min(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(90)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
     assert api_mod.initial_val == approx(0.6)
@@ -163,7 +163,7 @@ def test_postperc_max(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(195)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(195)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(30)
@@ -197,7 +197,7 @@ def test_postperc_min(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(90)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-40)
@@ -231,7 +231,7 @@ def test_postassign_max(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(30)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(30)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
     assert api_mod.initial_val == approx(30)
@@ -265,7 +265,7 @@ def test_postassign_min(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(-40)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(-40)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
     assert api_mod.initial_val == approx(-40)
@@ -303,7 +303,7 @@ def test_different_buffs(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(117)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(117)
     api_mods = api_ship.mods[eve_affectee_attr_id]
     assert len(api_mods) == 2
     api_mod1 = api_mods.find_by_affector_attr(affector_attr_id=eve_buff_val_attr1_id).one()
@@ -372,7 +372,7 @@ def test_different_sources(client, consts):
     # Aggregation mode is set to max, and fleet buff value is higher (1.25*4 = 5 vs 4.7), so only
     # fleet buff is applied
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(750)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(750)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
     assert api_mod.initial_val == approx(5)

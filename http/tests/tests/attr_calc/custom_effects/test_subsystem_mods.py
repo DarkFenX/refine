@@ -22,7 +22,7 @@ def test_slots(client, consts):
     # Verification
     api_ship.update()
     # High slots
-    assert api_ship.attrs[eve_affectee_attr_hi_id].dogma == approx(3)
+    assert api_ship.attrs[eve_affectee_attr_hi_id].modified == approx(3)
     api_mod_hi = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_hi_id,
         affector_item_id=api_subsystem.id).one()
@@ -31,7 +31,7 @@ def test_slots(client, consts):
     assert api_mod_hi.stacking_mult is None
     assert api_mod_hi.applied_val == approx(3)
     # Medium slots
-    assert api_ship.attrs[eve_affectee_attr_mid_id].dogma == approx(6)
+    assert api_ship.attrs[eve_affectee_attr_mid_id].modified == approx(6)
     api_mod_mid = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_mid_id,
         affector_item_id=api_subsystem.id).one()
@@ -40,7 +40,7 @@ def test_slots(client, consts):
     assert api_mod_mid.stacking_mult is None
     assert api_mod_mid.applied_val == approx(4)
     # Low slots
-    assert api_ship.attrs[eve_affectee_attr_low_id].dogma == approx(2)
+    assert api_ship.attrs[eve_affectee_attr_low_id].modified == approx(2)
     api_mod_low = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_low_id,
         affector_item_id=api_subsystem.id).one()
@@ -68,7 +68,7 @@ def test_hardpoints(client, consts):
     # Verification
     api_ship.update()
     # Turrets
-    assert api_ship.attrs[eve_affectee_attr_turret_id].dogma == approx(4)
+    assert api_ship.attrs[eve_affectee_attr_turret_id].modified == approx(4)
     api_mod_turret = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_turret_id,
         affector_item_id=api_subsystem.id).one()
@@ -77,7 +77,7 @@ def test_hardpoints(client, consts):
     assert api_mod_turret.stacking_mult is None
     assert api_mod_turret.applied_val == approx(4)
     # Launchers
-    assert api_ship.attrs[eve_affectee_attr_launcher_id].dogma == approx(8)
+    assert api_ship.attrs[eve_affectee_attr_launcher_id].modified == approx(8)
     api_mod_launcher = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_launcher_id,
         affector_item_id=api_subsystem.id).one()

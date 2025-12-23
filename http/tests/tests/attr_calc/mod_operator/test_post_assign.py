@@ -24,7 +24,7 @@ def setup_hig_test(*, client, consts, high_is_good):
     api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee_id)
     api_item_affectee.update()
     return (
-        api_item_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_item_affectee.attrs[eve_affectee_attr_id].modified,
         api_item_affectee.mods[eve_affectee_attr_id],
         api_item_affector2,
         api_item_affector3)
@@ -195,7 +195,7 @@ def test_insignificant_earlier_ops(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(post_ass_val)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(post_ass_val)
     api_post_assign_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_post_assign_mod.op == consts.ApiModOp.post_assign
     assert api_post_assign_mod.initial_val == approx(post_ass_val)

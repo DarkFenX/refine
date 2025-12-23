@@ -50,7 +50,7 @@ def test_no_side_effects(client, consts):
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     assert len(api_booster.attrs) == 1
-    assert api_booster.attrs[eve_affector_attr_id].extra == approx(20)
+    assert api_booster.attrs[eve_affector_attr_id].modified == approx(20)
 
 
 def test_with_side_effects(client, consts):
@@ -146,11 +146,11 @@ def test_with_side_effects(client, consts):
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     assert len(api_booster.attrs) == 5
-    assert api_booster.attrs[eve_primary_affector_attr_id].extra == approx(20)
-    assert api_booster.attrs[eve_side1_chance_attr_id].extra == approx(0.4)
-    assert api_booster.attrs[eve_side1_affector_attr_id].extra == approx(25)
-    assert api_booster.attrs[eve_side2_chance_attr_id].extra == approx(0.2)
-    assert api_booster.attrs[eve_side2_affector_attr_id].extra == approx(10)
+    assert api_booster.attrs[eve_primary_affector_attr_id].modified == approx(20)
+    assert api_booster.attrs[eve_side1_chance_attr_id].modified == approx(0.4)
+    assert api_booster.attrs[eve_side1_affector_attr_id].modified == approx(25)
+    assert api_booster.attrs[eve_side2_chance_attr_id].modified == approx(0.2)
+    assert api_booster.attrs[eve_side2_affector_attr_id].modified == approx(10)
 
 
 def test_strength_matching(client, consts):
@@ -189,8 +189,8 @@ def test_strength_matching(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(100)
-    assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_module1.update().attrs[eve_affectee_attr_id].modified == approx(100)
+    assert api_module2.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -199,8 +199,8 @@ def test_strength_matching(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(125)
-    assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_module1.update().attrs[eve_affectee_attr_id].modified == approx(125)
+    assert api_module2.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -244,8 +244,8 @@ def test_strength_mismatch_op(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(100)
-    assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_module1.update().attrs[eve_affectee_attr_id].modified == approx(100)
+    assert api_module2.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -253,8 +253,8 @@ def test_strength_mismatch_op(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(125)
-    assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_module1.update().attrs[eve_affectee_attr_id].modified == approx(125)
+    assert api_module2.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -298,8 +298,8 @@ def test_strength_mismatch_attr(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(100)
-    assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_module1.update().attrs[eve_affectee_attr_id].modified == approx(100)
+    assert api_module2.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -307,8 +307,8 @@ def test_strength_mismatch_attr(client, consts):
     # Action
     api_booster.change_booster(side_effects={api_effect_id: True})
     # Verification
-    assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(125)
-    assert api_module2.update().attrs[eve_affectee_attr_id].extra == approx(250)
+    assert api_module1.update().attrs[eve_affectee_attr_id].modified == approx(125)
+    assert api_module2.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_side = api_booster.update().side_effects[api_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True

@@ -22,7 +22,7 @@ def test_affected(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_unaffected_other_location(client, consts):
@@ -47,7 +47,7 @@ def test_unaffected_other_location(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_other_group(client, consts):
@@ -73,7 +73,7 @@ def test_unaffected_other_group(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_other_fit(client, consts):
@@ -100,7 +100,7 @@ def test_unaffected_other_fit(client, consts):
     api_fit2.set_ship(type_id=eve_struct_id)
     api_fit1.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit2.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_propagation(client, consts):
@@ -134,11 +134,11 @@ def test_propagation(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_rig(type_id=eve_middle_item_id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_affector_item = api_fit.add_rig(type_id=eve_affector_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(140)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(140)
     api_affector_item.remove()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_replace_root(client, consts):
@@ -163,11 +163,11 @@ def test_replace_root(client, consts):
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_rig(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_struct.remove()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_fit.set_ship(type_id=eve_struct_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def setup_switch_type_id_root_test(*, client, consts):
@@ -215,15 +215,15 @@ def test_switch_type_id_root_struct_to_ship_remove(client, consts):
      api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_affector.remove()
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_root_struct_to_unknown_remove(client, consts):
@@ -237,15 +237,15 @@ def test_switch_type_id_root_struct_to_unknown_remove(client, consts):
      api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_root.change_ship(type_id=eve_root_unknown_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_affector.remove()
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_root_struct_to_not_loaded_remove(client, consts):
@@ -259,15 +259,15 @@ def test_switch_type_id_root_struct_to_not_loaded_remove(client, consts):
      api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_root.change_ship(type_id=eve_root_not_loaded_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_affector.remove()
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_root_ship_to_struct_remove(client, consts):
@@ -281,15 +281,15 @@ def test_switch_type_id_root_ship_to_struct_remove(client, consts):
      api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_affector.remove()
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_root_unknown_to_struct_remove(client, consts):
@@ -303,15 +303,15 @@ def test_switch_type_id_root_unknown_to_struct_remove(client, consts):
      api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_root.change_ship(type_id=eve_root_unknown_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_affector.remove()
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_root_not_loaded_to_struct_remove(client, consts):
@@ -325,15 +325,15 @@ def test_switch_type_id_root_not_loaded_to_struct_remove(client, consts):
      api_affectee) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_root = api_fit.set_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_root.change_ship(type_id=eve_root_not_loaded_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_affector.remove()
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_src_to_ship(client, consts):
@@ -365,12 +365,12 @@ def test_switch_src_to_ship(client, consts):
     api_fit.set_ship(type_id=eve_root_id)
     api_affectee = api_fit.add_rig(type_id=eve_affectee_id)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(120)

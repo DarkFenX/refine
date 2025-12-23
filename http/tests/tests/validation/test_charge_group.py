@@ -285,14 +285,14 @@ def test_modified(client, consts):
     api_fit.set_ship(type_id=eve_ship)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
     # Verification
-    assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_grp1_id)
+    assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_grp1_id)
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
-    assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_grp1_id)
+    assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_grp1_id)
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is True
     with check_no_field():
@@ -300,7 +300,7 @@ def test_modified(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_grp2_id)
+    assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_grp2_id)
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is True
     with check_no_field():
@@ -308,7 +308,7 @@ def test_modified(client, consts):
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
-    assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_grp2_id)
+    assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_grp2_id)
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}

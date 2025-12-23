@@ -19,7 +19,7 @@ def test_level_switch_loaded(client, consts):
     # Verification
     api_item.update()
     assert api_item.level == 5
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(500)
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
@@ -32,7 +32,7 @@ def test_level_switch_loaded(client, consts):
     # Verification
     api_item.update()
     assert api_item.level == 3
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(300)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(300)
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
@@ -72,7 +72,7 @@ def test_level_switch_not_loaded(client, consts):
     # Verification
     api_item.update()
     assert api_item.level == 5
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(500)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(500)
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
@@ -103,7 +103,7 @@ def test_level_switch_not_loaded(client, consts):
     # Verification
     api_item.update()
     assert api_item.level == 3
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(300)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(300)
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
@@ -123,7 +123,7 @@ def test_duplicate_loaded(client, consts):
     # Verification
     api_item.update()
     assert api_item.level == 3
-    assert api_item.attrs[eve_level_attr_id].dogma == 3
+    assert api_item.attrs[eve_level_attr_id].modified == 3
     api_fit.update()
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
@@ -134,7 +134,7 @@ def test_duplicate_loaded(client, consts):
     # Verification - nothing should've changed
     api_item.update()
     assert api_item.level == 3
-    assert api_item.attrs[eve_level_attr_id].dogma == 3
+    assert api_item.attrs[eve_level_attr_id].modified == 3
     api_fit.update()
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
@@ -189,8 +189,7 @@ def test_level_modification(client, consts):
     api_item.update()
     assert api_item.level == 5
     assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(5)
-    assert api_item.attrs[eve_affectee_attr_id].extra == approx(5)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_item.mods  # noqa: B018
     # Action
@@ -199,7 +198,6 @@ def test_level_modification(client, consts):
     api_item.update()
     assert api_item.level == 3
     assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(3)
-    assert api_item.attrs[eve_affectee_attr_id].extra == approx(3)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(3)
     with check_no_field():
         api_item.mods  # noqa: B018

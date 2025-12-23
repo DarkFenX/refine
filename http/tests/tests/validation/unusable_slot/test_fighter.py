@@ -120,7 +120,7 @@ def test_modified_max(client, consts):
     api_char = api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    assert api_char.update().attrs[eve_max_attr_id].extra == approx(0)
+    assert api_char.update().attrs[eve_max_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_fighter=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_fighter.max == 0
@@ -128,7 +128,7 @@ def test_modified_max(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_char.update().attrs[eve_max_attr_id].extra == approx(1)
+    assert api_char.update().attrs[eve_max_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_fighter=True))
     assert api_val.passed is True
     with check_no_field():

@@ -20,7 +20,7 @@ def test_attr1(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
 
 
 def test_attr2(client, consts):
@@ -42,7 +42,7 @@ def test_attr2(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
 
 
 def test_attr3(client, consts):
@@ -64,7 +64,7 @@ def test_attr3(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
 
 
 def test_attr4(client, consts):
@@ -86,7 +86,7 @@ def test_attr4(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
 
 
 def test_multiple(client, consts):
@@ -118,5 +118,5 @@ def test_multiple(client, consts):
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(37.5)
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(100)
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(37.5)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(100)

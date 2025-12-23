@@ -338,14 +338,14 @@ def test_src_mutation_itemlist_replaced(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    assert api_src_module.update().attrs[eve_tgt_list_attr_id].extra == approx(eve_item_list2_id)
+    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(mutation=eve_mutator_id)
     # Verification
-    assert api_src_module.update().attrs[eve_tgt_list_attr_id].extra == approx(eve_item_list1_id)
+    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list1_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
@@ -353,7 +353,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
     # Action
     api_src_module.change_module(mutation={eve_tgt_list_attr_id: Muta.roll_to_api(val=0)})
     # Verification
-    assert api_src_module.update().attrs[eve_tgt_list_attr_id].extra == approx(0)
+    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
@@ -361,14 +361,14 @@ def test_src_mutation_itemlist_replaced(client, consts):
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
-    assert api_src_module.update().attrs[eve_tgt_list_attr_id].extra == approx(0)
+    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(mutation=None)
     # Verification
-    assert api_src_module.update().attrs[eve_tgt_list_attr_id].extra == approx(eve_item_list2_id)
+    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():

@@ -38,8 +38,8 @@ def test_sec_zones(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.88)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(1.2)
@@ -58,8 +58,8 @@ def test_sec_zones(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.88)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(1.2)
@@ -78,8 +78,8 @@ def test_sec_zones(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-4.56)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(1.9)
@@ -98,8 +98,8 @@ def test_sec_zones(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-4.56)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(1.9)
@@ -118,8 +118,8 @@ def test_sec_zones(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.04)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(2.1)
@@ -138,8 +138,8 @@ def test_sec_zones(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.04)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(2.1)
@@ -158,8 +158,8 @@ def test_sec_zones(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.04)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
     assert api_sec_mod.initial_val == approx(2.1)
@@ -216,11 +216,11 @@ def test_propagation_general(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-4.56)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -228,11 +228,11 @@ def test_propagation_general(client, consts):
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.47)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.928)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.47)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.928)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 2
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -240,11 +240,11 @@ def test_propagation_general(client, consts):
     api_implant.remove()
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-4.56)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -306,11 +306,11 @@ def test_propagation_specific(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.88)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -318,11 +318,11 @@ def test_propagation_specific(client, consts):
     api_hisec_implant = api_fit.add_implant(type_id=eve_hisec_implant_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.44)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.44)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.456)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.44)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.44)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-3.456)
     assert len(api_rig.mods) == 3
     assert len(api_rig.mods[eve_hisec_attr_id]) == 1
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
@@ -331,11 +331,11 @@ def test_propagation_specific(client, consts):
     api_hisec_implant.remove()
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.88)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -343,11 +343,11 @@ def test_propagation_specific(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-4.56)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -355,11 +355,11 @@ def test_propagation_specific(client, consts):
     api_lowsec_implant = api_fit.add_implant(type_id=eve_lowsec_implant_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(2.47)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.47)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.928)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(2.47)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.47)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.928)
     assert len(api_rig.mods) == 3
     assert len(api_rig.mods[eve_lowsec_attr_id]) == 1
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
@@ -368,11 +368,11 @@ def test_propagation_specific(client, consts):
     api_lowsec_implant.remove()
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-4.56)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -380,11 +380,11 @@ def test_propagation_specific(client, consts):
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.04)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -392,11 +392,11 @@ def test_propagation_specific(client, consts):
     api_nullsec_implant = api_fit.add_implant(type_id=eve_nullsec_implant_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.94)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.94)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-7.056)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.94)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.94)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-7.056)
     assert len(api_rig.mods) == 3
     assert len(api_rig.mods[eve_nullsec_attr_id]) == 1
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
@@ -405,11 +405,11 @@ def test_propagation_specific(client, consts):
     api_nullsec_implant.remove()
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.04)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     assert len(api_rig.mods) == 2
     assert len(api_rig.mods[eve_sec_attr_id]) == 1
     assert len(api_rig.mods[eve_affectee_attr_id]) == 1
@@ -443,8 +443,8 @@ def test_no_value_general(client, consts):
     # attribute value), but does not include value of general sec attribute, second update includes
     # it
     api_rig.update().update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-5.04)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
 
 
 def test_no_value_specific(client, consts):
@@ -474,8 +474,8 @@ def test_no_value_specific(client, consts):
     # Verification - first update triggers calculation of affectee attribute (and thus nullsec
     # attribute value), but does not include value of nullsec attribute, second update includes it
     api_rig.update().update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.5)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.6)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.5)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-3.6)
 
 
 def test_no_attr_general(client, consts):
@@ -504,7 +504,7 @@ def test_no_attr_general(client, consts):
     api_fit = api_sol.create_fit()
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification - no effect on target attribute, since calculations of general attr value fails
-    assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(-2.4)
+    assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(-2.4)
 
 
 def test_no_attr_specific(client, consts):
@@ -546,26 +546,26 @@ def test_no_attr_specific(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.56)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.744)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.56)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-3.744)
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification - since lowsec attr is not available, it uses modified value of general attribute
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.43)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-3.432)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.43)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-3.432)
     # Action
     api_implant.remove()
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.1)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.64)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.1)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.64)
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec)
     # Verification
     api_rig.update()
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_affectee_attr_id].dogma == approx(-2.88)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
 
 
 def setup_op_precedence_test(*, client, consts, high_is_good):
@@ -612,10 +612,10 @@ def test_op_precedence_high_is_good(client, consts):
      api_implant) = setup_op_precedence_test(client=client, consts=consts, high_is_good=True)
     # Verification - base-assignment goes before pre-assignment, regardless of attribute's
     # high-is-good flag, thus gets discarded in modification info as ineffective
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.5)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.5)
     api_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
     assert api_mod.initial_val == approx(1.5)
@@ -635,10 +635,10 @@ def test_op_precedence_high_is_bad(client, consts):
      api_implant) = setup_op_precedence_test(client=client, consts=consts, high_is_good=False)
     # Verification - base-assignment goes before pre-assignment, regardless of attribute's
     # high-is-good flag, thus gets discarded in modification info as ineffective
-    assert api_rig.attrs[eve_hisec_attr_id].dogma == approx(1.2)
-    assert api_rig.attrs[eve_lowsec_attr_id].dogma == approx(1.9)
-    assert api_rig.attrs[eve_nullsec_attr_id].dogma == approx(2.1)
-    assert api_rig.attrs[eve_sec_attr_id].dogma == approx(1.5)
+    assert api_rig.attrs[eve_hisec_attr_id].modified == approx(1.2)
+    assert api_rig.attrs[eve_lowsec_attr_id].modified == approx(1.9)
+    assert api_rig.attrs[eve_nullsec_attr_id].modified == approx(2.1)
+    assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.5)
     api_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
     assert api_mod.initial_val == approx(1.5)

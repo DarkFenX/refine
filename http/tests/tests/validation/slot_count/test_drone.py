@@ -114,7 +114,7 @@ def test_modified_max(client, consts):
     api_char = api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    assert api_char.update().attrs[eve_max_attr_id].extra == approx(0)
+    assert api_char.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -125,7 +125,7 @@ def test_modified_max(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_char.update().attrs[eve_max_attr_id].extra == approx(1)
+    assert api_char.update().attrs[eve_max_attr_id].modified == approx(1)
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))

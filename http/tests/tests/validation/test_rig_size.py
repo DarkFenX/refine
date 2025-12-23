@@ -129,9 +129,9 @@ def test_modified(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].extra == approx(2)
-    assert api_rig1.update().attrs[eve_attr_id].extra == approx(2)
-    assert api_rig2.update().attrs[eve_attr_id].extra == approx(2)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(2)
+    assert api_rig1.update().attrs[eve_attr_id].modified == approx(2)
+    assert api_rig2.update().attrs[eve_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3

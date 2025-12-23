@@ -184,7 +184,7 @@ def test_modified_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
-    assert api_module.update().attrs[eve_use_attr_id].extra == 150
+    assert api_module.update().attrs[eve_use_attr_id].modified == 150
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -195,7 +195,7 @@ def test_modified_use(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_module.update().attrs[eve_use_attr_id].extra == 75
+    assert api_module.update().attrs[eve_use_attr_id].modified == 75
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (75, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -224,7 +224,7 @@ def test_modified_max(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == 120
+    assert api_ship.update().attrs[eve_max_attr_id].modified == 120
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (150, 120)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -235,7 +235,7 @@ def test_modified_max(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == 180
+    assert api_ship.update().attrs[eve_max_attr_id].modified == 180
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (150, 180)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -259,7 +259,7 @@ def test_mutation_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
-    assert api_module.update().attrs[eve_use_attr_id].extra == 120
+    assert api_module.update().attrs[eve_use_attr_id].modified == 120
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (120, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -269,7 +269,7 @@ def test_mutation_use(client, consts):
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.7)}))
     # Verification
-    assert api_module.update().attrs[eve_use_attr_id].extra == 129.6
+    assert api_module.update().attrs[eve_use_attr_id].modified == 129.6
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (129.6, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -280,7 +280,7 @@ def test_mutation_use(client, consts):
     # Action
     api_module.change_module(mutation={eve_use_attr_id: Muta.roll_to_api(val=0.8)})
     # Verification
-    assert api_module.update().attrs[eve_use_attr_id].extra == 134.4
+    assert api_module.update().attrs[eve_use_attr_id].modified == 134.4
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (134.4, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
@@ -291,7 +291,7 @@ def test_mutation_use(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_use_attr_id].extra == 120
+    assert api_module.update().attrs[eve_use_attr_id].modified == 120
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
     assert api_stats.powergrid == (120, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))

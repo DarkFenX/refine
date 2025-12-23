@@ -31,7 +31,7 @@ def setup_penalization_test(*, client, consts, stackable):
     api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee_id)
     api_item_affectee.update()
     return (
-        api_item_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_item_affectee.attrs[eve_affectee_attr_id].modified,
         api_item_affectee.mods[eve_affectee_attr_id],
         api_item_affector1,
         api_item_affector2,
@@ -151,7 +151,7 @@ def test_deep_stacking(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(4394.548753)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(4394.548753)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
     # 9th affector is completely ignored both in calculation process and for modification listing
     assert len(api_mods) == 8
@@ -220,7 +220,7 @@ def test_insignificant_stacking(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
     assert len(api_mods) == 2
     api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
@@ -256,7 +256,7 @@ def test_insignificant_base(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     with check_no_field():
         api_affectee.mods  # noqa: B018
 
@@ -291,7 +291,7 @@ def test_insignificant_modified_base(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     api_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_mul
     assert api_mod.initial_val == approx(0)
@@ -318,6 +318,6 @@ def test_zero(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
         api_affectee.mods  # noqa: B018

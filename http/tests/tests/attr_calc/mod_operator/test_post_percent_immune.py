@@ -31,7 +31,7 @@ def setup_penalization_test(*, client, consts, stackable):
     api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee_id)
     api_item_affectee.update()
     return (
-        api_item_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_item_affectee.attrs[eve_affectee_attr_id].modified,
         api_item_affectee.mods[eve_affectee_attr_id],
         api_item_affector1,
         api_item_affector2,
@@ -137,7 +137,7 @@ def test_insignificant_base(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     with check_no_field():
         api_affectee.mods  # noqa: B018
 
@@ -172,7 +172,7 @@ def test_insignificant_modified_base(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     api_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
     assert api_mod.initial_val == approx(0)
@@ -312,7 +312,7 @@ def test_insignificant_earlier_ops(client, consts):
     expected_value = (
             (pre_ass_val * pre_mul_val / pre_div_val + mod_add_val - mod_sub_val) * post_mul_val
             / post_div_val * (1 + post_perc_val / 100) * (1 + post_perc_immune_val / 100))
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(expected_value)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(expected_value)
     api_post_perc_immune_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_post_perc_immune_mod.op == consts.ApiModOp.post_percent
     assert api_post_perc_immune_mod.initial_val == approx(post_perc_immune_val)
@@ -352,7 +352,7 @@ def test_insignificant_op_collision(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     # Verification - when both sides of multiplication are 0, right side is preferred for fewer mods
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     api_post_perc_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_post_perc_mod.op == consts.ApiModOp.post_percent
     assert api_post_perc_mod.initial_val == approx(-100)
@@ -385,7 +385,7 @@ def setup_insignificant_chain_values_test(*, client, consts, stackable):
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_affectee.update()
     return (
-        api_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_affectee.attrs[eve_affectee_attr_id].modified,
         api_affectee.mods[eve_affectee_attr_id],
         api_affector1,
         api_affector3)

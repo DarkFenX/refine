@@ -1102,13 +1102,13 @@ def test_modification_incoming(client, consts):
     assert api_item.mutation.attrs[eve_affectee_remove_attr_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_remove_attr_id].absolute == approx(284)
     assert api_item.attrs[eve_affector_attr_id].base == approx(20)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(20)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(20)
     assert api_item.attrs[eve_affectee_add_attr_id].base == approx(180)
-    assert api_item.attrs[eve_affectee_add_attr_id].dogma == approx(216)
+    assert api_item.attrs[eve_affectee_add_attr_id].modified == approx(216)
     assert api_item.attrs[eve_affectee_change_attr_id].base == approx(176)
-    assert api_item.attrs[eve_affectee_change_attr_id].dogma == approx(211.2)
+    assert api_item.attrs[eve_affectee_change_attr_id].modified == approx(211.2)
     assert api_item.attrs[eve_affectee_remove_attr_id].base == approx(284)
-    assert api_item.attrs[eve_affectee_remove_attr_id].dogma == approx(340.8)
+    assert api_item.attrs[eve_affectee_remove_attr_id].modified == approx(340.8)
     # Action
     api_item.change_module(mutation={
         eve_affectee_add_attr_id: Muta.roll_to_api(val=0.9),
@@ -1124,13 +1124,13 @@ def test_modification_incoming(client, consts):
     assert api_item.mutation.attrs[eve_affectee_remove_attr_id].roll == approx(0)
     assert api_item.mutation.attrs[eve_affectee_remove_attr_id].absolute == approx(220)
     assert api_item.attrs[eve_affector_attr_id].base == approx(20)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(20)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(20)
     assert api_item.attrs[eve_affectee_add_attr_id].base == approx(172)
-    assert api_item.attrs[eve_affectee_add_attr_id].dogma == approx(206.4)
+    assert api_item.attrs[eve_affectee_add_attr_id].modified == approx(206.4)
     assert api_item.attrs[eve_affectee_change_attr_id].base == approx(184)
-    assert api_item.attrs[eve_affectee_change_attr_id].dogma == approx(220.8)
+    assert api_item.attrs[eve_affectee_change_attr_id].modified == approx(220.8)
     assert api_item.attrs[eve_affectee_remove_attr_id].base == approx(220)
-    assert api_item.attrs[eve_affectee_remove_attr_id].dogma == approx(264)
+    assert api_item.attrs[eve_affectee_remove_attr_id].modified == approx(264)
 
 
 def test_modification_outgoing(client, consts):
@@ -1188,17 +1188,17 @@ def test_modification_outgoing(client, consts):
     assert api_item.mutation.attrs[eve_affector_remove_attr_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affector_remove_attr_id].absolute == approx(28.4)
     assert api_item.attrs[eve_affector_add_attr_id].base == approx(18)
-    assert api_item.attrs[eve_affector_add_attr_id].dogma == approx(18)
+    assert api_item.attrs[eve_affector_add_attr_id].modified == approx(18)
     assert api_item.attrs[eve_affector_change_attr_id].base == approx(17.6)
-    assert api_item.attrs[eve_affector_change_attr_id].dogma == approx(17.6)
+    assert api_item.attrs[eve_affector_change_attr_id].modified == approx(17.6)
     assert api_item.attrs[eve_affector_remove_attr_id].base == approx(28.4)
-    assert api_item.attrs[eve_affector_remove_attr_id].dogma == approx(28.4)
+    assert api_item.attrs[eve_affector_remove_attr_id].modified == approx(28.4)
     assert api_item.attrs[eve_affectee_add_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_add_attr_id].dogma == approx(236)
+    assert api_item.attrs[eve_affectee_add_attr_id].modified == approx(236)
     assert api_item.attrs[eve_affectee_change_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_change_attr_id].dogma == approx(235.2)
+    assert api_item.attrs[eve_affectee_change_attr_id].modified == approx(235.2)
     assert api_item.attrs[eve_affectee_remove_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_remove_attr_id].dogma == approx(256.8)
+    assert api_item.attrs[eve_affectee_remove_attr_id].modified == approx(256.8)
     # Action
     api_item.change_module(mutation={
         eve_affector_add_attr_id: Muta.roll_to_api(val=0.9),
@@ -1214,17 +1214,17 @@ def test_modification_outgoing(client, consts):
     assert api_item.mutation.attrs[eve_affector_remove_attr_id].roll == approx(0)
     assert api_item.mutation.attrs[eve_affector_remove_attr_id].absolute == approx(22)
     assert api_item.attrs[eve_affector_add_attr_id].base == approx(17.2)
-    assert api_item.attrs[eve_affector_add_attr_id].dogma == approx(17.2)
+    assert api_item.attrs[eve_affector_add_attr_id].modified == approx(17.2)
     assert api_item.attrs[eve_affector_change_attr_id].base == approx(18.4)
-    assert api_item.attrs[eve_affector_change_attr_id].dogma == approx(18.4)
+    assert api_item.attrs[eve_affector_change_attr_id].modified == approx(18.4)
     assert api_item.attrs[eve_affector_remove_attr_id].base == approx(22)
-    assert api_item.attrs[eve_affector_remove_attr_id].dogma == approx(22)
+    assert api_item.attrs[eve_affector_remove_attr_id].modified == approx(22)
     assert api_item.attrs[eve_affectee_add_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_add_attr_id].dogma == approx(234.4)
+    assert api_item.attrs[eve_affectee_add_attr_id].modified == approx(234.4)
     assert api_item.attrs[eve_affectee_change_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_change_attr_id].dogma == approx(236.8)
+    assert api_item.attrs[eve_affectee_change_attr_id].modified == approx(236.8)
     assert api_item.attrs[eve_affectee_remove_attr_id].base == approx(200)
-    assert api_item.attrs[eve_affectee_remove_attr_id].dogma == approx(244)
+    assert api_item.attrs[eve_affectee_remove_attr_id].modified == approx(244)
 
 
 def test_drone(client):

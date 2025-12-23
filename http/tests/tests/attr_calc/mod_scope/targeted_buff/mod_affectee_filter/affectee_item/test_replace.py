@@ -23,11 +23,11 @@ def test_proj_onlist_to_onlist(client, consts):
     api_ship1 = api_affectee_fit.set_ship(type_id=eve_ship1_id)
     api_module = api_affector_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_module(add_projs=[api_ship1.id])
-    assert api_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_ship1.update().attrs[eve_affectee_attr_id].modified == approx(90)
     api_ship2 = api_affectee_fit.set_ship(type_id=eve_ship2_id)
-    assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_ship2.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_module.change_module(add_projs=[api_ship2.id])
-    assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(45)
+    assert api_ship2.update().attrs[eve_affectee_attr_id].modified == approx(45)
 
 
 def test_proj_onlist_to_offlist(client, consts):
@@ -52,8 +52,8 @@ def test_proj_onlist_to_offlist(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_module = api_affector_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(90)
     api_struct = api_affectee_fit.set_ship(type_id=eve_struct_id)
-    assert api_struct.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_struct.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_module.change_module(add_projs=[api_struct.id])
-    assert api_struct.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_struct.update().attrs[eve_affectee_attr_id].modified == approx(100)

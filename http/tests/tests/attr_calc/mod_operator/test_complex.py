@@ -131,7 +131,7 @@ def test_almost_all_in(client, consts):
     expected_value = (
             (pre_ass_val * pre_mul_val / pre_div_val + mod_add_val - mod_sub_val) * post_mul_val
             / post_div_val * (1 + post_perc_val / 100) * (1 + post_perc_immune_val / 100))
-    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(expected_value)
+    assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(expected_value)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
     api_pre_assign_mod = api_mods.find_by_op(op=consts.ApiModOp.pre_assign).one()
     assert api_pre_assign_mod.initial_val == approx(pre_ass_val)

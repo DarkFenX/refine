@@ -233,14 +233,14 @@ def test_modified_limit(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    assert api_ship.update().attrs[eve_limit_attr_id].extra == approx(eve_group1_id)
+    assert api_ship.update().attrs[eve_limit_attr_id].modified == approx(eve_group1_id)
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
-    assert api_ship.update().attrs[eve_limit_attr_id].extra == approx(eve_group2_id)
+    assert api_ship.update().attrs[eve_limit_attr_id].modified == approx(eve_group2_id)
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})

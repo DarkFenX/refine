@@ -40,15 +40,15 @@ def test_loaded_onlist_to_loaded_offlist_remove(client, consts):
     api_child = api_fit2.add_drone(type_id=eve_loaded_onlist_id)
     api_module.change_module(add_projs=[api_child.id])
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_child.change_drone(type_id=eve_loaded_offlist_id)
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_module.remove()
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_loaded_onlist_to_unloaded_onlist_remove(client, consts):
@@ -62,7 +62,7 @@ def test_loaded_onlist_to_unloaded_onlist_remove(client, consts):
     api_child = api_fit2.add_drone(type_id=eve_loaded_onlist_id)
     api_module.change_module(add_projs=[api_child.id])
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_child.change_drone(type_id=eve_unloaded_onlist_id)
     # Verification
@@ -88,7 +88,7 @@ def test_loaded_onlist_to_unloaded_offlist_remove(client, consts):
     api_child = api_fit2.add_drone(type_id=eve_loaded_onlist_id)
     api_module.change_module(add_projs=[api_child.id])
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_child.change_drone(type_id=eve_unloaded_offlist_id)
     # Verification
@@ -114,15 +114,15 @@ def test_loaded_offlist_to_loaded_onlist_remove(client, consts):
     api_child = api_fit2.add_drone(type_id=eve_loaded_offlist_id)
     api_module.change_module(add_projs=[api_child.id])
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
     api_child.change_drone(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_module.remove()
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(200)
 
 
 def test_unloaded_onlist_to_loaded_onlist_remove(client, consts):
@@ -141,11 +141,11 @@ def test_unloaded_onlist_to_loaded_onlist_remove(client, consts):
     # Action
     api_child.change_drone(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_module.remove()
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(200)
 
 
 def test_unloaded_offlist_to_loaded_onlist_remove(client, consts):
@@ -165,8 +165,8 @@ def test_unloaded_offlist_to_loaded_onlist_remove(client, consts):
     # Action
     api_child.change_drone(type_id=eve_loaded_onlist_id)
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_module.remove()
     # Verification
-    assert api_child.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(200)

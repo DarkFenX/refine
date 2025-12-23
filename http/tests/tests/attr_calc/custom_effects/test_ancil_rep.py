@@ -19,8 +19,7 @@ def test_local_aar(client, consts):
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     api_mod = api_aar_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.extra_mul
     assert api_mod.initial_val == approx(3)
@@ -48,8 +47,7 @@ def test_remote_aar(client, consts):
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     api_mod = api_aar_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.extra_mul
     assert api_mod.initial_val == approx(3)
@@ -73,23 +71,20 @@ def test_charge_switch(client, consts):
     api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.ApiRack.low)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
         api_aar_item.mods  # noqa: B018
     # Action
     api_aar_item.change_module(charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
     # Action
     api_aar_item.change_module(charge_type_id=None)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
         api_aar_item.mods  # noqa: B018
 
@@ -112,23 +107,20 @@ def test_charge_type_id_switch(client, consts):
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
     # Action
     api_aar_item.charge.change_charge(type_id=eve_other_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
         api_aar_item.mods  # noqa: B018
     # Action
     api_aar_item.charge.change_charge(type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
 
 
@@ -160,20 +152,17 @@ def test_mult_change(client, consts):
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_aar_affectee_attr_id].modified == approx(300)
     # Action
     api_mod_item = api_fit.add_rig(type_id=eve_mod_item_id)
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].extra == approx(375)
+    assert api_aar_item.attrs[eve_aar_affectee_attr_id].modified == approx(375)
     # Action
     api_mod_item.remove()
     # Verification
     api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].dogma == approx(100)
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.attrs[eve_aar_affectee_attr_id].modified == approx(300)
 
 
 def test_penalties(client, consts):
@@ -203,8 +192,7 @@ def test_penalties(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_aar.update()
-    assert api_aar.attrs[eve_aar_affectee_attr_id].dogma == approx(150)
-    assert api_aar.attrs[eve_aar_affectee_attr_id].extra == approx(450)
+    assert api_aar.attrs[eve_aar_affectee_attr_id].modified == approx(450)
     api_mods = api_aar.mods[eve_aar_affectee_attr_id]
     assert len(api_mods) == 2
     api_mod_paste = api_mods.find_by_affector_item(affector_item_id=api_aar.id).one()
@@ -237,19 +225,19 @@ def test_state(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_paste_item_id)
     # Verification
-    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].modified == approx(300)
     # Action
     api_aar_item.change_module(state=consts.ApiModuleState.disabled)
     # Verification
-    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].modified == approx(300)
     # Action
     api_aar_item.change_module(state=consts.ApiModuleState.active)
     # Verification
-    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(300)
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].modified == approx(300)
     # Action
     api_aar_item.change_module(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    assert api_aar_item.update().attrs[eve_affectee_attr_id].extra == approx(100)
+    assert api_aar_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action & verification
     api_aar_item.change_module(charge_type_id=None)
     api_aar_item.remove()

@@ -417,9 +417,9 @@ def test_modification(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_attr_id].absolute == approx(224)
     assert api_item.attrs[eve_affector_attr_id].base == approx(17.6)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(17.6)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(17.6)
     assert api_item.attrs[eve_affectee_attr_id].base == approx(224)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(263.424)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(263.424)
 
 
 def test_item_type_id(client):
@@ -483,9 +483,9 @@ def test_item_group(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(112)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(88)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(88)  # Not modified
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(88)  # Not modified
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(112)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(134.4)  # Modified
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(134.4)  # Modified
 
 
 def test_item_category(client, consts):
@@ -515,7 +515,7 @@ def test_item_category(client, consts):
     # Verification - value is 144 because change is non-penalized thanks to implant category of
     # mutated item.
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(144)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(144)
 
 
 def test_item_skillreqs(client, consts):
@@ -565,9 +565,9 @@ def test_item_skillreqs(client, consts):
     assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(112)
     assert api_item.attrs[eve_affectee_attr1_id].base == approx(88)
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(88)  # Not modified
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(88)  # Not modified
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(112)
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(134.4)  # Modified
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(134.4)  # Modified
 
 
 def test_item_effects(client, consts):
@@ -600,8 +600,8 @@ def test_item_effects(client, consts):
     api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification - 1st attr would be changed by base item effects, 2nd by mutated ones
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(120)
 
 
 def test_item_default_effect(client, consts):
@@ -638,8 +638,8 @@ def test_item_default_effect(client, consts):
     # Verification - 1st attr would be modified by base item (which has 1st effect is default), 2nd
     # gets modified because mutated item declares 2nd effect as default.
     api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
-    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(120)
 
 
 def test_drone(client):

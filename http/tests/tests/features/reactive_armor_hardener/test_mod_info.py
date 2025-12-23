@@ -36,10 +36,10 @@ def test_normal(client, consts):
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.675)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.795)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.855)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.675)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.735)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.795)
     api_rah_mod_em = api_rah.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_em_attr_id,
         affector_item_id=api_implant.id).one()
@@ -77,10 +77,10 @@ def test_normal(client, consts):
     assert api_rah_mod_expl.affectors.one().item_id == api_implant.id
     assert api_rah_mod_expl.affectors.one().attr_id == eve_implant_attr_id
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4275)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.43875)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.43365)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.40545)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.4275)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.43875)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.43365)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.40545)
     api_ship_mod_em = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_em_attr_id,
         affector_item_id=api_rah.id).one()
@@ -151,10 +151,10 @@ def test_incoming(client, consts):
     api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.675)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.795)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.855)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.675)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.735)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.795)
     api_em_mod = api_rah.mods[eve_basic_info.res_em_attr_id].one()
     assert api_em_mod.op == consts.ApiModOp.post_percent
     assert api_em_mod.initial_val == approx(-10)
@@ -223,15 +223,15 @@ def test_outgoing_insignificance(client, consts):
     # Verification - only thermal resistance modification is significant, since it multiplies by 0,
     # while other 3 multiply by 1 (even those with base value of 0, and modified value of 0).
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(1)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(1)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.5)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.59)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.51)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.59)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.51)
     assert len(api_ship.mods) == 1
     api_mod = api_ship.mods[eve_basic_info.res_therm_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_mul

@@ -153,8 +153,8 @@ def test_modified(client, consts):
     api_service1 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     api_service2 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     # Verification
-    assert api_service1.update().attrs[eve_limit_attr_id].extra == approx(2)
-    assert api_service2.update().attrs[eve_limit_attr_id].extra == approx(2)
+    assert api_service1.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_service2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
@@ -180,16 +180,16 @@ def test_mutation_limit_priority(client, consts):
         state=consts.ApiServiceState.offline,
         mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
-    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(5)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
-    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
@@ -197,8 +197,8 @@ def test_mutation_limit_priority(client, consts):
     # Action
     api_module1.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(2)
-    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
@@ -224,16 +224,16 @@ def test_mutation_limit_inheritance(client, consts):
         state=consts.ApiServiceState.offline,
         mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
-    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(5)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
-    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
     with check_no_field():
@@ -241,8 +241,8 @@ def test_mutation_limit_inheritance(client, consts):
     # Action
     api_module1.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
-    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_base_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}

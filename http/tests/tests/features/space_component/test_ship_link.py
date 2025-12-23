@@ -29,13 +29,13 @@ def test_affectee_filter_item_list(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_drone.update().attrs[eve_attr_id].dogma == approx(220)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_drone.update().attrs[eve_attr_id].modified == approx(220)
     # Action
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    assert api_struct.update().attrs[eve_attr_id].dogma == approx(220)
-    assert api_drone.update().attrs[eve_attr_id].dogma == approx(220)
+    assert api_struct.update().attrs[eve_attr_id].modified == approx(220)
+    assert api_drone.update().attrs[eve_attr_id].modified == approx(220)
 
 
 def test_affectee_filter_unspecified(client, consts):
@@ -56,13 +56,13 @@ def test_affectee_filter_unspecified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(220)
-    assert api_drone.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(220)
+    assert api_drone.update().attrs[eve_attr_id].modified == approx(200)
     # Action
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    assert api_struct.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_drone.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_struct.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_drone.update().attrs[eve_attr_id].modified == approx(200)
 
 
 def test_affectee_filter_location(client, consts):
@@ -84,15 +84,15 @@ def test_affectee_filter_location(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_item_id)
     api_implant = api_fit.add_implant(type_id=eve_item_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig.update().attrs[eve_attr_id].dogma == approx(220)
-    assert api_implant.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig.update().attrs[eve_attr_id].modified == approx(220)
+    assert api_implant.update().attrs[eve_attr_id].modified == approx(200)
     # Action
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    assert api_struct.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_implant.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_struct.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_implant.update().attrs[eve_attr_id].modified == approx(200)
 
 
 def test_affectee_filter_location_group(client, consts):
@@ -123,17 +123,17 @@ def test_affectee_filter_location_group(client, consts):
     api_rig2 = api_fit.add_rig(type_id=eve_other_id)
     api_implant = api_fit.add_implant(type_id=eve_item_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig1.update().attrs[eve_attr_id].dogma == approx(220)
-    assert api_rig2.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_implant.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig1.update().attrs[eve_attr_id].modified == approx(220)
+    assert api_rig2.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_implant.update().attrs[eve_attr_id].modified == approx(200)
     # Action
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    assert api_struct.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig1.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig2.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_implant.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_struct.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig1.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig2.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_implant.update().attrs[eve_attr_id].modified == approx(200)
 
 
 def test_affectee_filter_location_skillreq(client, consts):
@@ -159,17 +159,17 @@ def test_affectee_filter_location_skillreq(client, consts):
     api_rig2 = api_fit.add_rig(type_id=eve_other_id)
     api_implant = api_fit.add_implant(type_id=eve_item_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig1.update().attrs[eve_attr_id].dogma == approx(220)
-    assert api_rig2.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_implant.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig1.update().attrs[eve_attr_id].modified == approx(220)
+    assert api_rig2.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_implant.update().attrs[eve_attr_id].modified == approx(200)
     # Action
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    assert api_struct.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig1.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_rig2.update().attrs[eve_attr_id].dogma == approx(200)
-    assert api_implant.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_struct.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig1.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_rig2.update().attrs[eve_attr_id].modified == approx(200)
+    assert api_implant.update().attrs[eve_attr_id].modified == approx(200)
 
 
 def test_state(client, consts):
@@ -187,7 +187,7 @@ def test_state(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(200)
 
 
 def test_effect_mode(client, consts):
@@ -206,12 +206,12 @@ def test_effect_mode(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(220)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(220)
     # Action
     api_sw_effect.change_sw_effect(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(200)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(200)
     # Action
     api_sw_effect.change_sw_effect(effect_modes={api_effect_id: consts.ApiEffMode.force_run})
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(220)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(220)

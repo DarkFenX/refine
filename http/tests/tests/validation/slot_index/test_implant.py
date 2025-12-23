@@ -124,16 +124,16 @@ def test_modified_index(client, consts):
     api_implant1 = api_fit.add_implant(type_id=eve_implant_id)
     api_implant2 = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_implant1.update().attrs[eve_slot_attr_id].extra == approx(2)
-    assert api_implant2.update().attrs[eve_slot_attr_id].extra == approx(2)
+    assert api_implant1.update().attrs[eve_slot_attr_id].modified == approx(2)
+    assert api_implant2.update().attrs[eve_slot_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
-    assert api_implant1.update().attrs[eve_slot_attr_id].extra == approx(3)
-    assert api_implant2.update().attrs[eve_slot_attr_id].extra == approx(3)
+    assert api_implant1.update().attrs[eve_slot_attr_id].modified == approx(3)
+    assert api_implant2.update().attrs[eve_slot_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}

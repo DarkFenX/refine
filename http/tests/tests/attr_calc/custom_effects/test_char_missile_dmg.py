@@ -51,14 +51,14 @@ def test_filter(client, consts):
         charge_type_id=eve_item_nonmissile_id)
     api_launcher1.update()
     api_launcher2.update()
-    assert api_launcher1.charge.attrs[eve_attr_missile_em_id].dogma == approx(55)
-    assert api_launcher1.charge.attrs[eve_attr_missile_therm_id].dogma == approx(77)
-    assert api_launcher1.charge.attrs[eve_attr_missile_kin_id].dogma == approx(88)
-    assert api_launcher1.charge.attrs[eve_attr_missile_expl_id].dogma == approx(110)
-    assert api_launcher2.charge.attrs[eve_attr_missile_em_id].dogma == approx(50)
-    assert api_launcher2.charge.attrs[eve_attr_missile_therm_id].dogma == approx(70)
-    assert api_launcher2.charge.attrs[eve_attr_missile_kin_id].dogma == approx(80)
-    assert api_launcher2.charge.attrs[eve_attr_missile_expl_id].dogma == approx(100)
+    assert api_launcher1.charge.attrs[eve_attr_missile_em_id].modified == approx(55)
+    assert api_launcher1.charge.attrs[eve_attr_missile_therm_id].modified == approx(77)
+    assert api_launcher1.charge.attrs[eve_attr_missile_kin_id].modified == approx(88)
+    assert api_launcher1.charge.attrs[eve_attr_missile_expl_id].modified == approx(110)
+    assert api_launcher2.charge.attrs[eve_attr_missile_em_id].modified == approx(50)
+    assert api_launcher2.charge.attrs[eve_attr_missile_therm_id].modified == approx(70)
+    assert api_launcher2.charge.attrs[eve_attr_missile_kin_id].modified == approx(80)
+    assert api_launcher2.charge.attrs[eve_attr_missile_expl_id].modified == approx(100)
 
 
 def test_penalization(client, consts):
@@ -128,10 +128,10 @@ def test_penalization(client, consts):
         charge_type_id=eve_item_missile_id)
     api_launcher.update()
     # Just check values
-    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(93.6)
-    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(131.04)
-    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(149.76)
-    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(187.2)
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].modified == approx(93.6)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].modified == approx(131.04)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].modified == approx(149.76)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].modified == approx(187.2)
     # In modification info, check that both operators are exposed as post-multiplication (despite
     # on-character effect actually using a bit different operator), and that penalization flag is
     # reported as expected - that on-character effect modification is not getting penalized
@@ -210,31 +210,31 @@ def test_state(client, consts):
         charge_type_id=eve_item_missile_id)
     # Verification
     api_launcher.update()
-    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(250)
-    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(350)
-    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(400)
-    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(500)
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].modified == approx(250)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].modified == approx(350)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].modified == approx(400)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].modified == approx(500)
     # Action
     api_char.change_character(state=False)
     # Verification
     api_launcher.update()
-    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(50)
-    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(70)
-    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(80)
-    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(100)
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].modified == approx(50)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].modified == approx(70)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].modified == approx(80)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].modified == approx(100)
     # Action
     api_char.change_character(state=True)
     # Verification
     api_launcher.update()
-    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(250)
-    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(350)
-    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(400)
-    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(500)
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].modified == approx(250)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].modified == approx(350)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].modified == approx(400)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].modified == approx(500)
     # Action
     api_char.change_character(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_launcher.update()
-    assert api_launcher.charge.attrs[eve_attr_missile_em_id].dogma == approx(50)
-    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].dogma == approx(70)
-    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].dogma == approx(80)
-    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].dogma == approx(100)
+    assert api_launcher.charge.attrs[eve_attr_missile_em_id].modified == approx(50)
+    assert api_launcher.charge.attrs[eve_attr_missile_therm_id].modified == approx(70)
+    assert api_launcher.charge.attrs[eve_attr_missile_kin_id].modified == approx(80)
+    assert api_launcher.charge.attrs[eve_attr_missile_expl_id].modified == approx(100)

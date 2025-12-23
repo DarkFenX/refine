@@ -20,9 +20,9 @@ def test_root_self(client, consts):
     api_fit = api_sol.create_fit()
     api_ship1 = api_fit.set_ship(type_id=eve_ship1_id)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    assert api_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_ship1.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     api_ship2 = api_fit.set_ship(type_id=eve_ship2_id)
-    assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(75)
+    assert api_ship2.update().attrs[eve_affectee_attr_id].modified == approx(75)
 
 
 def test_root_fleeted(client, consts):
@@ -47,6 +47,6 @@ def test_root_fleeted(client, consts):
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     api_ship1 = api_fit2.set_ship(type_id=eve_ship1_id)
     api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    assert api_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
+    assert api_ship1.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     api_ship2 = api_fit2.set_ship(type_id=eve_ship2_id)
-    assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(75)
+    assert api_ship2.update().attrs[eve_affectee_attr_id].modified == approx(75)

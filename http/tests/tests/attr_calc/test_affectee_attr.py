@@ -30,8 +30,8 @@ def test_multiple(client, consts):
     api_item = api_fit.add_rig(type_id=eve_item_id)
     api_item.update()
     # First attribute should be modified by modifier 1
-    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(60)
+    assert api_item.attrs[eve_affectee_attr1_id].modified == approx(60)
     # Second should be modified by modifier 2
-    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(96)
+    assert api_item.attrs[eve_affectee_attr2_id].modified == approx(96)
     # Third should stay unmodified
-    assert api_item.attrs[eve_affectee_attr3_id].dogma == approx(100)
+    assert api_item.attrs[eve_affectee_attr3_id].modified == approx(100)

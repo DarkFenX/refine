@@ -23,7 +23,7 @@ def test_missile_launcher_rof(client, consts):
     api_launcher2 = api_fit.add_module(type_id=eve_launcher2_id)
     # Verification
     api_launcher1 = api_launcher1.update()
-    assert api_launcher1.attrs[eve_affectee_attr_id].dogma == approx(4)
+    assert api_launcher1.attrs[eve_affectee_attr_id].modified == approx(4)
     api_mod = api_launcher1.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -32,7 +32,7 @@ def test_missile_launcher_rof(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(-20)
     api_launcher2 = api_launcher2.update()
-    assert api_launcher2.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_launcher2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_launcher2.mods  # noqa: B018
 
@@ -56,7 +56,7 @@ def test_missile_damage_em(client, consts):
     api_launcher2 = api_fit.add_module(type_id=eve_launcher_id, charge_type_id=eve_charge2_id)
     # Verification
     api_launcher1 = api_launcher1.update()
-    assert api_launcher1.charge.attrs[eve_affectee_attr_id].dogma == approx(6)
+    assert api_launcher1.charge.attrs[eve_affectee_attr_id].modified == approx(6)
     api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -66,7 +66,7 @@ def test_missile_damage_em(client, consts):
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
-    assert api_charge2.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_charge2.mods  # noqa: B018
 
@@ -90,7 +90,7 @@ def test_missile_damage_therm(client, consts):
     api_launcher2 = api_fit.add_module(type_id=eve_launcher_id, charge_type_id=eve_charge2_id)
     # Verification
     api_launcher1 = api_launcher1.update()
-    assert api_launcher1.charge.attrs[eve_affectee_attr_id].dogma == approx(6)
+    assert api_launcher1.charge.attrs[eve_affectee_attr_id].modified == approx(6)
     api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -100,7 +100,7 @@ def test_missile_damage_therm(client, consts):
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
-    assert api_charge2.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_charge2.mods  # noqa: B018
 
@@ -124,7 +124,7 @@ def test_missile_damage_kin(client, consts):
     api_launcher2 = api_fit.add_module(type_id=eve_launcher_id, charge_type_id=eve_charge2_id)
     # Verification
     api_launcher1 = api_launcher1.update()
-    assert api_launcher1.charge.attrs[eve_affectee_attr_id].dogma == approx(6)
+    assert api_launcher1.charge.attrs[eve_affectee_attr_id].modified == approx(6)
     api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -134,7 +134,7 @@ def test_missile_damage_kin(client, consts):
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
-    assert api_charge2.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_charge2.mods  # noqa: B018
 
@@ -158,7 +158,7 @@ def test_missile_damage_expl(client, consts):
     api_launcher2 = api_fit.add_module(type_id=eve_launcher_id, charge_type_id=eve_charge2_id)
     # Verification
     api_launcher1 = api_launcher1.update()
-    assert api_launcher1.charge.attrs[eve_affectee_attr_id].dogma == approx(6)
+    assert api_launcher1.charge.attrs[eve_affectee_attr_id].modified == approx(6)
     api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -168,7 +168,7 @@ def test_missile_damage_expl(client, consts):
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
-    assert api_charge2.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_charge2.mods  # noqa: B018
 
@@ -191,7 +191,7 @@ def test_drone_dmg(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id)
     # Verification
     api_drone1 = api_drone1.update()
-    assert api_drone1.attrs[eve_affectee_attr_id].dogma == approx(6)
+    assert api_drone1.attrs[eve_affectee_attr_id].modified == approx(6)
     api_mod = api_drone1.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -200,7 +200,7 @@ def test_drone_dmg(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(20)
     api_drone2 = api_drone2.update()
-    assert api_drone2.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_drone2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
         api_drone2.mods  # noqa: B018
 
@@ -227,7 +227,7 @@ def test_cloak_recalibration(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
     api_module1 = api_module1.update()
-    assert api_module1.attrs[eve_affectee_attr_id].dogma == approx(5000)
+    assert api_module1.attrs[eve_affectee_attr_id].modified == approx(5000)
     api_mod = api_module1.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
@@ -236,6 +236,6 @@ def test_cloak_recalibration(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(-50)
     api_module2 = api_module2.update()
-    assert api_module2.attrs[eve_affectee_attr_id].dogma == approx(10000)
+    assert api_module2.attrs[eve_affectee_attr_id].modified == approx(10000)
     with check_no_field():
         api_module2.mods  # noqa: B018

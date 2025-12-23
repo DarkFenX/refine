@@ -25,7 +25,7 @@ def test_affected_child_ship(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(96)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(96)
 
 
 def test_affected_child_struct(client, consts):
@@ -52,7 +52,7 @@ def test_affected_child_struct(client, consts):
     api_struct = api_fit2.set_ship(type_id=eve_struct_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_struct.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(96)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(96)
 
 
 def test_affected_charge(client, consts):
@@ -80,7 +80,7 @@ def test_affected_charge(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module2 = api_fit2.add_module(type_id=eve_module2_id, charge_type_id=eve_charge_id)
     api_module1.change_module(add_projs=[api_ship.id])
-    assert api_module2.charge.update().attrs[eve_attr2_id].dogma == approx(96)
+    assert api_module2.charge.update().attrs[eve_attr2_id].modified == approx(96)
 
 
 def test_unaffected_root(client, consts):
@@ -105,7 +105,7 @@ def test_unaffected_root(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_ship.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_ship.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_char_child(client, consts):
@@ -134,7 +134,7 @@ def test_unaffected_char_child(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_implant = api_fit2.add_implant(type_id=eve_implant_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_implant.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_implant.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_targeted_child(client, consts):
@@ -169,7 +169,7 @@ def test_unaffected_targeted_child(client, consts):
     api_fit2.set_ship(type_id=eve_ship_id)
     api_drone = api_fit2.add_drone(type_id=eve_drone_id)
     api_module.change_module(add_projs=[api_drone.id])
-    assert api_drone.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_drone.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_via_child_target(client, consts):
@@ -198,7 +198,7 @@ def test_unaffected_via_child_target(client, consts):
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_drone = api_fit2.add_drone(type_id=eve_drone_id)
     api_module.change_module(add_projs=[api_drone.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_other_group(client, consts):
@@ -226,7 +226,7 @@ def test_unaffected_other_group(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_other_fit(client, consts):
@@ -254,7 +254,7 @@ def test_unaffected_other_fit(client, consts):
     api_fit3.set_ship(type_id=eve_ship_id)
     api_rig = api_fit3.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_ship2.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_nontgt_location_item(client, consts):
@@ -281,7 +281,7 @@ def test_unaffected_nontgt_location_item(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(80)
 
 
 def test_unaffected_nontgt_location_ship(client, consts):
@@ -308,4 +308,4 @@ def test_unaffected_nontgt_location_ship(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module.change_module(add_projs=[api_ship.id])
-    assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
+    assert api_rig.update().attrs[eve_attr2_id].modified == approx(80)

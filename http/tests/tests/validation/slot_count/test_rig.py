@@ -134,7 +134,7 @@ def test_modified_max(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(0)
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(rig_slots=True))
     assert api_stats.rig_slots == (1, 0)
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
@@ -145,7 +145,7 @@ def test_modified_max(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_ship.update().attrs[eve_max_attr_id].extra == approx(1)
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(1)
     api_stats = api_fit.get_stats(options=FitStatsOptions(rig_slots=True))
     assert api_stats.rig_slots == (1, 1)
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))

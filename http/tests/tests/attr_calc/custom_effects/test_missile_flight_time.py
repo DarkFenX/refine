@@ -44,18 +44,10 @@ def test_missile_kinds(client, consts):
     api_fof_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_fof_missile_id)
     api_dot_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_dot_missile_id)
     # Verification
-    api_regular_module.update()
-    assert api_regular_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_regular_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
-    api_defender_module.update()
-    assert api_defender_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_defender_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
-    api_fof_module.update()
-    assert api_fof_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_fof_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
-    api_dot_module.update()
-    assert api_dot_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_dot_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_regular_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
+    assert api_defender_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
+    assert api_fof_module.charge.update().attrs[eve_flight_time_attr_id].modified == approx(14000)
+    assert api_dot_module.charge.update().attrs[eve_flight_time_attr_id].modified == approx(14000)
 
 
 def test_mod_info(client, consts):
@@ -78,8 +70,7 @@ def test_mod_info(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
     api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     api_mod = api_module.charge.mods[eve_flight_time_attr_id].one()
     assert api_mod.op == consts.ApiModOp.extra_add
     assert api_mod.initial_val == approx(4000)
@@ -111,12 +102,8 @@ def test_isolation(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     api_module2 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    api_module1.update()
-    assert api_module1.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module1.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
-    api_module2.update()
-    assert api_module2.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module2.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module1.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
+    assert api_module2.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
 
 
 def test_state(client, consts):
@@ -140,19 +127,19 @@ def test_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_module.charge.change_charge(state=False)
     # Verification - effect is applied even when effect is disabled
-    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_module.charge.change_charge(state=True)
     # Verification
-    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_module.charge.change_charge(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    assert api_module.update().charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
     # Action - just check that solar system is in consistent state when charge is removed with the
     # effect disabled
     api_module.change_module(charge_type_id=None)
@@ -191,21 +178,15 @@ def test_dogma_interaction(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(20000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(24000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(24000)
     # Action
     api_rig.remove()
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
 
 
 def test_speed_zero(client, consts):
@@ -227,9 +208,7 @@ def test_speed_zero(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification - bonus is not applied when missile velocity is 0
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
 
 
 def test_modifier_ship_change(client, consts):
@@ -255,39 +234,27 @@ def test_modifier_ship_change(client, consts):
     api_fit.set_ship(type_id=eve_ship1_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(12000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(12000)
     # Action
     api_fit.set_ship(type_id=eve_unloaded_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_fit.remove_ship()
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(12000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(12000)
 
 
 def test_modifier_switch_type_id_ship(client, consts):
@@ -313,27 +280,19 @@ def test_modifier_switch_type_id_ship(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(12000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(12000)
     # Action
     api_ship.change_ship(type_id=eve_unloaded_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
     # Action
     api_ship.change_ship(type_id=eve_ship1_id)
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
 
 
 def test_modifier_missile_velocity_changed(client, consts):
@@ -368,22 +327,18 @@ def test_modifier_missile_velocity_changed(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
     api_module.update()
-    assert api_module.charge.attrs[eve_speed_attr_id].dogma == approx(500)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.charge.attrs[eve_speed_attr_id].modified == approx(500)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_module.update()
-    assert api_module.charge.attrs[eve_speed_attr_id].dogma == approx(800)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(12500)
+    assert api_module.charge.attrs[eve_speed_attr_id].modified == approx(800)
+    assert api_module.charge.attrs[eve_flight_time_attr_id].modified == approx(12500)
     # Action
     api_rig.remove()
     # Verification
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
 
 
 def test_modifier_ship_radius_changed(client, consts):
@@ -414,24 +369,18 @@ def test_modifier_ship_radius_changed(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification
-    assert api_ship.update().attrs[eve_radius_attr_id].dogma == approx(2000)
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_ship.update().attrs[eve_radius_attr_id].modified == approx(2000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification - lib uses unmodified ship radius for calculations, so result does not change
-    assert api_ship.update().attrs[eve_radius_attr_id].dogma == approx(1600)
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_ship.update().attrs[eve_radius_attr_id].modified == approx(1600)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
     api_rig.remove()
     # Verification
-    assert api_ship.update().attrs[eve_radius_attr_id].dogma == approx(2000)
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(14000)
+    assert api_ship.update().attrs[eve_radius_attr_id].modified == approx(2000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
 
 
 def test_modifier_no_attr_missile_velocity(client, consts):
@@ -453,9 +402,7 @@ def test_modifier_no_attr_missile_velocity(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification - failure to calculate dependencies means bonus is not applied
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
 
 
 def test_modifier_no_attr_missile_radius(client, consts):
@@ -477,9 +424,7 @@ def test_modifier_no_attr_missile_radius(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification - failure to calculate dependencies means bonus is not applied
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
 
 
 def test_modifier_ship_not_loaded(client, consts):
@@ -501,6 +446,4 @@ def test_modifier_ship_not_loaded(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_missile_id)
     # Verification - failure to calculate dependencies means bonus is not applied
-    api_module.update()
-    assert api_module.charge.attrs[eve_flight_time_attr_id].dogma == approx(10000)
-    assert api_module.charge.attrs[eve_flight_time_attr_id].extra == approx(10000)
+    assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)

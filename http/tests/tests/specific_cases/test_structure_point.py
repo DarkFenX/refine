@@ -20,11 +20,11 @@ def test_warp_scram_status(client, consts):
     api_point = api_affector_fit.add_module(type_id=eve_point_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    assert api_ship.update().attrs[eve_status_attr_id].modified == approx(0)
     # Action
     api_point.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    assert api_ship.update().attrs[eve_status_attr_id].modified == approx(100)
 
 
 def test_module_mwd_block(client, consts):

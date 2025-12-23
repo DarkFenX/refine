@@ -47,8 +47,8 @@ def test_switch_state(client, consts):
     assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
     assert api_affector_fighter.abilities[eve_secondary_abil_id].state is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(120)
-    assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(120)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(100)
     # Action
     api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
@@ -57,8 +57,8 @@ def test_switch_state(client, consts):
     assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
     assert api_affector_fighter.abilities[eve_secondary_abil_id].state is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
-    assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(100)
     # Action
     api_affector_fighter.change_fighter(abilities={eve_secondary_abil_id: True})
     # Verification
@@ -67,8 +67,8 @@ def test_switch_state(client, consts):
     assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
     assert api_affector_fighter.abilities[eve_secondary_abil_id].state is True
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
-    assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(100)
     # Action
     api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
     # Verification
@@ -77,8 +77,8 @@ def test_switch_state(client, consts):
     assert api_affector_fighter.abilities[eve_primary_abil_id].state is True
     assert api_affector_fighter.abilities[eve_secondary_abil_id].state is True
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(120)
-    assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(130)
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(120)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(130)
     # Action
     api_affector_fighter.change_fighter(abilities={eve_primary_abil_id: False})
     # Verification
@@ -87,8 +87,8 @@ def test_switch_state(client, consts):
     assert api_affector_fighter.abilities[eve_primary_abil_id].state is False
     assert api_affector_fighter.abilities[eve_secondary_abil_id].state is True
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
-    assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(130)
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(130)
     # Action
     api_affector_fighter.change_fighter(abilities={eve_secondary_abil_id: False})
     # Verification
@@ -97,5 +97,5 @@ def test_switch_state(client, consts):
     assert api_affector_fighter.abilities[eve_primary_abil_id].state is False
     assert api_affector_fighter.abilities[eve_secondary_abil_id].state is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr1_id].extra == approx(100)
-    assert api_affectee_ship.attrs[eve_affectee_attr2_id].extra == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(100)

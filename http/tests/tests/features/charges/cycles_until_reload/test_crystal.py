@@ -389,10 +389,10 @@ def test_modified(client, consts):
     # Verification - modified values are used for damage amount and damage chance. Chance
     # modification is used in EVE, mining preservation command burst charges change it.
     api_module.update()
-    assert api_module.charge.attrs[eve_dmg_flag_attr_id].extra == approx(0)
-    assert api_module.charge.attrs[eve_hp_attr_id].extra == approx(2)
-    assert api_module.charge.attrs[eve_chance_attr_id].extra == approx(0.05)
-    assert api_module.charge.attrs[eve_dmg_attr_id].extra == approx(0.005)
+    assert api_module.charge.attrs[eve_dmg_flag_attr_id].modified == approx(0)
+    assert api_module.charge.attrs[eve_hp_attr_id].modified == approx(2)
+    assert api_module.charge.attrs[eve_chance_attr_id].modified == approx(0.05)
+    assert api_module.charge.attrs[eve_dmg_attr_id].modified == approx(0.005)
     assert api_module.cycles_until_empty == 4000
 
 

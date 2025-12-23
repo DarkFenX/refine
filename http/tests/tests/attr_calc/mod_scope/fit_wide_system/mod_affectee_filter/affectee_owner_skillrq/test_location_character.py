@@ -22,7 +22,7 @@ def test_affected(client, consts):
     api_fit.set_character(type_id=eve_char_item_id)
     api_affectee_item = api_fit.add_drone(type_id=eve_affectee_item_id)
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_unaffected_non_owner_modifiable(client, consts):
@@ -47,7 +47,7 @@ def test_unaffected_non_owner_modifiable(client, consts):
     api_fit.set_character(type_id=eve_char_item_id)
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_other_skillreq(client, consts):
@@ -73,7 +73,7 @@ def test_unaffected_other_skillreq(client, consts):
     api_fit.set_character(type_id=eve_char_item_id)
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     api_affectee_item = api_fit.add_drone(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_other_fit(client, consts):
@@ -99,7 +99,7 @@ def test_unaffected_other_fit(client, consts):
     api_fit1.add_fw_effect(type_id=eve_affector_item_id)
     api_fit2.set_character(type_id=eve_char_item_id)
     api_affectee_item = api_fit2.add_drone(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_replace_root(client, consts):
@@ -126,11 +126,11 @@ def test_replace_root(client, consts):
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     api_fit.set_character(type_id=eve_char_item_id)
     api_affectee_item = api_fit.add_drone(type_id=eve_affectee_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_fit.remove_character()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_fit.set_character(type_id=eve_char_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def setup_switch_type_id_root_test(*, client, consts):
@@ -166,15 +166,15 @@ def test_switch_type_id_root_loaded_to_not_loaded_remove(client, consts):
      api_affectee_item) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_character = api_fit.set_character(type_id=eve_char_loaded_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_character.change_character(type_id=eve_char_not_loaded_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_fw_effect.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_root_not_loaded_to_loaded_remove(client, consts):
@@ -186,12 +186,12 @@ def test_switch_type_id_root_not_loaded_to_loaded_remove(client, consts):
      api_affectee_item) = setup_switch_type_id_root_test(client=client, consts=consts)
     api_character = api_fit.set_character(type_id=eve_char_not_loaded_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_character.change_character(type_id=eve_char_loaded_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_fw_effect.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)

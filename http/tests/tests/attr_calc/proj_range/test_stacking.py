@@ -46,7 +46,7 @@ def test_stacking(client, consts):
     # Second module has stronger effect after range factored in, and thus is penalized less. If it
     # was the other way around, the value would've been ~348.2
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(338.797742)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(338.797742)
     api_mods = api_affectee_ship.mods[eve_affectee_attr_id]
     assert len(api_mods) == 2
     api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()

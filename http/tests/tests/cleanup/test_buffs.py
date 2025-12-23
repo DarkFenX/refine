@@ -18,4 +18,4 @@ def test_affectee_filter_item(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    assert api_ship.update().attrs[eve_attr_id].dogma == approx(150)
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(150)

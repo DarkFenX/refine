@@ -36,7 +36,7 @@ def test_resist_aggr_max(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_ship.update()
     # First system-wide buff is stronger before resists, second is stronger after, second is applied
-    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(127.5)
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(127.5)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-30)

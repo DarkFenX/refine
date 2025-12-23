@@ -31,16 +31,16 @@ def test_range(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(9000, 0, 0))
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
     api_affectee_ship.change_ship(coordinates=(11000, 0, 0))
     # Verification - falloff attribute is ignored for buffs
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
     api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
     # Verification
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)

@@ -85,17 +85,17 @@ def test_ship_to_struct_remove(client, consts):
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_targeted_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(33)
     # Action
     api_root.change_ship(type_id=eve_root_struct_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(19)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(19)
     # Action
     api_system_proj_effect.remove()
     api_buff_proj_effect.remove()
     api_targeted_module.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
 
 
 def test_ship_to_unknown_remove(client, consts):
@@ -114,17 +114,17 @@ def test_ship_to_unknown_remove(client, consts):
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_targeted_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(33)
     # Action
     api_root.change_ship(type_id=eve_root_unknown_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
     # Action
     api_system_proj_effect.remove()
     api_buff_proj_effect.remove()
     api_targeted_module.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
 
 
 def test_ship_to_not_loaded_remove(client, consts):
@@ -143,17 +143,17 @@ def test_ship_to_not_loaded_remove(client, consts):
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_targeted_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(33)
     # Action
     api_root.change_ship(type_id=eve_root_not_loaded_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
     # Action
     api_system_proj_effect.remove()
     api_buff_proj_effect.remove()
     api_targeted_module.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
 
 
 def test_struct_to_ship_remove(client, consts):
@@ -172,17 +172,17 @@ def test_struct_to_ship_remove(client, consts):
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_targeted_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(19)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(19)
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(33)
     # Action
     api_system_proj_effect.remove()
     api_buff_proj_effect.remove()
     api_targeted_module.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
 
 
 def test_unknown_to_ship_remove(client, consts):
@@ -201,17 +201,17 @@ def test_unknown_to_ship_remove(client, consts):
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_targeted_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(33)
     # Action
     api_system_proj_effect.remove()
     api_buff_proj_effect.remove()
     api_targeted_module.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
 
 
 def test_not_loaded_to_ship_remove(client, consts):
@@ -230,14 +230,14 @@ def test_not_loaded_to_ship_remove(client, consts):
     api_buff_proj_effect.change_proj_effect(add_projs=[api_root.id])
     api_targeted_module.change_module(add_projs=[api_root.id])
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(33)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(33)
     # Action
     api_system_proj_effect.remove()
     api_buff_proj_effect.remove()
     api_targeted_module.remove()
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(0)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(0)

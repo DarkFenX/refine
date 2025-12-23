@@ -17,11 +17,11 @@ def test_loaded_to_loaded(client):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    assert api_ship.update().attrs[eve_d1_attr1_id].dogma == approx(50)
+    assert api_ship.update().attrs[eve_d1_attr1_id].modified == approx(50)
     api_sol.change_src(data=eve_d2)
     api_ship.update()
-    assert api_ship.attrs[eve_d2_attr1_id].dogma == approx(30)
-    assert api_ship.attrs[eve_d2_attr2_id].dogma == approx(85)
+    assert api_ship.attrs[eve_d2_attr1_id].modified == approx(30)
+    assert api_ship.attrs[eve_d2_attr2_id].modified == approx(85)
 
 
 def test_loaded_to_not_loaded_to_loaded(client):
@@ -34,7 +34,7 @@ def test_loaded_to_not_loaded_to_loaded(client):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_d1_ship_ip)
     # Verification
-    assert api_ship.update().attrs[eve_d1_attr1_id].dogma == approx(50)
+    assert api_ship.update().attrs[eve_d1_attr1_id].modified == approx(50)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -44,4 +44,4 @@ def test_loaded_to_not_loaded_to_loaded(client):
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_d1_attr1_id].dogma == approx(50)
+    assert api_ship.update().attrs[eve_d1_attr1_id].modified == approx(50)

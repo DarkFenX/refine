@@ -587,8 +587,8 @@ def test_modified(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.disabled)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.disabled)
     # Verification
-    assert api_module1.update().attrs[eve_attr_id].extra == approx(0)
-    assert api_module2.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module1.update().attrs[eve_attr_id].modified == approx(0)
+    assert api_module2.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is True
     with check_no_field():
@@ -597,8 +597,8 @@ def test_modified(client, consts):
     api_rig1.remove()
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    assert api_module1.update().attrs[eve_attr_id].extra == approx(1)
-    assert api_module2.update().attrs[eve_attr_id].extra == approx(1)
+    assert api_module1.update().attrs[eve_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec
@@ -619,7 +619,7 @@ def test_mutation(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.disabled)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is True
     with check_no_field():
@@ -627,7 +627,7 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(1)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec
@@ -636,7 +636,7 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=0)})
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is True
     with check_no_field():
@@ -644,7 +644,7 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=0.3)})
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0.9)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0.9)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec
@@ -653,7 +653,7 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=True))
     assert api_val.passed is True
     with check_no_field():

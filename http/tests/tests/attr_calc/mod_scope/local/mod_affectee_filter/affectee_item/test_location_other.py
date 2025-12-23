@@ -20,7 +20,7 @@ def test_affected_charge_bundled(client, consts):
     api_module = api_fit.add_module(
         type_id=eve_affector_item_id,
         charge_type_id=eve_affectee_item_id)
-    assert api_module.update().charge.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.update().charge.attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_affected_charge_separate(client, consts):
@@ -41,7 +41,7 @@ def test_affected_charge_separate(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affector_item_id)
     api_module.change_module(charge_type_id=eve_affectee_item_id)
-    assert api_module.update().charge.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.update().charge.attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_affected_module_bundled(client, consts):
@@ -61,7 +61,7 @@ def test_affected_module_bundled(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affectee_item_id, charge_type_id=eve_affector_item_id)
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_affected_module_separate(client, consts):
@@ -81,11 +81,11 @@ def test_affected_module_separate(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affectee_item_id)
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_module.change_module(charge_type_id=eve_affector_item_id)
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_module.change_module(charge_type_id=None)
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_fighter_to_autocharge(client, consts):
@@ -116,7 +116,7 @@ def test_unaffected_fighter_to_autocharge(client, consts):
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[api_autocharge_effect_id]
-    assert api_autocharge.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_autocharge.attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_unaffected_autocharge_to_fighter(client, consts):
@@ -144,7 +144,7 @@ def test_unaffected_autocharge_to_fighter(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.update()
-    assert api_fighter.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_fighter.attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_propagation_charge(client, consts):
@@ -175,11 +175,11 @@ def test_propagation_charge(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_middle_item = api_fit.add_module(type_id=eve_middle_item_id, charge_type_id=eve_affectee_item_id)
-    assert api_middle_item.update().charge.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_middle_item.update().charge.attrs[eve_affectee_attr_id].modified == approx(120)
     api_affector_item = api_fit.add_rig(type_id=eve_affector_item_id)
-    assert api_middle_item.update().charge.attrs[eve_affectee_attr_id].dogma == approx(140)
+    assert api_middle_item.update().charge.attrs[eve_affectee_attr_id].modified == approx(140)
     api_affector_item.remove()
-    assert api_middle_item.update().charge.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_middle_item.update().charge.attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def test_propagation_module(client, consts):
@@ -213,11 +213,11 @@ def test_propagation_module(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_affectee_item = api_fit.add_module(type_id=eve_affectee_item_id, charge_type_id=eve_middle_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_affector_item = api_fit.add_rig(type_id=eve_affector_item_id)
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(140)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(140)
     api_affector_item.remove()
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
 def setup_switch_type_id_test(*, client, consts):
@@ -246,7 +246,7 @@ def test_switch_type_id_module_affected_to_not_loaded_remove(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affectee_loaded_id, charge_type_id=eve_affector_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_module.change_module(type_id=eve_affectee_not_loaded_id)
     # Verification
@@ -276,11 +276,11 @@ def test_switch_type_id_module_not_loaded_to_affected_remove(client, consts):
     # Action
     api_module.change_module(type_id=eve_affectee_loaded_id)
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_module.charge.remove()
     # Verification
-    assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_module.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
 def test_switch_type_id_module_affected_to_not_loaded_to_affected(client, consts):
@@ -292,7 +292,7 @@ def test_switch_type_id_module_affected_to_not_loaded_to_affected(client, consts
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_affector_id, charge_type_id=eve_affectee_loaded_id)
     # Verification
-    assert api_module.charge.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.charge.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
     api_module.charge.change_charge(type_id=eve_affectee_not_loaded_id)
     # Verification
@@ -302,4 +302,4 @@ def test_switch_type_id_module_affected_to_not_loaded_to_affected(client, consts
     # Action
     api_module.charge.change_charge(type_id=eve_affectee_loaded_id)
     # Verification
-    assert api_module.charge.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_module.charge.update().attrs[eve_affectee_attr_id].modified == approx(120)

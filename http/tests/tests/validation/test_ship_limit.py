@@ -769,7 +769,7 @@ def test_modified_type(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    assert api_module.update().attrs[eve_type_attr_id].extra == approx(eve_allowed_ship_id)
+    assert api_module.update().attrs[eve_type_attr_id].modified == approx(eve_allowed_ship_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
@@ -778,7 +778,7 @@ def test_modified_type(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    assert api_module.update().attrs[eve_type_attr_id].extra == approx(eve_allowed_ship_id)
+    assert api_module.update().attrs[eve_type_attr_id].modified == approx(eve_allowed_ship_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():
@@ -810,7 +810,7 @@ def test_modified_group(client, consts):
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_allowed_grp_id)
+    assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_allowed_grp_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
@@ -819,7 +819,7 @@ def test_modified_group(client, consts):
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
-    assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_allowed_grp_id)
+    assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_allowed_grp_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
     with check_no_field():

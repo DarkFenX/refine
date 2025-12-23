@@ -19,11 +19,10 @@ def test_sec_status_switch(client, consts):
     # Verification
     assert api_fit.update().sec_status == 4
     api_item.update()
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(400)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(400)
     api_item.update()
     assert api_item.attrs[eve_affector_attr_id].base == approx(0)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(4)
-    assert api_item.attrs[eve_affector_attr_id].extra == approx(4)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(4)
     # Proper info about what security status modifies
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
@@ -40,11 +39,10 @@ def test_sec_status_switch(client, consts):
     # getting calculated and is not exposed
     assert api_fit.update().sec_status == -9.9
     api_item.update()
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(-990)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(-990)
     api_item.update()
     assert api_item.attrs[eve_affector_attr_id].base == approx(0)
-    assert api_item.attrs[eve_affector_attr_id].dogma == approx(-9.9)
-    assert api_item.attrs[eve_affector_attr_id].extra == approx(-9.9)
+    assert api_item.attrs[eve_affector_attr_id].modified == approx(-9.9)
     # Proper info about what security status modifies
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr_id,
@@ -77,8 +75,7 @@ def test_sec_status_modification(client, consts):
     assert api_fit.update().sec_status == 2
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(2)
-    assert api_item.attrs[eve_affectee_attr_id].extra == approx(2)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(2)
     with check_no_field():
         api_item.mods  # noqa: B018
     # Action
@@ -87,7 +84,6 @@ def test_sec_status_modification(client, consts):
     assert api_fit.update().sec_status == 3
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
-    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(3)
-    assert api_item.attrs[eve_affectee_attr_id].extra == approx(3)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(3)
     with check_no_field():
         api_item.mods  # noqa: B018

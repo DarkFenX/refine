@@ -24,5 +24,5 @@ def test_unaffected(client, consts):
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     api_root_affectee_item = api_fit.set_ship(type_id=eve_root_affectee_item_id)
     api_child_affectee_item = api_fit.add_rig(type_id=eve_child_affectee_item_id)
-    assert api_root_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
-    assert api_child_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_root_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
+    assert api_child_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)

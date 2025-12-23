@@ -168,7 +168,7 @@ def test_modified_req(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    assert api_module.update().attrs[eve_req_attr_id].extra == approx(3)
+    assert api_module.update().attrs[eve_req_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
@@ -176,7 +176,7 @@ def test_modified_req(client, consts):
     # Action
     api_skill.change_skill(level=2)
     # Verification
-    assert api_module.update().attrs[eve_req_attr_id].extra == approx(3)
+    assert api_module.update().attrs[eve_req_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
@@ -184,7 +184,7 @@ def test_modified_req(client, consts):
     # Action
     api_implant.remove()
     # Verification
-    assert api_module.update().attrs[eve_req_attr_id].extra == approx(2)
+    assert api_module.update().attrs[eve_req_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
@@ -192,7 +192,7 @@ def test_modified_req(client, consts):
     # Action
     api_skill.change_skill(level=1)
     # Verification
-    assert api_module.update().attrs[eve_req_attr_id].extra == approx(2)
+    assert api_module.update().attrs[eve_req_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
@@ -216,7 +216,7 @@ def test_mutation_req(client, consts):
         state=consts.ApiModuleState.overload,
         mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.9)}))
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(4.2)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(4.2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
@@ -224,7 +224,7 @@ def test_mutation_req(client, consts):
     # Action
     api_skill.change_skill(level=3)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(4.2)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(4.2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True
     with check_no_field():
@@ -233,7 +233,7 @@ def test_mutation_req(client, consts):
     api_skill.change_skill(level=1)
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=0)})
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(1.5)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1.5)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
@@ -241,7 +241,7 @@ def test_mutation_req(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].extra == approx(2)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1

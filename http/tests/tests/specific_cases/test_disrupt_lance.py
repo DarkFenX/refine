@@ -23,7 +23,7 @@ def test_debuff_rr(client, consts):
     api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-50)
@@ -39,7 +39,7 @@ def test_debuff_rr(client, consts):
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-50)
@@ -75,7 +75,7 @@ def test_debuff_warp(client, consts):
     assert api_affectee_fit_stats.can_jump_drive is False
     assert api_affectee_fit_stats.can_dock_citadel is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(100)
@@ -96,7 +96,7 @@ def test_debuff_warp(client, consts):
     assert api_affectee_fit_stats.can_jump_drive is False
     assert api_affectee_fit_stats.can_dock_citadel is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(100)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(100)
@@ -136,8 +136,8 @@ def test_debuff_dock_jump(client, consts):
     assert api_affectee_fit_stats.can_jump_gate is False
     assert api_affectee_fit_stats.can_jump_drive is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].dogma == approx(1)
-    assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].dogma == approx(1)
+    assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].modified == approx(1)
+    assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].modified == approx(1)
     api_dock_mod = api_affectee_ship.mods[eve_affectee_dock_attr_id].one()
     assert api_dock_mod.op == consts.ApiModOp.mod_add
     assert api_dock_mod.initial_val == approx(1)
@@ -166,8 +166,8 @@ def test_debuff_dock_jump(client, consts):
     assert api_affectee_fit_stats.can_jump_gate is False
     assert api_affectee_fit_stats.can_jump_drive is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].dogma == approx(1)
-    assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].dogma == approx(1)
+    assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].modified == approx(1)
+    assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].modified == approx(1)
     api_dock_mod = api_affectee_ship.mods[eve_affectee_dock_attr_id].one()
     assert api_dock_mod.op == consts.ApiModOp.mod_add
     assert api_dock_mod.initial_val == approx(1)
@@ -207,7 +207,7 @@ def test_debuff_tether(client, consts):
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
     assert api_affectee_fit_stats.can_tether is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(1)
@@ -225,7 +225,7 @@ def test_debuff_tether(client, consts):
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
     assert api_affectee_fit_stats.can_tether is False
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
     assert api_mod.initial_val == approx(1)
@@ -256,7 +256,7 @@ def test_drone(client, consts):
     api_affector_module.change_module(add_projs=[api_affectee_drone.id])
     # Verification
     api_affectee_drone.update()
-    assert api_affectee_drone.attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    assert api_affectee_drone.attrs[eve_affectee_attr_id].modified == approx(0.5)
     api_mod = api_affectee_drone.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
     assert api_mod.initial_val == approx(-50)
@@ -291,16 +291,16 @@ def test_range(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 6999, 0))
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification - within attacking ship radius
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action
     api_affectee_ship.change_ship(coordinates=(0, 7001, 0))
     # Verification - slightly goes out of attacking ship radius
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
     # Action
     api_affectee_ship.change_ship(coordinates=(0, 122999, 0))
     # Verification - within surface-to-surface range
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(0.5)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
     # Action
     api_affectee_ship.change_ship(coordinates=(0, 123001, 0))
     # Verification - slightly out of surface-to-surface range
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1)

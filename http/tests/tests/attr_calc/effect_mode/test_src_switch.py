@@ -58,10 +58,10 @@ def test_src_switch(client, consts):
     api_sol.change_src(data=eve_d2)
     # Verification
     api_normal.update()
-    assert api_normal.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_normal.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_normal.effects[api_effect_id].running is True
     assert api_normal.effects[api_effect_id].mode == consts.ApiEffMode.force_run
     api_mutable.update()
-    assert api_mutable.attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_mutable.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_mutable.effects[api_effect_id].running is True
     assert api_mutable.effects[api_effect_id].mode == consts.ApiEffMode.force_run

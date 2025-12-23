@@ -237,7 +237,7 @@ def test_tgt_modified(client, consts):
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0.1)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0.1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -245,14 +245,14 @@ def test_tgt_modified(client, consts):
     # Action
     api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_mod_item.remove()
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0.1)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0.1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -297,16 +297,16 @@ def test_src_modified(client, consts):
     api_src_item1.change_module(add_projs=[api_tgt_item.id])
     api_src_item2.change_module(add_projs=[api_tgt_item.id])
     # Verification - validation results are the same as if attributes were not modified
-    assert api_src_item1.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr3_id)
-    assert api_src_item2.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr3_id)
+    assert api_src_item1.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr3_id)
+    assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr3_id)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
     # Action
     api_mod_item.remove()
     # Verification
-    assert api_src_item1.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr1_id)
-    assert api_src_item2.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr2_id)
+    assert api_src_item1.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr1_id)
+    assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr2_id)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
@@ -329,14 +329,14 @@ def test_tgt_mutation(client, consts):
     api_tgt_item = api_tgt_fit.add_drone(type_id=eve_tgt_base_item_id)
     api_src_item.change_module(add_projs=[api_tgt_item.id])
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(1)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -344,14 +344,14 @@ def test_tgt_mutation(client, consts):
     # Action
     api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0)})
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0.1)})
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0.2)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
@@ -359,7 +359,7 @@ def test_tgt_mutation(client, consts):
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
-    assert api_tgt_item.update().attrs[eve_resist_attr_id].extra == approx(0)
+    assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
@@ -412,8 +412,8 @@ def test_src_mutation(client, consts):
     api_src_item2.change_module(add_projs=[api_tgt_item.id])
     # Verification - on first item resist attr ID definition was modified (overridden by attrs from
     # mutated item) and is effective, but on 2nd item attribute mutation doesn't change anything
-    assert api_src_item1.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr2_id)
-    assert api_src_item2.update().attrs[eve_resist_def_attr_id].extra == approx(0)
+    assert api_src_item1.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr2_id)
+    assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item2.id: [api_tgt_item.id]}
@@ -421,8 +421,8 @@ def test_src_mutation(client, consts):
     api_src_item1.change_module(mutation=None)
     api_src_item2.change_module(mutation=None)
     # Verification
-    assert api_src_item1.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr1_id)
-    assert api_src_item2.update().attrs[eve_resist_def_attr_id].extra == approx(eve_resist_attr3_id)
+    assert api_src_item1.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr1_id)
+    assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr3_id)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id], api_src_item2.id: [api_tgt_item.id]}

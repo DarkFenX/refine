@@ -18,7 +18,7 @@ def test_bubble_sig_local(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     # Verification
-    assert api_ship.update().attrs[eve_sig_attr_id].dogma == approx(150)
+    assert api_ship.update().attrs[eve_sig_attr_id].modified == approx(150)
 
 
 def test_bubble_sig_projected(client, consts):
@@ -39,7 +39,7 @@ def test_bubble_sig_projected(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_sig_attr_id].dogma == approx(100)
+    assert api_ship.update().attrs[eve_sig_attr_id].modified == approx(100)
 
 
 def test_warp_dscript(client, consts):
@@ -786,11 +786,11 @@ def test_range_sscript(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(16000, 0, 0))
     api_wdfg.change_module(add_projs=[api_tgt_ship.id])
     # Verification - range should be 16k (20k base from module -20% from script)
-    assert api_tgt_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
+    assert api_tgt_ship.update().attrs[eve_status_attr_id].modified == approx(100)
     # Action
     api_tgt_ship.change_ship(coordinates=(16001, 0, 0))
     # Verification
-    assert api_tgt_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
+    assert api_tgt_ship.update().attrs[eve_status_attr_id].modified == approx(0)
 
 
 def test_assist_bubble_local(client, consts):
@@ -808,11 +808,11 @@ def test_assist_bubble_local(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(1)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
 
 
 def test_assist_bubble_projected(client, consts):
@@ -832,7 +832,7 @@ def test_assist_bubble_projected(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
 
 
 def test_assist_dscript(client, consts):
@@ -857,11 +857,11 @@ def test_assist_dscript(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(1)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
 
 
 def test_assist_sscript(client, consts):
@@ -886,8 +886,8 @@ def test_assist_sscript(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(1)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
+    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)

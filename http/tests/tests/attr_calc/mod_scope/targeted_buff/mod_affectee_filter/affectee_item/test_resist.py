@@ -37,11 +37,11 @@ def test_resisted_value_change_root(client, consts):
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
     api_affector_module.change_module(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(156)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(156)
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(167)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(167)
     api_affectee_rig.remove()
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(156)
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(156)
 
 
 def test_resisted_value_change_child(client, consts):
@@ -84,8 +84,8 @@ def test_resisted_value_change_child(client, consts):
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
     api_affector_module.change_module(add_projs=[api_affectee_drone.id])
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(156)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].modified == approx(156)
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(167)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].modified == approx(167)
     api_affectee_rig.remove()
-    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(156)
+    assert api_affectee_drone.update().attrs[eve_affectee_attr_id].modified == approx(156)

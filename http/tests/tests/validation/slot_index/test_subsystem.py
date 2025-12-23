@@ -124,16 +124,16 @@ def test_modified_index(client, consts):
     api_subsystem1 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    assert api_subsystem1.update().attrs[eve_slot_attr_id].extra == approx(2)
-    assert api_subsystem2.update().attrs[eve_slot_attr_id].extra == approx(2)
+    assert api_subsystem1.update().attrs[eve_slot_attr_id].modified == approx(2)
+    assert api_subsystem2.update().attrs[eve_slot_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem1.id, api_subsystem2.id])}
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
-    assert api_subsystem1.update().attrs[eve_slot_attr_id].extra == approx(3)
-    assert api_subsystem2.update().attrs[eve_slot_attr_id].extra == approx(3)
+    assert api_subsystem1.update().attrs[eve_slot_attr_id].modified == approx(3)
+    assert api_subsystem2.update().attrs[eve_slot_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem1.id, api_subsystem2.id])}
