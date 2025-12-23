@@ -1,7 +1,7 @@
 use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CycleLoopedPart, CyclePart},
     util::InfCount,
 };
 
@@ -43,8 +43,11 @@ where
     pub(super) fn iter_events(&self) -> CycleLoopLimSinEventIter<T> {
         CycleLoopLimSinEventIter::new(*self)
     }
-    pub(super) fn iter_parts(&self) -> CycleLoopLimSinPartIter<'_, T> {
+    pub(super) fn iter_parts_regular(&self) -> CycleLoopLimSinPartIter<'_, T> {
         CycleLoopLimSinPartIter::new(self)
+    }
+    pub(super) fn iter_parts_looped(&self) -> CycleLoopedLoopLimSinPartIter<'_, T> {
+        CycleLoopedLoopLimSinPartIter::new(self)
     }
     pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
         Some(CycleLooped::LoopLimSin(*self))
@@ -99,7 +102,7 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Part iterator
+// Part iterators
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CycleLoopLimSinPartIter<'a, T> {
     cycle: &'a CycleLoopLimSin<T>,
@@ -130,6 +133,43 @@ where
                 Some(CyclePart {
                     data: self.cycle.p2_data,
                     repeat_count: InfCount::Count(1),
+                })
+            }
+            2 => None,
+            _ => unreachable!(),
+        }
+    }
+}
+
+pub(in crate::svc) struct CycleLoopedLoopLimSinPartIter<'a, T> {
+    cycle: &'a CycleLoopLimSin<T>,
+    index: usize,
+}
+impl<'a, T> CycleLoopedLoopLimSinPartIter<'a, T> {
+    fn new(cycle: &'a CycleLoopLimSin<T>) -> Self {
+        Self { cycle, index: 0 }
+    }
+}
+impl<T> Iterator for CycleLoopedLoopLimSinPartIter<'_, T>
+where
+    T: Copy,
+{
+    type Item = CycleLoopedPart<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.index {
+            0 => {
+                self.index = 1;
+                Some(CycleLoopedPart {
+                    data: self.cycle.p1_data,
+                    repeat_count: self.cycle.p1_repeat_count,
+                })
+            }
+            1 => {
+                self.index = 2;
+                Some(CycleLoopedPart {
+                    data: self.cycle.p2_data,
+                    repeat_count: 1,
                 })
             }
             2 => None,

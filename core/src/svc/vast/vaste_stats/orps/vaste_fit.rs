@@ -96,15 +96,24 @@ fn get_orrps(
         }
         for (&effect_key, rep_getter) in item_data.iter() {
             let r_effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle = match rep_getter(ctx, calc, item_key, r_effect, spool, None) {
+            let effect_cycle = match cycle_map.get(&effect_key) {
+                Some(effect_cycle_loop) => effect_cycle_loop.to_time_chargedness(),
+                None => continue,
+            };
+            let effect_cycle_part = effect_cycle.get_first();
+            let output_per_cycle = match rep_getter(
+                ctx,
+                calc,
+                item_key,
+                r_effect,
+                effect_cycle_part.chargedness,
+                spool,
+                None,
+            ) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
-                Some(effect_cycle_loop) => effect_cycle_loop,
-                None => continue,
-            };
-            rps += output_per_cycle.get_total() / effect_cycle_loop.get_average_time();
+            rps += output_per_cycle.get_total() / effect_cycle_part.time;
         }
     }
     rps

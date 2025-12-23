@@ -137,16 +137,24 @@ fn get_irr_data(
         };
         for (&effect_key, rep_getter) in projector_data.iter() {
             let effect_cycles = match projector_cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
+                Some(effect_cycles) => effect_cycles.to_time_chargedness(),
                 None => continue,
             };
+            let effect_cycle_part = effect_cycles.get_first();
             let r_effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle =
-                match rep_getter(ctx, calc, projector_item_key, r_effect, spool, Some(projectee_item_key)) {
-                    Some(hp_per_cycle) => hp_per_cycle,
-                    None => continue,
-                };
-            let cycle_time_s = effect_cycles.get_first().time;
+            let output_per_cycle = match rep_getter(
+                ctx,
+                calc,
+                projector_item_key,
+                r_effect,
+                effect_cycle_part.chargedness,
+                spool,
+                Some(projectee_item_key),
+            ) {
+                Some(hp_per_cycle) => hp_per_cycle,
+                None => continue,
+            };
+            let cycle_time_s = effect_cycle_part.time;
             result.push(IrrEntry {
                 // For now there are no reps which spread effect over multiple cycles, so we just
                 // record total amount for the purposes of RR penalty

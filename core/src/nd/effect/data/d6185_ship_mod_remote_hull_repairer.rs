@@ -31,6 +31,7 @@ fn internal_get_outgoing_rep_opc(
     calc: &mut Calc,
     projector_key: UItemKey,
     projector_effect: &REffect,
+    _chargedness: Option<AttrVal>,
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {

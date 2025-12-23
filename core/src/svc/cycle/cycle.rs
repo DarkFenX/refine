@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     def::AttrVal,
-    svc::cycle::{CycleDataFull, CycleDataTime},
+    svc::cycle::{CycleDataFull, CycleDataTime, CycleDataTimeChargedness},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -48,6 +48,13 @@ impl Cycle {
             Self::LoopLimSin(inner) => inner.get_average_time(),
         }
     }
+    // Convenience conversion methods, to avoid type hinting in some cases
+    pub(in crate::svc) fn to_time(&self) -> Cycle<CycleDataTime> {
+        self.into()
+    }
+    pub(in crate::svc) fn to_time_chargedness(&self) -> Cycle<CycleDataTimeChargedness> {
+        self.into()
+    }
 }
 impl Cycle<CycleDataTime> {
     pub(in crate::svc) fn copy_rounded(&self) -> Self {
@@ -88,6 +95,7 @@ impl<T> CycleLooped<T> {
     }
 }
 impl CycleLooped {
+    // TODO: consider if it is correct to use it, or if looped parts should be used everywhere
     pub(in crate::svc) fn get_average_time(&self) -> AttrVal {
         match self {
             Self::Inf(inner) => inner.get_average_time(),

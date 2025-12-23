@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, ItemId, OF},
     sol::SolarSystem,
     svc::{
-        cycle::{Cycle, CycleDataTime, CycleDataTimeCharged},
+        cycle::{Cycle, CycleDataTime, CycleDataTimeChargedness},
         output::Output,
     },
     ud::UItemKey,
@@ -65,7 +65,7 @@ impl StaggerKey {
 }
 
 pub(super) fn process_staggers(
-    stagger_map: RMapVec<StaggerKey, (Cycle<CycleDataTimeCharged>, Output<AttrVal>)>,
+    stagger_map: RMapVec<StaggerKey, (Cycle<CycleDataTimeChargedness>, Output<AttrVal>)>,
     aggregator: &mut Aggregator,
 ) {
     for (stagger_key, stagger_group) in stagger_map.into_iter() {

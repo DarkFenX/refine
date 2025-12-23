@@ -76,9 +76,16 @@ fn get_orr_effect(
     rep_getter_getter: fn(&REffect) -> Option<NOutgoingRepGetter>,
 ) -> Option<AttrVal> {
     let rep_getter = rep_getter_getter(effect)?;
-    let effect_cycle_loop = effect_cycle.try_get_loop()?;
-    let rep_amount = rep_getter(ctx, calc, item_key, effect, spool, None)?;
-    Some(rep_amount.get_total() / effect_cycle_loop.get_average_time())
+    let effect_cycle_loop = effect_cycle.to_time_chargedness().try_get_loop()?;
+    let mut rep_amount = OF(0.0);
+    let mut time = OF(0.0);
+    for effect_cycle_part in effect_cycle_loop.iter_parts() {
+        let chargedness = effect_cycle_part.data.chargedness;
+        let cycle_rep_amount = rep_getter(ctx, calc, item_key, effect, chargedness, spool, None)?;
+        rep_amount += cycle_rep_amount.get_total() * effect_cycle_part.repeat_count as f64;
+        time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
+    }
+    Some(rep_amount / time)
 }
 
 fn get_getter_shield(effect: &REffect) -> Option<NOutgoingRepGetter> {

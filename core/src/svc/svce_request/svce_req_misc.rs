@@ -33,7 +33,8 @@ impl Svc {
             }
             let repeat_count = match cycle_part.repeat_count {
                 InfCount::Count(repeat_count) => repeat_count,
-                // If some of parts is charged and cycles infinitely, item never goes "empty"
+                // If some of the parts are charged, and they cycle infinitely, item never goes
+                // "empty"
                 InfCount::Infinite => return Some(InfCount::Infinite),
             };
             charged_cycles += repeat_count;

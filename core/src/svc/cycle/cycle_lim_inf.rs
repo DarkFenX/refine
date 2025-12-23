@@ -43,7 +43,7 @@ where
     pub(super) fn iter_events(&self) -> CycleLimInfEventIter<T> {
         CycleLimInfEventIter::new(*self)
     }
-    pub(super) fn iter_parts(&self) -> CycleLimInfPartIter<'_, T> {
+    pub(super) fn iter_parts_regular(&self) -> CycleLimInfPartIter<'_, T> {
         CycleLimInfPartIter::new(self)
     }
     pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {

@@ -60,7 +60,7 @@ where
     pub(super) fn iter_events(&self) -> CycleLimSinInfEventIter<T> {
         CycleLimSinInfEventIter::new(*self)
     }
-    pub(super) fn iter_parts(&self) -> CycleLimSinInfPartIter<'_, T> {
+    pub(super) fn iter_parts_regular(&self) -> CycleLimSinInfPartIter<'_, T> {
         CycleLimSinInfPartIter::new(self)
     }
     pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {

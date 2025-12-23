@@ -36,7 +36,7 @@ where
     pub(super) fn iter_events(&self) -> CycleLimEventIter<T> {
         CycleLimEventIter::new(*self)
     }
-    pub(super) fn iter_parts(&self) -> CycleLimPartIter<'_, T> {
+    pub(super) fn iter_parts_regular(&self) -> CycleLimPartIter<'_, T> {
         CycleLimPartIter::new(self)
     }
 }

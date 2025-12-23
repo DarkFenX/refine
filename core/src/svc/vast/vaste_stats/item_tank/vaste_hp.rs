@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, CycleOptions, CycleOptionsSim, get_item_cycle_info},
+        cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
         err::StatItemCheckError,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
@@ -118,8 +118,8 @@ fn get_local_ancil_hp(
                 };
                 let hp_per_cycle = match rep_getter(ctx, calc, item_key, effect, effect_cycle_part.data.chargedness) {
                     Some(hp_per_cycle) => hp_per_cycle,
-                    // If HP was not returned for this part, it cannot be returned for this effect
-                    // altogether
+                    // Assume that if HP was not returned for this part, it cannot be returned for
+                    // this effect altogether
                     None => continue 'effect,
                 };
                 effect_ancil_hp += hp_per_cycle.get_total() * effect_part_repeats as f64;
@@ -159,53 +159,57 @@ fn get_remote_ancil_hp(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (&effect_key, rep_getter) in projector_data.iter() {
+        'effect: for (&effect_key, rep_getter) in projector_data.iter() {
             let effect_cycles = match projector_cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle =
-                match rep_getter(ctx, calc, projector_item_key, effect, None, Some(projectee_item_key)) {
-                    Some(hp_per_cycle) => hp_per_cycle,
-                    None => continue,
+            let mut broken_sequence = false;
+            let mut effect_ancil_hp = OF(0.0);
+            let effect_cycle_parts = effect_cycles.get_parts();
+            for effect_cycle_part in effect_cycle_parts.iter() {
+                // No charges in current part breaks sequence
+                if effect_cycle_part.data.chargedness.is_none() {
+                    broken_sequence = true;
+                    break;
+                }
+                let effect_part_repeats = match effect_cycle_part.repeat_count {
+                    InfCount::Count(effect_part_repeats) => effect_part_repeats,
+                    // Can infinitely cycle - current effect is not an ancil, skip it completely
+                    InfCount::Infinite => continue 'effect,
                 };
-            // TODO: redo into proper ancil semi-charged handling
-            let cycle_count = match get_charged_cycles(effect_cycles) {
-                InfCount::Count(cycle_count) => cycle_count,
-                InfCount::Infinite => continue,
-            };
-            total_ancil_hp += output_per_cycle.get_total() * cycle_count as f64;
+                let hp_per_cycle = match rep_getter(
+                    ctx,
+                    calc,
+                    projector_item_key,
+                    effect,
+                    effect_cycle_part.data.chargedness,
+                    None,
+                    Some(projectee_item_key),
+                ) {
+                    Some(hp_per_cycle) => hp_per_cycle,
+                    // Assume that if HP was not returned for this part, it cannot be returned for
+                    // this effect altogether
+                    None => continue 'effect,
+                };
+                effect_ancil_hp += hp_per_cycle.get_total() * effect_part_repeats as f64;
+                // Reloads break sequence
+                if let Some(interrupt) = effect_cycle_part.data.interrupt
+                    && interrupt.reload
+                {
+                    broken_sequence = true;
+                    break;
+                }
+            }
+            // If cycle was not broken early, and it loops, it is infinitely cycling, and thus not
+            // an ancil
+            if !broken_sequence && effect_cycle_parts.loops {
+                continue;
+            }
+            // Add HP only after we concluded it is an ancil
+            total_ancil_hp += effect_ancil_hp;
         }
     }
     total_ancil_hp
-}
-
-fn get_charged_cycles(cycle: &Cycle) -> InfCount {
-    let mut charged_cycles = 0;
-    let cycle_parts = cycle.get_parts();
-    for cycle_part in cycle_parts.iter() {
-        // Current part uncharged means we're empty by this point
-        if cycle_part.data.chargedness.is_none() {
-            return InfCount::Count(charged_cycles);
-        }
-        let repeat_count = match cycle_part.repeat_count {
-            InfCount::Count(repeat_count) => repeat_count,
-            // If some of parts is charged and cycles infinitely, item never goes "empty"
-            InfCount::Infinite => return InfCount::Infinite,
-        };
-        charged_cycles += repeat_count;
-        // break sequence only on reloads
-        if let Some(interrupt) = cycle_part.data.interrupt
-            && interrupt.reload
-        {
-            return InfCount::Count(charged_cycles);
-        }
-    }
-    // If we didn't bail early, have charged cycles and sequence is looped, it is never-ending
-    // sequence of charged cycles
-    if cycle_parts.loops && charged_cycles > 0 {
-        return InfCount::Infinite;
-    }
-    InfCount::Count(charged_cycles)
 }

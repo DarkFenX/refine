@@ -1,8 +1,23 @@
 use super::{
-    cycle_inf::CycleInfPartIter, cycle_lim::CycleLimPartIter, cycle_lim_inf::CycleLimInfPartIter,
-    cycle_lim_sin_inf::CycleLimSinInfPartIter, cycle_loop_lim_sin::CycleLoopLimSinPartIter,
+    cycle_inf::{CycleInfPartIter, CycleLoopedInfPartIter},
+    cycle_lim::CycleLimPartIter,
+    cycle_lim_inf::CycleLimInfPartIter,
+    cycle_lim_sin_inf::CycleLimSinInfPartIter,
+    cycle_loop_lim_sin::{CycleLoopLimSinPartIter, CycleLoopedLoopLimSinPartIter},
 };
-use crate::{svc::cycle::Cycle, util::InfCount};
+use crate::{
+    def::Count,
+    svc::cycle::{Cycle, CycleLooped},
+    util::InfCount,
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Regular cycle
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(crate) struct CyclePart<T> {
+    pub(crate) data: T,
+    pub(crate) repeat_count: InfCount,
+}
 
 pub(crate) struct CycleParts<'a, T> {
     cycle: &'a Cycle<T>,
@@ -14,18 +29,13 @@ where
 {
     pub(crate) fn iter(&self) -> CyclePartIter<'a, T> {
         match self.cycle {
-            Cycle::Lim(inner) => CyclePartIter::Lim(inner.iter_parts()),
-            Cycle::Inf(inner) => CyclePartIter::Inf(inner.iter_parts()),
-            Cycle::LimInf(inner) => CyclePartIter::LimInf(inner.iter_parts()),
-            Cycle::LimSinInf(inner) => CyclePartIter::LimSinInf(inner.iter_parts()),
-            Cycle::LoopLimSin(inner) => CyclePartIter::LoopLimSin(inner.iter_parts()),
+            Cycle::Lim(inner) => CyclePartIter::Lim(inner.iter_parts_regular()),
+            Cycle::Inf(inner) => CyclePartIter::Inf(inner.iter_parts_regular()),
+            Cycle::LimInf(inner) => CyclePartIter::LimInf(inner.iter_parts_regular()),
+            Cycle::LimSinInf(inner) => CyclePartIter::LimSinInf(inner.iter_parts_regular()),
+            Cycle::LoopLimSin(inner) => CyclePartIter::LoopLimSin(inner.iter_parts_regular()),
         }
     }
-}
-
-pub(crate) struct CyclePart<T> {
-    pub(crate) data: T,
-    pub(crate) repeat_count: InfCount,
 }
 
 impl<T> Cycle<T>
@@ -60,6 +70,44 @@ where
             Self::Inf(inner) => inner.next(),
             Self::LimInf(inner) => inner.next(),
             Self::LimSinInf(inner) => inner.next(),
+            Self::LoopLimSin(inner) => inner.next(),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Looped cycle
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(crate) struct CycleLoopedPart<T> {
+    pub(crate) data: T,
+    pub(crate) repeat_count: Count,
+}
+
+impl<T> CycleLooped<T>
+where
+    T: Copy,
+{
+    pub(in crate::svc) fn iter_parts(&self) -> CycleLoopedPartIter<'_, T> {
+        match self {
+            Self::Inf(inner) => CycleLoopedPartIter::Inf(inner.iter_parts_looped()),
+            Self::LoopLimSin(inner) => CycleLoopedPartIter::LoopLimSin(inner.iter_parts_looped()),
+        }
+    }
+}
+
+pub(in crate::svc) enum CycleLoopedPartIter<'a, T> {
+    Inf(CycleLoopedInfPartIter<'a, T>),
+    LoopLimSin(CycleLoopedLoopLimSinPartIter<'a, T>),
+}
+impl<T> Iterator for CycleLoopedPartIter<'_, T>
+where
+    T: Copy,
+{
+    type Item = CycleLoopedPart<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            Self::Inf(inner) => inner.next(),
             Self::LoopLimSin(inner) => inner.next(),
         }
     }

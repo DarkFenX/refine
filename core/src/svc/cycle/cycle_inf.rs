@@ -1,6 +1,6 @@
 use crate::{
     def::AttrVal,
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CycleLoopedPart, CyclePart},
     util::InfCount,
 };
 
@@ -31,8 +31,11 @@ where
     pub(super) fn iter_events(&self) -> CycleInfEventIter<T> {
         CycleInfEventIter::new(*self)
     }
-    pub(super) fn iter_parts(&self) -> CycleInfPartIter<'_, T> {
+    pub(super) fn iter_parts_regular(&self) -> CycleInfPartIter<'_, T> {
         CycleInfPartIter::new(self)
+    }
+    pub(super) fn iter_parts_looped(&self) -> CycleLoopedInfPartIter<'_, T> {
+        CycleLoopedInfPartIter::new(self)
     }
     pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
         Some(CycleLooped::Inf(*self))
@@ -74,7 +77,7 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Part iterator
+// Part iterators
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CycleInfPartIter<'a, T> {
     cycle: &'a CycleInf<T>,
@@ -98,6 +101,32 @@ where
         Some(CyclePart {
             data: self.cycle.data,
             repeat_count: InfCount::Infinite,
+        })
+    }
+}
+
+pub(in crate::svc) struct CycleLoopedInfPartIter<'a, T> {
+    cycle: &'a CycleInf<T>,
+    yielded: bool,
+}
+impl<'a, T> CycleLoopedInfPartIter<'a, T> {
+    fn new(cycle: &'a CycleInf<T>) -> Self {
+        Self { cycle, yielded: false }
+    }
+}
+impl<T> Iterator for CycleLoopedInfPartIter<'_, T>
+where
+    T: Copy,
+{
+    type Item = CycleLoopedPart<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.yielded {
+            return None;
+        }
+        Some(CycleLoopedPart {
+            data: self.cycle.data,
+            repeat_count: 1,
         })
     }
 }

@@ -4,7 +4,7 @@ use super::event::{CapSimEvent, CapSimEventCycleCheck};
 use crate::{
     def::{AttrVal, Count, OF},
     svc::{
-        cycle::{Cycle, CycleDataTime, CycleDataTimeCharged},
+        cycle::{Cycle, CycleDataTime, CycleDataTimeChargedness},
         output::{Output, OutputComplex, OutputSimple},
     },
     util::{RMapVec, sig_round},
@@ -20,7 +20,7 @@ impl Aggregator {
     pub(super) fn add_entry(
         &mut self,
         start_delay: AttrVal,
-        cycle: Cycle<CycleDataTimeCharged>,
+        cycle: Cycle<CycleDataTimeChargedness>,
         output: Output<AttrVal>,
     ) {
         self.data.add_entry(
@@ -59,7 +59,7 @@ impl Aggregator {
 // converted into cap sim events, where some data needed for aggregation will be lost
 struct AggrEventInfo {
     start_delay: AttrVal,
-    cycle: Cycle<CycleDataTimeCharged>,
+    cycle: Cycle<CycleDataTimeChargedness>,
     output: Output<AttrVal>,
 }
 impl From<AggrEventInfo> for CapSimEvent {
@@ -80,7 +80,7 @@ struct AggrKey {
     output: AggrKeyOutput,
 }
 impl AggrKey {
-    fn new(start_delay: AttrVal, cycle: &Cycle<CycleDataTimeCharged>, output: &Output<AttrVal>) -> Self {
+    fn new(start_delay: AttrVal, cycle: &Cycle<CycleDataTimeChargedness>, output: &Output<AttrVal>) -> Self {
         Self {
             start_delay: sig_round(start_delay, 10),
             cycle: Cycle::from(cycle).copy_rounded(),
