@@ -28,7 +28,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
                 }
                 false => Some(AggrBreacherTicks::Lc(AbtLc {
                     dmg_tick_count: output_ticks,
-                    inactive_tick_count: cycle_ticks - output_ticks,
+                    tick_count: cycle_ticks,
                     repeat_count: limited.repeat_count,
                 })),
             }
@@ -39,7 +39,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
                 false => Some(AggrBreacherTicks::Ic(AbtIc {
                     dmg_tick_count: output_ticks,
-                    inactive_tick_count: cycle_ticks - output_ticks,
+                    tick_count: cycle_ticks,
                 })),
             }
         }
@@ -48,17 +48,13 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
             let p2_ticks = time_to_ticks(infinite2.p2_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
-                false => {
-                    let p1_dmg_ticks = output_ticks.min(p1_ticks);
-                    let p2_dmg_ticks = output_ticks.min(p2_ticks);
-                    Some(AggrBreacherTicks::LcIc(AbtLcIc {
-                        p1_dmg_tick_count: p1_dmg_ticks,
-                        p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
-                        p1_repeat_count: infinite2.p1_repeat_count,
-                        p2_dmg_tick_count: p2_dmg_ticks,
-                        p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
-                    }))
-                }
+                false => Some(AggrBreacherTicks::LcIc(AbtLcIc {
+                    p1_dmg_tick_count: output_ticks.min(p1_ticks),
+                    p1_tick_count: p1_ticks,
+                    p1_repeat_count: infinite2.p1_repeat_count,
+                    p2_dmg_tick_count: output_ticks.min(p2_ticks),
+                    p2_tick_count: p2_ticks,
+                })),
             }
         }
         Cycle::LimSinInf(infinite3) => {
@@ -67,21 +63,16 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
             let p3_ticks = time_to_ticks(infinite3.p3_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks && output_ticks > p3_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
-                false => {
-                    let p1_dmg_ticks = output_ticks.min(p1_ticks);
-                    let p2_dmg_ticks = output_ticks.min(p2_ticks);
-                    let p3_dmg_ticks = output_ticks.min(p3_ticks);
-                    Some(AggrBreacherTicks::LcLcIc(AbtLcLcIc {
-                        p1_dmg_tick_count: p1_dmg_ticks,
-                        p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
-                        p1_repeat_count: infinite3.p1_repeat_count,
-                        p2_dmg_tick_count: p2_dmg_ticks,
-                        p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
-                        p2_repeat_count: 1,
-                        p3_dmg_tick_count: p3_dmg_ticks,
-                        p3_inactive_tick_count: p3_ticks - p3_dmg_ticks,
-                    }))
-                }
+                false => Some(AggrBreacherTicks::LcLcIc(AbtLcLcIc {
+                    p1_dmg_tick_count: output_ticks.min(p1_ticks),
+                    p1_tick_count: p1_ticks,
+                    p1_repeat_count: infinite3.p1_repeat_count,
+                    p2_dmg_tick_count: output_ticks.min(p2_ticks),
+                    p2_tick_count: p2_ticks,
+                    p2_repeat_count: 1,
+                    p3_dmg_tick_count: output_ticks.min(p3_ticks),
+                    p3_tick_count: p3_ticks,
+                })),
             }
         }
         Cycle::LoopLimSin(looped2) => {
@@ -89,18 +80,14 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
             let p2_ticks = time_to_ticks(looped2.p2_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
-                false => {
-                    let p1_dmg_ticks = output_ticks.min(p1_ticks);
-                    let p2_dmg_ticks = output_ticks.min(p2_ticks);
-                    Some(AggrBreacherTicks::LoopLcLc(AbtLoopLcLc {
-                        p1_dmg_tick_count: p1_dmg_ticks,
-                        p1_inactive_tick_count: p1_ticks - p1_dmg_ticks,
-                        p1_repeat_count: looped2.p1_repeat_count,
-                        p2_dmg_tick_count: p2_dmg_ticks,
-                        p2_inactive_tick_count: p2_ticks - p2_dmg_ticks,
-                        p2_repeat_count: 1,
-                    }))
-                }
+                false => Some(AggrBreacherTicks::LoopLcLc(AbtLoopLcLc {
+                    p1_dmg_tick_count: output_ticks.min(p1_ticks),
+                    p1_tick_count: p1_ticks,
+                    p1_repeat_count: looped2.p1_repeat_count,
+                    p2_dmg_tick_count: output_ticks.min(p2_ticks),
+                    p2_tick_count: p2_ticks,
+                    p2_repeat_count: 1,
+                })),
             }
         }
     }

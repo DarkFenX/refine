@@ -83,7 +83,7 @@ impl AbtLs {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct AbtLc {
     pub(super) dmg_tick_count: Count,
-    pub(super) inactive_tick_count: Count,
+    pub(super) tick_count: Count,
     pub(super) repeat_count: Count,
 }
 impl AbtLc {
@@ -91,12 +91,11 @@ impl AbtLc {
         None
     }
     fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let ticks_per_cycle = self.dmg_tick_count + self.inactive_tick_count;
-        if tick / ticks_per_cycle >= self.repeat_count {
+        if tick / self.tick_count >= self.repeat_count {
             return false;
         };
-        let in_cycle_tick = tick % ticks_per_cycle;
-        in_cycle_tick < self.dmg_tick_count
+        let tick = tick % self.tick_count;
+        tick < self.dmg_tick_count
     }
 }
 
@@ -117,50 +116,47 @@ impl AbtIs {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct AbtIc {
     pub(super) dmg_tick_count: Count,
-    pub(super) inactive_tick_count: Count,
+    pub(super) tick_count: Count,
 }
 impl AbtIc {
     fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
         Some(AggrBreacherTicksLooped::Ic(*self))
     }
     fn get_loop_len(&self) -> Count {
-        self.dmg_tick_count + self.inactive_tick_count
+        self.tick_count
     }
     fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let ticks_per_cycle = self.dmg_tick_count + self.inactive_tick_count;
-        let in_cycle_tick = tick % ticks_per_cycle;
-        in_cycle_tick < self.dmg_tick_count
+        let tick = tick % self.tick_count;
+        tick < self.dmg_tick_count
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct AbtLcIc {
     pub(super) p1_dmg_tick_count: Count,
-    pub(super) p1_inactive_tick_count: Count,
+    pub(super) p1_tick_count: Count,
     pub(super) p1_repeat_count: Count,
     pub(super) p2_dmg_tick_count: Count,
-    pub(super) p2_inactive_tick_count: Count,
+    pub(super) p2_tick_count: Count,
 }
 impl AbtLcIc {
     fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        match self.p2_inactive_tick_count {
-            0 => Some(AggrBreacherTicksLooped::Is(AbtIs {})),
-            _ => Some(AggrBreacherTicksLooped::Ic(AbtIc {
+        match self.p2_dmg_tick_count >= self.p2_tick_count {
+            true => Some(AggrBreacherTicksLooped::Is(AbtIs {})),
+            false => Some(AggrBreacherTicksLooped::Ic(AbtIc {
                 dmg_tick_count: self.p2_dmg_tick_count,
-                inactive_tick_count: self.p2_inactive_tick_count,
+                tick_count: self.p2_tick_count,
             })),
         }
     }
     fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let p1_inner_ticks = self.p1_dmg_tick_count + self.p1_inactive_tick_count;
-        let p1_total_ticks = p1_inner_ticks * self.p1_repeat_count;
+        let p1_total_ticks = self.p1_tick_count * self.p1_repeat_count;
         if tick < p1_total_ticks {
-            let tick = tick % p1_inner_ticks;
+            let tick = tick % self.p1_tick_count;
             return tick < self.p1_dmg_tick_count;
         }
         let tick = tick - p1_total_ticks;
-        let p2_inner_ticks = self.p2_dmg_tick_count + self.p2_inactive_tick_count;
-        let tick = tick % p2_inner_ticks;
+        let tick = tick % self.p2_tick_count;
         tick < self.p2_dmg_tick_count
     }
 }
@@ -168,41 +164,38 @@ impl AbtLcIc {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct AbtLcLcIc {
     pub(super) p1_dmg_tick_count: Count,
-    pub(super) p1_inactive_tick_count: Count,
+    pub(super) p1_tick_count: Count,
     pub(super) p1_repeat_count: Count,
     pub(super) p2_dmg_tick_count: Count,
-    pub(super) p2_inactive_tick_count: Count,
+    pub(super) p2_tick_count: Count,
     pub(super) p2_repeat_count: Count,
     pub(super) p3_dmg_tick_count: Count,
-    pub(super) p3_inactive_tick_count: Count,
+    pub(super) p3_tick_count: Count,
 }
 impl AbtLcLcIc {
     fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        match self.p3_inactive_tick_count {
-            0 => Some(AggrBreacherTicksLooped::Is(AbtIs {})),
-            _ => Some(AggrBreacherTicksLooped::Ic(AbtIc {
+        match self.p3_dmg_tick_count >= self.p3_tick_count {
+            true => Some(AggrBreacherTicksLooped::Is(AbtIs {})),
+            false => Some(AggrBreacherTicksLooped::Ic(AbtIc {
                 dmg_tick_count: self.p3_dmg_tick_count,
-                inactive_tick_count: self.p3_inactive_tick_count,
+                tick_count: self.p3_tick_count,
             })),
         }
     }
     fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let p1_inner_ticks = self.p1_dmg_tick_count + self.p1_inactive_tick_count;
-        let p1_total_ticks = p1_inner_ticks * self.p1_repeat_count;
+        let p1_total_ticks = self.p1_tick_count * self.p1_repeat_count;
         if tick < p1_total_ticks {
-            let tick = tick % p1_inner_ticks;
+            let tick = tick % self.p1_tick_count;
             return tick < self.p1_dmg_tick_count;
         }
         let tick = tick - p1_total_ticks;
-        let p2_inner_ticks = self.p2_dmg_tick_count + self.p2_inactive_tick_count;
-        let p2_total_ticks = p2_inner_ticks * self.p2_repeat_count;
+        let p2_total_ticks = self.p2_tick_count * self.p2_repeat_count;
         if tick < p2_total_ticks {
-            let tick = tick % p2_inner_ticks;
+            let tick = tick % self.p2_tick_count;
             return tick < self.p2_dmg_tick_count;
         }
         let tick = tick - p2_total_ticks;
-        let p3_inner_ticks = self.p3_dmg_tick_count + self.p3_inactive_tick_count;
-        let tick = tick % p3_inner_ticks;
+        let tick = tick % self.p3_tick_count;
         tick < self.p3_dmg_tick_count
     }
 }
@@ -210,10 +203,10 @@ impl AbtLcLcIc {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct AbtLoopLcLc {
     pub(super) p1_dmg_tick_count: Count,
-    pub(super) p1_inactive_tick_count: Count,
+    pub(super) p1_tick_count: Count,
     pub(super) p1_repeat_count: Count,
     pub(super) p2_dmg_tick_count: Count,
-    pub(super) p2_inactive_tick_count: Count,
+    pub(super) p2_tick_count: Count,
     pub(super) p2_repeat_count: Count,
 }
 impl AbtLoopLcLc {
@@ -221,21 +214,18 @@ impl AbtLoopLcLc {
         Some(AggrBreacherTicksLooped::LoopLcLc(*self))
     }
     fn get_loop_len(&self) -> Count {
-        (self.p1_dmg_tick_count + self.p1_inactive_tick_count) * self.p1_repeat_count
-            + (self.p2_dmg_tick_count + self.p2_inactive_tick_count) * self.p2_repeat_count
+        self.p1_tick_count * self.p1_repeat_count + self.p2_tick_count * self.p2_repeat_count
     }
     fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let p1_inner_ticks = self.p1_dmg_tick_count + self.p1_inactive_tick_count;
-        let p1_total_ticks = p1_inner_ticks * self.p1_repeat_count;
-        let p2_inner_ticks = self.p2_dmg_tick_count + self.p2_inactive_tick_count;
-        let p2_total_ticks = p2_inner_ticks * self.p2_repeat_count;
+        let p1_total_ticks = self.p1_tick_count * self.p1_repeat_count;
+        let p2_total_ticks = self.p2_tick_count * self.p2_repeat_count;
         let total_ticks = p1_total_ticks + p2_total_ticks;
         let tick = tick % total_ticks;
         if tick < p1_total_ticks {
-            let tick = tick % p1_inner_ticks;
+            let tick = tick % self.p1_tick_count;
             return tick < self.p1_dmg_tick_count;
         }
-        let tick = (tick - p1_total_ticks) % p2_inner_ticks;
+        let tick = (tick - p1_total_ticks) % self.p2_tick_count;
         tick < self.p2_dmg_tick_count
     }
 }
