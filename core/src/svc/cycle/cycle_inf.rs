@@ -98,6 +98,7 @@ where
         if self.yielded {
             return None;
         }
+        self.yielded = true;
         Some(CyclePart {
             data: self.cycle.data,
             repeat_count: InfCount::Infinite,
@@ -124,6 +125,7 @@ where
         if self.yielded {
             return None;
         }
+        self.yielded = true;
         Some(CycleLoopedPart {
             data: self.cycle.data,
             repeat_count: 1,
