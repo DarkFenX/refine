@@ -12,7 +12,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cycle_info,
+        cycle::{Cycle, get_item_cycle_info},
         output::{Output, OutputSimple},
         vast::{
             Vast, VastFitData,
@@ -50,7 +50,7 @@ fn fill_consumers(
 ) {
     let mut stagger_map = RMapVec::new();
     for (&item_key, item_data) in fit_data.cap_consumers_active.iter() {
-        let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -60,7 +60,7 @@ fn fill_consumers(
                 Some(cap_consumed) if cap_consumed.abs() > FLOAT_TOLERANCE => cap_consumed,
                 _ => continue,
             };
-            let effect_cycles = match cycle_map.remove(&effect_key) {
+            let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
@@ -70,10 +70,10 @@ fn fill_consumers(
             });
             match stagger.is_staggered(item_key) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles, &output_per_cycle),
-                    (effect_cycles, output_per_cycle),
+                    StaggerKey::new(&effect_cycles.into(), &output_per_cycle),
+                    (effect_cycles.into(), output_per_cycle),
                 ),
-                false => aggregator.add_entry(OF(0.0), effect_cycles, output_per_cycle),
+                false => aggregator.add_entry(OF(0.0), effect_cycles.into(), output_per_cycle),
             }
         }
     }
@@ -94,7 +94,7 @@ fn fill_neuts(
     };
     let mut stagger_map = RMapVec::new();
     for (&neut_item_key, item_data) in neut_data.iter() {
-        let mut cycle_map = match get_item_cycle_info(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -106,16 +106,16 @@ fn fill_neuts(
                 Some(output_per_cycle) if output_per_cycle.has_impact() => -output_per_cycle,
                 _ => continue,
             };
-            let effect_cycles = match cycle_map.remove(&effect_key) {
+            let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
             match stagger.is_staggered(neut_item_key) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles, &output_per_cycle),
-                    (effect_cycles, output_per_cycle),
+                    StaggerKey::new(&effect_cycles.into(), &output_per_cycle),
+                    (effect_cycles.into(), output_per_cycle),
                 ),
-                false => aggregator.add_entry(OF(0.0), effect_cycles, output_per_cycle),
+                false => aggregator.add_entry(OF(0.0), effect_cycles.into(), output_per_cycle),
             }
         }
     }
@@ -136,7 +136,7 @@ fn fill_transfers(
     };
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let mut cycle_map = match get_item_cycle_info(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -146,16 +146,16 @@ fn fill_transfers(
                 Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
                 _ => continue,
             };
-            let effect_cycles = match cycle_map.remove(&effect_key) {
+            let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
             match stagger.is_staggered(transfer_item_key) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles, &output_per_cycle),
-                    (effect_cycles, output_per_cycle),
+                    StaggerKey::new(&effect_cycles.into(), &output_per_cycle),
+                    (effect_cycles.into(), output_per_cycle),
                 ),
-                false => aggregator.add_entry(OF(0.0), effect_cycles, output_per_cycle),
+                false => aggregator.add_entry(OF(0.0), effect_cycles.into(), output_per_cycle),
             }
         }
     }
@@ -164,7 +164,7 @@ fn fill_transfers(
 
 fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
     for (&item_key, item_data) in fit_data.cap_injects.iter() {
-        let mut cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -175,13 +175,13 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
                 Some(cap_injected) if cap_injected > FLOAT_TOLERANCE => cap_injected,
                 _ => continue,
             };
-            let effect_cycles = match cycle_map.remove(&effect_key) {
+            let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),
-                cycle_iter: effect_cycles.iter_events(),
+                cycle_iter: Cycle::from(effect_cycles).iter_events(),
                 output: cap_injected,
             }));
         }

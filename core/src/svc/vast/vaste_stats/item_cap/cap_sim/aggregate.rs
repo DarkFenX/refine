@@ -4,7 +4,7 @@ use super::event::{CapSimEvent, CapSimEventCycleCheck};
 use crate::{
     def::{AttrVal, Count, OF},
     svc::{
-        cycle::{Cycle, CycleDataTime},
+        cycle::{Cycle, CycleDataTime, CycleDataTimeCharged},
         output::{Output, OutputComplex, OutputSimple},
     },
     util::{RMapVec, sig_round},
@@ -17,7 +17,12 @@ impl Aggregator {
     pub(super) fn new() -> Self {
         Self { data: RMapVec::new() }
     }
-    pub(super) fn add_entry(&mut self, start_delay: AttrVal, cycle: Cycle<CycleDataTime>, output: Output<AttrVal>) {
+    pub(super) fn add_entry(
+        &mut self,
+        start_delay: AttrVal,
+        cycle: Cycle<CycleDataTimeCharged>,
+        output: Output<AttrVal>,
+    ) {
         self.data.add_entry(
             AggrKey::new(start_delay, &cycle, &output),
             AggrEventInfo {
@@ -54,7 +59,7 @@ impl Aggregator {
 // converted into cap sim events, where some data needed for aggregation will be lost
 struct AggrEventInfo {
     start_delay: AttrVal,
-    cycle: Cycle<CycleDataTime>,
+    cycle: Cycle<CycleDataTimeCharged>,
     output: Output<AttrVal>,
 }
 impl From<AggrEventInfo> for CapSimEvent {
@@ -75,10 +80,10 @@ struct AggrKey {
     output: AggrKeyOutput,
 }
 impl AggrKey {
-    fn new(start_delay: AttrVal, cycle: &Cycle<CycleDataTime>, output: &Output<AttrVal>) -> Self {
+    fn new(start_delay: AttrVal, cycle: &Cycle<CycleDataTimeCharged>, output: &Output<AttrVal>) -> Self {
         Self {
             start_delay: sig_round(start_delay, 10),
-            cycle: cycle.copy_rounded(),
+            cycle: Cycle::from(cycle).copy_rounded(),
             output: output.into(),
         }
     }

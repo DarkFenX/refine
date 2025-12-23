@@ -123,7 +123,7 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> Attr
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            cps += cap_injected / effect_cycles.get_average_cycle_time();
+            cps += cap_injected / effect_cycles.get_average_time();
         }
     }
     cps
@@ -160,7 +160,7 @@ fn get_cap_consumed(
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            cps += cap_consumed / effect_cycles.get_average_cycle_time();
+            cps += cap_consumed / effect_cycles.get_average_time();
         }
     }
     cps
@@ -187,7 +187,7 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            cps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+            cps += output_per_cycle.get_total() / effect_cycles.get_average_time();
         }
     }
     cps
@@ -214,7 +214,7 @@ fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) 
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            nps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+            nps += output_per_cycle.get_total() / effect_cycles.get_average_time();
         }
     }
     nps

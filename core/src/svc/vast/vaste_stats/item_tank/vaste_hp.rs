@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
+        cycle::{Cycle, CycleOptions, CycleOptionsSim, get_item_cycle_info},
         err::StatItemCheckError,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
@@ -106,7 +106,8 @@ fn get_local_ancil_hp(
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
-            let cycle_count = match effect_cycles.iter_charged_info() {
+            // TODO: redo into proper ancil semi-charged handling
+            let cycle_count = match get_charged_cycles(effect_cycles) {
                 InfCount::Count(cycle_count) => cycle_count,
                 InfCount::Infinite => continue,
             };
@@ -143,7 +144,8 @@ fn get_remote_ancil_hp(
                     Some(hp_per_cycle) => hp_per_cycle,
                     None => continue,
                 };
-            let cycle_count = match effect_cycles.iter_charged_info() {
+            // TODO: redo into proper ancil semi-charged handling
+            let cycle_count = match get_charged_cycles(effect_cycles) {
                 InfCount::Count(cycle_count) => cycle_count,
                 InfCount::Infinite => continue,
             };
@@ -151,4 +153,26 @@ fn get_remote_ancil_hp(
         }
     }
     total_ancil_hp
+}
+
+fn get_charged_cycles(cycle: &Cycle) -> InfCount {
+    let mut charged_cycles = 0;
+    for cycle_part in cycle.iter_parts() {
+        // Current part uncharged -> can't do anything
+        if cycle_part.data.charged.is_none() {
+            break;
+        }
+        let repeat_count = match cycle_part.repeat_count {
+            InfCount::Count(repeat_count) => repeat_count,
+            InfCount::Infinite => return InfCount::Infinite,
+        };
+        charged_cycles += repeat_count;
+        // break sequence only on reloads
+        if let Some(interrupt) = cycle_part.data.interrupt
+            && interrupt.reload
+        {
+            break;
+        }
+    }
+    InfCount::Count(charged_cycles)
 }

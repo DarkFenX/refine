@@ -292,7 +292,7 @@ impl VastFitData {
                     Some(effect_cycles) => effect_cycles,
                     None => continue,
                 };
-                breacher_accum.add(output_per_cycle, *effect_cycles);
+                breacher_accum.add(output_per_cycle, effect_cycles.into());
             }
         }
     }

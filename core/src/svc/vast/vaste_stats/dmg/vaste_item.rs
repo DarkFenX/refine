@@ -112,7 +112,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
             {
-                breacher_accum.add(dmg_opc, cycle);
+                breacher_accum.add(dmg_opc, (&cycle).into());
             }
         }
         if include_charges {

@@ -2,9 +2,12 @@ use super::{
     cycle_inf::CycleInf, cycle_lim::CycleLim, cycle_lim_inf::CycleLimInf, cycle_lim_sin_inf::CycleLimSinInf,
     cycle_loop_lim_sin::CycleLoopLimSin,
 };
-use crate::{def::AttrVal, svc::cycle::CycleDataFull};
+use crate::{
+    def::AttrVal,
+    svc::cycle::{CycleDataFull, CycleDataTime},
+};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum Cycle<T = CycleDataFull> {
     Lim(CycleLim<T>),
     Inf(CycleInf<T>),
@@ -45,6 +48,8 @@ impl Cycle {
             Self::LoopLimSin(inner) => inner.get_average_time(),
         }
     }
+}
+impl Cycle<CycleDataTime> {
     pub(in crate::svc) fn copy_rounded(&self) -> Self {
         match self {
             Self::Lim(inner) => Self::Lim(inner.copy_rounded()),

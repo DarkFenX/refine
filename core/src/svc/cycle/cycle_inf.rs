@@ -1,11 +1,11 @@
 use crate::{
     def::AttrVal,
-    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Part 1: repeats infinitely
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleInf<T = CycleDataFull> {
     pub(in crate::svc) data: T,
 }
@@ -46,6 +46,8 @@ impl CycleInf {
     pub(super) fn get_average_time(&self) -> AttrVal {
         self.data.time
     }
+}
+impl CycleInf<CycleDataTime> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             data: self.data.copy_rounded(),

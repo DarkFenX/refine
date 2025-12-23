@@ -26,12 +26,20 @@ impl Svc {
         )?;
         let mut charged_cycles = 0;
         for cycle_part in cycle_info.get(&defeff_key)?.iter_parts() {
-            match cycle_part.data.charged {
-                Some(_) => match cycle_part.repeat_count {
-                    InfCount::Count(count) => charged_cycles += count,
-                    InfCount::Infinite => return Some(InfCount::Infinite),
-                },
-                None => break,
+            // Current part uncharged -> can't do anything
+            if cycle_part.data.charged.is_none() {
+                break;
+            }
+            let repeat_count = match cycle_part.repeat_count {
+                InfCount::Count(repeat_count) => repeat_count,
+                InfCount::Infinite => return Some(InfCount::Infinite),
+            };
+            charged_cycles += repeat_count;
+            // break sequence only on reloads
+            if let Some(interrupt) = cycle_part.data.interrupt
+                && interrupt.reload
+            {
+                break;
             }
         }
         Some(InfCount::Count(charged_cycles))

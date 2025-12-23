@@ -1,14 +1,14 @@
 use super::{cycle_inf::CycleInf, cycle_lim_inf::CycleLimInf};
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Part 1: runs specified number of times
 // Part 2: runs once
 // Part 3: repeats infinitely
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLimSinInf<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
@@ -85,6 +85,8 @@ impl CycleLimSinInf {
     pub(super) fn get_average_time(&self) -> AttrVal {
         self.p3_data.time
     }
+}
+impl CycleLimSinInf<CycleDataTime> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             p1_data: self.p1_data.copy_rounded(),

@@ -1,14 +1,14 @@
 use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{Cycle, CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart, CyclePartIter},
     util::InfCount,
 };
 
 // Following parts are lopped:
 // Part 1: runs specified number of times
 // Part 2: runs once
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLoopLimSin<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
@@ -66,7 +66,8 @@ impl CycleLoopLimSin {
         let p2_total_time = self.p2_data.time;
         (p1_total_time + p2_total_time) / (self.p1_repeat_count + 1) as f64
     }
-    // Methods used in cycle staggering
+}
+impl CycleLoopLimSin<CycleDataTime> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             p1_data: self.p1_data.copy_rounded(),
