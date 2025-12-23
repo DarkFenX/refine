@@ -2,7 +2,7 @@ pub(in crate::svc) use cycle::{Cycle, CycleLooped};
 pub(in crate::svc) use data::{CycleDataFull, CycleDataTime, CycleDataTimeCharged, CycleInterrupt};
 pub(in crate::svc) use item_info::{CycleOptions, CycleOptionsSim, get_item_cycle_info};
 pub(in crate::svc) use iter_event::CycleEventIter;
-pub(in crate::svc) use iter_part::{CyclePart, CyclePartIter};
+pub(in crate::svc) use iter_part::{CyclePart, CyclePartIter, CycleParts};
 
 mod cycle;
 mod cycle_inf;

@@ -157,13 +157,15 @@ fn get_remote_ancil_hp(
 
 fn get_charged_cycles(cycle: &Cycle) -> InfCount {
     let mut charged_cycles = 0;
-    for cycle_part in cycle.iter_parts() {
-        // Current part uncharged -> can't do anything
+    let cycle_parts = cycle.get_parts();
+    for cycle_part in cycle_parts.iter() {
+        // Current part uncharged means we're empty by this point
         if cycle_part.data.charged.is_none() {
-            break;
+            return InfCount::Count(charged_cycles);
         }
         let repeat_count = match cycle_part.repeat_count {
             InfCount::Count(repeat_count) => repeat_count,
+            // If some of parts is charged and cycles infinitely, item never goes "empty"
             InfCount::Infinite => return InfCount::Infinite,
         };
         charged_cycles += repeat_count;
@@ -171,8 +173,13 @@ fn get_charged_cycles(cycle: &Cycle) -> InfCount {
         if let Some(interrupt) = cycle_part.data.interrupt
             && interrupt.reload
         {
-            break;
+            return InfCount::Count(charged_cycles);
         }
+    }
+    // If we didn't bail early, have charged cycles and sequence is looped, it is never-ending
+    // sequence of charged cycles
+    if cycle_parts.loops && charged_cycles > 0 {
+        return InfCount::Infinite;
     }
     InfCount::Count(charged_cycles)
 }

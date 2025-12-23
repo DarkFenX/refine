@@ -1,10 +1,12 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
     util::InfCount,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLim<T = CycleDataFull> {
     pub(in crate::svc) data: T,
@@ -31,17 +33,11 @@ impl<T> CycleLim<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
-        CyclePartIter::One(
-            [CyclePart {
-                data: self.data,
-                repeat_count: InfCount::Count(self.repeat_count),
-            }]
-            .into_iter(),
-        )
-    }
     pub(super) fn iter_events(&self) -> CycleLimEventIter<T> {
         CycleLimEventIter::new(*self)
+    }
+    pub(super) fn iter_parts(&self) -> CycleLimPartIter<'_, T> {
+        CycleLimPartIter::new(self)
     }
 }
 impl CycleLim {
@@ -58,6 +54,9 @@ impl CycleLim<CycleDataTime> {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Event iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CycleLimEventIter<T> {
     cycle: CycleLim<T>,
     repeats_done: Count,
@@ -79,5 +78,34 @@ where
         }
         self.repeats_done += 1;
         Some(self.cycle.data)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Part data + iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc) struct CycleLimPartIter<'a, T> {
+    cycle: &'a CycleLim<T>,
+    yielded: bool,
+}
+impl<'a, T> CycleLimPartIter<'a, T> {
+    fn new(cycle: &'a CycleLim<T>) -> Self {
+        Self { cycle, yielded: false }
+    }
+}
+impl<T> Iterator for CycleLimPartIter<'_, T>
+where
+    T: Copy,
+{
+    type Item = CyclePart<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.yielded {
+            return None;
+        }
+        Some(CyclePart {
+            data: self.cycle.data,
+            repeat_count: InfCount::Count(self.cycle.repeat_count),
+        })
     }
 }

@@ -1,7 +1,8 @@
 use super::{
-    cycle::Cycle, cycle_inf::CycleInfEventIter, cycle_lim::CycleLimEventIter, cycle_lim_inf::CycleLimInfEventIter,
+    cycle_inf::CycleInfEventIter, cycle_lim::CycleLimEventIter, cycle_lim_inf::CycleLimInfEventIter,
     cycle_lim_sin_inf::CycleLimSinInfEventIter, cycle_loop_lim_sin::CycleLoopLimSinEventIter,
 };
+use crate::svc::cycle::Cycle;
 
 impl<T> Cycle<T>
 where

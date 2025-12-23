@@ -2,12 +2,14 @@ use super::cycle_inf::CycleInf;
 use crate::{
     AttrVal,
     def::Count,
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
     util::InfCount,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times
 // Part 2: repeats infinitely
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLimInf<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
@@ -38,23 +40,11 @@ impl<T> CycleLimInf<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
-        CyclePartIter::Two(
-            [
-                CyclePart {
-                    data: self.p1_data,
-                    repeat_count: InfCount::Count(self.p1_repeat_count),
-                },
-                CyclePart {
-                    data: self.p2_data,
-                    repeat_count: InfCount::Infinite,
-                },
-            ]
-            .into_iter(),
-        )
-    }
     pub(super) fn iter_events(&self) -> CycleLimInfEventIter<T> {
         CycleLimInfEventIter::new(*self)
+    }
+    pub(super) fn iter_parts(&self) -> CycleLimInfPartIter<'_, T> {
+        CycleLimInfPartIter::new(self)
     }
     pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
         Some(CycleLooped::Inf(CycleInf { data: self.p2_data }))
@@ -75,6 +65,9 @@ impl CycleLimInf<CycleDataTime> {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Event iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CycleLimInfEventIter<T> {
     cycle: CycleLimInf<T>,
     index: u8,
@@ -106,6 +99,46 @@ where
                 Some(self.cycle.p1_data)
             }
             1 => Some(self.cycle.p2_data),
+            _ => unreachable!(),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Part iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc) struct CycleLimInfPartIter<'a, T> {
+    cycle: &'a CycleLimInf<T>,
+    index: usize,
+}
+impl<'a, T> CycleLimInfPartIter<'a, T> {
+    fn new(cycle: &'a CycleLimInf<T>) -> Self {
+        Self { cycle, index: 0 }
+    }
+}
+impl<T> Iterator for CycleLimInfPartIter<'_, T>
+where
+    T: Copy,
+{
+    type Item = CyclePart<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.index {
+            0 => {
+                self.index = 1;
+                Some(CyclePart {
+                    data: self.cycle.p1_data,
+                    repeat_count: InfCount::Count(self.cycle.p1_repeat_count),
+                })
+            }
+            1 => {
+                self.index = 2;
+                Some(CyclePart {
+                    data: self.cycle.p2_data,
+                    repeat_count: InfCount::Infinite,
+                })
+            }
+            2 => None,
             _ => unreachable!(),
         }
     }

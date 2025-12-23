@@ -1,13 +1,15 @@
 use super::cycle_inf::CycleInf;
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart, CyclePartIter},
+    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
     util::InfCount,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Following parts are lopped:
 // Part 1: runs specified number of times
 // Part 2: runs once
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleLoopLimSin<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
@@ -38,23 +40,11 @@ impl<T> CycleLoopLimSin<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
-        CyclePartIter::Two(
-            [
-                CyclePart {
-                    data: self.p1_data,
-                    repeat_count: InfCount::Count(self.p1_repeat_count),
-                },
-                CyclePart {
-                    data: self.p2_data,
-                    repeat_count: InfCount::Count(1),
-                },
-            ]
-            .into_iter(),
-        )
-    }
     pub(super) fn iter_events(&self) -> CycleLoopLimSinEventIter<T> {
         CycleLoopLimSinEventIter::new(*self)
+    }
+    pub(super) fn iter_parts(&self) -> CycleLoopLimSinPartIter<'_, T> {
+        CycleLoopLimSinPartIter::new(self)
     }
     pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
         Some(CycleLooped::LoopLimSin(*self))
@@ -77,6 +67,9 @@ impl CycleLoopLimSin<CycleDataTime> {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Event iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CycleLoopLimSinEventIter<T> {
     cycle: CycleLoopLimSin<T>,
     p1_repeats_done: Count,
@@ -102,5 +95,45 @@ where
         }
         self.p1_repeats_done += 1;
         Some(self.cycle.p1_data)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Part iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc) struct CycleLoopLimSinPartIter<'a, T> {
+    cycle: &'a CycleLoopLimSin<T>,
+    index: usize,
+}
+impl<'a, T> CycleLoopLimSinPartIter<'a, T> {
+    fn new(cycle: &'a CycleLoopLimSin<T>) -> Self {
+        Self { cycle, index: 0 }
+    }
+}
+impl<T> Iterator for CycleLoopLimSinPartIter<'_, T>
+where
+    T: Copy,
+{
+    type Item = CyclePart<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.index {
+            0 => {
+                self.index = 1;
+                Some(CyclePart {
+                    data: self.cycle.p1_data,
+                    repeat_count: InfCount::Count(self.cycle.p1_repeat_count),
+                })
+            }
+            1 => {
+                self.index = 2;
+                Some(CyclePart {
+                    data: self.cycle.p2_data,
+                    repeat_count: InfCount::Count(1),
+                })
+            }
+            2 => None,
+            _ => unreachable!(),
+        }
     }
 }
