@@ -1,113 +1,92 @@
 use super::cycle_inf::CycleInf;
 use crate::{
-    def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
-    util::{InfCount, sig_round},
+    AttrVal,
+    def::Count,
+    svc::cycle::{CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    util::InfCount,
 };
 
 // Part 1: runs specified number of times
 // Part 2: repeats infinitely
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleLimInf {
-    pub(in crate::svc) p1_active_time: AttrVal,
-    pub(in crate::svc) p1_inactive_time: AttrVal,
-    pub(in crate::svc) p1_interrupt: bool,
-    pub(in crate::svc) p1_charged: Option<AttrVal>,
+pub(in crate::svc) struct CycleLimInf<T = CycleDataFull> {
+    pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
-    pub(in crate::svc) p2_active_time: AttrVal,
-    pub(in crate::svc) p2_inactive_time: AttrVal,
-    pub(in crate::svc) p2_interrupt: bool,
-    pub(in crate::svc) p2_charged: Option<AttrVal>,
+    pub(in crate::svc) p2_data: T,
 }
-impl CycleLimInf {
-    pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
-        Some(CycleLooped::Inf(CycleInf {
-            active_time: self.p2_active_time,
-            inactive_time: self.p2_inactive_time,
-            interrupt: self.p2_interrupt,
-            charged: self.p2_charged,
-        }))
+impl<T> CycleLimInf<T>
+where
+    T: Copy,
+{
+    pub(super) fn get_loop(&self) -> Option<CycleLooped<T>> {
+        Some(CycleLooped::Inf(CycleInf { data: self.p2_data }))
     }
-    pub(super) fn iter_charged_info(&self) -> CycleChargedInfoIter {
-        CycleChargedInfoIter::Two(
+    pub(super) fn get_first(&self) -> &T {
+        &self.p1_data
+    }
+    pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
+        CyclePartIter::Two(
             [
-                CycleChargedInfo {
+                CyclePart {
+                    data: self.p1_data,
                     repeat_count: InfCount::Count(self.p1_repeat_count),
-                    charged: self.p1_charged,
                 },
-                CycleChargedInfo {
+                CyclePart {
+                    data: self.p2_data,
                     repeat_count: InfCount::Infinite,
-                    charged: self.p2_charged,
                 },
             ]
             .into_iter(),
         )
     }
-    pub(super) fn get_average_cycle_time(&self) -> AttrVal {
-        self.p1_active_time + self.p1_inactive_time
+    pub(super) fn iter_events(&self) -> CycleLimInfEventIter<T> {
+        CycleLimInfEventIter::new(*self)
     }
-    pub(super) fn iter_events(&self) -> CycleLimInfEventIter {
-        CycleLimInfEventIter::new(self)
+}
+impl CycleLimInf {
+    pub(super) fn get_average_time(&self) -> AttrVal {
+        self.p2_data.time
     }
-    // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            p1_active_time: sig_round(self.p1_active_time, 10),
-            p1_inactive_time: sig_round(self.p1_inactive_time, 10),
+            p1_data: self.p1_data.copy_rounded(),
             p1_repeat_count: self.p1_repeat_count,
-            p1_interrupt: self.p1_interrupt,
-            p1_charged: self.p1_charged.map(|v| sig_round(v, 10)),
-            p2_active_time: sig_round(self.p2_active_time, 10),
-            p2_inactive_time: sig_round(self.p2_inactive_time, 10),
-            p2_interrupt: self.p2_interrupt,
-            p2_charged: self.p2_charged.map(|v| sig_round(v, 10)),
+            p2_data: self.p2_data.copy_rounded(),
         }
-    }
-    pub(super) fn get_first_cycle_time(&self) -> AttrVal {
-        self.p1_active_time + self.p1_inactive_time
     }
 }
 
-pub(in crate::svc) struct CycleLimInfEventIter {
+pub(in crate::svc) struct CycleLimInfEventIter<T> {
+    cycle: CycleLimInf<T>,
     index: u8,
-    p1_item: CycleEventItem,
-    p1_repeat_count: Count,
-    p1_cycles_done: Count,
-    p2_item: CycleEventItem,
+    p1_repeats_done: Count,
 }
-impl CycleLimInfEventIter {
-    fn new(cycle: &CycleLimInf) -> Self {
+impl<T> CycleLimInfEventIter<T> {
+    fn new(cycle: CycleLimInf<T>) -> Self {
         Self {
+            cycle,
             index: 0,
-            p1_item: CycleEventItem::new(
-                cycle.p1_active_time + cycle.p1_inactive_time,
-                cycle.p1_interrupt,
-                cycle.p1_charged,
-            ),
-            p1_repeat_count: cycle.p1_repeat_count,
-            p1_cycles_done: 0,
-            p2_item: CycleEventItem::new(
-                cycle.p2_active_time + cycle.p2_inactive_time,
-                cycle.p2_interrupt,
-                cycle.p2_charged,
-            ),
+            p1_repeats_done: 0,
         }
     }
 }
-impl Iterator for CycleLimInfEventIter {
-    type Item = CycleEventItem;
+impl<T> Iterator for CycleLimInfEventIter<T>
+where
+    T: Copy,
+{
+    type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
             0 => {
-                if self.p1_cycles_done >= self.p1_repeat_count {
+                if self.p1_repeats_done >= self.cycle.p1_repeat_count {
                     self.index = 1;
-                    return Some(self.p2_item);
+                    return Some(self.cycle.p2_data);
                 }
-                self.p1_cycles_done += 1;
-                Some(self.p1_item)
+                self.p1_repeats_done += 1;
+                Some(self.cycle.p1_data)
             }
-            1 => Some(self.p2_item),
+            1 => Some(self.cycle.p2_data),
             _ => unreachable!(),
         }
     }

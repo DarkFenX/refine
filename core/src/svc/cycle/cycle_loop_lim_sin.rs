@@ -1,103 +1,87 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{CycleChargedInfo, CycleChargedInfoIter, CycleEventItem, CycleLooped},
-    util::{InfCount, sig_round},
+    svc::cycle::{CycleDataFull, CycleLooped, CyclePart, CyclePartIter},
+    util::InfCount,
 };
 
 // Following parts are lopped:
 // Part 1: runs specified number of times
 // Part 2: runs once
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleLoopLimSin {
-    pub(in crate::svc) p1_active_time: AttrVal,
-    pub(in crate::svc) p1_inactive_time: AttrVal,
-    pub(in crate::svc) p1_interrupt: bool,
-    pub(in crate::svc) p1_charged: Option<AttrVal>,
+pub(in crate::svc) struct CycleLoopLimSin<T = CycleDataFull> {
+    pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
-    pub(in crate::svc) p2_active_time: AttrVal,
-    pub(in crate::svc) p2_inactive_time: AttrVal,
-    pub(in crate::svc) p2_interrupt: bool,
-    pub(in crate::svc) p2_charged: Option<AttrVal>,
+    pub(in crate::svc) p2_data: T,
 }
-impl CycleLoopLimSin {
-    pub(super) fn get_looped_part(&self) -> Option<CycleLooped> {
+impl<T> CycleLoopLimSin<T>
+where
+    T: Copy,
+{
+    pub(super) fn get_loop(&self) -> Option<CycleLooped<T>> {
         Some(CycleLooped::LoopLimSin(*self))
     }
-    pub(super) fn get_charged_info(&self) -> CycleChargedInfoIter {
-        CycleChargedInfoIter::Two(
+    pub(super) fn get_first(&self) -> &T {
+        &self.p1_data
+    }
+    pub(super) fn iter_parts(&self) -> CyclePartIter<T> {
+        CyclePartIter::Two(
             [
-                CycleChargedInfo {
+                CyclePart {
+                    data: self.p1_data,
                     repeat_count: InfCount::Count(self.p1_repeat_count),
-                    charged: self.p1_charged,
                 },
-                CycleChargedInfo {
+                CyclePart {
+                    data: self.p2_data,
                     repeat_count: InfCount::Count(1),
-                    charged: self.p2_charged,
                 },
             ]
             .into_iter(),
         )
     }
-    pub(super) fn get_average_cycle_time(&self) -> AttrVal {
-        let p1_total_time = (self.p1_active_time + self.p1_inactive_time) * self.p1_repeat_count as f64;
-        let p2_total_time = self.p2_active_time + self.p2_inactive_time;
-        (p1_total_time + p2_total_time) / (self.p1_repeat_count + 1) as f64
+    pub(super) fn iter_events(&self) -> CycleLoopLimSinEventIter<T> {
+        CycleLoopLimSinEventIter::new(*self)
     }
-    pub(super) fn iter_events(&self) -> CycleLoopLimSinEventIter {
-        CycleLoopLimSinEventIter::new(self)
+}
+impl CycleLoopLimSin {
+    pub(super) fn get_average_time(&self) -> AttrVal {
+        let p1_total_time = self.p1_data.time * self.p1_repeat_count as f64;
+        let p2_total_time = self.p2_data.time;
+        (p1_total_time + p2_total_time) / (self.p1_repeat_count + 1) as f64
     }
     // Methods used in cycle staggering
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            p1_active_time: sig_round(self.p1_active_time, 10),
-            p1_inactive_time: sig_round(self.p1_inactive_time, 10),
+            p1_data: self.p1_data.copy_rounded(),
             p1_repeat_count: self.p1_repeat_count,
-            p1_interrupt: self.p1_interrupt,
-            p1_charged: self.p1_charged.map(|v| sig_round(v, 10)),
-            p2_active_time: sig_round(self.p2_active_time, 10),
-            p2_inactive_time: sig_round(self.p2_inactive_time, 10),
-            p2_interrupt: self.p2_interrupt,
-            p2_charged: self.p2_charged.map(|v| sig_round(v, 10)),
+            p2_data: self.p2_data.copy_rounded(),
         }
-    }
-    pub(super) fn get_first_cycle_time(&self) -> AttrVal {
-        self.p1_active_time + self.p1_inactive_time
     }
 }
 
-pub(in crate::svc) struct CycleLoopLimSinEventIter {
-    p1_item: CycleEventItem,
-    p1_repeat_count: Count,
-    p1_cycles_done: Count,
-    p2_item: CycleEventItem,
+pub(in crate::svc) struct CycleLoopLimSinEventIter<T> {
+    cycle: CycleLoopLimSin<T>,
+    p1_repeats_done: Count,
 }
-impl CycleLoopLimSinEventIter {
-    fn new(cycle: &CycleLoopLimSin) -> Self {
+impl<T> CycleLoopLimSinEventIter<T> {
+    fn new(cycle: CycleLoopLimSin<T>) -> Self {
         Self {
-            p1_item: CycleEventItem::new(
-                cycle.p1_active_time + cycle.p1_inactive_time,
-                cycle.p1_interrupt,
-                cycle.p1_charged,
-            ),
-            p1_repeat_count: cycle.p1_repeat_count,
-            p1_cycles_done: 0,
-            p2_item: CycleEventItem::new(
-                cycle.p2_active_time + cycle.p2_inactive_time,
-                cycle.p2_interrupt,
-                cycle.p2_charged,
-            ),
+            cycle,
+            p1_repeats_done: 0,
         }
     }
 }
-impl Iterator for CycleLoopLimSinEventIter {
-    type Item = CycleEventItem;
+impl<T> Iterator for CycleLoopLimSinEventIter<T>
+where
+    T: Copy,
+{
+    type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.p1_cycles_done >= self.p1_repeat_count {
-            self.p1_cycles_done = 0;
-            return Some(self.p2_item);
+        if self.p1_repeats_done >= self.cycle.p1_repeat_count {
+            self.p1_repeats_done = 0;
+            return Some(self.cycle.p2_data);
         }
-        self.p1_cycles_done += 1;
-        Some(self.p1_item)
+        self.p1_repeats_done += 1;
+        Some(self.cycle.p1_data)
     }
 }

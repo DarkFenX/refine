@@ -3,7 +3,11 @@ use std::collections::hash_map::Entry;
 use super::{conv::cycle_to_ticks, ticks::AggrBreacherTicksLooped};
 use crate::{
     def::{AttrVal, Count, OF, SERVER_TICK_HZ},
-    svc::{cycle::Cycle, output::OutputDmgBreacher, vast::StatDmgBreacher},
+    svc::{
+        cycle::{Cycle, CycleDataTime},
+        output::OutputDmgBreacher,
+        vast::StatDmgBreacher,
+    },
     util::RMap,
 };
 
@@ -23,7 +27,7 @@ impl BreacherAccum {
     pub(in crate::svc::vast) fn new() -> Self {
         Self { data: RMap::new() }
     }
-    pub(in crate::svc::vast) fn add(&mut self, opc: OutputDmgBreacher, cycle: Cycle) {
+    pub(in crate::svc::vast) fn add(&mut self, opc: OutputDmgBreacher, cycle: Cycle<CycleDataTime>) {
         let ticks = match cycle_to_ticks(cycle, opc.tick_count) {
             Some(ticks) => ticks,
             None => return,

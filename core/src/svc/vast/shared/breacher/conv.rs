@@ -1,14 +1,14 @@
 use super::ticks::{AbtIc, AbtIs, AbtLc, AbtLcIc, AbtLcLcIc, AbtLoopLcLc, AbtLs, AggrBreacherTicks};
 use crate::{
     def::{AttrVal, Count, SERVER_TICK_HZ},
-    svc::cycle::Cycle,
+    svc::cycle::{Cycle, CycleDataTime},
     util::ceil_unerr,
 };
 
 // Process breacher module cycle data + output per cycle into some kind of aggregated value, which
 // discards all overlapping instances and aligns everything to ticks, which is needed for further
 // processing
-pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBreacherTicks> {
+pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -> Option<AggrBreacherTicks> {
     if output_ticks < 1 {
         return None;
     }
@@ -17,11 +17,10 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             if limited.repeat_count == 0 {
                 return None;
             }
-            let cycle_ticks = time_to_ticks(limited.active_time + limited.inactive_time);
+            let cycle_ticks = time_to_ticks(limited.data.time);
             match output_ticks >= cycle_ticks {
                 true => {
-                    let last_cycle_start_ts =
-                        (limited.active_time + limited.inactive_time) * (limited.repeat_count - 1) as f64;
+                    let last_cycle_start_ts = limited.data.time * (limited.repeat_count - 1) as f64;
                     let last_cycle_start_tick = time_to_ticks(last_cycle_start_ts);
                     Some(AggrBreacherTicks::Ls(AbtLs {
                         count: last_cycle_start_tick + output_ticks,
@@ -35,7 +34,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::Inf(infinite1) => {
-            let cycle_ticks = time_to_ticks(infinite1.active_time + infinite1.inactive_time);
+            let cycle_ticks = time_to_ticks(infinite1.data.time);
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
                 false => Some(AggrBreacherTicks::Ic(AbtIc {
@@ -45,8 +44,8 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::LimInf(infinite2) => {
-            let p1_ticks = time_to_ticks(infinite2.p1_active_time + infinite2.p1_inactive_time);
-            let p2_ticks = time_to_ticks(infinite2.p2_active_time + infinite2.p2_inactive_time);
+            let p1_ticks = time_to_ticks(infinite2.p1_data.time);
+            let p2_ticks = time_to_ticks(infinite2.p2_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
                 false => {
@@ -63,9 +62,9 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::LimSinInf(infinite3) => {
-            let p1_ticks = time_to_ticks(infinite3.p1_active_time + infinite3.p1_inactive_time);
-            let p2_ticks = time_to_ticks(infinite3.p2_active_time + infinite3.p2_inactive_time);
-            let p3_ticks = time_to_ticks(infinite3.p3_active_time + infinite3.p3_inactive_time);
+            let p1_ticks = time_to_ticks(infinite3.p1_data.time);
+            let p2_ticks = time_to_ticks(infinite3.p2_data.time);
+            let p3_ticks = time_to_ticks(infinite3.p3_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks && output_ticks > p3_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
                 false => {
@@ -86,8 +85,8 @@ pub(super) fn cycle_to_ticks(cycle: Cycle, output_ticks: Count) -> Option<AggrBr
             }
         }
         Cycle::LoopLimSin(looped2) => {
-            let p1_ticks = time_to_ticks(looped2.p1_active_time + looped2.p1_inactive_time);
-            let p2_ticks = time_to_ticks(looped2.p2_active_time + looped2.p2_inactive_time);
+            let p1_ticks = time_to_ticks(looped2.p1_data.time);
+            let p2_ticks = time_to_ticks(looped2.p2_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
                 false => {

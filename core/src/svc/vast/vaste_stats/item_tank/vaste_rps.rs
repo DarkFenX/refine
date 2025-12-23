@@ -96,8 +96,8 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REf
             None => continue,
         };
         for (&effect_key, rep_getter) in item_data.iter() {
-            let effect_cycles = match cycle_map.get(&effect_key).and_then(|v| v.get_looped_part()) {
-                Some(effect_cycles) => effect_cycles,
+            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.get_loop()) {
+                Some(effect_cycle_loop) => effect_cycle_loop,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
@@ -105,7 +105,7 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REf
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
-            total_rps += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+            total_rps += output_per_cycle.get_total() / effect_cycle_loop.get_average_time();
         }
     }
     total_rps
@@ -145,7 +145,7 @@ fn get_irr_data(
                     Some(hp_per_cycle) => hp_per_cycle,
                     None => continue,
                 };
-            let cycle_time_s = effect_cycles.get_average_cycle_time();
+            let cycle_time_s = effect_cycles.get_first().time;
             result.push(IrrEntry {
                 // For now there are no reps which spread effect over multiple cycles, so we just
                 // record total amount for the purposes of RR penalty

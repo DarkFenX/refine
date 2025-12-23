@@ -76,9 +76,9 @@ fn get_orr_effect(
     rep_getter_getter: fn(&REffect) -> Option<NOutgoingRepGetter>,
 ) -> Option<AttrVal> {
     let rep_getter = rep_getter_getter(effect)?;
-    let effect_cycle = effect_cycle.get_looped_part()?;
+    let effect_cycle_loop = effect_cycle.get_loop()?;
     let rep_amount = rep_getter(ctx, calc, item_key, effect, spool, None)?;
-    Some(rep_amount.get_total() / effect_cycle.get_average_cycle_time())
+    Some(rep_amount.get_total() / effect_cycle_loop.get_average_time())
 }
 
 fn get_getter_shield(effect: &REffect) -> Option<NOutgoingRepGetter> {

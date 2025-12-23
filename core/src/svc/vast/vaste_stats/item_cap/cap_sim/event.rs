@@ -2,7 +2,10 @@ use std::cmp::Ordering;
 
 use crate::{
     def::AttrVal,
-    svc::{cycle::CycleEventIter, output::Output},
+    svc::{
+        cycle::{CycleDataTimeCharged, CycleEventIter},
+        output::Output,
+    },
 };
 
 pub(super) enum CapSimEvent {
@@ -59,7 +62,7 @@ impl Eq for CapSimEvent {}
 
 pub(super) struct CapSimEventCycleCheck {
     pub(super) time: AttrVal,
-    pub(super) cycle_iter: CycleEventIter,
+    pub(super) cycle_iter: CycleEventIter<CycleDataTimeCharged>,
     pub(super) output: Output<AttrVal>,
 }
 
@@ -70,6 +73,6 @@ pub(super) struct CapSimEventCapGain {
 
 pub(super) struct CapSimEventInjector {
     pub(super) time: AttrVal,
-    pub(super) cycle_iter: CycleEventIter,
+    pub(super) cycle_iter: CycleEventIter<CycleDataTimeCharged>,
     pub(super) output: AttrVal,
 }

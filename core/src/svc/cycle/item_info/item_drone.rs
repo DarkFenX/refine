@@ -1,12 +1,11 @@
 use either::Either;
 
 use crate::{
-    def::OF,
     rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, cycle_inf::CycleInf},
+        cycle::{Cycle, CycleDataFull, cycle_inf::CycleInf},
         eff_funcs,
     },
     ud::{UDrone, UItemKey},
@@ -42,10 +41,11 @@ pub(super) fn get_drone_cycle_info(
         cycle_infos.insert(
             effect_key,
             Cycle::Inf(CycleInf {
-                active_time: duration_s,
-                inactive_time: OF(0.0),
-                interrupt: false,
-                charged: None,
+                data: CycleDataFull {
+                    time: duration_s,
+                    interrupt: false,
+                    charged: None,
+                },
             }),
         );
     }

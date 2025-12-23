@@ -266,11 +266,11 @@ impl VastFitData {
                     Some(output_per_cycle) => output_per_cycle,
                     None => continue,
                 };
-                let effect_cycles = match cycle_map.get(&effect_key).and_then(|v| v.get_looped_part()) {
-                    Some(effect_cycles) => effect_cycles,
+                let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.get_loop()) {
+                    Some(effect_cycle_loop) => effect_cycle_loop,
                     None => continue,
                 };
-                *dps_normal += output_per_cycle.get_total() / effect_cycles.get_average_cycle_time();
+                *dps_normal += output_per_cycle.get_total() / effect_cycle_loop.get_average_time();
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {

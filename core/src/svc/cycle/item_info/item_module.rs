@@ -10,7 +10,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            Cycle,
+            Cycle, CycleDataFull,
             cycle_inf::CycleInf,
             cycle_lim::CycleLim,
             cycle_lim_inf::CycleLimInf,
@@ -122,10 +122,11 @@ fn fill_module_effect_info(
         cycle_infos.insert(
             effect_key,
             Cycle::Lim(CycleLim {
-                active_time: duration,
-                inactive_time: OF(0.0),
-                interrupt: true,
-                charged: charge_info.get_first_cycle_chargeness(),
+                data: CycleDataFull {
+                    time: duration,
+                    interrupt: true,
+                    charged: charge_info.get_first_cycle_chargeness(),
+                },
                 repeat_count: 1,
             }),
         );
@@ -147,10 +148,11 @@ fn fill_module_effect_info(
             cycle_infos.insert(
                 effect_key,
                 Cycle::Inf(CycleInf {
-                    active_time: duration,
-                    inactive_time: cycle_dt,
-                    interrupt: force_int,
-                    charged: charge_info.get_first_cycle_chargeness(),
+                    data: CycleDataFull {
+                        time: duration + cycle_dt,
+                        interrupt: force_int,
+                        charged: charge_info.get_first_cycle_chargeness(),
+                    },
                 }),
             );
             return;
@@ -162,10 +164,11 @@ fn fill_module_effect_info(
             cycle_infos.insert(
                 effect_key,
                 Cycle::Inf(CycleInf {
-                    active_time: duration,
-                    inactive_time: cycle_dt,
-                    interrupt: force_int,
-                    charged: Some(OF(1.0)),
+                    data: CycleDataFull {
+                        time: duration + cycle_dt,
+                        interrupt: force_int,
+                        charged: Some(OF(1.0)),
+                    },
                 }),
             );
             return;
@@ -180,10 +183,11 @@ fn fill_module_effect_info(
         (false, false, false) => return,
         // Infinitely cycling modules without charge
         (false, false, true) => Cycle::Inf(CycleInf {
-            active_time: duration,
-            inactive_time: cycle_dt,
-            interrupt: force_int,
-            charged: None,
+            data: CycleDataFull {
+                time: duration + cycle_dt,
+                interrupt: force_int,
+                charged: None,
+            },
         }),
         // Only partially charged, has to reload every cycle
         (false, true, false) => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
@@ -194,15 +198,17 @@ fn fill_module_effect_info(
         {
             true => part_r(ctx, calc, item_key, duration, cycle_dt, charge_info.part_charged),
             false => Cycle::LimInf(CycleLimInf {
-                p1_active_time: duration,
-                p1_inactive_time: cycle_dt,
-                p1_interrupt: force_int,
-                p1_charged: charge_info.part_charged,
+                p1_data: CycleDataFull {
+                    time: duration + cycle_dt,
+                    interrupt: force_int,
+                    charged: charge_info.part_charged,
+                },
                 p1_repeat_count: 1,
-                p2_active_time: duration,
-                p2_inactive_time: cycle_dt,
-                p2_interrupt: force_int,
-                p2_charged: None,
+                p2_data: CycleDataFull {
+                    time: duration + cycle_dt,
+                    interrupt: force_int,
+                    charged: None,
+                },
             }),
         },
         // Only fully charged, has to reload after charges are out
@@ -214,15 +220,17 @@ fn fill_module_effect_info(
         {
             true => full_r(ctx, calc, item_key, duration, cycle_dt, force_int, full_count),
             false => Cycle::LimInf(CycleLimInf {
-                p1_active_time: duration,
-                p1_inactive_time: cycle_dt,
-                p1_interrupt: force_int,
-                p1_charged: Some(OF(1.0)),
+                p1_data: CycleDataFull {
+                    time: duration + cycle_dt,
+                    interrupt: force_int,
+                    charged: Some(OF(1.0)),
+                },
                 p1_repeat_count: full_count,
-                p2_active_time: duration,
-                p2_inactive_time: cycle_dt,
-                p2_interrupt: force_int,
-                p2_charged: None,
+                p2_data: CycleDataFull {
+                    time: duration + cycle_dt,
+                    interrupt: force_int,
+                    charged: None,
+                },
             }),
         },
         // Fully charged + partially charged + can't run uncharged
@@ -253,19 +261,22 @@ fn fill_module_effect_info(
                     charge_info.part_charged,
                 ),
                 false => Cycle::LimSinInf(CycleLimSinInf {
-                    p1_active_time: duration,
-                    p1_inactive_time: cycle_dt,
-                    p1_interrupt: force_int,
-                    p1_charged: Some(OF(1.0)),
+                    p1_data: CycleDataFull {
+                        time: duration + cycle_dt,
+                        interrupt: force_int,
+                        charged: Some(OF(1.0)),
+                    },
                     p1_repeat_count: full_count,
-                    p2_active_time: duration,
-                    p2_inactive_time: cycle_dt,
-                    p2_interrupt: force_int,
-                    p2_charged: charge_info.part_charged,
-                    p3_active_time: duration,
-                    p3_inactive_time: cycle_dt,
-                    p3_interrupt: force_int,
-                    p3_charged: None,
+                    p2_data: CycleDataFull {
+                        time: duration + cycle_dt,
+                        interrupt: force_int,
+                        charged: charge_info.part_charged,
+                    },
+                    p3_data: CycleDataFull {
+                        time: duration + cycle_dt,
+                        interrupt: force_int,
+                        charged: None,
+                    },
                 }),
             }
         }
@@ -293,10 +304,11 @@ fn part_r(
     part_value: Option<AttrVal>,
 ) -> Cycle {
     Cycle::Inf(CycleInf {
-        active_time: duration,
-        inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-        interrupt: true,
-        charged: part_value,
+        data: CycleDataFull {
+            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+            interrupt: true,
+            charged: part_value,
+        },
     })
 }
 
@@ -311,21 +323,24 @@ fn full_r(
 ) -> Cycle {
     match full_count {
         1 => Cycle::Inf(CycleInf {
-            active_time: duration,
-            inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-            interrupt: true,
-            charged: Some(OF(1.0)),
+            data: CycleDataFull {
+                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+                interrupt: true,
+                charged: Some(OF(1.0)),
+            },
         }),
         _ => Cycle::LoopLimSin(CycleLoopLimSin {
-            p1_active_time: duration,
-            p1_inactive_time: cycle_dt,
-            p1_interrupt: force_int,
-            p1_charged: Some(OF(1.0)),
+            p1_data: CycleDataFull {
+                time: duration + cycle_dt,
+                interrupt: force_int,
+                charged: Some(OF(1.0)),
+            },
             p1_repeat_count: full_count - 1,
-            p2_active_time: duration,
-            p2_inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-            p2_interrupt: true,
-            p2_charged: Some(OF(1.0)),
+            p2_data: CycleDataFull {
+                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+                interrupt: true,
+                charged: Some(OF(1.0)),
+            },
         }),
     }
 }
@@ -341,14 +356,16 @@ fn both_r(
     part_value: Option<AttrVal>,
 ) -> Cycle {
     Cycle::LoopLimSin(CycleLoopLimSin {
-        p1_active_time: duration,
-        p1_inactive_time: cycle_dt,
-        p1_interrupt: force_int,
-        p1_charged: Some(OF(1.0)),
+        p1_data: CycleDataFull {
+            time: duration + cycle_dt,
+            interrupt: force_int,
+            charged: Some(OF(1.0)),
+        },
         p1_repeat_count: full_count,
-        p2_active_time: duration,
-        p2_inactive_time: Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
-        p2_interrupt: true,
-        p2_charged: part_value,
+        p2_data: CycleDataFull {
+            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cycle_dt),
+            interrupt: true,
+            charged: part_value,
+        },
     })
 }

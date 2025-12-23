@@ -25,9 +25,9 @@ impl Svc {
             true,
         )?;
         let mut charged_cycles = 0;
-        for charged_info in cycle_info.get(&defeff_key)?.iter_charged_info() {
-            match charged_info.charged {
-                Some(_) => match charged_info.repeat_count {
+        for cycle_part in cycle_info.get(&defeff_key)?.iter_parts() {
+            match cycle_part.data.charged {
+                Some(_) => match cycle_part.repeat_count {
                     InfCount::Count(count) => charged_cycles += count,
                     InfCount::Infinite => return Some(InfCount::Infinite),
                 },

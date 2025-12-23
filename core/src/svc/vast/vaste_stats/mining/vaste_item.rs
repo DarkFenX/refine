@@ -63,9 +63,9 @@ fn get_mps_effect(
     mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
 ) -> Option<MiningAmount> {
     let mining_getter = mining_getter_getter(effect)?;
-    let effect_cycle = effect_cycle.get_looped_part()?;
+    let effect_cycle = effect_cycle.get_loop()?;
     let mining_amount = mining_getter(ctx, calc, item_key, effect)?;
-    Some(mining_amount.get_total() / effect_cycle.get_average_cycle_time())
+    Some(mining_amount.get_total() / effect_cycle.get_average_time())
 }
 
 fn get_getter_ore(effect: &REffect) -> Option<NMiningGetter> {
