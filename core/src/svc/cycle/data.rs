@@ -16,9 +16,12 @@ impl CycleInterrupt {
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
+    // Full time (active time with any downtimes combined)
     pub(in crate::svc) time: AttrVal,
+    // What kind of interruptions happen after current cycle
     pub(in crate::svc) interrupt: Option<CycleInterrupt>,
-    pub(in crate::svc) charged: Option<AttrVal>,
+    // How charged current cycle is
+    pub(in crate::svc) chargedness: Option<AttrVal>,
 }
 
 // Simplified cycle data types, they are useful mostly because they allow cycle optimizations during
@@ -26,13 +29,13 @@ pub(in crate::svc) struct CycleDataFull {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc) struct CycleDataTimeCharged {
     pub(in crate::svc) time: AttrVal,
-    pub(in crate::svc) charged: Option<AttrVal>,
+    pub(in crate::svc) chargedness: Option<AttrVal>,
 }
 impl From<&CycleDataFull> for CycleDataTimeCharged {
     fn from(full: &CycleDataFull) -> Self {
         Self {
             time: full.time,
-            charged: full.charged,
+            chargedness: full.chargedness,
         }
     }
 }

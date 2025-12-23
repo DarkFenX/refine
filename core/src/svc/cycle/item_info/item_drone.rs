@@ -44,7 +44,7 @@ pub(super) fn get_drone_cycle_info(
                 data: CycleDataFull {
                     time: duration_s,
                     interrupt: None,
-                    charged: None,
+                    chargedness: None,
                 },
             }),
         );

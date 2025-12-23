@@ -28,7 +28,7 @@ impl Svc {
         let cycle_parts = cycle_info.get(&defeff_key)?.get_parts();
         for cycle_part in cycle_parts.iter() {
             // Current part uncharged means we're empty by this point
-            if cycle_part.data.charged.is_none() {
+            if cycle_part.data.chargedness.is_none() {
                 return Some(InfCount::Count(charged_cycles));
             }
             let repeat_count = match cycle_part.repeat_count {

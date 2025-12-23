@@ -17,6 +17,7 @@ pub(in crate::nd::effect::data) fn get_local_shield_rep_opc(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
+    _chargedness: Option<AttrVal>,
 ) -> Option<Output<AttrVal>> {
     get_local_rep_opc(
         ctx,
@@ -34,6 +35,7 @@ pub(in crate::nd::effect::data) fn get_local_armor_rep_opc(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
+    _chargedness: Option<AttrVal>,
 ) -> Option<Output<AttrVal>> {
     get_local_rep_opc(
         ctx,
@@ -51,6 +53,7 @@ pub(in crate::nd::effect::data) fn get_local_hull_rep_opc(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
+    _chargedness: Option<AttrVal>,
 ) -> Option<Output<AttrVal>> {
     get_local_rep_opc(
         ctx,

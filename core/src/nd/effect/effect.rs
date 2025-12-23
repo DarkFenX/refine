@@ -32,7 +32,7 @@ pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
 // Getters - misc
 pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<MiningAmount>>;
-pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<AttrVal>>;
+pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<AttrVal>) -> Option<Output<AttrVal>>;
 pub(crate) type NOutgoingRepGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NNeutGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;

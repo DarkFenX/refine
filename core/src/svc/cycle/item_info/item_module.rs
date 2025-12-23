@@ -125,7 +125,7 @@ fn fill_module_effect_info(
                 data: CycleDataFull {
                     time: duration,
                     interrupt: None,
-                    charged: charge_info.get_first_cycle_chargeness(),
+                    chargedness: charge_info.get_first_cycle_chargeness(),
                 },
                 repeat_count: 1,
             }),
@@ -151,7 +151,7 @@ fn fill_module_effect_info(
                     data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        charged: charge_info.get_first_cycle_chargeness(),
+                        chargedness: charge_info.get_first_cycle_chargeness(),
                     },
                 }),
             );
@@ -167,7 +167,7 @@ fn fill_module_effect_info(
                     data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        charged: Some(OF(1.0)),
+                        chargedness: Some(OF(1.0)),
                     },
                 }),
             );
@@ -186,7 +186,7 @@ fn fill_module_effect_info(
             data: CycleDataFull {
                 time: duration + cooldown,
                 interrupt: CycleInterrupt::try_new(int_cd, false),
-                charged: None,
+                chargedness: None,
             },
         }),
         // Only partially charged, has to reload every cycle
@@ -217,13 +217,13 @@ fn fill_module_effect_info(
                 p1_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
-                    charged: charge_info.part_charged,
+                    chargedness: charge_info.part_charged,
                 },
                 p1_repeat_count: 1,
                 p2_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
-                    charged: None,
+                    chargedness: None,
                 },
             }),
         },
@@ -239,13 +239,13 @@ fn fill_module_effect_info(
                 p1_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
-                    charged: Some(OF(1.0)),
+                    chargedness: Some(OF(1.0)),
                 },
                 p1_repeat_count: full_count,
                 p2_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
-                    charged: None,
+                    chargedness: None,
                 },
             }),
         },
@@ -280,18 +280,18 @@ fn fill_module_effect_info(
                     p1_data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        charged: Some(OF(1.0)),
+                        chargedness: Some(OF(1.0)),
                     },
                     p1_repeat_count: full_count,
                     p2_data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        charged: charge_info.part_charged,
+                        chargedness: charge_info.part_charged,
                     },
                     p3_data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        charged: None,
+                        chargedness: None,
                     },
                 }),
             }
@@ -324,7 +324,7 @@ fn part_r(
         data: CycleDataFull {
             time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
             interrupt: CycleInterrupt::try_new(int_cd, true),
-            charged: part_value,
+            chargedness: part_value,
         },
     })
 }
@@ -343,20 +343,20 @@ fn full_r(
             data: CycleDataFull {
                 time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
                 interrupt: CycleInterrupt::try_new(int_cd, true),
-                charged: Some(OF(1.0)),
+                chargedness: Some(OF(1.0)),
             },
         }),
         _ => Cycle::LoopLimSin(CycleLoopLimSin {
             p1_data: CycleDataFull {
                 time: duration + cooldown,
                 interrupt: CycleInterrupt::try_new(int_cd, false),
-                charged: Some(OF(1.0)),
+                chargedness: Some(OF(1.0)),
             },
             p1_repeat_count: full_count - 1,
             p2_data: CycleDataFull {
                 time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
                 interrupt: CycleInterrupt::try_new(int_cd, true),
-                charged: Some(OF(1.0)),
+                chargedness: Some(OF(1.0)),
             },
         }),
     }
@@ -376,13 +376,13 @@ fn both_r(
         p1_data: CycleDataFull {
             time: duration + cooldown,
             interrupt: CycleInterrupt::try_new(int_cd, false),
-            charged: Some(OF(1.0)),
+            chargedness: Some(OF(1.0)),
         },
         p1_repeat_count: full_count,
         p2_data: CycleDataFull {
             time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
             interrupt: CycleInterrupt::try_new(int_cd, true),
-            charged: part_value,
+            chargedness: part_value,
         },
     })
 }

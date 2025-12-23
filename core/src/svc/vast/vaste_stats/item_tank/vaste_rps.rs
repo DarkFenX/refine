@@ -101,7 +101,8 @@ fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REf
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle = match rep_getter(ctx, calc, item_key, effect) {
+            let chargedness = effect_cycle_loop.get_first().chargedness;
+            let output_per_cycle = match rep_getter(ctx, calc, item_key, effect, chargedness) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };

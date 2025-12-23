@@ -79,6 +79,14 @@ pub(in crate::svc) enum CycleLooped<T = CycleDataFull> {
     Inf(CycleInf<T>),
     LoopLimSin(CycleLoopLimSin<T>),
 }
+impl<T> CycleLooped<T> {
+    pub(in crate::svc) fn get_first(&self) -> &T {
+        match self {
+            Self::Inf(inner) => inner.get_first(),
+            Self::LoopLimSin(inner) => inner.get_first(),
+        }
+    }
+}
 impl CycleLooped {
     pub(in crate::svc) fn get_average_time(&self) -> AttrVal {
         match self {
