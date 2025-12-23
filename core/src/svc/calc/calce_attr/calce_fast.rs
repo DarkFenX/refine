@@ -50,7 +50,7 @@ impl Calc {
     // - Optional attribute
     // - Fallback in case of missing attribute argument
     // - Dogma value as an option
-    pub(in crate::svc::calc) fn get_item_oattr_afb_odogma(
+    pub(crate) fn get_item_oattr_afb_odogma(
         &mut self,
         ctx: SvcCtx,
         item_key: UItemKey,

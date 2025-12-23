@@ -420,8 +420,7 @@ def test_local_aar_ship_accuracy_and_charge_switch(client, consts):
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
 
 
-def test_local_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
-    # Rounding in this case means the way lib considers not-fully-charged-cycle
+def test_local_aar_ship_chargedness_and_state_switch(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
         client=client, basic_info=eve_basic_info, hps=(3000, 2000, 1000), maker=client.mk_eve_ship)
@@ -440,11 +439,11 @@ def test_local_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     # Verification - count of cycles is floored (i.e. forced to reload on partially charged cycles)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_fit_stats.hp.armor == (approx(2000), approx(900), 0)
+    assert api_fit_stats.hp.armor == (approx(2000), approx(1150), 0)
     assert api_fit_stats.hp.hull == (approx(1000), 0, 0)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=True))
     assert api_ship_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_ship_stats.hp.armor == (approx(2000), approx(900), 0)
+    assert api_ship_stats.hp.armor == (approx(2000), approx(1150), 0)
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.change_module(state=consts.ApiModuleState.online)
@@ -462,11 +461,11 @@ def test_local_aar_ship_charge_rate_rounding_and_state_switch(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_fit_stats.hp.armor == (approx(2000), approx(900), 0)
+    assert api_fit_stats.hp.armor == (approx(2000), approx(1150), 0)
     assert api_fit_stats.hp.hull == (approx(1000), 0, 0)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=True))
     assert api_ship_stats.hp.shield == (approx(3000), 0, 0)
-    assert api_ship_stats.hp.armor == (approx(2000), approx(900), 0)
+    assert api_ship_stats.hp.armor == (approx(2000), approx(1150), 0)
     assert api_ship_stats.hp.hull == (approx(1000), 0, 0)
     # Action
     api_aar.remove()
