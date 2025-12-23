@@ -161,12 +161,12 @@ def test_stacking_complex_different_multiple_downtimes(client, consts):
         dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst.breacher == [approx(625), approx(0.00625)]
-    assert api_fleet_dps_reload.breacher == [approx(527.777778), approx(0.005277778)]
+    assert api_fleet_dps_reload.breacher == [approx(599.206349), approx(0.005992063)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst.breacher == [approx(625), approx(0.00625)]
-    assert api_fit_dps_reload.breacher == [approx(527.777778), approx(0.005277778)]
+    assert api_fit_dps_reload.breacher == [approx(599.206349), approx(0.005992063)]
     # Action
     api_module1.remove()
     # Verification
