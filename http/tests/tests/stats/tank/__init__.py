@@ -1,7 +1,7 @@
 import typing
 from dataclasses import dataclass
 
-from fw.util import Default
+from fw.util import Absent, Default, conditional_insert
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable
@@ -289,19 +289,19 @@ def make_eve_tankable(
         client: TestClient,
         basic_info: TankBasicInfo,
         hps: tuple[float | None, float | None, float | None] | None = None,
-        shield_regen: float | None = None,
+        shield_regen: float | type[Absent] = Absent,
         resos_shield: tuple[float | None, float | None, float | None, float | None] | None = None,
         resos_armor: tuple[float | None, float | None, float | None, float | None] | None = None,
         resos_hull: tuple[float | None, float | None, float | None, float | None] | None = None,
-        rr_resist: float | None = None,
-        fighter_count: float | None = None,
+        rr_resist: float | type[Absent] = Absent,
+        fighter_count: float | type[Absent] = Absent,
         maker: Callable | None = None,
 ) -> int:
     attrs = {}
     if hps is not None:
         hp_attr_ids = (basic_info.shield_hp_attr_id, basic_info.armor_hp_attr_id, basic_info.hull_hp_attr_id)
         attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
-    conditional_insert(attrs=attrs, attr_id=basic_info.shield_regen_attr_id, value=shield_regen)
+    conditional_insert(container=attrs, path=[basic_info.shield_regen_attr_id], value=shield_regen)
     if resos_shield is not None:
         shield_res_attr_ids = (
             basic_info.shield_res_em_attr_id,
@@ -323,10 +323,8 @@ def make_eve_tankable(
             basic_info.hull_res_kin_attr_id,
             basic_info.hull_res_expl_attr_id)
         attrs.update({k: v for k, v in zip(hull_res_attr_ids, resos_hull, strict=True) if v is not None})
-    if rr_resist is not None:
-        attrs[basic_info.rr_res_attr_id] = rr_resist
-    if fighter_count is not None:
-        attrs[basic_info.max_fighter_count_attr_id] = fighter_count
+    conditional_insert(container=attrs, path=[basic_info.rr_res_attr_id], value=rr_resist)
+    conditional_insert(container=attrs, path=[basic_info.max_fighter_count_attr_id], value=fighter_count)
     if maker is None:
         maker = client.mk_eve_item
     return maker(attrs=attrs)
@@ -336,12 +334,12 @@ def make_eve_local_sb(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_sb_effect_id],
@@ -352,14 +350,14 @@ def make_eve_local_asb(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_asb_effect_id],
@@ -370,12 +368,12 @@ def make_eve_local_ar(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_ar_effect_id],
@@ -386,16 +384,16 @@ def make_eve_local_aar(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        charge_rate: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        charge_rate: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.armor_rep_amount_mult_attr_id: 3.0}
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    conditional_insert(attrs=attrs, attr_id=basic_info.charge_rate_attr_id, value=charge_rate)
+    conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.charge_rate_attr_id], value=charge_rate)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_aar_effect_id],
@@ -406,12 +404,12 @@ def make_eve_local_hr(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.hull_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_hr_effect_id],
@@ -422,16 +420,16 @@ def make_eve_remote_sb(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
-        falloff_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
+        falloff_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_sb_effect_id],
@@ -442,18 +440,18 @@ def make_eve_remote_asb(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        optimal_range: float | None = None,
-        falloff_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
+        falloff_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_asb_effect_id],
@@ -464,14 +462,14 @@ def make_eve_drone_shield(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.shield_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
     return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.remote_dsb_effect_id],
@@ -482,16 +480,16 @@ def make_eve_remote_ar(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
-        falloff_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
+        falloff_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_ar_effect_id],
@@ -502,20 +500,20 @@ def make_eve_remote_aar(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        charge_rate: float | None = None,
-        optimal_range: float | None = None,
-        falloff_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        charge_rate: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
+        falloff_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.armor_rep_amount_mult_attr_id: 3.0}
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    conditional_insert(attrs=attrs, attr_id=basic_info.charge_rate_attr_id, value=charge_rate)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.charge_rate_attr_id], value=charge_rate)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_aar_effect_id],
@@ -526,18 +524,18 @@ def make_eve_remote_sar(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        spool_step: float | None = None,
-        spool_max: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        spool_step: float | type[Absent] = Absent,
+        spool_max: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_spool_step_attr_id, value=spool_step)
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_spool_max_attr_id, value=spool_max)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.armor_spool_step_attr_id], value=spool_step)
+    conditional_insert(container=attrs, path=[basic_info.armor_spool_max_attr_id], value=spool_max)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_sar_effect_id],
@@ -548,14 +546,14 @@ def make_eve_drone_armor(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.armor_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
     return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.remote_dar_effect_id],
@@ -566,16 +564,16 @@ def make_eve_remote_hr(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
-        falloff_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
+        falloff_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_falloff_attr_id, value=falloff_range)
+    conditional_insert(container=attrs, path=[basic_info.hull_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.remote_hr_effect_id],
@@ -586,20 +584,15 @@ def make_eve_drone_hull(
         *,
         client: TestClient,
         basic_info: TankBasicInfo,
-        rep_amount: float | None = None,
-        cycle_time: float | None = None,
-        optimal_range: float | None = None,
+        rep_amount: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        optimal_range: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    conditional_insert(attrs=attrs, attr_id=basic_info.hull_rep_amount_attr_id, value=rep_amount)
-    conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    conditional_insert(attrs=attrs, attr_id=basic_info.rr_optimal_attr_id, value=optimal_range)
+    conditional_insert(container=attrs, path=[basic_info.hull_rep_amount_attr_id], value=rep_amount)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
     return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.remote_dhr_effect_id],
         defeff_id=basic_info.remote_dhr_effect_id)
-
-
-def conditional_insert(*, attrs: dict[int, float], attr_id: int, value: float | None) -> None:
-    if value is not None:
-        attrs[attr_id] = value

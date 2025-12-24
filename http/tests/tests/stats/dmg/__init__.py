@@ -1,7 +1,7 @@
 import typing
 from dataclasses import dataclass
 
-from fw.util import Default
+from fw.util import Absent, Default, conditional_insert
 
 if typing.TYPE_CHECKING:
     from fw.client import TestClient
@@ -322,10 +322,10 @@ def make_eve_ship(
         client: TestClient,
         basic_info: DmgBasicInfo,
         hps: tuple[float | None, float | None, float | None] | None = None,
-        speed: float | None = None,
-        sig_radius: float | None = None,
-        neut_resist: float | None = None,
-        radius: float | None = None,
+        speed: float | type[Absent] = Absent,
+        sig_radius: float | type[Absent] = Absent,
+        neut_resist: float | type[Absent] = Absent,
+        radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     if hps is not None:
@@ -334,10 +334,10 @@ def make_eve_ship(
             basic_info.armor_hp_attr_id,
             basic_info.hull_hp_attr_id)
         attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.neut_resist_attr_id, value=neut_resist)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
+    conditional_insert(container=attrs, path=[basic_info.neut_resist_attr_id], value=neut_resist)
+    conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
     return client.mk_eve_ship(attrs=attrs)
 
 
@@ -345,24 +345,24 @@ def make_eve_turret_proj(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        dmg_mult: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        reload_time: float | None = None,
-        range_optimal: float | None = None,
-        range_falloff: float | None = None,
-        tracking: float | None = None,
-        sig_resolution: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        range_falloff: float | type[Absent] = Absent,
+        tracking: float | type[Absent] = Absent,
+        sig_resolution: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.falloff_attr_id], value=range_falloff)
+    conditional_insert(container=attrs, path=[basic_info.tracking_attr_id], value=tracking)
+    conditional_insert(container=attrs, path=[basic_info.sig_resolution_attr_id], value=sig_resolution)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.turret_proj_effect_id],
@@ -373,24 +373,24 @@ def make_eve_turret_laser(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        dmg_mult: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        reload_time: float | None = None,
-        range_optimal: float | None = None,
-        range_falloff: float | None = None,
-        tracking: float | None = None,
-        sig_resolution: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        range_falloff: float | type[Absent] = Absent,
+        tracking: float | type[Absent] = Absent,
+        sig_resolution: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.falloff_attr_id], value=range_falloff)
+    conditional_insert(container=attrs, path=[basic_info.tracking_attr_id], value=tracking)
+    conditional_insert(container=attrs, path=[basic_info.sig_resolution_attr_id], value=sig_resolution)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
@@ -401,26 +401,26 @@ def make_eve_turret_spool(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        dmg_mult: float | None = None,
-        spool_step: float | None = None,
-        spool_max: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        reload_time: float | None = None,
-        range_optimal: float | None = None,
-        tracking: float | None = None,
-        sig_resolution: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        spool_step: float | type[Absent] = Absent,
+        spool_max: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        tracking: float | type[Absent] = Absent,
+        sig_resolution: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_spool_step_attr_id, value=spool_step)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_spool_max_attr_id, value=spool_max)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_spool_step_attr_id], value=spool_step)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_spool_max_attr_id], value=spool_max)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.tracking_attr_id], value=tracking)
+    conditional_insert(container=attrs, path=[basic_info.sig_resolution_attr_id], value=sig_resolution)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.turret_spool_effect_id],
@@ -432,19 +432,19 @@ def make_eve_turret_civilian(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        dmg_mult: float | None = None,
-        cycle_time: float | None = None,
-        reload_time: float | None = None,
-        charge_type_id: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
+        charge_type_id: float | type[Absent] = Absent,
 ) -> int:
     # The lib doesn't make use of module-level autocharges, but we fill the data needed for it for
     # completeness anyway
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.ammo_loaded_attr_id, value=charge_type_id)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.ammo_loaded_attr_id], value=charge_type_id)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
@@ -455,24 +455,24 @@ def make_eve_vorton(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        dmg_mult: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        reload_time: float | None = None,
-        range_optimal: float | None = None,
-        exp_radius: float | None = None,
-        exp_speed: float | None = None,
-        drf: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        exp_radius: float | type[Absent] = Absent,
+        exp_speed: float | type[Absent] = Absent,
+        drf: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.aoe_velocity_attr_id], value=exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.aoe_drf_attr_id], value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.vorton_effect_id],
@@ -484,11 +484,11 @@ def make_eve_charge_normal(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
+        volume: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
     return client.mk_eve_item(attrs=attrs)
 
 
@@ -497,19 +497,19 @@ def make_eve_charge_crystal(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
-        get_damaged: float | None = None,
-        hp: float | None = None,
-        vol_dmg: float | None = None,
-        vol_chance: float | None = None,
+        volume: float | type[Absent] = Absent,
+        get_damaged: float | type[Absent] = Absent,
+        hp: float | type[Absent] = Absent,
+        vol_dmg: float | type[Absent] = Absent,
+        vol_chance: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_get_dmg_attr_id, value=get_damaged)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.hull_hp_attr_id, value=hp)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_dmg_attr_id, value=vol_dmg)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.crystal_volatility_chance_attr_id, value=vol_chance)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.crystal_get_dmg_attr_id], value=get_damaged)
+    conditional_insert(container=attrs, path=[basic_info.hull_hp_attr_id], value=hp)
+    conditional_insert(container=attrs, path=[basic_info.crystal_volatility_dmg_attr_id], value=vol_dmg)
+    conditional_insert(container=attrs, path=[basic_info.crystal_volatility_chance_attr_id], value=vol_chance)
     return client.mk_eve_item(attrs=attrs)
 
 
@@ -517,16 +517,16 @@ def make_eve_launcher(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        reactivation_delay: float | None = None,
-        reload_time: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        reactivation_delay: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reactivation_delay_attr_id, value=reactivation_delay)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reactivation_delay_attr_id], value=reactivation_delay)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.launcher_effect_id],
@@ -538,25 +538,25 @@ def make_eve_missile(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
-        speed: float | None = None,
-        flight_time: float | None = None,
-        mass: float | None = None,
-        agility: float | None = None,
-        exp_radius: float | None = None,
-        exp_speed: float | None = None,
-        drf: float | None = None,
+        volume: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        flight_time: float | type[Absent] = Absent,
+        mass: float | type[Absent] = Absent,
+        agility: float | type[Absent] = Absent,
+        exp_radius: float | type[Absent] = Absent,
+        exp_speed: float | type[Absent] = Absent,
+        drf: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.flight_time_attr_id], value=flight_time)
+    conditional_insert(container=attrs, path=[basic_info.mass_attr_id], value=mass)
+    conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
+    conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.aoe_velocity_attr_id], value=exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.aoe_drf_attr_id], value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.missile_effect_id],
@@ -568,27 +568,27 @@ def make_eve_missile_fof(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
-        speed: float | None = None,
-        flight_time: float | None = None,
-        mass: float | None = None,
-        agility: float | None = None,
-        max_range: float | None = None,
-        exp_radius: float | None = None,
-        exp_speed: float | None = None,
-        drf: float | None = None,
+        volume: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        flight_time: float | type[Absent] = Absent,
+        mass: float | type[Absent] = Absent,
+        agility: float | type[Absent] = Absent,
+        max_range: float | type[Absent] = Absent,
+        exp_radius: float | type[Absent] = Absent,
+        exp_speed: float | type[Absent] = Absent,
+        drf: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_fof_range_attr_id, value=max_range)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.flight_time_attr_id], value=flight_time)
+    conditional_insert(container=attrs, path=[basic_info.mass_attr_id], value=mass)
+    conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
+    conditional_insert(container=attrs, path=[basic_info.max_fof_range_attr_id], value=max_range)
+    conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.aoe_velocity_attr_id], value=exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.aoe_drf_attr_id], value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.missile_fof_effect_id],
@@ -600,25 +600,25 @@ def make_eve_missile_defender(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
-        speed: float | None = None,
-        flight_time: float | None = None,
-        mass: float | None = None,
-        agility: float | None = None,
-        exp_radius: float | None = None,
-        exp_speed: float | None = None,
-        drf: float | None = None,
+        volume: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        flight_time: float | type[Absent] = Absent,
+        mass: float | type[Absent] = Absent,
+        agility: float | type[Absent] = Absent,
+        exp_radius: float | type[Absent] = Absent,
+        exp_speed: float | type[Absent] = Absent,
+        drf: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.flight_time_attr_id], value=flight_time)
+    conditional_insert(container=attrs, path=[basic_info.mass_attr_id], value=mass)
+    conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
+    conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.aoe_velocity_attr_id], value=exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.aoe_drf_attr_id], value=drf)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.missile_defender_effect_id],
@@ -629,24 +629,24 @@ def make_eve_breacher(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        dmg_abs: float | None = None,
-        dmg_rel: float | None = None,
-        dmg_duration: float | None = None,
-        volume: float | None = None,
-        speed: float | None = None,
-        flight_time: float | None = None,
-        mass: float | None = None,
-        agility: float | None = None,
+        dmg_abs: float | type[Absent] = Absent,
+        dmg_rel: float | type[Absent] = Absent,
+        dmg_duration: float | type[Absent] = Absent,
+        volume: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        flight_time: float | type[Absent] = Absent,
+        mass: float | type[Absent] = Absent,
+        agility: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_abs_attr_id, value=dmg_abs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_rel_attr_id, value=dmg_rel)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_breach_duration_attr_id, value=dmg_duration)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
+    conditional_insert(container=attrs, path=[basic_info.dmg_breach_abs_attr_id], value=dmg_abs)
+    conditional_insert(container=attrs, path=[basic_info.dmg_breach_rel_attr_id], value=dmg_rel)
+    conditional_insert(container=attrs, path=[basic_info.dmg_breach_duration_attr_id], value=dmg_duration)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.flight_time_attr_id], value=flight_time)
+    conditional_insert(container=attrs, path=[basic_info.mass_attr_id], value=mass)
+    conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.breacher_effect_id],
@@ -658,24 +658,24 @@ def make_eve_bomb(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
-        speed: float | None = None,
-        flight_time: float | None = None,
-        mass: float | None = None,
-        agility: float | None = None,
-        exp_range: float | None = None,
-        exp_radius: float | None = None,
+        volume: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        flight_time: float | type[Absent] = Absent,
+        mass: float | type[Absent] = Absent,
+        agility: float | type[Absent] = Absent,
+        exp_range: float | type[Absent] = Absent,
+        exp_radius: float | type[Absent] = Absent,
         neut_resist_attr: bool = False,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=exp_range)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.flight_time_attr_id], value=flight_time)
+    conditional_insert(container=attrs, path=[basic_info.mass_attr_id], value=mass)
+    conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
+    conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=exp_range)
+    conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
     if neut_resist_attr:
         attrs[basic_info.resist_def_attr_id] = basic_info.neut_resist_attr_id
     return client.mk_eve_item(
@@ -689,27 +689,27 @@ def make_eve_bomb_guided(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        volume: float | None = None,
-        speed: float | None = None,
-        flight_time: float | None = None,
-        mass: float | None = None,
-        agility: float | None = None,
-        exp_range: float | None = None,
-        exp_radius: float | None = None,
-        exp_speed: float | None = None,
-        drf: float | None = None,
+        volume: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        flight_time: float | type[Absent] = Absent,
+        mass: float | type[Absent] = Absent,
+        agility: float | type[Absent] = Absent,
+        exp_range: float | type[Absent] = Absent,
+        exp_radius: float | type[Absent] = Absent,
+        exp_speed: float | type[Absent] = Absent,
+        drf: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.volume_attr_id, value=volume)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.flight_time_attr_id, value=flight_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.mass_attr_id, value=mass)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.agility_attr_id, value=agility)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=exp_range)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_cloud_size_attr_id, value=exp_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_velocity_attr_id, value=exp_speed)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.aoe_drf_attr_id, value=drf)
+    conditional_insert(container=attrs, path=[basic_info.volume_attr_id], value=volume)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.flight_time_attr_id], value=flight_time)
+    conditional_insert(container=attrs, path=[basic_info.mass_attr_id], value=mass)
+    conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
+    conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=exp_range)
+    conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.aoe_velocity_attr_id], value=exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.aoe_drf_attr_id], value=drf)
     return client.mk_eve_item(
         grp_id=basic_info.guided_bomb_group_id,
         attrs=attrs,
@@ -722,31 +722,31 @@ def make_eve_drone(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        dmg_mult: float | None = None,
-        cycle_time: float | None = None,
-        range_optimal: float | None = None,
-        range_falloff: float | None = None,
-        tracking: float | None = None,
-        sig_resolution: float | None = None,
-        speed_cruise: float | None = None,
-        speed_chase: float | None = None,
-        radius: float | None = None,
-        sig_radius: float | None = None,
-        prop_sig_radius_mult: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        range_falloff: float | type[Absent] = Absent,
+        tracking: float | type[Absent] = Absent,
+        sig_resolution: float | type[Absent] = Absent,
+        speed_cruise: float | type[Absent] = Absent,
+        speed_chase: float | type[Absent] = Absent,
+        radius: float | type[Absent] = Absent,
+        sig_radius: float | type[Absent] = Absent,
+        prop_sig_radius_mult: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.falloff_attr_id, value=range_falloff)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.tracking_attr_id, value=tracking)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_resolution_attr_id, value=sig_resolution)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.entity_cruise_speed_attr_id, value=speed_cruise)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_velocity_attr_id, value=speed_chase)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.radius_attr_id, value=radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=sig_radius)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.prop_sig_radius_mult_attr_id, value=prop_sig_radius_mult)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.falloff_attr_id], value=range_falloff)
+    conditional_insert(container=attrs, path=[basic_info.tracking_attr_id], value=tracking)
+    conditional_insert(container=attrs, path=[basic_info.sig_resolution_attr_id], value=sig_resolution)
+    conditional_insert(container=attrs, path=[basic_info.entity_cruise_speed_attr_id], value=speed_cruise)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed_chase)
+    conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
+    conditional_insert(container=attrs, path=[basic_info.prop_sig_radius_mult_attr_id], value=prop_sig_radius_mult)
     return client.mk_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
@@ -758,13 +758,13 @@ def make_eve_smartbomb(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        range_optimal: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=range_optimal)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.smartbomb_effect_id],
@@ -775,18 +775,18 @@ def make_eve_pds(
         *,
         client: TestClient,
         basic_info: DmgBasicInfo,
-        dmg_mult: float | None = None,
-        cycle_time: float | None = None,
-        capacity: float | None = None,
-        reload_time: float | None = None,
-        range_optimal: float | None = None,
+        dmg_mult: float | type[Absent] = Absent,
+        cycle_time: float | type[Absent] = Absent,
+        capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 200}
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dmg_mult_attr_id, value=dmg_mult)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.capacity_attr_id, value=capacity)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.reload_time_attr_id, value=reload_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.emp_field_range_attr_id, value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.dmg_mult_attr_id], value=dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
+    conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=range_optimal)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.pds_effect_id],
@@ -798,13 +798,13 @@ def make_eve_dd_direct_amarr(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay1_attr_id], value=delay)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_direct_amarr_effect_id],
@@ -816,13 +816,13 @@ def make_eve_dd_direct_caldari(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay1_attr_id], value=delay)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_direct_caldari_effect_id],
@@ -834,13 +834,13 @@ def make_eve_dd_direct_gallente(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay1_attr_id], value=delay)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_direct_gallente_effect_id],
@@ -852,13 +852,13 @@ def make_eve_dd_direct_minmatar(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay1_attr_id], value=delay)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_direct_minmatar_effect_id],
@@ -870,21 +870,21 @@ def make_eve_dd_lance(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
-        dmg_interval: float | None = None,
-        dmg_duration: float | None = None,
-        range_optimal: float | None = None,
-        dmg_radius: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
+        dmg_interval: float | type[Absent] = Absent,
+        dmg_duration: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay2_attr_id, value=delay)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_interval_attr_id, value=dmg_interval)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_duration_attr_id, value=dmg_duration)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=dmg_radius)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay2_attr_id], value=delay)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_lance_effect_id],
@@ -896,21 +896,21 @@ def make_eve_dd_lance_debuff(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
-        dmg_interval: float | None = None,
-        dmg_duration: float | None = None,
-        range_optimal: float | None = None,
-        dmg_radius: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
+        dmg_interval: float | type[Absent] = Absent,
+        dmg_duration: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay2_attr_id, value=delay)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_interval_attr_id, value=dmg_interval)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_duration_attr_id, value=dmg_duration)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=dmg_radius)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay2_attr_id], value=delay)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_lance_debuff_effect_id],
@@ -922,21 +922,21 @@ def make_eve_dd_reaper(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
-        dmg_interval: float | None = None,
-        dmg_duration: float | None = None,
-        range_optimal: float | None = None,
-        dmg_radius: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
+        dmg_interval: float | type[Absent] = Absent,
+        dmg_duration: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay2_attr_id, value=delay)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_interval_attr_id, value=dmg_interval)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_duration_attr_id, value=dmg_duration)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=dmg_radius)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay2_attr_id], value=delay)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_reaper_effect_id],
@@ -948,21 +948,21 @@ def make_eve_dd_boson(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
-        dmg_interval: float | None = None,
-        dmg_duration: float | None = None,
-        range_optimal: float | None = None,
-        dmg_radius: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
+        dmg_interval: float | type[Absent] = Absent,
+        dmg_duration: float | type[Absent] = Absent,
+        range_optimal: float | type[Absent] = Absent,
+        dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay2_attr_id, value=delay)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_interval_attr_id, value=dmg_interval)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_dmg_duration_attr_id, value=dmg_duration)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.max_range_attr_id, value=range_optimal)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.sig_radius_attr_id, value=dmg_radius)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay2_attr_id], value=delay)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
+    conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_boson_effect_id],
@@ -974,13 +974,13 @@ def make_eve_dd_vorton(
         client: TestClient,
         basic_info: DmgBasicInfo,
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
-        cycle_time: float | None = None,
-        delay: float | None = None,
+        cycle_time: float | type[Absent] = Absent,
+        delay: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
     _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=dmgs)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.cycle_time_attr_id, value=cycle_time)
-    _conditional_insert(attrs=attrs, attr_id=basic_info.dd_delay1_attr_id, value=delay)
+    conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.dd_delay1_attr_id], value=delay)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.dd_vorton_effect_id],
@@ -1000,8 +1000,3 @@ def _add_dmgs(
             basic_info.dmg_kin_attr_id,
             basic_info.dmg_expl_attr_id)
         attrs.update({k: v for k, v in zip(dmg_attr_ids, dmgs, strict=True) if v is not None})
-
-
-def _conditional_insert(*, attrs: dict[int, float], attr_id: int, value: float | None) -> None:
-    if value is not None:
-        attrs[attr_id] = value
