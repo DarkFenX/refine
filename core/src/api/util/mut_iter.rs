@@ -49,7 +49,7 @@ where
 }
 
 pub trait New {
-    type Key: Copy + Clone;
+    type Key: Copy;
     type This<'a>;
     fn new_new(sol: &mut SolarSystem, key: Self::Key) -> Self::This<'_>;
 }

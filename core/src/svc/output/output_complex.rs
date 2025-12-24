@@ -7,7 +7,7 @@ use crate::{
 
 pub(crate) struct OutputComplex<T>
 where
-    T: Copy + Clone,
+    T: Copy,
 {
     pub(crate) amount: T,
     pub(crate) delay: AttrVal,
@@ -16,7 +16,7 @@ where
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + Clone,
+    T: Copy,
 {
     pub(super) fn get_amount(&self) -> T {
         self.amount
@@ -30,7 +30,7 @@ where
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + Clone + std::ops::Mul<AttrVal, Output = T>,
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
 {
     pub(super) fn get_total(&self) -> T {
         self.amount * OF(self.repeats as f64)
@@ -43,13 +43,16 @@ impl OutputComplex<AttrVal> {
     pub(super) fn absolute_impact(&self) -> AttrVal {
         self.amount.abs() * self.repeats as f64
     }
+    pub(super) fn limit_amount(&mut self, amount: AttrVal) {
+        self.amount = Float::min(self.amount, amount);
+    }
     pub(super) fn add_amount(&mut self, amount: AttrVal) {
         self.amount += amount;
     }
 }
 impl<T> std::ops::Neg for OutputComplex<T>
 where
-    T: Copy + Clone + std::ops::Neg<Output = T>,
+    T: Copy + std::ops::Neg<Output = T>,
 {
     type Output = Self;
 
@@ -58,17 +61,25 @@ where
         self
     }
 }
+impl<T> std::ops::MulAssign<AttrVal> for OutputComplex<T>
+where
+    T: Copy + std::ops::MulAssign<AttrVal>,
+{
+    fn mul_assign(&mut self, rhs: AttrVal) {
+        self.amount.mul_assign(rhs);
+    }
+}
 
 struct OutputComplexIter<'a, T>
 where
-    T: Copy + Clone,
+    T: Copy,
 {
     output: &'a OutputComplex<T>,
     cycles_done: Count,
 }
 impl<'a, T> OutputComplexIter<'a, T>
 where
-    T: Copy + Clone,
+    T: Copy,
 {
     fn new(output: &'a OutputComplex<T>) -> Self {
         Self { output, cycles_done: 0 }
@@ -76,7 +87,7 @@ where
 }
 impl<T> Iterator for OutputComplexIter<'_, T>
 where
-    T: Copy + Clone,
+    T: Copy,
 {
     type Item = (AttrVal, T);
 

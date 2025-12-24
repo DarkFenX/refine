@@ -99,18 +99,18 @@ fn get_local_rps(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (&effect_key, rep_getter) in item_data.iter() {
+        for (&effect_key, rep_ospec) in item_data.iter() {
             let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
                 Some(effect_cycle_loop) => effect_cycle_loop,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
             let chargedness = effect_cycle_loop.get_first().chargedness;
-            let output_per_cycle = match rep_getter(ctx, calc, item_key, effect, chargedness) {
+            let output_per_cycle = match rep_ospec.get_total(ctx, calc, item_key, effect, chargedness) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
-            total_rps += output_per_cycle.get_total() / effect_cycle_loop.get_average_time();
+            total_rps += output_per_cycle / effect_cycle_loop.get_average_time();
         }
     }
     total_rps

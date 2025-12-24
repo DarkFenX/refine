@@ -96,7 +96,7 @@ fn get_local_ancil_hp(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        'effect: for (&effect_key, rep_getter) in item_data.iter() {
+        'effect: for (&effect_key, rep_ospec) in item_data.iter() {
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
@@ -122,13 +122,14 @@ fn get_local_ancil_hp(
                         _ => continue 'effect,
                     },
                 };
-                let hp_per_cycle = match rep_getter(ctx, calc, item_key, effect, effect_cycle_part.data.chargedness) {
-                    Some(hp_per_cycle) => hp_per_cycle,
-                    // Assume that if HP was not returned for this part, it cannot be returned for
-                    // this effect altogether
-                    None => continue 'effect,
-                };
-                effect_ancil_hp += hp_per_cycle.get_total() * effect_part_repeats as f64;
+                let hp_per_cycle =
+                    match rep_ospec.get_total(ctx, calc, item_key, effect, effect_cycle_part.data.chargedness) {
+                        Some(hp_per_cycle) => hp_per_cycle,
+                        // Assume that if HP was not returned for this part, it cannot be returned for
+                        // this effect altogether
+                        None => continue 'effect,
+                    };
+                effect_ancil_hp += hp_per_cycle * effect_part_repeats as f64;
                 // Reloads break sequence
                 if let Some(interrupt) = effect_cycle_part.data.interrupt
                     && interrupt.reload

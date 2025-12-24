@@ -10,6 +10,7 @@ mod item_checks;
 mod item_tank;
 mod mining;
 mod neut;
+mod opc_spec_exts;
 mod orps;
 mod vaste_fit_resource;
 mod vaste_fit_slot;
