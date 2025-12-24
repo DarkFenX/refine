@@ -1,7 +1,7 @@
 use crate::{
     ad::AAttrId,
     nd::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec, NProjMultGetter},
-    rd::RAttrKey,
+    rd::{RAttrKey, REffectResist},
     util::RMap,
 };
 
@@ -41,6 +41,7 @@ where
     pub(crate) proj_mult: NProjMultGetter,
     pub(crate) spoolable: bool,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
+    pub(crate) resist: Option<REffectResist>,
     pub(crate) ilimit_attr_key: Option<RAttrKey>,
 }
 impl<T> REffectProjOpcSpec<T>
@@ -56,6 +57,10 @@ where
             proj_mult: n_proj_opc_spec.proj_mult,
             spoolable: n_proj_opc_spec.spoolable,
             charge_mult: n_proj_opc_spec.charge_mult,
+            resist: n_proj_opc_spec
+                .resist
+                .as_ref()
+                .and_then(|v| REffectResist::try_from_n_effect_resist(v, attr_id_key_map)),
             ilimit_attr_key: n_proj_opc_spec
                 .ilimit_attr_id
                 .and_then(|v| attr_id_key_map.get(&v).copied()),

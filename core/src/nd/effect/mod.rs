@@ -9,6 +9,7 @@ pub(crate) use effect::{
 };
 pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
+pub(crate) use resist::NEffectResist;
 pub(crate) use spool::{NSpoolAttrs, ResolvedSpool};
 
 mod charge;
@@ -18,4 +19,5 @@ mod dmg_kind;
 mod effect;
 mod opc_spec;
 mod projectee_filter;
+mod resist;
 mod spool;
