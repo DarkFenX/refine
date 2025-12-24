@@ -4,8 +4,8 @@ pub(crate) use charge::{
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect::{
-    NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NLocalRepGetter,
-    NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
+    NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NMiningGetter,
+    NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
 pub(crate) use opc_spec::NEffectLocalOpcSpec;
 pub(crate) use projectee_filter::NEffectProjecteeFilter;

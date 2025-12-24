@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::{NLocalRepGetter, NOutgoingRepGetter},
+    nd::{NEffectLocalOpcSpec, NOutgoingRepGetter},
     rd::REffectKey,
     svc::{
         SvcCtx,
@@ -88,7 +88,11 @@ impl Vast {
 
 const RPS_CYCLE_OPTIONS: CycleOptions = CycleOptions::Burst;
 
-fn get_local_rps(ctx: SvcCtx, calc: &mut Calc, rep_data: &RMapRMap<UItemKey, REffectKey, NLocalRepGetter>) -> AttrVal {
+fn get_local_rps(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    rep_data: &RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
+) -> AttrVal {
     let mut total_rps = OF(0.0);
     for (&item_key, item_data) in rep_data.iter() {
         let cycle_map = match get_item_cycle_info(ctx, calc, item_key, RPS_CYCLE_OPTIONS, false) {

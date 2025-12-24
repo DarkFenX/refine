@@ -32,7 +32,6 @@ pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
 // Getters - misc
 pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<MiningAmount>>;
-pub(crate) type NLocalRepGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<AttrVal>) -> Option<Output<AttrVal>>;
 pub(crate) type NOutgoingRepGetter = fn(
     SvcCtx,
     &mut Calc,
@@ -84,9 +83,6 @@ pub(crate) struct NEffect {
     pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
     pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
     pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
-    pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter> = None,
-    pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter> = None,
-    pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter> = None,
     // Getters - cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,

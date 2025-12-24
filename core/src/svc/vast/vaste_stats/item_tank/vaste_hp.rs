@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    nd::{NLocalRepGetter, NOutgoingRepGetter},
+    nd::{NEffectLocalOpcSpec, NOutgoingRepGetter},
     rd::REffectKey,
     svc::{
         SvcCtx,
@@ -88,7 +88,7 @@ const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions::Sim(CycleOptionsSim {
 fn get_local_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    ancil_data: &RMapRMap<UItemKey, REffectKey, NLocalRepGetter>,
+    ancil_data: &RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     for (&item_key, item_data) in ancil_data.iter() {

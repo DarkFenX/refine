@@ -72,7 +72,7 @@ fn get_local_rep_base_opc(
     rep_attr_key: Option<RAttrKey>,
     applied_at_start: bool,
 ) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_oattr_afb_odogma(ctx, item_key, rep_attr_key, OF(0.0))?;
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, rep_attr_key, OF(0.0))?;
     let delay = match applied_at_start {
         true => OF(0.0),
         false => eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,

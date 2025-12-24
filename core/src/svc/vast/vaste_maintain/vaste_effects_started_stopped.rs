@@ -64,23 +64,23 @@ impl Vast {
                         self.handle_dmg_start(effect, item_key, &module.get_fit_key());
                         self.handle_mining_start(effect, item_key, &module.get_fit_key());
                         // Local reps
-                        if let Some(rep_getter) = effect.local_shield_rep_opc_getter {
+                        if let Some(rep_ospec) = effect.local_shield_rep_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_shield.add_entry(item_key, effect.key, rep_getter);
+                            fit_data.lr_shield.add_entry(item_key, effect.key, rep_ospec);
                             if effect.charge.is_some() {
-                                fit_data.lr_shield_limitable.add_entry(item_key, effect.key, rep_getter);
+                                fit_data.lr_shield_limitable.add_entry(item_key, effect.key, rep_ospec);
                             }
                         }
-                        if let Some(rep_getter) = effect.local_armor_rep_opc_getter {
+                        if let Some(rep_ospec) = effect.local_armor_rep_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_armor.add_entry(item_key, effect.key, rep_getter);
+                            fit_data.lr_armor.add_entry(item_key, effect.key, rep_ospec);
                             if effect.charge.is_some() {
-                                fit_data.lr_armor_limitable.add_entry(item_key, effect.key, rep_getter);
+                                fit_data.lr_armor_limitable.add_entry(item_key, effect.key, rep_ospec);
                             }
                         }
-                        if let Some(rep_getter) = effect.local_hull_rep_opc_getter {
+                        if let Some(rep_ospec) = effect.local_hull_rep_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.lr_hull.add_entry(item_key, effect.key, rep_getter);
+                            fit_data.lr_hull.add_entry(item_key, effect.key, rep_ospec);
                         }
                         // Outgoing reps
                         self.handle_orrs_start(effect, item_key, &module.get_fit_key());
@@ -155,21 +155,21 @@ impl Vast {
                         self.handle_dmg_stop(effect, item_key, &module.get_fit_key());
                         self.handle_mining_stop(effect, item_key, &module.get_fit_key());
                         // Local reps
-                        if effect.local_shield_rep_opc_getter.is_some() {
+                        if effect.local_shield_rep_opc_spec.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_shield.remove_l2(item_key, &effect.key);
                             if effect.charge.is_some() {
                                 fit_data.lr_shield_limitable.remove_l2(item_key, &effect.key);
                             }
                         }
-                        if effect.local_armor_rep_opc_getter.is_some() {
+                        if effect.local_armor_rep_opc_spec.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_armor.remove_l2(item_key, &effect.key);
                             if effect.charge.is_some() {
                                 fit_data.lr_armor_limitable.remove_l2(item_key, &effect.key);
                             }
                         }
-                        if effect.local_hull_rep_opc_getter.is_some() {
+                        if effect.local_hull_rep_opc_spec.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.lr_hull.remove_l2(item_key, &effect.key);
                         }
