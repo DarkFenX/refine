@@ -4,10 +4,8 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectProjOpcSpec,
-        effect::data::shared::{
-            base_opc::get_armor_rep_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult, spool::get_rep_spool,
-        },
+        NEffect, NEffectProjOpcSpec, NSpoolAttrs,
+        effect::data::shared::{base_opc::get_armor_rep_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
     },
 };
 
@@ -18,11 +16,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        spool_getter: Some(get_rep_spool),
+        spool_attr_ids: Some(NSpoolAttrs {
+            step: ac::attrs::REP_MULT_BONUS_PER_CYCLE,
+            max: ac::attrs::REP_MULT_BONUS_MAX,
+        }),
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_armor_rep_base_opc,
             proj_mult: get_simple_s2s_noapp_proj_mult,
-            spool: Some(get_rep_spool),
+            spoolable: true,
             ilimit_attr_id: Some(ac::attrs::ARMOR_HP),
             ..
         }),

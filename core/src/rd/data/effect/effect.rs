@@ -3,11 +3,11 @@ use crate::{
     def::AttrVal,
     nd::{
         N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NMiningGetter,
-        NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolGetter,
+        NNeutGetter, NNormalDmgGetter, NProjMultGetter,
     },
     rd::{
         RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectLocalOpcSpec,
-        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListKey,
+        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListKey, RSpoolAttrs,
     },
     util::RMap,
 };
@@ -28,7 +28,6 @@ pub(crate) struct REffect {
     pub(crate) banned_in_lowsec: bool,
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) kills_item: bool,
-    pub(crate) spool_resolver: Option<NSpoolGetter>,
     pub(crate) calc_customizer: Option<NCalcCustomizer>,
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
     // Output getters
@@ -47,6 +46,7 @@ pub(crate) struct REffect {
     pub(crate) buff: Option<REffectBuff>,
     pub(crate) charge: Option<REffectCharge>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
+    pub(crate) spool_attr_keys: Option<RSpoolAttrs>,
     pub(crate) modifier_proj_attr_keys: [Option<RAttrKey>; 2],
     pub(crate) discharge_attr_key: Option<RAttrKey>,
     pub(crate) duration_attr_key: Option<RAttrKey>,
@@ -79,7 +79,6 @@ impl REffect {
             banned_in_lowsec: a_effect.banned_in_lowsec && a_effect.state == AState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
-            spool_resolver: n_effect.and_then(|n| n.spool_getter),
             calc_customizer: n_effect.and_then(|n| n.calc_customizer),
             modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
             // Output getters
@@ -98,6 +97,7 @@ impl REffect {
             buff: Default::default(),
             charge: Default::default(),
             projectee_filter: Default::default(),
+            spool_attr_keys: Default::default(),
             modifier_proj_attr_keys: Default::default(),
             discharge_attr_key: Default::default(),
             duration_attr_key: Default::default(),
@@ -172,6 +172,10 @@ impl REffect {
                     attr_id_key_map,
                 )
             });
+            self.spool_attr_keys = n_effect
+                .spool_attr_ids
+                .as_ref()
+                .and_then(|n_spool_attrs| RSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_id_key_map));
             if let Some(modifier_proj_attrs_getter) = n_effect.modifier_proj_attrs_getter {
                 let proj_attr_ids = modifier_proj_attrs_getter(a_effect);
                 self.modifier_proj_attr_keys =

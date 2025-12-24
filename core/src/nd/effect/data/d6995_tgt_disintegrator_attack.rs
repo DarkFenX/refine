@@ -7,10 +7,8 @@ use crate::{
     misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKind,
-        effect::{
-            ResolvedSpool,
-            data::shared::{proj_mult::get_disintegrator_proj_mult, spool::get_dmg_spool},
-        },
+        NSpoolAttrs,
+        effect::{ResolvedSpool, data::shared::proj_mult::get_disintegrator_proj_mult},
     },
     rd::REffect,
     svc::{
@@ -32,7 +30,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
         }),
-        spool_getter: Some(get_dmg_spool),
+        spool_attr_ids: Some(NSpoolAttrs {
+            step: ac::attrs::DMG_MULT_BONUS_PER_CYCLE,
+            max: ac::attrs::DMG_MULT_BONUS_MAX,
+        }),
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_getter: Some(get_dmg_opc),
         ..

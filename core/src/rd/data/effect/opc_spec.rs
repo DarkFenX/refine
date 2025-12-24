@@ -1,8 +1,6 @@
 use crate::{
     ad::AAttrId,
-    nd::{
-        NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec, NProjMultGetter, NSpoolGetter,
-    },
+    nd::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec, NProjMultGetter},
     rd::RAttrKey,
     util::RMap,
 };
@@ -10,11 +8,11 @@ use crate::{
 #[derive(Copy, Clone)]
 pub(crate) struct REffectLocalOpcSpec<T>
 where
-    T: Copy
+    T: Copy,
 {
     pub(crate) base: NBaseOutputGetter<T>,
-    pub(crate) charge_mult: Option<NChargeMultGetter> = None,
-    pub(crate) ilimit_attr_key: Option<RAttrKey> = None,
+    pub(crate) charge_mult: Option<NChargeMultGetter>,
+    pub(crate) ilimit_attr_key: Option<RAttrKey>,
 }
 impl<T> REffectLocalOpcSpec<T>
 where
@@ -37,13 +35,13 @@ where
 #[derive(Copy, Clone)]
 pub(crate) struct REffectProjOpcSpec<T>
 where
-    T: Copy
+    T: Copy,
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) proj_mult: NProjMultGetter,
-    pub(crate) spool: Option<NSpoolGetter> = None,
-    pub(crate) charge_mult: Option<NChargeMultGetter> = None,
-    pub(crate) ilimit_attr_key: Option<RAttrKey> = None,
+    pub(crate) spoolable: bool,
+    pub(crate) charge_mult: Option<NChargeMultGetter>,
+    pub(crate) ilimit_attr_key: Option<RAttrKey>,
 }
 impl<T> REffectProjOpcSpec<T>
 where
@@ -56,7 +54,7 @@ where
         Self {
             base: n_proj_opc_spec.base,
             proj_mult: n_proj_opc_spec.proj_mult,
-            spool: n_proj_opc_spec.spool,
+            spoolable: n_proj_opc_spec.spoolable,
             charge_mult: n_proj_opc_spec.charge_mult,
             ilimit_attr_key: n_proj_opc_spec
                 .ilimit_attr_id

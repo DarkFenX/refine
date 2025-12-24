@@ -146,11 +146,15 @@ fn get_irr_data(
             };
             let effect_cycle_part = effect_cycles.get_first();
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let spool_mult = ospec
-                .spool
-                .and_then(|spool_getter| spool_getter(ctx, calc, projector_item_key))
-                .and_then(|spool_raw| ResolvedSpool::try_build(ctx, calc, projector_item_key, effect, spool, spool_raw))
-                .map(|v| v.mult);
+            let spool_mult = if ospec.spoolable
+                && let Some(spool_attrs) = effect.spool_attr_keys
+                && let Some(resolved) =
+                    ResolvedSpool::try_build(ctx, calc, projector_item_key, effect, spool, spool_attrs)
+            {
+                Some(resolved.mult)
+            } else {
+                None
+            };
             let output_per_cycle = match ospec.get_output(
                 ctx,
                 calc,

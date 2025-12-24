@@ -1,4 +1,5 @@
 use crate::{
+    ad::AAttrId,
     def::{AttrVal, Count, OF},
     misc::Spool,
     rd::{RAttrKey, REffect},
@@ -7,9 +8,9 @@ use crate::{
     util::{ceil_unerr, floor_unerr},
 };
 
-pub(crate) struct NSpoolRaw {
-    pub(crate) step: AttrVal,
-    pub(crate) max: AttrVal,
+pub(crate) struct NSpoolAttrs {
+    pub(crate) step: AAttrId,
+    pub(crate) max: AAttrId,
 }
 
 // TODO: code below was moved to svc, after everything was switched to it, this needs to be removed

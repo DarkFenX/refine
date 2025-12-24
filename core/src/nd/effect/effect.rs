@@ -3,7 +3,7 @@ use crate::{
     def::AttrVal,
     ed::EEffectId,
     misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, Spool},
-    nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolRaw},
+    nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolAttrs},
     rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
@@ -19,7 +19,6 @@ pub(crate) type NEffectMaker = fn() -> AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
 // General
-pub(crate) type NSpoolGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<NSpoolRaw>;
 pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
 // Getters - projection
 pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
@@ -51,7 +50,7 @@ pub(crate) struct NEffect {
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) kills_item: bool = false,
-    pub(crate) spool_getter: Option<NSpoolGetter> = None,
+    pub(crate) spool_attr_ids: Option<NSpoolAttrs> = None,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_customizer: Option<NCalcCustomizer> = None,
     // Getters - modifier projection

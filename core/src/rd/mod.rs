@@ -14,7 +14,7 @@ pub(crate) use data::{
     REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectKey,
     REffectLocalOpcSpec, REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemAXt,
     RItemChargeLimit, RItemContLimit, RItemEffectData, RItemList, RItemListKey, RItemShipLimit, RMuta, RShipDroneLimit,
-    RShipKind, RcEffect, RcItem, RcMuta,
+    RShipKind, RSpoolAttrs, RcEffect, RcItem, RcMuta,
 };
 pub use src::{Src, SrcInitError};
 

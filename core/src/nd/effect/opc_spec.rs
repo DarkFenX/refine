@@ -1,7 +1,7 @@
 use crate::{
     ad::AAttrId,
     def::AttrVal,
-    nd::{NProjMultGetter, NSpoolGetter},
+    nd::NProjMultGetter,
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemKey,
@@ -27,7 +27,7 @@ where
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) proj_mult: NProjMultGetter,
-    pub(crate) spool: Option<NSpoolGetter> = None,
+    pub(crate) spoolable: bool = false,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
     pub(crate) ilimit_attr_id: Option<AAttrId> = None,
 }

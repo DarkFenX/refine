@@ -10,7 +10,7 @@ pub(crate) use effect::{
     N_EFFECT_MAP, NBaseOutputGetter, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NChargeMultGetter,
     NDmgKindGetter, NEcmGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate,
     NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec,
-    NEffectProjecteeFilter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolGetter, NSpoolRaw,
+    NEffectProjecteeFilter, NMiningGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolAttrs,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 

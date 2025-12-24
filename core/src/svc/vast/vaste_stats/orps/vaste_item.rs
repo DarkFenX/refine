@@ -73,20 +73,23 @@ fn get_orr_effect(
     effect: &REffect,
     effect_cycle: Cycle,
     spool: Option<Spool>,
-    rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
+    ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> Option<AttrVal> {
-    let rep_ospec = rep_ospec_getter(effect)?;
+    let ospec = ospec_getter(effect)?;
     let effect_cycle_loop = effect_cycle.to_time_chargedness().try_get_loop()?;
-    let spool_mult = rep_ospec
-        .spool
-        .and_then(|spool_getter| spool_getter(ctx, calc, item_key))
-        .and_then(|spool_raw| ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_raw))
-        .map(|v| v.mult);
+    let spool_mult = if ospec.spoolable
+        && let Some(spool_attrs) = effect.spool_attr_keys
+        && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+    {
+        Some(resolved.mult)
+    } else {
+        None
+    };
     let mut rep_amount = OF(0.0);
     let mut time = OF(0.0);
     for effect_cycle_part in effect_cycle_loop.iter_parts() {
         let chargedness = effect_cycle_part.data.chargedness;
-        let cycle_rep_amount = rep_ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, None)?;
+        let cycle_rep_amount = ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, None)?;
         rep_amount += cycle_rep_amount * effect_cycle_part.repeat_count as f64;
         time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
     }

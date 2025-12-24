@@ -5,6 +5,7 @@ pub(crate) use effect::REffect;
 pub(crate) use modifier::REffectModifier;
 pub(crate) use opc_spec::{REffectLocalOpcSpec, REffectProjOpcSpec};
 pub(crate) use projectee_filter::REffectProjecteeFilter;
+pub(crate) use spool::RSpoolAttrs;
 
 mod buff;
 mod charge;
@@ -13,3 +14,4 @@ mod effect;
 mod modifier;
 mod opc_spec;
 mod projectee_filter;
+mod spool;

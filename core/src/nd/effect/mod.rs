@@ -5,11 +5,11 @@ pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect::{
     NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NMiningGetter,
-    NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolGetter,
+    NNeutGetter, NNormalDmgGetter, NProjMultGetter,
 };
 pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
-pub(crate) use spool::{NSpoolRaw, ResolvedSpool};
+pub(crate) use spool::{NSpoolAttrs, ResolvedSpool};
 
 mod charge;
 mod container;

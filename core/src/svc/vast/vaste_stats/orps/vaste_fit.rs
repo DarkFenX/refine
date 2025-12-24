@@ -100,11 +100,14 @@ fn get_orrps(
                 Some(effect_cycle_loop) => effect_cycle_loop.to_time_chargedness(),
                 None => continue,
             };
-            let spool_mult = ospec
-                .spool
-                .and_then(|spool_getter| spool_getter(ctx, calc, item_key))
-                .and_then(|spool_raw| ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_raw))
-                .map(|v| v.mult);
+            let spool_mult = if ospec.spoolable
+                && let Some(spool_attrs) = effect.spool_attr_keys
+                && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+            {
+                Some(resolved.mult)
+            } else {
+                None
+            };
             let effect_cycle_part = effect_cycle.get_first();
             let output_per_cycle = match ospec.get_total(
                 ctx,
