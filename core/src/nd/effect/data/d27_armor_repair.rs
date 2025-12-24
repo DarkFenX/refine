@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectLocalOpcSpec,
-        effect::data::shared::opc::{get_local_armor_rep_base_opc, get_local_armor_rep_ilimit},
+        effect::data::shared::opc::{get_armor_rep_base_opc, get_self_armor_ilimit},
     },
 };
 
@@ -17,8 +17,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         local_armor_rep_opc_spec: Some(NEffectLocalOpcSpec {
-            base: get_local_armor_rep_base_opc,
-            instance_limit: Some(get_local_armor_rep_ilimit),
+            base: get_armor_rep_base_opc,
+            instance_limit: Some(get_self_armor_ilimit),
             ..
         }),
         ..

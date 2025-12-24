@@ -3,7 +3,10 @@ use crate::{
     def::AttrVal,
     ed::EEffectId,
     misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, Spool},
-    nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjecteeFilter, effect::ResolvedSpool},
+    nd::{
+        NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter,
+        effect::ResolvedSpool,
+    },
     rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
@@ -75,6 +78,9 @@ pub(crate) struct NEffect {
     pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
     pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
     // Getters - rep output
+    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
     pub(crate) outgoing_shield_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     pub(crate) outgoing_armor_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     pub(crate) outgoing_hull_rep_opc_getter: Option<NOutgoingRepGetter> = None,
@@ -86,6 +92,7 @@ pub(crate) struct NEffect {
     // Getters - cap
     pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,
+    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
     // Getters - misc
     pub(crate) ecm_opc_getter: Option<NEcmGetter> = None,
 }

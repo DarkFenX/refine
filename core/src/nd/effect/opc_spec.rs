@@ -28,8 +28,8 @@ where
     T: Copy
 {
     pub(crate) base: NEffectBaseOutputGetter<T>,
-    pub(crate) spool: NEffectSpoolGetter,
+    pub(crate) proj_mult: NProjMultGetter,
+    pub(crate) spool: Option<NEffectSpoolGetter> = None,
     pub(crate) charge_mult: Option<NEffectChargeMultGetter> = None,
-    pub(crate) proj_mult: Option<NProjMultGetter> = None,
     pub(crate) instance_limit: Option<NEffectProjInstanceLimitGetter> = None,
 }

@@ -1,3 +1,4 @@
+use super::generic::{get_generic_base_opc, get_self_ilimit, get_proj_ilimit};
 use crate::{
     ac,
     def::{AttrVal, OF},
@@ -14,80 +15,81 @@ use crate::{
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Local reps
+// Base getters
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::data) fn get_local_shield_rep_base_opc(
+pub(in crate::nd::effect::data) fn get_shield_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    get_local_rep_base_opc(ctx, calc, item_key, effect, ctx.ac().shield_bonus, true)
-}
-pub(in crate::nd::effect::data) fn get_local_shield_rep_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_ship_attr(ctx, calc, item_key, ctx.ac().shield_capacity)
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().shield_bonus, true)
 }
 
-pub(in crate::nd::effect::data) fn get_local_armor_rep_base_opc(
+pub(in crate::nd::effect::data) fn get_armor_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    get_local_rep_base_opc(ctx, calc, item_key, effect, ctx.ac().armor_dmg_amount, false)
-}
-pub(in crate::nd::effect::data) fn get_local_armor_rep_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_ship_attr(ctx, calc, item_key, ctx.ac().armor_hp)
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().armor_dmg_amount, false)
 }
 
-pub(in crate::nd::effect::data) fn get_local_hull_rep_base_opc(
+pub(in crate::nd::effect::data) fn get_hull_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    get_local_rep_base_opc(ctx, calc, item_key, effect, ctx.ac().struct_dmg_amount, false)
-}
-pub(in crate::nd::effect::data) fn get_local_hull_rep_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_ship_attr(ctx, calc, item_key, ctx.ac().hp)
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().struct_dmg_amount, false)
 }
 
-fn get_local_rep_base_opc(
+pub(in crate::nd::effect::data) fn get_cap_trans_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    rep_attr_key: Option<RAttrKey>,
-    applied_at_start: bool,
 ) -> Option<Output<AttrVal>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, rep_attr_key, OF(0.0))?;
-    let delay = match applied_at_start {
-        true => OF(0.0),
-        false => eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,
-    };
-    Some(Output::Simple(OutputSimple { amount, delay }))
-}
-
-fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
-    let fit_key = ctx.u_data.items.get(item_key).get_fit_key()?;
-    let ship_key = ctx.u_data.fits.get(fit_key).ship?;
-    calc.get_item_oattr_oextra(ctx, ship_key, attr_key)
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().power_transfer_amount, false)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Remote reps
+// Instance limits
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::nd::effect::data) fn get_self_shield_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_self_ilimit(ctx, calc, item_key, ctx.ac().shield_capacity)
+}
+
+pub(in crate::nd::effect::data) fn get_self_armor_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_self_ilimit(ctx, calc, item_key, ctx.ac().armor_hp)
+}
+
+pub(in crate::nd::effect::data) fn get_self_hull_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_self_ilimit(ctx, calc, item_key, ctx.ac().hp)
+}
+
+pub(in crate::nd::effect::data) fn get_proj_cap_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_proj_ilimit(ctx, calc, item_key, ctx.ac().capacitor_capacity)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Remote reps - old
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_outgoing_shield_rep_opc(
     ctx: SvcCtx,
