@@ -7,6 +7,11 @@ use crate::{
     util::{ceil_unerr, floor_unerr},
 };
 
+pub(crate) struct NSpoolRaw {
+    pub(crate) step: AttrVal,
+    pub(crate) max: AttrVal,
+}
+
 pub(crate) struct ResolvedSpool {
     pub(crate) cycles: Count,
     pub(crate) cycles_max: Count,
