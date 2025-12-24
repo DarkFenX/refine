@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    nd::{NEffectLocalOpcSpec, NOutgoingRepGetter},
+    nd::{NEffectLocalOpcSpec, NEffectProjOpcSpec},
     rd::REffectKey,
     svc::{
         SvcCtx,
@@ -154,7 +154,7 @@ fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_key: UItemKey,
-    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
+    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {
@@ -166,7 +166,7 @@ fn get_remote_ancil_hp(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        'effect: for (&effect_key, rep_getter) in projector_data.iter() {
+        'effect: for (&effect_key, ospec) in projector_data.iter() {
             let effect_cycles = match projector_cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
@@ -192,7 +192,7 @@ fn get_remote_ancil_hp(
                         _ => continue 'effect,
                     },
                 };
-                let hp_per_cycle = match rep_getter(
+                let hp_per_cycle = match ospec.get_total(
                     ctx,
                     calc,
                     projector_item_key,
@@ -206,7 +206,7 @@ fn get_remote_ancil_hp(
                     // this effect altogether
                     None => continue 'effect,
                 };
-                effect_ancil_hp += hp_per_cycle.get_total() * effect_part_repeats as f64;
+                effect_ancil_hp += hp_per_cycle * effect_part_repeats as f64;
                 // Reloads break sequence
                 if let Some(interrupt) = effect_cycle_part.data.interrupt
                     && interrupt.reload

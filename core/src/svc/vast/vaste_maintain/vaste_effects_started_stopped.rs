@@ -252,37 +252,37 @@ impl Vast {
         }
     }
     fn handle_orrs_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(rep_getter) = effect.outgoing_shield_rep_opc_getter {
+        if let Some(rep_ospec) = effect.outgoing_shield_rep_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_shield.add_entry(item_key, effect.key, rep_getter);
+            fit_data.orr_shield.add_entry(item_key, effect.key, rep_ospec);
         }
-        if let Some(rep_getter) = effect.outgoing_armor_rep_opc_getter {
+        if let Some(rep_ospec) = effect.outgoing_armor_rep_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_armor.add_entry(item_key, effect.key, rep_getter);
+            fit_data.orr_armor.add_entry(item_key, effect.key, rep_ospec);
         }
-        if let Some(rep_getter) = effect.outgoing_hull_rep_opc_getter {
+        if let Some(rep_ospec) = effect.outgoing_hull_rep_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.orr_hull.add_entry(item_key, effect.key, rep_getter);
+            fit_data.orr_hull.add_entry(item_key, effect.key, rep_ospec);
         }
-        if let Some(rep_getter) = effect.outgoing_cap_rep_opc_getter {
+        if let Some(rep_ospec) = effect.outgoing_cap_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.out_cap.add_entry(item_key, effect.key, rep_getter);
+            fit_data.out_cap.add_entry(item_key, effect.key, rep_ospec);
         }
     }
     fn handle_orrs_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.outgoing_shield_rep_opc_getter.is_some() {
+        if effect.outgoing_shield_rep_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_shield.remove_l2(item_key, &effect.key);
         }
-        if effect.outgoing_armor_rep_opc_getter.is_some() {
+        if effect.outgoing_armor_rep_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_armor.remove_l2(item_key, &effect.key);
         }
-        if effect.outgoing_hull_rep_opc_getter.is_some() {
+        if effect.outgoing_hull_rep_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_hull.remove_l2(item_key, &effect.key);
         }
-        if effect.outgoing_cap_rep_opc_getter.is_some() {
+        if effect.outgoing_cap_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.out_cap.remove_l2(item_key, &effect.key);
         }

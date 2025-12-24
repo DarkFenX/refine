@@ -18,11 +18,11 @@ impl ResolvedSpool {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        r_effect: &REffect,
+        effect: &REffect,
         spool: Option<Spool>,
         raw_spool_vals: NSpoolRaw,
     ) -> Option<Self> {
-        let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
+        let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
         let spool = ctx.u_data.get_item_key_spool(item_key, spool);
         resolve_spool(spool, raw_spool_vals.step, raw_spool_vals.max, duration_s)
     }

@@ -56,37 +56,37 @@ impl Vast {
                 projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
             }
         }
-        if let Some(rep_getter) = effect.outgoing_shield_rep_opc_getter {
+        if let Some(rep_ospec) = effect.outgoing_shield_rep_opc_spec {
             if effect.is_active_with_duration {
                 self.irr_shield
-                    .add_entry(projectee_key, projector_key, effect.key, rep_getter);
+                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
             }
             if effect.charge.is_some() {
                 self.irr_shield_limitable
-                    .add_entry(projectee_key, projector_key, effect.key, rep_getter);
+                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
             }
         }
-        if let Some(rep_getter) = effect.outgoing_armor_rep_opc_getter {
+        if let Some(rep_ospec) = effect.outgoing_armor_rep_opc_spec {
             if effect.is_active_with_duration {
                 self.irr_armor
-                    .add_entry(projectee_key, projector_key, effect.key, rep_getter);
+                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
             }
             if effect.charge.is_some() {
                 self.irr_armor_limitable
-                    .add_entry(projectee_key, projector_key, effect.key, rep_getter);
+                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
             }
         }
-        if let Some(rep_getter) = effect.outgoing_hull_rep_opc_getter
+        if let Some(rep_ospec) = effect.outgoing_hull_rep_opc_spec
             && effect.is_active_with_duration
         {
             self.irr_hull
-                .add_entry(projectee_key, projector_key, effect.key, rep_getter);
+                .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
         }
-        if let Some(rep_getter) = effect.outgoing_cap_rep_opc_getter
+        if let Some(rep_ospec) = effect.outgoing_cap_opc_spec
             && effect.is_active_with_duration
         {
             self.in_cap
-                .add_entry(projectee_key, projector_key, effect.key, rep_getter);
+                .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
         }
         if let Some(neut_getter) = effect.neut_opc_getter {
             self.in_neuts
@@ -143,7 +143,7 @@ impl Vast {
                 projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
             }
         }
-        if effect.outgoing_shield_rep_opc_getter.is_some() {
+        if effect.outgoing_shield_rep_opc_spec.is_some() {
             if effect.is_active_with_duration {
                 self.irr_shield.remove_l3(projectee_key, projector_key, &effect.key);
             }
@@ -152,7 +152,7 @@ impl Vast {
                     .remove_l3(projectee_key, projector_key, &effect.key);
             }
         }
-        if effect.outgoing_armor_rep_opc_getter.is_some() {
+        if effect.outgoing_armor_rep_opc_spec.is_some() {
             if effect.is_active_with_duration {
                 self.irr_armor.remove_l3(projectee_key, projector_key, &effect.key);
             }
@@ -161,10 +161,10 @@ impl Vast {
                     .remove_l3(projectee_key, projector_key, &effect.key);
             }
         }
-        if effect.outgoing_hull_rep_opc_getter.is_some() && effect.is_active_with_duration {
+        if effect.outgoing_hull_rep_opc_spec.is_some() && effect.is_active_with_duration {
             self.irr_hull.remove_l3(projectee_key, projector_key, &effect.key);
         }
-        if effect.outgoing_cap_rep_opc_getter.is_some() && effect.is_active_with_duration {
+        if effect.outgoing_cap_opc_spec.is_some() && effect.is_active_with_duration {
             self.in_cap.remove_l3(projectee_key, projector_key, &effect.key);
         }
         if effect.neut_opc_getter.is_some() {

@@ -3,8 +3,8 @@ use crate::{
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
     nd::{
-        NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NEffectLocalOpcSpec, NMiningGetter, NNeutGetter,
-        NNormalDmgGetter, NOutgoingRepGetter,
+        NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec, NMiningGetter,
+        NNeutGetter, NNormalDmgGetter,
     },
     rd::{RAttrKey, REffectKey, RItemListKey, RItemShipLimit},
     svc::vast::{
@@ -21,13 +21,15 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemKey>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) irr_shield_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
+    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_shield_limitable:
+        RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_armor_limitable:
+        RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
     // Cap
-    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
+    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NNeutGetter>,
     // Ewar
     pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
@@ -130,12 +132,12 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
     pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
     // Stats-related - RR output
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
     // Stats-related - misc output
     pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
-    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
     // Stats-related - local active tank
     pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,

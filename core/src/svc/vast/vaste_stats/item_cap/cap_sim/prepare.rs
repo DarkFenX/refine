@@ -140,10 +140,10 @@ fn fill_transfers(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (&effect_key, cap_getter) in item_data.iter() {
+        for (&effect_key, ospec) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
             let output_per_cycle =
-                match cap_getter(ctx, calc, transfer_item_key, effect, None, None, Some(cap_item_key)) {
+                match ospec.get_output(ctx, calc, transfer_item_key, effect, None, None, Some(cap_item_key)) {
                     Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
                     _ => continue,
                 };

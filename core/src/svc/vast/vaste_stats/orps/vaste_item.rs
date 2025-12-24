@@ -2,13 +2,14 @@ use super::shared::get_orps_cycle_options;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::NOutgoingRepGetter,
+    nd::NEffectProjOpcSpec,
     rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{Cycle, get_item_cycle_info},
         err::StatItemCheckError,
+        spool::ResolvedSpool,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_module},
     },
     ud::UItemKey,
@@ -48,7 +49,7 @@ fn get_orr_item_key(
     item_key: UItemKey,
     spool: Option<Spool>,
     ignore_state: bool,
-    rep_getter_getter: fn(&REffect) -> Option<NOutgoingRepGetter>,
+    rep_ospec_getter: fn(&REffect) -> Option<NEffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut item_orr = OF(0.0);
     // TODO: allow configuring cycle options by caller
@@ -59,7 +60,7 @@ fn get_orr_item_key(
     };
     for (effect_key, cycle) in cycle_map {
         let r_effect = ctx.u_data.src.get_effect(effect_key);
-        if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, r_effect, cycle, spool, rep_getter_getter) {
+        if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, r_effect, cycle, spool, rep_ospec_getter) {
             item_orr += effect_orr;
         }
     }
@@ -73,33 +74,38 @@ fn get_orr_effect(
     effect: &REffect,
     effect_cycle: Cycle,
     spool: Option<Spool>,
-    rep_getter_getter: fn(&REffect) -> Option<NOutgoingRepGetter>,
+    rep_ospec_getter: fn(&REffect) -> Option<NEffectProjOpcSpec<AttrVal>>,
 ) -> Option<AttrVal> {
-    let rep_getter = rep_getter_getter(effect)?;
+    let rep_ospec = rep_ospec_getter(effect)?;
     let effect_cycle_loop = effect_cycle.to_time_chargedness().try_get_loop()?;
+    let spool_mult = rep_ospec
+        .spool
+        .and_then(|spool_getter| spool_getter(ctx, calc, item_key))
+        .and_then(|spool_raw| ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_raw))
+        .map(|v| v.mult);
     let mut rep_amount = OF(0.0);
     let mut time = OF(0.0);
     for effect_cycle_part in effect_cycle_loop.iter_parts() {
         let chargedness = effect_cycle_part.data.chargedness;
-        let cycle_rep_amount = rep_getter(ctx, calc, item_key, effect, chargedness, spool, None)?;
-        rep_amount += cycle_rep_amount.get_total() * effect_cycle_part.repeat_count as f64;
+        let cycle_rep_amount = rep_ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, None)?;
+        rep_amount += cycle_rep_amount * effect_cycle_part.repeat_count as f64;
         time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
     }
     Some(rep_amount / time)
 }
 
-fn get_getter_shield(effect: &REffect) -> Option<NOutgoingRepGetter> {
-    effect.outgoing_shield_rep_opc_getter
+fn get_getter_shield(effect: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+    effect.outgoing_shield_rep_opc_spec
 }
 
-fn get_getter_armor(effect: &REffect) -> Option<NOutgoingRepGetter> {
-    effect.outgoing_armor_rep_opc_getter
+fn get_getter_armor(effect: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+    effect.outgoing_armor_rep_opc_spec
 }
 
-fn get_getter_hull(effect: &REffect) -> Option<NOutgoingRepGetter> {
-    effect.outgoing_hull_rep_opc_getter
+fn get_getter_hull(effect: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+    effect.outgoing_hull_rep_opc_spec
 }
 
-fn get_getter_cap(effect_id: &REffect) -> Option<NOutgoingRepGetter> {
-    effect_id.outgoing_cap_rep_opc_getter
+fn get_getter_cap(effect_id: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+    effect_id.outgoing_cap_opc_spec
 }

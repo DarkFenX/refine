@@ -5,7 +5,7 @@ pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
 pub(crate) use effect::{
     NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NMiningGetter,
-    NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolGetter,
+    NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolGetter,
 };
 pub(crate) use opc_spec::{NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;

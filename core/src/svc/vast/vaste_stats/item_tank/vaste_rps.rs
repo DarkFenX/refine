@@ -1,13 +1,14 @@
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::{NEffectLocalOpcSpec, NOutgoingRepGetter},
+    nd::{NEffectLocalOpcSpec, NEffectProjOpcSpec},
     rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptions, get_item_cycle_info},
         err::StatItemCheckError,
+        spool::ResolvedSpool,
         vast::{StatTankRegen, Vast, shared::calc_regen, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::{UItem, UItemKey},
@@ -126,7 +127,7 @@ fn get_irr_data(
     calc: &mut Calc,
     projectee_item_key: UItemKey,
     spool: Option<Spool>,
-    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NOutgoingRepGetter>,
+    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {
@@ -139,20 +140,25 @@ fn get_irr_data(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (&effect_key, rep_getter) in projector_data.iter() {
+        for (&effect_key, ospec) in projector_data.iter() {
             let effect_cycles = match projector_cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles.to_time_chargedness(),
                 None => continue,
             };
             let effect_cycle_part = effect_cycles.get_first();
-            let r_effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle = match rep_getter(
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let spool_mult = ospec
+                .spool
+                .and_then(|spool_getter| spool_getter(ctx, calc, projector_item_key))
+                .and_then(|spool_raw| ResolvedSpool::try_build(ctx, calc, projector_item_key, effect, spool, spool_raw))
+                .map(|v| v.mult);
+            let output_per_cycle = match ospec.get_output(
                 ctx,
                 calc,
                 projector_item_key,
-                r_effect,
+                effect,
                 effect_cycle_part.chargedness,
-                spool,
+                spool_mult,
                 Some(projectee_item_key),
             ) {
                 Some(hp_per_cycle) => hp_per_cycle,

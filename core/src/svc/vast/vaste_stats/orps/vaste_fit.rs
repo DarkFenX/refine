@@ -2,12 +2,13 @@ use super::shared::get_orps_cycle_options;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::NOutgoingRepGetter,
+    nd::NEffectProjOpcSpec,
     rd::REffectKey,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::get_item_cycle_info,
+        spool::ResolvedSpool,
         vast::{StatOutRepItemKinds, StatTank, Vast},
     },
     ud::{UFitKey, UItemKey},
@@ -80,7 +81,7 @@ fn get_orrps(
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
     spool: Option<Spool>,
-    fit_data: &RMapRMap<UItemKey, REffectKey, NOutgoingRepGetter>,
+    fit_data: &RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut rps = OF(0.0);
     // TODO: allow configuring cycle options by caller
@@ -94,26 +95,31 @@ fn get_orrps(
         if !item_kinds.resolve(u_item) {
             continue;
         }
-        for (&effect_key, rep_getter) in item_data.iter() {
-            let r_effect = ctx.u_data.src.get_effect(effect_key);
+        for (&effect_key, ospec) in item_data.iter() {
+            let effect = ctx.u_data.src.get_effect(effect_key);
             let effect_cycle = match cycle_map.get(&effect_key) {
                 Some(effect_cycle_loop) => effect_cycle_loop.to_time_chargedness(),
                 None => continue,
             };
+            let spool_mult = ospec
+                .spool
+                .and_then(|spool_getter| spool_getter(ctx, calc, item_key))
+                .and_then(|spool_raw| ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_raw))
+                .map(|v| v.mult);
             let effect_cycle_part = effect_cycle.get_first();
-            let output_per_cycle = match rep_getter(
+            let output_per_cycle = match ospec.get_total(
                 ctx,
                 calc,
                 item_key,
-                r_effect,
+                effect,
                 effect_cycle_part.chargedness,
-                spool,
+                spool_mult,
                 None,
             ) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
-            rps += output_per_cycle.get_total() / effect_cycle_part.time;
+            rps += output_per_cycle / effect_cycle_part.time;
         }
     }
     rps
