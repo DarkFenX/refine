@@ -4,7 +4,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::MiningAmount,
-    nd::{NEffect, effect::data::shared::opc::get_mining_opc},
+    nd::{NEffect, effect::data::shared::base_opc::get_mining_opc},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemKey,

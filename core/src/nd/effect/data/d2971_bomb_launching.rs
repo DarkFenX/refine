@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectDmgKind,
         effect::data::shared::{
-            opc::get_missile_dmg_opc,
+            base_opc::get_missile_dmg_opc,
             proj_mult::{get_bomb_noapp_proj_mult, get_bomb_proj_mult, get_bomb_range_mult, get_radius_ratio_mult},
         },
     },

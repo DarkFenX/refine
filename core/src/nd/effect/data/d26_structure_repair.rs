@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectLocalOpcSpec,
-        effect::data::shared::opc::{get_hull_rep_base_opc, get_self_hull_ilimit},
+        effect::data::shared::{base_opc::get_hull_rep_base_opc, ilimit::get_self_hull_ilimit},
     },
 };
 

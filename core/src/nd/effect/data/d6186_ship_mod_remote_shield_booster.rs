@@ -1,17 +1,14 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::AttrVal,
     ec,
     ed::EEffectId,
-    misc::Spool,
     nd::{
-        NEffect,
-        effect::data::shared::{opc::get_outgoing_shield_rep_opc, proj_mult::get_full_noapp_proj_mult},
+        NEffect, NEffectProjOpcSpec,
+        effect::data::shared::{
+            base_opc::get_shield_rep_base_opc, ilimit::get_proj_shield_ilimit, proj_mult::get_full_noapp_proj_mult,
+        },
     },
-    rd::REffect,
-    svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
@@ -21,28 +18,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        outgoing_shield_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
+        outgoing_shield_rep_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_shield_rep_base_opc,
+            proj_mult: get_full_noapp_proj_mult,
+            instance_limit: Some(get_proj_shield_ilimit),
+            ..
+        }),
         ..
     }
-}
-
-fn internal_get_outgoing_rep_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _chargedness: Option<AttrVal>,
-    spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<AttrVal>> {
-    get_outgoing_shield_rep_opc(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        spool,
-        None,
-        projectee_key,
-        get_full_noapp_proj_mult,
-    )
 }

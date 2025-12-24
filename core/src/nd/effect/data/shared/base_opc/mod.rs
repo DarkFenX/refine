@@ -5,8 +5,7 @@ pub(in crate::nd::effect::data) use neut::{get_aoe_dd_side_neut_opc, get_generic
 pub(in crate::nd::effect::data) use rep::{
     get_ancillary_armor_mult, get_ancillary_armor_mult_old, get_armor_rep_base_opc, get_cap_trans_base_opc,
     get_hull_rep_base_opc, get_outgoing_armor_rep_opc, get_outgoing_cap_rep_opc, get_outgoing_hull_rep_opc,
-    get_outgoing_rep_opc, get_outgoing_shield_rep_opc, get_proj_cap_ilimit, get_self_armor_ilimit,
-    get_self_hull_ilimit, get_self_shield_ilimit, get_shield_rep_base_opc,
+    get_outgoing_rep_opc, get_outgoing_shield_rep_opc, get_shield_rep_base_opc,
 };
 
 mod dmg_dd;

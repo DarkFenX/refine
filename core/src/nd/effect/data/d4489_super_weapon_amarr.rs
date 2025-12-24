@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjecteeFilter,
-        effect::data::shared::{mods::make_dd_self_debuffs, opc::get_direct_dd_dmg_opc},
+        effect::data::shared::{base_opc::get_direct_dd_dmg_opc, mods::make_dd_self_debuffs},
     },
     ud::UItem,
 };

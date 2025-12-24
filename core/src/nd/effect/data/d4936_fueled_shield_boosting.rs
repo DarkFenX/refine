@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        effect::data::shared::opc::{get_self_shield_ilimit, get_shield_rep_base_opc},
+        effect::data::shared::{base_opc::get_shield_rep_base_opc, ilimit::get_self_shield_ilimit},
     },
 };
 

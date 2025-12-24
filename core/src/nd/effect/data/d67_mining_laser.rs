@@ -7,7 +7,7 @@ use crate::{
     misc::MiningAmount,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc,
-        effect::data::shared::opc::get_mining_values,
+        effect::data::shared::base_opc::get_mining_values,
     },
     rd::REffect,
     svc::{

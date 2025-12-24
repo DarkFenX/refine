@@ -6,7 +6,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect,
-        effect::data::shared::{opc::get_generic_neut_opc, proj_mult::get_neut_proj_mult},
+        effect::data::shared::{base_opc::get_generic_neut_opc, proj_mult::get_neut_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},

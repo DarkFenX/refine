@@ -3,7 +3,7 @@ use crate::{
     ad::AEffectId,
     ec,
     ed::EEffectId,
-    nd::{NEffect, effect::data::shared::opc::get_mining_opc},
+    nd::{NEffect, effect::data::shared::base_opc::get_mining_opc},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MINING_CLOUDS;

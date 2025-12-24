@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect,
-        effect::data::shared::{mods::make_dd_self_debuffs, opc::get_aoe_dd_side_neut_opc},
+        effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc, mods::make_dd_self_debuffs},
     },
 };
 

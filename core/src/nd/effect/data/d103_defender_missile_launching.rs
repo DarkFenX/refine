@@ -7,7 +7,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     nd::{
         NEffect,
-        effect::data::shared::{opc::get_missile_dmg_opc, proj_mult::get_null_proj_mult},
+        effect::data::shared::{base_opc::get_missile_dmg_opc, proj_mult::get_null_proj_mult},
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},

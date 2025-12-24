@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectDmgKind,
         effect::data::shared::{
-            mods::make_dd_self_debuffs, opc::get_aoe_dd_side_neut_opc, proj_mult::get_aoe_dd_dmg_proj_mult,
+            base_opc::get_aoe_dd_side_neut_opc, mods::make_dd_self_debuffs, proj_mult::get_aoe_dd_dmg_proj_mult,
         },
     },
     rd::REffect,

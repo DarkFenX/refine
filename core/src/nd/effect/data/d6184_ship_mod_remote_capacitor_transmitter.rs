@@ -6,8 +6,7 @@ use crate::{
     nd::{
         NEffect, NEffectProjOpcSpec,
         effect::data::shared::{
-            opc::{get_cap_trans_base_opc, get_proj_cap_ilimit},
-            proj_mult::get_simple_s2s_noapp_proj_mult,
+            base_opc::get_cap_trans_base_opc, ilimit::get_proj_cap_ilimit, proj_mult::get_simple_s2s_noapp_proj_mult,
         },
     },
 };

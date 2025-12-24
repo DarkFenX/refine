@@ -5,7 +5,10 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        effect::data::shared::opc::{get_ancillary_armor_mult, get_armor_rep_base_opc, get_self_armor_ilimit},
+        effect::data::shared::{
+            base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
+            ilimit::get_self_armor_ilimit,
+        },
     },
 };
 

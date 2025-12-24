@@ -3,7 +3,7 @@ use crate::{
     ad::AEffectId,
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectDmgKind, NEffectProjecteeFilter, effect::data::shared::opc::get_direct_dd_dmg_opc},
+    nd::{NEffect, NEffectDmgKind, NEffectProjecteeFilter, effect::data::shared::base_opc::get_direct_dd_dmg_opc},
     ud::UItem,
 };
 

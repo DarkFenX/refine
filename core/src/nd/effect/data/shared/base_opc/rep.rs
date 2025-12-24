@@ -1,4 +1,4 @@
-use super::generic::{get_generic_base_opc, get_self_ilimit, get_proj_ilimit};
+use super::generic::get_generic_base_opc;
 use crate::{
     ac,
     def::{AttrVal, OF},
@@ -14,9 +14,6 @@ use crate::{
     ud::UItemKey,
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Base getters
-////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_shield_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -51,41 +48,6 @@ pub(in crate::nd::effect::data) fn get_cap_trans_base_opc(
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().power_transfer_amount, false)
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Instance limits
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::data) fn get_self_shield_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_self_ilimit(ctx, calc, item_key, ctx.ac().shield_capacity)
-}
-
-pub(in crate::nd::effect::data) fn get_self_armor_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_self_ilimit(ctx, calc, item_key, ctx.ac().armor_hp)
-}
-
-pub(in crate::nd::effect::data) fn get_self_hull_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_self_ilimit(ctx, calc, item_key, ctx.ac().hp)
-}
-
-pub(in crate::nd::effect::data) fn get_proj_cap_ilimit(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-) -> Option<AttrVal> {
-    get_proj_ilimit(ctx, calc, item_key, ctx.ac().capacitor_capacity)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
