@@ -2,11 +2,8 @@ use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
-    nd::{
-        NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec, NMiningGetter,
-        NNeutGetter, NNormalDmgGetter,
-    },
-    rd::{RAttrKey, REffectKey, RItemListKey, RItemShipLimit},
+    nd::{NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter},
+    rd::{RAttrKey, REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
         vaste_vals::EffectSecZoneInfo,
@@ -21,15 +18,15 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitKey, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemKey>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) irr_shield_limitable:
-        RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+        RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) irr_armor_limitable:
-        RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+        RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Cap
-    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NNeutGetter>,
     // Ewar
     pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
@@ -132,18 +129,18 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
     pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
     // Stats-related - RR output
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Stats-related - misc output
     pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
-    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Stats-related - local active tank
-    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
     // Stats-related - cap
     pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemKey, REffectKey, RAttrKey>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,

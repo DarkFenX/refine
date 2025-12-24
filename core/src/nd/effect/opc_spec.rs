@@ -1,4 +1,5 @@
 use crate::{
+    ad::AAttrId,
     def::AttrVal,
     nd::{NProjMultGetter, NSpoolGetter},
     rd::REffect,
@@ -11,17 +12,15 @@ pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemKey, AttrVal) -> 
 pub(crate) type NLocalInstanceLimitGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 pub(crate) type NProjInstanceLimitGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 
-#[derive(Copy, Clone)]
 pub(crate) struct NEffectLocalOpcSpec<T>
 where
     T: Copy
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
-    pub(crate) instance_limit: Option<NLocalInstanceLimitGetter> = None,
+    pub(crate) ilimit_attr_id: Option<AAttrId> = None,
 }
 
-#[derive(Copy, Clone)]
 pub(crate) struct NEffectProjOpcSpec<T>
 where
     T: Copy
@@ -30,5 +29,5 @@ where
     pub(crate) proj_mult: NProjMultGetter,
     pub(crate) spool: Option<NSpoolGetter> = None,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
-    pub(crate) instance_limit: Option<NProjInstanceLimitGetter> = None,
+    pub(crate) ilimit_attr_id: Option<AAttrId> = None,
 }

@@ -3,10 +3,7 @@ use crate::{
     ad::AEffectId,
     ec,
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectLocalOpcSpec,
-        effect::data::shared::{base_opc::get_hull_rep_base_opc, ilimit::get_self_hull_ilimit},
-    },
+    nd::{NEffect, NEffectLocalOpcSpec, effect::data::shared::base_opc::get_hull_rep_base_opc},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::STRUCTURE_REPAIR;
@@ -18,7 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         local_hull_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: get_hull_rep_base_opc,
-            instance_limit: Some(get_self_hull_ilimit),
+            ilimit_attr_id: Some(ac::attrs::HP),
             ..
         }),
         ..

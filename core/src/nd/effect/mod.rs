@@ -7,7 +7,7 @@ pub(crate) use effect::{
     NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NMiningGetter,
     NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolGetter,
 };
-pub(crate) use opc_spec::{NEffectLocalOpcSpec, NEffectProjOpcSpec};
+pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use spool::{NSpoolRaw, ResolvedSpool};
 

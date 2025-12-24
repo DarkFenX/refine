@@ -1,7 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    nd::{NEffectLocalOpcSpec, NEffectProjOpcSpec},
-    rd::REffectKey,
+    rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -88,7 +87,7 @@ const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions::Sim(CycleOptionsSim {
 fn get_local_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    ancil_data: &RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
+    ancil_data: &RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     for (&item_key, item_data) in ancil_data.iter() {
@@ -154,7 +153,7 @@ fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_key: UItemKey,
-    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {

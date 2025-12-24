@@ -5,9 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectProjOpcSpec,
-        effect::data::shared::{
-            base_opc::get_hull_rep_base_opc, ilimit::get_proj_hull_ilimit, proj_mult::get_full_noapp_proj_mult,
-        },
+        effect::data::shared::{base_opc::get_hull_rep_base_opc, proj_mult::get_full_noapp_proj_mult},
     },
 };
 
@@ -21,7 +19,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         outgoing_hull_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_hull_rep_base_opc,
             proj_mult: get_full_noapp_proj_mult,
-            instance_limit: Some(get_proj_hull_ilimit),
+            ilimit_attr_id: Some(ac::attrs::HP),
             ..
         }),
         ..

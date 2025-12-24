@@ -1,8 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::{NEffectLocalOpcSpec, NEffectProjOpcSpec},
-    rd::REffectKey,
+    rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -92,7 +91,7 @@ const RPS_CYCLE_OPTIONS: CycleOptions = CycleOptions::Burst;
 fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    rep_data: &RMapRMap<UItemKey, REffectKey, NEffectLocalOpcSpec<AttrVal>>,
+    rep_data: &RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
     for (&item_key, item_data) in rep_data.iter() {
@@ -127,7 +126,7 @@ fn get_irr_data(
     calc: &mut Calc,
     projectee_item_key: UItemKey,
     spool: Option<Spool>,
-    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {

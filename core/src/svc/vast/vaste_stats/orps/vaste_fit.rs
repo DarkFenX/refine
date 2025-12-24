@@ -2,8 +2,7 @@ use super::shared::get_orps_cycle_options;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::NEffectProjOpcSpec,
-    rd::REffectKey,
+    rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -81,7 +80,7 @@ fn get_orrps(
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
     spool: Option<Spool>,
-    fit_data: &RMapRMap<UItemKey, REffectKey, NEffectProjOpcSpec<AttrVal>>,
+    fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut rps = OF(0.0);
     // TODO: allow configuring cycle options by caller

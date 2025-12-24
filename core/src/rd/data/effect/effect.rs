@@ -2,13 +2,12 @@ use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId, AState},
     def::AttrVal,
     nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter,
-        NEffectLocalOpcSpec, NEffectProjOpcSpec, NMiningGetter, NNeutGetter, NNormalDmgGetter, NProjMultGetter,
-        NSpoolGetter,
+        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NMiningGetter,
+        NNeutGetter, NNormalDmgGetter, NProjMultGetter, NSpoolGetter,
     },
     rd::{
-        RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectModifier,
-        REffectProjecteeFilter, RItem, RItemListKey,
+        RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectLocalOpcSpec,
+        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListKey,
     },
     util::RMap,
 };
@@ -39,14 +38,7 @@ pub(crate) struct REffect {
     pub(crate) mining_ore_opc_getter: Option<NMiningGetter>,
     pub(crate) mining_ice_opc_getter: Option<NMiningGetter>,
     pub(crate) mining_gas_opc_getter: Option<NMiningGetter>,
-    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>>,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>>,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>>,
-    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>>,
-    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>>,
-    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>>,
     pub(crate) neut_opc_getter: Option<NNeutGetter>,
-    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<AttrVal>>,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter>,
     pub(crate) ecm_opc_getter: Option<NEcmGetter>,
     // Fields which depend on slab keys
@@ -64,6 +56,14 @@ pub(crate) struct REffect {
     pub(crate) chance_attr_key: Option<RAttrKey>,
     pub(crate) resist_attr_key: Option<RAttrKey>,
     pub(crate) is_active_with_duration: bool,
+    // Output specs depend on slab keys as well
+    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
+    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
+    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
+    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
+    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
 }
 impl REffect {
     pub(in crate::rd) fn from_a_effect(effect_key: REffectKey, a_effect: &AEffect) -> Self {
@@ -89,14 +89,7 @@ impl REffect {
             mining_ore_opc_getter: n_effect.and_then(|n| n.mining_ore_opc_getter),
             mining_ice_opc_getter: n_effect.and_then(|n| n.mining_ice_opc_getter),
             mining_gas_opc_getter: n_effect.and_then(|n| n.mining_gas_opc_getter),
-            outgoing_shield_rep_opc_spec: n_effect.and_then(|n| n.outgoing_shield_rep_opc_spec),
-            outgoing_armor_rep_opc_spec: n_effect.and_then(|n| n.outgoing_armor_rep_opc_spec),
-            outgoing_hull_rep_opc_spec: n_effect.and_then(|n| n.outgoing_hull_rep_opc_spec),
-            local_shield_rep_opc_spec: n_effect.and_then(|n| n.local_shield_rep_opc_spec),
-            local_armor_rep_opc_spec: n_effect.and_then(|n| n.local_armor_rep_opc_spec),
-            local_hull_rep_opc_spec: n_effect.and_then(|n| n.local_hull_rep_opc_spec),
             neut_opc_getter: n_effect.and_then(|n| n.neut_opc_getter),
-            outgoing_cap_opc_spec: n_effect.and_then(|n| n.outgoing_cap_opc_spec),
             cap_inject_getter: n_effect.and_then(|n| n.cap_inject_getter),
             ecm_opc_getter: n_effect.and_then(|n| n.ecm_opc_getter),
             // Fields which depend on slab keys
@@ -114,6 +107,13 @@ impl REffect {
             chance_attr_key: Default::default(),
             resist_attr_key: Default::default(),
             is_active_with_duration: Default::default(),
+            outgoing_shield_rep_opc_spec: Default::default(),
+            outgoing_armor_rep_opc_spec: Default::default(),
+            outgoing_hull_rep_opc_spec: Default::default(),
+            local_shield_rep_opc_spec: Default::default(),
+            local_armor_rep_opc_spec: Default::default(),
+            local_hull_rep_opc_spec: Default::default(),
+            outgoing_cap_opc_spec: Default::default(),
         }
     }
     pub(in crate::rd) fn fill_key_dependents(
@@ -177,6 +177,34 @@ impl REffect {
                 self.modifier_proj_attr_keys =
                     proj_attr_ids.map(|opt| opt.and_then(|attr_id| attr_id_key_map.get(&attr_id).copied()));
             }
+            self.outgoing_shield_rep_opc_spec = n_effect
+                .outgoing_shield_rep_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
+            self.outgoing_armor_rep_opc_spec = n_effect
+                .outgoing_armor_rep_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
+            self.outgoing_hull_rep_opc_spec = n_effect
+                .outgoing_hull_rep_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
+            self.local_shield_rep_opc_spec = n_effect
+                .local_shield_rep_opc_spec
+                .as_ref()
+                .map(|v| REffectLocalOpcSpec::from_n_local_opc_spec(v, attr_id_key_map));
+            self.local_armor_rep_opc_spec = n_effect
+                .local_armor_rep_opc_spec
+                .as_ref()
+                .map(|v| REffectLocalOpcSpec::from_n_local_opc_spec(v, attr_id_key_map));
+            self.local_hull_rep_opc_spec = n_effect
+                .local_hull_rep_opc_spec
+                .as_ref()
+                .map(|v| REffectLocalOpcSpec::from_n_local_opc_spec(v, attr_id_key_map));
+            self.outgoing_cap_opc_spec = n_effect
+                .outgoing_cap_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
         }
         // Data derived from key-dependent data
         self.is_active_with_duration = self.state == AState::Active && self.duration_attr_key.is_some();

@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        effect::data::shared::{base_opc::get_shield_rep_base_opc, ilimit::get_self_shield_ilimit},
+        effect::data::shared::base_opc::get_shield_rep_base_opc,
     },
 };
 
@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         local_shield_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: get_shield_rep_base_opc,
-            instance_limit: Some(get_self_shield_ilimit),
+            ilimit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
             ..
         }),
         ..

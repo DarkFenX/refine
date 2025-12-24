@@ -6,8 +6,7 @@ use crate::{
     nd::{
         NEffect, NEffectProjOpcSpec,
         effect::data::shared::{
-            base_opc::get_armor_rep_base_opc, ilimit::get_proj_armor_ilimit, proj_mult::get_simple_s2s_noapp_proj_mult,
-            spool::get_rep_spool,
+            base_opc::get_armor_rep_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult, spool::get_rep_spool,
         },
     },
 };
@@ -24,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_armor_rep_base_opc,
             proj_mult: get_simple_s2s_noapp_proj_mult,
             spool: Some(get_rep_spool),
-            instance_limit: Some(get_proj_armor_ilimit),
+            ilimit_attr_id: Some(ac::attrs::ARMOR_HP),
             ..
         }),
         ..

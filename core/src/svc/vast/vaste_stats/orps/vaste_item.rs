@@ -2,8 +2,7 @@ use super::shared::get_orps_cycle_options;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
-    nd::NEffectProjOpcSpec,
-    rd::REffect,
+    rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -49,7 +48,7 @@ fn get_orr_item_key(
     item_key: UItemKey,
     spool: Option<Spool>,
     ignore_state: bool,
-    rep_ospec_getter: fn(&REffect) -> Option<NEffectProjOpcSpec<AttrVal>>,
+    rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut item_orr = OF(0.0);
     // TODO: allow configuring cycle options by caller
@@ -74,7 +73,7 @@ fn get_orr_effect(
     effect: &REffect,
     effect_cycle: Cycle,
     spool: Option<Spool>,
-    rep_ospec_getter: fn(&REffect) -> Option<NEffectProjOpcSpec<AttrVal>>,
+    rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> Option<AttrVal> {
     let rep_ospec = rep_ospec_getter(effect)?;
     let effect_cycle_loop = effect_cycle.to_time_chargedness().try_get_loop()?;
@@ -94,18 +93,18 @@ fn get_orr_effect(
     Some(rep_amount / time)
 }
 
-fn get_getter_shield(effect: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+fn get_getter_shield(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
     effect.outgoing_shield_rep_opc_spec
 }
 
-fn get_getter_armor(effect: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+fn get_getter_armor(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
     effect.outgoing_armor_rep_opc_spec
 }
 
-fn get_getter_hull(effect: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+fn get_getter_hull(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
     effect.outgoing_hull_rep_opc_spec
 }
 
-fn get_getter_cap(effect_id: &REffect) -> Option<NEffectProjOpcSpec<AttrVal>> {
+fn get_getter_cap(effect_id: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
     effect_id.outgoing_cap_opc_spec
 }

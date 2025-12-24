@@ -7,7 +7,6 @@ use crate::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectProjOpcSpec,
         effect::data::shared::{
             base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
-            ilimit::get_proj_armor_ilimit,
             proj_mult::get_full_noapp_proj_mult,
         },
     },
@@ -30,7 +29,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_armor_rep_base_opc,
             proj_mult: get_full_noapp_proj_mult,
             charge_mult: Some(get_ancillary_armor_mult),
-            instance_limit: Some(get_proj_armor_ilimit),
+            ilimit_attr_id: Some(ac::attrs::ARMOR_HP),
             ..
         }),
         ..
