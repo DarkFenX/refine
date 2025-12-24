@@ -1,20 +1,16 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::AttrVal,
     ec,
     ed::EEffectId,
-    misc::Spool,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectProjOpcSpec,
         effect::data::shared::{
-            base_opc::{get_ancillary_armor_mult_old, get_outgoing_rep_opc},
+            base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
+            ilimit::get_proj_armor_ilimit,
             proj_mult::get_full_noapp_proj_mult,
         },
     },
-    rd::REffect,
-    svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER;
@@ -30,33 +26,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             })),
             activates_charge: false,
         }),
-        outgoing_armor_rep_opc_getter: Some(internal_get_outgoing_rep_opc),
+        outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_armor_rep_base_opc,
+            proj_mult: get_full_noapp_proj_mult,
+            charge_mult: Some(get_ancillary_armor_mult),
+            instance_limit: Some(get_proj_armor_ilimit),
+            ..
+        }),
         ..
     }
-}
-
-fn internal_get_outgoing_rep_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    chargedness: Option<AttrVal>,
-    spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<AttrVal>> {
-    let extra_mult = get_ancillary_armor_mult_old(ctx, calc, projector_key, chargedness);
-    get_outgoing_rep_opc(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        spool,
-        None,
-        projectee_key,
-        get_full_noapp_proj_mult,
-        ctx.ac().armor_dmg_amount,
-        ctx.ac().armor_hp,
-        extra_mult,
-        false,
-    )
 }
