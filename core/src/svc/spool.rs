@@ -1,22 +1,17 @@
 use crate::{
     def::{AttrVal, Count, OF},
     misc::Spool,
-    rd::{RAttrKey, REffect},
+    nd::NSpoolRaw,
+    rd::REffect,
     svc::{SvcCtx, calc::Calc, eff_funcs},
     ud::UItemKey,
     util::{ceil_unerr, floor_unerr},
 };
 
-pub(crate) struct NSpoolRaw {
-    pub(crate) step: AttrVal,
-    pub(crate) max: AttrVal,
-}
-
-// TODO: code below was moved to svc, after everything was switched to it, this needs to be removed
-pub(crate) struct ResolvedSpool {
-    pub(crate) cycles: Count,
-    pub(crate) cycles_max: Count,
-    pub(crate) mult: AttrVal,
+pub(super) struct ResolvedSpool {
+    pub(super) cycles: Count,
+    pub(super) cycles_max: Count,
+    pub(super) mult: AttrVal,
 }
 impl ResolvedSpool {
     pub(super) fn try_build(
@@ -25,18 +20,15 @@ impl ResolvedSpool {
         item_key: UItemKey,
         r_effect: &REffect,
         spool: Option<Spool>,
-        step_attr_key: Option<RAttrKey>,
-        max_attr_key: Option<RAttrKey>,
+        raw_spool_vals: NSpoolRaw,
     ) -> Option<Self> {
         let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, r_effect)?;
-        let spool_step = calc.get_item_attr_oextra(ctx, item_key, step_attr_key?)?;
-        let spool_max = calc.get_item_attr_oextra(ctx, item_key, max_attr_key?)?;
         let spool = ctx.u_data.get_item_key_spool(item_key, spool);
-        resolve_spool(spool, spool_max, spool_step, duration_s)
+        resolve_spool(spool, raw_spool_vals.step, raw_spool_vals.max, duration_s)
     }
 }
 
-fn resolve_spool(spool: Spool, max: AttrVal, step: AttrVal, cycle_time: AttrVal) -> Option<ResolvedSpool> {
+fn resolve_spool(spool: Spool, step: AttrVal, max: AttrVal, cycle_time: AttrVal) -> Option<ResolvedSpool> {
     // Step is used as divisor when calculating all spool types
     if step == OF(0.0) {
         return None;

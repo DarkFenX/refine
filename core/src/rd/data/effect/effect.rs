@@ -4,7 +4,7 @@ use crate::{
     nd::{
         N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter,
         NEffectLocalOpcSpec, NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter,
-        NSpoolResolver,
+        NSpoolGetter,
     },
     rd::{
         RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectModifier,
@@ -29,7 +29,7 @@ pub(crate) struct REffect {
     pub(crate) banned_in_lowsec: bool,
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) kills_item: bool,
-    pub(crate) spool_resolver: Option<NSpoolResolver>,
+    pub(crate) spool_resolver: Option<NSpoolGetter>,
     pub(crate) calc_customizer: Option<NCalcCustomizer>,
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
     // Output getters
@@ -79,7 +79,7 @@ impl REffect {
             banned_in_lowsec: a_effect.banned_in_lowsec && a_effect.state == AState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
-            spool_resolver: n_effect.and_then(|n| n.spool_resolver),
+            spool_resolver: n_effect.and_then(|n| n.spool_getter),
             calc_customizer: n_effect.and_then(|n| n.calc_customizer),
             modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
             // Output getters

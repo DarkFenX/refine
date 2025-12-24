@@ -3,6 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
+        spool::ResolvedSpool,
     },
     ud::{UData, UItemKey},
     util::InfCount,
@@ -60,13 +61,17 @@ impl Svc {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_key()??;
         let defeff = u_data.src.get_effect(defeff_key);
-        let spool_resolver = defeff.spool_resolver?;
-        let resolved_spool = spool_resolver(
+        let spool_raw_vals_getter = defeff.spool_resolver?;
+        // TODO: limit by non-interrupted spool cycle count
+        let ctx = SvcCtx::new(u_data, &self.eff_projs);
+        let spool_raw_vals = spool_raw_vals_getter(ctx, &mut self.calc, item_key)?;
+        let resolved_spool = ResolvedSpool::try_build(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             defeff,
             None,
+            spool_raw_vals,
         )?;
         let overridden = u_item.get_spool().is_some();
         Some(AdjustableCount {
