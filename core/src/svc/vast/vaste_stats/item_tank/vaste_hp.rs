@@ -113,8 +113,14 @@ fn get_local_ancil_hp(
                 }
                 let effect_part_repeats = match effect_cycle_part.repeat_count {
                     InfCount::Count(effect_part_repeats) => effect_part_repeats,
-                    // Can infinitely cycle - current effect is not an ancil, skip it completely
-                    InfCount::Infinite => continue 'effect,
+                    InfCount::Infinite => match effect_cycle_part.data.interrupt {
+                        // Infinite cycle with reload marker means it has to reload every cycle,
+                        // which is acceptable
+                        Some(interrupt) if interrupt.reload => 1,
+                        // Can infinitely cycle without reloads - current effect is not an ancil,
+                        // skip it completely
+                        _ => continue 'effect,
+                    },
                 };
                 let hp_per_cycle = match rep_getter(ctx, calc, item_key, effect, effect_cycle_part.data.chargedness) {
                     Some(hp_per_cycle) => hp_per_cycle,
@@ -176,8 +182,14 @@ fn get_remote_ancil_hp(
                 }
                 let effect_part_repeats = match effect_cycle_part.repeat_count {
                     InfCount::Count(effect_part_repeats) => effect_part_repeats,
-                    // Can infinitely cycle - current effect is not an ancil, skip it completely
-                    InfCount::Infinite => continue 'effect,
+                    InfCount::Infinite => match effect_cycle_part.data.interrupt {
+                        // Infinite cycle with reload marker means it has to reload every cycle,
+                        // which is acceptable
+                        Some(interrupt) if interrupt.reload => 1,
+                        // Can infinitely cycle without reloads - current effect is not an ancil,
+                        // skip it completely
+                        _ => continue 'effect,
+                    },
                 };
                 let hp_per_cycle = match rep_getter(
                     ctx,

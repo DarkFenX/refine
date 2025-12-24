@@ -149,5 +149,5 @@ def test_local_chargedness(client, consts):
     api_module.change_module(type_id=eve_module2_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(hp=True, rps=True))
-    assert api_stats.hp.armor.ancil_local == approx(310.5)
+    assert api_stats.hp.armor.ancil_local == approx(517.5)
     assert api_stats.rps.one().armor.local == approx(57.5)
