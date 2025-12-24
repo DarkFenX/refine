@@ -7,6 +7,7 @@ pub(crate) use effect::{
     NBreacherDmgGetter, NCalcCustomizer, NCapInjectGetter, NDmgKindGetter, NEcmGetter, NEffect, NLocalRepGetter,
     NMiningGetter, NNeutGetter, NNormalDmgGetter, NOutgoingRepGetter, NProjMultGetter, NSpoolResolver,
 };
+pub(crate) use opc_spec::NEffectLocalOpcSpec;
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use spool::ResolvedSpool;
 
@@ -15,5 +16,6 @@ mod container;
 mod data;
 mod dmg_kind;
 mod effect;
+mod opc_spec;
 mod projectee_filter;
 mod spool;

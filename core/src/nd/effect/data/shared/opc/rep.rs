@@ -16,6 +16,79 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Local reps
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::nd::effect::data) fn get_local_shield_rep_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+) -> Option<Output<AttrVal>> {
+    get_local_rep_base_opc(ctx, calc, item_key, effect, ctx.ac().shield_bonus, true)
+}
+pub(in crate::nd::effect::data) fn get_local_shield_rep_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_ship_attr(ctx, calc, item_key, ctx.ac().shield_capacity)
+}
+
+pub(in crate::nd::effect::data) fn get_local_armor_rep_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+) -> Option<Output<AttrVal>> {
+    get_local_rep_base_opc(ctx, calc, item_key, effect, ctx.ac().armor_dmg_amount, false)
+}
+pub(in crate::nd::effect::data) fn get_local_armor_rep_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_ship_attr(ctx, calc, item_key, ctx.ac().armor_hp)
+}
+
+pub(in crate::nd::effect::data) fn get_local_hull_rep_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+) -> Option<Output<AttrVal>> {
+    get_local_rep_base_opc(ctx, calc, item_key, effect, ctx.ac().struct_dmg_amount, false)
+}
+pub(in crate::nd::effect::data) fn get_local_hull_rep_ilimit(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+) -> Option<AttrVal> {
+    get_ship_attr(ctx, calc, item_key, ctx.ac().hp)
+}
+
+fn get_local_rep_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+    rep_attr_key: Option<RAttrKey>,
+    applied_at_start: bool,
+) -> Option<Output<AttrVal>> {
+    let mut amount = calc.get_item_oattr_afb_odogma(ctx, item_key, rep_attr_key, OF(0.0))?;
+    let delay = match applied_at_start {
+        true => OF(0.0),
+        false => eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,
+    };
+    Some(Output::Simple(OutputSimple { amount, delay }))
+}
+
+fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
+    let fit_key = ctx.u_data.items.get(item_key).get_fit_key()?;
+    let ship_key = ctx.u_data.fits.get(fit_key).ship?;
+    calc.get_item_oattr_oextra(ctx, ship_key, attr_key)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Local reps - old
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_local_shield_rep_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -96,12 +169,6 @@ pub(in crate::nd::effect::data) fn get_local_rep_opc(
         amount = amount.min(hp);
     }
     Some(Output::Simple(OutputSimple { amount, delay }))
-}
-
-fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
-    let fit_key = ctx.u_data.items.get(item_key).get_fit_key()?;
-    let ship_key = ctx.u_data.fits.get(fit_key).ship?;
-    calc.get_item_oattr_oextra(ctx, ship_key, attr_key)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
