@@ -8,7 +8,7 @@ use crate::{
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
         effect::data::shared::{
-            opc::{get_ancillary_armor_mult, get_outgoing_rep_opc},
+            opc::{get_ancillary_armor_mult_old, get_outgoing_rep_opc},
             proj_mult::get_full_noapp_proj_mult,
         },
     },
@@ -44,7 +44,7 @@ fn internal_get_outgoing_rep_opc(
     spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
 ) -> Option<Output<AttrVal>> {
-    let extra_mult = get_ancillary_armor_mult(ctx, calc, projector_key, chargedness);
+    let extra_mult = get_ancillary_armor_mult_old(ctx, calc, projector_key, chargedness);
     get_outgoing_rep_opc(
         ctx,
         calc,

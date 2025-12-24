@@ -81,9 +81,9 @@ pub(crate) struct NEffect {
     pub(crate) outgoing_hull_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     pub(crate) outgoing_cap_rep_opc_getter: Option<NOutgoingRepGetter> = None,
     // Getters - local reps
-    pub(crate) local_shield_rep_output: Option<NEffectLocalOpcSpec<AttrVal>> = None,
-    pub(crate) local_armor_rep_output: Option<NEffectLocalOpcSpec<AttrVal>> = None,
-    pub(crate) local_hull_rep_output: Option<NEffectLocalOpcSpec<AttrVal>> = None,
+    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
+    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
+    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
     pub(crate) local_shield_rep_opc_getter: Option<NLocalRepGetter> = None,
     pub(crate) local_armor_rep_opc_getter: Option<NLocalRepGetter> = None,
     pub(crate) local_hull_rep_opc_getter: Option<NLocalRepGetter> = None,

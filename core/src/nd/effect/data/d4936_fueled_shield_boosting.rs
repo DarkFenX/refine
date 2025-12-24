@@ -4,8 +4,8 @@ use crate::{
     ec,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        effect::data::shared::opc::get_local_shield_rep_opc,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
+        effect::data::shared::opc::{get_local_shield_rep_base_opc, get_local_shield_rep_ilimit},
     },
 };
 
@@ -22,7 +22,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             })),
             activates_charge: false,
         }),
-        local_shield_rep_opc_getter: Some(get_local_shield_rep_opc),
+        local_shield_rep_opc_spec: Some(NEffectLocalOpcSpec {
+            base: get_local_shield_rep_base_opc,
+            instance_limit: Some(get_local_shield_rep_ilimit),
+            ..
+        }),
         ..
     }
 }

@@ -87,91 +87,6 @@ fn get_ship_attr(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Opt
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Local reps - old
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::data) fn get_local_shield_rep_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    _chargedness: Option<AttrVal>,
-) -> Option<Output<AttrVal>> {
-    get_local_rep_opc(
-        ctx,
-        calc,
-        item_key,
-        effect,
-        ctx.ac().shield_bonus,
-        ctx.ac().shield_capacity,
-        None,
-        true,
-    )
-}
-
-pub(in crate::nd::effect::data) fn get_local_armor_rep_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    _chargedness: Option<AttrVal>,
-) -> Option<Output<AttrVal>> {
-    get_local_rep_opc(
-        ctx,
-        calc,
-        item_key,
-        effect,
-        ctx.ac().armor_dmg_amount,
-        ctx.ac().armor_hp,
-        None,
-        false,
-    )
-}
-
-pub(in crate::nd::effect::data) fn get_local_hull_rep_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    _chargedness: Option<AttrVal>,
-) -> Option<Output<AttrVal>> {
-    get_local_rep_opc(
-        ctx,
-        calc,
-        item_key,
-        effect,
-        ctx.ac().struct_dmg_amount,
-        ctx.ac().hp,
-        None,
-        false,
-    )
-}
-
-pub(in crate::nd::effect::data) fn get_local_rep_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    rep_attr_key: Option<RAttrKey>,
-    limit_attr_key: Option<RAttrKey>,
-    extra_mult: Option<AttrVal>,
-    applied_at_start: bool,
-) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_oattr_afb_odogma(ctx, item_key, rep_attr_key, OF(0.0))?;
-    let delay = match applied_at_start {
-        true => OF(0.0),
-        false => eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,
-    };
-    if let Some(extra_mult) = extra_mult {
-        amount *= extra_mult;
-    }
-    // Total resource pool limit
-    if let Some(hp) = get_ship_attr(ctx, calc, item_key, limit_attr_key) {
-        amount = amount.min(hp);
-    }
-    Some(Output::Simple(OutputSimple { amount, delay }))
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // Remote reps
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_outgoing_shield_rep_opc(
@@ -330,8 +245,7 @@ pub(in crate::nd::effect::data) fn get_outgoing_rep_opc(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-pub(in crate::nd::effect::data) fn get_ancillary_armor_mult(
+pub(in crate::nd::effect::data) fn get_ancillary_armor_mult_old(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -339,6 +253,21 @@ pub(in crate::nd::effect::data) fn get_ancillary_armor_mult(
 ) -> Option<AttrVal> {
     if let Some(chargedness) = chargedness
         && let Some(charge_key) = ctx.u_data.items.get(item_key).get_charge_key()
+        && ctx.u_data.items.get(charge_key).get_type_id() == ac::items::NANITE_REPAIR_PASTE
+        && let Some(rep_mult) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().charged_armor_dmg_mult)
+    {
+        return Some((rep_mult - OF(1.0)) * chargedness + OF(1.0));
+    }
+    None
+}
+
+pub(in crate::nd::effect::data) fn get_ancillary_armor_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    chargedness: AttrVal,
+) -> Option<AttrVal> {
+    if let Some(charge_key) = ctx.u_data.items.get(item_key).get_charge_key()
         && ctx.u_data.items.get(charge_key).get_type_id() == ac::items::NANITE_REPAIR_PASTE
         && let Some(rep_mult) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().charged_armor_dmg_mult)
     {
