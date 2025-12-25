@@ -1,11 +1,8 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId, AState},
     def::AttrVal,
-    misc::MiningAmount,
-    nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NNormalDmgGetter,
-        NProjMultGetter,
-    },
+    misc::{DmgKinds, MiningAmount},
+    nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NProjMultGetter},
     rd::{
         RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectLocalOpcSpec,
         REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListKey, RSpoolAttrs,
@@ -33,7 +30,6 @@ pub(crate) struct REffect {
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
     // Output getters
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
-    pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter>,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
     pub(crate) ecm_opc_getter: Option<NEcmGetter>,
     // Fields which depend on slab keys
@@ -53,6 +49,7 @@ pub(crate) struct REffect {
     pub(crate) resist_attr_key: Option<RAttrKey>,
     pub(crate) is_active_with_duration: bool,
     // Output specs depend on slab keys as well
+    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<AttrVal>>>,
     pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
@@ -84,7 +81,6 @@ impl REffect {
             modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
             // Output getters
             dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
-            normal_dmg_opc_getter: n_effect.and_then(|n| n.normal_dmg_opc_getter),
             breacher_dmg_opc_getter: n_effect.and_then(|n| n.breacher_dmg_opc_getter),
             ecm_opc_getter: n_effect.and_then(|n| n.ecm_opc_getter),
             // Fields which depend on slab keys
@@ -103,6 +99,7 @@ impl REffect {
             chance_attr_key: Default::default(),
             resist_attr_key: Default::default(),
             is_active_with_duration: Default::default(),
+            normal_dmg_opc_spec: Default::default(),
             mining_ore_opc_spec: Default::default(),
             mining_ice_opc_spec: Default::default(),
             mining_gas_opc_spec: Default::default(),
@@ -182,6 +179,10 @@ impl REffect {
                 self.modifier_proj_attr_keys =
                     proj_attr_ids.map(|opt| opt.and_then(|attr_id| attr_id_key_map.get(&attr_id).copied()));
             }
+            self.normal_dmg_opc_spec = n_effect
+                .normal_dmg_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
             self.mining_ore_opc_spec = n_effect
                 .mining_ore_opc_spec
                 .as_ref()

@@ -3,9 +3,7 @@ pub(crate) use charge::{
 };
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
-pub(crate) use effect::{
-    NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NEffect, NNormalDmgGetter, NProjMultGetter,
-};
+pub(crate) use effect::{NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NEffect, NProjMultGetter};
 pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use resist::NEffectResist;

@@ -204,9 +204,9 @@ impl Vast {
         }
     }
     fn handle_dmg_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(dmg_getter) = effect.normal_dmg_opc_getter {
+        if let Some(dmg_ospec) = effect.normal_dmg_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.dmg_normal.add_entry(item_key, effect.key, dmg_getter);
+            fit_data.dmg_normal.add_entry(item_key, effect.key, dmg_ospec);
         }
         if let Some(dmg_getter) = effect.breacher_dmg_opc_getter {
             let fit_data = self.get_fit_data_mut(fit_key);
@@ -214,7 +214,7 @@ impl Vast {
         }
     }
     fn handle_dmg_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.normal_dmg_opc_getter.is_some() {
+        if effect.normal_dmg_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.dmg_normal.remove_l2(item_key, &effect.key);
         }

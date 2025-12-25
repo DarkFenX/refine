@@ -6,6 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptions, get_item_cycle_info},
+        spool::ResolvedSpool,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
             shared::{BreacherAccum, apply_breacher},
@@ -257,20 +258,29 @@ impl VastFitData {
                 None => continue,
             };
             let u_item = ctx.u_data.items.get(item_key);
-            for (&effect_key, dmg_getter) in item_data.iter() {
-                let r_effect = ctx.u_data.src.get_effect(effect_key);
-                if !item_kinds.resolve(ctx, u_item, r_effect) {
+            for (&effect_key, ospec) in item_data.iter() {
+                let effect = ctx.u_data.src.get_effect(effect_key);
+                if !item_kinds.resolve(ctx, u_item, effect) {
                     continue;
                 }
-                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, spool, projectee_key) {
-                    Some(output_per_cycle) => output_per_cycle,
-                    None => continue,
-                };
                 let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
                     Some(effect_cycle_loop) => effect_cycle_loop,
                     None => continue,
                 };
-                *dps_normal += output_per_cycle.get_total() / effect_cycle_loop.get_average_time();
+                let spool_mult = if ospec.spoolable
+                    && let Some(spool_attrs) = effect.spool_attr_keys
+                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+                {
+                    Some(resolved.mult)
+                } else {
+                    None
+                };
+                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
+                let output_per_cycle = match ospec.get_total(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
+                    Some(output_per_cycle) => output_per_cycle,
+                    None => continue,
+                };
+                *dps_normal += output_per_cycle / effect_cycle_loop.get_average_time();
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
@@ -312,17 +322,26 @@ impl VastFitData {
                 None => continue,
             };
             let u_item = ctx.u_data.items.get(item_key);
-            for (&effect_key, dmg_getter) in item_data.iter() {
-                let r_effect = ctx.u_data.src.get_effect(effect_key);
-                if !item_kinds.resolve(ctx, u_item, r_effect) {
+            for (&effect_key, ospec) in item_data.iter() {
+                let effect = ctx.u_data.src.get_effect(effect_key);
+                if !item_kinds.resolve(ctx, u_item, effect) {
                     continue;
                 }
-                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, spool, projectee_key) {
-                    Some(output_per_cycle) => output_per_cycle,
-                    None => continue,
-                };
                 if !cycle_map.contains_key(&effect_key) {
                     continue;
+                };
+                let spool_mult = if ospec.spoolable
+                    && let Some(spool_attrs) = effect.spool_attr_keys
+                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+                {
+                    Some(resolved.mult)
+                } else {
+                    None
+                };
+                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
+                let output_per_cycle = match ospec.get_output(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
+                    Some(output_per_cycle) => output_per_cycle,
+                    None => continue,
                 };
                 *volley_normal += output_per_cycle.get_amount();
             }

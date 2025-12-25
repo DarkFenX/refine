@@ -2,7 +2,7 @@
 
 use crate::{
     def::AttrVal,
-    misc::MiningAmount,
+    misc::{DmgKinds, MiningAmount},
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
@@ -16,6 +16,17 @@ pub(super) trait InstanceMul {
 impl InstanceMul for AttrVal {
     fn instance_mul(self, mult: AttrVal) -> Self {
         self * mult
+    }
+}
+
+impl InstanceMul for DmgKinds<AttrVal> {
+    fn instance_mul(self, mult: AttrVal) -> Self {
+        DmgKinds {
+            em: self.em * mult,
+            thermal: self.thermal * mult,
+            kinetic: self.kinetic * mult,
+            explosive: self.explosive * mult,
+        }
     }
 }
 

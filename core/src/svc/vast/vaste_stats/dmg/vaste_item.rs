@@ -7,6 +7,7 @@ use crate::{
         calc::Calc,
         cycle::get_item_cycle_info,
         err::StatItemCheckError,
+        spool::ResolvedSpool,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
             shared::{BreacherAccum, apply_breacher},
@@ -103,11 +104,21 @@ impl Vast {
         };
         for (effect_key, cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(dmg_getter) = effect.normal_dmg_opc_getter
+            if let Some(ospec) = effect.normal_dmg_opc_spec
                 && let Some(cycle_loop) = cycle.try_get_loop()
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
             {
-                *dps_normal += dmg_opc.get_total() / cycle_loop.get_average_time();
+                let spool_mult = if ospec.spoolable
+                    && let Some(spool_attrs) = effect.spool_attr_keys
+                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+                {
+                    Some(resolved.mult)
+                } else {
+                    None
+                };
+                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
+                if let Some(dmg) = ospec.get_total(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
+                    *dps_normal += dmg / cycle_loop.get_average_time();
+                }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
@@ -212,10 +223,19 @@ impl Vast {
         };
         for (effect_key, _cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(dmg_getter) = effect.normal_dmg_opc_getter
-                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, spool, projectee_key)
-            {
-                *volley_normal += dmg_opc.get_amount();
+            if let Some(ospec) = effect.normal_dmg_opc_spec {
+                let spool_mult = if ospec.spoolable
+                    && let Some(spool_attrs) = effect.spool_attr_keys
+                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+                {
+                    Some(resolved.mult)
+                } else {
+                    None
+                };
+                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
+                if let Some(dmg) = ospec.get_total(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
+                    *volley_normal += dmg;
+                }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)

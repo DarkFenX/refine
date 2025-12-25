@@ -2,13 +2,13 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     def::AttrVal,
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, Spool},
+    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolAttrs},
     rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
-        output::{Output, OutputDmgBreacher},
+        output::OutputDmgBreacher,
     },
     ud::{UItem, UItemKey, UProjData},
     util::RMap,
@@ -25,8 +25,6 @@ pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, UItemKey, UProjData) -> AttrVal;
 // Getters - damage output
 pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
-pub(crate) type NNormalDmgGetter =
-    fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<Spool>, Option<UItemKey>) -> Option<Output<DmgKinds<AttrVal>>>;
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
 // Getters - misc
@@ -55,7 +53,7 @@ pub(crate) struct NEffect {
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter> = None,
     // Getters - damage output
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
-    pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter> = None,
+    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<AttrVal>>> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
     // Getters - mining
     pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
