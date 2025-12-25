@@ -1,16 +1,12 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::{AttrVal, OF},
     ec,
     ed::EEffectId,
     nd::{
-        NEffect,
-        effect::data::shared::{base_opc::get_generic_neut_opc, proj_mult::get_neut_proj_mult},
+        NEffect, NEffectProjOpcSpec, NEffectResist,
+        effect::data::shared::{base_opc::get_nosf_base_opc, proj_mult::get_neut_proj_mult},
     },
-    rd::REffect,
-    svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::ENERGY_NOSF_FALLOFF;
@@ -20,30 +16,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        neut_opc_getter: Some(internal_get_neut_opc),
+        neut_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_nosf_base_opc,
+            proj_mult: get_neut_proj_mult,
+            resist: Some(NEffectResist::Standard),
+            ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            ..
+        }),
         ..
     }
-}
-
-fn internal_get_neut_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<AttrVal>> {
-    // Not a blood raider ship - not considered as a neut
-    if calc.get_item_oattr_oextra(ctx, projector_key, ctx.ac().nos_override)? == OF(0.0) {
-        return None;
-    }
-    get_generic_neut_opc(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        projectee_key,
-        get_neut_proj_mult,
-        ctx.ac().power_transfer_amount,
-        false,
-    )
 }

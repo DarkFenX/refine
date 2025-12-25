@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    misc::EffectSpec,
+    misc::{AttrSpec, EffectSpec},
     rd::{RAttrKey, REffect, REffectLocalOpcSpec, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, calc::Calc, eff_funcs, output::Output},
     ud::UItemKey,
@@ -79,7 +79,11 @@ impl REffectProjOpcSpec<AttrVal> {
                 mult *= resist_mult;
             }
             Some(REffectResist::Attr(resist_attr_key))
-                if let Some(resist_mult) = calc.get_item_attr_oextra(ctx, projectee_key, resist_attr_key) =>
+                if let Some(resist_mult) = eff_funcs::get_resist_mult_by_projectee_aspec(
+                    ctx,
+                    calc,
+                    &AttrSpec::new(projectee_key, resist_attr_key),
+                ) =>
             {
                 mult *= resist_mult;
             }

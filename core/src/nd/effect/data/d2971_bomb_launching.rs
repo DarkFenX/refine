@@ -31,7 +31,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_getter: Some(internal_get_dmg_opc),
-        neut_opc_getter: Some(internal_get_neut_opc),
+        neut_opc_spec: None,
         ecm_opc_getter: Some(internal_get_ecm_opc),
         ..
     }

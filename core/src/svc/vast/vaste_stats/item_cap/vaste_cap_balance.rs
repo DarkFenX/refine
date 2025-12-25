@@ -205,17 +205,18 @@ fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) 
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (&effect_key, cap_getter) in item_data.iter() {
+        for (&effect_key, ospec) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle = match cap_getter(ctx, calc, neut_item_key, effect, Some(cap_item_key)) {
-                Some(output_per_cycle) => output_per_cycle,
-                None => continue,
-            };
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
             };
-            nps += output_per_cycle.get_total() / effect_cycles.get_average_time();
+            let invar_data = ospec.make_invar_data(ctx, calc, neut_item_key, effect, Some(cap_item_key));
+            let output_per_cycle = match ospec.get_total(ctx, calc, neut_item_key, effect, None, None, invar_data) {
+                Some(output_per_cycle) => output_per_cycle,
+                None => continue,
+            };
+            nps += output_per_cycle / effect_cycles.get_average_time();
         }
     }
     nps

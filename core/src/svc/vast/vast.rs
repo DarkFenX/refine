@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
-    nd::{NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NMiningGetter, NNeutGetter, NNormalDmgGetter},
+    nd::{NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NMiningGetter, NNormalDmgGetter},
     rd::{RAttrKey, REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -27,7 +27,7 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Cap
     pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NNeutGetter>,
+    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Ewar
     pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
 }
@@ -133,7 +133,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) orr_hull: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Stats-related - misc output
-    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, NNeutGetter>,
+    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) out_cap: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Stats-related - local active tank
     pub(in crate::svc::vast) lr_shield: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,

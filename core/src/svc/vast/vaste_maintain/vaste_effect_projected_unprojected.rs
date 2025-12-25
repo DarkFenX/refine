@@ -88,9 +88,9 @@ impl Vast {
             self.in_cap
                 .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
         }
-        if let Some(neut_getter) = effect.neut_opc_getter {
+        if let Some(neut_ospec) = effect.neut_opc_spec {
             self.in_neuts
-                .add_entry(projectee_key, projector_key, effect.key, neut_getter);
+                .add_entry(projectee_key, projector_key, effect.key, neut_ospec);
         }
         if let Some(ecm_getter) = effect.ecm_opc_getter {
             self.in_ecm
@@ -167,7 +167,7 @@ impl Vast {
         if effect.outgoing_cap_opc_spec.is_some() && effect.is_active_with_duration {
             self.in_cap.remove_l3(projectee_key, projector_key, &effect.key);
         }
-        if effect.neut_opc_getter.is_some() {
+        if effect.neut_opc_spec.is_some() {
             self.in_neuts.remove_l3(projectee_key, projector_key, &effect.key);
         }
         if effect.ecm_opc_getter.is_some() {

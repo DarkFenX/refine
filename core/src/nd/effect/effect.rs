@@ -31,7 +31,6 @@ pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
 // Getters - misc
 pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<MiningAmount>>;
-pub(crate) type NNeutGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<Output<AttrVal>>;
 pub(crate) type NCapInjectGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<Ecm>;
 
@@ -73,7 +72,7 @@ pub(crate) struct NEffect {
     pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
     pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
     // Getters - cap
-    pub(crate) neut_opc_getter: Option<NNeutGetter> = None,
+    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
     pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
     pub(crate) cap_inject_getter: Option<NCapInjectGetter> = None,
     // Getters - misc

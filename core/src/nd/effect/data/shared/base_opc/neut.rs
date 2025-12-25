@@ -1,83 +1,72 @@
+use ordered_float::Float;
+
+use super::generic::get_generic_base_opc;
 use crate::{
+    ac,
     def::{AttrVal, OF},
-    misc::{AttrSpec, EffectSpec},
-    nd::{NProjMultGetter, effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult},
-    rd::{RAttrKey, REffect},
+    nd::{NEffectProjOpcSpec, NEffectResist, effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult},
+    rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
-        eff_funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
+    util::FLOAT_TOLERANCE,
 };
 
-pub(in crate::nd::effect::data) fn get_generic_neut_opc(
+pub(in crate::nd::effect::data) fn get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    projectee_key: Option<UItemKey>,
-    proj_mult_getter: NProjMultGetter,
-    amount_attr_key: Option<RAttrKey>,
-    applied_at_start: bool,
+    item_key: UItemKey,
+    effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    let mut amount = calc.get_item_oattr_afb_oextra(ctx, projector_key, amount_attr_key, OF(0.0))?;
-    let delay = match applied_at_start {
-        true => OF(0.0),
-        false => eff_funcs::get_effect_duration_s(ctx, calc, projector_key, projector_effect)?,
-    };
-    if let Some(projectee_key) = projectee_key {
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
-            projectee_key,
-        );
-        amount *= proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-        // Effect resistance reduction
-        if let Some(rr_mult) =
-            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
-        {
-            amount *= rr_mult;
-        }
-        // Total resource pool limit
-        if let Some(cap) = calc.get_item_oattr_oextra(ctx, projectee_key, ctx.ac().capacitor_capacity) {
-            amount = amount.min(cap);
-        }
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().energy_neut_amount, true)
+}
+
+pub(in crate::nd::effect::data) fn get_nosf_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+) -> Option<Output<AttrVal>> {
+    // Not a blood raider ship - not considered as a neut
+    if calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().nos_override)?.abs() < FLOAT_TOLERANCE {
+        return None;
     }
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().power_transfer_amount, false)
+}
+
+pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    _effect: &REffect,
+) -> Option<Output<AttrVal>> {
+    let attr_consts = ctx.ac();
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, attr_consts.energy_neut_amount, OF(0.0))?;
+    let delay = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.doomsday_warning_duration, OF(0.0))?;
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
-pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc(
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AoE doomsday side-effect neuting
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<AttrVal> {
+    NEffectProjOpcSpec {
+        base: get_aoe_dd_side_neut_base_opc,
+        proj_mult: get_aoe_dd_side_neut_proj_mult,
+        resist: Some(NEffectResist::Attr(ac::attrs::DOOMSDAY_ENERGY_NEUT_RESIST_ID)),
+        ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+        ..
+    }
+}
+
+fn get_aoe_dd_side_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    projectee_key: Option<UItemKey>,
+    item_key: UItemKey,
+    effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    let attr_consts = ctx.ac();
-    let mut amount =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.doomsday_energy_neut_amount, OF(0.0))?;
-    if let Some(projectee_key) = projectee_key {
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
-            projectee_key,
-        );
-        amount *= get_aoe_dd_side_neut_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-        // Effect resistance reduction
-        if let Some(resist_attr_key) = attr_consts.doomsday_energy_neut_resist_id
-            && let Some(resist_mult) =
-                eff_funcs::get_resist_mult_by_projectee_aspec(ctx, calc, &AttrSpec::new(projectee_key, resist_attr_key))
-        {
-            amount *= resist_mult;
-        }
-        // Total resource pool limit
-        if let Some(cap) = calc.get_item_oattr_oextra(ctx, projectee_key, attr_consts.capacitor_capacity) {
-            amount = amount.min(cap);
-        }
-    }
-    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
+    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().doomsday_energy_neut_amount, true)
 }

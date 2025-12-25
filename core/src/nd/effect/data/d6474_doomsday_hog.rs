@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect,
-        effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc, mods::make_dd_self_debuffs},
+        effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc_spec, mods::make_dd_self_debuffs},
     },
 };
 
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             full: make_dd_self_debuffs().collect(),
             ..
         }),
-        neut_opc_getter: Some(get_aoe_dd_side_neut_opc),
+        neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),
         ..
     }
 }

@@ -6,7 +6,7 @@ use crate::{
     nd::{
         NEffect, NEffectDmgKind,
         effect::data::shared::{
-            base_opc::{get_aoe_dd_dmg_opc, get_aoe_dd_side_neut_opc},
+            base_opc::{get_aoe_dd_dmg_opc, get_aoe_dd_side_neut_opc_spec},
             mods::make_dd_self_debuffs,
         },
     },
@@ -26,7 +26,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_getter: Some(get_aoe_dd_dmg_opc),
-        neut_opc_getter: Some(get_aoe_dd_side_neut_opc),
+        neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),
         ..
     }
 }

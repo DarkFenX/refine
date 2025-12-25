@@ -27,12 +27,15 @@ impl Vast {
             None => return Ok(item_nps),
         };
         for (effect_key, effect_cycle) in cycle_map {
-            let r_effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(neut_getter) = r_effect.neut_opc_getter
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            if let Some(neut_ospec) = effect.neut_opc_spec
                 && let Some(effect_cycle_loop) = effect_cycle.try_get_loop()
-                && let Some(neut_amount) = neut_getter(ctx, calc, item_key, r_effect, projectee_key)
             {
-                item_nps += neut_amount.get_total() / effect_cycle_loop.get_average_time();
+                let invar_data = neut_ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
+                let neut_opc = neut_ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data);
+                if let Some(neut_opc) = neut_opc {
+                    item_nps += neut_opc / effect_cycle_loop.get_average_time();
+                }
             }
         }
         if include_charges {

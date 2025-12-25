@@ -288,13 +288,13 @@ impl Vast {
         }
     }
     fn handle_neut_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(neut_getter) = effect.neut_opc_getter {
+        if let Some(neut_ospec) = effect.neut_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.out_neuts.add_entry(item_key, effect.key, neut_getter);
+            fit_data.out_neuts.add_entry(item_key, effect.key, neut_ospec);
         }
     }
     fn handle_neut_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.neut_opc_getter.is_some() {
+        if effect.neut_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.out_neuts.remove_l2(item_key, &effect.key);
         }
