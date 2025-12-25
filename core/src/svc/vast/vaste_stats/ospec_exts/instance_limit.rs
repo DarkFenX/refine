@@ -2,6 +2,7 @@
 
 use crate::{
     def::AttrVal,
+    misc::MiningAmount,
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
@@ -16,6 +17,11 @@ impl InstanceLimit for AttrVal {
     fn instance_limit(&mut self, limit: AttrVal) {
         *self = AttrVal::min(*self, limit);
     }
+}
+
+impl InstanceLimit for MiningAmount {
+    // No-op for mining
+    fn instance_limit(&mut self, _limit: AttrVal) {}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

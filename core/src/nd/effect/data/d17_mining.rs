@@ -4,7 +4,10 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::MiningAmount,
-    nd::{NEffect, effect::data::shared::base_opc::get_mining_opc},
+    nd::{
+        NEffect, NEffectProjOpcSpec,
+        effect::data::shared::{base_opc::get_mining_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
+    },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemKey,
@@ -17,13 +20,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        mining_ore_opc_getter: Some(internal_get_mining_ore_opc),
-        mining_ice_opc_getter: Some(internal_get_mining_ice_opc),
+        mining_ore_opc_spec: Some(NEffectProjOpcSpec {
+            base: internal_get_ore_mining_base_opc,
+            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            ..
+        }),
+        mining_ice_opc_spec: Some(NEffectProjOpcSpec {
+            base: internal_get_ice_mining_base_opc,
+            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            ..
+        }),
         ..
     }
 }
 
-fn internal_get_mining_ore_opc(
+fn internal_get_ore_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -33,10 +44,10 @@ fn internal_get_mining_ore_opc(
     if item.is_ice_harvester() {
         return None;
     }
-    get_mining_opc(ctx, calc, item_key, effect)
+    get_mining_base_opc(ctx, calc, item_key, effect)
 }
 
-fn internal_get_mining_ice_opc(
+fn internal_get_ice_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -46,5 +57,5 @@ fn internal_get_mining_ice_opc(
     if !item.is_ice_harvester() {
         return None;
     }
-    get_mining_opc(ctx, calc, item_key, effect)
+    get_mining_base_opc(ctx, calc, item_key, effect)
 }

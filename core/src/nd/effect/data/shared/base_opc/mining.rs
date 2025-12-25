@@ -12,7 +12,7 @@ use crate::{
     util::FLOAT_TOLERANCE,
 };
 
-pub(in crate::nd::effect::data) fn get_mining_opc(
+pub(in crate::nd::effect::data) fn get_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -25,7 +25,30 @@ pub(in crate::nd::effect::data) fn get_mining_opc(
     }))
 }
 
-pub(in crate::nd::effect::data) fn get_mining_values(
+pub(in crate::nd::effect::data) fn get_crit_mining_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+) -> Option<Output<MiningAmount>> {
+    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
+    let attr_consts = ctx.ac();
+    let crit_chance = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_chance, OF(0.0))?;
+    let yield_ = match crit_chance > FLOAT_TOLERANCE {
+        true => {
+            let crit_bonus =
+                calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_bonus_yield, OF(0.0))?;
+            yield_ * (OF(1.0) + crit_chance.clamp(OF(0.0), OF(1.0)) * crit_bonus)
+        }
+        false => yield_,
+    };
+    Some(Output::Simple(OutputSimple {
+        amount: MiningAmount { yield_, drain },
+        delay,
+    }))
+}
+
+fn get_mining_values(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -45,3 +68,5 @@ pub(in crate::nd::effect::data) fn get_mining_values(
     };
     Some((delay, yield_, yield_ + waste))
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

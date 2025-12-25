@@ -1,22 +1,16 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::OF,
     ec,
     ed::EEffectId,
     misc::MiningAmount,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc,
-        effect::data::shared::base_opc::get_mining_values,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectProjOpcSpec,
+        effect::data::shared::{base_opc::get_crit_mining_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
     },
     rd::REffect,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
-    },
+    svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemKey,
-    util::FLOAT_TOLERANCE,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MINING_LASER;
@@ -32,13 +26,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             })),
             activates_charge: false,
         }),
-        mining_ore_opc_getter: Some(get_mining_ore_opc),
-        mining_ice_opc_getter: Some(get_mining_ice_opc),
+        mining_ore_opc_spec: Some(NEffectProjOpcSpec {
+            base: internal_get_ore_crit_mining_base_opc,
+            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            ..
+        }),
+        mining_ice_opc_spec: Some(NEffectProjOpcSpec {
+            base: internal_get_ice_crit_mining_base_opc,
+            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            ..
+        }),
         ..
     }
 }
 
-fn get_mining_ore_opc(
+fn internal_get_ore_crit_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -48,10 +50,10 @@ fn get_mining_ore_opc(
     if item.is_ice_harvester() {
         return None;
     }
-    get_mining_opc(ctx, calc, item_key, effect)
+    get_crit_mining_base_opc(ctx, calc, item_key, effect)
 }
 
-fn get_mining_ice_opc(
+fn internal_get_ice_crit_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -61,23 +63,5 @@ fn get_mining_ice_opc(
     if !item.is_ice_harvester() {
         return None;
     }
-    get_mining_opc(ctx, calc, item_key, effect)
-}
-
-fn get_mining_opc(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, effect: &REffect) -> Option<Output<MiningAmount>> {
-    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
-    let attr_consts = ctx.ac();
-    let crit_chance = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_chance, OF(0.0))?;
-    let yield_ = match crit_chance > FLOAT_TOLERANCE {
-        true => {
-            let crit_bonus =
-                calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_crit_bonus_yield, OF(0.0))?;
-            yield_ * (OF(1.0) + crit_chance.clamp(OF(0.0), OF(1.0)) * crit_bonus)
-        }
-        false => yield_,
-    };
-    Some(Output::Simple(OutputSimple {
-        amount: MiningAmount { yield_, drain },
-        delay,
-    }))
+    get_crit_mining_base_opc(ctx, calc, item_key, effect)
 }

@@ -2,6 +2,7 @@
 
 use crate::{
     def::AttrVal,
+    misc::MiningAmount,
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
@@ -15,6 +16,13 @@ pub(super) trait InstanceMulAssign {
 impl InstanceMulAssign for AttrVal {
     fn instance_mul_assign(&mut self, mult: AttrVal) {
         *self *= mult;
+    }
+}
+
+impl InstanceMulAssign for MiningAmount {
+    fn instance_mul_assign(&mut self, mult: AttrVal) {
+        self.yield_ *= mult;
+        self.drain *= mult;
     }
 }
 

@@ -1,8 +1,9 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId, AState},
     def::AttrVal,
+    misc::MiningAmount,
     nd::{
-        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NMiningGetter, NNormalDmgGetter,
+        N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NNormalDmgGetter,
         NProjMultGetter,
     },
     rd::{
@@ -34,9 +35,6 @@ pub(crate) struct REffect {
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
     pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter>,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
-    pub(crate) mining_ore_opc_getter: Option<NMiningGetter>,
-    pub(crate) mining_ice_opc_getter: Option<NMiningGetter>,
-    pub(crate) mining_gas_opc_getter: Option<NMiningGetter>,
     pub(crate) ecm_opc_getter: Option<NEcmGetter>,
     // Fields which depend on slab keys
     pub(crate) modifiers: Vec<REffectModifier>,
@@ -55,6 +53,9 @@ pub(crate) struct REffect {
     pub(crate) resist_attr_key: Option<RAttrKey>,
     pub(crate) is_active_with_duration: bool,
     // Output specs depend on slab keys as well
+    pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
+    pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
+    pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
     pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
     pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
@@ -85,9 +86,6 @@ impl REffect {
             dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
             normal_dmg_opc_getter: n_effect.and_then(|n| n.normal_dmg_opc_getter),
             breacher_dmg_opc_getter: n_effect.and_then(|n| n.breacher_dmg_opc_getter),
-            mining_ore_opc_getter: n_effect.and_then(|n| n.mining_ore_opc_getter),
-            mining_ice_opc_getter: n_effect.and_then(|n| n.mining_ice_opc_getter),
-            mining_gas_opc_getter: n_effect.and_then(|n| n.mining_gas_opc_getter),
             ecm_opc_getter: n_effect.and_then(|n| n.ecm_opc_getter),
             // Fields which depend on slab keys
             modifiers: Default::default(),
@@ -105,6 +103,9 @@ impl REffect {
             chance_attr_key: Default::default(),
             resist_attr_key: Default::default(),
             is_active_with_duration: Default::default(),
+            mining_ore_opc_spec: Default::default(),
+            mining_ice_opc_spec: Default::default(),
+            mining_gas_opc_spec: Default::default(),
             outgoing_shield_rep_opc_spec: Default::default(),
             outgoing_armor_rep_opc_spec: Default::default(),
             outgoing_hull_rep_opc_spec: Default::default(),
@@ -181,6 +182,18 @@ impl REffect {
                 self.modifier_proj_attr_keys =
                     proj_attr_ids.map(|opt| opt.and_then(|attr_id| attr_id_key_map.get(&attr_id).copied()));
             }
+            self.mining_ore_opc_spec = n_effect
+                .mining_ore_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
+            self.mining_ice_opc_spec = n_effect
+                .mining_ice_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
+            self.mining_gas_opc_spec = n_effect
+                .mining_gas_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
             self.outgoing_shield_rep_opc_spec = n_effect
                 .outgoing_shield_rep_opc_spec
                 .as_ref()

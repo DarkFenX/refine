@@ -1,8 +1,8 @@
 use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
-    misc::{AttrSpec, EffectSpec},
-    nd::{NBreacherDmgGetter, NEcmGetter, NMiningGetter, NNormalDmgGetter},
+    misc::{AttrSpec, EffectSpec, MiningAmount},
+    nd::{NBreacherDmgGetter, NEcmGetter, NNormalDmgGetter},
     rd::{RAttrKey, REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -125,9 +125,9 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemKey, REffectKey, NNormalDmgGetter>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemKey, REffectKey, NBreacherDmgGetter>,
     // Stats-related - mining output
-    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
-    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, NMiningGetter>,
+    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<MiningAmount>>,
+    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<MiningAmount>>,
+    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<MiningAmount>>,
     // Stats-related - RR output
     pub(in crate::svc::vast) orr_shield: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) orr_armor: RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,

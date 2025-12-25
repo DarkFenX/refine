@@ -30,7 +30,6 @@ pub(crate) type NNormalDmgGetter =
 pub(crate) type NBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
 // Getters - misc
-pub(crate) type NMiningGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<MiningAmount>>;
 pub(crate) type NEcmGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<Ecm>;
 
 pub(crate) struct NEffect {
@@ -59,9 +58,9 @@ pub(crate) struct NEffect {
     pub(crate) normal_dmg_opc_getter: Option<NNormalDmgGetter> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
     // Getters - mining
-    pub(crate) mining_ore_opc_getter: Option<NMiningGetter> = None,
-    pub(crate) mining_ice_opc_getter: Option<NMiningGetter> = None,
-    pub(crate) mining_gas_opc_getter: Option<NMiningGetter> = None,
+    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
+    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
+    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     // Getters - rep output
     pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
     pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,

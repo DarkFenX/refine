@@ -224,29 +224,29 @@ impl Vast {
         }
     }
     fn handle_mining_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if let Some(mining_getter) = effect.mining_ore_opc_getter {
+        if let Some(mining_ospec) = effect.mining_ore_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_ore.add_entry(item_key, effect.key, mining_getter);
+            fit_data.mining_ore.add_entry(item_key, effect.key, mining_ospec);
         }
-        if let Some(mining_getter) = effect.mining_ice_opc_getter {
+        if let Some(mining_ospec) = effect.mining_ice_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_ice.add_entry(item_key, effect.key, mining_getter);
+            fit_data.mining_ice.add_entry(item_key, effect.key, mining_ospec);
         }
-        if let Some(mining_getter) = effect.mining_gas_opc_getter {
+        if let Some(mining_ospec) = effect.mining_gas_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
-            fit_data.mining_gas.add_entry(item_key, effect.key, mining_getter);
+            fit_data.mining_gas.add_entry(item_key, effect.key, mining_ospec);
         }
     }
     fn handle_mining_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
-        if effect.mining_ore_opc_getter.is_some() {
+        if effect.mining_ore_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.mining_ore.remove_l2(item_key, &effect.key);
         }
-        if effect.mining_ice_opc_getter.is_some() {
+        if effect.mining_ice_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.mining_ice.remove_l2(item_key, &effect.key);
         }
-        if effect.mining_gas_opc_getter.is_some() {
+        if effect.mining_gas_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.mining_gas.remove_l2(item_key, &effect.key);
         }

@@ -1,8 +1,8 @@
 use super::shared::get_mps_cycle_options;
 use crate::{
+    def::{AttrVal, OF},
     misc::MiningAmount,
-    nd::NMiningGetter,
-    rd::REffect,
+    rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -38,7 +38,7 @@ fn get_mps_item_key(
     item_key: UItemKey,
     cycle_options: CycleOptions,
     ignore_state: bool,
-    mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
+    mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut item_mps = MiningAmount::default();
     let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, ignore_state) {
@@ -47,7 +47,7 @@ fn get_mps_item_key(
     };
     for (effect_key, cycle) in cycle_map {
         let effect = ctx.u_data.src.get_effect(effect_key);
-        if let Some(effect_mps) = get_mps_effect(ctx, calc, item_key, effect, cycle, mining_getter_getter) {
+        if let Some(effect_mps) = get_mps_effect(ctx, calc, item_key, effect, cycle, mining_ospec_getter) {
             item_mps += effect_mps;
         }
     }
@@ -60,22 +60,32 @@ fn get_mps_effect(
     item_key: UItemKey,
     effect: &REffect,
     effect_cycle: Cycle,
-    mining_getter_getter: fn(&REffect) -> Option<NMiningGetter>,
+    mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> Option<MiningAmount> {
-    let mining_getter = mining_getter_getter(effect)?;
-    let effect_cycle = effect_cycle.try_get_loop()?;
-    let mining_amount = mining_getter(ctx, calc, item_key, effect)?;
-    Some(mining_amount.get_total() / effect_cycle.get_average_time())
+    let ospec = mining_ospec_getter(effect)?;
+    let effect_cycle_loop = effect_cycle.to_time().try_get_loop()?;
+    let mut mining = MiningAmount {
+        yield_: OF(0.0),
+        drain: OF(0.0),
+    };
+    let mut time = OF(0.0);
+    let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
+    for effect_cycle_part in effect_cycle_loop.iter_parts() {
+        let cycle_mining = ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data)?;
+        mining += cycle_mining * AttrVal::from(effect_cycle_part.repeat_count);
+        time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
+    }
+    Some(mining / time)
 }
 
-fn get_getter_ore(effect: &REffect) -> Option<NMiningGetter> {
-    effect.mining_ore_opc_getter
+fn get_getter_ore(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {
+    effect.mining_ore_opc_spec
 }
 
-fn get_getter_ice(effect: &REffect) -> Option<NMiningGetter> {
-    effect.mining_ice_opc_getter
+fn get_getter_ice(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {
+    effect.mining_ice_opc_spec
 }
 
-fn get_getter_gas(effect: &REffect) -> Option<NMiningGetter> {
-    effect.mining_gas_opc_getter
+fn get_getter_gas(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {
+    effect.mining_gas_opc_spec
 }
