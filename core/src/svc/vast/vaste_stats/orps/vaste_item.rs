@@ -87,9 +87,10 @@ fn get_orr_effect(
     };
     let mut rep_amount = OF(0.0);
     let mut time = OF(0.0);
+    let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
     for effect_cycle_part in effect_cycle_loop.iter_parts() {
         let chargedness = effect_cycle_part.data.chargedness;
-        let cycle_rep_amount = ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, None)?;
+        let cycle_rep_amount = ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, invar_data)?;
         rep_amount += cycle_rep_amount * effect_cycle_part.repeat_count as f64;
         time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
     }

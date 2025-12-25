@@ -99,14 +99,15 @@ fn get_local_rps(
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
-        for (&effect_key, rep_ospec) in item_data.iter() {
+        for (&effect_key, ospec) in item_data.iter() {
             let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
                 Some(effect_cycle_loop) => effect_cycle_loop,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
             let chargedness = effect_cycle_loop.get_first().chargedness;
-            let output_per_cycle = match rep_ospec.get_total(ctx, calc, item_key, effect, chargedness) {
+            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
+            let output_per_cycle = match ospec.get_total(ctx, calc, item_key, effect, chargedness, invar_data) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,
             };
@@ -155,6 +156,7 @@ fn get_irr_data(
             } else {
                 None
             };
+            let invar_data = ospec.make_invar_data(ctx, calc, projector_item_key, effect, Some(projectee_item_key));
             let output_per_cycle = match ospec.get_output(
                 ctx,
                 calc,
@@ -162,7 +164,7 @@ fn get_irr_data(
                 effect,
                 effect_cycle_part.chargedness,
                 spool_mult,
-                Some(projectee_item_key),
+                invar_data,
             ) {
                 Some(hp_per_cycle) => hp_per_cycle,
                 None => continue,

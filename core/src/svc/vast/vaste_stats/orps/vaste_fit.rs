@@ -109,6 +109,7 @@ fn get_orrps(
                 None
             };
             let effect_cycle_part = effect_cycle.get_first();
+            let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
             let output_per_cycle = match ospec.get_total(
                 ctx,
                 calc,
@@ -116,7 +117,7 @@ fn get_orrps(
                 effect,
                 effect_cycle_part.chargedness,
                 spool_mult,
-                None,
+                invar_data,
             ) {
                 Some(output_per_cycle) => output_per_cycle,
                 None => continue,

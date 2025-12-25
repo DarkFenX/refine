@@ -179,13 +179,13 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
         };
         for (&effect_key, ospec) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle =
-                match ospec.get_total(ctx, calc, transfer_item_key, effect, None, None, Some(cap_item_key)) {
-                    Some(output_per_cycle) => output_per_cycle,
-                    None => continue,
-                };
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let invar_data = ospec.make_invar_data(ctx, calc, transfer_item_key, effect, Some(cap_item_key));
+            let output_per_cycle = match ospec.get_total(ctx, calc, transfer_item_key, effect, None, None, invar_data) {
+                Some(output_per_cycle) => output_per_cycle,
                 None => continue,
             };
             cps += output_per_cycle / effect_cycles.get_average_time();

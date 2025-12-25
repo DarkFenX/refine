@@ -95,7 +95,7 @@ fn get_local_ancil_hp(
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        'effect: for (&effect_key, rep_ospec) in item_data.iter() {
+        'effect: for (&effect_key, ospec) in item_data.iter() {
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
@@ -103,6 +103,7 @@ fn get_local_ancil_hp(
             let effect = ctx.u_data.src.get_effect(effect_key);
             let mut broken_sequence = false;
             let mut effect_ancil_hp = OF(0.0);
+            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
             let effect_cycle_parts = effect_cycles.get_parts();
             for effect_cycle_part in effect_cycle_parts.iter() {
                 // No charges in current part breaks sequence
@@ -121,13 +122,19 @@ fn get_local_ancil_hp(
                         _ => continue 'effect,
                     },
                 };
-                let hp_per_cycle =
-                    match rep_ospec.get_total(ctx, calc, item_key, effect, effect_cycle_part.data.chargedness) {
-                        Some(hp_per_cycle) => hp_per_cycle,
-                        // Assume that if HP was not returned for this part, it cannot be returned for
-                        // this effect altogether
-                        None => continue 'effect,
-                    };
+                let hp_per_cycle = match ospec.get_total(
+                    ctx,
+                    calc,
+                    item_key,
+                    effect,
+                    effect_cycle_part.data.chargedness,
+                    invar_data,
+                ) {
+                    Some(hp_per_cycle) => hp_per_cycle,
+                    // Assume that if HP was not returned for this part, it cannot be returned for
+                    // this effect altogether
+                    None => continue 'effect,
+                };
                 effect_ancil_hp += hp_per_cycle * effect_part_repeats as f64;
                 // Reloads break sequence
                 if let Some(interrupt) = effect_cycle_part.data.interrupt
@@ -173,6 +180,7 @@ fn get_remote_ancil_hp(
             let effect = ctx.u_data.src.get_effect(effect_key);
             let mut broken_sequence = false;
             let mut effect_ancil_hp = OF(0.0);
+            let invar_data = ospec.make_invar_data(ctx, calc, projector_item_key, effect, Some(projectee_item_key));
             let effect_cycle_parts = effect_cycles.get_parts();
             for effect_cycle_part in effect_cycle_parts.iter() {
                 // No charges in current part breaks sequence
@@ -198,7 +206,7 @@ fn get_remote_ancil_hp(
                     effect,
                     effect_cycle_part.data.chargedness,
                     None,
-                    Some(projectee_item_key),
+                    invar_data,
                 ) {
                     Some(hp_per_cycle) => hp_per_cycle,
                     // Assume that if HP was not returned for this part, it cannot be returned for

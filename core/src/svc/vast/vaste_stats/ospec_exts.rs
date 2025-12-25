@@ -1,14 +1,28 @@
 use crate::{
-    def::AttrVal,
+    def::{AttrVal, OF},
     misc::EffectSpec,
-    rd::{RAttrKey, REffect, REffectLocalOpcSpec, REffectProjOpcSpec},
+    rd::{RAttrKey, REffect, REffectLocalOpcSpec, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, calc::Calc, eff_funcs, output::Output},
     ud::UItemKey,
 };
 
-// TODO: expensive operations from here to level above - proj data, resists, limit calculation
+#[derive(Copy, Clone)]
+pub(super) struct EffectLocalInvarData {
+    ilimit: Option<AttrVal>,
+}
+
+#[derive(Copy, Clone)]
+pub(super) struct EffectProjInvarData {
+    mult: Option<AttrVal>,
+    ilimit: Option<AttrVal>,
+}
 
 impl REffectLocalOpcSpec<AttrVal> {
+    pub(super) fn make_invar_data(&self, ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> EffectLocalInvarData {
+        EffectLocalInvarData {
+            ilimit: get_self_ilimit(ctx, calc, item_key, self.ilimit_attr_key),
+        }
+    }
     pub(super) fn get_total(
         &self,
         ctx: SvcCtx,
@@ -16,6 +30,7 @@ impl REffectLocalOpcSpec<AttrVal> {
         item_key: UItemKey,
         effect: &REffect,
         chargedness: Option<AttrVal>,
+        invar_data: EffectLocalInvarData,
     ) -> Option<AttrVal> {
         let mut output = (self.base)(ctx, calc, item_key, effect)?;
         if let Some(charge_mult_getter) = self.charge_mult
@@ -24,7 +39,7 @@ impl REffectLocalOpcSpec<AttrVal> {
         {
             output *= charge_mult;
         }
-        if let Some(ilimit) = get_self_ilimit(ctx, calc, item_key, self.ilimit_attr_key) {
+        if let Some(ilimit) = invar_data.ilimit {
             output.limit_amount(ilimit);
         }
         Some(output.get_total())
@@ -32,6 +47,51 @@ impl REffectLocalOpcSpec<AttrVal> {
 }
 
 impl REffectProjOpcSpec<AttrVal> {
+    pub(super) fn make_invar_data(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        projector_key: UItemKey,
+        projector_effect: &REffect,
+        projectee_key: Option<UItemKey>,
+    ) -> EffectProjInvarData {
+        let projectee_key = match projectee_key {
+            Some(projectee_key) => projectee_key,
+            None => {
+                return EffectProjInvarData {
+                    mult: None,
+                    ilimit: None,
+                };
+            }
+        };
+        let proj_data = ctx.eff_projs.get_or_make_proj_data(
+            ctx.u_data,
+            EffectSpec::new(projector_key, projector_effect.key),
+            projectee_key,
+        );
+        let mut mult = OF(1.0);
+        mult *= (self.proj_mult)(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        match self.resist {
+            Some(REffectResist::Standard)
+                if let Some(resist_mult) =
+                    eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key) =>
+            {
+                mult *= resist_mult;
+            }
+            Some(REffectResist::Attr(resist_attr_key))
+                if let Some(resist_mult) = calc.get_item_attr_oextra(ctx, projectee_key, resist_attr_key) =>
+            {
+                mult *= resist_mult;
+            }
+            _ => (),
+        }
+        let mult = match mult {
+            OF(1.0) => None,
+            v => Some(v),
+        };
+        let ilimit = get_proj_ilimit(ctx, calc, projectee_key, self.ilimit_attr_key);
+        EffectProjInvarData { mult, ilimit }
+    }
     pub(super) fn get_output(
         &self,
         ctx: SvcCtx,
@@ -40,7 +100,7 @@ impl REffectProjOpcSpec<AttrVal> {
         projector_effect: &REffect,
         chargedness: Option<AttrVal>,
         spool_mult: Option<AttrVal>,
-        projectee_key: Option<UItemKey>,
+        invar_data: EffectProjInvarData,
     ) -> Option<Output<AttrVal>> {
         let mut output = (self.base)(ctx, calc, projector_key, projector_effect)?;
         // Chargedness
@@ -54,24 +114,13 @@ impl REffectProjOpcSpec<AttrVal> {
         if let Some(spool_mult) = spool_mult {
             output *= spool_mult;
         }
-        if let Some(projectee_key) = projectee_key {
-            let proj_data = ctx.eff_projs.get_or_make_proj_data(
-                ctx.u_data,
-                EffectSpec::new(projector_key, projector_effect.key),
-                projectee_key,
-            );
-            // Projection reduction
-            output *= (self.proj_mult)(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-            // Effect resistance reduction
-            if let Some(rr_mult) =
-                eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
-            {
-                output *= rr_mult;
-            }
-            // Resource pool limit
-            if let Some(ilimit) = get_proj_ilimit(ctx, calc, projectee_key, self.ilimit_attr_key) {
-                output.limit_amount(ilimit);
-            }
+        // Projection & resistance effect reduction
+        if let Some(invar_mult) = invar_data.mult {
+            output *= invar_mult;
+        }
+        // Instance limit
+        if let Some(ilimit) = invar_data.ilimit {
+            output.limit_amount(ilimit);
         }
         Some(output)
     }
@@ -83,7 +132,7 @@ impl REffectProjOpcSpec<AttrVal> {
         projector_effect: &REffect,
         chargedness: Option<AttrVal>,
         spool_mult: Option<AttrVal>,
-        projectee_key: Option<UItemKey>,
+        invar_data: EffectProjInvarData,
     ) -> Option<AttrVal> {
         let output = self.get_output(
             ctx,
@@ -92,7 +141,7 @@ impl REffectProjOpcSpec<AttrVal> {
             projector_effect,
             chargedness,
             spool_mult,
-            projectee_key,
+            invar_data,
         )?;
         Some(output.get_total())
     }

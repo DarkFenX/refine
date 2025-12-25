@@ -142,14 +142,15 @@ fn fill_transfers(
         };
         for (&effect_key, ospec) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let output_per_cycle =
-                match ospec.get_output(ctx, calc, transfer_item_key, effect, None, None, Some(cap_item_key)) {
-                    Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
-                    _ => continue,
-                };
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
                 None => continue,
+            };
+            let invar_data = ospec.make_invar_data(ctx, calc, transfer_item_key, effect, Some(cap_item_key));
+            let output_per_cycle = match ospec.get_output(ctx, calc, transfer_item_key, effect, None, None, invar_data)
+            {
+                Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
+                _ => continue,
             };
             match stagger.is_staggered(transfer_item_key) {
                 true => stagger_map.add_entry(
