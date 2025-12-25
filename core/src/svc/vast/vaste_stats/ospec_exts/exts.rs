@@ -1,3 +1,4 @@
+use super::invar_data::{EffectLocalInvarData, EffectProjInvarData};
 use crate::{
     def::{AttrVal, OF},
     misc::{AttrSpec, EffectSpec},
@@ -6,25 +7,18 @@ use crate::{
     ud::UItemKey,
 };
 
-#[derive(Copy, Clone)]
-pub(super) struct EffectLocalInvarData {
-    ilimit: Option<AttrVal>,
-}
-
-#[derive(Copy, Clone)]
-pub(super) struct EffectProjInvarData {
-    mult_pre: Option<AttrVal>,
-    ilimit: Option<AttrVal>,
-    mult_post: Option<AttrVal>,
-}
-
 impl REffectLocalOpcSpec<AttrVal> {
-    pub(super) fn make_invar_data(&self, ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> EffectLocalInvarData {
+    pub(in crate::svc::vast::vaste_stats) fn make_invar_data(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+    ) -> EffectLocalInvarData {
         EffectLocalInvarData {
             ilimit: get_self_ilimit(ctx, calc, item_key, self.ilimit_attr_key),
         }
     }
-    pub(super) fn get_total(
+    pub(in crate::svc::vast::vaste_stats) fn get_total(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -48,7 +42,7 @@ impl REffectLocalOpcSpec<AttrVal> {
 }
 
 impl REffectProjOpcSpec<AttrVal> {
-    pub(super) fn make_invar_data(
+    pub(in crate::svc::vast::vaste_stats) fn make_invar_data(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -107,7 +101,7 @@ impl REffectProjOpcSpec<AttrVal> {
             mult_post,
         }
     }
-    pub(super) fn get_output(
+    pub(in crate::svc::vast::vaste_stats) fn get_output(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -143,7 +137,7 @@ impl REffectProjOpcSpec<AttrVal> {
         }
         Some(output)
     }
-    pub(super) fn get_total(
+    pub(in crate::svc::vast::vaste_stats) fn get_total(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
