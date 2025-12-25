@@ -89,7 +89,6 @@ pub(crate) struct RAttrConsts {
     pub(crate) doomsday_dmg_duration: Option<RAttrKey>,
     pub(crate) doomsday_energy_neut_amount: Option<RAttrKey>,
     pub(crate) doomsday_energy_neut_radius: Option<RAttrKey>,
-    pub(crate) doomsday_energy_neut_resist_id: Option<RAttrKey>,
     pub(crate) doomsday_energy_neut_sig_radius: Option<RAttrKey>,
     pub(crate) doomsday_warning_duration: Option<RAttrKey>,
     pub(crate) dot_duration: Option<RAttrKey>,
@@ -177,8 +176,6 @@ pub(crate) struct RAttrConsts {
     pub(crate) recharge_rate: Option<RAttrKey>,
     pub(crate) reload_time: Option<RAttrKey>,
     pub(crate) remote_resist_id: Option<RAttrKey>,
-    pub(crate) rep_mult_bonus_max: Option<RAttrKey>,
-    pub(crate) rep_mult_bonus_per_cycle: Option<RAttrKey>,
     pub(crate) required_thermodynamics_skill: Option<RAttrKey>,
     pub(crate) resist_shift_amount: Option<RAttrKey>,
     pub(crate) rig_size: Option<RAttrKey>,
@@ -326,7 +323,6 @@ impl RAttrConsts {
             doomsday_dmg_duration: attr_id_key_map.get(&ac::attrs::DOOMSDAY_DMG_DURATION).copied(),
             doomsday_energy_neut_amount: attr_id_key_map.get(&ac::attrs::DOOMSDAY_ENERGY_NEUT_AMOUNT).copied(),
             doomsday_energy_neut_radius: attr_id_key_map.get(&ac::attrs::DOOMSDAY_ENERGY_NEUT_RADIUS).copied(),
-            doomsday_energy_neut_resist_id: attr_id_key_map.get(&ac::attrs::DOOMSDAY_ENERGY_NEUT_RESIST_ID).copied(),
             doomsday_energy_neut_sig_radius: attr_id_key_map
                 .get(&ac::attrs::DOOMSDAY_ENERGY_NEUT_SIG_RADIUS)
                 .copied(),
@@ -418,8 +414,6 @@ impl RAttrConsts {
             recharge_rate: attr_id_key_map.get(&ac::attrs::RECHARGE_RATE).copied(),
             reload_time: attr_id_key_map.get(&ac::attrs::RELOAD_TIME).copied(),
             remote_resist_id: attr_id_key_map.get(&ac::attrs::REMOTE_RESIST_ID).copied(),
-            rep_mult_bonus_max: attr_id_key_map.get(&ac::attrs::REP_MULT_BONUS_MAX).copied(),
-            rep_mult_bonus_per_cycle: attr_id_key_map.get(&ac::attrs::REP_MULT_BONUS_PER_CYCLE).copied(),
             required_thermodynamics_skill: attr_id_key_map.get(&ac::attrs::REQUIRED_THERMODYNAMICS_SKILL).copied(),
             resist_shift_amount: attr_id_key_map.get(&ac::attrs::RESIST_SHIFT_AMOUNT).copied(),
             rig_size: attr_id_key_map.get(&ac::attrs::RIG_SIZE).copied(),

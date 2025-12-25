@@ -4,8 +4,15 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc},
-    svc::{SvcCtx, calc::Calc},
+    nd::{
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
+    },
+    rd::REffect,
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        output::{Output, OutputSimple},
+    },
     ud::UItemKey,
 };
 
@@ -20,19 +27,24 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
         }),
-        cap_inject_getter: Some(get_cap_inject),
+        cap_inject_opc_spec: Some(NEffectLocalOpcSpec {
+            base: internal_get_cap_inject,
+            ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            ..
+        }),
         ..
     }
 }
 
-fn get_cap_inject(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
+fn internal_get_cap_inject(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    _effect: &REffect,
+) -> Option<Output<AttrVal>> {
     let item = ctx.u_data.items.get(item_key);
     let charge_key = item.get_charge_key()?;
     let attr_consts = ctx.ac();
-    let charge_amount = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.capacitor_bonus, OF(0.0))?;
-    let fit_key = ctx.u_data.items.get(charge_key).dc_charge().unwrap().get_fit_key();
-    let ship_key = ctx.u_data.fits.get(fit_key).ship;
-    let ship_amount = calc.get_oitem_oattr_ffb_extra(ctx, ship_key, attr_consts.capacitor_capacity, OF(0.0));
-    let amount = AttrVal::min(charge_amount, ship_amount);
-    Some(amount)
+    let amount = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.capacitor_bonus, OF(0.0))?;
+    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }

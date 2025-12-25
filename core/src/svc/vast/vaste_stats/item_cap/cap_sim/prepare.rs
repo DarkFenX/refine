@@ -171,16 +171,18 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (&effect_key, cap_getter) in item_data.iter() {
-            let cap_injected = match cap_getter(ctx, calc, item_key) {
+        for (&effect_key, ospec) in item_data.iter() {
+            let effect_cycles = match cycle_map.get(&effect_key) {
+                Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
+            let cap_injected = match ospec.get_total(ctx, calc, item_key, effect, None, invar_data) {
                 // Even if some injector has negative value, player doesn't have to use it, so it is
                 // just ignored
                 Some(cap_injected) if cap_injected > FLOAT_TOLERANCE => cap_injected,
                 _ => continue,
-            };
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
-                None => continue,
             };
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),

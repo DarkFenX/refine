@@ -85,9 +85,9 @@ impl Vast {
                         // Outgoing reps
                         self.handle_orrs_start(effect, item_key, &module.get_fit_key());
                         // Cap
-                        if let Some(cap_inject_getter) = effect.cap_inject_getter {
+                        if let Some(inject_ospec) = effect.cap_inject_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
-                            fit_data.cap_injects.add_entry(item_key, effect.key, cap_inject_getter);
+                            fit_data.cap_injects.add_entry(item_key, effect.key, inject_ospec);
                         }
                         self.handle_neut_start(effect, item_key, &module.get_fit_key());
                         if let Some(use_attr_key) = effect.discharge_attr_key {
@@ -176,7 +176,7 @@ impl Vast {
                         // Outgoing reps
                         self.handle_orrs_stop(effect, item_key, &module.get_fit_key());
                         // Cap
-                        if effect.cap_inject_getter.is_some() {
+                        if effect.cap_inject_opc_spec.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_key());
                             fit_data.cap_injects.remove_l2(item_key, &effect.key);
                         }

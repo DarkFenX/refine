@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
     misc::{AttrSpec, EffectSpec},
-    nd::{NBreacherDmgGetter, NCapInjectGetter, NEcmGetter, NMiningGetter, NNormalDmgGetter},
+    nd::{NBreacherDmgGetter, NEcmGetter, NMiningGetter, NNormalDmgGetter},
     rd::{RAttrKey, REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -143,7 +143,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) lr_hull: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
     // Stats-related - cap
     pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemKey, REffectKey, RAttrKey>,
-    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, NCapInjectGetter>,
+    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
     // Stats-related - misc
     pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
 }

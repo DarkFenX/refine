@@ -114,13 +114,15 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> Attr
             Some(cycle_map) => cycle_map,
             None => continue,
         };
-        for (&effect_key, cap_getter) in item_data.iter() {
-            let cap_injected = match cap_getter(ctx, calc, item_key) {
-                Some(cap_injected) => cap_injected,
-                None => continue,
-            };
+        for (&effect_key, ospec) in item_data.iter() {
             let effect_cycles = match cycle_map.get(&effect_key) {
                 Some(effect_cycles) => effect_cycles,
+                None => continue,
+            };
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
+            let cap_injected = match ospec.get_total(ctx, calc, item_key, effect, None, invar_data) {
+                Some(cap_injected) => cap_injected,
                 None => continue,
             };
             cps += cap_injected / effect_cycles.get_average_time();
