@@ -9,8 +9,6 @@ use crate::{
 
 pub(crate) type NBaseOutputGetter<T> = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<T>>;
 pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemKey, AttrVal) -> Option<AttrVal>;
-pub(crate) type NLocalInstanceLimitGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
-pub(crate) type NProjInstanceLimitGetter = fn(SvcCtx, &mut Calc, UItemKey) -> Option<AttrVal>;
 
 pub(crate) struct NEffectLocalOpcSpec<T>
 where

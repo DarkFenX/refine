@@ -43,9 +43,6 @@ impl OutputComplex<AttrVal> {
     pub(super) fn absolute_impact(&self) -> AttrVal {
         self.amount.abs() * self.repeats as f64
     }
-    pub(super) fn limit_amount(&mut self, amount: AttrVal) {
-        self.amount = Float::min(self.amount, amount);
-    }
     pub(super) fn add_amount(&mut self, amount: AttrVal) {
         self.amount += amount;
     }

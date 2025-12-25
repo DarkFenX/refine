@@ -1,4 +1,11 @@
-use super::invar_data::{EffectLocalInvarData, EffectProjInvarData};
+#![allow(private_bounds)]
+
+use super::{
+    instance_limit::InstanceLimit,
+    instance_mul::InstanceMulAssign,
+    instance_sum::InstanceMul,
+    invar_data::{EffectLocalInvarData, EffectProjInvarData},
+};
 use crate::{
     def::{AttrVal, OF},
     misc::{AttrSpec, EffectSpec},
@@ -7,7 +14,10 @@ use crate::{
     ud::UItemKey,
 };
 
-impl REffectLocalOpcSpec<AttrVal> {
+impl<T> REffectLocalOpcSpec<T>
+where
+    T: Copy + InstanceMul + InstanceMulAssign + InstanceLimit,
+{
     pub(in crate::svc::vast::vaste_stats) fn make_invar_data(
         &self,
         ctx: SvcCtx,
@@ -26,22 +36,25 @@ impl REffectLocalOpcSpec<AttrVal> {
         effect: &REffect,
         chargedness: Option<AttrVal>,
         invar_data: EffectLocalInvarData,
-    ) -> Option<AttrVal> {
+    ) -> Option<T> {
         let mut output = (self.base)(ctx, calc, item_key, effect)?;
         if let Some(charge_mult_getter) = self.charge_mult
             && let Some(chargedness) = chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
         {
-            output *= charge_mult;
+            output.instance_mul_assign(charge_mult);
         }
         if let Some(ilimit) = invar_data.ilimit {
-            output.limit_amount(ilimit);
+            output.instance_limit(ilimit);
         }
-        Some(output.get_total())
+        Some(output.instance_sum())
     }
 }
 
-impl REffectProjOpcSpec<AttrVal> {
+impl<T> REffectProjOpcSpec<T>
+where
+    T: Copy + InstanceMul + InstanceMulAssign + InstanceLimit,
+{
     pub(in crate::svc::vast::vaste_stats) fn make_invar_data(
         &self,
         ctx: SvcCtx,
@@ -110,30 +123,30 @@ impl REffectProjOpcSpec<AttrVal> {
         chargedness: Option<AttrVal>,
         spool_mult: Option<AttrVal>,
         invar_data: EffectProjInvarData,
-    ) -> Option<Output<AttrVal>> {
+    ) -> Option<Output<T>> {
         let mut output = (self.base)(ctx, calc, projector_key, projector_effect)?;
         // Chargedness
         if let Some(charge_mult_getter) = self.charge_mult
             && let Some(chargedness) = chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
         {
-            output *= charge_mult;
+            output.instance_mul_assign(charge_mult);
         }
         // Spool
         if let Some(spool_mult) = spool_mult {
-            output *= spool_mult;
+            output.instance_mul_assign(spool_mult);
         }
         // Pre-limit projection & resistance effect reduction
         if let Some(invar_mult) = invar_data.mult_pre {
-            output *= invar_mult;
+            output.instance_mul_assign(invar_mult);
         }
         // Instance limit
         if let Some(ilimit) = invar_data.ilimit {
-            output.limit_amount(ilimit);
+            output.instance_limit(ilimit);
         }
         // Post-limit projection effect reduction
         if let Some(invar_mult) = invar_data.mult_post {
-            output *= invar_mult;
+            output.instance_mul_assign(invar_mult);
         }
         Some(output)
     }
@@ -146,7 +159,7 @@ impl REffectProjOpcSpec<AttrVal> {
         chargedness: Option<AttrVal>,
         spool_mult: Option<AttrVal>,
         invar_data: EffectProjInvarData,
-    ) -> Option<AttrVal> {
+    ) -> Option<T> {
         let output = self.get_output(
             ctx,
             calc,
@@ -156,7 +169,7 @@ impl REffectProjOpcSpec<AttrVal> {
             spool_mult,
             invar_data,
         )?;
-        Some(output.get_total())
+        Some(output.instance_sum())
     }
 }
 

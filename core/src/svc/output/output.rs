@@ -55,12 +55,6 @@ impl Output<AttrVal> {
             Output::Complex(inner) => inner.absolute_impact(),
         }
     }
-    pub(in crate::svc) fn limit_amount(&mut self, amount: AttrVal) {
-        match self {
-            Output::Simple(inner) => inner.limit_amount(amount),
-            Output::Complex(inner) => inner.limit_amount(amount),
-        }
-    }
     pub(in crate::svc) fn add_amount(&mut self, amount: AttrVal) {
         match self {
             Output::Simple(inner) => inner.add_amount(amount),
