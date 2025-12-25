@@ -1,7 +1,5 @@
 #![allow(private_bounds)]
 
-use std::ops::Mul;
-
 use crate::{
     def::AttrVal,
     svc::output::{Output, OutputComplex, OutputSimple},
@@ -16,7 +14,7 @@ pub(super) trait InstanceMul {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl InstanceMul for AttrVal {
     fn instance_mul(self, mult: AttrVal) -> Self {
-        self.mul(mult)
+        self * mult
     }
 }
 
