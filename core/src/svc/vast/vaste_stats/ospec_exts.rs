@@ -13,8 +13,9 @@ pub(super) struct EffectLocalInvarData {
 
 #[derive(Copy, Clone)]
 pub(super) struct EffectProjInvarData {
-    mult: Option<AttrVal>,
+    mult_pre: Option<AttrVal>,
     ilimit: Option<AttrVal>,
+    mult_post: Option<AttrVal>,
 }
 
 impl REffectLocalOpcSpec<AttrVal> {
@@ -59,8 +60,9 @@ impl REffectProjOpcSpec<AttrVal> {
             Some(projectee_key) => projectee_key,
             None => {
                 return EffectProjInvarData {
-                    mult: None,
+                    mult_pre: None,
                     ilimit: None,
+                    mult_post: None,
                 };
             }
         };
@@ -69,14 +71,16 @@ impl REffectProjOpcSpec<AttrVal> {
             EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
-        let mut mult = OF(1.0);
-        mult *= (self.proj_mult)(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mut mult_pre = OF(1.0);
+        if let Some(proj_mult_getter) = self.proj_mult_pre {
+            mult_pre *= proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        }
         match self.resist {
             Some(REffectResist::Standard)
                 if let Some(resist_mult) =
                     eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key) =>
             {
-                mult *= resist_mult;
+                mult_pre *= resist_mult;
             }
             Some(REffectResist::Attr(resist_attr_key))
                 if let Some(resist_mult) = eff_funcs::get_resist_mult_by_projectee_aspec(
@@ -85,16 +89,23 @@ impl REffectProjOpcSpec<AttrVal> {
                     &AttrSpec::new(projectee_key, resist_attr_key),
                 ) =>
             {
-                mult *= resist_mult;
+                mult_pre *= resist_mult;
             }
             _ => (),
         }
-        let mult = match mult {
-            OF(1.0) => None,
-            v => Some(v),
+        let mult_post = match self.proj_mult_post {
+            Some(proj_mult_getter) => {
+                let mult = proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+                process_mult(mult)
+            }
+            None => None,
         };
         let ilimit = get_proj_ilimit(ctx, calc, projectee_key, self.ilimit_attr_key);
-        EffectProjInvarData { mult, ilimit }
+        EffectProjInvarData {
+            mult_pre: process_mult(mult_pre),
+            ilimit,
+            mult_post,
+        }
     }
     pub(super) fn get_output(
         &self,
@@ -118,13 +129,17 @@ impl REffectProjOpcSpec<AttrVal> {
         if let Some(spool_mult) = spool_mult {
             output *= spool_mult;
         }
-        // Projection & resistance effect reduction
-        if let Some(invar_mult) = invar_data.mult {
+        // Pre-limit projection & resistance effect reduction
+        if let Some(invar_mult) = invar_data.mult_pre {
             output *= invar_mult;
         }
         // Instance limit
         if let Some(ilimit) = invar_data.ilimit {
             output.limit_amount(ilimit);
+        }
+        // Post-limit projection effect reduction
+        if let Some(invar_mult) = invar_data.mult_post {
+            output *= invar_mult;
         }
         Some(output)
     }
@@ -165,4 +180,11 @@ fn get_proj_ilimit(
     attr_key: Option<RAttrKey>,
 ) -> Option<AttrVal> {
     calc.get_item_oattr_oextra(ctx, projectee_key, attr_key)
+}
+
+fn process_mult(mult: AttrVal) -> Option<AttrVal> {
+    match mult {
+        OF(1.0) => None,
+        v => Some(v),
+    }
 }

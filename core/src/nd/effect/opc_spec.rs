@@ -26,9 +26,10 @@ where
     T: Copy
 {
     pub(crate) base: NBaseOutputGetter<T>,
-    pub(crate) proj_mult: NProjMultGetter,
     pub(crate) spoolable: bool = false,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
+    pub(crate) proj_mult_pre: Option<NProjMultGetter> = None,
     pub(crate) resist: Option<NEffectResist> = None,
     pub(crate) ilimit_attr_id: Option<AAttrId> = None,
+    pub(crate) proj_mult_post: Option<NProjMultGetter> = None,
 }

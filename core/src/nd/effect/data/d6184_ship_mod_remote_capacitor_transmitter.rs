@@ -18,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         outgoing_cap_opc_spec: Some(NEffectProjOpcSpec {
             base: get_cap_trans_base_opc,
-            proj_mult: get_simple_s2s_noapp_proj_mult,
+            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
             ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
             ..
