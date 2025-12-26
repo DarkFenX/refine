@@ -2,7 +2,7 @@ use ordered_float::Float;
 
 use crate::{
     def::{AttrVal, Count, OF},
-    util::FLOAT_TOLERANCE,
+    util::{FLOAT_TOLERANCE, Limit},
 };
 
 #[derive(Copy, Clone)]
@@ -35,6 +35,14 @@ where
 {
     pub(super) fn get_total(&self) -> T {
         self.amount * OF(self.repeats as f64)
+    }
+}
+impl<T> OutputComplex<T>
+where
+    T: Copy + Limit,
+{
+    pub(super) fn limit_amount(&mut self, limit: AttrVal) {
+        self.amount.limit(limit);
     }
 }
 impl OutputComplex<AttrVal> {

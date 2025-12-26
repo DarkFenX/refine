@@ -45,22 +45,25 @@ where
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
-    let mut output = T::default();
+    let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_repeat_count = OF::from(cycle_part.repeat_count);
-        // Output
-        let mut part_output = inv_data.base.instance_sum() * cycle_repeat_count;
+        // Value
+        let mut part_output = inv_data.base;
         if let Some(chargedness) = cycle_part.data.chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
         {
             part_output *= charge_mult;
         }
-        output += part_output;
+        if let Some(limit) = inv_data.ilimit {
+            part_output.limit_amount(limit);
+        }
+        value += part_output.instance_sum() * cycle_repeat_count;
         // Time
         time += cycle_part.data.time * cycle_repeat_count;
     }
-    Some(output / time)
+    Some(value / time)
 }
 
 fn aggr_local_time<T>(
@@ -76,12 +79,18 @@ where
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
-    let mut output = T::default();
+    let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_repeat_count = OF::from(cycle_part.repeat_count);
-        output += inv_data.base.instance_sum() * cycle_repeat_count;
+        // Value
+        let mut part_output = inv_data.base;
+        if let Some(limit) = inv_data.ilimit {
+            part_output.limit_amount(limit);
+        }
+        value += part_output.instance_sum() * cycle_repeat_count;
+        // Time
         time += cycle_part.data.time * cycle_repeat_count;
     }
-    Some(output / time)
+    Some(value / time)
 }

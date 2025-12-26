@@ -19,12 +19,15 @@ where
 {
     let cycle = cseq.get_first_cycle();
     let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
-    let mut output = inv_data.base.instance_sum();
+    let mut output = inv_data.base;
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = cycle.chargedness
         && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
     {
         output *= charge_mult;
     }
-    Some(output / cycle.time)
+    if let Some(limit) = inv_data.ilimit {
+        output.limit_amount(limit);
+    }
+    Some(output.instance_sum() / cycle.time)
 }

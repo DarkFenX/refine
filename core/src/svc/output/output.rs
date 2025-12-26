@@ -1,5 +1,5 @@
 use super::{output_complex::OutputComplex, output_simple::OutputSimple};
-use crate::def::AttrVal;
+use crate::{def::AttrVal, util::Limit};
 
 #[derive(Copy, Clone)]
 pub(crate) enum Output<T>
@@ -40,6 +40,17 @@ where
         match self {
             Output::Simple(inner) => inner.get_total(),
             Output::Complex(inner) => inner.get_total(),
+        }
+    }
+}
+impl<T> Output<T>
+where
+    T: Copy + Limit,
+{
+    pub(in crate::svc) fn limit_amount(&mut self, limit: AttrVal) {
+        match self {
+            Output::Simple(inner) => inner.limit_amount(limit),
+            Output::Complex(inner) => inner.limit_amount(limit),
         }
     }
 }
