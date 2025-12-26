@@ -18,7 +18,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVals},
-        eff_funcs,
+        funcs,
     },
     ud::{UFitKey, UItemKey},
     util::{RMap, RSet},
@@ -213,7 +213,7 @@ impl Calc {
             return None;
         }
         let rah_espec = EffectSpec::new(item_key, ctx.ec().adaptive_armor_hardener?);
-        let cycle_s = eff_funcs::get_espec_duration_s(ctx, self, rah_espec)?;
+        let cycle_s = funcs::get_espec_duration_s(ctx, self, rah_espec)?;
         let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
         Some(RahDataSim::new(rah_info))
     }

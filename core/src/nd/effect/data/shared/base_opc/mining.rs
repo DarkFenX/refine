@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        eff_funcs,
+        funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
@@ -54,7 +54,7 @@ fn get_mining_values(
     item_key: UItemKey,
     effect: &REffect,
 ) -> Option<(AttrVal, AttrVal, AttrVal)> {
-    let delay = eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
+    let delay = funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
     let attr_consts = ctx.ac();
     let yield_ = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_amount, OF(0.0))?;
     let waste_chance = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mining_waste_probability, OF(0.0))?;

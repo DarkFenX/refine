@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     rd::{RAttrKey, REffect},
-    svc::{SvcCtx, calc::Calc, item_funcs},
+    svc::{SvcCtx, calc::Calc, funcs},
     ud::{UItemKey, UProjData},
     util::Xyz,
 };
@@ -27,8 +27,8 @@ pub(in crate::nd::effect::data) fn get_missile_application_mult(
     let src_drf = calc
         .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.aoe_dmg_reduction_factor, OF(0.0))
         .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key);
-    let tgt_speed = proj_data.get_tgt_speed() * item_funcs::get_speed(ctx, calc, projectee_key);
+    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_key);
+    let tgt_speed = proj_data.get_tgt_speed() * funcs::get_speed(ctx, calc, projectee_key);
     // "Static" part
     let radius_ratio = tgt_sig_radius / src_er;
     if radius_ratio.is_nan() {
@@ -72,7 +72,7 @@ pub(super) fn get_turret_application_mult(
     let turret_tracking_speed = calc
         .get_item_oattr_ffb_extra(ctx, projector_key, projector_effect.track_attr_key, OF(0.0))
         .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key);
+    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_key);
     let result = ordered_float::Float::powf(
         OF(0.5),
         OF((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2)),
@@ -93,7 +93,7 @@ pub(super) fn get_radius_ratio_mult(
     let src_effect_radius = calc
         .get_item_oattr_ffb_extra(ctx, projector_key, src_attr_key, OF(0.0))
         .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key);
+    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_key);
     let radius_ratio = tgt_sig_radius / src_effect_radius;
     if radius_ratio.is_nan() {
         return OF(0.0);
@@ -145,7 +145,7 @@ fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, direction: Xyz, 
     if speed_perc <= OF(0.0) {
         return Xyz::default();
     }
-    let speed_max = item_funcs::get_speed(ctx, calc, item_key);
+    let speed_max = funcs::get_speed(ctx, calc, item_key);
     if speed_max <= OF(0.0) {
         return Xyz::default();
     }

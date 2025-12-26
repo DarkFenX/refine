@@ -20,7 +20,7 @@ use crate::{
                 get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
             },
         },
-        eff_funcs,
+        funcs,
     },
     ud::{UItem, UItemKey, UModule},
     util::{FLOAT_TOLERANCE, InfCount, RMap},
@@ -85,7 +85,7 @@ fn fill_module_effect_info(
         return;
     }
     // No appropriate duration - no info
-    let duration = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
+    let duration = match funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
         Some(duration) => duration,
         None => return,
     };

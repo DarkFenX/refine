@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{Cycle, CycleDataFull, cycle_inf::CycleInf},
-        eff_funcs,
+        funcs,
     },
     ud::{UDrone, UItemKey},
     util::RMap,
@@ -32,7 +32,7 @@ pub(super) fn get_drone_cycle_info(
         if !effect.is_active_with_duration {
             continue;
         }
-        let duration_s = match eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
+        let duration_s = match funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
             Some(duration_s) => duration_s,
             None => continue,
         };

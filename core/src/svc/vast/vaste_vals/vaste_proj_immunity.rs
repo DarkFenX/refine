@@ -5,7 +5,7 @@ use crate::{
     def::{ItemId, OF},
     misc::EffectSpec,
     rd::RAttrKey,
-    svc::{SvcCtx, calc::Calc, eff_funcs, vast::VastFitData},
+    svc::{SvcCtx, calc::Calc, funcs, vast::VastFitData},
     ud::UItemKey,
     util::{RMapRSet, RSet},
 };
@@ -46,7 +46,7 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if eff_funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0)) {
+            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0)) {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
@@ -90,7 +90,7 @@ impl VastFitData {
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if eff_funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
+            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
                 && projector_especs.len() > 0
             {
                 let projectee_item_id = ctx.u_data.items.id_by_key(projectee_aspec.item_key);

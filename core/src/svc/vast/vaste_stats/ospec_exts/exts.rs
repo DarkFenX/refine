@@ -10,7 +10,7 @@ use crate::{
     def::{AttrVal, OF},
     misc::{AttrSpec, EffectSpec},
     rd::{RAttrKey, REffect, REffectLocalOpcSpec, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, calc::Calc, eff_funcs, output::Output},
+    svc::{SvcCtx, calc::Calc, funcs, output::Output},
     ud::UItemKey,
 };
 
@@ -85,12 +85,12 @@ where
         match self.resist {
             Some(REffectResist::Standard)
                 if let Some(resist_mult) =
-                    eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key) =>
+                    funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key) =>
             {
                 mult_pre *= resist_mult;
             }
             Some(REffectResist::Attr(resist_attr_key))
-                if let Some(resist_mult) = eff_funcs::get_resist_mult_by_projectee_aspec(
+                if let Some(resist_mult) = funcs::get_resist_mult_by_projectee_aspec(
                     ctx,
                     calc,
                     &AttrSpec::new(projectee_key, resist_attr_key),

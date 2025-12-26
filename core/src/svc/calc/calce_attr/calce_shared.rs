@@ -5,8 +5,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, misc::ItemAttrData},
-        eff_funcs,
         err::KeyedItemLoadedError,
+        funcs,
     },
     ud::{UItem, UItemKey},
 };
@@ -21,8 +21,7 @@ impl Calc {
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {
         let resist_attr_key = cmod.raw.resist_attr_key?;
         let item_key = cmod.ctx.get_item_key()?;
-        let resist =
-            eff_funcs::get_resist_mult_by_projectee_aspec(ctx, self, &AttrSpec::new(item_key, resist_attr_key))?;
+        let resist = funcs::get_resist_mult_by_projectee_aspec(ctx, self, &AttrSpec::new(item_key, resist_attr_key))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<AttrVal> {

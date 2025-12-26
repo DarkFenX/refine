@@ -3,7 +3,7 @@ use super::item_checks::{
 };
 use crate::{
     def::{AttrVal, OF},
-    svc::{SvcCtx, calc::Calc, err::StatItemCheckError, item_funcs, vast::Vast},
+    svc::{SvcCtx, calc::Calc, err::StatItemCheckError, funcs, vast::Vast},
     ud::UItemKey,
     util::{FLOAT_TOLERANCE, ceil_tick},
 };
@@ -18,7 +18,7 @@ impl Vast {
         item_key: UItemKey,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
-        let speed = item_funcs::get_speed(ctx, calc, item_key);
+        let speed = funcs::get_speed(ctx, calc, item_key);
         Ok(speed)
     }
     pub(in crate::svc) fn get_stat_item_agility(
@@ -68,7 +68,7 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
     ) -> AttrVal {
-        item_funcs::get_sig_radius(ctx, calc, item_key)
+        funcs::get_sig_radius(ctx, calc, item_key)
     }
     pub(in crate::svc) fn get_stat_item_mass(
         ctx: SvcCtx,

@@ -3,17 +3,16 @@
 pub(crate) use ctx::SvcCtx;
 pub(crate) use svc::Svc;
 
+mod api;
 pub(crate) mod calc;
 mod ctx;
 pub(crate) mod cycle;
-pub(crate) mod eff_funcs;
 pub(crate) mod eff_projs;
 pub(crate) mod err;
-pub(crate) mod item_funcs;
+pub(crate) mod funcs;
 pub(crate) mod output;
 mod spool;
 mod svc;
 mod svce_debug;
 mod svce_notify;
-mod svce_request;
 pub(crate) mod vast;

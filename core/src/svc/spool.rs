@@ -2,7 +2,7 @@ use crate::{
     def::{AttrVal, Count, OF},
     misc::Spool,
     rd::{REffect, RSpoolAttrs},
-    svc::{SvcCtx, calc::Calc, eff_funcs},
+    svc::{SvcCtx, calc::Calc, funcs},
     ud::UItemKey,
     util::{ceil_unerr, floor_unerr},
 };
@@ -21,7 +21,7 @@ impl ResolvedSpool {
         spool: Option<Spool>,
         spool_attrs: RSpoolAttrs,
     ) -> Option<Self> {
-        let duration_s = eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
+        let duration_s = funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
         let spool_step = calc.get_item_attr_oextra(ctx, item_key, spool_attrs.step)?;
         let spool_max = calc.get_item_attr_oextra(ctx, item_key, spool_attrs.max)?;
         let spool = ctx.u_data.get_item_key_spool(item_key, spool);

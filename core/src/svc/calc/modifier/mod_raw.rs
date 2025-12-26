@@ -15,7 +15,7 @@ use crate::{
         calc::{
             AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser, Location, ModifierKind,
         },
-        eff_funcs,
+        funcs,
     },
     ud::{UItem, UItemKey},
 };
@@ -72,7 +72,7 @@ impl RawModifier {
         let kind = get_effect_mod_kind(effect.category, &affectee_filter)?;
         // Only targeted effects can be affected by resists
         let resist_attr_key = match kind {
-            ModifierKind::Targeted => eff_funcs::get_resist_attr_key(affector_item, effect),
+            ModifierKind::Targeted => funcs::get_resist_attr_key(affector_item, effect),
             _ => None,
         };
         Some(Self {
@@ -179,7 +179,7 @@ impl RawModifier {
                 buff_type_attr_key,
                 proj_mult_getter: effect.modifier_proj_mult_getter,
                 proj_attr_keys: effect.modifier_proj_attr_keys,
-                resist_attr_key: eff_funcs::get_resist_attr_key(affector_item, effect),
+                resist_attr_key: funcs::get_resist_attr_key(affector_item, effect),
                 ..
             },
             // Fleet buffs cannot be resisted and range-reduced regardless of what effect says

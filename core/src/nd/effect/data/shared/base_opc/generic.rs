@@ -4,7 +4,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        eff_funcs,
+        funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemKey,
@@ -21,7 +21,7 @@ pub(super) fn get_generic_base_opc(
     let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, attr_key, OF(0.0))?;
     let delay = match applied_at_start {
         true => OF(0.0),
-        false => eff_funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,
+        false => funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,
     };
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
