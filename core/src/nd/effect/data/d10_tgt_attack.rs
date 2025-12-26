@@ -4,9 +4,10 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, EffectSpec, Spool},
+    misc::DmgKinds,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, effect::data::shared::proj_mult::get_turret_proj_mult,
+        NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectProjOpcSpec,
+        effect::data::shared::proj_mult::get_turret_proj_mult,
     },
     rd::REffect,
     svc::{
@@ -34,7 +35,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         dmg_kind_getter: Some(internal_get_dmg_kind),
-        normal_dmg_opc_getter: Some(get_dmg_opc),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: internal_get_dmg_base_opc,
+            proj_mult_pre: Some(get_turret_proj_mult),
+            ..
+        }),
         ..
     }
 }
@@ -43,35 +48,23 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Turret
 }
 
-fn get_dmg_opc(
+fn internal_get_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
+    item_key: UItemKey,
+    _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    let projector_u_item = ctx.u_data.items.get(projector_key);
-    let dmg_item_key = match projector_u_item.get_axt().unwrap().capacity > OF(0.0) {
+    let item = ctx.u_data.items.get(item_key);
+    let dmg_item_key = match item.get_axt().unwrap().capacity > OF(0.0) {
         // If item has capacity but no charge - it is not dealing damage
-        true => projector_u_item.get_charge_key()?,
-        false => projector_key,
+        true => item.get_charge_key()?,
+        false => item_key,
     };
-    let attr_consts = ctx.ac();
-    let mut dmg_mult = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dmg_mult, OF(0.0))?;
-    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, attr_consts.em_dmg, OF(0.0))?;
-    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, attr_consts.therm_dmg, OF(0.0))?;
-    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, attr_consts.kin_dmg, OF(0.0))?;
-    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, attr_consts.expl_dmg, OF(0.0))?;
-    if let Some(projectee_key) = projectee_key {
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
-            projectee_key,
-        );
-        dmg_mult *= get_turret_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-    }
+    let dmg_mult = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().dmg_mult, OF(0.0))?;
+    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().em_dmg, OF(0.0))?;
+    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().therm_dmg, OF(0.0))?;
+    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().kin_dmg, OF(0.0))?;
+    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().expl_dmg, OF(0.0))?;
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
             em: dmg_em * dmg_mult,

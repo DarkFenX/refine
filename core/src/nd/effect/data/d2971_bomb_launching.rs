@@ -4,11 +4,11 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, Spool},
+    misc::{Ecm, EffectSpec},
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::{
-            base_opc::get_missile_dmg_opc,
+            base_opc::get_instant_dmg_base_opc,
             proj_mult::{get_bomb_noapp_proj_mult, get_bomb_proj_mult, get_bomb_range_mult, get_radius_ratio_mult},
         },
     },
@@ -30,9 +30,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
-        normal_dmg_opc_getter: Some(internal_get_dmg_opc),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_instant_dmg_base_opc,
+            proj_mult_pre: Some(get_bomb_proj_mult),
+            ..
+        }),
         neut_opc_spec: Some(NEffectProjOpcSpec {
-            base: internal_get_generic_base_opc,
+            base: internal_get_neut_base_opc,
             proj_mult_pre: Some(internal_get_application_mult),
             resist: Some(NEffectResist::Standard),
             ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
@@ -54,28 +58,10 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Bomb
 }
 
-fn internal_get_dmg_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<DmgKinds<AttrVal>>> {
-    get_missile_dmg_opc(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        projectee_key,
-        get_bomb_proj_mult,
-    )
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Neut
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn internal_get_generic_base_opc(
+fn internal_get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,

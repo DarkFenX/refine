@@ -4,13 +4,12 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, Spool},
     nd::{
-        NEffect, NEffectDmgKind,
-        effect::data::shared::{base_opc::get_missile_dmg_opc, proj_mult::get_missile_proj_mult},
+        NEffect, NEffectDmgKind, NEffectProjOpcSpec,
+        effect::data::shared::{base_opc::get_instant_dmg_base_opc, proj_mult::get_missile_proj_mult},
     },
     rd::REffect,
-    svc::{SvcCtx, calc::Calc, output::Output},
+    svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemKey, UProjData},
 };
 
@@ -22,7 +21,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
-        normal_dmg_opc_getter: Some(internal_get_dmg_opc),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_instant_dmg_base_opc,
+            proj_mult_pre: Some(internal_get_fof_missile_proj_mult),
+            ..
+        }),
         ..
     }
 }
@@ -31,25 +34,7 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Missile
 }
 
-fn internal_get_dmg_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<DmgKinds<AttrVal>>> {
-    get_missile_dmg_opc(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        projectee_key,
-        get_dmg_proj_mult_fof_missile,
-    )
-}
-
-fn get_dmg_proj_mult_fof_missile(
+fn internal_get_fof_missile_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

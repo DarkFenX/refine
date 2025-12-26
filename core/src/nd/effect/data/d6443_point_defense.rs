@@ -1,21 +1,16 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{DmgKinds, EffectSpec, Spool},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKind,
-        effect::data::shared::proj_mult::get_simple_s2s_noapp_proj_mult,
+        NEffectProjOpcSpec,
+        effect::data::shared::{
+            base_opc::get_instant_charge_mult_dmg_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult,
+        },
     },
-    rd::REffect,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
-    },
-    ud::{UItem, UItemKey},
+    ud::UItem,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::POINT_DEFENSE;
@@ -30,47 +25,15 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         dmg_kind_getter: Some(internal_get_dmg_kind),
-        normal_dmg_opc_getter: Some(get_dmg_opc),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_instant_charge_mult_dmg_base_opc,
+            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            ..
+        }),
         ..
     }
 }
 
 fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Smartbomb
-}
-
-fn get_dmg_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    _spool: Option<Spool>,
-    projectee_key: Option<UItemKey>,
-) -> Option<Output<DmgKinds<AttrVal>>> {
-    let charge_key = ctx.u_data.items.get(projector_key).get_charge_key()?;
-    let attr_consts = ctx.ac();
-    let mut dmg_mult = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dmg_mult, OF(1.0))?;
-    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.em_dmg, OF(0.0))?;
-    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.therm_dmg, OF(0.0))?;
-    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.kin_dmg, OF(0.0))?;
-    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.expl_dmg, OF(0.0))?;
-    if let Some(projectee_key) = projectee_key {
-        // Projection/application reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
-            projectee_key,
-        );
-        dmg_mult *=
-            get_simple_s2s_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-    }
-    Some(Output::Simple(OutputSimple {
-        amount: DmgKinds {
-            em: dmg_em * dmg_mult,
-            thermal: dmg_therm * dmg_mult,
-            kinetic: dmg_kin * dmg_mult,
-            explosive: dmg_expl * dmg_mult,
-        },
-        delay: OF(0.0),
-    }))
 }

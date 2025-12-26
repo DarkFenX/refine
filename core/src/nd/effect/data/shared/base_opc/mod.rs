@@ -1,5 +1,6 @@
-pub(in crate::nd::effect::data) use dmg_dd::{get_aoe_dd_dmg_opc, get_direct_dd_dmg_opc};
-pub(in crate::nd::effect::data) use dmg_missile::get_missile_dmg_opc;
+pub(in crate::nd::effect::data) use dmg::{
+    get_aoe_dd_dmg_opc_spec, get_direct_dd_dmg_opc_spec, get_instant_charge_mult_dmg_base_opc, get_instant_dmg_base_opc,
+};
 pub(in crate::nd::effect::data) use mining::{get_crit_mining_base_opc, get_mining_base_opc};
 pub(in crate::nd::effect::data) use neut::{
     get_aoe_dd_side_neut_opc_spec, get_aoe_neut_base_opc, get_neut_base_opc, get_nosf_base_opc,
@@ -9,8 +10,7 @@ pub(in crate::nd::effect::data) use rep::{
     get_shield_rep_base_opc,
 };
 
-mod dmg_dd;
-mod dmg_missile;
+mod dmg;
 mod generic;
 mod mining;
 mod neut;

@@ -5,7 +5,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjecteeFilter,
-        effect::data::shared::{base_opc::get_direct_dd_dmg_opc, mods::make_dd_self_debuffs},
+        effect::data::shared::{base_opc::get_direct_dd_dmg_opc_spec, mods::make_dd_self_debuffs},
     },
     ud::UItem,
 };
@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         projectee_filter: Some(NEffectProjecteeFilter::ItemList(ac::itemlists::CAPITALS_FREIGHTERS)),
         dmg_kind_getter: Some(internal_get_dmg_kind),
-        normal_dmg_opc_getter: Some(get_direct_dd_dmg_opc),
+        normal_dmg_opc_spec: Some(get_direct_dd_dmg_opc_spec()),
         ..
     }
 }

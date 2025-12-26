@@ -7,7 +7,7 @@ pub(crate) use effect::{NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEc
 pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use resist::NEffectResist;
-pub(crate) use spool::{NSpoolAttrs, ResolvedSpool};
+pub(crate) use spool::NSpoolAttrs;
 
 mod charge;
 mod container;
