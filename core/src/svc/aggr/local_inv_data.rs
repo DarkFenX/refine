@@ -1,28 +1,33 @@
 use super::shared::process_mult;
 use crate::{
     def::AttrVal,
-    rd::{RAttrKey, REffectLocalOpcSpec},
-    svc::{SvcCtx, calc::Calc},
+    rd::{RAttrKey, REffect, REffectLocalOpcSpec},
+    svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemKey,
 };
 
-#[derive(Copy, Clone)]
-pub(super) struct LocalInvariantData {
-    pub(super) ilimit: Option<AttrVal>,
-}
-
-pub(super) fn make_local_inv_data<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    ospec: &REffectLocalOpcSpec<T>,
-) -> LocalInvariantData
+pub(super) struct LocalInvariantData<T>
 where
     T: Copy,
 {
-    LocalInvariantData {
+    pub(super) base: Output<T>,
+    pub(super) ilimit: Option<AttrVal>,
+}
+
+pub(super) fn try_make_local_inv_data<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+    ospec: &REffectLocalOpcSpec<T>,
+) -> Option<LocalInvariantData<T>>
+where
+    T: Copy,
+{
+    Some(LocalInvariantData {
+        base: (ospec.base)(ctx, calc, item_key, effect)?,
         ilimit: get_ship_limit(ctx, calc, item_key, ospec.ilimit_attr_key),
-    }
+    })
 }
 
 fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {

@@ -6,7 +6,7 @@ use crate::{
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(super) trait InstanceLimit {
+pub(in crate::svc::aggr) trait InstanceLimit {
     fn instance_limit(&mut self, limit: AttrVal);
 }
 
@@ -41,10 +41,10 @@ impl<T> Output<T>
 where
     T: Copy + InstanceLimit,
 {
-    pub(super) fn instance_limit_legacy(&mut self, limit: AttrVal) {
+    pub(in crate::svc::aggr) fn instance_limit(&mut self, limit: AttrVal) {
         match self {
-            Self::Simple(inner) => inner.instance_limit_legacy(limit),
-            Self::Complex(inner) => inner.instance_limit_legacy(limit),
+            Self::Simple(inner) => inner.instance_limit(limit),
+            Self::Complex(inner) => inner.instance_limit(limit),
         }
     }
 }
@@ -53,7 +53,7 @@ impl<T> OutputSimple<T>
 where
     T: Copy + InstanceLimit,
 {
-    fn instance_limit_legacy(&mut self, limit: AttrVal) {
+    fn instance_limit(&mut self, limit: AttrVal) {
         self.amount.instance_limit(limit);
     }
 }
@@ -62,7 +62,7 @@ impl<T> OutputComplex<T>
 where
     T: Copy + InstanceLimit,
 {
-    fn instance_limit_legacy(&mut self, limit: AttrVal) {
+    fn instance_limit(&mut self, limit: AttrVal) {
         self.amount.instance_limit(limit);
     }
 }

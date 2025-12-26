@@ -1,6 +1,7 @@
 use super::{output_complex::OutputComplex, output_simple::OutputSimple};
 use crate::def::AttrVal;
 
+#[derive(Copy, Clone)]
 pub(crate) enum Output<T>
 where
     T: Copy,

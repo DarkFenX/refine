@@ -6,7 +6,7 @@ use crate::{
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(super) trait InstanceMul {
+pub(in crate::svc::aggr) trait InstanceMul {
     fn instance_mul(self, mult: AttrVal) -> Self;
 }
 
@@ -57,12 +57,12 @@ impl InstanceMul for Ecm {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
-    T: Copy + InstanceMul,
+    T: Copy + std::ops::Mul<AttrVal>,
 {
-    pub(super) fn instance_sum_legacy(&self) -> T {
+    pub(in crate::svc::aggr) fn instance_sum(&self) -> T {
         match self {
-            Self::Simple(inner) => inner.instance_sum_legacy(),
-            Self::Complex(inner) => inner.instance_sum_legacy(),
+            Self::Simple(inner) => inner.instance_sum(),
+            Self::Complex(inner) => inner.instance_sum(),
         }
     }
 }
@@ -71,16 +71,16 @@ impl<T> OutputSimple<T>
 where
     T: Copy,
 {
-    fn instance_sum_legacy(&self) -> T {
+    fn instance_sum(&self) -> T {
         self.amount
     }
 }
 
 impl<T> OutputComplex<T>
 where
-    T: Copy + InstanceMul,
+    T: Copy + std::ops::Mul<AttrVal>,
 {
-    fn instance_sum_legacy(&self) -> T {
-        self.amount.instance_mul(AttrVal::from(self.repeats))
+    fn instance_sum(&self) -> T {
+        self.amount * AttrVal::from(self.repeats)
     }
 }

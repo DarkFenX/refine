@@ -42,12 +42,12 @@ where
             && let Some(chargedness) = chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
         {
-            output.instance_mul_assign(charge_mult);
+            output.instance_mul_assign_legacy(charge_mult);
         }
         if let Some(ilimit) = invar_data.ilimit {
-            output.instance_limit(ilimit);
+            output.instance_limit_legacy(ilimit);
         }
-        Some(output.instance_sum())
+        Some(output.instance_sum_legacy())
     }
 }
 
@@ -130,23 +130,23 @@ where
             && let Some(chargedness) = chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
         {
-            output.instance_mul_assign(charge_mult);
+            output.instance_mul_assign_legacy(charge_mult);
         }
         // Spool
         if let Some(spool_mult) = spool_mult {
-            output.instance_mul_assign(spool_mult);
+            output.instance_mul_assign_legacy(spool_mult);
         }
         // Pre-limit projection & resistance effect reduction
         if let Some(invar_mult) = invar_data.mult_pre {
-            output.instance_mul_assign(invar_mult);
+            output.instance_mul_assign_legacy(invar_mult);
         }
         // Instance limit
         if let Some(ilimit) = invar_data.ilimit {
-            output.instance_limit(ilimit);
+            output.instance_limit_legacy(ilimit);
         }
         // Post-limit projection effect reduction
         if let Some(invar_mult) = invar_data.mult_post {
-            output.instance_mul_assign(invar_mult);
+            output.instance_mul_assign_legacy(invar_mult);
         }
         Some(output)
     }
@@ -169,7 +169,7 @@ where
             spool_mult,
             invar_data,
         )?;
-        Some(output.instance_sum())
+        Some(output.instance_sum_legacy())
     }
 }
 

@@ -2,6 +2,7 @@ use ordered_float::Float;
 
 use crate::{def::AttrVal, util::FLOAT_TOLERANCE};
 
+#[derive(Copy, Clone)]
 pub(crate) struct OutputSimple<T>
 where
     T: Copy,
