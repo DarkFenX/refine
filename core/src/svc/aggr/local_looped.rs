@@ -1,3 +1,4 @@
+use super::local_inv_data::make_local_inv_data;
 use crate::{
     nd::NChargeMultGetter,
     rd::REffectLocalOpcSpec,
@@ -38,6 +39,7 @@ where
     T: Copy,
 {
     let cycle_loop = cycle.try_get_loop()?;
+    let inv_data = make_local_inv_data(ctx, calc, item_key, ospec);
     None
 }
 
@@ -52,5 +54,6 @@ where
     T: Copy,
 {
     let cycle_loop = cycle.try_get_loop()?;
+    let inv_data = make_local_inv_data(ctx, calc, item_key, ospec);
     None
 }
