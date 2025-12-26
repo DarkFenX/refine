@@ -103,21 +103,6 @@ pub(in crate::nd::effect::data) fn get_breacher_proj_mult(
     get_missile_range_mult(ctx, calc, projector_key, proj_data)
 }
 
-pub(in crate::nd::effect::data) fn get_bomb_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    let mult = get_bomb_range_mult(ctx, calc, projector_key, proj_data);
-    if mult == OF(0.0) {
-        return OF(0.0);
-    }
-    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
-}
-
 pub(in crate::nd::effect::data) fn get_guided_bomb_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,

@@ -9,7 +9,7 @@ use crate::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::{
             base_opc::get_instant_dmg_base_opc,
-            proj_mult::{get_bomb_noapp_proj_mult, get_bomb_proj_mult, get_bomb_range_mult, get_radius_ratio_mult},
+            proj_mult::{get_bomb_noapp_proj_mult, get_bomb_range_mult, get_radius_ratio_mult},
         },
     },
     rd::REffect,
@@ -32,7 +32,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(get_bomb_proj_mult),
+            proj_mult_str: Some(internal_get_application_mult),
+            proj_mult_chance: Some(internal_get_range_mult),
             ..
         }),
         neut_opc_spec: Some(NEffectProjOpcSpec {
@@ -46,30 +47,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         ecm_opc_getter: Some(internal_get_ecm_opc),
         ..
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Damage
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Bomb
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Neut
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn internal_get_neut_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    _effect: &REffect,
-) -> Option<Output<AttrVal>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, ctx.ac().energy_neut_amount, OF(0.0))?;
-    // Do not return neut stats for non-neut bombs
-    if amount <= OF(0.0) {
-        return None;
-    }
-    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }
 
 fn internal_get_application_mult(
@@ -92,6 +69,27 @@ fn internal_get_range_mult(
     proj_data: UProjData,
 ) -> AttrVal {
     get_bomb_range_mult(ctx, calc, projector_key, proj_data)
+}
+
+fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
+    NEffectDmgKind::Bomb
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Neut
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn internal_get_neut_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    _effect: &REffect,
+) -> Option<Output<AttrVal>> {
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, ctx.ac().energy_neut_amount, OF(0.0))?;
+    // Do not return neut stats for non-neut bombs
+    if amount <= OF(0.0) {
+        return None;
+    }
+    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
