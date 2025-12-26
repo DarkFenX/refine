@@ -233,8 +233,8 @@ impl Vast {
                     None
                 };
                 let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
-                if let Some(dmg) = ospec.get_total(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
-                    *volley_normal += dmg;
+                if let Some(dmg) = ospec.get_output(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
+                    *volley_normal += dmg.get_amount();
                 }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter

@@ -93,16 +93,15 @@ fn get_aoe_dd_dmg_base_opc(
     item_key: UItemKey,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    let attr_consts = ctx.ac();
-    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.em_dmg, OF(0.0))?;
-    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.therm_dmg, OF(0.0))?;
-    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.kin_dmg, OF(0.0))?;
-    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.expl_dmg, OF(0.0))?;
+    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().em_dmg, OF(0.0))?;
+    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().therm_dmg, OF(0.0))?;
+    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().kin_dmg, OF(0.0))?;
+    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().expl_dmg, OF(0.0))?;
     let delay_s =
-        calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.doomsday_warning_duration, OF(0.0))? / OF(1000.0);
-    if let Some(interval_ms) = calc.get_item_oattr_oextra(ctx, item_key, attr_consts.doomsday_dmg_cycle_time)
+        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().doomsday_warning_duration, OF(0.0))? / OF(1000.0);
+    if let Some(interval_ms) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().doomsday_dmg_cycle_time)
         && interval_ms > FLOAT_TOLERANCE
-        && let Some(duration_ms) = calc.get_item_oattr_oextra(ctx, item_key, attr_consts.doomsday_dmg_duration)
+        && let Some(duration_ms) = calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().doomsday_dmg_duration)
     {
         let repeats = floor_unerr(duration_ms / interval_ms).into_inner() as Count;
         if repeats >= 2 {
