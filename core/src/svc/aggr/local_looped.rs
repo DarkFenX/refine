@@ -50,13 +50,13 @@ where
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_repeat_count = OF::from(cycle_part.repeat_count);
         // Value
-        let mut part_output = inv_data.base;
+        let mut part_output = inv_data.base_output;
         if let Some(chargedness) = cycle_part.data.chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
         {
             part_output *= charge_mult;
         }
-        if let Some(limit) = inv_data.ilimit {
+        if let Some(limit) = inv_data.amount_limit {
             part_output.limit_amount(limit);
         }
         value += part_output.instance_sum() * cycle_repeat_count;
@@ -84,8 +84,8 @@ where
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_repeat_count = OF::from(cycle_part.repeat_count);
         // Value
-        let mut part_output = inv_data.base;
-        if let Some(limit) = inv_data.ilimit {
+        let mut part_output = inv_data.base_output;
+        if let Some(limit) = inv_data.amount_limit {
             part_output.limit_amount(limit);
         }
         value += part_output.instance_sum() * cycle_repeat_count;
