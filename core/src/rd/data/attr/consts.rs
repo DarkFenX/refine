@@ -80,8 +80,6 @@ pub(crate) struct RAttrConsts {
     pub(crate) disallow_warping_jumping: Option<RAttrKey>,
     pub(crate) dmg_delay_duration: Option<RAttrKey>,
     pub(crate) dmg_mult: Option<RAttrKey>,
-    pub(crate) dmg_mult_bonus_max: Option<RAttrKey>,
-    pub(crate) dmg_mult_bonus_per_cycle: Option<RAttrKey>,
     pub(crate) doomsday_aoe_duration: Option<RAttrKey>,
     pub(crate) doomsday_aoe_range: Option<RAttrKey>,
     pub(crate) doomsday_aoe_sig_radius: Option<RAttrKey>,

@@ -2,7 +2,7 @@ use super::{
     application::{get_missile_application_mult, get_radius_ratio_mult, get_turret_application_mult},
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_dd_neut_range_mult, get_full_restricted_range_mult,
-        get_full_unrestricted_range_mult, get_missile_range_mult, get_simple_c2s_range_mult, get_simple_s2s_range_mult,
+        get_full_unrestricted_range_mult, get_simple_c2s_range_mult, get_simple_s2s_range_mult,
     },
 };
 use crate::{
