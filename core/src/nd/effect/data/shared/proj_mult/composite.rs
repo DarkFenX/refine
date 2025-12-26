@@ -1,9 +1,8 @@
 use super::{
     application::{get_missile_application_mult, get_radius_ratio_mult, get_turret_application_mult},
     range::{
-        get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_bomb_range_mult, get_dd_neut_range_mult,
-        get_full_restricted_range_mult, get_full_unrestricted_range_mult, get_missile_range_mult,
-        get_simple_c2s_range_mult, get_simple_s2s_range_mult,
+        get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_dd_neut_range_mult, get_full_restricted_range_mult,
+        get_full_unrestricted_range_mult, get_missile_range_mult, get_simple_c2s_range_mult, get_simple_s2s_range_mult,
     },
 };
 use crate::{
@@ -74,48 +73,7 @@ pub(in crate::nd::effect::data) fn get_vorton_proj_mult(
     if mult == OF(0.0) {
         return OF(0.0);
     }
-    mult * get_missile_application_mult(ctx, calc, projector_key, projectee_key, proj_data)
-}
-
-pub(in crate::nd::effect::data) fn get_missile_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    let mult = get_missile_range_mult(ctx, calc, projector_key, proj_data);
-    if mult == OF(0.0) {
-        return OF(0.0);
-    }
-    mult * get_missile_application_mult(ctx, calc, projector_key, projectee_key, proj_data)
-}
-
-pub(in crate::nd::effect::data) fn get_breacher_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_missile_range_mult(ctx, calc, projector_key, proj_data)
-}
-
-pub(in crate::nd::effect::data) fn get_guided_bomb_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    let mult = get_missile_range_mult(ctx, calc, projector_key, proj_data);
-    if mult == OF(0.0) {
-        return OF(0.0);
-    }
-    mult * get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
+    mult * get_missile_application_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
 }
 
 pub(in crate::nd::effect::data) fn get_bubble_proj_mult(
@@ -228,17 +186,6 @@ pub(in crate::nd::effect::data) fn get_full_noapp_proj_mult(
     proj_data: UProjData,
 ) -> AttrVal {
     get_full_restricted_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
-}
-
-pub(in crate::nd::effect::data) fn get_bomb_noapp_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_bomb_range_mult(ctx, calc, projector_key, proj_data)
 }
 
 pub(in crate::nd::effect::data) fn get_aoe_burst_noapp_proj_mult(

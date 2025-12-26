@@ -9,7 +9,7 @@ use crate::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::{
             base_opc::get_instant_dmg_base_opc,
-            proj_mult::{get_bomb_noapp_proj_mult, get_bomb_range_mult, get_radius_ratio_mult},
+            proj_mult::{get_bomb_application_mult, get_bomb_range_mult},
         },
     },
     rd::REffect,
@@ -19,7 +19,7 @@ use crate::{
         eff_funcs,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemKey, UProjData},
+    ud::{UItem, UItemKey},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::BOMB_LAUNCHING;
@@ -32,14 +32,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(internal_get_application_mult),
-            proj_mult_chance: Some(internal_get_range_mult),
+            proj_mult_str: Some(get_bomb_application_mult),
+            proj_mult_chance: Some(get_bomb_range_mult),
             ..
         }),
         neut_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_neut_base_opc,
-            proj_mult_str: Some(internal_get_application_mult),
-            proj_mult_chance: Some(internal_get_range_mult),
+            proj_mult_str: Some(get_bomb_application_mult),
+            proj_mult_chance: Some(get_bomb_range_mult),
             resist: Some(NEffectResist::Standard),
             ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
             ..
@@ -47,28 +47,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         ecm_opc_getter: Some(internal_get_ecm_opc),
         ..
     }
-}
-
-fn internal_get_application_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    projectee_key: UItemKey,
-    _proj_data: UProjData,
-) -> AttrVal {
-    get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
-}
-
-fn internal_get_range_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    _projector_effect: &REffect,
-    _projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    get_bomb_range_mult(ctx, calc, projector_key, proj_data)
 }
 
 fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
@@ -128,7 +106,7 @@ fn internal_get_ecm_opc(
         );
         // Lockbreaker bombs have perfect application whenever they hit, regardless of target
         // signature radius
-        let mut mult = get_bomb_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mut mult = get_bomb_range_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         // Effect resistance reduction
         if let Some(resist_mult) =
             eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)

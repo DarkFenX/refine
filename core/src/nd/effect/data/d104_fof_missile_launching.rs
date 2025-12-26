@@ -6,7 +6,10 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec,
-        effect::data::shared::{base_opc::get_instant_dmg_base_opc, proj_mult::get_missile_proj_mult},
+        effect::data::shared::{
+            base_opc::get_instant_dmg_base_opc,
+            proj_mult::{get_missile_application_mult, get_missile_range_mult},
+        },
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
@@ -23,7 +26,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(internal_get_fof_missile_proj_mult),
+            proj_mult_str: Some(get_missile_application_mult),
+            proj_mult_chance: Some(internal_get_fof_missile_range_mult),
             ..
         }),
         ..
@@ -34,7 +38,7 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Missile
 }
 
-fn internal_get_fof_missile_proj_mult(
+fn internal_get_fof_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -48,5 +52,5 @@ fn internal_get_fof_missile_proj_mult(
     {
         return OF(0.0);
     }
-    get_missile_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
+    get_missile_range_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
 }

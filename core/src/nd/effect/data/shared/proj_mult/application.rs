@@ -6,37 +6,14 @@ use crate::{
     util::Xyz,
 };
 
-pub(super) fn get_turret_application_mult(
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::nd::effect::data) fn get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &REffect,
-    projectee_key: UItemKey,
-    proj_data: UProjData,
-) -> AttrVal {
-    let attr_consts = ctx.ac();
-    let angular_speed = calc_angular(ctx, calc, projector_key, projectee_key, proj_data);
-    let turret_sig_radius = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.optimal_sig_radius, OF(0.0))
-        .max(OF(0.0));
-    let turret_tracking_speed = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, projector_effect.track_attr_key, OF(0.0))
-        .max(OF(0.0));
-    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key);
-    let result = ordered_float::Float::powf(
-        OF(0.5),
-        OF((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2)),
-    );
-    match result.is_nan() {
-        true => OF(0.0),
-        false => result.clamp(OF(0.0), OF(1.0)),
-    }
-}
-
-pub(super) fn get_missile_application_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
+    _projector_effect: &REffect,
     projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
@@ -65,7 +42,48 @@ pub(super) fn get_missile_application_mult(
     radius_ratio.min(mobile_mult).clamp(OF(0.0), OF(1.0))
 }
 
-pub(in crate::nd::effect::data) fn get_radius_ratio_mult(
+pub(in crate::nd::effect::data) fn get_bomb_application_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    _projector_effect: &REffect,
+    projectee_key: UItemKey,
+    _proj_data: UProjData,
+) -> AttrVal {
+    get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn get_turret_application_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    projector_effect: &REffect,
+    projectee_key: UItemKey,
+    proj_data: UProjData,
+) -> AttrVal {
+    let attr_consts = ctx.ac();
+    let angular_speed = calc_angular(ctx, calc, projector_key, projectee_key, proj_data);
+    let turret_sig_radius = calc
+        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.optimal_sig_radius, OF(0.0))
+        .max(OF(0.0));
+    let turret_tracking_speed = calc
+        .get_item_oattr_ffb_extra(ctx, projector_key, projector_effect.track_attr_key, OF(0.0))
+        .max(OF(0.0));
+    let tgt_sig_radius = item_funcs::get_sig_radius(ctx, calc, projectee_key);
+    let result = ordered_float::Float::powf(
+        OF(0.5),
+        OF((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2)),
+    );
+    match result.is_nan() {
+        true => OF(0.0),
+        false => result.clamp(OF(0.0), OF(1.0)),
+    }
+}
+
+pub(super) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,

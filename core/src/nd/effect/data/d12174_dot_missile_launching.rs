@@ -5,7 +5,7 @@ use crate::{
     ec,
     ed::EEffectId,
     misc::EffectSpec,
-    nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_breacher_proj_mult},
+    nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_missile_range_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
     ud::{UItem, UItemKey},
@@ -49,7 +49,7 @@ fn get_dmg_opc(
             EffectSpec::new(projector_key, projector_effect.key),
             projectee_key,
         );
-        let mult = get_breacher_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mult = get_missile_range_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         abs_max *= mult;
         rel_max *= mult;
     }

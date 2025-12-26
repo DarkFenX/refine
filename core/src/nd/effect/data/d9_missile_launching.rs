@@ -8,7 +8,7 @@ use crate::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec,
         effect::data::shared::{
             base_opc::get_instant_dmg_base_opc,
-            proj_mult::{get_guided_bomb_proj_mult, get_missile_proj_mult},
+            proj_mult::{get_bomb_application_mult, get_missile_application_mult, get_missile_range_mult},
         },
     },
     rd::REffect,
@@ -26,7 +26,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(internal_get_missile_proj_mult),
+            proj_mult_str: Some(internal_get_missile_application_mult),
+            proj_mult_chance: Some(get_missile_range_mult),
             ..
         }),
         ..
@@ -40,7 +41,7 @@ fn internal_get_dmg_kind(u_item: &UItem) -> NEffectDmgKind {
     }
 }
 
-fn internal_get_missile_proj_mult(
+fn internal_get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -49,8 +50,8 @@ fn internal_get_missile_proj_mult(
     proj_data: UProjData,
 ) -> AttrVal {
     let proj_mult_getter = match is_guided_bomb(ctx.u_data.items.get(projector_key)) {
-        true => get_guided_bomb_proj_mult,
-        false => get_missile_proj_mult,
+        true => get_bomb_application_mult,
+        false => get_missile_application_mult,
     };
     proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
 }

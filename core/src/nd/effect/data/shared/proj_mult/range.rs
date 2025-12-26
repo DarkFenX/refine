@@ -100,10 +100,12 @@ fn get_full_range_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Missile-alike effect range calculation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_missile_range_mult(
+pub(in crate::nd::effect::data) fn get_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
+    _projector_effect: &REffect,
+    _projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
     let attr_consts = ctx.ac();
@@ -156,6 +158,8 @@ pub(in crate::nd::effect::data) fn get_bomb_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
+    _projector_effect: &REffect,
+    _projectee_key: UItemKey,
     proj_data: UProjData,
 ) -> AttrVal {
     // Bomb is similar to missile, but they have fixed flight range and AoE effect
