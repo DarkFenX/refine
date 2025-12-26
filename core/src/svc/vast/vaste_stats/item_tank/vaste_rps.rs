@@ -4,6 +4,7 @@ use crate::{
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
+        aggr::aggr_local_first_per_second,
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -95,23 +96,21 @@ fn get_local_rps(
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
     for (&item_key, item_data) in rep_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, RPS_CYCLE_OPTIONS, false) {
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, RPS_CYCLE_OPTIONS, false) {
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq()) {
-                Some(effect_cycle_loop) => effect_cycle_loop,
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let chargedness = effect_cycle_loop.get_first_cycle().chargedness;
-            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
-            let output_per_cycle = match ospec.get_total(ctx, calc, item_key, effect, chargedness, invar_data) {
-                Some(hp_per_cycle) => hp_per_cycle,
+            let effect_rps = match aggr_local_first_per_second(ctx, calc, item_key, effect, cseq, ospec) {
+                Some(effect_rps) => effect_rps,
                 None => continue,
             };
-            total_rps += output_per_cycle / effect_cycle_loop.get_average_time();
+            total_rps += effect_rps;
         }
     }
     total_rps
