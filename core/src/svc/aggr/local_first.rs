@@ -1,0 +1,30 @@
+use super::{local_inv_data::try_make_local_inv_data, traits::Aggregable};
+use crate::{
+    rd::{REffect, REffectLocalOpcSpec},
+    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
+    ud::UItemKey,
+};
+
+// Local effects, considers only first cycle (for "burst" stats)
+pub(in crate::svc) fn aggr_local_first_per_second<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+    cseq: &CycleSeq,
+    ospec: &REffectLocalOpcSpec<T>,
+) -> Option<T>
+where
+    T: Copy + Aggregable,
+{
+    let cycle = cseq.get_first_cycle();
+    let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
+    let mut output = inv_data.base.instance_sum();
+    if let Some(charge_mult_getter) = ospec.charge_mult
+        && let Some(chargedness) = cycle.chargedness
+        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
+    {
+        output *= charge_mult;
+    }
+    Some(output / cycle.time)
+}

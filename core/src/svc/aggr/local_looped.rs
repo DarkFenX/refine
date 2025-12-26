@@ -17,7 +17,7 @@ pub(in crate::svc) fn aggr_local_looped_per_second<T>(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    cycle: &CycleSeq,
+    cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<T>
 where
@@ -25,9 +25,9 @@ where
 {
     match ospec.charge_mult {
         Some(charge_mult_getter) => {
-            aggr_local_time_charge(ctx, calc, item_key, effect, cycle.into(), ospec, charge_mult_getter)
+            aggr_local_time_charge(ctx, calc, item_key, effect, cseq.into(), ospec, charge_mult_getter)
         }
-        None => aggr_local_time(ctx, calc, item_key, effect, cycle.into(), ospec),
+        None => aggr_local_time(ctx, calc, item_key, effect, cseq.into(), ospec),
     }
 }
 
@@ -48,14 +48,17 @@ where
     let mut output = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let mut part_output = inv_data.base.instance_sum() * OF::from(cycle_part.repeat_count);
+        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
+        // Output
+        let mut part_output = inv_data.base.instance_sum() * cycle_repeat_count;
         if let Some(chargedness) = cycle_part.data.chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
         {
             part_output *= charge_mult;
         }
         output += part_output;
-        time += cycle_part.data.time;
+        // Time
+        time += cycle_part.data.time * cycle_repeat_count;
     }
     Some(output / time)
 }
@@ -76,8 +79,9 @@ where
     let mut output = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        output += inv_data.base.instance_sum() * OF::from(cycle_part.repeat_count);
-        time += cycle_part.data.time;
+        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
+        output += inv_data.base.instance_sum() * cycle_repeat_count;
+        time += cycle_part.data.time * cycle_repeat_count;
     }
     Some(output / time)
 }
