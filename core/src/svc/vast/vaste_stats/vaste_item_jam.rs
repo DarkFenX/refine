@@ -35,9 +35,10 @@ impl Vast {
         let mut item_unjam_chance = OF(1.0);
         let mut item_unjam_uptime = OF(1.0);
         for (&projector_item_key, projector_data) in incoming_ecms.iter() {
-            for (&effect_key, ecm_getter) in projector_data.iter() {
+            for (&effect_key, ospec) in projector_data.iter() {
                 let effect = ctx.u_data.src.get_effect(effect_key);
-                let item_ecm = match ecm_getter(ctx, calc, projector_item_key, effect, Some(projectee_item_key)) {
+                let inv_data = ospec.make_invar_data(ctx, calc, projector_item_key, effect, Some(projectee_item_key));
+                let item_ecm = match ospec.get_total(ctx, calc, projector_item_key, effect, None, None, inv_data) {
                     Some(item_ecm) => item_ecm,
                     None => continue,
                 };

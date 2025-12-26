@@ -1,8 +1,8 @@
 use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     def::{AttrVal, Count},
-    misc::{AttrSpec, DmgKinds, EffectSpec, MiningAmount},
-    nd::{NBreacherDmgGetter, NEcmGetter},
+    misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
+    nd::NBreacherDmgGetter,
     rd::{RAttrKey, REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListKey, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
@@ -29,7 +29,7 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
     // Ewar
-    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, NEcmGetter>,
+    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<Ecm>>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {

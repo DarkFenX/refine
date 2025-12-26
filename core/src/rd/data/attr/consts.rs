@@ -312,8 +312,6 @@ impl RAttrConsts {
             disallow_warping_jumping: attr_id_key_map.get(&ac::attrs::DISALLOW_WARPING_JUMPING).copied(),
             dmg_delay_duration: attr_id_key_map.get(&ac::attrs::DMG_DELAY_DURATION).copied(),
             dmg_mult: attr_id_key_map.get(&ac::attrs::DMG_MULT).copied(),
-            dmg_mult_bonus_max: attr_id_key_map.get(&ac::attrs::DMG_MULT_BONUS_MAX).copied(),
-            dmg_mult_bonus_per_cycle: attr_id_key_map.get(&ac::attrs::DMG_MULT_BONUS_PER_CYCLE).copied(),
             doomsday_aoe_duration: attr_id_key_map.get(&ac::attrs::DOOMSDAY_AOE_DURATION).copied(),
             doomsday_aoe_range: attr_id_key_map.get(&ac::attrs::DOOMSDAY_AOE_RANGE).copied(),
             doomsday_aoe_sig_radius: attr_id_key_map.get(&ac::attrs::DOOMSDAY_AOE_SIG_RADIUS).copied(),

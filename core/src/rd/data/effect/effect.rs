@@ -1,8 +1,8 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId, AState},
     def::AttrVal,
-    misc::{DmgKinds, MiningAmount},
-    nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEcmGetter, NProjMultGetter},
+    misc::{DmgKinds, Ecm, MiningAmount},
+    nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NProjMultGetter},
     rd::{
         RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectLocalOpcSpec,
         REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListKey, RSpoolAttrs,
@@ -31,7 +31,6 @@ pub(crate) struct REffect {
     // Output getters
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
-    pub(crate) ecm_opc_getter: Option<NEcmGetter>,
     // Fields which depend on slab keys
     pub(crate) modifiers: Vec<REffectModifier>,
     pub(crate) stopped_effect_keys: Vec<REffectKey>,
@@ -62,6 +61,7 @@ pub(crate) struct REffect {
     pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
     pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
     pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
+    pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
 }
 impl REffect {
     pub(in crate::rd) fn from_a_effect(effect_key: REffectKey, a_effect: &AEffect) -> Self {
@@ -82,7 +82,6 @@ impl REffect {
             // Output getters
             dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
             breacher_dmg_opc_getter: n_effect.and_then(|n| n.breacher_dmg_opc_getter),
-            ecm_opc_getter: n_effect.and_then(|n| n.ecm_opc_getter),
             // Fields which depend on slab keys
             modifiers: Default::default(),
             stopped_effect_keys: Default::default(),
@@ -112,6 +111,7 @@ impl REffect {
             neut_opc_spec: Default::default(),
             outgoing_cap_opc_spec: Default::default(),
             cap_inject_opc_spec: Default::default(),
+            ecm_opc_spec: Default::default(),
         }
     }
     pub(in crate::rd) fn fill_key_dependents(
@@ -231,6 +231,10 @@ impl REffect {
                 .cap_inject_opc_spec
                 .as_ref()
                 .map(|v| REffectLocalOpcSpec::from_n_local_opc_spec(v, attr_id_key_map));
+            self.ecm_opc_spec = n_effect
+                .ecm_opc_spec
+                .as_ref()
+                .map(|v| REffectProjOpcSpec::from_n_proj_opc_spec(v, attr_id_key_map));
         }
         // Data derived from key-dependent data
         self.is_active_with_duration = self.state == AState::Active && self.duration_attr_key.is_some();

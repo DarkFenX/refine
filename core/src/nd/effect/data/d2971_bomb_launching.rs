@@ -4,7 +4,7 @@ use crate::{
     def::{AttrVal, OF},
     ec,
     ed::EEffectId,
-    misc::{Ecm, EffectSpec},
+    misc::Ecm,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::{
@@ -16,7 +16,6 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        eff_funcs,
         output::{Output, OutputSimple},
     },
     ud::{UItem, UItemKey},
@@ -44,7 +43,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
             ..
         }),
-        ecm_opc_getter: Some(internal_get_ecm_opc),
+        ecm_opc_spec: Some(NEffectProjOpcSpec {
+            base: internal_get_ecm_base_opc,
+            proj_mult_chance: Some(get_bomb_range_mult),
+            resist: Some(NEffectResist::Standard),
+            ..
+        }),
         ..
     }
 }
@@ -73,57 +77,37 @@ fn internal_get_neut_base_opc(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ECM
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn internal_get_ecm_opc(
+fn internal_get_ecm_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
-    projector_effect: &REffect,
-    projectee_key: Option<UItemKey>,
-) -> Option<Ecm> {
+    _projector_effect: &REffect,
+) -> Option<Output<Ecm>> {
     let attr_consts = ctx.ac();
-    let mut str_radar =
+    let str_radar =
         calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
-    let mut str_magnet = calc.get_item_oattr_afb_oextra(
+    let str_magnet = calc.get_item_oattr_afb_oextra(
         ctx,
         projector_key,
         attr_consts.scan_magnetometric_strength_bonus,
         OF(0.0),
     )?;
-    let mut str_grav =
+    let str_grav =
         calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
-    let mut str_ladar =
+    let str_ladar =
         calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
     // Do not return ECM stats for non-ecm bombs
     if str_radar <= OF(0.0) && str_magnet <= OF(0.0) && str_grav <= OF(0.0) && str_ladar <= OF(0.0) {
         return None;
     }
-    if let Some(projectee_key) = projectee_key {
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
-            projectee_key,
-        );
-        // Lockbreaker bombs have perfect application whenever they hit, regardless of target
-        // signature radius
-        let mut mult = get_bomb_range_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-        // Effect resistance reduction
-        if let Some(resist_mult) =
-            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
-        {
-            mult *= resist_mult;
-        }
-        // Apply multiplier
-        str_radar *= mult;
-        str_magnet *= mult;
-        str_grav *= mult;
-        str_ladar *= mult;
-    }
-    Some(Ecm {
-        radar: str_radar,
-        magnetometric: str_magnet,
-        gravimetric: str_grav,
-        ladar: str_ladar,
-        duration: OF(0.0),
-    })
+    Some(Output::Simple(OutputSimple {
+        amount: Ecm {
+            radar: str_radar,
+            magnetometric: str_magnet,
+            gravimetric: str_grav,
+            ladar: str_ladar,
+            duration: OF(0.0),
+        },
+        delay: OF(0.0),
+    }))
 }

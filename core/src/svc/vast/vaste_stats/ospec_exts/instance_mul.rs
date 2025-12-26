@@ -2,7 +2,7 @@
 
 use crate::{
     def::AttrVal,
-    misc::{DmgKinds, MiningAmount},
+    misc::{DmgKinds, Ecm, MiningAmount},
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
@@ -32,6 +32,15 @@ impl InstanceMulAssign for MiningAmount {
     fn instance_mul_assign(&mut self, mult: AttrVal) {
         self.yield_ *= mult;
         self.drain *= mult;
+    }
+}
+
+impl InstanceMulAssign for Ecm {
+    fn instance_mul_assign(&mut self, mult: AttrVal) {
+        self.radar *= mult;
+        self.magnetometric *= mult;
+        self.gravimetric *= mult;
+        self.ladar *= mult;
     }
 }
 

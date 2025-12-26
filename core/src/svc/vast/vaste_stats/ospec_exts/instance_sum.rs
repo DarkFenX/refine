@@ -2,7 +2,7 @@
 
 use crate::{
     def::AttrVal,
-    misc::{DmgKinds, MiningAmount},
+    misc::{DmgKinds, Ecm, MiningAmount},
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
@@ -35,6 +35,19 @@ impl InstanceMul for MiningAmount {
         MiningAmount {
             yield_: self.yield_ * mult,
             drain: self.drain * mult,
+        }
+    }
+}
+
+// TODO: consider if ECM has to be here at all
+impl InstanceMul for Ecm {
+    fn instance_mul(self, mult: AttrVal) -> Self {
+        Ecm {
+            radar: self.radar * mult,
+            magnetometric: self.magnetometric * mult,
+            gravimetric: self.gravimetric * mult,
+            ladar: self.ladar * mult,
+            duration: self.duration,
         }
     }
 }

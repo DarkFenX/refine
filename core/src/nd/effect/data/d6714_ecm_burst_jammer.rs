@@ -1,14 +1,12 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::OF,
     ec,
     ed::EEffectId,
-    misc::{Ecm, EffectSpec},
-    nd::{NEffect, effect::data::shared::proj_mult::get_simple_s2s_noapp_proj_mult},
-    rd::REffect,
-    svc::{SvcCtx, calc::Calc, eff_funcs},
-    ud::UItemKey,
+    nd::{
+        NEffect, NEffectProjOpcSpec, NEffectResist,
+        effect::data::shared::{base_opc::get_ecm_burst_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
+    },
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::ECM_BURST_JAMMER;
@@ -18,57 +16,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(E_EFFECT_ID),
         aid: A_EFFECT_ID,
-        ecm_opc_getter: Some(internal_get_ecm_opc),
+        ecm_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_ecm_burst_base_opc,
+            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
+            resist: Some(NEffectResist::Standard),
+            ..
+        }),
         ..
     }
-}
-
-fn internal_get_ecm_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    projector_effect: &REffect,
-    projectee_key: Option<UItemKey>,
-) -> Option<Ecm> {
-    let attr_consts = ctx.ac();
-    let mut str_radar =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
-    let mut str_magnet = calc.get_item_oattr_afb_oextra(
-        ctx,
-        projector_key,
-        attr_consts.scan_magnetometric_strength_bonus,
-        OF(0.0),
-    )?;
-    let mut str_grav =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
-    let mut str_ladar =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
-    if let Some(projectee_key) = projectee_key {
-        let mut mult = OF(1.0);
-        // Projection reduction
-        let proj_data = ctx.eff_projs.get_or_make_proj_data(
-            ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
-            projectee_key,
-        );
-        mult *= get_simple_s2s_noapp_proj_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
-        // Effect resistance reduction
-        if let Some(rr_mult) =
-            eff_funcs::get_effect_resist_mult(ctx, calc, projector_key, projector_effect, projectee_key)
-        {
-            mult *= rr_mult;
-        }
-        // Apply multiplier
-        str_radar *= mult;
-        str_magnet *= mult;
-        str_grav *= mult;
-        str_ladar *= mult;
-    }
-    Some(Ecm {
-        radar: str_radar,
-        magnetometric: str_magnet,
-        gravimetric: str_grav,
-        ladar: str_ladar,
-        duration: OF(0.0),
-    })
 }
