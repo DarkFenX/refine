@@ -83,7 +83,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc_spec() -> NEffectProjOpcSp
     // Direct DDs have no range limitations
     NEffectProjOpcSpec {
         base: get_aoe_dd_dmg_base_opc,
-        proj_mult_pre: Some(get_aoe_dd_dmg_proj_mult),
+        proj_mult_str: Some(get_aoe_dd_dmg_proj_mult),
         ..
     }
 }

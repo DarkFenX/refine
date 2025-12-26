@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_armor_rep_base_opc,
             spoolable: true,
-            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
             ilimit_attr_id: Some(ac::attrs::ARMOR_HP),
             ..

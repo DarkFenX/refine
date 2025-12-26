@@ -18,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         mining_gas_opc_spec: Some(NEffectProjOpcSpec {
             base: get_mining_base_opc,
-            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
             ..
         }),
         ..

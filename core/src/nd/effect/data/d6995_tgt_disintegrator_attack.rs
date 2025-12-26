@@ -32,7 +32,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_charge_mult_dmg_base_opc,
             spoolable: true,
-            proj_mult_pre: Some(get_disintegrator_proj_mult),
+            proj_mult_str: Some(get_disintegrator_proj_mult),
             ..
         }),
         ..

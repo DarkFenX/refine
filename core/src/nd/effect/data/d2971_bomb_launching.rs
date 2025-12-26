@@ -32,18 +32,15 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_pre: Some(get_bomb_proj_mult),
+            proj_mult_str: Some(get_bomb_proj_mult),
             ..
         }),
         neut_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_neut_base_opc,
-            proj_mult_pre: Some(internal_get_application_mult),
+            proj_mult_str: Some(internal_get_application_mult),
+            proj_mult_chance: Some(internal_get_range_mult),
             resist: Some(NEffectResist::Standard),
             ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
-            // Here, projection reduction is split into 2 separate parts, range and application
-            // reduction. This is done to correctly process cases when target has 50% chance to hit,
-            // and target's cap pool is below post-application/resist bomb neut value
-            proj_mult_post: Some(internal_get_range_mult),
             ..
         }),
         ecm_opc_getter: Some(internal_get_ecm_opc),

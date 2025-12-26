@@ -26,7 +26,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_pre: Some(internal_get_missile_proj_mult),
+            proj_mult_str: Some(internal_get_missile_proj_mult),
             ..
         }),
         ..

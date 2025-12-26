@@ -38,12 +38,12 @@ where
     T: Copy,
 {
     pub(crate) base: NBaseOutputGetter<T>,
-    pub(crate) spoolable: bool,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
-    pub(crate) proj_mult_pre: Option<NProjMultGetter>,
+    pub(crate) spoolable: bool,
+    pub(crate) proj_mult_str: Option<NProjMultGetter>,
+    pub(crate) proj_mult_chance: Option<NProjMultGetter>,
     pub(crate) resist: Option<REffectResist>,
     pub(crate) ilimit_attr_key: Option<RAttrKey>,
-    pub(crate) proj_mult_post: Option<NProjMultGetter>,
 }
 impl<T> REffectProjOpcSpec<T>
 where
@@ -55,9 +55,10 @@ where
     ) -> Self {
         Self {
             base: n_proj_opc_spec.base,
-            spoolable: n_proj_opc_spec.spoolable,
             charge_mult: n_proj_opc_spec.charge_mult,
-            proj_mult_pre: n_proj_opc_spec.proj_mult_pre,
+            spoolable: n_proj_opc_spec.spoolable,
+            proj_mult_str: n_proj_opc_spec.proj_mult_str,
+            proj_mult_chance: n_proj_opc_spec.proj_mult_chance,
             resist: n_proj_opc_spec
                 .resist
                 .as_ref()
@@ -65,7 +66,6 @@ where
             ilimit_attr_key: n_proj_opc_spec
                 .ilimit_attr_id
                 .and_then(|v| attr_id_key_map.get(&v).copied()),
-            proj_mult_post: n_proj_opc_spec.proj_mult_post,
         }
     }
 }

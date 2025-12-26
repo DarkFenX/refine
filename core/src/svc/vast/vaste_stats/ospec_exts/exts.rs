@@ -79,7 +79,7 @@ where
             projectee_key,
         );
         let mut mult_pre = OF(1.0);
-        if let Some(proj_mult_getter) = self.proj_mult_pre {
+        if let Some(proj_mult_getter) = self.proj_mult_str {
             mult_pre *= proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
         }
         match self.resist {
@@ -100,7 +100,7 @@ where
             }
             _ => (),
         }
-        let mult_post = match self.proj_mult_post {
+        let mult_post = match self.proj_mult_chance {
             Some(proj_mult_getter) => {
                 let mult = proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
                 process_mult(mult)

@@ -34,7 +34,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_dmg_base_opc,
-            proj_mult_pre: Some(get_aoe_dd_dmg_proj_mult),
+            proj_mult_str: Some(get_aoe_dd_dmg_proj_mult),
             ..
         }),
         neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),

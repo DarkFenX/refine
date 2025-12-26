@@ -28,12 +28,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         mining_ore_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_ore_crit_mining_base_opc,
-            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
             ..
         }),
         mining_ice_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_ice_crit_mining_base_opc,
-            proj_mult_pre: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
             ..
         }),
         ..

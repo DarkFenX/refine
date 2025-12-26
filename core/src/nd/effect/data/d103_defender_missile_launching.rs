@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_instant_dmg_base_opc,
             // Defenders cannot be used vs targets allowed by the lib, so always return 0 if target
             // is specified
-            proj_mult_pre: Some(get_null_proj_mult),
+            proj_mult_str: Some(get_null_proj_mult),
             ..
         }),
         ..
