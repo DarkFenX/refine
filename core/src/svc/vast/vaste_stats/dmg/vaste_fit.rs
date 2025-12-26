@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleOptions, get_item_cycle_info},
+        cycle::{CyclingOptions, get_item_cseq_map},
         spool::ResolvedSpool,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
@@ -248,12 +248,12 @@ impl VastFitData {
         dps_normal: &mut DmgKinds<AttrVal>,
         breacher_accum: &mut BreacherAccum,
         item_kinds: StatDmgItemKinds,
-        cycle_options: CycleOptions,
+        cycle_options: CyclingOptions,
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
+            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
@@ -263,7 +263,7 @@ impl VastFitData {
                 if !item_kinds.resolve(ctx, u_item, effect) {
                     continue;
                 }
-                let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
+                let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq()) {
                     Some(effect_cycle_loop) => effect_cycle_loop,
                     None => continue,
                 };
@@ -284,7 +284,7 @@ impl VastFitData {
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
+            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
@@ -317,7 +317,7 @@ impl VastFitData {
         projectee_key: Option<UItemKey>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
+            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };
@@ -347,7 +347,7 @@ impl VastFitData {
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
-            let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
+            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
                 Some(cycle_map) => cycle_map,
                 None => continue,
             };

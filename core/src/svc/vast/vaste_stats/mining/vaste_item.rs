@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, CycleOptions, get_item_cycle_info},
+        cycle::{CycleSeq, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{StatMining, Vast, vaste_stats::item_checks::check_drone_module},
     },
@@ -36,12 +36,12 @@ fn get_mps_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    cycle_options: CycleOptions,
+    cycle_options: CyclingOptions,
     ignore_state: bool,
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut item_mps = MiningAmount::default();
-    let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, ignore_state) {
+    let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, ignore_state) {
         Some(cycle_map) => cycle_map,
         None => return item_mps,
     };
@@ -59,18 +59,18 @@ fn get_mps_effect(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    effect_cycle: Cycle,
+    effect_cycle: CycleSeq,
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> Option<MiningAmount> {
     let ospec = mining_ospec_getter(effect)?;
-    let effect_cycle_loop = effect_cycle.to_time().try_get_loop()?;
+    let effect_cycle_loop = effect_cycle.to_time().try_loop_cseq()?;
     let mut mining = MiningAmount {
         yield_: OF(0.0),
         drain: OF(0.0),
     };
     let mut time = OF(0.0);
     let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
-    for effect_cycle_part in effect_cycle_loop.iter_parts() {
+    for effect_cycle_part in effect_cycle_loop.iter_cseq_parts() {
         let cycle_mining = ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data)?;
         mining += cycle_mining * AttrVal::from(effect_cycle_part.repeat_count);
         time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;

@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, ItemId, OF},
     sol::SolarSystem,
     svc::{
-        cycle::{Cycle, CycleDataTime, CycleDataTimeChargedness},
+        cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
         output::Output,
     },
     ud::UItemKey,
@@ -50,11 +50,11 @@ impl StatCapSimStaggerInt {
 pub(super) struct StaggerKey {
     // Out of all cycle parameters, only time between cycles is used to decide what goes into a
     // stagger group
-    pub(super) cycle: Cycle<CycleDataTime>,
+    pub(super) cycle: CycleSeq<CycleDataTime>,
     delay: AttrVal,
 }
 impl StaggerKey {
-    pub(super) fn new(cycle: &Cycle<CycleDataTime>, output: &Output<AttrVal>) -> Self {
+    pub(super) fn new(cycle: &CycleSeq<CycleDataTime>, output: &Output<AttrVal>) -> Self {
         // Round everything, so that small differences in result (which is possible due to different
         // order of float operations) end up having the same key
         Self {
@@ -65,7 +65,7 @@ impl StaggerKey {
 }
 
 pub(super) fn process_staggers(
-    stagger_map: RMapVec<StaggerKey, (Cycle<CycleDataTimeChargedness>, Output<AttrVal>)>,
+    stagger_map: RMapVec<StaggerKey, (CycleSeq<CycleDataTimeCharge>, Output<AttrVal>)>,
     aggregator: &mut Aggregator,
 ) {
     for (stagger_key, stagger_group) in stagger_map.into_iter() {
@@ -76,7 +76,7 @@ pub(super) fn process_staggers(
             continue;
         }
         // Sort by output value, from highest to lowest
-        let stagger_period = stagger_key.cycle.get_first().time / stagger_group.len() as f64;
+        let stagger_period = stagger_key.cycle.get_first_cycle().time / stagger_group.len() as f64;
         for (i, (cycle, output)) in stagger_group
             .into_iter()
             .sorted_by_key(|(_, o)| -o.absolute_impact())

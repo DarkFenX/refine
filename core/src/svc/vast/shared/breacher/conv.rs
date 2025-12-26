@@ -1,19 +1,19 @@
 use super::ticks::{AbtIc, AbtIs, AbtLc, AbtLcIc, AbtLcLcIc, AbtLoopLcLc, AbtLs, AggrBreacherTicks};
 use crate::{
     def::{AttrVal, Count, SERVER_TICK_HZ},
-    svc::cycle::{Cycle, CycleDataTime},
+    svc::cycle::{CycleDataTime, CycleSeq},
     util::ceil_unerr,
 };
 
 // Process breacher module cycle data + output per cycle into some kind of aggregated value, which
 // discards all overlapping instances and aligns everything to ticks, which is needed for further
 // processing
-pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -> Option<AggrBreacherTicks> {
+pub(super) fn cycle_to_ticks(cycle: CycleSeq<CycleDataTime>, output_ticks: Count) -> Option<AggrBreacherTicks> {
     if output_ticks < 1 {
         return None;
     }
     match cycle {
-        Cycle::Lim(limited) => {
+        CycleSeq::Lim(limited) => {
             if limited.repeat_count == 0 {
                 return None;
             }
@@ -33,7 +33,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
                 })),
             }
         }
-        Cycle::Inf(infinite1) => {
+        CycleSeq::Inf(infinite1) => {
             let cycle_ticks = time_to_ticks(infinite1.data.time);
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::Is(AbtIs {})),
@@ -43,7 +43,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
                 })),
             }
         }
-        Cycle::LimInf(infinite2) => {
+        CycleSeq::LimInf(infinite2) => {
             let p1_ticks = time_to_ticks(infinite2.p1_data.time);
             let p2_ticks = time_to_ticks(infinite2.p2_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {
@@ -57,7 +57,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
                 })),
             }
         }
-        Cycle::LimSinInf(infinite3) => {
+        CycleSeq::LimSinInf(infinite3) => {
             let p1_ticks = time_to_ticks(infinite3.p1_data.time);
             let p2_ticks = time_to_ticks(infinite3.p2_data.time);
             let p3_ticks = time_to_ticks(infinite3.p3_data.time);
@@ -75,7 +75,7 @@ pub(super) fn cycle_to_ticks(cycle: Cycle<CycleDataTime>, output_ticks: Count) -
                 })),
             }
         }
-        Cycle::LoopLimSin(looped2) => {
+        CycleSeq::LoopLimSin(looped2) => {
             let p1_ticks = time_to_ticks(looped2.p1_data.time);
             let p2_ticks = time_to_ticks(looped2.p2_data.time);
             match output_ticks >= p1_ticks && output_ticks >= p2_ticks {

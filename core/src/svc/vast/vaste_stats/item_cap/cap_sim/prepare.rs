@@ -12,7 +12,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, get_item_cycle_info},
+        cycle::{CycleSeq, get_item_cseq_map},
         output::{Output, OutputSimple},
         vast::{
             Vast, VastFitData,
@@ -50,7 +50,7 @@ fn fill_consumers(
 ) {
     let mut stagger_map = RMapVec::new();
     for (&item_key, item_data) in fit_data.cap_consumers_active.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -94,7 +94,7 @@ fn fill_neuts(
     };
     let mut stagger_map = RMapVec::new();
     for (&neut_item_key, item_data) in neut_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -137,7 +137,7 @@ fn fill_transfers(
     };
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -167,7 +167,7 @@ fn fill_transfers(
 
 fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
     for (&item_key, item_data) in fit_data.cap_injects.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -186,7 +186,7 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
             };
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),
-                cycle_iter: Cycle::from(effect_cycles).iter_events(),
+                cycle_iter: CycleSeq::from(effect_cycles).iter_cycles(),
                 output: cap_injected,
             }));
         }

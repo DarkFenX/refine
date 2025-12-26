@@ -1,13 +1,13 @@
-use crate::svc::cycle::{CycleOptions, CycleOptionsSim};
+use crate::svc::cycle::{CycleOptionsSim, CyclingOptions};
 
-pub(super) fn get_dps_cycle_options(reload: bool) -> CycleOptions {
+pub(super) fn get_dps_cycle_options(reload: bool) -> CyclingOptions {
     match reload {
-        true => CycleOptions::Sim(CycleOptionsSim {
+        true => CyclingOptions::Sim(CycleOptionsSim {
             rearm_minions: Some(true),
             ..
         }),
-        false => CycleOptions::Burst,
+        false => CyclingOptions::Burst,
     }
 }
 
-pub(super) const VOLLEY_CYCLE_OPTIONS: CycleOptions = CycleOptions::Burst;
+pub(super) const VOLLEY_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Burst;

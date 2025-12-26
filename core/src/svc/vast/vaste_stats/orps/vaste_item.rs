@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, get_item_cycle_info},
+        cycle::{CycleSeq, get_item_cseq_map},
         err::StatItemCheckError,
         spool::ResolvedSpool,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_module},
@@ -53,7 +53,7 @@ fn get_orr_item_key(
     let mut item_orr = OF(0.0);
     // TODO: allow configuring cycle options by caller
     let cycle_options = get_orps_cycle_options(false);
-    let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, ignore_state) {
+    let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, ignore_state) {
         Some(cycle_map) => cycle_map,
         None => return item_orr,
     };
@@ -71,12 +71,12 @@ fn get_orr_effect(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    effect_cycle: Cycle,
+    effect_cycle: CycleSeq,
     spool: Option<Spool>,
     ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> Option<AttrVal> {
     let ospec = ospec_getter(effect)?;
-    let effect_cycle_loop = effect_cycle.to_time_chargedness().try_get_loop()?;
+    let effect_cycle_loop = effect_cycle.to_time_charge().try_loop_cseq()?;
     let spool_mult = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_keys
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
@@ -88,7 +88,7 @@ fn get_orr_effect(
     let mut rep_amount = OF(0.0);
     let mut time = OF(0.0);
     let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
-    for effect_cycle_part in effect_cycle_loop.iter_parts() {
+    for effect_cycle_part in effect_cycle_loop.iter_cseq_parts() {
         let chargedness = effect_cycle_part.data.chargedness;
         let cycle_rep_amount = ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, invar_data)?;
         rep_amount += cycle_rep_amount * effect_cycle_part.repeat_count as f64;

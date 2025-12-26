@@ -2,14 +2,14 @@ use crate::{
     api::AdjustableCount,
     svc::{
         Svc, SvcCtx,
-        cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
+        cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         spool::ResolvedSpool,
     },
     ud::{UData, UItemKey},
     util::InfCount,
 };
 
-const CYCLE_COUNT_OPTIONS: CycleOptions = CycleOptions::Sim(CycleOptionsSim {
+const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
     reload_optionals: Some(true),
     ..
 });
@@ -18,7 +18,7 @@ impl Svc {
     pub(crate) fn get_item_cycles_until_empty(&mut self, u_data: &UData, item_key: UItemKey) -> Option<InfCount> {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_key()??;
-        let cycle_info = get_item_cycle_info(
+        let cycle_info = get_item_cseq_map(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
@@ -26,7 +26,7 @@ impl Svc {
             true,
         )?;
         let mut charged_cycles = 0;
-        let cycle_parts = cycle_info.get(&defeff_key)?.get_parts();
+        let cycle_parts = cycle_info.get(&defeff_key)?.get_cseq_parts();
         for cycle_part in cycle_parts.iter() {
             // Current part uncharged means we're empty by this point
             if cycle_part.data.chargedness.is_none() {

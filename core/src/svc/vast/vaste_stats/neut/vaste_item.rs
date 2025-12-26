@@ -4,7 +4,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cycle_info,
+        cycle::get_item_cseq_map,
         err::StatItemCheckError,
         vast::{Vast, vaste_stats::item_checks::check_charge_drone_fighter_module},
     },
@@ -22,14 +22,14 @@ impl Vast {
     ) -> Result<AttrVal, StatItemCheckError> {
         check_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let mut item_nps = OF(0.0);
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, ignore_state) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return Ok(item_nps),
         };
         for (effect_key, effect_cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(neut_ospec) = effect.neut_opc_spec
-                && let Some(effect_cycle_loop) = effect_cycle.try_get_loop()
+                && let Some(effect_cycle_loop) = effect_cycle.try_loop_cseq()
             {
                 let invar_data = neut_ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
                 let neut_opc = neut_ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data);

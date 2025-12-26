@@ -1,7 +1,7 @@
 use crate::{def::AttrVal, rd::REffectKey};
 
 #[derive(Copy, Clone)]
-pub(in crate::svc) enum CycleOptions {
+pub(in crate::svc) enum CyclingOptions {
     Burst,
     Sim(CycleOptionsSim),
 }
@@ -17,5 +17,5 @@ pub(in crate::svc) struct CycleOptionsSim {
 
 pub(super) struct SelfKillerInfo {
     pub(super) effect_key: REffectKey,
-    pub(super) duration_s: AttrVal,
+    pub(super) duration: AttrVal,
 }

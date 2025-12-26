@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cycle_info,
+        cycle::get_item_cseq_map,
         err::StatItemCheckError,
         spool::ResolvedSpool,
         vast::{
@@ -98,14 +98,14 @@ impl Vast {
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let options = get_dps_cycle_options(reload);
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, options, ignore_state) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, options, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return Ok(()),
         };
         for (effect_key, cycle) in cycle_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(ospec) = effect.normal_dmg_opc_spec
-                && let Some(cycle_loop) = cycle.try_get_loop()
+                && let Some(cycle_loop) = cycle.try_loop_cseq()
             {
                 let spool_mult = if ospec.spoolable
                     && let Some(spool_attrs) = effect.spool_attr_keys
@@ -217,7 +217,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
             Some(cycle_map) => cycle_map,
             None => return Ok(()),
         };

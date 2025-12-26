@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, Count},
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
+    svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped},
     util::InfCount,
 };
 
@@ -8,44 +8,44 @@ use crate::{
 // Part 1: runs specified number of times
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleLim<T = CycleDataFull> {
+pub(in crate::svc) struct CSeqLim<T = CycleDataFull> {
     pub(in crate::svc) data: T,
     pub(in crate::svc) repeat_count: Count,
 }
-impl<T> CycleLim<T> {
-    pub(super) fn get_first(&self) -> &T {
+impl<T> CSeqLim<T> {
+    pub(super) fn get_first_cycle(&self) -> &T {
         &self.data
     }
-    pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
+    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         None
     }
-    pub(super) fn convert<'a, U>(&'a self) -> Cycle<U>
+    pub(super) fn convert<'a, U>(&'a self) -> CycleSeq<U>
     where
         U: From<&'a T>,
     {
-        Cycle::Lim(CycleLim {
+        CycleSeq::Lim(CSeqLim {
             data: (&self.data).into(),
             repeat_count: self.repeat_count,
         })
     }
 }
-impl<T> CycleLim<T>
+impl<T> CSeqLim<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_events(&self) -> CycleLimEventIter<T> {
-        CycleLimEventIter::new(*self)
+    pub(super) fn iter_cycles(&self) -> CSeqLimCycleIter<T> {
+        CSeqLimCycleIter::new(*self)
     }
-    pub(super) fn iter_parts_regular(&self) -> CycleLimPartIter<'_, T> {
-        CycleLimPartIter::new(self)
+    pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
+        CSeqLimPartIter::new(self)
     }
 }
-impl CycleLim {
-    pub(super) fn get_average_time(&self) -> AttrVal {
+impl CSeqLim {
+    pub(super) fn get_time(&self) -> AttrVal {
         self.data.time
     }
 }
-impl CycleLim<CycleDataTime> {
+impl CSeqLim<CycleDataTime> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             data: self.data.copy_rounded(),
@@ -55,57 +55,57 @@ impl CycleLim<CycleDataTime> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Event iterator
+// Cycle iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CycleLimEventIter<T> {
-    cycle: CycleLim<T>,
+pub(in crate::svc) struct CSeqLimCycleIter<T> {
+    cseq: CSeqLim<T>,
     repeats_done: Count,
 }
-impl<T> CycleLimEventIter<T> {
-    fn new(cycle: CycleLim<T>) -> Self {
-        Self { cycle, repeats_done: 0 }
+impl<T> CSeqLimCycleIter<T> {
+    fn new(cseq: CSeqLim<T>) -> Self {
+        Self { cseq, repeats_done: 0 }
     }
 }
-impl<T> Iterator for CycleLimEventIter<T>
+impl<T> Iterator for CSeqLimCycleIter<T>
 where
     T: Copy,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.repeats_done >= self.cycle.repeat_count {
+        if self.repeats_done >= self.cseq.repeat_count {
             return None;
         }
         self.repeats_done += 1;
-        Some(self.cycle.data)
+        Some(self.cseq.data)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part data + iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CycleLimPartIter<'a, T> {
-    cycle: &'a CycleLim<T>,
+pub(in crate::svc) struct CSeqLimPartIter<'a, T> {
+    cseq: &'a CSeqLim<T>,
     yielded: bool,
 }
-impl<'a, T> CycleLimPartIter<'a, T> {
-    fn new(cycle: &'a CycleLim<T>) -> Self {
-        Self { cycle, yielded: false }
+impl<'a, T> CSeqLimPartIter<'a, T> {
+    fn new(cseq: &'a CSeqLim<T>) -> Self {
+        Self { cseq, yielded: false }
     }
 }
-impl<T> Iterator for CycleLimPartIter<'_, T>
+impl<T> Iterator for CSeqLimPartIter<'_, T>
 where
     T: Copy,
 {
-    type Item = CyclePart<T>;
+    type Item = CSeqPart<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.yielded {
             return None;
         }
-        Some(CyclePart {
-            data: self.cycle.data,
-            repeat_count: InfCount::Count(self.cycle.repeat_count),
+        Some(CSeqPart {
+            data: self.cseq.data,
+            repeat_count: InfCount::Count(self.cseq.repeat_count),
         })
     }
 }

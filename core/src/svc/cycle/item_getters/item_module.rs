@@ -1,7 +1,7 @@
 use either::Either;
 use ordered_float::Float;
 
-use super::shared::{CycleOptions, SelfKillerInfo};
+use super::shared::{CyclingOptions, SelfKillerInfo};
 use crate::{
     def::{AttrVal, Count, OF, SERVER_TICK_S},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
@@ -10,15 +10,15 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            Cycle, CycleDataFull, CycleInterrupt,
-            cycle_inf::CycleInf,
-            cycle_lim::CycleLim,
-            cycle_lim_inf::CycleLimInf,
-            cycle_lim_sin_inf::CycleLimSinInf,
-            cycle_loop_lim_sin::CycleLoopLimSin,
+            CycleDataFull, CycleInterrupt, CycleSeq,
             effect_charge_info::{
                 get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
             },
+            seq_inf::CSeqInf,
+            seq_lim::CSeqLim,
+            seq_lim_inf::CSeqLimInf,
+            seq_lim_sin_inf::CSeqLimSinInf,
+            seq_loop_lim_sin::CycleSeqLoopLimSin,
         },
         funcs,
     },
@@ -26,19 +26,19 @@ use crate::{
     util::{FLOAT_TOLERANCE, InfCount, RMap},
 };
 
-pub(super) fn get_module_cycle_info(
+pub(super) fn get_module_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     item: &UItem,
     module: &UModule,
-    options: CycleOptions,
+    options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, Cycle>> {
+) -> Option<RMap<REffectKey, CycleSeq>> {
     if !module.is_loaded() {
         return None;
     };
-    let mut cycle_infos = RMap::new();
+    let mut cseq_map = RMap::new();
     let mut self_killers = Vec::new();
     let effect_keys = match ignore_state {
         true => Either::Left(module.get_effect_datas().unwrap().keys().copied()),
@@ -46,7 +46,7 @@ pub(super) fn get_module_cycle_info(
     };
     for effect_key in effect_keys {
         fill_module_effect_info(
-            &mut cycle_infos,
+            &mut cseq_map,
             &mut self_killers,
             ctx,
             calc,
@@ -61,16 +61,16 @@ pub(super) fn get_module_cycle_info(
     if !self_killers.is_empty() {
         let fastest_sk_effect_key = self_killers
             .into_iter()
-            .min_by_key(|sk_info| sk_info.duration_s)
+            .min_by_key(|sk_info| sk_info.duration)
             .unwrap()
             .effect_key;
-        cycle_infos.retain(|&k, _| k == fastest_sk_effect_key);
+        cseq_map.retain(|&k, _| k == fastest_sk_effect_key);
     }
-    Some(cycle_infos)
+    Some(cseq_map)
 }
 
 fn fill_module_effect_info(
-    cycle_infos: &mut RMap<REffectKey, Cycle>,
+    cseq_map: &mut RMap<REffectKey, CycleSeq>,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -78,7 +78,7 @@ fn fill_module_effect_info(
     item: &UItem,
     module: &UModule,
     effect_key: REffectKey,
-    options: CycleOptions,
+    options: CyclingOptions,
 ) {
     let effect = ctx.u_data.src.get_effect(effect_key);
     if !effect.is_active_with_duration {
@@ -117,11 +117,11 @@ fn fill_module_effect_info(
     if effect.kills_item {
         self_killers.push(SelfKillerInfo {
             effect_key,
-            duration_s: duration,
+            duration: duration,
         });
-        cycle_infos.insert(
+        cseq_map.insert(
             effect_key,
-            Cycle::Lim(CycleLim {
+            CycleSeq::Lim(CSeqLim {
                 data: CycleDataFull {
                     time: duration,
                     interrupt: None,
@@ -141,13 +141,13 @@ fn fill_module_effect_info(
     // Decide if interruptions happen every cycle based on reactivation delay value
     let int_cd = cooldown > FLOAT_TOLERANCE;
     let sim_options = match options {
-        CycleOptions::Sim(sim_options) => sim_options,
+        CyclingOptions::Sim(sim_options) => sim_options,
         // If burst cycle mode was requested, just assume first cycle is the "most charged", and
         // infinitely repeat it
-        CycleOptions::Burst => {
-            cycle_infos.insert(
+        CyclingOptions::Burst => {
+            cseq_map.insert(
                 effect_key,
-                Cycle::Inf(CycleInf {
+                CycleSeq::Inf(CSeqInf {
                     data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -161,9 +161,9 @@ fn fill_module_effect_info(
     let full_count = match charge_info.fully_charged {
         InfCount::Count(full_count) => full_count,
         InfCount::Infinite => {
-            cycle_infos.insert(
+            cseq_map.insert(
                 effect_key,
-                Cycle::Inf(CycleInf {
+                CycleSeq::Inf(CSeqInf {
                     data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -174,7 +174,7 @@ fn fill_module_effect_info(
             return;
         }
     };
-    let cycle = match (
+    let cseq = match (
         full_count > 0,
         charge_info.part_charged.is_some(),
         charge_info.can_run_uncharged,
@@ -182,7 +182,7 @@ fn fill_module_effect_info(
         // Can't cycle at all, should've been handled earlier
         (false, false, false) => return,
         // Infinitely cycling modules without charge
-        (false, false, true) => Cycle::Inf(CycleInf {
+        (false, false, true) => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
                 time: duration + cooldown,
                 interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -213,7 +213,7 @@ fn fill_module_effect_info(
                 int_cd,
                 charge_info.part_charged,
             ),
-            false => Cycle::LimInf(CycleLimInf {
+            false => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -235,7 +235,7 @@ fn fill_module_effect_info(
             .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
         {
             true => full_r(ctx, calc, item_key, duration, cooldown, int_cd, full_count),
-            false => Cycle::LimInf(CycleLimInf {
+            false => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -276,7 +276,7 @@ fn fill_module_effect_info(
                     full_count,
                     charge_info.part_charged,
                 ),
-                false => Cycle::LimSinInf(CycleLimSinInf {
+                false => CycleSeq::LimSinInf(CSeqLimSinInf {
                     p1_data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -297,7 +297,7 @@ fn fill_module_effect_info(
             }
         }
     };
-    cycle_infos.insert(effect_key, cycle);
+    cseq_map.insert(effect_key, cseq);
 }
 
 fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
@@ -319,8 +319,8 @@ fn part_r(
     cooldown: AttrVal,
     int_cd: bool,
     part_value: Option<AttrVal>,
-) -> Cycle {
-    Cycle::Inf(CycleInf {
+) -> CycleSeq {
+    CycleSeq::Inf(CSeqInf {
         data: CycleDataFull {
             time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
             interrupt: CycleInterrupt::try_new(int_cd, true),
@@ -337,16 +337,16 @@ fn full_r(
     cooldown: AttrVal,
     int_cd: bool,
     full_count: Count,
-) -> Cycle {
+) -> CycleSeq {
     match full_count {
-        1 => Cycle::Inf(CycleInf {
+        1 => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
                 time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
                 interrupt: CycleInterrupt::try_new(int_cd, true),
                 chargedness: Some(OF(1.0)),
             },
         }),
-        _ => Cycle::LoopLimSin(CycleLoopLimSin {
+        _ => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
             p1_data: CycleDataFull {
                 time: duration + cooldown,
                 interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -371,8 +371,8 @@ fn both_r(
     int_cd: bool,
     full_count: Count,
     part_value: Option<AttrVal>,
-) -> Cycle {
-    Cycle::LoopLimSin(CycleLoopLimSin {
+) -> CycleSeq {
+    CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
         p1_data: CycleDataFull {
             time: duration + cooldown,
             interrupt: CycleInterrupt::try_new(int_cd, false),

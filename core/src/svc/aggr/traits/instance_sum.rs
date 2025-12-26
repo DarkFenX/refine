@@ -57,7 +57,7 @@ impl InstanceMul for Ecm {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
-    T: Copy + std::ops::Mul<AttrVal>,
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
 {
     pub(in crate::svc::aggr) fn instance_sum(&self) -> T {
         match self {
@@ -78,7 +78,7 @@ where
 
 impl<T> OutputComplex<T>
 where
-    T: Copy + std::ops::Mul<AttrVal>,
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
 {
     fn instance_sum(&self) -> T {
         self.amount * AttrVal::from(self.repeats)

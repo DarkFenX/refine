@@ -1,32 +1,32 @@
-use super::shared::CycleOptions;
+use super::shared::CyclingOptions;
 use crate::{
     def::AttrVal,
     rd::REffectKey,
-    svc::{SvcCtx, calc::Calc, cycle::Cycle},
+    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::{UFighter, UItemKey},
     util::RMap,
 };
 
 struct FtrEffectInfo {
-    cycle: Cycle,
+    cseq: CycleSeq,
     rearm: Option<FtrEffectRearmInfo>,
 }
 
 #[derive(Copy, Clone)]
 struct FtrEffectRearmInfo {
-    time_until_rearm_s: AttrVal,
-    full_rearm_time_s: AttrVal,
-    charge_rearm_time_s: AttrVal,
+    time_until_rearm: AttrVal,
+    full_rearm_time: AttrVal,
+    charge_rearm_time: AttrVal,
 }
 
-pub(super) fn get_fighter_cycle_info(
+pub(super) fn get_fighter_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     fighter: &UFighter,
-    options: CycleOptions,
+    options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, Cycle>> {
+) -> Option<RMap<REffectKey, CycleSeq>> {
     if !fighter.is_loaded() {
         return None;
     };

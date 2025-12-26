@@ -5,24 +5,24 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, CycleDataFull, cycle_inf::CycleInf},
+        cycle::{CycleDataFull, CycleSeq, seq_inf::CSeqInf},
         funcs,
     },
     ud::{UDrone, UItemKey},
     util::RMap,
 };
 
-pub(super) fn get_drone_cycle_info(
+pub(super) fn get_drone_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     drone: &UDrone,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, Cycle>> {
+) -> Option<RMap<REffectKey, CycleSeq>> {
     if !drone.is_loaded() {
         return None;
     };
-    let mut cycle_infos = RMap::new();
+    let mut cseq_map = RMap::new();
     let effect_keys = match ignore_state {
         true => Either::Left(drone.get_effect_datas().unwrap().keys().copied()),
         false => Either::Right(drone.get_reffs().unwrap().iter().copied()),
@@ -38,9 +38,9 @@ pub(super) fn get_drone_cycle_info(
         };
         // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
         // flags, limited charges & reloads
-        cycle_infos.insert(
+        cseq_map.insert(
             effect_key,
-            Cycle::Inf(CycleInf {
+            CycleSeq::Inf(CSeqInf {
                 data: CycleDataFull {
                     time: duration_s,
                     interrupt: None,
@@ -49,5 +49,5 @@ pub(super) fn get_drone_cycle_info(
             }),
         );
     }
-    Some(cycle_infos)
+    Some(cseq_map)
 }

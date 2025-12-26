@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cycle_info,
+        cycle::get_item_cseq_map,
         vast::{StatNeutItemKinds, Vast},
     },
     ud::{UFitKey, UItemKey},
@@ -55,7 +55,7 @@ fn get_nps(
 ) -> AttrVal {
     let mut nps = OF(0.0);
     for (&item_key, item_data) in fit_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -65,7 +65,7 @@ fn get_nps(
         }
         for (&effect_key, ospec) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_get_loop()) {
+            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq()) {
                 Some(effect_cycle_loop) => effect_cycle_loop,
                 None => continue,
             };

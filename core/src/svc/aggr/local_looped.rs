@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{Cycle, CycleDataTime, CycleDataTimeChargedness},
+        cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
     },
     ud::UItemKey,
 };
@@ -17,7 +17,7 @@ pub(in crate::svc) fn aggr_local_looped_per_second<T>(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    cycle: &Cycle,
+    cycle: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<T>
 where
@@ -36,18 +36,18 @@ fn aggr_local_time_chargedness<T>(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    cycle: Cycle<CycleDataTimeChargedness>,
+    cycle: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectLocalOpcSpec<T>,
     charge_mult_getter: NChargeMultGetter,
 ) -> Option<T>
 where
     T: Copy + Aggregable,
 {
-    let cycle_loop = cycle.try_get_loop()?;
+    let cycle_loop = cycle.try_loop_cseq()?;
     let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
     let mut output = T::default();
     let mut time = OF(0.0);
-    for cycle_part in cycle_loop.iter_parts() {
+    for cycle_part in cycle_loop.iter_cseq_parts() {
         let mut part_output = inv_data.base.instance_sum() * OF::from(cycle_part.repeat_count);
         if let Some(chargedness) = cycle_part.data.chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
@@ -55,7 +55,7 @@ where
             part_output *= charge_mult;
         }
         output += part_output;
-        time += cycle_part;
+        time += cycle_part.data.time;
     }
     None
 }
@@ -65,14 +65,14 @@ fn aggr_local_time<T>(
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
-    cycle: Cycle<CycleDataTime>,
+    cycle: CycleSeq<CycleDataTime>,
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<T>
 where
     T: Copy + Aggregable,
 {
-    let cycle_loop = cycle.try_get_loop()?;
+    let cycle_loop = cycle.try_loop_cseq()?;
     let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
-    for cycle_part in cycle_loop.iter_parts() {}
+    for cycle_part in cycle_loop.iter_cseq_parts() {}
     None
 }

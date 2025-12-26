@@ -1,8 +1,7 @@
-use super::cycle_inf::CycleInf;
 use crate::{
     AttrVal,
     def::Count,
-    svc::cycle::{Cycle, CycleDataFull, CycleDataTime, CycleLooped, CyclePart},
+    svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::InfCount,
 };
 
@@ -11,24 +10,24 @@ use crate::{
 // Part 2: repeats infinitely
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleLimInf<T = CycleDataFull> {
+pub(in crate::svc) struct CSeqLimInf<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
 }
-impl<T> CycleLimInf<T> {
-    pub(super) fn get_first(&self) -> &T {
+impl<T> CSeqLimInf<T> {
+    pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn convert<'a, U>(&'a self) -> Cycle<U>
+    pub(super) fn convert<'a, U>(&'a self) -> CycleSeq<U>
     where
         U: From<&'a T> + Eq,
     {
         let p1_data = U::from(&self.p1_data);
         let p2_data = U::from(&self.p2_data);
         match p1_data == p2_data {
-            true => Cycle::Inf(CycleInf { data: p1_data }),
-            false => Cycle::LimInf(CycleLimInf {
+            true => CycleSeq::Inf(CSeqInf { data: p1_data }),
+            false => CycleSeq::LimInf(CSeqLimInf {
                 p1_data,
                 p1_repeat_count: self.p1_repeat_count,
                 p2_data,
@@ -36,26 +35,26 @@ impl<T> CycleLimInf<T> {
         }
     }
 }
-impl<T> CycleLimInf<T>
+impl<T> CSeqLimInf<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_events(&self) -> CycleLimInfEventIter<T> {
-        CycleLimInfEventIter::new(*self)
+    pub(super) fn iter_cycles(&self) -> CSeqLimInfCycleIter<T> {
+        CSeqLimInfCycleIter::new(*self)
     }
-    pub(super) fn iter_parts_regular(&self) -> CycleLimInfPartIter<'_, T> {
-        CycleLimInfPartIter::new(self)
+    pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimInfPartIter<'_, T> {
+        CSeqLimInfPartIter::new(self)
     }
-    pub(super) fn try_get_loop(&self) -> Option<CycleLooped<T>> {
-        Some(CycleLooped::Inf(CycleInf { data: self.p2_data }))
+    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
+        Some(CycleSeqLooped::Inf(CSeqInf { data: self.p2_data }))
     }
 }
-impl CycleLimInf {
+impl CSeqLimInf {
     pub(super) fn get_average_time(&self) -> AttrVal {
         self.p2_data.time
     }
 }
-impl CycleLimInf<CycleDataTime> {
+impl CSeqLimInf<CycleDataTime> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             p1_data: self.p1_data.copy_rounded(),
@@ -66,23 +65,23 @@ impl CycleLimInf<CycleDataTime> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Event iterator
+// Cycle iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CycleLimInfEventIter<T> {
-    cycle: CycleLimInf<T>,
+pub(in crate::svc) struct CSeqLimInfCycleIter<T> {
+    cseq: CSeqLimInf<T>,
     index: u8,
     p1_repeats_done: Count,
 }
-impl<T> CycleLimInfEventIter<T> {
-    fn new(cycle: CycleLimInf<T>) -> Self {
+impl<T> CSeqLimInfCycleIter<T> {
+    fn new(cseq: CSeqLimInf<T>) -> Self {
         Self {
-            cycle,
+            cseq,
             index: 0,
             p1_repeats_done: 0,
         }
     }
 }
-impl<T> Iterator for CycleLimInfEventIter<T>
+impl<T> Iterator for CSeqLimInfCycleIter<T>
 where
     T: Copy,
 {
@@ -91,50 +90,50 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
             0 => {
-                if self.p1_repeats_done >= self.cycle.p1_repeat_count {
+                if self.p1_repeats_done >= self.cseq.p1_repeat_count {
                     self.index = 1;
-                    return Some(self.cycle.p2_data);
+                    return Some(self.cseq.p2_data);
                 }
                 self.p1_repeats_done += 1;
-                Some(self.cycle.p1_data)
+                Some(self.cseq.p1_data)
             }
-            1 => Some(self.cycle.p2_data),
+            1 => Some(self.cseq.p2_data),
             _ => unreachable!(),
         }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Part iterator
+// Sequence part iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CycleLimInfPartIter<'a, T> {
-    cycle: &'a CycleLimInf<T>,
+pub(in crate::svc) struct CSeqLimInfPartIter<'a, T> {
+    cseq: &'a CSeqLimInf<T>,
     index: usize,
 }
-impl<'a, T> CycleLimInfPartIter<'a, T> {
-    fn new(cycle: &'a CycleLimInf<T>) -> Self {
-        Self { cycle, index: 0 }
+impl<'a, T> CSeqLimInfPartIter<'a, T> {
+    fn new(cseq: &'a CSeqLimInf<T>) -> Self {
+        Self { cseq, index: 0 }
     }
 }
-impl<T> Iterator for CycleLimInfPartIter<'_, T>
+impl<T> Iterator for CSeqLimInfPartIter<'_, T>
 where
     T: Copy,
 {
-    type Item = CyclePart<T>;
+    type Item = CSeqPart<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
             0 => {
                 self.index = 1;
-                Some(CyclePart {
-                    data: self.cycle.p1_data,
-                    repeat_count: InfCount::Count(self.cycle.p1_repeat_count),
+                Some(CSeqPart {
+                    data: self.cseq.p1_data,
+                    repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
             1 => {
                 self.index = 2;
-                Some(CyclePart {
-                    data: self.cycle.p2_data,
+                Some(CSeqPart {
+                    data: self.cseq.p2_data,
                     repeat_count: InfCount::Infinite,
                 })
             }

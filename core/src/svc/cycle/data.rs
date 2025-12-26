@@ -1,19 +1,8 @@
 use crate::{def::AttrVal, util::sig_round};
 
-#[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleInterrupt {
-    pub(in crate::svc) cooldown: bool,
-    pub(in crate::svc) reload: bool,
-}
-impl CycleInterrupt {
-    pub(in crate::svc) fn try_new(cooldown: bool, reload: bool) -> Option<Self> {
-        match cooldown || reload {
-            true => Some(Self { cooldown, reload }),
-            false => None,
-        }
-    }
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Details
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
     // Full time (active time with any downtimes combined)
@@ -27,15 +16,15 @@ pub(in crate::svc) struct CycleDataFull {
 // Simplified cycle data types, they are useful mostly because they allow cycle optimizations during
 // cycle conversion
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc) struct CycleDataTimeChargedness {
+pub(in crate::svc) struct CycleDataTimeCharge {
     pub(in crate::svc) time: AttrVal,
     pub(in crate::svc) chargedness: Option<AttrVal>,
 }
-impl From<&CycleDataFull> for CycleDataTimeChargedness {
-    fn from(full: &CycleDataFull) -> Self {
+impl From<&CycleDataFull> for CycleDataTimeCharge {
+    fn from(details_full: &CycleDataFull) -> Self {
         Self {
-            time: full.time,
-            chargedness: full.chargedness,
+            time: details_full.time,
+            chargedness: details_full.chargedness,
         }
     }
 }
@@ -52,14 +41,31 @@ impl CycleDataTime {
     }
 }
 impl From<&CycleDataFull> for CycleDataTime {
-    fn from(full: &CycleDataFull) -> Self {
-        Self { time: full.time }
+    fn from(data_full: &CycleDataFull) -> Self {
+        Self { time: data_full.time }
     }
 }
-impl From<&CycleDataTimeChargedness> for CycleDataTime {
-    fn from(time_charged: &CycleDataTimeChargedness) -> Self {
+impl From<&CycleDataTimeCharge> for CycleDataTime {
+    fn from(data_time_charge: &CycleDataTimeCharge) -> Self {
         Self {
-            time: time_charged.time,
+            time: data_time_charge.time,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Detail fields
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone)]
+pub(in crate::svc) struct CycleInterrupt {
+    pub(in crate::svc) cooldown: bool,
+    pub(in crate::svc) reload: bool,
+}
+impl CycleInterrupt {
+    pub(in crate::svc) fn try_new(cooldown: bool, reload: bool) -> Option<Self> {
+        match cooldown || reload {
+            true => Some(Self { cooldown, reload }),
+            false => None,
         }
     }
 }

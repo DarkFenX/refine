@@ -1,3 +1,3 @@
-use crate::svc::cycle::CycleOptions;
+use crate::svc::cycle::CyclingOptions;
 
-pub(super) const NEUT_CYCLE_OPTIONS: CycleOptions = CycleOptions::Burst;
+pub(super) const NEUT_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Burst;

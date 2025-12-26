@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cycle_info,
+        cycle::get_item_cseq_map,
         err::StatItemCheckError,
         vast::{Vast, VastFitData, shared::calc_regen, vaste_stats::item_checks::check_ship},
     },
@@ -110,7 +110,7 @@ fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: Uni
 fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> AttrVal {
     let mut cps = OF(0.0);
     for (&item_key, item_data) in fit_data.cap_injects.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -145,7 +145,7 @@ fn get_cap_consumed(
         false => CYCLE_OPTIONS_BURST,
     };
     for (&item_key, item_data) in fit_data.cap_consumers_active.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -175,7 +175,7 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
         None => return cps,
     };
     for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -203,7 +203,7 @@ fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) 
         None => return nps,
     };
     for (&neut_item_key, item_data) in neut_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };

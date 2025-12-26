@@ -4,7 +4,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
+        cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
@@ -79,7 +79,7 @@ impl Vast {
     }
 }
 
-const ANCIL_CYCLE_OPTIONS: CycleOptions = CycleOptions::Sim(CycleOptionsSim {
+const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
     reload_optionals: Some(true),
     ..
 });
@@ -91,7 +91,7 @@ fn get_local_ancil_hp(
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     for (&item_key, item_data) in ancil_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, ANCIL_CYCLE_OPTIONS, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, ANCIL_CYCLE_OPTIONS, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -104,7 +104,7 @@ fn get_local_ancil_hp(
             let mut broken_sequence = false;
             let mut effect_ancil_hp = OF(0.0);
             let invar_data = ospec.make_invar_data(ctx, calc, item_key);
-            let effect_cycle_parts = effect_cycles.get_parts();
+            let effect_cycle_parts = effect_cycles.get_cseq_parts();
             for effect_cycle_part in effect_cycle_parts.iter() {
                 // No charges in current part breaks sequence
                 if effect_cycle_part.data.chargedness.is_none() {
@@ -168,7 +168,7 @@ fn get_remote_ancil_hp(
         None => return total_ancil_hp,
     };
     for (&projector_item_key, projector_data) in incoming_ancils.iter() {
-        let projector_cycle_map = match get_item_cycle_info(ctx, calc, projector_item_key, ANCIL_CYCLE_OPTIONS, false) {
+        let projector_cycle_map = match get_item_cseq_map(ctx, calc, projector_item_key, ANCIL_CYCLE_OPTIONS, false) {
             Some(projector_cycle_map) => projector_cycle_map,
             None => continue,
         };
@@ -181,7 +181,7 @@ fn get_remote_ancil_hp(
             let mut broken_sequence = false;
             let mut effect_ancil_hp = OF(0.0);
             let invar_data = ospec.make_invar_data(ctx, calc, projector_item_key, effect, Some(projectee_item_key));
-            let effect_cycle_parts = effect_cycles.get_parts();
+            let effect_cycle_parts = effect_cycles.get_cseq_parts();
             for effect_cycle_part in effect_cycle_parts.iter() {
                 // No charges in current part breaks sequence
                 if effect_cycle_part.data.chargedness.is_none() {

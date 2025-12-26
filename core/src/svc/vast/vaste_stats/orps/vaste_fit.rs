@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cycle_info,
+        cycle::get_item_cseq_map,
         spool::ResolvedSpool,
         vast::{StatOutRepItemKinds, StatTank, Vast},
     },
@@ -86,7 +86,7 @@ fn get_orrps(
     // TODO: allow configuring cycle options by caller
     let cycle_options = get_orps_cycle_options(false);
     for (&item_key, item_data) in fit_data.iter() {
-        let cycle_map = match get_item_cycle_info(ctx, calc, item_key, cycle_options, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };
@@ -97,7 +97,7 @@ fn get_orrps(
         for (&effect_key, ospec) in item_data.iter() {
             let effect = ctx.u_data.src.get_effect(effect_key);
             let effect_cycle = match cycle_map.get(&effect_key) {
-                Some(effect_cycle_loop) => effect_cycle_loop.to_time_chargedness(),
+                Some(effect_cycle_loop) => effect_cycle_loop.to_time_charge(),
                 None => continue,
             };
             let spool_mult = if ospec.spoolable
@@ -108,7 +108,7 @@ fn get_orrps(
             } else {
                 None
             };
-            let effect_cycle_part = effect_cycle.get_first();
+            let effect_cycle_part = effect_cycle.get_first_cycle();
             let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
             let output_per_cycle = match ospec.get_total(
                 ctx,

@@ -4,14 +4,14 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleOptions, CycleOptionsSim, get_item_cycle_info},
+        cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{StatJamApplied, StatSensorsKind, Vast},
     },
     ud::UItemKey,
 };
 
-const JAM_OPTIONS: CycleOptions = CycleOptions::Sim(CycleOptionsSim { .. });
+const JAM_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim { .. });
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_incoming_jam(
@@ -55,8 +55,8 @@ impl Vast {
                 let ecm_jam_chance = (item_ecm_str / sensors.strength).clamp(OF(0.0), OF(1.0));
                 item_unjam_chance *= OF(1.0) - ecm_jam_chance;
                 // Jam uptime
-                if let Some(cycle_map) = get_item_cycle_info(ctx, calc, projector_item_key, JAM_OPTIONS, false)
-                    && let Some(effect_cycle_loop) = cycle_map.get(&effect_key).and_then(|v| v.try_get_loop())
+                if let Some(cycle_map) = get_item_cseq_map(ctx, calc, projector_item_key, JAM_OPTIONS, false)
+                    && let Some(effect_cycle_loop) = cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq())
                 {
                     // Theoretically, it is possible to have overlapping cycles with some items
                     // (e.g. if ECM burst projectors had super short cycle). This stat deliberately
