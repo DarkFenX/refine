@@ -1,5 +1,6 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
+    shared::AggrData,
     traits::Aggregable,
 };
 use crate::{
@@ -14,7 +15,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_proj_looped_per_second<T>(
+pub(in crate::svc) fn aggr_proj_clip_per_second<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -23,6 +24,21 @@ pub(in crate::svc) fn aggr_proj_looped_per_second<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
 ) -> Option<T>
+where
+    T: Copy + Aggregable,
+{
+    Some(aggr_proj_clip(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)?.get_per_second())
+}
+
+pub(in crate::svc) fn aggr_proj_clip<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    effect: &REffect,
+    cseq: &CycleSeq,
+    ospec: &REffectProjOpcSpec<T>,
+    projectee_key: Option<UItemKey>,
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -41,7 +57,7 @@ fn aggr_proj_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     inv_spool: SpoolInvariantData,
-) -> Option<T>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -109,7 +125,7 @@ where
             time += cycle_part.data.time;
         }
     }
-    Some(value / time)
+    Some(AggrData { amount: value, time })
 }
 fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
     let mut uninterrupted_cycles = 0;
@@ -140,7 +156,7 @@ fn aggr_proj_regular<T>(
     cseq: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<T>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -170,5 +186,5 @@ where
         value += part_output.instance_sum() * cycle_repeat_count;
         time += cycle_part.data.time * cycle_repeat_count;
     }
-    Some(value / time)
+    Some(AggrData { amount: value, time })
 }
