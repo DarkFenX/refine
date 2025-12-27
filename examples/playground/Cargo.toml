@@ -11,6 +11,5 @@ radc = { package = "refine-adc", path = "../../data-cacher", features = ["json-z
 chrono = ">=0.4.42"
 itertools = ">=0.14.0"
 time = { version = ">=0.3.44", features = ["macros"] }
-rand = ">=0.10.0-rc.5"
 tracing = ">=0.1.44"
 tracing-subscriber = { version = ">=0.3.22", features = ["time"] }

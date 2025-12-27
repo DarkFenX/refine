@@ -31,7 +31,9 @@ impl Fk for EAttr {
     }
     fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(v) = attr_val_to_fk(self.default_value) {
+        if ec::extras::TYPE_LIST_ATTR_IDS.contains(&self.id)
+            && let Some(v) = attr_val_to_fk(self.default_value)
+        {
             vec.push(v);
         }
         vec
@@ -47,11 +49,10 @@ impl Fk for EAttr {
     }
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let (true, Some(dv_fk)) = (
-            ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.id),
-            attr_val_to_fk(self.default_value),
-        ) {
-            vec.push(dv_fk);
+        if ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.id)
+            && let Some(v) = attr_val_to_fk(self.default_value)
+        {
+            vec.push(v);
         }
         vec
     }

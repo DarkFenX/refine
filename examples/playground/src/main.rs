@@ -12,7 +12,6 @@ use std::{
 
 use chrono::Utc;
 use itertools::Itertools;
-use rand::{Rng, SeedableRng};
 use rc::{
     AddMode, ItemCommon, ItemMutCommon, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone, SecZoneCorruption,
     SkillLevel, SolarSystem, Src, VERSION,
@@ -54,8 +53,8 @@ fn main() {
         "tq".to_string(),
     ));
     // test_random(&edh, &mut adc);
-    // test_crusader(&edh, &mut adc);
-    test_nphoon(&edh, &mut adc);
+    test_crusader(&edh, &mut adc);
+    // test_nphoon(&edh, &mut adc);
 }
 
 fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {

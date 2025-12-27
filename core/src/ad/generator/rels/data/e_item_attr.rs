@@ -31,13 +31,10 @@ impl Fk for EItemAttr {
     }
     fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        match self.attr_id {
-            ec::attrs::VALID_TGT_WHITELIST | ec::attrs::TGT_FILTER_TYPELIST_ID
-                if let Some(v_fk) = attr_val_to_fk(self.value) =>
-            {
-                vec.push(v_fk)
-            }
-            _ => (),
+        if ec::extras::TYPE_LIST_ATTR_IDS.contains(&self.attr_id)
+            && let Some(v) = attr_val_to_fk(self.value)
+        {
+            vec.push(v)
         }
         vec
     }
@@ -51,11 +48,10 @@ impl Fk for EItemAttr {
     }
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let (true, Some(v_fk)) = (
-            ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.attr_id),
-            attr_val_to_fk(self.value),
-        ) {
-            vec.push(v_fk);
+        if ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.attr_id)
+            && let Some(v) = attr_val_to_fk(self.value)
+        {
+            vec.push(v);
         }
         vec
     }
@@ -63,9 +59,12 @@ impl Fk for EItemAttr {
 impl EItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
     fn get_fk_from_val(&self, unit: EAttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
-        match (g_supp.attr_unit_map.get(&self.attr_id), attr_val_to_fk(self.value)) {
-            (Some(&u), Some(v_fk)) if u == unit => Some(v_fk),
-            _ => None,
+        if let Some(&u) = g_supp.attr_unit_map.get(&self.attr_id)
+            && u == unit
+            && let Some(v) = attr_val_to_fk(self.value)
+        {
+            return Some(v);
         }
+        None
     }
 }
