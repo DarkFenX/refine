@@ -4,6 +4,7 @@ use crate::{
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
+        aggr::aggr_proj_first_per_second,
         calc::Calc,
         cycle::get_item_cseq_map,
         vast::{StatNeutItemKinds, Vast},
@@ -50,13 +51,13 @@ fn get_nps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatNeutItemKinds,
-    projectee_key: Option<UItemKey>,
+    projectee_item_key: Option<UItemKey>,
     fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut nps = OF(0.0);
     for (&item_key, item_data) in fit_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         let u_item = ctx.u_data.items.get(item_key);
@@ -64,17 +65,16 @@ fn get_nps(
             continue;
         }
         for (&effect_key, ospec) in item_data.iter() {
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
+                None => continue,
+            };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq()) {
-                Some(effect_cycle_loop) => effect_cycle_loop,
-                None => continue,
-            };
-            let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
-            let output_per_cycle = match ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data) {
-                Some(output_per_cycle) => output_per_cycle,
-                None => continue,
-            };
-            nps += output_per_cycle / effect_cycle_loop.get_average_time();
+            if let Some(effect_nps) =
+                aggr_proj_first_per_second(ctx, calc, item_key, effect, cseq, ospec, None, projectee_item_key)
+            {
+                nps += effect_nps;
+            }
         }
     }
     nps
