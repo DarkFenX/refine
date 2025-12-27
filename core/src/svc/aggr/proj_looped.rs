@@ -3,13 +3,13 @@ use super::{
     traits::Aggregable,
 };
 use crate::{
-    def::OF,
+    def::{AttrVal, Count, OF},
     nd::NChargeMultGetter,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataTime, CycleDataTimeCharge, CycleDataTimeInt, CycleSeq},
+        cycle::{CycleDataTime, CycleDataTimeCharge, CycleDataTimeInt, CycleSeq, CycleSeqLooped},
     },
     ud::UItemKey,
 };
@@ -79,20 +79,65 @@ where
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    // Do a dry run to set amount of interrupted cycles before we begin
+    let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     let mut value = T::default();
     let mut time = OF(0.0);
-    for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
-        // Value
-        let mut part_output = inv_proj.output;
-        if let Some(limit) = inv_proj.amount_limit {
-            part_output.limit_amount(limit);
+    'part: for cycle_part in cseq.iter_cseq_parts() {
+        for i in 0..cycle_part.repeat_count {
+            let mut part_output = inv_proj.output;
+            // Case when the rest of cycle part is at full spool
+            if !cycle_part.data.interrupt && uninterrupted_cycles >= inv_spool.cycles_to_max {
+                let remaining_cycles = cycle_part.repeat_count - i;
+                // Spool
+                part_output *= OF(1.0) + inv_spool.max;
+                uninterrupted_cycles += remaining_cycles;
+                // Limit
+                if let Some(limit) = inv_proj.amount_limit {
+                    part_output.limit_amount(limit);
+                }
+                // Update total values
+                let remaining_cycles = AttrVal::from(remaining_cycles);
+                value += part_output.instance_sum() * remaining_cycles;
+                time += cycle_part.data.time * remaining_cycles;
+                continue 'part;
+            }
+            // Spool
+            part_output *= OF(1.0) + inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            match cycle_part.data.interrupt {
+                true => uninterrupted_cycles = 0,
+                false => uninterrupted_cycles += 1,
+            }
+            // Limit
+            if let Some(limit) = inv_proj.amount_limit {
+                part_output.limit_amount(limit);
+            }
+            // Update total values
+            value += part_output.instance_sum();
+            time += cycle_part.data.time;
         }
-        value += part_output.instance_sum() * cycle_repeat_count;
-        // Time
-        time += cycle_part.data.time * cycle_repeat_count;
     }
     Some(value / time)
+}
+fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataTimeInt>, inv_spool: &SpoolInvariantData) -> Count {
+    let mut uninterrupted_cycles = 0;
+    let mut interruptions = false;
+    for cycle_part in cseq.iter_cseq_parts() {
+        match cycle_part.data.interrupt {
+            true => {
+                uninterrupted_cycles = 0;
+                interruptions = true;
+            }
+            false => {
+                uninterrupted_cycles += cycle_part.repeat_count;
+            }
+        }
+    }
+    // If there are no interruptions at all, just set max possible spool right away
+    if !interruptions {
+        uninterrupted_cycles = inv_spool.cycles_to_max;
+    }
+    uninterrupted_cycles
 }
 
 fn aggr_proj_chargedness<T>(
@@ -113,7 +158,7 @@ where
     let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
+        let cycle_repeat_count = AttrVal::from(cycle_part.repeat_count);
         // Value
         let mut part_output = inv_proj.output;
         if let Some(chargedness) = cycle_part.data.chargedness
@@ -148,7 +193,7 @@ where
     let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
+        let cycle_repeat_count = AttrVal::from(cycle_part.repeat_count);
         // Value
         let mut part_output = inv_proj.output;
         if let Some(limit) = inv_proj.amount_limit {

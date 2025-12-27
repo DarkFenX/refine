@@ -1,5 +1,5 @@
 use crate::{
-    def::OF,
+    def::AttrVal,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
@@ -21,7 +21,7 @@ pub(super) fn fighter_count_postproc_fast(
         .unwrap()
         .get_count()
         .unwrap();
-    let current_count = OF::from(count.current);
+    let current_count = AttrVal::from(count.current);
     val.dogma = current_count;
     val.extra = current_count;
     val
@@ -41,6 +41,6 @@ pub(super) fn fighter_count_postproc_info(
         .unwrap()
         .get_count()
         .unwrap();
-    let current_count = OF::from(count.current);
+    let current_count = AttrVal::from(count.current);
     AttrValInfo::new(current_count)
 }

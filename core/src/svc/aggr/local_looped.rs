@@ -1,6 +1,6 @@
 use super::{local_inv_data::LocalInvariantData, traits::Aggregable};
 use crate::{
-    def::OF,
+    def::{AttrVal, OF},
     nd::NChargeMultGetter,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -48,7 +48,7 @@ where
     let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
+        let cycle_repeat_count = AttrVal::from(cycle_part.repeat_count);
         // Value
         let mut part_output = inv_local.output;
         if let Some(chargedness) = cycle_part.data.chargedness
@@ -82,7 +82,7 @@ where
     let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_repeat_count = OF::from(cycle_part.repeat_count);
+        let cycle_repeat_count = AttrVal::from(cycle_part.repeat_count);
         // Value
         let mut part_output = inv_local.output;
         if let Some(limit) = inv_local.amount_limit {

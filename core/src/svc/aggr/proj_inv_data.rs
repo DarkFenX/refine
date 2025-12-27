@@ -99,7 +99,7 @@ fn process_mult(mult: AttrVal) -> Option<AttrVal> {
 pub(super) struct SpoolInvariantData {
     pub(super) step: AttrVal,
     pub(super) max: AttrVal,
-    pub(super) cycles: Count,
+    pub(super) cycles_to_max: Count,
 }
 impl SpoolInvariantData {
     pub(super) fn try_make<T>(
@@ -131,7 +131,7 @@ impl SpoolInvariantData {
         Some(Self {
             step,
             max,
-            cycles: ceil_unerr(cycles).into_inner() as Count,
+            cycles_to_max: ceil_unerr(cycles).into_inner() as Count,
         })
     }
 }
