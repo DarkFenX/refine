@@ -1,12 +1,12 @@
 use super::shared::get_mps_cycle_options;
 use crate::{
-    def::{AttrVal, OF},
     misc::MiningAmount,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
+        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
         calc::Calc,
-        cycle::{CycleSeq, CyclingOptions, get_item_cseq_map},
+        cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{StatMining, Vast, vaste_stats::item_checks::check_drone_module},
     },
@@ -41,41 +41,33 @@ fn get_mps_item_key(
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut item_mps = MiningAmount::default();
-    let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, ignore_state) {
-        Some(cycle_map) => cycle_map,
+    let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, ignore_state) {
+        Some(cseq_map) => cseq_map,
         None => return item_mps,
     };
-    for (effect_key, cycle) in cycle_map {
+    for (effect_key, cseq) in cseq_map {
         let effect = ctx.u_data.src.get_effect(effect_key);
-        if let Some(effect_mps) = get_mps_effect(ctx, calc, item_key, effect, cycle, mining_ospec_getter) {
-            item_mps += effect_mps;
+        let ospec = match mining_ospec_getter(&effect) {
+            Some(ospec) => ospec,
+            None => continue,
+        };
+        match cycle_options {
+            CyclingOptions::Burst => {
+                if let Some(effect_mps) =
+                    aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, None, None)
+                {
+                    item_mps += effect_mps;
+                }
+            }
+            CyclingOptions::Sim(_) => {
+                if let Some(effect_mps) = aggr_proj_looped_per_second(ctx, calc, item_key, effect, &cseq, &ospec, None)
+                {
+                    item_mps += effect_mps;
+                }
+            }
         }
     }
     item_mps
-}
-
-fn get_mps_effect(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    effect_cycle: CycleSeq,
-    mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
-) -> Option<MiningAmount> {
-    let ospec = mining_ospec_getter(effect)?;
-    let effect_cycle_loop = effect_cycle.to_time().try_loop_cseq()?;
-    let mut mining = MiningAmount {
-        yield_: OF(0.0),
-        drain: OF(0.0),
-    };
-    let mut time = OF(0.0);
-    let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
-    for effect_cycle_part in effect_cycle_loop.iter_cseq_parts() {
-        let cycle_mining = ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data)?;
-        mining += cycle_mining * AttrVal::from(effect_cycle_part.repeat_count);
-        time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
-    }
-    Some(mining / time)
 }
 
 fn get_getter_ore(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {

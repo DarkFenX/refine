@@ -150,8 +150,8 @@ fn get_irr_data(
                 effect,
                 cseq,
                 ospec,
-                spool,
                 Some(projectee_item_key),
+                spool,
             ) {
                 Some(effect_rep) => effect_rep,
                 None => continue,

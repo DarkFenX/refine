@@ -14,13 +14,13 @@ pub(in crate::svc) fn aggr_proj_first_per_second<T>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
+    spool: Option<Spool>,
 ) -> Option<T>
 where
     T: Copy + Aggregable,
 {
-    let aggr_data = aggr_proj_first(ctx, calc, projector_key, effect, cseq, ospec, spool, projectee_key)?;
+    let aggr_data = aggr_proj_first(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)?;
     Some(aggr_data.get_per_second())
 }
 
@@ -31,8 +31,8 @@ pub(in crate::svc) fn aggr_proj_first<T>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    spool: Option<Spool>,
     projectee_key: Option<UItemKey>,
+    spool: Option<Spool>,
 ) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,

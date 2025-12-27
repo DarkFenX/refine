@@ -39,6 +39,12 @@ impl std::ops::Mul<AttrVal> for MiningAmount {
         }
     }
 }
+impl std::ops::MulAssign<AttrVal> for MiningAmount {
+    fn mul_assign(&mut self, rhs: AttrVal) {
+        self.yield_ *= rhs;
+        self.drain *= rhs;
+    }
+}
 impl std::ops::Div<AttrVal> for MiningAmount {
     type Output = MiningAmount;
     fn div(self, rhs: AttrVal) -> Self::Output {

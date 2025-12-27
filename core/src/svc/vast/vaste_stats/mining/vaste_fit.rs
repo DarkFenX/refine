@@ -5,6 +5,7 @@ use crate::{
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
+        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
         calc::Calc,
         cycle::get_item_cseq_map,
         vast::{StatMining, StatMiningItemKinds, Vast},
@@ -57,8 +58,8 @@ fn get_mps(
     let cycle_options = get_mps_cycle_options(reload);
     let mut mps = MiningAmount::new(OF(0.0), OF(0.0));
     for (&item_key, item_data) in fit_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         let u_item = ctx.u_data.items.get(item_key);
@@ -66,17 +67,27 @@ fn get_mps(
             continue;
         }
         for (&effect_key, ospec) in item_data.iter() {
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
+                None => continue,
+            };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq()) {
-                Some(effect_cycle_loop) => effect_cycle_loop,
-                None => continue,
-            };
-            let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
-            let output_per_cycle = match ospec.get_total(ctx, calc, item_key, effect, None, None, invar_data) {
-                Some(output_per_cycle) => output_per_cycle,
-                None => continue,
-            };
-            mps += output_per_cycle / effect_cycle_loop.get_average_time();
+            match reload {
+                true => {
+                    if let Some(effect_mps) =
+                        aggr_proj_looped_per_second(ctx, calc, item_key, effect, cseq, ospec, None)
+                    {
+                        mps += effect_mps;
+                    }
+                }
+                false => {
+                    if let Some(effect_mps) =
+                        aggr_proj_first_per_second(ctx, calc, item_key, effect, cseq, ospec, None, None)
+                    {
+                        mps += effect_mps;
+                    }
+                }
+            }
         }
     }
     mps
