@@ -1,10 +1,13 @@
+use ordered_float::Float;
+
 use super::traits::Aggregable;
 use crate::{
-    def::{AttrVal, OF},
+    def::{AttrVal, Count, OF},
     misc::{AttrSpec, EffectSpec},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, calc::Calc, funcs, output::Output},
     ud::UItemKey,
+    util::{FLOAT_TOLERANCE, ceil_unerr},
 };
 
 pub(super) struct ProjInvariantData<T>
@@ -12,6 +15,7 @@ where
     T: Copy,
 {
     pub(super) output: Output<T>,
+    pub(super) spool: Option<SpoolInvariantData>,
     pub(super) amount_limit: Option<AttrVal>,
     pub(super) mult_post: Option<AttrVal>,
 }
@@ -72,6 +76,7 @@ where
     }
     Some(ProjInvariantData {
         output,
+        spool: SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec),
         amount_limit,
         mult_post,
     })
@@ -81,5 +86,48 @@ fn process_mult(mult: AttrVal) -> Option<AttrVal> {
     match mult {
         OF(1.0) => None,
         v => Some(v),
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Spool
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) struct SpoolInvariantData {
+    pub(super) step: AttrVal,
+    pub(super) max: AttrVal,
+    pub(super) cycles: Count,
+}
+impl SpoolInvariantData {
+    fn try_make<T>(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+        effect: &REffect,
+        ospec: &REffectProjOpcSpec<T>,
+    ) -> Option<Self>
+    where
+        T: Copy,
+    {
+        if !ospec.spoolable {
+            return None;
+        }
+        let spool_attr_keys = effect.spool_attr_keys?;
+        let step = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.step)?;
+        if step.abs() < FLOAT_TOLERANCE {
+            return None;
+        }
+        let max = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.max)?;
+        if max.abs() < FLOAT_TOLERANCE {
+            return None;
+        }
+        let cycles = max / step;
+        if cycles.is_sign_negative() {
+            return None;
+        }
+        Some(Self {
+            step,
+            max,
+            cycles: ceil_unerr(cycles).into_inner() as Count,
+        })
     }
 }
