@@ -8,7 +8,6 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        spool::ResolvedSpool,
         vast::{StatTankRegen, Vast, shared::calc_regen, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::{UItem, UItemKey},
@@ -151,6 +150,7 @@ fn get_irr_data(
                 effect,
                 cseq,
                 ospec,
+                spool,
                 Some(projectee_item_key),
             ) {
                 Some(effect_rep) => effect_rep,

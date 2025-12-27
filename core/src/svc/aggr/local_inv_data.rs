@@ -9,7 +9,7 @@ pub(super) struct LocalInvariantData<T>
 where
     T: Copy,
 {
-    pub(super) base_output: Output<T>,
+    pub(super) output: Output<T>,
     pub(super) amount_limit: Option<AttrVal>,
 }
 
@@ -24,7 +24,7 @@ where
     T: Copy,
 {
     Some(LocalInvariantData {
-        base_output: (ospec.base)(ctx, calc, item_key, effect)?,
+        output: (ospec.base)(ctx, calc, item_key, effect)?,
         amount_limit: get_ship_limit(ctx, calc, item_key, ospec.ilimit_attr_key),
     })
 }

@@ -34,7 +34,7 @@ where
 {
     let cycle = cseq.get_first_cycle();
     let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
-    let mut output = inv_data.base_output;
+    let mut output = inv_data.output;
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = cycle.chargedness
         && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
