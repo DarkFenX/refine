@@ -1,6 +1,6 @@
 use crate::{def::AttrVal, util::Limit};
 
-pub(in crate::svc::aggr) trait Aggregable:
+pub(in crate::svc) trait Aggregable:
     Default
     + std::ops::AddAssign<Self>
     + std::ops::Mul<AttrVal, Output = Self>

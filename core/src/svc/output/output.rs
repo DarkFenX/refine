@@ -34,17 +34,6 @@ where
 }
 impl<T> Output<T>
 where
-    T: Copy + std::ops::Mul<AttrVal, Output = T>,
-{
-    pub(in crate::svc) fn get_total(&self) -> T {
-        match self {
-            Output::Simple(inner) => inner.get_total(),
-            Output::Complex(inner) => inner.get_total(),
-        }
-    }
-}
-impl<T> Output<T>
-where
     T: Copy + Limit,
 {
     pub(in crate::svc) fn limit_amount(&mut self, limit: AttrVal) {

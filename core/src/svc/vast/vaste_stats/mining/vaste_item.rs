@@ -22,11 +22,11 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_key)?;
-        let cycle_options = get_mps_cycle_options(reload);
+        let cycling_options = get_mps_cycle_options(reload);
         let mps = StatMining {
-            ore: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ore),
-            ice: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_ice),
-            gas: get_mps_item_key(ctx, calc, item_key, cycle_options, ignore_state, get_getter_gas),
+            ore: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_ore),
+            ice: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_ice),
+            gas: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_gas),
         };
         Ok(mps)
     }
@@ -36,12 +36,12 @@ fn get_mps_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    cycle_options: CyclingOptions,
+    cycling_options: CyclingOptions,
     ignore_state: bool,
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut item_mps = MiningAmount::default();
-    let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, ignore_state) {
+    let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, ignore_state) {
         Some(cseq_map) => cseq_map,
         None => return item_mps,
     };
@@ -51,7 +51,7 @@ fn get_mps_item_key(
             Some(ospec) => ospec,
             None => continue,
         };
-        match cycle_options {
+        match cycling_options {
             CyclingOptions::Burst => {
                 if let Some(effect_mps) =
                     aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, None, None)

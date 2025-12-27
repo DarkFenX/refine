@@ -5,8 +5,9 @@ use crate::{
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
+        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
         calc::Calc,
-        cycle::{CycleSeq, get_item_cseq_map},
+        cycle::{CycleSeq, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         spool::ResolvedSpool,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_module},
@@ -51,16 +52,31 @@ fn get_orr_item_key(
     rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut item_orr = OF(0.0);
-    // TODO: allow configuring cycle options by caller
-    let cycle_options = get_orps_cycle_options(false);
-    let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, ignore_state) {
-        Some(cycle_map) => cycle_map,
+    let cycling_options = get_orps_cycle_options(false);
+    let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, ignore_state) {
+        Some(cseq_map) => cseq_map,
         None => return item_orr,
     };
-    for (effect_key, cycle) in cycle_map {
-        let r_effect = ctx.u_data.src.get_effect(effect_key);
-        if let Some(effect_orr) = get_orr_effect(ctx, calc, item_key, r_effect, cycle, spool, rep_ospec_getter) {
-            item_orr += effect_orr;
+    for (effect_key, cseq) in cseq_map {
+        let effect = ctx.u_data.src.get_effect(effect_key);
+        let ospec = match rep_ospec_getter(&effect) {
+            Some(ospec) => ospec,
+            None => continue,
+        };
+        match cycling_options {
+            CyclingOptions::Burst => {
+                if let Some(effect_orr) =
+                    aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, None, spool)
+                {
+                    item_orr += effect_orr;
+                }
+            }
+            CyclingOptions::Sim(_) => {
+                if let Some(effect_orr) = aggr_proj_looped_per_second(ctx, calc, item_key, effect, &cseq, &ospec, None)
+                {
+                    item_orr += effect_orr;
+                }
+            }
         }
     }
     item_orr

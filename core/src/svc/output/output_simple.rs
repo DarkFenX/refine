@@ -17,9 +17,6 @@ impl<T> OutputSimple<T>
 where
     T: Copy,
 {
-    pub(super) fn get_total(&self) -> T {
-        self.amount
-    }
     pub(super) fn get_amount(&self) -> T {
         self.amount
     }

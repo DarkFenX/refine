@@ -1,7 +1,7 @@
 use ordered_float::Float;
 
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, Count},
     util::{FLOAT_TOLERANCE, Limit},
 };
 
@@ -27,14 +27,6 @@ where
     }
     pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         OutputComplexIter::new(self)
-    }
-}
-impl<T> OutputComplex<T>
-where
-    T: Copy + std::ops::Mul<AttrVal, Output = T>,
-{
-    pub(super) fn get_total(&self) -> T {
-        self.amount * OF(self.repeats as f64)
     }
 }
 impl<T> OutputComplex<T>
