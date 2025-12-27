@@ -102,7 +102,7 @@ pub(super) struct SpoolInvariantData {
     pub(super) cycles: Count,
 }
 impl SpoolInvariantData {
-    fn try_make<T>(
+    pub(super) fn try_make<T>(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,

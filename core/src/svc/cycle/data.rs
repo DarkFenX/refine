@@ -16,6 +16,20 @@ pub(in crate::svc) struct CycleDataFull {
 // Simplified cycle data types, they are useful mostly because they allow cycle optimizations during
 // cycle conversion
 #[derive(Copy, Clone, Eq, PartialEq)]
+pub(in crate::svc) struct CycleDataTimeInt {
+    pub(in crate::svc) time: AttrVal,
+    pub(in crate::svc) interrupt: bool,
+}
+impl From<&CycleDataFull> for CycleDataTimeInt {
+    fn from(details_full: &CycleDataFull) -> Self {
+        Self {
+            time: details_full.time,
+            interrupt: details_full.interrupt.is_some(),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc) struct CycleDataTimeCharge {
     pub(in crate::svc) time: AttrVal,
     pub(in crate::svc) chargedness: Option<AttrVal>,
