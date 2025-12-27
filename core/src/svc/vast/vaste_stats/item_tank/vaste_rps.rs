@@ -4,7 +4,7 @@ use crate::{
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::aggr_local_first_per_second,
+        aggr::{aggr_local_first_per_second, aggr_proj_first},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -97,7 +97,7 @@ fn get_local_rps(
     let mut total_rps = OF(0.0);
     for (&item_key, item_data) in rep_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, RPS_CYCLE_OPTIONS, false) {
-            Some(projector_cycle_map) => projector_cycle_map,
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
@@ -134,46 +134,33 @@ fn get_irr_data(
         None => return result,
     };
     for (&projector_item_key, projector_data) in incoming_reps.iter() {
-        // TODO: consider if cycle options should be configurable
-        let projector_cycle_map = match get_item_cseq_map(ctx, calc, projector_item_key, RPS_CYCLE_OPTIONS, false) {
-            Some(projector_cycle_map) => projector_cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_key, RPS_CYCLE_OPTIONS, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in projector_data.iter() {
-            let effect_cycles = match projector_cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles.to_time_charge(),
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
-            let effect_cycle_part = effect_cycles.get_first_cycle();
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let spool_mult = if ospec.spoolable
-                && let Some(spool_attrs) = effect.spool_attr_keys
-                && let Some(resolved) =
-                    ResolvedSpool::try_build(ctx, calc, projector_item_key, effect, spool, spool_attrs)
-            {
-                Some(resolved.mult)
-            } else {
-                None
-            };
-            let invar_data = ospec.make_invar_data(ctx, calc, projector_item_key, effect, Some(projectee_item_key));
-            let output_per_cycle = match ospec.get_output(
+            let effect_rep = match aggr_proj_first(
                 ctx,
                 calc,
                 projector_item_key,
                 effect,
-                effect_cycle_part.chargedness,
-                spool_mult,
-                invar_data,
+                cseq,
+                ospec,
+                Some(projectee_item_key),
             ) {
-                Some(hp_per_cycle) => hp_per_cycle,
+                Some(effect_rep) => effect_rep,
                 None => continue,
             };
-            let cycle_time_s = effect_cycle_part.time;
             result.push(IrrEntry {
                 // For now there are no reps which spread effect over multiple cycles, so we just
                 // record total amount for the purposes of RR penalty
-                amount: output_per_cycle.get_total(),
-                cycle_time: cycle_time_s,
+                amount: effect_rep.amount,
+                cycle_time: effect_rep.time,
             });
         }
     }
