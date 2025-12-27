@@ -3,7 +3,11 @@ use crate::{
     def::OF,
     nd::NChargeMultGetter,
     rd::{REffect, REffectProjOpcSpec},
-    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
+    },
     ud::UItemKey,
 };
 
@@ -40,7 +44,7 @@ fn aggr_proj_time_charge<T>(
     calc: &mut Calc,
     projector_key: UItemKey,
     effect: &REffect,
-    cseq: &CycleSeq,
+    cseq: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     charge_mult_getter: NChargeMultGetter,
@@ -76,7 +80,7 @@ fn aggr_proj_time<T>(
     calc: &mut Calc,
     projector_key: UItemKey,
     effect: &REffect,
-    cseq: &CycleSeq,
+    cseq: CycleSeq<CycleDataTime>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
 ) -> Option<T>
