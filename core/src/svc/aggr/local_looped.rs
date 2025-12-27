@@ -1,4 +1,4 @@
-use super::{local_inv_data::try_make_local_inv_data, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, traits::Aggregable};
 use crate::{
     def::OF,
     nd::NChargeMultGetter,
@@ -44,19 +44,19 @@ where
     T: Copy + Aggregable,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
     let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_repeat_count = OF::from(cycle_part.repeat_count);
         // Value
-        let mut part_output = inv_data.output;
+        let mut part_output = inv_local.output;
         if let Some(chargedness) = cycle_part.data.chargedness
             && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
         {
             part_output *= charge_mult;
         }
-        if let Some(limit) = inv_data.amount_limit {
+        if let Some(limit) = inv_local.amount_limit {
             part_output.limit_amount(limit);
         }
         value += part_output.instance_sum() * cycle_repeat_count;
@@ -78,14 +78,14 @@ where
     T: Copy + Aggregable,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_data = try_make_local_inv_data(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
     let mut value = T::default();
     let mut time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_repeat_count = OF::from(cycle_part.repeat_count);
         // Value
-        let mut part_output = inv_data.output;
-        if let Some(limit) = inv_data.amount_limit {
+        let mut part_output = inv_local.output;
+        if let Some(limit) = inv_local.amount_limit {
             part_output.limit_amount(limit);
         }
         value += part_output.instance_sum() * cycle_repeat_count;

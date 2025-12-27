@@ -1,4 +1,4 @@
-use super::{proj_inv_data::try_make_proj_inv_data, shared::AggrData, traits::Aggregable};
+use super::{proj_inv_data::ProjInvariantData, shared::AggrData, traits::Aggregable};
 use crate::{
     misc::Spool,
     rd::{REffect, REffectProjOpcSpec},
@@ -38,8 +38,8 @@ where
     T: Copy + Aggregable,
 {
     let cycle = cseq.get_first_cycle();
-    let inv_data = try_make_proj_inv_data(ctx, calc, projector_key, effect, ospec, projectee_key)?;
-    let mut output = inv_data.output;
+    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let mut output = inv_proj.output;
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = cycle.chargedness
         && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
@@ -52,10 +52,10 @@ where
     {
         output *= resolved.mult;
     }
-    if let Some(limit) = inv_data.amount_limit {
+    if let Some(limit) = inv_proj.amount_limit {
         output.limit_amount(limit);
     }
-    if let Some(mult_post) = inv_data.mult_post {
+    if let Some(mult_post) = inv_proj.mult_post {
         output *= mult_post;
     }
     Some(AggrData {

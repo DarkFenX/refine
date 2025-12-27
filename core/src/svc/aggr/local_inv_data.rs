@@ -12,21 +12,22 @@ where
     pub(super) output: Output<T>,
     pub(super) amount_limit: Option<AttrVal>,
 }
-
-pub(super) fn try_make_local_inv_data<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    ospec: &REffectLocalOpcSpec<T>,
-) -> Option<LocalInvariantData<T>>
+impl<T> LocalInvariantData<T>
 where
     T: Copy,
 {
-    Some(LocalInvariantData {
-        output: (ospec.base)(ctx, calc, item_key, effect)?,
-        amount_limit: get_ship_limit(ctx, calc, item_key, ospec.ilimit_attr_key),
-    })
+    pub(super) fn try_make(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_key: UItemKey,
+        effect: &REffect,
+        ospec: &REffectLocalOpcSpec<T>,
+    ) -> Option<Self> {
+        Some(LocalInvariantData {
+            output: (ospec.base)(ctx, calc, item_key, effect)?,
+            amount_limit: get_ship_limit(ctx, calc, item_key, ospec.ilimit_attr_key),
+        })
+    }
 }
 
 fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
