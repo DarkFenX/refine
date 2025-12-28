@@ -295,7 +295,7 @@ def test_reload(client, consts):
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
+    # Verification - reload averages dps over whole reload cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
@@ -310,6 +310,24 @@ def test_reload(client, consts):
         dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
     api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
     assert api_module_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
+    assert api_module_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
+    # Action
+    api_sol.change(default_spool=Spool.spool_scale_to_api(val=0.5))
+    # Verification - reload does not rely on spool parameters in any way, unlike burst dps
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
+    assert api_fleet_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
+    assert api_fleet_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
+    assert api_fit_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
+    assert api_fit_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
+    assert api_module_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
     assert api_module_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
 
 
