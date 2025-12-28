@@ -265,7 +265,7 @@ where
             part_output *= mult_post;
         }
         // Update result
-        max_amount = max_amount.maximum(part_output.get_max());
+        max_amount = max_amount.maximum(part_output.get_max_amount());
     }
     Some(max_amount)
 }
@@ -327,7 +327,7 @@ where
                     inv_proj.mult_post,
                 );
                 // Update result
-                max_amount = max_amount.maximum(cycle_output.get_max());
+                max_amount = max_amount.maximum(cycle_output.get_max_amount());
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
@@ -339,7 +339,7 @@ where
                 inv_proj.mult_post,
             );
             // Update result
-            max_amount = max_amount.maximum(cycle_output.get_max());
+            max_amount = max_amount.maximum(cycle_output.get_max_amount());
             // Update state
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = 0,

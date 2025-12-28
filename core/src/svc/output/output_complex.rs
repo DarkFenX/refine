@@ -22,7 +22,13 @@ where
     pub(super) fn get_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_max(&self) -> T {
+    pub(super) fn get_immediate_amount(&self) -> Option<T> {
+        match self.delay.abs() < FLOAT_TOLERANCE {
+            true => Some(self.amount),
+            false => None,
+        }
+    }
+    pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
     pub(super) fn get_delay(&self) -> AttrVal {

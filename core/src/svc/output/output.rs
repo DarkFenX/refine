@@ -19,10 +19,16 @@ where
             Output::Complex(inner) => inner.get_amount(),
         }
     }
-    pub(in crate::svc) fn get_max(&self) -> T {
+    pub(in crate::svc) fn get_immediate_amount(&self) -> Option<T> {
         match self {
-            Output::Simple(inner) => inner.get_max(),
-            Output::Complex(inner) => inner.get_max(),
+            Output::Simple(inner) => inner.get_immediate_amount(),
+            Output::Complex(inner) => inner.get_immediate_amount(),
+        }
+    }
+    pub(in crate::svc) fn get_max_amount(&self) -> T {
+        match self {
+            Output::Simple(inner) => inner.get_max_amount(),
+            Output::Complex(inner) => inner.get_max_amount(),
         }
     }
     pub(in crate::svc) fn get_delay(&self) -> AttrVal {

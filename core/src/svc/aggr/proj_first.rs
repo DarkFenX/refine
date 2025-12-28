@@ -47,7 +47,7 @@ where
     T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
     aggr_into_output(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)
-        .map(|output_data| output_data.output.get_max())
+        .map(|output_data| output_data.output.get_max_amount())
 }
 
 pub(in crate::svc) fn aggr_proj_first_data<T>(
