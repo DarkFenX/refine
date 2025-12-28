@@ -1,5 +1,3 @@
-use crate::def::AttrVal;
-
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct DmgKinds<T> {
     pub em: T,
@@ -12,14 +10,6 @@ impl<T> DmgKinds<T> {
         DmgKindsIter::new(self)
     }
 }
-impl<T> DmgKinds<T>
-where
-    T: Default,
-{
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 impl<T> Default for DmgKinds<T>
 where
     T: Default,
@@ -30,56 +20,6 @@ where
             thermal: T::default(),
             kinetic: T::default(),
             explosive: T::default(),
-        }
-    }
-}
-impl<T> std::ops::AddAssign<DmgKinds<T>> for DmgKinds<T>
-where
-    T: std::ops::AddAssign<T>,
-{
-    fn add_assign(&mut self, rhs: DmgKinds<T>) {
-        self.em += rhs.em;
-        self.thermal += rhs.thermal;
-        self.kinetic += rhs.kinetic;
-        self.explosive += rhs.explosive;
-    }
-}
-impl<T> std::ops::Mul<AttrVal> for DmgKinds<T>
-where
-    T: std::ops::Mul<AttrVal, Output = T>,
-{
-    type Output = DmgKinds<T>;
-    fn mul(self, rhs: AttrVal) -> Self::Output {
-        Self {
-            em: self.em * rhs,
-            thermal: self.thermal * rhs,
-            kinetic: self.kinetic * rhs,
-            explosive: self.explosive * rhs,
-        }
-    }
-}
-impl<T> std::ops::MulAssign<AttrVal> for DmgKinds<T>
-where
-    T: std::ops::MulAssign<AttrVal>,
-{
-    fn mul_assign(&mut self, rhs: AttrVal) {
-        self.em *= rhs;
-        self.thermal *= rhs;
-        self.kinetic *= rhs;
-        self.explosive *= rhs;
-    }
-}
-impl<T> std::ops::Div<AttrVal> for DmgKinds<T>
-where
-    T: std::ops::Div<AttrVal, Output = T>,
-{
-    type Output = DmgKinds<T>;
-    fn div(self, rhs: AttrVal) -> Self::Output {
-        Self {
-            em: self.em / rhs,
-            thermal: self.thermal / rhs,
-            kinetic: self.kinetic / rhs,
-            explosive: self.explosive / rhs,
         }
     }
 }

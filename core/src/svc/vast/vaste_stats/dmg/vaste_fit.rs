@@ -59,7 +59,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
         let cycle_options = get_dps_cycle_options(reload);
-        let mut dps_normal = DmgKinds::new();
+        let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
         for fit_key in fit_keys {
             self.get_fit_data(&fit_key).fill_stat_dps(
@@ -117,7 +117,7 @@ impl Vast {
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
-        let mut dps_normal = DmgKinds::new();
+        let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
         let cycle_options = get_dps_cycle_options(reload);
         self.get_fit_data(&fit_key).fill_stat_dps(
@@ -171,7 +171,7 @@ impl Vast {
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) -> (DmgKinds<AttrVal>, StatDmgBreacher) {
-        let mut volley_normal = DmgKinds::new();
+        let mut volley_normal = DmgKinds::default();
         let mut volley_breacher = StatDmgBreacher::new();
         for fit_key in fit_keys {
             self.get_fit_data(&fit_key).fill_stat_volley(
@@ -225,7 +225,7 @@ impl Vast {
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) -> (DmgKinds<AttrVal>, StatDmgBreacher) {
-        let mut volley_normal = DmgKinds::new();
+        let mut volley_normal = DmgKinds::default();
         let mut volley_breacher = StatDmgBreacher::new();
         self.get_fit_data(&fit_key).fill_stat_volley(
             ctx,

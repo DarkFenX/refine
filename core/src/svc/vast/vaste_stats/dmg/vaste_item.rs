@@ -68,7 +68,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<(DmgKinds<AttrVal>, BreacherAccum), StatItemCheckError> {
-        let mut dps_normal = DmgKinds::new();
+        let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
         Vast::internal_get_stat_item_dps_checked(
             ctx,
@@ -192,7 +192,7 @@ impl Vast {
         ignore_state: bool,
         projectee_key: Option<UItemKey>,
     ) -> Result<(DmgKinds<AttrVal>, StatDmgBreacher), StatItemCheckError> {
-        let mut volley_normal = DmgKinds::new();
+        let mut volley_normal = DmgKinds::default();
         let mut volley_breacher = StatDmgBreacher::new();
         Vast::internal_get_stat_item_volley_checked(
             ctx,
