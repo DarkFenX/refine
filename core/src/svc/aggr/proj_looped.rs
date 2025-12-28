@@ -98,16 +98,26 @@ where
         };
         for i in 0..cycle_part.repeat_count {
             let mut part_output = inv_proj.output;
-            // Case when the rest of cycle part is at full spool
-            if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
-                let remaining_cycles = cycle_part.repeat_count - i;
+            // Case when spool multiplier does not change for the rest of cycles of current part
+            let stable_spool = match cycle_part.data.interrupt {
+                // Current cycle is at 0 spool, and we have an interrupt every cycle
+                Some(_) if uninterrupted_cycles == 0 => Some(OF(0.0)),
+                // Current cycle is at max spool, and we have no interrupts in cycles of current
+                // part
+                None if uninterrupted_cycles >= inv_spool.cycles_to_max => {
+                    let remaining_cycles = cycle_part.repeat_count - i;
+                    uninterrupted_cycles += remaining_cycles;
+                    Some(inv_spool.max)
+                }
+                _ => None,
+            };
+            if let Some(stable_spool) = stable_spool {
                 // Chargedness
                 if let Some(charge_mult) = charge_mult {
                     part_output *= charge_mult;
                 }
                 // Spool
-                part_output *= OF(1.0) + inv_spool.max;
-                uninterrupted_cycles += remaining_cycles;
+                part_output *= OF(1.0) + stable_spool;
                 // Limit
                 if let Some(limit) = inv_proj.amount_limit {
                     part_output.limit_amount(limit);
@@ -117,9 +127,10 @@ where
                     part_output *= mult_post;
                 }
                 // Update total values
-                let remaining_cycles = AttrVal::from(remaining_cycles);
+                let remaining_cycles = AttrVal::from(cycle_part.repeat_count - i);
                 total_amount += part_output.amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
+                // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
             // Chargedness
