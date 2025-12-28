@@ -1,6 +1,5 @@
 use super::shared::get_mps_cycle_options;
 use crate::{
-    def::OF,
     misc::MiningAmount,
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
