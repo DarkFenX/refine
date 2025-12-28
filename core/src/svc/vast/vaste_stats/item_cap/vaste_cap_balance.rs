@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_looped_amount_ps, aggr_proj_first_ps},
+        aggr::{aggr_local_looped_ps, aggr_proj_first_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
@@ -122,7 +122,7 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> Attr
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
 
-            if let Some(effect_cps) = aggr_local_looped_amount_ps(ctx, calc, item_key, effect, cseq, ospec) {
+            if let Some(effect_cps) = aggr_local_looped_ps(ctx, calc, item_key, effect, cseq, ospec) {
                 cps += effect_cps;
             }
         }

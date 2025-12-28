@@ -3,7 +3,7 @@ use crate::{
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_clip_data, aggr_proj_clip_data},
+        aggr::{aggr_local_clip_amount, aggr_proj_clip_amount},
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -102,7 +102,7 @@ fn get_local_ancil_hp(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_clip_data) = aggr_local_clip_data(ctx, calc, item_key, effect, cseq, ospec) {
+            if let Some(effect_clip_data) = aggr_local_clip_amount(ctx, calc, item_key, effect, cseq, ospec) {
                 total_ancil_hp += effect_clip_data.amount;
             }
         }
@@ -132,7 +132,7 @@ fn get_remote_ancil_hp(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_clip_data) = aggr_proj_clip_data(
+            if let Some(effect_clip_data) = aggr_proj_clip_amount(
                 ctx,
                 calc,
                 projector_item_key,

@@ -4,7 +4,7 @@ use crate::{
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_first_ps, aggr_proj_first_data},
+        aggr::{aggr_local_first_ps, aggr_proj_first_amount},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -141,7 +141,7 @@ fn get_irr_data(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_rep) = aggr_proj_first_data(
+            if let Some(effect_rep) = aggr_proj_first_amount(
                 ctx,
                 calc,
                 projector_item_key,

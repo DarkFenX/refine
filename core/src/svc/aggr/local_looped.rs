@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::LimitAmount};
+use super::{local_inv_data::LocalInvariantData, shared::AggrAmount, traits::LimitAmount};
 use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectLocalOpcSpec},
@@ -7,7 +7,7 @@ use crate::{
 };
 
 // Local effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_local_looped_amount_ps<T>(
+pub(in crate::svc) fn aggr_local_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -24,17 +24,17 @@ where
         + std::ops::Div<AttrVal, Output = T>
         + LimitAmount,
 {
-    aggr_local_looped_amount_data(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_data| aggr_data.get_ps())
+    aggr_local_looped_amount(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
-pub(in crate::svc) fn aggr_local_looped_amount_data<T>(
+pub(in crate::svc) fn aggr_local_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmount<T>>
 where
     T: Default
         + Copy
@@ -65,7 +65,7 @@ where
         total_amount += part_output.amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
-    Some(AggrData {
+    Some(AggrAmount {
         amount: total_amount,
         time: total_time,
     })

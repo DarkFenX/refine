@@ -94,12 +94,3 @@ impl<T> CycleSeqLooped<T> {
         }
     }
 }
-impl CycleSeqLooped {
-    // TODO: consider if it is correct to use it, or if looped parts should be used everywhere
-    pub(in crate::svc) fn get_average_time(&self) -> AttrVal {
-        match self {
-            Self::Inf(inner) => inner.get_time(),
-            Self::LoopLimSin(inner) => inner.get_average_time(),
-        }
-    }
-}

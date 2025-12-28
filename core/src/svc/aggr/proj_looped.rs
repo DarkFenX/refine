@@ -1,6 +1,6 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
-    shared::AggrData,
+    shared::AggrAmount,
     traits::{LimitAmount, Maximum},
 };
 use crate::{
@@ -34,8 +34,8 @@ where
         + std::ops::Div<AttrVal, Output = T>
         + LimitAmount,
 {
-    aggr_proj_looped_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)
-        .and_then(|aggr_data| aggr_data.get_ps())
+    aggr_proj_looped_amount(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)
+        .and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
 pub(in crate::svc) fn aggr_proj_looped_max<T>(
@@ -62,7 +62,7 @@ where
     }
 }
 
-pub(in crate::svc) fn aggr_proj_looped_data<T>(
+pub(in crate::svc) fn aggr_proj_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -70,7 +70,7 @@ pub(in crate::svc) fn aggr_proj_looped_data<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmount<T>>
 where
     T: Default
         + Copy
@@ -96,7 +96,7 @@ fn aggr_total_regular<T>(
     cseq: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmount<T>>
 where
     T: Default
         + Copy
@@ -131,7 +131,7 @@ where
         total_amount += part_output.amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
-    Some(AggrData {
+    Some(AggrAmount {
         amount: total_amount,
         time: total_time,
     })
@@ -146,7 +146,7 @@ fn aggr_total_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     inv_spool: SpoolInvariantData,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmount<T>>
 where
     T: Default
         + Copy
@@ -217,7 +217,7 @@ where
             }
         }
     }
-    Some(AggrData {
+    Some(AggrAmount {
         amount: total_amount,
         time: total_time,
     })

@@ -3,11 +3,11 @@ use crate::{
     svc::output::Output,
 };
 
-pub(in crate::svc) struct AggrData<T> {
+pub(in crate::svc) struct AggrAmount<T> {
     pub(in crate::svc) amount: T,
     pub(in crate::svc) time: AttrVal,
 }
-impl<T> AggrData<T>
+impl<T> AggrAmount<T>
 where
     T: std::ops::Div<AttrVal, Output = T>,
 {
@@ -19,10 +19,10 @@ where
     }
 }
 
-pub(super) struct AggrOutputData<T>
+pub(in crate::svc) struct AggrOutput<T>
 where
     T: Copy,
 {
-    pub(super) output: Output<T>,
-    pub(super) time: AttrVal,
+    pub(in crate::svc) output: Output<T>,
+    pub(in crate::svc) time: AttrVal,
 }

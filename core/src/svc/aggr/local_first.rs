@@ -1,6 +1,6 @@
 use super::{
     local_inv_data::LocalInvariantData,
-    shared::{AggrData, AggrOutputData},
+    shared::{AggrAmount, AggrOutput},
     traits::LimitAmount,
 };
 use crate::{
@@ -26,34 +26,34 @@ where
         + std::ops::Div<AttrVal, Output = T>
         + LimitAmount,
 {
-    aggr_local_first_data(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_data| aggr_data.get_ps())
+    aggr_local_first_amount(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
-pub(in crate::svc) fn aggr_local_first_data<T>(
+pub(in crate::svc) fn aggr_local_first_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmount<T>>
 where
     T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
-    aggr_into_output(ctx, calc, item_key, effect, cseq, ospec).map(|output_data| AggrData {
+    aggr_local_first_output(ctx, calc, item_key, effect, cseq, ospec).map(|output_data| AggrAmount {
         amount: output_data.output.amount_sum(),
         time: output_data.time,
     })
 }
 
-fn aggr_into_output<T>(
+pub(in crate::svc) fn aggr_local_first_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrOutputData<T>>
+) -> Option<AggrOutput<T>>
 where
     T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
@@ -71,7 +71,7 @@ where
     if let Some(limit) = inv_local.amount_limit {
         output.limit_amount(limit);
     }
-    Some(AggrOutputData {
+    Some(AggrOutput {
         output,
         time: cycle.time,
     })

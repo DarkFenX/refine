@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::LimitAmount};
+use super::{local_inv_data::LocalInvariantData, shared::AggrAmount, traits::LimitAmount};
 use crate::{
     AttrVal,
     def::OF,
@@ -9,14 +9,14 @@ use crate::{
 };
 
 // Local effects, considers only part of sequence until charges are out
-pub(in crate::svc) fn aggr_local_clip_data<T>(
+pub(in crate::svc) fn aggr_local_clip_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmount<T>>
 where
     T: Default
         + Copy
@@ -68,7 +68,7 @@ where
     if cycle_parts.loops && !reload {
         return None;
     }
-    Some(AggrData {
+    Some(AggrAmount {
         amount: total_amount,
         time: total_time,
     })
