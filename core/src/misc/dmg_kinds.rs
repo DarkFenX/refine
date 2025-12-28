@@ -10,6 +10,14 @@ impl<T> DmgKinds<T> {
         DmgKindsIter::new(self)
     }
 }
+impl<T> DmgKinds<T>
+where
+    T: Copy + std::ops::Add<T, Output = T>,
+{
+    pub fn get_total(&self) -> T {
+        self.em + self.thermal + self.kinetic + self.explosive
+    }
+}
 impl<T> Default for DmgKinds<T>
 where
     T: Default,

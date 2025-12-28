@@ -1,4 +1,4 @@
-use super::{aggregable::Aggregable, limit_amount::LimitAmount};
+use super::{aggregable::Aggregable, limit_amount::LimitAmount, maximum::Maximum};
 use crate::{def::AttrVal, misc::DmgKinds};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8,6 +8,14 @@ impl Aggregable for DmgKinds<AttrVal> {}
 impl LimitAmount for DmgKinds<AttrVal> {
     // No-op, since there is no logic to limit damage depending on target attrs
     fn limit_amount(&mut self, _limit: AttrVal) {}
+}
+impl Maximum for DmgKinds<AttrVal> {
+    fn maximum(self, other: Self) -> Self {
+        match self.get_total() >= other.get_total() {
+            true => self,
+            false => other,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
