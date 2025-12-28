@@ -1,7 +1,7 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
     shared::AggrData,
-    traits::Aggregable,
+    traits::LimitAmount,
 };
 use crate::{
     def::{AttrVal, Count, OF},
@@ -25,7 +25,13 @@ pub(in crate::svc) fn aggr_proj_looped_ps<T>(
     projectee_key: Option<UItemKey>,
 ) -> Option<T>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + std::ops::Div<AttrVal, Output = T>
+        + LimitAmount,
 {
     aggr_proj_looped_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)
         .and_then(|aggr_data| aggr_data.get_ps())
@@ -41,7 +47,12 @@ pub(in crate::svc) fn aggr_proj_looped_data<T>(
     projectee_key: Option<UItemKey>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_total_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
@@ -63,7 +74,12 @@ fn aggr_total_spool<T>(
     inv_spool: SpoolInvariantData,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
@@ -102,7 +118,7 @@ where
                 }
                 // Update total values
                 let remaining_cycles = AttrVal::from(remaining_cycles);
-                total_amount += part_output.instance_sum() * remaining_cycles;
+                total_amount += part_output.amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 continue 'part;
             }
@@ -125,7 +141,7 @@ where
                 part_output *= mult_post;
             }
             // Update total values
-            total_amount += part_output.instance_sum();
+            total_amount += part_output.amount_sum();
             total_time += cycle_part.data.time;
         }
     }
@@ -165,7 +181,12 @@ fn aggr_total_regular<T>(
     projectee_key: Option<UItemKey>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
@@ -190,7 +211,7 @@ where
         }
         // Update total values
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        total_amount += part_output.instance_sum() * part_cycle_count;
+        total_amount += part_output.amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
     Some(AggrData {

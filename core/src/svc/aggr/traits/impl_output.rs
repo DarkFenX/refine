@@ -8,10 +8,10 @@ impl<T> Output<T>
 where
     T: Copy + std::ops::Mul<AttrVal, Output = T>,
 {
-    pub(in crate::svc::aggr) fn instance_sum(&self) -> T {
+    pub(in crate::svc::aggr) fn amount_sum(&self) -> T {
         match self {
-            Self::Simple(inner) => inner.instance_sum(),
-            Self::Complex(inner) => inner.instance_sum(),
+            Self::Simple(inner) => inner.amount_sum(),
+            Self::Complex(inner) => inner.amount_sum(),
         }
     }
 }
@@ -31,7 +31,7 @@ impl<T> OutputSimple<T>
 where
     T: Copy,
 {
-    fn instance_sum(&self) -> T {
+    fn amount_sum(&self) -> T {
         self.amount
     }
 }
@@ -48,7 +48,7 @@ impl<T> OutputComplex<T>
 where
     T: Copy + std::ops::Mul<AttrVal, Output = T>,
 {
-    fn instance_sum(&self) -> T {
+    fn amount_sum(&self) -> T {
         self.amount * AttrVal::from(self.repeats)
     }
 }

@@ -1,10 +1,9 @@
-use super::{aggregable::Aggregable, limit_amount::LimitAmount};
+use super::limit_amount::LimitAmount;
 use crate::{def::AttrVal, misc::MiningAmount};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Aggregable for MiningAmount {}
 impl LimitAmount for MiningAmount {
     // No-op, since there is no logic to limit mining amount depending on target attrs
     fn limit_amount(&mut self, _limit: AttrVal) {}

@@ -1,7 +1,7 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
     shared::AggrData,
-    traits::Aggregable,
+    traits::LimitAmount,
 };
 use crate::{
     def::{AttrVal, OF},
@@ -26,7 +26,12 @@ pub(in crate::svc) fn aggr_proj_clip_data<T>(
     projectee_key: Option<UItemKey>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
@@ -48,7 +53,12 @@ fn aggr_spool<T>(
     inv_spool: SpoolInvariantData,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut uninterrupted_cycles = 0;
@@ -97,7 +107,7 @@ where
                 }
                 // Update total values
                 let remaining_cycles = AttrVal::from(remaining_cycles);
-                total_amount += part_output.instance_sum() * remaining_cycles;
+                total_amount += part_output.amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
@@ -121,7 +131,7 @@ where
                 part_output *= mult_post;
             }
             // Update total values - current cycle is added regardless
-            total_amount += part_output.instance_sum();
+            total_amount += part_output.amount_sum();
             total_time += cycle_part.data.time;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
@@ -153,7 +163,12 @@ fn aggr_regular<T>(
     projectee_key: Option<UItemKey>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut total_amount = T::default();
@@ -182,7 +197,7 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += part_output.instance_sum();
+                total_amount += part_output.amount_sum();
                 total_time += cycle_part.data.time;
                 break;
             }
@@ -193,7 +208,7 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                total_amount += part_output.instance_sum() * part_cycle_count;
+                total_amount += part_output.amount_sum() * part_cycle_count;
                 total_time += cycle_part.data.time * part_cycle_count;
             }
         }

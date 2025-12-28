@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::LimitAmount};
 use crate::{
     AttrVal,
     def::OF,
@@ -18,7 +18,12 @@ pub(in crate::svc) fn aggr_local_clip_data<T>(
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
     let mut total_amount = T::default();
@@ -43,7 +48,7 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += part_output.instance_sum();
+                total_amount += part_output.amount_sum();
                 total_time += cycle_part.data.time;
                 break;
             }
@@ -54,7 +59,7 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                total_amount += part_output.instance_sum() * part_cycle_count;
+                total_amount += part_output.amount_sum() * part_cycle_count;
                 total_time += cycle_part.data.time * part_cycle_count;
             }
         }

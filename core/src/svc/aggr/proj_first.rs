@@ -1,9 +1,10 @@
 use super::{
     proj_inv_data::ProjInvariantData,
     shared::{AggrData, AggrOutputData},
-    traits::Aggregable,
+    traits::LimitAmount,
 };
 use crate::{
+    AttrVal,
     misc::Spool,
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
@@ -22,7 +23,11 @@ pub(in crate::svc) fn aggr_proj_first_ps<T>(
     spool: Option<Spool>,
 ) -> Option<T>
 where
-    T: Copy + Aggregable,
+    T: Copy
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + std::ops::Div<AttrVal, Output = T>
+        + LimitAmount,
 {
     aggr_proj_first_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)
         .and_then(|aggr_data| aggr_data.get_ps())
@@ -39,7 +44,7 @@ pub(in crate::svc) fn aggr_proj_first_max<T>(
     spool: Option<Spool>,
 ) -> Option<T>
 where
-    T: Copy + Aggregable,
+    T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
     aggr_into_output(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)
         .map(|output_data| output_data.output.get_max())
@@ -56,10 +61,10 @@ pub(in crate::svc) fn aggr_proj_first_data<T>(
     spool: Option<Spool>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
     aggr_into_output(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool).map(|output_data| AggrData {
-        amount: output_data.output.instance_sum(),
+        amount: output_data.output.amount_sum(),
         time: output_data.time,
     })
 }
@@ -75,7 +80,7 @@ fn aggr_into_output<T>(
     spool: Option<Spool>,
 ) -> Option<AggrOutputData<T>>
 where
-    T: Copy + Aggregable,
+    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
     let cycle = cseq.get_first_cycle();
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;

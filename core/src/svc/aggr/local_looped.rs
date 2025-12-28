@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::LimitAmount};
 use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectLocalOpcSpec},
@@ -16,7 +16,13 @@ pub(in crate::svc) fn aggr_local_looped_amount_ps<T>(
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<T>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + std::ops::Div<AttrVal, Output = T>
+        + LimitAmount,
 {
     aggr_local_looped_amount_data(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_data| aggr_data.get_ps())
 }
@@ -30,7 +36,12 @@ pub(in crate::svc) fn aggr_local_looped_amount_data<T>(
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<AggrData<T>>
 where
-    T: Copy + Aggregable,
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
@@ -51,7 +62,7 @@ where
         }
         // Update total values
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        total_amount += part_output.instance_sum() * part_cycle_count;
+        total_amount += part_output.amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
     Some(AggrData {

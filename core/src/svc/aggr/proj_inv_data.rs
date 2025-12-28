@@ -1,6 +1,5 @@
 use ordered_float::Float;
 
-use super::traits::Aggregable;
 use crate::{
     def::{AttrVal, Count, OF},
     misc::{AttrSpec, EffectSpec},
@@ -23,7 +22,7 @@ where
 }
 impl<T> ProjInvariantData<T>
 where
-    T: Copy + Aggregable,
+    T: Copy + std::ops::MulAssign<AttrVal>,
 {
     pub(super) fn try_make(
         ctx: SvcCtx,
