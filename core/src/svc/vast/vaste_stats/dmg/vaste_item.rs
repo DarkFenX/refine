@@ -229,7 +229,7 @@ impl Vast {
                 if let Some(output_data) =
                     aggr_proj_first_output_data(ctx, calc, item_key, effect, &cseq, ospec, projectee_key, spool)
                 {
-                    *volley_normal += output_data.output.get_amount();
+                    *volley_normal += output_data.output.get_max();
                 }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter

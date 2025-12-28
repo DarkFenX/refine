@@ -19,6 +19,12 @@ where
             Output::Complex(inner) => inner.get_amount(),
         }
     }
+    pub(in crate::svc) fn get_max(&self) -> T {
+        match self {
+            Output::Simple(inner) => inner.get_max(),
+            Output::Complex(inner) => inner.get_max(),
+        }
+    }
     pub(in crate::svc) fn get_delay(&self) -> AttrVal {
         match self {
             Output::Simple(inner) => inner.get_delay(),

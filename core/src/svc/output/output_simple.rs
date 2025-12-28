@@ -20,6 +20,9 @@ where
     pub(super) fn get_amount(&self) -> T {
         self.amount
     }
+    pub(super) fn get_max(&self) -> T {
+        self.amount
+    }
     pub(super) fn get_delay(&self) -> AttrVal {
         self.delay
     }
