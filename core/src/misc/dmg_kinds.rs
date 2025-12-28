@@ -58,6 +58,17 @@ where
         }
     }
 }
+impl<T> std::ops::MulAssign<AttrVal> for DmgKinds<T>
+where
+    T: std::ops::MulAssign<AttrVal>,
+{
+    fn mul_assign(&mut self, rhs: AttrVal) {
+        self.em *= rhs;
+        self.thermal *= rhs;
+        self.kinetic *= rhs;
+        self.explosive *= rhs;
+    }
+}
 impl<T> std::ops::Div<AttrVal> for DmgKinds<T>
 where
     T: std::ops::Div<AttrVal, Output = T>,

@@ -4,6 +4,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
+        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         spool::ResolvedSpool,
@@ -253,56 +254,58 @@ impl VastFitData {
         projectee_key: Option<UItemKey>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
-                Some(cycle_map) => cycle_map,
+            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+                Some(cseq_map) => cseq_map,
                 None => continue,
             };
-            let u_item = ctx.u_data.items.get(item_key);
+            let item = ctx.u_data.items.get(item_key);
             for (&effect_key, ospec) in item_data.iter() {
                 let effect = ctx.u_data.src.get_effect(effect_key);
-                if !item_kinds.resolve(ctx, u_item, effect) {
+                if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
-                let effect_cycle_loop = match cycle_map.get(&effect_key).and_then(|v| v.try_loop_cseq()) {
-                    Some(effect_cycle_loop) => effect_cycle_loop,
+                let cseq = match cseq_map.get(&effect_key) {
+                    Some(cseq) => cseq,
                     None => continue,
                 };
-                let spool_mult = if ospec.spoolable
-                    && let Some(spool_attrs) = effect.spool_attr_keys
-                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
-                {
-                    Some(resolved.mult)
-                } else {
-                    None
-                };
-                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
-                let output_per_cycle = match ospec.get_total(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
-                    Some(output_per_cycle) => output_per_cycle,
-                    None => continue,
-                };
-                *dps_normal += output_per_cycle / effect_cycle_loop.get_average_time();
+                match cycle_options {
+                    CyclingOptions::Burst => {
+                        if let Some(effect_dps) =
+                            aggr_proj_first_per_second(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
+                        {
+                            *dps_normal += effect_dps;
+                        }
+                    }
+                    CyclingOptions::Sim(_) => {
+                        if let Some(effect_dps) =
+                            aggr_proj_looped_per_second(ctx, calc, item_key, effect, cseq, ospec, projectee_key)
+                        {
+                            *dps_normal += effect_dps;
+                        }
+                    }
+                }
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
-            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
-                Some(cycle_map) => cycle_map,
+            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+                Some(cseq_map) => cseq_map,
                 None => continue,
             };
-            let u_item = ctx.u_data.items.get(item_key);
+            let item = ctx.u_data.items.get(item_key);
             for (&effect_key, dmg_getter) in item_data.iter() {
-                let r_effect = ctx.u_data.src.get_effect(effect_key);
-                if !item_kinds.resolve(ctx, u_item, r_effect) {
+                let effect = ctx.u_data.src.get_effect(effect_key);
+                if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
-                let output_per_cycle = match dmg_getter(ctx, calc, item_key, r_effect, projectee_key) {
-                    Some(output_per_cycle) => output_per_cycle,
+                let cseq = match cseq_map.get(&effect_key) {
+                    Some(cseq) => cseq,
                     None => continue,
                 };
-                let effect_cycles = match cycle_map.get(&effect_key) {
-                    Some(effect_cycles) => effect_cycles,
+                let opc = match dmg_getter(ctx, calc, item_key, effect, projectee_key) {
+                    Some(opc) => opc,
                     None => continue,
                 };
-                breacher_accum.add(output_per_cycle, effect_cycles.into());
+                breacher_accum.add(opc, cseq.into());
             }
         }
     }

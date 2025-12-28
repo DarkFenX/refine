@@ -4,6 +4,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
+        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
@@ -98,32 +99,36 @@ impl Vast {
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let options = get_dps_cycle_options(reload);
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, options, ignore_state) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, options, ignore_state) {
+            Some(cseq_map) => cseq_map,
             None => return Ok(()),
         };
-        for (effect_key, cycle) in cycle_map {
+        for (effect_key, cseq) in cseq_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(ospec) = effect.normal_dmg_opc_spec
-                && let Some(cycle_loop) = cycle.try_loop_cseq()
-            {
-                let spool_mult = if ospec.spoolable
-                    && let Some(spool_attrs) = effect.spool_attr_keys
-                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
-                {
-                    Some(resolved.mult)
-                } else {
-                    None
-                };
-                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
-                if let Some(dmg) = ospec.get_total(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
-                    *dps_normal += dmg / cycle_loop.get_average_time();
+            let ospec = match effect.normal_dmg_opc_spec {
+                Some(ospec) => ospec,
+                None => continue,
+            };
+            match reload {
+                true => {
+                    if let Some(effect_dps) =
+                        aggr_proj_looped_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key)
+                    {
+                        *dps_normal += effect_dps;
+                    }
+                }
+                false => {
+                    if let Some(effect_dps) =
+                        aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key, spool)
+                    {
+                        *dps_normal += effect_dps;
+                    }
                 }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_key, effect, projectee_key)
             {
-                breacher_accum.add(dmg_opc, (&cycle).into());
+                breacher_accum.add(dmg_opc, (&cseq).into());
             }
         }
         if include_charges {
