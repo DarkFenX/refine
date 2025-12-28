@@ -27,7 +27,8 @@ pub(in crate::svc) fn aggr_proj_looped_ps<T>(
 where
     T: Copy + Aggregable,
 {
-    Some(aggr_proj_looped_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)?.get_ps()?)
+    aggr_proj_looped_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)
+        .and_then(|aggr_data| aggr_data.get_ps())
 }
 
 pub(in crate::svc) fn aggr_proj_looped_data<T>(

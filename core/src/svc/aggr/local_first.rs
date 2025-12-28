@@ -21,7 +21,7 @@ pub(in crate::svc) fn aggr_local_first_ps<T>(
 where
     T: Copy + Aggregable,
 {
-    Some(aggr_local_first_data(ctx, calc, item_key, effect, cseq, ospec)?.get_ps()?)
+    aggr_local_first_data(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_data| aggr_data.get_ps())
 }
 
 pub(in crate::svc) fn aggr_local_first_data<T>(
