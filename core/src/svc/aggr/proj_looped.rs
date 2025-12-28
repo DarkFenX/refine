@@ -1,7 +1,7 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
     shared::AggrData,
-    traits::LimitAmount,
+    traits::{LimitAmount, Maximum},
 };
 use crate::{
     def::{AttrVal, Count, OF},
@@ -150,26 +150,6 @@ where
         time: total_time,
     })
 }
-fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
-    let mut uninterrupted_cycles = 0;
-    let mut interruptions = false;
-    for cycle_part in cseq.iter_cseq_parts() {
-        match cycle_part.data.interrupt {
-            Some(_) => {
-                uninterrupted_cycles = 0;
-                interruptions = true;
-            }
-            None => {
-                uninterrupted_cycles += cycle_part.repeat_count;
-            }
-        }
-    }
-    // If there are no interruptions at all, just set max possible spool right away
-    if !interruptions {
-        uninterrupted_cycles = inv_spool.cycles_to_max;
-    }
-    uninterrupted_cycles
-}
 
 fn aggr_total_regular<T>(
     ctx: SvcCtx,
@@ -223,3 +203,70 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Max
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fn aggr_max_regular<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    effect: &REffect,
+    cseq: CycleSeq<CycleDataTimeCharge>,
+    ospec: &REffectProjOpcSpec<T>,
+    projectee_key: Option<UItemKey>,
+) -> Option<T>
+where
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount
+        + Maximum,
+{
+    let cseq = cseq.try_loop_cseq()?;
+    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let mut max_amount = T::default();
+    for cycle_part in cseq.iter_cseq_parts() {
+        let mut part_output = inv_proj.output;
+        // Chargedness
+        if let Some(charge_mult_getter) = ospec.charge_mult
+            && let Some(chargedness) = cycle_part.data.chargedness
+            && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
+        {
+            part_output *= charge_mult;
+        }
+        // Limit
+        if let Some(limit) = inv_proj.amount_limit {
+            part_output.limit_amount(limit);
+        }
+        // Chance-based multipliers
+        if let Some(mult_post) = inv_proj.mult_post {
+            part_output *= mult_post;
+        }
+        // Update result
+        max_amount = max_amount.maximum(part_output.get_max());
+    }
+    Some(max_amount)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
+    let mut uninterrupted_cycles = 0;
+    let mut interruptions = false;
+    for cycle_part in cseq.iter_cseq_parts() {
+        match cycle_part.data.interrupt {
+            Some(_) => {
+                uninterrupted_cycles = 0;
+                interruptions = true;
+            }
+            None => {
+                uninterrupted_cycles += cycle_part.repeat_count;
+            }
+        }
+    }
+    // If there are no interruptions at all, just set max possible spool right away
+    if !interruptions {
+        uninterrupted_cycles = inv_spool.cycles_to_max;
+    }
+    uninterrupted_cycles
+}
