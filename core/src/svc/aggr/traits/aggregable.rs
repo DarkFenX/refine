@@ -1,4 +1,5 @@
-use crate::{def::AttrVal, util::Limit};
+use super::instance_limit::LimitAmount;
+use crate::def::AttrVal;
 
 pub(in crate::svc) trait Aggregable:
     Default
@@ -6,6 +7,6 @@ pub(in crate::svc) trait Aggregable:
     + std::ops::Mul<AttrVal, Output = Self>
     + std::ops::MulAssign<AttrVal>
     + std::ops::Div<AttrVal, Output = Self>
-    + Limit
+    + LimitAmount
 {
 }

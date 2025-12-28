@@ -7,7 +7,3 @@ pub(crate) trait Named {
 pub(crate) trait GetId<T> {
     fn get_id(&self) -> T;
 }
-
-pub(crate) trait Limit {
-    fn limit(&mut self, limit: OrderedFloat<f64>);
-}

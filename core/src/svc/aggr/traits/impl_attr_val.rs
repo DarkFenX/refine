@@ -1,12 +1,10 @@
-use ordered_float::OrderedFloat;
+use super::{aggregable::Aggregable, instance_limit::LimitAmount};
+use crate::AttrVal;
 
-use super::aggregable::Aggregable;
-use crate::util::Limit;
+impl Aggregable for AttrVal {}
 
-impl Aggregable for OrderedFloat<f64> {}
-
-impl Limit for OrderedFloat<f64> {
-    fn limit(&mut self, limit: OrderedFloat<f64>) {
-        *self = OrderedFloat::min(*self, limit);
+impl LimitAmount for AttrVal {
+    fn limit_amount(&mut self, limit: AttrVal) {
+        *self = AttrVal::min(*self, limit);
     }
 }

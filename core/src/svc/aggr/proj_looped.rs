@@ -44,15 +44,15 @@ where
     T: Copy + Aggregable,
 {
     match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
-        Some(inv_spool) => aggr_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
-        None => aggr_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
+        Some(inv_spool) => aggr_total_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
+        None => aggr_total_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Private functions
+// Totals
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<T>(
+fn aggr_total_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -155,7 +155,7 @@ fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &Sp
     uninterrupted_cycles
 }
 
-fn aggr_regular<T>(
+fn aggr_total_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -198,3 +198,7 @@ where
         time: total_time,
     })
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Max
+////////////////////////////////////////////////////////////////////////////////////////////////////

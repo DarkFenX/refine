@@ -2,7 +2,7 @@ use ordered_float::Float;
 
 use crate::{
     def::{AttrVal, Count},
-    util::{FLOAT_TOLERANCE, Limit},
+    util::FLOAT_TOLERANCE,
 };
 
 #[derive(Copy, Clone)]
@@ -30,14 +30,6 @@ where
     }
     pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         OutputComplexIter::new(self)
-    }
-}
-impl<T> OutputComplex<T>
-where
-    T: Copy + Limit,
-{
-    pub(super) fn limit_amount(&mut self, limit: AttrVal) {
-        self.amount.limit(limit);
     }
 }
 impl OutputComplex<AttrVal> {

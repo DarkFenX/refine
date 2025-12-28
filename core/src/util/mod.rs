@@ -8,7 +8,7 @@ pub(crate) use inf_count::InfCount;
 pub use storage::{Map, RMap, RSet};
 pub(crate) use storage::{MapSet, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, extend_vec_from_map_set_l1};
 pub(crate) use str_err::StrMsgError;
-pub(crate) use traits::{GetId, Limit, Named};
+pub(crate) use traits::{GetId, Named};
 pub use unit_interval::{UnitInterval, UnitIntervalError};
 pub(crate) use xyz::Xyz;
 

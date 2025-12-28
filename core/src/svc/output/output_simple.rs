@@ -1,9 +1,6 @@
 use ordered_float::Float;
 
-use crate::{
-    def::AttrVal,
-    util::{FLOAT_TOLERANCE, Limit},
-};
+use crate::{def::AttrVal, util::FLOAT_TOLERANCE};
 
 #[derive(Copy, Clone)]
 pub(crate) struct OutputSimple<T>
@@ -28,14 +25,6 @@ where
     }
     pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
         OutputSimpleIter::new(self)
-    }
-}
-impl<T> OutputSimple<T>
-where
-    T: Copy + Limit,
-{
-    pub(super) fn limit_amount(&mut self, limit: AttrVal) {
-        self.amount.limit(limit);
     }
 }
 impl OutputSimple<AttrVal> {

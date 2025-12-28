@@ -1,11 +1,9 @@
-use ordered_float::OrderedFloat;
-
-use super::aggregable::Aggregable;
-use crate::{misc::MiningAmount, util::Limit};
+use super::{aggregable::Aggregable, instance_limit::LimitAmount};
+use crate::{def::AttrVal, misc::MiningAmount};
 
 impl Aggregable for MiningAmount {}
 
-impl Limit for MiningAmount {
+impl LimitAmount for MiningAmount {
     // No-op, since there is no logic to limit mining amount depending on target attrs
-    fn limit(&mut self, _limit: OrderedFloat<f64>) {}
+    fn limit_amount(&mut self, _limit: AttrVal) {}
 }
