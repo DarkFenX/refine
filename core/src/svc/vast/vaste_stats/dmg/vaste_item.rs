@@ -105,23 +105,21 @@ impl Vast {
         };
         for (effect_key, cseq) in cseq_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let ospec = match effect.normal_dmg_opc_spec {
-                Some(ospec) => ospec,
-                None => continue,
-            };
-            match reload {
-                true => {
-                    if let Some(effect_dps) =
-                        aggr_proj_looped_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key)
-                    {
-                        *dps_normal += effect_dps;
+            if let Some(ospec) = effect.normal_dmg_opc_spec {
+                match reload {
+                    true => {
+                        if let Some(effect_dps) =
+                            aggr_proj_looped_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key)
+                        {
+                            *dps_normal += effect_dps;
+                        }
                     }
-                }
-                false => {
-                    if let Some(effect_dps) =
-                        aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key, spool)
-                    {
-                        *dps_normal += effect_dps;
+                    false => {
+                        if let Some(effect_dps) =
+                            aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key, spool)
+                        {
+                            *dps_normal += effect_dps;
+                        }
                     }
                 }
             }
