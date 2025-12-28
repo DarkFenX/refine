@@ -4,11 +4,10 @@ use crate::{
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
+        aggr::{aggr_proj_first_amount_ps, aggr_proj_first_output_data, aggr_proj_looped_amount_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
-        spool::ResolvedSpool,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
             shared::{BreacherAccum, apply_breacher},
@@ -220,24 +219,17 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {
+            Some(cseq_map) => cseq_map,
             None => return Ok(()),
         };
-        for (effect_key, _cycle) in cycle_map {
+        for (effect_key, cseq) in cseq_map {
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(ospec) = effect.normal_dmg_opc_spec {
-                let spool_mult = if ospec.spoolable
-                    && let Some(spool_attrs) = effect.spool_attr_keys
-                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
+            if let Some(ospec) = &effect.normal_dmg_opc_spec {
+                if let Some(output_data) =
+                    aggr_proj_first_output_data(ctx, calc, item_key, effect, &cseq, ospec, projectee_key, spool)
                 {
-                    Some(resolved.mult)
-                } else {
-                    None
-                };
-                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
-                if let Some(dmg) = ospec.get_output(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
-                    *volley_normal += dmg.get_amount();
+                    *volley_normal += output_data.output.get_amount();
                 }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter

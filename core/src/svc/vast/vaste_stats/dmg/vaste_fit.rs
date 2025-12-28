@@ -4,10 +4,9 @@ use crate::{
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
+        aggr::{aggr_proj_first_amount_ps, aggr_proj_first_output_data, aggr_proj_looped_amount_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
-        spool::ResolvedSpool,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
             shared::{BreacherAccum, apply_breacher},
@@ -320,33 +319,25 @@ impl VastFitData {
         projectee_key: Option<UItemKey>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cycle_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
-                Some(cycle_map) => cycle_map,
+            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {
+                Some(cseq_map) => cseq_map,
                 None => continue,
             };
-            let u_item = ctx.u_data.items.get(item_key);
+            let item = ctx.u_data.items.get(item_key);
             for (&effect_key, ospec) in item_data.iter() {
                 let effect = ctx.u_data.src.get_effect(effect_key);
-                if !item_kinds.resolve(ctx, u_item, effect) {
+                if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
-                if !cycle_map.contains_key(&effect_key) {
-                    continue;
-                };
-                let spool_mult = if ospec.spoolable
-                    && let Some(spool_attrs) = effect.spool_attr_keys
-                    && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
-                {
-                    Some(resolved.mult)
-                } else {
-                    None
-                };
-                let inv_data = ospec.make_invar_data(ctx, calc, item_key, effect, projectee_key);
-                let output_per_cycle = match ospec.get_output(ctx, calc, item_key, effect, None, spool_mult, inv_data) {
-                    Some(output_per_cycle) => output_per_cycle,
+                let cseq = match cseq_map.get(&effect_key) {
+                    Some(cseq) => cseq,
                     None => continue,
                 };
-                *volley_normal += output_per_cycle.get_amount();
+                if let Some(output_data) =
+                    aggr_proj_first_output_data(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
+                {
+                    *volley_normal += output_data.output.get_amount();
+                }
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
