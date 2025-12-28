@@ -12,6 +12,7 @@ use crate::{
         cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
     },
     ud::UItemKey,
+    util::InfCount,
 };
 
 // Projected effects, considers only infinite parts of cycles
@@ -44,7 +45,7 @@ where
 {
     match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_proj_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
-        None => aggr_proj_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
+        None => aggr_proj_regular(ctx, calc, projector_key, effect, cseq, ospec, projectee_key),
     }
 }
 
@@ -61,13 +62,23 @@ fn aggr_proj_spool<T>(
 where
     T: Copy + Aggregable,
 {
-    let cseq = cseq.try_loop_cseq()?;
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
-    // Do a dry run to set amount of interrupted cycles before we begin
-    let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
+    let mut uninterrupted_cycles = 0;
     let mut value = T::default();
     let mut time = OF(0.0);
-    'part: for cycle_part in cseq.iter_cseq_parts() {
+    let mut reload = false;
+    let cycle_parts = cseq.get_cseq_parts();
+    'part: for cycle_part in cycle_parts.iter() {
+        let part_cycle_count = match cycle_part.repeat_count {
+            InfCount::Count(part_cycle_count) => part_cycle_count,
+            InfCount::Infinite => match cycle_part.data.interrupt {
+                // Process 1 cycle if reload happens after every cycle in this part, even if cycles
+                // are infinite
+                Some(interrupt) if interrupt.reload => 1,
+                // No reloads in infinite sequence - sequence is not a clip - no data to return
+                _ => return None,
+            },
+        };
         // Calculate chargedness mult once for every part, no need to do it for every cycle
         let charge_mult = if let Some(charge_mult_getter) = ospec.charge_mult
             && let Some(chargedness) = cycle_part.data.chargedness
@@ -76,11 +87,11 @@ where
         } else {
             None
         };
-        for i in 0..cycle_part.repeat_count {
+        for i in 0..part_cycle_count {
             let mut part_output = inv_proj.output;
             // Case when the rest of cycle part is at full spool
             if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
-                let remaining_cycles = cycle_part.repeat_count - i;
+                let remaining_cycles = part_cycle_count - i;
                 // Chargedness
                 if let Some(charge_mult) = charge_mult {
                     part_output *= charge_mult;
@@ -100,6 +111,7 @@ where
                 let remaining_cycles = AttrVal::from(remaining_cycles);
                 value += part_output.instance_sum() * remaining_cycles;
                 time += cycle_part.data.time * remaining_cycles;
+                // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
             // Chargedness
@@ -120,32 +132,24 @@ where
             if let Some(mult_post) = inv_proj.mult_post {
                 part_output *= mult_post;
             }
-            // Update total values
+            // Update total values - current cycle is added regardless
             value += part_output.instance_sum();
             time += cycle_part.data.time;
+            // If reload happens after it, set reload flag and quit all the cycling - clip is
+            // considered finished upon hitting reload
+            if let Some(interrupt) = cycle_part.data.interrupt
+                && interrupt.reload
+            {
+                reload = true;
+                break 'part;
+            }
         }
+    }
+    // If cycles are infinite and have no reload, return no data
+    if cycle_parts.loops && !reload {
+        return None;
     }
     Some(AggrData { amount: value, time })
-}
-fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
-    let mut uninterrupted_cycles = 0;
-    let mut interruptions = false;
-    for cycle_part in cseq.iter_cseq_parts() {
-        match cycle_part.data.interrupt {
-            Some(_) => {
-                uninterrupted_cycles = 0;
-                interruptions = true;
-            }
-            None => {
-                uninterrupted_cycles += cycle_part.repeat_count;
-            }
-        }
-    }
-    // If there are no interruptions at all, just set max possible spool right away
-    if !interruptions {
-        uninterrupted_cycles = inv_spool.cycles_to_max;
-    }
-    uninterrupted_cycles
 }
 
 fn aggr_proj_regular<T>(
@@ -153,18 +157,19 @@ fn aggr_proj_regular<T>(
     calc: &mut Calc,
     projector_key: UItemKey,
     effect: &REffect,
-    cseq: CycleSeq<CycleDataTimeCharge>,
+    cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
 ) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
-    let cseq = cseq.try_loop_cseq()?;
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut value = T::default();
     let mut time = OF(0.0);
-    for cycle_part in cseq.iter_cseq_parts() {
+    let mut reload = false;
+    let cycle_parts = cseq.get_cseq_parts();
+    for cycle_part in cycle_parts.iter() {
         let mut part_output = inv_proj.output;
         // Chargedness
         if let Some(charge_mult_getter) = ospec.charge_mult
@@ -182,9 +187,29 @@ where
             part_output *= mult_post;
         }
         // Update total values
-        let cycle_repeat_count = AttrVal::from(cycle_part.repeat_count);
-        value += part_output.instance_sum() * cycle_repeat_count;
-        time += cycle_part.data.time * cycle_repeat_count;
+        match cycle_part.data.interrupt {
+            // Add first cycle after which there is a reload
+            Some(interrupt) if interrupt.reload => {
+                reload = true;
+                value += part_output.instance_sum();
+                time += cycle_part.data.time;
+                break;
+            }
+            _ => {
+                let part_cycle_count = match cycle_part.repeat_count {
+                    InfCount::Count(part_cycle_count) => AttrVal::from(part_cycle_count),
+                    // If any cycle repeats infinitely without running out, then it does not run out
+                    // of "clip", no clip - no data
+                    InfCount::Infinite => return None,
+                };
+                value += part_output.instance_sum() * part_cycle_count;
+                time += cycle_part.data.time * part_cycle_count;
+            }
+        }
+    }
+    // If cycles are infinite and have no reload, return no data
+    if cycle_parts.loops && !reload {
+        return None;
     }
     Some(AggrData { amount: value, time })
 }

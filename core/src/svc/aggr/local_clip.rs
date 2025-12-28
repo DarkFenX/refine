@@ -63,14 +63,14 @@ where
                 break;
             }
             _ => {
-                let cycle_repeat_count = match cycle_part.repeat_count {
-                    InfCount::Count(cycle_repeat_count) => AttrVal::from(cycle_repeat_count),
+                let part_cycle_count = match cycle_part.repeat_count {
+                    InfCount::Count(part_cycle_count) => AttrVal::from(part_cycle_count),
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                value += part_output.instance_sum() * cycle_repeat_count;
-                time += cycle_part.data.time * cycle_repeat_count;
+                value += part_output.instance_sum() * part_cycle_count;
+                time += cycle_part.data.time * part_cycle_count;
             }
         }
     }

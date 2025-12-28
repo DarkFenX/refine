@@ -3,14 +3,14 @@ use crate::{
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::aggr_local_clip,
+        aggr::{aggr_local_clip, aggr_proj_clip},
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::{UItem, UItemKey},
-    util::{InfCount, RMapRMap, RMapRMapRMap},
+    util::{RMapRMap, RMapRMapRMap},
 };
 
 pub struct StatLayerHp {
@@ -123,67 +123,28 @@ fn get_remote_ancil_hp(
         None => return total_ancil_hp,
     };
     for (&projector_item_key, projector_data) in incoming_ancils.iter() {
-        let projector_cycle_map = match get_item_cseq_map(ctx, calc, projector_item_key, ANCIL_CYCLE_OPTIONS, false) {
-            Some(projector_cycle_map) => projector_cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_key, ANCIL_CYCLE_OPTIONS, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
-        'effect: for (&effect_key, ospec) in projector_data.iter() {
-            let effect_cycles = match projector_cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
+        for (&effect_key, ospec) in projector_data.iter() {
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let mut broken_sequence = false;
-            let mut effect_ancil_hp = OF(0.0);
-            let invar_data = ospec.make_invar_data(ctx, calc, projector_item_key, effect, Some(projectee_item_key));
-            let effect_cycle_parts = effect_cycles.get_cseq_parts();
-            for effect_cycle_part in effect_cycle_parts.iter() {
-                // No charges in current part breaks sequence
-                if effect_cycle_part.data.chargedness.is_none() {
-                    broken_sequence = true;
-                    break;
-                }
-                let effect_part_repeats = match effect_cycle_part.repeat_count {
-                    InfCount::Count(effect_part_repeats) => effect_part_repeats,
-                    InfCount::Infinite => match effect_cycle_part.data.interrupt {
-                        // Infinite cycle with reload marker means it has to reload every cycle,
-                        // which is acceptable
-                        Some(interrupt) if interrupt.reload => 1,
-                        // Can infinitely cycle without reloads - current effect is not an ancil,
-                        // skip it completely
-                        _ => continue 'effect,
-                    },
-                };
-                let hp_per_cycle = match ospec.get_total(
-                    ctx,
-                    calc,
-                    projector_item_key,
-                    effect,
-                    effect_cycle_part.data.chargedness,
-                    None,
-                    invar_data,
-                ) {
-                    Some(hp_per_cycle) => hp_per_cycle,
-                    // Assume that if HP was not returned for this part, it cannot be returned for
-                    // this effect altogether
-                    None => continue 'effect,
-                };
-                effect_ancil_hp += hp_per_cycle * effect_part_repeats as f64;
-                // Reloads break sequence
-                if let Some(interrupt) = effect_cycle_part.data.interrupt
-                    && interrupt.reload
-                {
-                    broken_sequence = true;
-                    break;
-                }
-            }
-            // If cycle was not broken early, and it loops, it is infinitely cycling, and thus not
-            // an ancil
-            if !broken_sequence && effect_cycle_parts.loops {
-                continue;
-            }
-            // Add HP only after we concluded it is an ancil
-            total_ancil_hp += effect_ancil_hp;
+            match aggr_proj_clip(
+                ctx,
+                calc,
+                projector_item_key,
+                effect,
+                cseq,
+                ospec,
+                Some(projectee_item_key),
+            ) {
+                Some(effect_clip_data) => total_ancil_hp += effect_clip_data.amount,
+                None => continue,
+            };
         }
     }
     total_ancil_hp

@@ -36,9 +36,9 @@ where
             part_output.limit_amount(limit);
         }
         // Update total values
-        let cycle_repeat_count = AttrVal::from(cycle_part.repeat_count);
-        value += part_output.instance_sum() * cycle_repeat_count;
-        time += cycle_part.data.time * cycle_repeat_count;
+        let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
+        value += part_output.instance_sum() * part_cycle_count;
+        time += cycle_part.data.time * part_cycle_count;
     }
     Some(value / time)
 }
