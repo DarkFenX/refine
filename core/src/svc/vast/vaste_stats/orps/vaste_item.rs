@@ -7,9 +7,8 @@ use crate::{
         SvcCtx,
         aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
         calc::Calc,
-        cycle::{CycleSeq, CyclingOptions, get_item_cseq_map},
+        cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        spool::ResolvedSpool,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_module},
     },
     ud::UItemKey,
@@ -80,37 +79,6 @@ fn get_orr_item_key(
         }
     }
     item_orr
-}
-
-fn get_orr_effect(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    effect_cycle: CycleSeq,
-    spool: Option<Spool>,
-    ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
-) -> Option<AttrVal> {
-    let ospec = ospec_getter(effect)?;
-    let effect_cycle_loop = effect_cycle.to_time_charge().try_loop_cseq()?;
-    let spool_mult = if ospec.spoolable
-        && let Some(spool_attrs) = effect.spool_attr_keys
-        && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, item_key, effect, spool, spool_attrs)
-    {
-        Some(resolved.mult)
-    } else {
-        None
-    };
-    let mut rep_amount = OF(0.0);
-    let mut time = OF(0.0);
-    let invar_data = ospec.make_invar_data(ctx, calc, item_key, effect, None);
-    for effect_cycle_part in effect_cycle_loop.iter_cseq_parts() {
-        let chargedness = effect_cycle_part.data.chargedness;
-        let cycle_rep_amount = ospec.get_total(ctx, calc, item_key, effect, chargedness, spool_mult, invar_data)?;
-        rep_amount += cycle_rep_amount * effect_cycle_part.repeat_count as f64;
-        time += effect_cycle_part.data.time * effect_cycle_part.repeat_count as f64;
-    }
-    Some(rep_amount / time)
 }
 
 fn get_getter_shield(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {

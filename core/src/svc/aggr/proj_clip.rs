@@ -4,12 +4,12 @@ use super::{
     traits::Aggregable,
 };
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, OF},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
+        cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemKey,
     util::InfCount,
