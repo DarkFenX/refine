@@ -10,6 +10,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
+        output::Output,
     },
     ud::UItemKey,
 };
@@ -97,7 +98,7 @@ where
             None
         };
         for i in 0..cycle_part.repeat_count {
-            let mut part_output = inv_proj.output;
+            let cycle_output = inv_proj.output;
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
                 // Current cycle is at 0 spool, and we have an interrupt every cycle
@@ -112,48 +113,35 @@ where
                 _ => None,
             };
             if let Some(stable_spool) = stable_spool {
-                // Chargedness
-                if let Some(charge_mult) = charge_mult {
-                    part_output *= charge_mult;
-                }
-                // Spool
-                part_output *= OF(1.0) + stable_spool;
-                // Limit
-                if let Some(limit) = inv_proj.amount_limit {
-                    part_output.limit_amount(limit);
-                }
-                // Chance-based multipliers
-                if let Some(mult_post) = inv_proj.mult_post {
-                    part_output *= mult_post;
-                }
+                let cycle_output = apply_values_spool(
+                    cycle_output,
+                    charge_mult,
+                    stable_spool,
+                    inv_proj.amount_limit,
+                    inv_proj.mult_post,
+                );
                 // Update total values
                 let remaining_cycles = AttrVal::from(cycle_part.repeat_count - i);
-                total_amount += part_output.amount_sum() * remaining_cycles;
+                total_amount += cycle_output.amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
-            // Chargedness
-            if let Some(charge_mult) = charge_mult {
-                part_output *= charge_mult;
-            }
-            // Spool
-            part_output *= OF(1.0) + inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let cycle_output = apply_values_spool(
+                cycle_output,
+                charge_mult,
+                inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64),
+                inv_proj.amount_limit,
+                inv_proj.mult_post,
+            );
+            // Update total values
+            total_amount += cycle_output.amount_sum();
+            total_time += cycle_part.data.time;
+            // Update state
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = 0,
                 None => uninterrupted_cycles += 1,
             }
-            // Limit
-            if let Some(limit) = inv_proj.amount_limit {
-                part_output.limit_amount(limit);
-            }
-            // Chance-based multipliers
-            if let Some(mult_post) = inv_proj.mult_post {
-                part_output *= mult_post;
-            }
-            // Update total values
-            total_amount += part_output.amount_sum();
-            total_time += cycle_part.data.time;
         }
     }
     Some(AggrData {
@@ -261,6 +249,29 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fn apply_values_spool<T>(
+    mut output: Output<T>,
+    chargedness: Option<AttrVal>,
+    spool: AttrVal,
+    amount_limit: Option<AttrVal>,
+    mult_post: Option<AttrVal>,
+) -> Output<T>
+where
+    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
+{
+    if let Some(charge_mult) = chargedness {
+        output *= charge_mult;
+    }
+    output *= OF(1.0) + spool;
+    if let Some(limit) = amount_limit {
+        output.limit_amount(limit);
+    }
+    if let Some(mult_post) = mult_post {
+        output *= mult_post;
+    }
+    output
+}
+
 fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
     let mut uninterrupted_cycles = 0;
     let mut interruptions = false;
