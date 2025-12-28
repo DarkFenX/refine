@@ -1,4 +1,4 @@
-use super::{aggregable::Aggregable, instance_limit::LimitAmount};
+use super::{aggregable::Aggregable, limit_amount::LimitAmount};
 use crate::{def::AttrVal, misc::DmgKinds};
 
 impl Aggregable for DmgKinds<AttrVal> {}

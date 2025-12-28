@@ -1,4 +1,4 @@
-use super::instance_limit::LimitAmount;
+use super::limit_amount::LimitAmount;
 use crate::def::AttrVal;
 
 pub(in crate::svc) trait Aggregable:

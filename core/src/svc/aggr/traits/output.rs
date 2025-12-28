@@ -1,17 +1,20 @@
-#![allow(private_bounds)]
-
+use super::limit_amount::LimitAmount;
 use crate::{
     def::AttrVal,
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(in crate::svc::aggr) trait LimitAmount {
-    fn limit_amount(&mut self, limit: AttrVal);
+impl<T> Output<T>
+where
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+{
+    pub(in crate::svc::aggr) fn instance_sum(&self) -> T {
+        match self {
+            Self::Simple(inner) => inner.instance_sum(),
+            Self::Complex(inner) => inner.instance_sum(),
+        }
+    }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exposure of appropriate methods in output
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
     T: Copy + LimitAmount,
@@ -26,6 +29,14 @@ where
 
 impl<T> OutputSimple<T>
 where
+    T: Copy,
+{
+    fn instance_sum(&self) -> T {
+        self.amount
+    }
+}
+impl<T> OutputSimple<T>
+where
     T: Copy + LimitAmount,
 {
     fn limit_amount(&mut self, limit: AttrVal) {
@@ -33,6 +44,14 @@ where
     }
 }
 
+impl<T> OutputComplex<T>
+where
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+{
+    fn instance_sum(&self) -> T {
+        self.amount * AttrVal::from(self.repeats)
+    }
+}
 impl<T> OutputComplex<T>
 where
     T: Copy + LimitAmount,
