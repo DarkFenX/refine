@@ -105,11 +105,9 @@ fn get_local_rps(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_rps = match aggr_local_first_per_second(ctx, calc, item_key, effect, cseq, ospec) {
-                Some(effect_rps) => effect_rps,
-                None => continue,
-            };
-            total_rps += effect_rps;
+            if let Some(effect_rps) = aggr_local_first_per_second(ctx, calc, item_key, effect, cseq, ospec) {
+                total_rps += effect_rps;
+            }
         }
     }
     total_rps
@@ -143,7 +141,7 @@ fn get_irr_data(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_rep = match aggr_proj_first(
+            if let Some(effect_rep) = aggr_proj_first(
                 ctx,
                 calc,
                 projector_item_key,
@@ -153,15 +151,13 @@ fn get_irr_data(
                 Some(projectee_item_key),
                 spool,
             ) {
-                Some(effect_rep) => effect_rep,
-                None => continue,
-            };
-            result.push(IrrEntry {
-                // For now there are no reps which spread effect over multiple cycles, so we just
-                // record total amount for the purposes of RR penalty
-                amount: effect_rep.amount,
-                cycle_time: effect_rep.time,
-            });
+                result.push(IrrEntry {
+                    // For now there are no reps which spread effect over multiple cycles, so we just
+                    // record total amount for the purposes of RR penalty
+                    amount: effect_rep.amount,
+                    cycle_time: effect_rep.time,
+                });
+            }
         }
     }
     result

@@ -102,10 +102,9 @@ fn get_local_ancil_hp(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            match aggr_local_clip(ctx, calc, item_key, effect, cseq, ospec) {
-                Some(effect_clip_data) => total_ancil_hp += effect_clip_data.amount,
-                None => continue,
-            };
+            if let Some(effect_clip_data) = aggr_local_clip(ctx, calc, item_key, effect, cseq, ospec) {
+                total_ancil_hp += effect_clip_data.amount;
+            }
         }
     }
     total_ancil_hp
@@ -133,7 +132,7 @@ fn get_remote_ancil_hp(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            match aggr_proj_clip(
+            if let Some(effect_clip_data) = aggr_proj_clip(
                 ctx,
                 calc,
                 projector_item_key,
@@ -142,9 +141,8 @@ fn get_remote_ancil_hp(
                 ospec,
                 Some(projectee_item_key),
             ) {
-                Some(effect_clip_data) => total_ancil_hp += effect_clip_data.amount,
-                None => continue,
-            };
+                total_ancil_hp += effect_clip_data.amount;
+            }
         }
     }
     total_ancil_hp

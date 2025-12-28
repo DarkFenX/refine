@@ -5,6 +5,7 @@ use crate::{
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
+        aggr::{aggr_local_looped_per_second, aggr_proj_first_per_second},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
@@ -110,22 +111,20 @@ fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: Uni
 fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> AttrVal {
     let mut cps = OF(0.0);
     for (&item_key, item_data) in fit_data.cap_injects.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
-            let cap_injected = match ospec.get_total(ctx, calc, item_key, effect, None, invar_data) {
-                Some(cap_injected) => cap_injected,
-                None => continue,
-            };
-            cps += cap_injected / effect_cycles.get_average_time();
+
+            if let Some(effect_cps) = aggr_local_looped_per_second(ctx, calc, item_key, effect, cseq, ospec) {
+                cps += effect_cps;
+            }
         }
     }
     cps
@@ -175,22 +174,28 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
         None => return cps,
     };
     for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
+                None => continue,
+            };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
-                None => continue,
-            };
-            let invar_data = ospec.make_invar_data(ctx, calc, transfer_item_key, effect, Some(cap_item_key));
-            let output_per_cycle = match ospec.get_total(ctx, calc, transfer_item_key, effect, None, None, invar_data) {
-                Some(output_per_cycle) => output_per_cycle,
-                None => continue,
-            };
-            cps += output_per_cycle / effect_cycles.get_average_time();
+            if let Some(effect_cps) = aggr_proj_first_per_second(
+                ctx,
+                calc,
+                transfer_item_key,
+                effect,
+                cseq,
+                ospec,
+                Some(cap_item_key),
+                None,
+            ) {
+                cps += effect_cps;
+            }
         }
     }
     cps
@@ -203,22 +208,21 @@ fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) 
         None => return nps,
     };
     for (&neut_item_key, item_data) in neut_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
+                None => continue,
+            };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
-                None => continue,
-            };
-            let invar_data = ospec.make_invar_data(ctx, calc, neut_item_key, effect, Some(cap_item_key));
-            let output_per_cycle = match ospec.get_total(ctx, calc, neut_item_key, effect, None, None, invar_data) {
-                Some(output_per_cycle) => output_per_cycle,
-                None => continue,
-            };
-            nps += output_per_cycle / effect_cycles.get_average_time();
+            if let Some(effect_nps) =
+                aggr_proj_first_per_second(ctx, calc, neut_item_key, effect, cseq, ospec, Some(cap_item_key), None)
+            {
+                nps += effect_nps;
+            }
         }
     }
     nps
