@@ -4,7 +4,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_amount_ps, aggr_proj_first_output_data, aggr_proj_looped_amount_ps},
+        aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{
@@ -270,14 +270,14 @@ impl VastFitData {
                 match cycle_options {
                     CyclingOptions::Burst => {
                         if let Some(effect_dps) =
-                            aggr_proj_first_amount_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
+                            aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
                         {
                             *dps_normal += effect_dps;
                         }
                     }
                     CyclingOptions::Sim(_) => {
                         if let Some(effect_dps) =
-                            aggr_proj_looped_amount_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key)
+                            aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key)
                         {
                             *dps_normal += effect_dps;
                         }
@@ -333,10 +333,10 @@ impl VastFitData {
                     Some(cseq) => cseq,
                     None => continue,
                 };
-                if let Some(output_data) =
-                    aggr_proj_first_output_data(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
+                if let Some(dmg_max) =
+                    aggr_proj_first_max(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
                 {
-                    *volley_normal += output_data.output.get_max();
+                    *volley_normal += dmg_max;
                 }
             }
         }

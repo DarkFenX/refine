@@ -3,7 +3,7 @@ use crate::{
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
-        aggr::aggr_proj_first_amount_ps,
+        aggr::aggr_proj_first_ps,
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
@@ -31,7 +31,7 @@ impl Vast {
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(ospec) = effect.neut_opc_spec
                 && let Some(effect_nps) =
-                    aggr_proj_first_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, projectee_item_key, None)
+                    aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, projectee_item_key, None)
             {
                 item_nps += effect_nps;
             }

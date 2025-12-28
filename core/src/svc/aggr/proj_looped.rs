@@ -1,6 +1,6 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
-    shared::AggrAmountData,
+    shared::AggrData,
     traits::Aggregable,
 };
 use crate::{
@@ -15,7 +15,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_proj_looped_amount_ps<T>(
+pub(in crate::svc) fn aggr_proj_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -27,10 +27,10 @@ pub(in crate::svc) fn aggr_proj_looped_amount_ps<T>(
 where
     T: Copy + Aggregable,
 {
-    Some(aggr_proj_looped_amount_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)?.get_ps()?)
+    Some(aggr_proj_looped_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)?.get_ps()?)
 }
 
-pub(in crate::svc) fn aggr_proj_looped_amount_data<T>(
+pub(in crate::svc) fn aggr_proj_looped_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -38,7 +38,7 @@ pub(in crate::svc) fn aggr_proj_looped_amount_data<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -60,7 +60,7 @@ fn aggr_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     inv_spool: SpoolInvariantData,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -128,7 +128,7 @@ where
             total_time += cycle_part.data.time;
         }
     }
-    Some(AggrAmountData {
+    Some(AggrData {
         amount: total_amount,
         time: total_time,
     })
@@ -162,7 +162,7 @@ fn aggr_regular<T>(
     cseq: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -192,7 +192,7 @@ where
         total_amount += part_output.instance_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
-    Some(AggrAmountData {
+    Some(AggrData {
         amount: total_amount,
         time: total_time,
     })

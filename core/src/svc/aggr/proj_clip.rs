@@ -1,6 +1,6 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
-    shared::AggrAmountData,
+    shared::AggrData,
     traits::Aggregable,
 };
 use crate::{
@@ -16,7 +16,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_proj_clip_amount_data<T>(
+pub(in crate::svc) fn aggr_proj_clip_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -24,7 +24,7 @@ pub(in crate::svc) fn aggr_proj_clip_amount_data<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -46,7 +46,7 @@ fn aggr_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     inv_spool: SpoolInvariantData,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -137,7 +137,7 @@ where
     if cycle_parts.loops && !reload {
         return None;
     }
-    Some(AggrAmountData {
+    Some(AggrData {
         amount: total_amount,
         time: total_time,
     })
@@ -151,7 +151,7 @@ fn aggr_regular<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -202,7 +202,7 @@ where
     if cycle_parts.loops && !reload {
         return None;
     }
-    Some(AggrAmountData {
+    Some(AggrData {
         amount: total_amount,
         time: total_time,
     })

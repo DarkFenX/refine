@@ -5,7 +5,7 @@ use crate::{
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -64,14 +64,12 @@ fn get_orr_item_key(
         };
         match cycling_options {
             CyclingOptions::Burst => {
-                if let Some(effect_orr) =
-                    aggr_proj_first_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, spool)
-                {
+                if let Some(effect_orr) = aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, spool) {
                     item_orr += effect_orr;
                 }
             }
             CyclingOptions::Sim(_) => {
-                if let Some(effect_orr) = aggr_proj_looped_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
+                if let Some(effect_orr) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
                     item_orr += effect_orr;
                 }
             }

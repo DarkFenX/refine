@@ -5,7 +5,7 @@ use crate::{
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
         vast::{StatMining, StatMiningItemKinds, Vast},
@@ -74,15 +74,12 @@ fn get_mps(
             let effect = ctx.u_data.src.get_effect(effect_key);
             match reload {
                 true => {
-                    if let Some(effect_mps) = aggr_proj_looped_amount_ps(ctx, calc, item_key, effect, cseq, ospec, None)
-                    {
+                    if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, None) {
                         mps += effect_mps;
                     }
                 }
                 false => {
-                    if let Some(effect_mps) =
-                        aggr_proj_first_amount_ps(ctx, calc, item_key, effect, cseq, ospec, None, None)
-                    {
+                    if let Some(effect_mps) = aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, None, None) {
                         mps += effect_mps;
                     }
                 }

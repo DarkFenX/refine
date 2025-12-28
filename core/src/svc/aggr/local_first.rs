@@ -1,6 +1,6 @@
 use super::{
     local_inv_data::LocalInvariantData,
-    shared::{AggrAmountData, AggrOutputData},
+    shared::{AggrData, AggrOutputData},
     traits::Aggregable,
 };
 use crate::{
@@ -10,7 +10,7 @@ use crate::{
 };
 
 // Local effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc) fn aggr_local_first_amount_ps<T>(
+pub(in crate::svc) fn aggr_local_first_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -21,27 +21,27 @@ pub(in crate::svc) fn aggr_local_first_amount_ps<T>(
 where
     T: Copy + Aggregable,
 {
-    Some(aggr_local_first_amount_data(ctx, calc, item_key, effect, cseq, ospec)?.get_ps()?)
+    Some(aggr_local_first_data(ctx, calc, item_key, effect, cseq, ospec)?.get_ps()?)
 }
 
-pub(in crate::svc) fn aggr_local_first_amount_data<T>(
+pub(in crate::svc) fn aggr_local_first_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
-    aggr_local_first_output_data(ctx, calc, item_key, effect, cseq, ospec).map(|output_data| AggrAmountData {
+    aggr_into_output(ctx, calc, item_key, effect, cseq, ospec).map(|output_data| AggrData {
         amount: output_data.output.instance_sum(),
         time: output_data.time,
     })
 }
 
-pub(in crate::svc) fn aggr_local_first_output_data<T>(
+fn aggr_into_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,

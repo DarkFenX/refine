@@ -4,7 +4,7 @@ use crate::{
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -53,14 +53,12 @@ fn get_mps_item_key(
         };
         match cycling_options {
             CyclingOptions::Burst => {
-                if let Some(effect_mps) =
-                    aggr_proj_first_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, None)
-                {
+                if let Some(effect_mps) = aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, None) {
                     item_mps += effect_mps;
                 }
             }
             CyclingOptions::Sim(_) => {
-                if let Some(effect_mps) = aggr_proj_looped_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
+                if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
                     item_mps += effect_mps;
                 }
             }

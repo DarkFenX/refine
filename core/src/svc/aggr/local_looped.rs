@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrAmountData, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::Aggregable};
 use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectLocalOpcSpec},
@@ -28,7 +28,7 @@ pub(in crate::svc) fn aggr_local_looped_amount_data<T>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrAmountData<T>>
+) -> Option<AggrData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -54,7 +54,7 @@ where
         total_amount += part_output.instance_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
-    Some(AggrAmountData {
+    Some(AggrData {
         amount: total_amount,
         time: total_time,
     })

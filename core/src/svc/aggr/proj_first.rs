@@ -1,6 +1,6 @@
 use super::{
     proj_inv_data::ProjInvariantData,
-    shared::{AggrAmountData, AggrOutputData},
+    shared::{AggrData, AggrOutputData},
     traits::Aggregable,
 };
 use crate::{
@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Projected effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc) fn aggr_proj_first_amount_ps<T>(
+pub(in crate::svc) fn aggr_proj_first_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -24,10 +24,10 @@ pub(in crate::svc) fn aggr_proj_first_amount_ps<T>(
 where
     T: Copy + Aggregable,
 {
-    Some(aggr_proj_first_amount_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)?.get_ps()?)
+    Some(aggr_proj_first_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)?.get_ps()?)
 }
 
-pub(in crate::svc) fn aggr_proj_first_amount_data<T>(
+pub(in crate::svc) fn aggr_proj_first_max<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -36,19 +36,34 @@ pub(in crate::svc) fn aggr_proj_first_amount_data<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     spool: Option<Spool>,
-) -> Option<AggrAmountData<T>>
+) -> Option<T>
 where
     T: Copy + Aggregable,
 {
-    aggr_proj_first_output_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool).map(
-        |output_data| AggrAmountData {
-            amount: output_data.output.instance_sum(),
-            time: output_data.time,
-        },
-    )
+    aggr_into_output(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)
+        .map(|output_data| output_data.output.get_max())
 }
 
-pub(in crate::svc) fn aggr_proj_first_output_data<T>(
+pub(in crate::svc) fn aggr_proj_first_data<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    effect: &REffect,
+    cseq: &CycleSeq,
+    ospec: &REffectProjOpcSpec<T>,
+    projectee_key: Option<UItemKey>,
+    spool: Option<Spool>,
+) -> Option<AggrData<T>>
+where
+    T: Copy + Aggregable,
+{
+    aggr_into_output(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool).map(|output_data| AggrData {
+        amount: output_data.output.instance_sum(),
+        time: output_data.time,
+    })
+}
+
+fn aggr_into_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
