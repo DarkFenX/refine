@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, shared::AggrAmountData, traits::Aggregable};
 use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectLocalOpcSpec},
@@ -7,7 +7,7 @@ use crate::{
 };
 
 // Local effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_local_looped_per_second<T>(
+pub(in crate::svc) fn aggr_local_looped_amount_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -18,10 +18,24 @@ pub(in crate::svc) fn aggr_local_looped_per_second<T>(
 where
     T: Copy + Aggregable,
 {
+    Some(aggr_local_looped_amount_data(ctx, calc, item_key, effect, cseq, ospec)?.get_ps()?)
+}
+
+pub(in crate::svc) fn aggr_local_looped_amount_data<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+    cseq: &CycleSeq,
+    ospec: &REffectLocalOpcSpec<T>,
+) -> Option<AggrAmountData<T>>
+where
+    T: Copy + Aggregable,
+{
     let cseq = cseq.try_loop_cseq()?;
     let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
-    let mut value = T::default();
-    let mut time = OF(0.0);
+    let mut total_amount = T::default();
+    let mut total_time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
         let mut part_output = inv_local.output;
         // Chargedness
@@ -37,8 +51,11 @@ where
         }
         // Update total values
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        value += part_output.instance_sum() * part_cycle_count;
-        time += cycle_part.data.time * part_cycle_count;
+        total_amount += part_output.instance_sum() * part_cycle_count;
+        total_time += cycle_part.data.time * part_cycle_count;
     }
-    Some(value / time)
+    Some(AggrAmountData {
+        amount: total_amount,
+        time: total_time,
+    })
 }

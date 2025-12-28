@@ -1,4 +1,4 @@
-use super::{proj_inv_data::ProjInvariantData, shared::AggrData, traits::Aggregable};
+use super::{proj_inv_data::ProjInvariantData, shared::AggrAmountData, traits::Aggregable};
 use crate::{
     misc::Spool,
     rd::{REffect, REffectProjOpcSpec},
@@ -7,7 +7,7 @@ use crate::{
 };
 
 // Projected effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc) fn aggr_proj_first_per_second<T>(
+pub(in crate::svc) fn aggr_proj_first_amount_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -20,11 +20,10 @@ pub(in crate::svc) fn aggr_proj_first_per_second<T>(
 where
     T: Copy + Aggregable,
 {
-    let aggr_data = aggr_proj_first(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)?;
-    Some(aggr_data.get_per_second())
+    Some(aggr_proj_first_amount_data(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool)?.get_ps()?)
 }
 
-pub(in crate::svc) fn aggr_proj_first<T>(
+pub(in crate::svc) fn aggr_proj_first_amount_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -33,7 +32,7 @@ pub(in crate::svc) fn aggr_proj_first<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     spool: Option<Spool>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmountData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -62,7 +61,7 @@ where
     if let Some(mult_post) = inv_proj.mult_post {
         output *= mult_post;
     }
-    Some(AggrData {
+    Some(AggrAmountData {
         amount: output.instance_sum(),
         time: cycle.time,
     })

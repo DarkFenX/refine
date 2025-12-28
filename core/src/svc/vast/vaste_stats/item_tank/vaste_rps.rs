@@ -4,7 +4,7 @@ use crate::{
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_first_per_second, aggr_proj_first},
+        aggr::{aggr_local_first_amount_ps, aggr_proj_first_amount_data},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
@@ -105,7 +105,7 @@ fn get_local_rps(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_rps) = aggr_local_first_per_second(ctx, calc, item_key, effect, cseq, ospec) {
+            if let Some(effect_rps) = aggr_local_first_amount_ps(ctx, calc, item_key, effect, cseq, ospec) {
                 total_rps += effect_rps;
             }
         }
@@ -141,7 +141,7 @@ fn get_irr_data(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_rep) = aggr_proj_first(
+            if let Some(effect_rep) = aggr_proj_first_amount_data(
                 ctx,
                 calc,
                 projector_item_key,

@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, OF},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_looped_per_second, aggr_proj_first_per_second},
+        aggr::{aggr_local_looped_amount_ps, aggr_proj_first_amount_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
@@ -122,7 +122,7 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, fit_data: &VastFitData) -> Attr
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
 
-            if let Some(effect_cps) = aggr_local_looped_per_second(ctx, calc, item_key, effect, cseq, ospec) {
+            if let Some(effect_cps) = aggr_local_looped_amount_ps(ctx, calc, item_key, effect, cseq, ospec) {
                 cps += effect_cps;
             }
         }
@@ -184,7 +184,7 @@ fn get_cap_transfers(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast:
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_cps) = aggr_proj_first_per_second(
+            if let Some(effect_cps) = aggr_proj_first_amount_ps(
                 ctx,
                 calc,
                 transfer_item_key,
@@ -219,7 +219,7 @@ fn get_neuts(ctx: SvcCtx, calc: &mut Calc, cap_item_key: UItemKey, vast: &Vast) 
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(effect_nps) =
-                aggr_proj_first_per_second(ctx, calc, neut_item_key, effect, cseq, ospec, Some(cap_item_key), None)
+                aggr_proj_first_amount_ps(ctx, calc, neut_item_key, effect, cseq, ospec, Some(cap_item_key), None)
             {
                 nps += effect_nps;
             }

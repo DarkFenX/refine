@@ -5,7 +5,7 @@ use crate::{
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
+        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{StatOutRepItemKinds, StatTank, Vast},
@@ -102,14 +102,13 @@ fn get_orrps(
             match cycling_options {
                 CyclingOptions::Burst => {
                     if let Some(effect_rps) =
-                        aggr_proj_first_per_second(ctx, calc, item_key, effect, cseq, ospec, None, spool)
+                        aggr_proj_first_amount_ps(ctx, calc, item_key, effect, cseq, ospec, None, spool)
                     {
                         rps += effect_rps;
                     }
                 }
                 CyclingOptions::Sim(_) => {
-                    if let Some(effect_rps) =
-                        aggr_proj_looped_per_second(ctx, calc, item_key, effect, cseq, ospec, None)
+                    if let Some(effect_rps) = aggr_proj_looped_amount_ps(ctx, calc, item_key, effect, cseq, ospec, None)
                     {
                         rps += effect_rps;
                     }

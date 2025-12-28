@@ -4,7 +4,7 @@ use crate::{
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::aggr_proj_first_per_second,
+        aggr::aggr_proj_first_amount_ps,
         calc::Calc,
         cycle::get_item_cseq_map,
         vast::{StatNeutItemKinds, Vast},
@@ -71,7 +71,7 @@ fn get_nps(
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
             if let Some(effect_nps) =
-                aggr_proj_first_per_second(ctx, calc, item_key, effect, cseq, ospec, projectee_item_key, None)
+                aggr_proj_first_amount_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_item_key, None)
             {
                 nps += effect_nps;
             }

@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, shared::AggrAmountData, traits::Aggregable};
 use crate::{
     AttrVal,
     def::OF,
@@ -9,35 +9,20 @@ use crate::{
 };
 
 // Local effects, considers only part of sequence until charges are out
-pub(in crate::svc) fn aggr_local_clip_per_second<T>(
+pub(in crate::svc) fn aggr_local_clip_amount_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<T>
-where
-    T: Copy + Aggregable,
-{
-    let aggr_data = aggr_local_clip(ctx, calc, item_key, effect, cseq, ospec)?;
-    Some(aggr_data.get_per_second())
-}
-
-pub(in crate::svc) fn aggr_local_clip<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_key: UItemKey,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmountData<T>>
 where
     T: Copy + Aggregable,
 {
     let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
-    let mut value = T::default();
-    let mut time = OF(0.0);
+    let mut total_amount = T::default();
+    let mut total_time = OF(0.0);
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
@@ -58,8 +43,8 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                value += part_output.instance_sum();
-                time += cycle_part.data.time;
+                total_amount += part_output.instance_sum();
+                total_time += cycle_part.data.time;
                 break;
             }
             _ => {
@@ -69,8 +54,8 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                value += part_output.instance_sum() * part_cycle_count;
-                time += cycle_part.data.time * part_cycle_count;
+                total_amount += part_output.instance_sum() * part_cycle_count;
+                total_time += cycle_part.data.time * part_cycle_count;
             }
         }
     }
@@ -78,5 +63,8 @@ where
     if cycle_parts.loops && !reload {
         return None;
     }
-    Some(AggrData { amount: value, time })
+    Some(AggrAmountData {
+        amount: total_amount,
+        time: total_time,
+    })
 }

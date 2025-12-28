@@ -1,6 +1,6 @@
 use super::{
     proj_inv_data::{ProjInvariantData, SpoolInvariantData},
-    shared::AggrData,
+    shared::AggrAmountData,
     traits::Aggregable,
 };
 use crate::{
@@ -16,7 +16,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_proj_clip_per_second<T>(
+pub(in crate::svc) fn aggr_proj_clip_amount_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -24,32 +24,20 @@ pub(in crate::svc) fn aggr_proj_clip_per_second<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<T>
-where
-    T: Copy + Aggregable,
-{
-    Some(aggr_proj_clip(ctx, calc, projector_key, effect, cseq, ospec, projectee_key)?.get_per_second())
-}
-
-pub(in crate::svc) fn aggr_proj_clip<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_key: UItemKey,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmountData<T>>
 where
     T: Copy + Aggregable,
 {
     match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
-        Some(inv_spool) => aggr_proj_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
-        None => aggr_proj_regular(ctx, calc, projector_key, effect, cseq, ospec, projectee_key),
+        Some(inv_spool) => aggr_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
+        None => aggr_regular(ctx, calc, projector_key, effect, cseq, ospec, projectee_key),
     }
 }
 
-fn aggr_proj_spool<T>(
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn aggr_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -58,14 +46,14 @@ fn aggr_proj_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
     inv_spool: SpoolInvariantData,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmountData<T>>
 where
     T: Copy + Aggregable,
 {
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut uninterrupted_cycles = 0;
-    let mut value = T::default();
-    let mut time = OF(0.0);
+    let mut total_amount = T::default();
+    let mut total_time = OF(0.0);
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     'part: for cycle_part in cycle_parts.iter() {
@@ -109,8 +97,8 @@ where
                 }
                 // Update total values
                 let remaining_cycles = AttrVal::from(remaining_cycles);
-                value += part_output.instance_sum() * remaining_cycles;
-                time += cycle_part.data.time * remaining_cycles;
+                total_amount += part_output.instance_sum() * remaining_cycles;
+                total_time += cycle_part.data.time * remaining_cycles;
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
@@ -133,8 +121,8 @@ where
                 part_output *= mult_post;
             }
             // Update total values - current cycle is added regardless
-            value += part_output.instance_sum();
-            time += cycle_part.data.time;
+            total_amount += part_output.instance_sum();
+            total_time += cycle_part.data.time;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
             if let Some(interrupt) = cycle_part.data.interrupt
@@ -149,10 +137,13 @@ where
     if cycle_parts.loops && !reload {
         return None;
     }
-    Some(AggrData { amount: value, time })
+    Some(AggrAmountData {
+        amount: total_amount,
+        time: total_time,
+    })
 }
 
-fn aggr_proj_regular<T>(
+fn aggr_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
@@ -160,13 +151,13 @@ fn aggr_proj_regular<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmountData<T>>
 where
     T: Copy + Aggregable,
 {
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
-    let mut value = T::default();
-    let mut time = OF(0.0);
+    let mut total_amount = T::default();
+    let mut total_time = OF(0.0);
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
@@ -191,8 +182,8 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                value += part_output.instance_sum();
-                time += cycle_part.data.time;
+                total_amount += part_output.instance_sum();
+                total_time += cycle_part.data.time;
                 break;
             }
             _ => {
@@ -202,8 +193,8 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                value += part_output.instance_sum() * part_cycle_count;
-                time += cycle_part.data.time * part_cycle_count;
+                total_amount += part_output.instance_sum() * part_cycle_count;
+                total_time += cycle_part.data.time * part_cycle_count;
             }
         }
     }
@@ -211,5 +202,8 @@ where
     if cycle_parts.loops && !reload {
         return None;
     }
-    Some(AggrData { amount: value, time })
+    Some(AggrAmountData {
+        amount: total_amount,
+        time: total_time,
+    })
 }

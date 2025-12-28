@@ -4,7 +4,7 @@ use crate::{
     misc::{DmgKinds, Spool},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_per_second, aggr_proj_looped_per_second},
+        aggr::{aggr_proj_first_amount_ps, aggr_proj_looped_amount_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
@@ -109,14 +109,14 @@ impl Vast {
                 match reload {
                     true => {
                         if let Some(effect_dps) =
-                            aggr_proj_looped_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key)
+                            aggr_proj_looped_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key)
                         {
                             *dps_normal += effect_dps;
                         }
                     }
                     false => {
                         if let Some(effect_dps) =
-                            aggr_proj_first_per_second(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key, spool)
+                            aggr_proj_first_amount_ps(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key, spool)
                         {
                             *dps_normal += effect_dps;
                         }

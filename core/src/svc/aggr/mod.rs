@@ -1,12 +1,12 @@
 //! Aggregators convert cycle sequence and output-per-cycle into a more processed form like
 //! single-number stats.
 
-pub(in crate::svc) use local_clip::{aggr_local_clip, aggr_local_clip_per_second};
-pub(in crate::svc) use local_first::{aggr_local_first, aggr_local_first_per_second};
-pub(in crate::svc) use local_looped::aggr_local_looped_per_second;
-pub(in crate::svc) use proj_clip::{aggr_proj_clip, aggr_proj_clip_per_second};
-pub(in crate::svc) use proj_first::{aggr_proj_first, aggr_proj_first_per_second};
-pub(in crate::svc) use proj_looped::aggr_proj_looped_per_second;
+pub(in crate::svc) use local_clip::aggr_local_clip_amount_data;
+pub(in crate::svc) use local_first::{aggr_local_first_amount_data, aggr_local_first_amount_ps};
+pub(in crate::svc) use local_looped::{aggr_local_looped_amount_data, aggr_local_looped_amount_ps};
+pub(in crate::svc) use proj_clip::aggr_proj_clip_amount_data;
+pub(in crate::svc) use proj_first::{aggr_proj_first_amount_data, aggr_proj_first_amount_ps};
+pub(in crate::svc) use proj_looped::{aggr_proj_looped_amount_data, aggr_proj_looped_amount_ps};
 
 mod local_clip;
 mod local_first;

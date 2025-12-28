@@ -1,4 +1,4 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrData, traits::Aggregable};
+use super::{local_inv_data::LocalInvariantData, shared::AggrAmountData, traits::Aggregable};
 use crate::{
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
@@ -6,7 +6,7 @@ use crate::{
 };
 
 // Local effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc) fn aggr_local_first_per_second<T>(
+pub(in crate::svc) fn aggr_local_first_amount_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -17,18 +17,17 @@ pub(in crate::svc) fn aggr_local_first_per_second<T>(
 where
     T: Copy + Aggregable,
 {
-    let aggr_data = aggr_local_first(ctx, calc, item_key, effect, cseq, ospec)?;
-    Some(aggr_data.get_per_second())
+    Some(aggr_local_first_amount_data(ctx, calc, item_key, effect, cseq, ospec)?.get_ps()?)
 }
 
-pub(in crate::svc) fn aggr_local_first<T>(
+pub(in crate::svc) fn aggr_local_first_amount_data<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrData<T>>
+) -> Option<AggrAmountData<T>>
 where
     T: Copy + Aggregable,
 {
@@ -46,7 +45,7 @@ where
     if let Some(limit) = inv_local.amount_limit {
         output.limit_amount(limit);
     }
-    Some(AggrData {
+    Some(AggrAmountData {
         amount: output.instance_sum(),
         time: cycle.time,
     })
