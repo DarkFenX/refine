@@ -25,7 +25,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         local_armor_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: get_armor_rep_base_opc,
             charge_mult: Some(get_ancillary_armor_mult),
-            ilimit_attr_id: Some(ac::attrs::ARMOR_HP),
+            limit_attr_id: Some(ac::attrs::ARMOR_HP),
             ..
         }),
         ..

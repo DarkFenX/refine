@@ -40,7 +40,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             proj_mult_str: Some(get_bomb_application_mult),
             proj_mult_chance: Some(get_bomb_range_mult),
             resist: Some(NEffectResist::Standard),
-            ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            limit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
             ..
         }),
         ecm_opc_spec: Some(NEffectProjOpcSpec {

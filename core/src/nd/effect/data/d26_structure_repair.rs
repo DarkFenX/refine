@@ -15,7 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: A_EFFECT_ID,
         local_hull_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: get_hull_rep_base_opc,
-            ilimit_attr_id: Some(ac::attrs::HP),
+            limit_attr_id: Some(ac::attrs::HP),
             ..
         }),
         ..

@@ -12,7 +12,7 @@ where
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
-    pub(crate) ilimit_attr_key: Option<RAttrKey>,
+    pub(crate) limit_attr_key: Option<RAttrKey>,
 }
 impl<T> REffectLocalOpcSpec<T>
 where
@@ -25,8 +25,8 @@ where
         Self {
             base: n_local_opc_spec.base,
             charge_mult: n_local_opc_spec.charge_mult,
-            ilimit_attr_key: n_local_opc_spec
-                .ilimit_attr_id
+            limit_attr_key: n_local_opc_spec
+                .limit_attr_id
                 .and_then(|v| attr_id_key_map.get(&v).copied()),
         }
     }
@@ -43,7 +43,7 @@ where
     pub(crate) proj_mult_str: Option<NProjMultGetter>,
     pub(crate) proj_mult_chance: Option<NProjMultGetter>,
     pub(crate) resist: Option<REffectResist>,
-    pub(crate) ilimit_attr_key: Option<RAttrKey>,
+    pub(crate) limit_attr_key: Option<RAttrKey>,
 }
 impl<T> REffectProjOpcSpec<T>
 where
@@ -63,8 +63,8 @@ where
                 .resist
                 .as_ref()
                 .and_then(|v| REffectResist::try_from_n_effect_resist(v, attr_id_key_map)),
-            ilimit_attr_key: n_proj_opc_spec
-                .ilimit_attr_id
+            limit_attr_key: n_proj_opc_spec
+                .limit_attr_id
                 .and_then(|v| attr_id_key_map.get(&v).copied()),
         }
     }

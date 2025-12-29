@@ -29,7 +29,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         cap_inject_opc_spec: Some(NEffectLocalOpcSpec {
             base: internal_get_cap_inject,
-            ilimit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            limit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
             ..
         }),
         ..

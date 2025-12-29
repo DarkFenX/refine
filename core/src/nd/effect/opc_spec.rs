@@ -16,7 +16,7 @@ where
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
-    pub(crate) ilimit_attr_id: Option<AAttrId> = None,
+    pub(crate) limit_attr_id: Option<AAttrId> = None,
 }
 
 pub(crate) struct NEffectProjOpcSpec<T>
@@ -29,5 +29,5 @@ where
     pub(crate) proj_mult_str: Option<NProjMultGetter> = None,
     pub(crate) proj_mult_chance: Option<NProjMultGetter> = None,
     pub(crate) resist: Option<NEffectResist> = None,
-    pub(crate) ilimit_attr_id: Option<AAttrId> = None,
+    pub(crate) limit_attr_id: Option<AAttrId> = None,
 }

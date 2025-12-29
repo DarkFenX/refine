@@ -15,10 +15,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleSeq, get_item_cseq_map},
         output::{Output, OutputSimple},
-        vast::{
-            Vast, VastFitData,
-            vaste_stats::item_cap::shared::{CYCLE_OPTIONS_BURST, CYCLE_OPTIONS_SIM},
-        },
+        vast::{Vast, VastFitData, vaste_stats::item_cap::shared::CYCLE_OPTIONS_SIM},
     },
     ud::UItemKey,
     util::{FLOAT_TOLERANCE, RMapVec},
@@ -139,7 +136,7 @@ fn fill_transfers(
     };
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+        let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_SIM, false) {
             Some(cseq_map) => cseq_map,
             None => continue,
         };

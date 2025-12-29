@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         local_shield_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: get_shield_rep_base_opc,
-            ilimit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
+            limit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
             ..
         }),
         ..

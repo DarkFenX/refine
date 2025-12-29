@@ -31,7 +31,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             charge_mult: Some(get_ancillary_armor_mult),
             proj_mult_str: Some(get_full_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
-            ilimit_attr_id: Some(ac::attrs::ARMOR_HP),
+            limit_attr_id: Some(ac::attrs::ARMOR_HP),
             ..
         }),
         ..

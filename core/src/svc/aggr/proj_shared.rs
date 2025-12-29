@@ -70,7 +70,7 @@ where
                 output *= mult_pre;
             }
             // Amount limit
-            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_key, ospec.ilimit_attr_key);
+            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_key, ospec.limit_attr_key);
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
                 let mult = proj_mult_getter(ctx, calc, projector_key, effect, projectee_key, proj_data);

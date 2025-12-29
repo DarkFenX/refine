@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_shield_rep_base_opc,
             proj_mult_str: Some(get_full_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
-            ilimit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
+            limit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
             ..
         }),
         ..
