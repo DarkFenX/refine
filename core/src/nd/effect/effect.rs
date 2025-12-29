@@ -21,6 +21,7 @@ pub(crate) type NEffectUpdater = fn(&mut AEffect);
 // General
 pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
 // Getters - projection
+// TODO: consider if proj attr getter should be a function or an enum like resists (standard/attrs)
 pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
 pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, UItemKey, UProjData) -> AttrVal;
 // Getters - damage output
