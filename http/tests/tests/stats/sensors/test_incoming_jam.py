@@ -292,6 +292,8 @@ def test_charge_bomb(client, consts):
     eve_jam_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength_bonus)
     eve_jam_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength_bonus)
     eve_jam_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength_bonus)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
     eve_flight_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
@@ -304,10 +306,13 @@ def test_charge_bomb(client, consts):
     eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_launcher_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
+    eve_launcher_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.use_missiles,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500},
+        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -317,7 +322,7 @@ def test_charge_bomb(client, consts):
             eve_flight_speed_attr_id: 4000, eve_flight_time_attr_id: 7500,
             eve_mass_attr_id: 1000, eve_agility_attr_id: 0.0000251,
             eve_expl_range_attr_id: 15000, eve_expl_radius_attr_id: 400,
-            eve_resist_def_attr_id: eve_resist_attr_id},
+            eve_resist_def_attr_id: eve_resist_attr_id, eve_volume_attr_id: 75},
         eff_ids=[eve_bomb_effect_id],
         defeff_id=eve_bomb_effect_id)
     eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 20.5})
@@ -651,11 +656,11 @@ def test_cycle_time_zero(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
-    # Verification
+    # Verification - stats depend on cycle info, so can't be fetched if it's not available
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
-    assert api_tgt_fit_stats.incoming_jam == [approx(0.06), 0]
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
-    assert api_tgt_ship_stats.incoming_jam == [approx(0.06), 0]
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_cycle_time_undefined(client, consts):
@@ -688,11 +693,11 @@ def test_cycle_time_undefined(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
-    # Verification
+    # Verification - stats depend on cycle info, so can't be fetched if it's not available
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
-    assert api_tgt_fit_stats.incoming_jam == [approx(0.06), 0]
+    assert api_tgt_fit_stats.incoming_jam == [0, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
-    assert api_tgt_ship_stats.incoming_jam == [approx(0.06), 0]
+    assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
 def test_not_loaded(client, consts):
