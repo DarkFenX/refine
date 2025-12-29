@@ -150,27 +150,6 @@ where
         }
         Some(output)
     }
-    pub(in crate::svc::vast::vaste_stats) fn get_total(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        projector_key: UItemKey,
-        projector_effect: &REffect,
-        chargedness: Option<AttrVal>,
-        spool_mult: Option<AttrVal>,
-        invar_data: EffectProjInvarData,
-    ) -> Option<T> {
-        let output = self.get_output(
-            ctx,
-            calc,
-            projector_key,
-            projector_effect,
-            chargedness,
-            spool_mult,
-            invar_data,
-        )?;
-        Some(output.instance_sum_legacy())
-    }
 }
 
 fn get_self_ilimit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
