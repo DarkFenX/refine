@@ -1,5 +1,5 @@
 use super::{
-    proj_shared::{ProjInvariantData, SpoolInvariantData, get_proj_output, get_proj_output_spool},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::AggrAmount,
     traits::{LimitAmount, Maximum},
 };
@@ -55,7 +55,7 @@ where
         + LimitAmount
         + Maximum,
 {
-    match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
+    match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_max_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
         None => aggr_max_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
     }
@@ -78,7 +78,7 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
+    match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_total_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
         None => aggr_total_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
     }
@@ -105,7 +105,7 @@ where
         + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
@@ -128,7 +128,7 @@ fn aggr_total_spool<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-    inv_spool: SpoolInvariantData,
+    inv_spool: AggrSpoolInvData,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -139,7 +139,7 @@ where
         + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     // Do a dry run to set amount of interrupted cycles before we begin
     let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     let mut total_amount = T::default();
@@ -215,7 +215,7 @@ where
         + Maximum,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut max_amount = T::default();
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle_part.data.chargedness);
@@ -233,7 +233,7 @@ fn aggr_max_spool<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-    inv_spool: SpoolInvariantData,
+    inv_spool: AggrSpoolInvData,
 ) -> Option<T>
 where
     T: Default
@@ -245,7 +245,7 @@ where
         + Maximum,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     // Do a dry run to set amount of interrupted cycles before we begin
     let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     let mut max_amount = T::default();
@@ -294,7 +294,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
+fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> Count {
     let mut uninterrupted_cycles = 0;
     let mut interruptions = false;
     for cycle_part in cseq.iter_cseq_parts() {

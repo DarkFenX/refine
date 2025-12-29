@@ -11,6 +11,7 @@ use crate::{
     def::OF,
     svc::{
         SvcCtx,
+        aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
         calc::Calc,
         cycle::{CycleSeq, get_item_cseq_map},
         output::{Output, OutputSimple},
@@ -94,29 +95,30 @@ fn fill_neuts(
     };
     let mut stagger_map = RMapVec::new();
     for (&neut_item_key, item_data) in neut_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, neut_item_key, CYCLE_OPTIONS_BURST, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, neut_item_key, CYCLE_OPTIONS_SIM, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
-            let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
-            let invar_data = ospec.make_invar_data(ctx, calc, neut_item_key, effect, Some(cap_item_key));
-            let output_per_cycle = match ospec.get_output(ctx, calc, neut_item_key, effect, None, None, invar_data) {
-                // Negate output, since neuts negatively impact cap, but output of neut getter
-                // function is positive
-                Some(output_per_cycle) if output_per_cycle.has_impact() => -output_per_cycle,
-                _ => continue,
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let inv_proj = match AggrProjInvData::try_make(ctx, calc, neut_item_key, effect, ospec, Some(cap_item_key))
+            {
+                Some(inv_proj) => inv_proj,
+                None => continue,
             };
+            // Negate output, since neuts negatively impact cap, but output of neut getter
+            // function is positive
+            let opc = -get_proj_output(ctx, calc, neut_item_key, ospec, &inv_proj, None);
+            if !opc.has_impact() {
+                continue;
+            }
             match stagger.is_staggered(neut_item_key) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles.into(), &output_per_cycle),
-                    (effect_cycles.into(), output_per_cycle),
-                ),
-                false => aggregator.add_entry(OF(0.0), effect_cycles.into(), output_per_cycle),
+                true => stagger_map.add_entry(StaggerKey::new(&cseq.into(), &opc), (cseq.into(), opc)),
+                false => aggregator.add_entry(OF(0.0), cseq.into(), opc),
             }
         }
     }
@@ -137,28 +139,28 @@ fn fill_transfers(
     };
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_key, item_data) in transfer_data.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_key, CYCLE_OPTIONS_BURST, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
-            let effect = ctx.u_data.src.get_effect(effect_key);
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
-            let invar_data = ospec.make_invar_data(ctx, calc, transfer_item_key, effect, Some(cap_item_key));
-            let output_per_cycle = match ospec.get_output(ctx, calc, transfer_item_key, effect, None, None, invar_data)
-            {
-                Some(output_per_cycle) if output_per_cycle.has_impact() => output_per_cycle,
-                _ => continue,
-            };
+            let effect = ctx.u_data.src.get_effect(effect_key);
+            let inv_proj =
+                match AggrProjInvData::try_make(ctx, calc, transfer_item_key, effect, ospec, Some(cap_item_key)) {
+                    Some(inv_proj) => inv_proj,
+                    None => continue,
+                };
+            let opc = get_proj_output(ctx, calc, transfer_item_key, ospec, &inv_proj, None);
+            if !opc.has_impact() {
+                continue;
+            }
             match stagger.is_staggered(transfer_item_key) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles.into(), &output_per_cycle),
-                    (effect_cycles.into(), output_per_cycle),
-                ),
-                false => aggregator.add_entry(OF(0.0), effect_cycles.into(), output_per_cycle),
+                true => stagger_map.add_entry(StaggerKey::new(&cseq.into(), &opc), (cseq.into(), opc)),
+                false => aggregator.add_entry(OF(0.0), cseq.into(), opc),
             }
         }
     }
@@ -167,26 +169,30 @@ fn fill_transfers(
 
 fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEvent>, fit_data: &VastFitData) {
     for (&item_key, item_data) in fit_data.cap_injects.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
-            Some(cycle_map) => cycle_map,
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, CYCLE_OPTIONS_SIM, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_key, ospec) in item_data.iter() {
-            let effect_cycles = match cycle_map.get(&effect_key) {
-                Some(effect_cycles) => effect_cycles,
+            let cseq = match cseq_map.get(&effect_key) {
+                Some(cseq) => cseq,
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            let invar_data = ospec.make_invar_data(ctx, calc, item_key);
-            let cap_injected = match ospec.get_total(ctx, calc, item_key, effect, None, invar_data) {
-                // Even if some injector has negative value, player doesn't have to use it, so it is
-                // just ignored
-                Some(cap_injected) if cap_injected > FLOAT_TOLERANCE => cap_injected,
-                _ => continue,
+            let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec) {
+                Some(inv_local) => inv_local,
+                None => continue,
             };
+            let opc = get_local_output(ctx, calc, item_key, ospec, &inv_local, None);
+            let cap_injected = opc.iter_output().map(|v| v.amount).sum();
+            // Even if some injector has negative value, player doesn't have to use it, so it is
+            // just ignored
+            if cap_injected <= FLOAT_TOLERANCE {
+                continue;
+            }
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),
-                cycle_iter: CycleSeq::from(effect_cycles).iter_cycles(),
+                cycle_iter: CycleSeq::from(cseq).iter_cycles(),
                 output: cap_injected,
             }));
         }

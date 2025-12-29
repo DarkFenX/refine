@@ -9,25 +9,25 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Data which stays the same through local effect cycles
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct LocalInvariantData<T>
+pub(in crate::svc) struct AggrLocalInvData<T>
 where
     T: Copy,
 {
     output: Output<T>,
     amount_limit: Option<AttrVal>,
 }
-impl<T> LocalInvariantData<T>
+impl<T> AggrLocalInvData<T>
 where
     T: Copy,
 {
-    pub(super) fn try_make(
+    pub(in crate::svc) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
         effect: &REffect,
         ospec: &REffectLocalOpcSpec<T>,
     ) -> Option<Self> {
-        Some(LocalInvariantData {
+        Some(AggrLocalInvData {
             output: (ospec.base)(ctx, calc, item_key, effect)?,
             amount_limit: get_ship_limit(ctx, calc, item_key, ospec.ilimit_attr_key),
         })
@@ -44,12 +44,12 @@ fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Op
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_local_output<T>(
+pub(in crate::svc) fn get_local_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     ospec: &REffectLocalOpcSpec<T>,
-    inv_local: &LocalInvariantData<T>,
+    inv_local: &AggrLocalInvData<T>,
     chargeness: Option<AttrVal>,
 ) -> Output<T>
 where

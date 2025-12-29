@@ -11,7 +11,6 @@ mod item_tank;
 mod mining;
 mod neut;
 mod orps;
-mod ospec_exts;
 mod vaste_fit_resource;
 mod vaste_fit_slot;
 mod vaste_item_jam;

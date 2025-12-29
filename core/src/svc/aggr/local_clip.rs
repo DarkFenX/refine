@@ -1,5 +1,5 @@
 use super::{
-    local_shared::{LocalInvariantData, get_local_output},
+    local_shared::{AggrLocalInvData, get_local_output},
     shared::AggrAmount,
     traits::LimitAmount,
 };
@@ -29,7 +29,7 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     let mut reload = false;

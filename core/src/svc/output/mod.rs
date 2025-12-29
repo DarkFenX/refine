@@ -7,3 +7,4 @@ mod output;
 mod output_complex;
 mod output_dmg_breacher;
 mod output_simple;
+mod shared;

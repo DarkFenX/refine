@@ -1,5 +1,5 @@
 use super::{
-    proj_shared::{ProjInvariantData, SpoolInvariantData, get_proj_output, get_proj_output_spool},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::AggrAmount,
     traits::LimitAmount,
 };
@@ -33,7 +33,7 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    match SpoolInvariantData::try_make(ctx, calc, projector_key, effect, ospec) {
+    match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
         None => aggr_regular(ctx, calc, projector_key, effect, cseq, ospec, projectee_key),
     }
@@ -50,7 +50,7 @@ fn aggr_spool<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_key: Option<UItemKey>,
-    inv_spool: SpoolInvariantData,
+    inv_spool: AggrSpoolInvData,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -60,7 +60,7 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut uninterrupted_cycles = 0;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
@@ -141,7 +141,7 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     let mut reload = false;

@@ -67,11 +67,11 @@ impl CapSim {
                     if let Some(cycle_iter_info) = event.cycle_iter.next() {
                         // Add outputs for this cycle
                         let mut output_delay = OF(0.0);
-                        for (output_interval, output_value) in event.output.iter_output() {
-                            output_delay += output_interval;
+                        for output_event in event.output.iter_output() {
+                            output_delay += output_event.time;
                             let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
                                 time: event.time + output_delay,
-                                amount: output_value,
+                                amount: output_event.amount,
                             });
                             self.events.push(new_event);
                         }

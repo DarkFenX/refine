@@ -1,5 +1,5 @@
 use super::{
-    local_shared::{LocalInvariantData, get_local_output},
+    local_shared::{AggrLocalInvData, get_local_output},
     shared::{AggrAmount, AggrOutput},
     traits::LimitAmount,
 };
@@ -58,7 +58,7 @@ where
     T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
     let cycle = cseq.get_first_cycle();
-    let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec)?;
     Some(AggrOutput {
         output: get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle.chargedness),
         time: cycle.time,

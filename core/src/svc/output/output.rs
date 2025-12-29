@@ -1,4 +1,4 @@
-use super::{output_complex::OutputComplex, output_simple::OutputSimple};
+use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::OutputIterItem};
 use crate::def::AttrVal;
 
 #[derive(Copy, Clone)]
@@ -37,7 +37,7 @@ where
             Output::Complex(inner) => inner.get_delay(),
         }
     }
-    pub(in crate::svc) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
+    pub(in crate::svc) fn iter_output(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         match self {
             Self::Simple(inner) => OutputIter::Simple(inner.iter_output()),
             Self::Complex(inner) => OutputIter::Complex(inner.iter_output()),
@@ -95,11 +95,11 @@ pub(in crate::svc) enum OutputIter<S, C> {
 }
 impl<S, C, T> Iterator for OutputIter<S, C>
 where
-    S: Iterator<Item = (AttrVal, T)>,
-    C: Iterator<Item = (AttrVal, T)>,
+    S: Iterator<Item = OutputIterItem<T>>,
+    C: Iterator<Item = OutputIterItem<T>>,
     T: Copy,
 {
-    type Item = (AttrVal, T);
+    type Item = OutputIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {

@@ -1,5 +1,6 @@
 use ordered_float::Float;
 
+use super::shared::OutputIterItem;
 use crate::{def::AttrVal, util::FLOAT_TOLERANCE};
 
 #[derive(Copy, Clone)]
@@ -29,7 +30,7 @@ where
     pub(super) fn get_delay(&self) -> AttrVal {
         self.delay
     }
-    pub(super) fn iter_output(&self) -> impl Iterator<Item = (AttrVal, T)> {
+    pub(super) fn iter_output(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputSimpleIter::new(self)
     }
 }
@@ -83,14 +84,17 @@ impl<T> Iterator for OutputSimpleIter<'_, T>
 where
     T: Copy,
 {
-    type Item = (AttrVal, T);
+    type Item = OutputIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.done {
             true => None,
             false => {
                 self.done = true;
-                Some((self.output.delay, self.output.amount))
+                Some(OutputIterItem {
+                    time: self.output.delay,
+                    amount: self.output.amount,
+                })
             }
         }
     }

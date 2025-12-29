@@ -1,5 +1,5 @@
 use super::{
-    local_shared::{LocalInvariantData, get_local_output},
+    local_shared::{AggrLocalInvData, get_local_output},
     shared::AggrAmount,
     traits::LimitAmount,
 };
@@ -48,7 +48,7 @@ where
         + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_local = LocalInvariantData::try_make(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {

@@ -12,7 +12,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // General data which stays the same through projected effect cycling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjInvariantData<T>
+pub(in crate::svc) struct AggrProjInvData<T>
 where
     T: Copy,
 {
@@ -20,11 +20,11 @@ where
     amount_limit: Option<AttrVal>,
     mult_post: Option<AttrVal>,
 }
-impl<T> ProjInvariantData<T>
+impl<T> AggrProjInvData<T>
 where
     T: Copy + std::ops::MulAssign<AttrVal>,
 {
-    pub(super) fn try_make(
+    pub(in crate::svc) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
         projector_key: UItemKey,
@@ -95,12 +95,12 @@ fn process_mult(mult: AttrVal) -> Option<AttrVal> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-related invariant data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct SpoolInvariantData {
+pub(super) struct AggrSpoolInvData {
     pub(super) step: AttrVal,
     pub(super) max: AttrVal,
     pub(super) cycles_to_max: Count,
 }
-impl SpoolInvariantData {
+impl AggrSpoolInvData {
     pub(super) fn try_make<T>(
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -138,12 +138,12 @@ impl SpoolInvariantData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_proj_output<T>(
+pub(in crate::svc) fn get_proj_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
     ospec: &REffectProjOpcSpec<T>,
-    inv_proj: &ProjInvariantData<T>,
+    inv_proj: &AggrProjInvData<T>,
     chargeness: Option<AttrVal>,
 ) -> Output<T>
 where
@@ -169,7 +169,7 @@ where
 }
 
 pub(super) fn get_proj_output_spool<T>(
-    inv_proj: &ProjInvariantData<T>,
+    inv_proj: &AggrProjInvData<T>,
     charge_mult: Option<AttrVal>,
     spool_extra_mult: AttrVal,
 ) -> Output<T>
