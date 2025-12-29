@@ -4,21 +4,21 @@ use crate::{
     def::{AttrVal, Count, OF},
     misc::{AttrSpec, EffectSpec},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, calc::Calc, funcs, output::Output},
+    svc::{SvcCtx, aggr::traits::LimitAmount, calc::Calc, funcs, output::Output},
     ud::UItemKey,
     util::{FLOAT_TOLERANCE, ceil_unerr},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General
+// General data which stays the same through projected effect cycling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct ProjInvariantData<T>
 where
     T: Copy,
 {
-    pub(super) output: Output<T>,
-    pub(super) amount_limit: Option<AttrVal>,
-    pub(super) mult_post: Option<AttrVal>,
+    output: Output<T>,
+    amount_limit: Option<AttrVal>,
+    mult_post: Option<AttrVal>,
 }
 impl<T> ProjInvariantData<T>
 where
@@ -93,7 +93,7 @@ fn process_mult(mult: AttrVal) -> Option<AttrVal> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Spool
+// Spool-related invariant data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct SpoolInvariantData {
     pub(super) step: AttrVal,
@@ -133,4 +133,63 @@ impl SpoolInvariantData {
             cycles_to_max: ceil_unerr(cycles).into_inner() as Count,
         })
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn get_proj_output<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    ospec: &REffectProjOpcSpec<T>,
+    inv_proj: &ProjInvariantData<T>,
+    chargeness: Option<AttrVal>,
+) -> Output<T>
+where
+    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
+{
+    let mut output = inv_proj.output;
+    // Chargedness
+    if let Some(charge_mult_getter) = ospec.charge_mult
+        && let Some(chargedness) = chargeness
+        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
+    {
+        output *= charge_mult;
+    }
+    // Limit
+    if let Some(limit) = inv_proj.amount_limit {
+        output.limit_amount(limit);
+    }
+    // Chance-based multipliers
+    if let Some(mult_post) = inv_proj.mult_post {
+        output *= mult_post;
+    }
+    output
+}
+
+pub(super) fn get_proj_output_spool<T>(
+    inv_proj: &ProjInvariantData<T>,
+    charge_mult: Option<AttrVal>,
+    spool_extra_mult: AttrVal,
+) -> Output<T>
+where
+    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
+{
+    let mut output = inv_proj.output;
+    // Chargedness
+    if let Some(charge_mult) = charge_mult {
+        output *= charge_mult;
+    }
+    // Spool
+    output *= OF(1.0) + spool_extra_mult;
+    // Limit
+    if let Some(limit) = inv_proj.amount_limit {
+        output.limit_amount(limit);
+    }
+    // Chance-based multipliers
+    if let Some(mult_post) = inv_proj.mult_post {
+        output *= mult_post;
+    }
+    output
 }

@@ -12,11 +12,11 @@ pub(in crate::svc) use proj_looped::{aggr_proj_looped_amount, aggr_proj_looped_m
 
 mod local_clip;
 mod local_first;
-mod local_inv_data;
 mod local_looped;
+mod local_shared;
 mod proj_clip;
 mod proj_first;
-mod proj_inv_data;
 mod proj_looped;
+mod proj_shared;
 mod shared;
 mod traits;

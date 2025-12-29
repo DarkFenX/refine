@@ -1,5 +1,5 @@
 use super::{
-    proj_inv_data::{ProjInvariantData, SpoolInvariantData},
+    proj_shared::{ProjInvariantData, SpoolInvariantData, get_proj_output, get_proj_output_spool},
     shared::AggrAmount,
     traits::LimitAmount,
 };
@@ -78,60 +78,31 @@ where
             },
         };
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-        {
-            charge_mult_getter(ctx, calc, projector_key, chargedness)
-        } else {
-            None
+        let charge_mult = match ospec.charge_mult {
+            Some(charge_mult_getter) if let Some(chargedness) = cycle_part.data.chargedness => {
+                charge_mult_getter(ctx, calc, projector_key, chargedness)
+            }
+            _ => None,
         };
         for i in 0..part_cycle_count {
-            let mut part_output = inv_proj.output;
             // Case when the rest of cycle part is at full spool
             if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
+                let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, inv_spool.max);
                 let remaining_cycles = part_cycle_count - i;
-                // Chargedness
-                if let Some(charge_mult) = charge_mult {
-                    part_output *= charge_mult;
-                }
-                // Spool
-                part_output *= OF(1.0) + inv_spool.max;
                 uninterrupted_cycles += remaining_cycles;
-                // Limit
-                if let Some(limit) = inv_proj.amount_limit {
-                    part_output.limit_amount(limit);
-                }
-                // Chance-based multipliers
-                if let Some(mult_post) = inv_proj.mult_post {
-                    part_output *= mult_post;
-                }
-                // Update total values
                 let remaining_cycles = AttrVal::from(remaining_cycles);
-                total_amount += part_output.amount_sum() * remaining_cycles;
+                total_amount += cycle_output.amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
-            // Chargedness
-            if let Some(charge_mult) = charge_mult {
-                part_output *= charge_mult;
-            }
-            // Spool
-            part_output *= OF(1.0) + inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, spool);
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = 0,
                 None => uninterrupted_cycles += 1,
             }
-            // Limit
-            if let Some(limit) = inv_proj.amount_limit {
-                part_output.limit_amount(limit);
-            }
-            // Chance-based multipliers
-            if let Some(mult_post) = inv_proj.mult_post {
-                part_output *= mult_post;
-            }
-            // Update total values - current cycle is added regardless
-            total_amount += part_output.amount_sum();
+            total_amount += cycle_output.amount_sum();
             total_time += cycle_part.data.time;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
@@ -176,28 +147,13 @@ where
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let mut part_output = inv_proj.output;
-        // Chargedness
-        if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-            && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
-        {
-            part_output *= charge_mult;
-        }
-        // Limit
-        if let Some(limit) = inv_proj.amount_limit {
-            part_output.limit_amount(limit);
-        }
-        // Chance-based multipliers
-        if let Some(mult_post) = inv_proj.mult_post {
-            part_output *= mult_post;
-        }
+        let cycle_output = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle_part.data.chargedness);
         // Update total values
         match cycle_part.data.interrupt {
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += part_output.amount_sum();
+                total_amount += cycle_output.amount_sum();
                 total_time += cycle_part.data.time;
                 break;
             }
@@ -208,7 +164,7 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                total_amount += part_output.amount_sum() * part_cycle_count;
+                total_amount += cycle_output.amount_sum() * part_cycle_count;
                 total_time += cycle_part.data.time * part_cycle_count;
             }
         }

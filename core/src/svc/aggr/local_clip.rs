@@ -1,4 +1,8 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrAmount, traits::LimitAmount};
+use super::{
+    local_shared::{LocalInvariantData, get_local_output},
+    shared::AggrAmount,
+    traits::LimitAmount,
+};
 use crate::{
     AttrVal,
     def::OF,
@@ -31,24 +35,12 @@ where
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let mut part_output = inv_local.output;
-        // Chargedness
-        if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-            && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
-        {
-            part_output *= charge_mult;
-        }
-        // Limit
-        if let Some(limit) = inv_local.amount_limit {
-            part_output.limit_amount(limit);
-        }
-        // Update total values
+        let cycle_output = get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle_part.data.chargedness);
         match cycle_part.data.interrupt {
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += part_output.amount_sum();
+                total_amount += cycle_output.amount_sum();
                 total_time += cycle_part.data.time;
                 break;
             }
@@ -59,7 +51,7 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                total_amount += part_output.amount_sum() * part_cycle_count;
+                total_amount += cycle_output.amount_sum() * part_cycle_count;
                 total_time += cycle_part.data.time * part_cycle_count;
             }
         }

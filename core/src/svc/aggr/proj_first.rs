@@ -1,10 +1,10 @@
 use super::{
-    proj_inv_data::ProjInvariantData,
+    proj_shared::{ProjInvariantData, get_proj_output, get_proj_output_spool},
     shared::{AggrAmount, AggrOutput},
     traits::LimitAmount,
 };
 use crate::{
-    AttrVal,
+    def::{AttrVal, OF},
     misc::Spool,
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
@@ -86,29 +86,20 @@ where
 {
     let cycle = cseq.get_first_cycle();
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
-    let mut output = inv_proj.output;
-    // Chargedness
-    if let Some(charge_mult_getter) = ospec.charge_mult
-        && let Some(chargedness) = cycle.chargedness
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
-    {
-        output *= charge_mult;
-    }
-    // Spool
-    if ospec.spoolable
+    let output = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_keys
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_key, effect, spool, spool_attrs)
     {
-        output *= resolved.mult;
-    }
-    // Limit
-    if let Some(limit) = inv_proj.amount_limit {
-        output.limit_amount(limit);
-    }
-    // Chance-based multipliers
-    if let Some(mult_post) = inv_proj.mult_post {
-        output *= mult_post;
-    }
+        let charge_mult = match ospec.charge_mult {
+            Some(charge_mult_getter) if let Some(chargedness) = cycle.chargedness => {
+                charge_mult_getter(ctx, calc, projector_key, chargedness)
+            }
+            _ => None,
+        };
+        get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - OF(1.0))
+    } else {
+        get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle.chargedness)
+    };
     Some(AggrOutput {
         output,
         time: cycle.time,

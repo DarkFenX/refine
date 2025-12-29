@@ -1,4 +1,8 @@
-use super::{local_inv_data::LocalInvariantData, shared::AggrAmount, traits::LimitAmount};
+use super::{
+    local_shared::{LocalInvariantData, get_local_output},
+    shared::AggrAmount,
+    traits::LimitAmount,
+};
 use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectLocalOpcSpec},
@@ -48,21 +52,9 @@ where
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let mut part_output = inv_local.output;
-        // Chargedness
-        if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-            && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
-        {
-            part_output *= charge_mult;
-        }
-        // Limit
-        if let Some(limit) = inv_local.amount_limit {
-            part_output.limit_amount(limit);
-        }
-        // Update total values
+        let cycle_output = get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle_part.data.chargedness);
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        total_amount += part_output.amount_sum() * part_cycle_count;
+        total_amount += cycle_output.amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
     Some(AggrAmount {

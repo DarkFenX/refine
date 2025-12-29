@@ -1,5 +1,5 @@
 use super::{
-    proj_inv_data::{ProjInvariantData, SpoolInvariantData},
+    proj_shared::{ProjInvariantData, SpoolInvariantData, get_proj_output, get_proj_output_spool},
     shared::AggrAmount,
     traits::{LimitAmount, Maximum},
 };
@@ -10,7 +10,6 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
-        output::Output,
     },
     ud::UItemKey,
 };
@@ -110,25 +109,9 @@ where
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let mut part_output = inv_proj.output;
-        // Chargedness
-        if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-            && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
-        {
-            part_output *= charge_mult;
-        }
-        // Limit
-        if let Some(limit) = inv_proj.amount_limit {
-            part_output.limit_amount(limit);
-        }
-        // Chance-based multipliers
-        if let Some(mult_post) = inv_proj.mult_post {
-            part_output *= mult_post;
-        }
-        // Update total values
+        let cycle_output = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle_part.data.chargedness);
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        total_amount += part_output.amount_sum() * part_cycle_count;
+        total_amount += cycle_output.amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
     Some(AggrAmount {
@@ -163,15 +146,13 @@ where
     let mut total_time = OF(0.0);
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-        {
-            charge_mult_getter(ctx, calc, projector_key, chargedness)
-        } else {
-            None
+        let charge_mult = match ospec.charge_mult {
+            Some(charge_mult_getter) if let Some(chargedness) = cycle_part.data.chargedness => {
+                charge_mult_getter(ctx, calc, projector_key, chargedness)
+            }
+            _ => None,
         };
         for i in 0..cycle_part.repeat_count {
-            let cycle_output = inv_proj.output;
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
                 // Current cycle is at 0 spool, and we have an interrupt every cycle
@@ -186,13 +167,7 @@ where
                 _ => None,
             };
             if let Some(stable_spool) = stable_spool {
-                let cycle_output = apply_values_spool(
-                    cycle_output,
-                    charge_mult,
-                    stable_spool,
-                    inv_proj.amount_limit,
-                    inv_proj.mult_post,
-                );
+                let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
                 // Update total values
                 let remaining_cycles = AttrVal::from(cycle_part.repeat_count - i);
                 total_amount += cycle_output.amount_sum() * remaining_cycles;
@@ -200,13 +175,8 @@ where
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
-            let cycle_output = apply_values_spool(
-                cycle_output,
-                charge_mult,
-                inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64),
-                inv_proj.amount_limit,
-                inv_proj.mult_post,
-            );
+            let cycle_spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update total values
             total_amount += cycle_output.amount_sum();
             total_time += cycle_part.data.time;
@@ -248,24 +218,9 @@ where
     let inv_proj = ProjInvariantData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let mut max_amount = T::default();
     for cycle_part in cseq.iter_cseq_parts() {
-        let mut part_output = inv_proj.output;
-        // Chargedness
-        if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-            && let Some(charge_mult) = charge_mult_getter(ctx, calc, projector_key, chargedness)
-        {
-            part_output *= charge_mult;
-        }
-        // Limit
-        if let Some(limit) = inv_proj.amount_limit {
-            part_output.limit_amount(limit);
-        }
-        // Chance-based multipliers
-        if let Some(mult_post) = inv_proj.mult_post {
-            part_output *= mult_post;
-        }
+        let cycle_output = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle_part.data.chargedness);
         // Update result
-        max_amount = max_amount.maximum(part_output.get_max_amount());
+        max_amount = max_amount.maximum(cycle_output.get_max_amount());
     }
     Some(max_amount)
 }
@@ -296,15 +251,13 @@ where
     let mut max_amount = T::default();
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = cycle_part.data.chargedness
-        {
-            charge_mult_getter(ctx, calc, projector_key, chargedness)
-        } else {
-            None
+        let charge_mult = match ospec.charge_mult {
+            Some(charge_mult_getter) if let Some(chargedness) = cycle_part.data.chargedness => {
+                charge_mult_getter(ctx, calc, projector_key, chargedness)
+            }
+            _ => None,
         };
         for i in 0..cycle_part.repeat_count {
-            let cycle_output = inv_proj.output;
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
                 // Current cycle is at 0 spool, and we have an interrupt every cycle
@@ -319,25 +272,13 @@ where
                 _ => None,
             };
             if let Some(stable_spool) = stable_spool {
-                let cycle_output = apply_values_spool(
-                    cycle_output,
-                    charge_mult,
-                    stable_spool,
-                    inv_proj.amount_limit,
-                    inv_proj.mult_post,
-                );
-                // Update result
+                let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
                 max_amount = max_amount.maximum(cycle_output.get_max_amount());
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
-            let cycle_output = apply_values_spool(
-                cycle_output,
-                charge_mult,
-                inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64),
-                inv_proj.amount_limit,
-                inv_proj.mult_post,
-            );
+            let cycle_spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update result
             max_amount = max_amount.maximum(cycle_output.get_max_amount());
             // Update state
@@ -353,29 +294,6 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn apply_values_spool<T>(
-    mut output: Output<T>,
-    chargedness: Option<AttrVal>,
-    spool: AttrVal,
-    amount_limit: Option<AttrVal>,
-    mult_post: Option<AttrVal>,
-) -> Output<T>
-where
-    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
-{
-    if let Some(charge_mult) = chargedness {
-        output *= charge_mult;
-    }
-    output *= OF(1.0) + spool;
-    if let Some(limit) = amount_limit {
-        output.limit_amount(limit);
-    }
-    if let Some(mult_post) = mult_post {
-        output *= mult_post;
-    }
-    output
-}
-
 fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &SpoolInvariantData) -> Count {
     let mut uninterrupted_cycles = 0;
     let mut interruptions = false;
