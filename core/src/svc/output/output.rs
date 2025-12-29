@@ -31,10 +31,10 @@ where
             Output::Complex(inner) => inner.get_delay(),
         }
     }
-    pub(in crate::svc) fn iter_output(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+    pub(in crate::svc) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         match self {
-            Self::Simple(inner) => OutputIter::Simple(inner.iter_output()),
-            Self::Complex(inner) => OutputIter::Complex(inner.iter_output()),
+            Self::Simple(inner) => OutputIter::Simple(inner.iter_amounts()),
+            Self::Complex(inner) => OutputIter::Complex(inner.iter_amounts()),
         }
     }
 }

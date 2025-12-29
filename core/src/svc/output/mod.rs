@@ -2,6 +2,7 @@ pub(crate) use output::Output;
 pub(crate) use output_complex::OutputComplex;
 pub(crate) use output_dmg_breacher::OutputDmgBreacher;
 pub(crate) use output_simple::OutputSimple;
+pub(in crate::svc) use shared::OutputIterItem;
 
 mod output;
 mod output_complex;

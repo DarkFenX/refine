@@ -67,7 +67,7 @@ impl From<AggrEventInfo> for CapSimEvent {
         CapSimEvent::CycleCheck(CapSimEventCycleCheck {
             time: aggr_info.start_delay,
             cycle_iter: aggr_info.cycle.iter_cycles(),
-            output: aggr_info.output,
+            opc: aggr_info.output,
         })
     }
 }

@@ -24,8 +24,8 @@ where
     pub(super) fn get_delay(&self) -> AttrVal {
         self.delay
     }
-    pub(super) fn iter_output(&self) -> impl Iterator<Item = OutputIterItem<T>> {
-        OutputSimpleIter::new(self)
+    pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+        OutputSimpleAmountIter::new(self)
     }
 }
 impl OutputSimple<AttrVal> {
@@ -59,14 +59,14 @@ where
     }
 }
 
-struct OutputSimpleIter<'a, T>
+struct OutputSimpleAmountIter<'a, T>
 where
     T: Copy,
 {
     output: &'a OutputSimple<T>,
     done: bool,
 }
-impl<'a, T> OutputSimpleIter<'a, T>
+impl<'a, T> OutputSimpleAmountIter<'a, T>
 where
     T: Copy,
 {
@@ -74,7 +74,7 @@ where
         Self { output, done: false }
     }
 }
-impl<T> Iterator for OutputSimpleIter<'_, T>
+impl<T> Iterator for OutputSimpleAmountIter<'_, T>
 where
     T: Copy,
 {

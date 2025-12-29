@@ -184,16 +184,15 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
                 None => continue,
             };
             let opc = get_local_output(ctx, calc, item_key, ospec, &inv_local, None);
-            let cap_injected = opc.iter_output().map(|v| v.amount).sum();
-            // Even if some injector has negative value, player doesn't have to use it, so it is
-            // just ignored
-            if cap_injected <= FLOAT_TOLERANCE {
-                continue;
-            }
+            let immediate_amount = opc.iter_amounts().next().and_then(|v| match v.time == OF(0.0) {
+                true => Some(v.amount),
+                false => None,
+            });
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),
                 cycle_iter: CycleSeq::from(cseq).iter_cycles(),
-                output: cap_injected,
+                opc,
+                immediate_amount,
             }));
         }
     }
