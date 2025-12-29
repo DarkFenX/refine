@@ -57,10 +57,10 @@ pub(in crate::svc) fn aggr_local_first_output<T>(
 where
     T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
-    let cycle = cseq.get_first_cycle();
+    let cycle_data = cseq.get_first_cycle();
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec)?;
     Some(AggrOutput {
-        output: get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle.chargedness),
-        time: cycle.time,
+        output: get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle_data.chargedness),
+        time: cycle_data.time,
     })
 }

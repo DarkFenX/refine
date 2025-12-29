@@ -50,16 +50,19 @@ impl StatCapSimStaggerInt {
 pub(super) struct StaggerKey {
     // Out of all cycle parameters, only time between cycles is used to decide what goes into a
     // stagger group
-    pub(super) cycle: CycleSeq<CycleDataTime>,
+    pub(super) cseq: CycleSeq<CycleDataTime>,
     delay: AttrVal,
 }
 impl StaggerKey {
-    pub(super) fn new(cycle: &CycleSeq<CycleDataTime>, output: &Output<AttrVal>) -> Self {
+    pub(super) fn new(cseq: &CycleSeq<CycleDataTime>, opc: &Output<AttrVal>) -> Self {
         // Round everything, so that small differences in result (which is possible due to different
         // order of float operations) end up having the same key
         Self {
-            cycle: cycle.copy_rounded(),
-            delay: sig_round(output.get_delay(), 10),
+            cseq: cseq.copy_rounded(),
+            delay: match opc.iter_amounts().next() {
+                Some(output_event) => sig_round(output_event.time, 10),
+                None => OF(0.0),
+            },
         }
     }
 }
@@ -76,7 +79,7 @@ pub(super) fn process_staggers(
             continue;
         }
         // Sort by output value, from highest to lowest
-        let stagger_period = stagger_key.cycle.get_first_cycle().time / stagger_group.len() as f64;
+        let stagger_period = stagger_key.cseq.get_first_cycle().time / stagger_group.len() as f64;
         for (i, (cycle, output)) in stagger_group
             .into_iter()
             .sorted_by_key(|(_, o)| -o.absolute_impact())

@@ -20,16 +20,12 @@ impl Aggregator {
     pub(super) fn add_entry(
         &mut self,
         start_delay: AttrVal,
-        cycle: CycleSeq<CycleDataTimeCharge>,
-        output: Output<AttrVal>,
+        cseq: CycleSeq<CycleDataTimeCharge>,
+        opc: Output<AttrVal>,
     ) {
         self.data.add_entry(
-            AggrKey::new(start_delay, &cycle, &output),
-            AggrEventInfo {
-                start_delay,
-                cycle,
-                output,
-            },
+            AggrKey::new(start_delay, &cseq, &opc),
+            AggrEventInfo { start_delay, cseq, opc },
         )
     }
     pub(super) fn into_sim_events(self, events: &mut BinaryHeap<CapSimEvent>) {
@@ -45,9 +41,9 @@ impl Aggregator {
     ) {
         events.extend(
             aggr_group
-                .extract_if(.., |v| filter_fn(v.output.get_amount(), OF(0.0)))
+                .extract_if(.., |v| filter_fn(v.opc.get_amount(), OF(0.0)))
                 .reduce(|mut l, r| {
-                    l.output.add_amount(r.output.get_amount());
+                    l.opc.add_amount(r.opc.get_amount());
                     l
                 })
                 .map(Into::into),
@@ -59,15 +55,15 @@ impl Aggregator {
 // converted into cap sim events, where some data needed for aggregation will be lost
 struct AggrEventInfo {
     start_delay: AttrVal,
-    cycle: CycleSeq<CycleDataTimeCharge>,
-    output: Output<AttrVal>,
+    cseq: CycleSeq<CycleDataTimeCharge>,
+    opc: Output<AttrVal>,
 }
 impl From<AggrEventInfo> for CapSimEvent {
     fn from(aggr_info: AggrEventInfo) -> Self {
         CapSimEvent::CycleCheck(CapSimEventCycleCheck {
             time: aggr_info.start_delay,
-            cycle_iter: aggr_info.cycle.iter_cycles(),
-            opc: aggr_info.output,
+            cycle_iter: aggr_info.cseq.iter_cycles(),
+            opc: aggr_info.opc,
         })
     }
 }
@@ -76,15 +72,15 @@ impl From<AggrEventInfo> for CapSimEvent {
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKey {
     start_delay: AttrVal,
-    cycle: CycleSeq<CycleDataTime>,
-    output: AggrKeyOutput,
+    cseq: CycleSeq<CycleDataTime>,
+    opc: AggrKeyOutput,
 }
 impl AggrKey {
-    fn new(start_delay: AttrVal, cycle: &CycleSeq<CycleDataTimeCharge>, output: &Output<AttrVal>) -> Self {
+    fn new(start_delay: AttrVal, cseq: &CycleSeq<CycleDataTimeCharge>, opc: &Output<AttrVal>) -> Self {
         Self {
             start_delay: sig_round(start_delay, 10),
-            cycle: CycleSeq::from(cycle).copy_rounded(),
-            output: output.into(),
+            cseq: CycleSeq::from(cseq).copy_rounded(),
+            opc: opc.into(),
         }
     }
 }
@@ -95,10 +91,10 @@ enum AggrKeyOutput {
     Complex(AggrKeyOutputComplex),
 }
 impl From<&Output<AttrVal>> for AggrKeyOutput {
-    fn from(output: &Output<AttrVal>) -> Self {
-        match output {
-            Output::Simple(simple) => AggrKeyOutput::Simple(simple.into()),
-            Output::Complex(complex) => AggrKeyOutput::Complex(complex.into()),
+    fn from(opc: &Output<AttrVal>) -> Self {
+        match opc {
+            Output::Simple(inner) => AggrKeyOutput::Simple(inner.into()),
+            Output::Complex(inner) => AggrKeyOutput::Complex(inner.into()),
         }
     }
 }

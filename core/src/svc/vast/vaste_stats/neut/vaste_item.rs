@@ -24,7 +24,7 @@ impl Vast {
         check_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let mut item_nps = OF(0.0);
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, NEUT_CYCLE_OPTIONS, ignore_state) {
-            Some(cycle_map) => cycle_map,
+            Some(cseq_map) => cseq_map,
             None => return Ok(item_nps),
         };
         for (effect_key, cseq) in cseq_map {
