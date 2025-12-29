@@ -1,4 +1,4 @@
-use super::shared::get_orps_cycle_options;
+use super::shared::get_orps_cycling_options;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
@@ -83,7 +83,7 @@ fn get_orrps(
     fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut rps = OF(0.0);
-    let cycling_options = get_orps_cycle_options(false);
+    let cycling_options = get_orps_cycling_options(false);
     for (&item_key, item_data) in fit_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
             Some(cseq_map) => cseq_map,

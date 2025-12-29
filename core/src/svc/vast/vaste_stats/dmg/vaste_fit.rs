@@ -1,4 +1,4 @@
-use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycle_options};
+use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options};
 use crate::{
     def::AttrVal,
     misc::{DmgKinds, Spool},
@@ -58,7 +58,7 @@ impl Vast {
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
-        let cycle_options = get_dps_cycle_options(reload);
+        let cycling_options = get_dps_cycling_options(reload);
         let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
         for fit_key in fit_keys {
@@ -68,7 +68,7 @@ impl Vast {
                 &mut dps_normal,
                 &mut breacher_accum,
                 item_kinds,
-                cycle_options,
+                cycling_options,
                 spool,
                 projectee_key,
             );
@@ -119,14 +119,14 @@ impl Vast {
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
         let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
-        let cycle_options = get_dps_cycle_options(reload);
+        let cycling_options = get_dps_cycling_options(reload);
         self.get_fit_data(&fit_key).fill_stat_dps(
             ctx,
             calc,
             &mut dps_normal,
             &mut breacher_accum,
             item_kinds,
-            cycle_options,
+            cycling_options,
             spool,
             projectee_key,
         );
@@ -248,12 +248,12 @@ impl VastFitData {
         dps_normal: &mut DmgKinds<AttrVal>,
         breacher_accum: &mut BreacherAccum,
         item_kinds: StatDmgItemKinds,
-        cycle_options: CyclingOptions,
+        cycling_options: CyclingOptions,
         spool: Option<Spool>,
         projectee_key: Option<UItemKey>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
-            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
                 Some(cseq_map) => cseq_map,
                 None => continue,
             };
@@ -267,7 +267,7 @@ impl VastFitData {
                     Some(cseq) => cseq,
                     None => continue,
                 };
-                match cycle_options {
+                match cycling_options {
                     CyclingOptions::Burst => {
                         if let Some(effect_dps) =
                             aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key, spool)
@@ -286,7 +286,7 @@ impl VastFitData {
             }
         }
         for (&item_key, item_data) in self.dmg_breacher.iter() {
-            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+            let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
                 Some(cseq_map) => cseq_map,
                 None => continue,
             };

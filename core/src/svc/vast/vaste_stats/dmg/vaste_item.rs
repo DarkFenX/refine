@@ -1,4 +1,4 @@
-use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycle_options};
+use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options};
 use crate::{
     def::AttrVal,
     misc::{DmgKinds, Spool},
@@ -97,7 +97,7 @@ impl Vast {
         projectee_key: Option<UItemKey>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
-        let options = get_dps_cycle_options(reload);
+        let options = get_dps_cycling_options(reload);
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, options, ignore_state) {
             Some(cseq_map) => cseq_map,
             None => return Ok(()),

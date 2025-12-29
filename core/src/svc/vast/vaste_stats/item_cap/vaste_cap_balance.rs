@@ -139,12 +139,12 @@ fn get_cap_consumed(
     gains: bool,
 ) -> AttrVal {
     let mut cps = OF(0.0);
-    let cycle_options = match reload {
+    let cycling_options = match reload {
         true => CYCLE_OPTIONS_SIM,
         false => CYCLE_OPTIONS_BURST,
     };
     for (&item_key, item_data) in fit_data.cap_consumers_active.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+        let cycle_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
             Some(cycle_map) => cycle_map,
             None => continue,
         };

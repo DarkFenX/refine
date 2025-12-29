@@ -1,4 +1,4 @@
-use super::shared::get_mps_cycle_options;
+use super::shared::get_mps_cycling_options;
 use crate::{
     misc::MiningAmount,
     rd::{REffectKey, REffectProjOpcSpec},
@@ -54,10 +54,10 @@ fn get_mps(
     reload: bool,
     fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
-    let cycle_options = get_mps_cycle_options(reload);
+    let cycling_options = get_mps_cycling_options(reload);
     let mut mps = MiningAmount::default();
     for (&item_key, item_data) in fit_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycle_options, false) {
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
             Some(cseq_map) => cseq_map,
             None => continue,
         };

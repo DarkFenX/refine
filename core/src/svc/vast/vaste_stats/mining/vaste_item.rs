@@ -1,4 +1,4 @@
-use super::shared::get_mps_cycle_options;
+use super::shared::get_mps_cycling_options;
 use crate::{
     misc::MiningAmount,
     rd::{REffect, REffectProjOpcSpec},
@@ -22,7 +22,7 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_key)?;
-        let cycling_options = get_mps_cycle_options(reload);
+        let cycling_options = get_mps_cycling_options(reload);
         let mps = StatMining {
             ore: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_ore),
             ice: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_ice),

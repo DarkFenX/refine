@@ -1,4 +1,4 @@
-use super::shared::get_orps_cycle_options;
+use super::shared::get_orps_cycling_options;
 use crate::{
     def::{AttrVal, OF},
     misc::Spool,
@@ -51,7 +51,7 @@ fn get_orr_item_key(
     rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut item_orr = OF(0.0);
-    let cycling_options = get_orps_cycle_options(false);
+    let cycling_options = get_orps_cycling_options(false);
     let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, ignore_state) {
         Some(cseq_map) => cseq_map,
         None => return item_orr,
