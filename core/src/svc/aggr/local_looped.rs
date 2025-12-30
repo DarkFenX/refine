@@ -54,7 +54,7 @@ where
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output = get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle_part.data.chargedness);
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        total_amount += cycle_output.amount_sum() * part_cycle_count;
+        total_amount += cycle_output.get_amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
     Some(AggrAmount {

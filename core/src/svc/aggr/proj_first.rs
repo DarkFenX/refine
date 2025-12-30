@@ -65,7 +65,7 @@ where
 {
     aggr_proj_first_output(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, spool).map(|output_data| {
         AggrAmount {
-            amount: output_data.output.amount_sum(),
+            amount: output_data.output.get_amount_sum(),
             time: output_data.time,
         }
     })

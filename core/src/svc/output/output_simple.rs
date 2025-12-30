@@ -28,17 +28,6 @@ where
         OutputSimpleAmountIter::new(self)
     }
 }
-impl<T> OutputSimple<T>
-where
-    T: Copy + Default,
-{
-    pub(super) fn get_sum_by_time(&self, time: AttrVal) -> T {
-        match self.delay <= time {
-            true => self.amount,
-            false => T::default(),
-        }
-    }
-}
 impl OutputSimple<AttrVal> {
     pub(super) fn has_impact(&self) -> bool {
         self.amount.abs() > FLOAT_TOLERANCE
@@ -59,6 +48,19 @@ where
     fn neg(mut self) -> Self::Output {
         self.amount = -self.amount;
         self
+    }
+}
+impl<T> std::ops::Mul<AttrVal> for OutputSimple<T>
+where
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: AttrVal) -> Self::Output {
+        Self {
+            amount: self.amount * rhs,
+            delay: self.delay,
+        }
     }
 }
 impl<T> std::ops::MulAssign<AttrVal> for OutputSimple<T>

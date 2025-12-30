@@ -111,7 +111,7 @@ where
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle_part.data.chargedness);
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
-        total_amount += cycle_output.amount_sum() * part_cycle_count;
+        total_amount += cycle_output.get_amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
     Some(AggrAmount {
@@ -170,7 +170,7 @@ where
                 let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
                 // Update total values
                 let remaining_cycles = AttrVal::from(cycle_part.repeat_count - i);
-                total_amount += cycle_output.amount_sum() * remaining_cycles;
+                total_amount += cycle_output.get_amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
@@ -178,7 +178,7 @@ where
             let cycle_spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update total values
-            total_amount += cycle_output.amount_sum();
+            total_amount += cycle_output.get_amount_sum();
             total_time += cycle_part.data.time;
             // Update state
             match cycle_part.data.interrupt {

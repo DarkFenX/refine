@@ -12,7 +12,7 @@ where
     // Time it takes per cycle in this part
     pub(super) time: AttrVal,
     // After "time" part is complete, it takes this time to finish with output
-    pub(super) extra_wait_time: AttrVal,
+    pub(super) tail_time: AttrVal,
     pub(super) output: Output<T>,
 }
 
@@ -23,7 +23,7 @@ where
     fn convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
         AggrPartData {
             time: self.time,
-            extra_wait_time: (xt.get_completion_time() - self.time).max(OF(0.0)),
+            tail_time: (xt.get_completion_time() - self.time).max(OF(0.0)),
             output: xt,
         }
     }

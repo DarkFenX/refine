@@ -3,10 +3,11 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, OF},
+    def::{AttrVal, Count, OF},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::UItemKey,
+    util::trunc_unerr,
 };
 
 // Local effects, considers only infinite parts of cycles
@@ -17,7 +18,7 @@ pub(in crate::svc) fn aggr_local_time_amount<T>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-    time: AttrVal,
+    mut time: AttrVal,
 ) -> Option<T>
 where
     T: Default
@@ -58,5 +59,39 @@ where
             inner.convert_extend(p1_opc, p2_opc)
         }
     };
-    None
+    let mut total_amount = T::default();
+    match cache {
+        CycleSeq::Lim(inner) => {
+            let full_repeats = (get_count_full_repeats(time, inner.data.time, inner.data.tail_time).trunc() as Count)
+                .min(inner.repeat_count);
+            total_amount += inner.data.output.get_amount_sum() * AttrVal::from(full_repeats);
+            let mut remaining_repeats = inner.repeat_count - full_repeats;
+            while time >= OF(0.0) && remaining_repeats > 0 {
+                total_amount += inner.data.output.get_amount_sum_by_time(time);
+                time -= inner.data.time;
+                remaining_repeats -= 1;
+            }
+        }
+        CycleSeq::Inf(inner) => {
+            let full_repeats = get_count_full_repeats(time, inner.data.time, inner.data.tail_time);
+            total_amount += inner.data.output.get_amount_sum() * full_repeats;
+            time -= inner.data.time * full_repeats;
+            while time >= OF(0.0) {
+                total_amount += inner.data.output.get_amount_sum_by_time(time);
+                time -= inner.data.time;
+            }
+        }
+        CycleSeq::LimInf(inner) => {}
+        CycleSeq::LimSinInf(inner) => {}
+        CycleSeq::LoopLimSin(inner) => {}
+    }
+    Some(total_amount)
+}
+
+fn get_count_full_repeats(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> AttrVal {
+    let time_no_tail = time - cycle_tail_time;
+    if time_no_tail < cycle_time {
+        return OF(0.0);
+    }
+    trunc_unerr(time_no_tail / cycle_time)
 }

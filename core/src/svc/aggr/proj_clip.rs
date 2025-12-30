@@ -91,7 +91,7 @@ where
                 let remaining_cycles = part_cycle_count - i;
                 uninterrupted_cycles += remaining_cycles;
                 let remaining_cycles = AttrVal::from(remaining_cycles);
-                total_amount += cycle_output.amount_sum() * remaining_cycles;
+                total_amount += cycle_output.get_amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
@@ -102,7 +102,7 @@ where
                 Some(_) => uninterrupted_cycles = 0,
                 None => uninterrupted_cycles += 1,
             }
-            total_amount += cycle_output.amount_sum();
+            total_amount += cycle_output.get_amount_sum();
             total_time += cycle_part.data.time;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
@@ -153,7 +153,7 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += cycle_output.amount_sum();
+                total_amount += cycle_output.get_amount_sum();
                 total_time += cycle_part.data.time;
                 break;
             }
@@ -164,7 +164,7 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                total_amount += cycle_output.amount_sum() * part_cycle_count;
+                total_amount += cycle_output.get_amount_sum() * part_cycle_count;
                 total_time += cycle_part.data.time * part_cycle_count;
             }
         }

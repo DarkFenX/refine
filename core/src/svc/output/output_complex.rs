@@ -3,7 +3,7 @@ use ordered_float::Float;
 use super::shared::OutputIterItem;
 use crate::{
     def::{AttrVal, Count, OF},
-    util::{FLOAT_TOLERANCE, trunc_unerr},
+    util::FLOAT_TOLERANCE,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -37,22 +37,6 @@ where
         OutputComplexAmountIter::new(self)
     }
 }
-impl<T> OutputComplex<T>
-where
-    T: Copy + Default + std::ops::Mul<AttrVal, Output = T>,
-{
-    pub(super) fn get_sum_by_time(&self, time: AttrVal) -> T {
-        let after_delay = time - self.delay;
-        if after_delay < OF(0.0) {
-            return T::default();
-        }
-        let count = after_delay / self.interval;
-        if !count.is_finite() || count < OF(0.0) {
-            return T::default();
-        }
-        self.amount * trunc_unerr(count)
-    }
-}
 impl OutputComplex<AttrVal> {
     pub(super) fn has_impact(&self) -> bool {
         self.amount.abs() > FLOAT_TOLERANCE
@@ -73,6 +57,21 @@ where
     fn neg(mut self) -> Self::Output {
         self.amount = -self.amount;
         self
+    }
+}
+impl<T> std::ops::Mul<AttrVal> for OutputComplex<T>
+where
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: AttrVal) -> Self::Output {
+        Self {
+            amount: self.amount * rhs,
+            delay: self.delay,
+            repeats: self.repeats,
+            interval: self.interval,
+        }
     }
 }
 impl<T> std::ops::MulAssign<AttrVal> for OutputComplex<T>

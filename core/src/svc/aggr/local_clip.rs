@@ -40,7 +40,7 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += cycle_output.amount_sum();
+                total_amount += cycle_output.get_amount_sum();
                 total_time += cycle_part.data.time;
                 break;
             }
@@ -51,7 +51,7 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,
                 };
-                total_amount += cycle_output.amount_sum() * part_cycle_count;
+                total_amount += cycle_output.get_amount_sum() * part_cycle_count;
                 total_time += cycle_part.data.time * part_cycle_count;
             }
         }

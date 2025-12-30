@@ -41,7 +41,7 @@ where
     T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
 {
     aggr_local_first_output(ctx, calc, item_key, effect, cseq, ospec).map(|output_data| AggrAmount {
-        amount: output_data.output.amount_sum(),
+        amount: output_data.output.get_amount_sum(),
         time: output_data.time,
     })
 }

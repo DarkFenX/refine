@@ -38,17 +38,6 @@ where
         }
     }
 }
-impl<T> Output<T>
-where
-    T: Copy + Default + std::ops::Mul<AttrVal, Output = T>,
-{
-    pub(in crate::svc) fn get_sum_by_time(&self, time: AttrVal) -> T {
-        match self {
-            Output::Simple(inner) => inner.get_sum_by_time(time),
-            Output::Complex(inner) => inner.get_sum_by_time(time),
-        }
-    }
-}
 impl Output<AttrVal> {
     pub(in crate::svc) fn has_impact(&self) -> bool {
         match self {
@@ -79,6 +68,19 @@ where
         match self {
             Self::Simple(inner) => Self::Simple(-inner),
             Self::Complex(inner) => Self::Complex(-inner),
+        }
+    }
+}
+impl<T> std::ops::Mul<AttrVal> for Output<T>
+where
+    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: AttrVal) -> Self::Output {
+        match self {
+            Self::Simple(inner) => Self::Simple(inner * rhs),
+            Self::Complex(inner) => Self::Complex(inner * rhs),
         }
     }
 }
