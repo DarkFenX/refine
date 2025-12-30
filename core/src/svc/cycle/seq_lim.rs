@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, Count},
     svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped},
-    util::InfCount,
+    util::{ConvertExtend, InfCount},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,12 +19,21 @@ impl<T> CSeqLim<T> {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         None
     }
-    pub(super) fn convert<'a, U>(&'a self) -> CycleSeq<U>
+    pub(super) fn convert<R>(self) -> CycleSeq<R>
     where
-        U: From<&'a T>,
+        R: From<T>,
     {
         CycleSeq::Lim(CSeqLim {
-            data: (&self.data).into(),
+            data: self.data.into(),
+            repeat_count: self.repeat_count,
+        })
+    }
+    pub(super) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
+    where
+        T: ConvertExtend<X, R>,
+    {
+        CycleSeq::Lim(CSeqLim {
+            data: self.data.convert_extend(xt),
             repeat_count: self.repeat_count,
         })
     }

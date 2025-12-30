@@ -3,7 +3,7 @@ use crate::{
     svc::cycle::{
         CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf,
     },
-    util::InfCount,
+    util::{ConvertExtend, InfCount},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,13 +22,13 @@ impl<T> CSeqLimSinInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn convert<'a, U>(&'a self) -> CycleSeq<U>
+    pub(super) fn convert<R>(self) -> CycleSeq<R>
     where
-        U: From<&'a T> + Eq,
+        R: From<T> + Eq,
     {
-        let p1_data = U::from(&self.p1_data);
-        let p2_data = U::from(&self.p2_data);
-        let p3_data = U::from(&self.p2_data);
+        let p1_data = R::from(self.p1_data);
+        let p2_data = R::from(self.p2_data);
+        let p3_data = R::from(self.p3_data);
         match (p1_data == p2_data, p2_data == p3_data) {
             // Nothing to merge
             (false, false) => CycleSeq::LimSinInf(CSeqLimSinInf {
@@ -49,7 +49,39 @@ impl<T> CSeqLimSinInf<T> {
                 p1_repeat_count: self.p1_repeat_count + 1,
                 p2_data: p3_data,
             }),
-            // Whole sequence becomes simple infinity
+            // Whole sequence becomes a simple infinity
+            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data }),
+        }
+    }
+    pub(super) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X, p3_xt: X) -> CycleSeq<R>
+    where
+        T: ConvertExtend<X, R>,
+        R: Eq,
+    {
+        let p1_data = self.p1_data.convert_extend(p1_xt);
+        let p2_data = self.p2_data.convert_extend(p2_xt);
+        let p3_data = self.p3_data.convert_extend(p3_xt);
+        match (p1_data == p2_data, p2_data == p3_data) {
+            // Nothing to merge
+            (false, false) => CycleSeq::LimSinInf(CSeqLimSinInf {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data,
+                p3_data,
+            }),
+            // Merge part 2 into tail
+            (false, true) => CycleSeq::LimInf(CSeqLimInf {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data: p3_data,
+            }),
+            // Merge part 2 into head
+            (true, false) => CycleSeq::LimInf(CSeqLimInf {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count + 1,
+                p2_data: p3_data,
+            }),
+            // Whole sequence becomes a simple infinity
             (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data }),
         }
     }

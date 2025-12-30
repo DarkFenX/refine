@@ -20,8 +20,8 @@ pub(in crate::svc) struct CycleDataTimeInt {
     pub(in crate::svc) time: AttrVal,
     pub(in crate::svc) interrupt: bool,
 }
-impl From<&CycleDataFull> for CycleDataTimeInt {
-    fn from(details_full: &CycleDataFull) -> Self {
+impl From<CycleDataFull> for CycleDataTimeInt {
+    fn from(details_full: CycleDataFull) -> Self {
         Self {
             time: details_full.time,
             interrupt: details_full.interrupt.is_some(),
@@ -34,8 +34,8 @@ pub(in crate::svc) struct CycleDataTimeCharge {
     pub(in crate::svc) time: AttrVal,
     pub(in crate::svc) chargedness: Option<AttrVal>,
 }
-impl From<&CycleDataFull> for CycleDataTimeCharge {
-    fn from(details_full: &CycleDataFull) -> Self {
+impl From<CycleDataFull> for CycleDataTimeCharge {
+    fn from(details_full: CycleDataFull) -> Self {
         Self {
             time: details_full.time,
             chargedness: details_full.chargedness,
@@ -54,13 +54,13 @@ impl CycleDataTime {
         }
     }
 }
-impl From<&CycleDataFull> for CycleDataTime {
-    fn from(data_full: &CycleDataFull) -> Self {
+impl From<CycleDataFull> for CycleDataTime {
+    fn from(data_full: CycleDataFull) -> Self {
         Self { time: data_full.time }
     }
 }
-impl From<&CycleDataTimeCharge> for CycleDataTime {
-    fn from(data_time_charge: &CycleDataTimeCharge) -> Self {
+impl From<CycleDataTimeCharge> for CycleDataTime {
+    fn from(data_time_charge: CycleDataTimeCharge) -> Self {
         Self {
             time: data_time_charge.time,
         }

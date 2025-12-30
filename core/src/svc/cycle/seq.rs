@@ -37,6 +37,18 @@ where
             Self::LoopLimSin(inner) => inner.try_loop_cseq(),
         }
     }
+    pub(in crate::svc) fn convert<U>(self) -> CycleSeq<U>
+    where
+        U: From<T> + Eq,
+    {
+        match self {
+            Self::Lim(inner) => inner.convert(),
+            Self::Inf(inner) => inner.convert(),
+            Self::LimInf(inner) => inner.convert(),
+            Self::LimSinInf(inner) => inner.convert(),
+            Self::LoopLimSin(inner) => inner.convert(),
+        }
+    }
 }
 impl CycleSeq {
     pub(in crate::svc) fn get_average_time(&self) -> AttrVal {
@@ -50,10 +62,10 @@ impl CycleSeq {
     }
     // Convenience conversion methods, to avoid type hinting in some cases
     pub(in crate::svc) fn to_time_charge(&self) -> CycleSeq<CycleDataTimeCharge> {
-        self.into()
+        self.convert()
     }
     pub(in crate::svc) fn to_time(&self) -> CycleSeq<CycleDataTime> {
-        self.into()
+        self.convert()
     }
 }
 impl CycleSeq<CycleDataTime> {
@@ -64,20 +76,6 @@ impl CycleSeq<CycleDataTime> {
             Self::LimInf(inner) => Self::LimInf(inner.copy_rounded()),
             Self::LimSinInf(inner) => Self::LimSinInf(inner.copy_rounded()),
             Self::LoopLimSin(inner) => Self::LoopLimSin(inner.copy_rounded()),
-        }
-    }
-}
-impl<T, U> From<&CycleSeq<T>> for CycleSeq<U>
-where
-    U: Eq + for<'a> From<&'a T>,
-{
-    fn from(cseq: &CycleSeq<T>) -> Self {
-        match cseq {
-            CycleSeq::Lim(inner) => inner.convert(),
-            CycleSeq::Inf(inner) => inner.convert(),
-            CycleSeq::LimInf(inner) => inner.convert(),
-            CycleSeq::LimSinInf(inner) => inner.convert(),
-            CycleSeq::LoopLimSin(inner) => inner.convert(),
         }
     }
 }

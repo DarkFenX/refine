@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, Count},
     svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
-    util::InfCount,
+    util::{ConvertExtend, InfCount},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,12 +19,28 @@ impl<T> CycleSeqLoopLimSin<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn convert<'a, U>(&'a self) -> CycleSeq<U>
+    pub(super) fn convert<R>(self) -> CycleSeq<R>
     where
-        U: From<&'a T> + Eq,
+        R: From<T> + Eq,
     {
-        let p1_data = U::from(&self.p1_data);
-        let p2_data = U::from(&self.p2_data);
+        let p1_data = R::from(self.p1_data);
+        let p2_data = R::from(self.p2_data);
+        match p1_data == p2_data {
+            true => CycleSeq::Inf(CSeqInf { data: p1_data }),
+            false => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
+                p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data,
+            }),
+        }
+    }
+    pub(super) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X) -> CycleSeq<R>
+    where
+        T: ConvertExtend<X, R>,
+        R: Eq,
+    {
+        let p1_data = self.p1_data.convert_extend(p1_xt);
+        let p2_data = self.p2_data.convert_extend(p2_xt);
         match p1_data == p2_data {
             true => CycleSeq::Inf(CSeqInf { data: p1_data }),
             false => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {

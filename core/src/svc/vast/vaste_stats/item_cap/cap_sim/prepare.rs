@@ -13,7 +13,7 @@ use crate::{
         SvcCtx,
         aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
         calc::Calc,
-        cycle::{CycleSeq, get_item_cseq_map},
+        cycle::get_item_cseq_map,
         output::{Output, OutputSimple},
         vast::{Vast, VastFitData, vaste_stats::item_cap::shared::CYCLE_OPTIONS_SIM},
     },
@@ -68,10 +68,10 @@ fn fill_consumers(
             });
             match stagger.is_staggered(item_key) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles.into(), &output_per_cycle),
-                    (effect_cycles.into(), output_per_cycle),
+                    StaggerKey::new(&effect_cycles.convert(), &output_per_cycle),
+                    (effect_cycles.convert(), output_per_cycle),
                 ),
-                false => aggregator.add_entry(OF(0.0), effect_cycles.into(), output_per_cycle),
+                false => aggregator.add_entry(OF(0.0), effect_cycles.convert(), output_per_cycle),
             }
         }
     }
@@ -114,8 +114,8 @@ fn fill_neuts(
                 continue;
             }
             match stagger.is_staggered(neut_item_key) {
-                true => stagger_map.add_entry(StaggerKey::new(&cseq.into(), &opc), (cseq.into(), opc)),
-                false => aggregator.add_entry(OF(0.0), cseq.into(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&cseq.convert(), &opc), (cseq.convert(), opc)),
+                false => aggregator.add_entry(OF(0.0), cseq.convert(), opc),
             }
         }
     }
@@ -156,8 +156,8 @@ fn fill_transfers(
                 continue;
             }
             match stagger.is_staggered(transfer_item_key) {
-                true => stagger_map.add_entry(StaggerKey::new(&cseq.into(), &opc), (cseq.into(), opc)),
-                false => aggregator.add_entry(OF(0.0), cseq.into(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&cseq.convert(), &opc), (cseq.convert(), opc)),
+                false => aggregator.add_entry(OF(0.0), cseq.convert(), opc),
             }
         }
     }
@@ -187,7 +187,7 @@ fn fill_injectors(ctx: SvcCtx, calc: &mut Calc, events: &mut BinaryHeap<CapSimEv
             });
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: OF(0.0),
-                cycle_iter: CycleSeq::from(cseq).iter_cycles(),
+                cycle_iter: cseq.convert().iter_cycles(),
                 opc,
                 immediate_amount,
             }));

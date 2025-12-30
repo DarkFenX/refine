@@ -57,7 +57,7 @@ where
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_max_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
-        None => aggr_max_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
+        None => aggr_max_regular(ctx, calc, projector_key, effect, cseq.convert(), ospec, projectee_key),
     }
 }
 
@@ -80,7 +80,7 @@ where
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
         Some(inv_spool) => aggr_total_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
-        None => aggr_total_regular(ctx, calc, projector_key, effect, cseq.into(), ospec, projectee_key),
+        None => aggr_total_regular(ctx, calc, projector_key, effect, cseq.convert(), ospec, projectee_key),
     }
 }
 

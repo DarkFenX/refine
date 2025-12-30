@@ -79,7 +79,7 @@ impl AggrKey {
     fn new(start_delay: AttrVal, cseq: &CycleSeq<CycleDataTimeCharge>, opc: &Output<AttrVal>) -> Self {
         Self {
             start_delay: sig_round(start_delay, 10),
-            cseq: CycleSeq::from(cseq).copy_rounded(),
+            cseq: cseq.convert().copy_rounded(),
             opc: opc.into(),
         }
     }

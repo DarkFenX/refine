@@ -1,7 +1,7 @@
 use crate::{
     def::AttrVal,
     svc::{cycle::CycleDataFull, output::Output},
-    util::Extend,
+    util::ConvertExtend,
 };
 
 struct AggrPartData<T>
@@ -12,14 +12,14 @@ where
     total_output: Output<T>,
 }
 
-impl<T> Extend<Output<T>, AggrPartData<T>> for CycleDataFull
+impl<T> ConvertExtend<Output<T>, AggrPartData<T>> for CycleDataFull
 where
     T: Copy,
 {
-    fn extend(&mut self, extra_data: Output<T>) -> AggrPartData<T> {
+    fn convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
         AggrPartData {
             time: self.time,
-            total_output: extra_data,
+            total_output: xt,
         }
     }
 }
