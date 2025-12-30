@@ -3,7 +3,7 @@ use ordered_float::Float;
 use super::shared::OutputIterItem;
 use crate::{
     def::{AttrVal, Count, OF},
-    util::FLOAT_TOLERANCE,
+    util::{FLOAT_TOLERANCE, trunc_unerr},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -13,6 +13,7 @@ where
 {
     pub(crate) amount: T,
     pub(crate) delay: AttrVal,
+    // Total count of times amount is output
     pub(crate) repeats: Count,
     pub(crate) interval: AttrVal,
 }
@@ -34,6 +35,22 @@ where
     }
     pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputComplexAmountIter::new(self)
+    }
+}
+impl<T> OutputComplex<T>
+where
+    T: Copy + Default + std::ops::Mul<AttrVal, Output = T>,
+{
+    pub(super) fn get_sum_by_time(&self, time: AttrVal) -> T {
+        let after_delay = time - self.delay;
+        if after_delay < OF(0.0) {
+            return T::default();
+        }
+        let count = after_delay / self.interval;
+        if !count.is_finite() || count < OF(0.0) {
+            return T::default();
+        }
+        self.amount * trunc_unerr(count)
     }
 }
 impl OutputComplex<AttrVal> {

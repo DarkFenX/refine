@@ -38,6 +38,17 @@ where
         }
     }
 }
+impl<T> Output<T>
+where
+    T: Copy + Default + std::ops::Mul<AttrVal, Output = T>,
+{
+    pub(in crate::svc) fn get_sum_by_time(&self, time: AttrVal) -> T {
+        match self {
+            Output::Simple(inner) => inner.get_sum_by_time(time),
+            Output::Complex(inner) => inner.get_sum_by_time(time),
+        }
+    }
+}
 impl Output<AttrVal> {
     pub(in crate::svc) fn has_impact(&self) -> bool {
         match self {

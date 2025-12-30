@@ -28,6 +28,17 @@ where
         OutputSimpleAmountIter::new(self)
     }
 }
+impl<T> OutputSimple<T>
+where
+    T: Copy + Default,
+{
+    pub(super) fn get_sum_by_time(&self, time: AttrVal) -> T {
+        match self.delay <= time {
+            true => self.amount,
+            false => T::default(),
+        }
+    }
+}
 impl OutputSimple<AttrVal> {
     pub(super) fn has_impact(&self) -> bool {
         self.amount.abs() > FLOAT_TOLERANCE

@@ -39,6 +39,7 @@ impl Aggregator {
         events: &mut BinaryHeap<CapSimEvent>,
         filter_fn: fn(AttrVal, AttrVal) -> bool,
     ) {
+        // TODO: check if get_amount() is the right method to use here
         events.extend(
             aggr_group
                 .extract_if(.., |v| filter_fn(v.opc.get_amount(), OF(0.0)))
