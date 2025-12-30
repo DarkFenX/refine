@@ -25,6 +25,12 @@ where
             Output::Complex(inner) => inner.get_max_amount(),
         }
     }
+    pub(in crate::svc) fn get_completion_time(&self) -> AttrVal {
+        match self {
+            Output::Simple(inner) => inner.get_completion_time(),
+            Output::Complex(inner) => inner.get_completion_time(),
+        }
+    }
     pub(in crate::svc) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         match self {
             Self::Simple(inner) => OutputIter::Simple(inner.iter_amounts()),

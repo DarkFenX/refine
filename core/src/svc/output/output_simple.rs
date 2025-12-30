@@ -21,6 +21,9 @@ where
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
+    pub(super) fn get_completion_time(&self) -> AttrVal {
+        self.delay
+    }
     pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputSimpleAmountIter::new(self)
     }

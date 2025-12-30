@@ -2,7 +2,7 @@ use ordered_float::Float;
 
 use super::shared::OutputIterItem;
 use crate::{
-    def::{AttrVal, Count},
+    def::{AttrVal, Count, OF},
     util::FLOAT_TOLERANCE,
 };
 
@@ -25,6 +25,12 @@ where
     }
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
+    }
+    pub(super) fn get_completion_time(&self) -> AttrVal {
+        if self.repeats < 1 {
+            return OF(0.0);
+        };
+        self.delay + self.interval * (self.repeats - 1) as f64
     }
     pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputComplexAmountIter::new(self)
@@ -83,22 +89,13 @@ where
     type Item = OutputIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.cycles_done {
-            0 => {
-                self.cycles_done += 1;
-                Some(OutputIterItem {
-                    time: self.output.delay,
-                    amount: self.output.amount,
-                })
-            }
-            n if n <= self.output.repeats => {
-                self.cycles_done += 1;
-                Some(OutputIterItem {
-                    time: self.output.interval,
-                    amount: self.output.amount,
-                })
-            }
-            _ => None,
+        if self.cycles_done >= self.output.repeats {
+            return None;
         }
+        self.cycles_done += 1;
+        Some(OutputIterItem {
+            time: self.output.interval,
+            amount: self.output.amount,
+        })
     }
 }
