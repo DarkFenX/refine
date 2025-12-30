@@ -1,4 +1,5 @@
 use super::{
+    cache::AggrPartData,
     local_shared::{AggrLocalInvData, get_local_output},
     traits::LimitAmount,
 };
@@ -62,30 +63,75 @@ where
     let mut total_amount = T::default();
     match cache {
         CycleSeq::Lim(inner) => {
-            let full_repeats = (get_count_full_repeats(time, inner.data.time, inner.data.tail_time).trunc() as Count)
-                .min(inner.repeat_count);
-            total_amount += inner.data.output.get_amount_sum() * AttrVal::from(full_repeats);
-            let mut remaining_repeats = inner.repeat_count - full_repeats;
-            while time >= OF(0.0) && remaining_repeats > 0 {
-                total_amount += inner.data.output.get_amount_sum_by_time(time);
-                time -= inner.data.time;
-                remaining_repeats -= 1;
+            if time > OF(0.0) {
+                process_limited(&mut total_amount, &mut time, &inner.data, inner.repeat_count)
             }
         }
         CycleSeq::Inf(inner) => {
-            let full_repeats = get_count_full_repeats(time, inner.data.time, inner.data.tail_time);
-            total_amount += inner.data.output.get_amount_sum() * full_repeats;
-            time -= inner.data.time * full_repeats;
-            while time >= OF(0.0) {
-                total_amount += inner.data.output.get_amount_sum_by_time(time);
-                time -= inner.data.time;
+            if time > OF(0.0) {
+                process_infinite(&mut total_amount, &mut time, &inner.data)
             }
         }
-        CycleSeq::LimInf(inner) => {}
-        CycleSeq::LimSinInf(inner) => {}
+        CycleSeq::LimInf(inner) => {
+            if time > OF(0.0) {
+                process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count)
+            }
+            if time > OF(0.0) {
+                process_infinite(&mut total_amount, &mut time, &inner.p2_data)
+            }
+        }
+        CycleSeq::LimSinInf(inner) => {
+            if time > OF(0.0) {
+                process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count)
+            }
+            if time > OF(0.0) {
+                process_single(&mut total_amount, &mut time, &inner.p2_data)
+            }
+            if time > OF(0.0) {
+                process_infinite(&mut total_amount, &mut time, &inner.p3_data)
+            }
+        }
         CycleSeq::LoopLimSin(inner) => {}
     }
     Some(total_amount)
+}
+
+fn process_single<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+where
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+{
+    match *time > data.time + data.tail_time {
+        true => *total_amount += data.output.get_amount_sum(),
+        false => *total_amount += data.output.get_amount_sum_by_time(*time),
+    }
+    *time -= data.time;
+}
+
+fn process_limited<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_count: Count)
+where
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+{
+    let full_repeats = (get_count_full_repeats(*time, data.time, data.tail_time).trunc() as Count).min(repeat_count);
+    *total_amount += data.output.get_amount_sum() * AttrVal::from(full_repeats);
+    let mut remaining_repeats = repeat_count - full_repeats;
+    while *time >= OF(0.0) && remaining_repeats > 0 {
+        *total_amount += data.output.get_amount_sum_by_time(*time);
+        *time -= data.time;
+        remaining_repeats -= 1;
+    }
+}
+
+fn process_infinite<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+where
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+{
+    let full_repeats = get_count_full_repeats(*time, data.time, data.tail_time);
+    *total_amount += data.output.get_amount_sum() * full_repeats;
+    *time -= data.time * full_repeats;
+    while *time >= OF(0.0) {
+        *total_amount += data.output.get_amount_sum_by_time(*time);
+        *time -= data.time;
+    }
 }
 
 fn get_count_full_repeats(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> AttrVal {
