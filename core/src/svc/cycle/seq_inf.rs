@@ -21,7 +21,7 @@ impl<T> CSeqInf<T> {
     {
         CycleSeq::Inf(CSeqInf { data: self.data.into() })
     }
-    pub(super) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
+    pub(in crate::svc) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
     where
         T: ConvertExtend<X, R>,
     {

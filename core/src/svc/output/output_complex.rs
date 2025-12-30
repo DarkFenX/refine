@@ -6,7 +6,7 @@ use crate::{
     util::FLOAT_TOLERANCE,
 };
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputComplex<T>
 where
     T: Copy,

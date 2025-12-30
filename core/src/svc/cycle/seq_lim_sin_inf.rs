@@ -53,7 +53,7 @@ impl<T> CSeqLimSinInf<T> {
             (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data }),
         }
     }
-    pub(super) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X, p3_xt: X) -> CycleSeq<R>
+    pub(in crate::svc) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X, p3_xt: X) -> CycleSeq<R>
     where
         T: ConvertExtend<X, R>,
         R: Eq,

@@ -3,7 +3,7 @@ use ordered_float::Float;
 use super::shared::OutputIterItem;
 use crate::{def::AttrVal, util::FLOAT_TOLERANCE};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputSimple<T>
 where
     T: Copy,

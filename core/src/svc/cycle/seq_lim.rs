@@ -28,7 +28,7 @@ impl<T> CSeqLim<T> {
             repeat_count: self.repeat_count,
         })
     }
-    pub(super) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
+    pub(in crate::svc) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
     where
         T: ConvertExtend<X, R>,
     {
