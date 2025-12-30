@@ -42,19 +42,19 @@ where
     let mut total_amount = T::default();
     match precalc {
         CycleSeq::Lim(inner) => {
-            process_limited(&mut total_amount, &mut time, &inner.data, inner.repeat_count);
+            process_limited_regular(&mut total_amount, &mut time, &inner.data, inner.repeat_count);
         }
         CycleSeq::Inf(inner) => {
-            process_infinite(&mut total_amount, &mut time, &inner.data);
+            process_infinite_regular(&mut total_amount, &mut time, &inner.data);
         }
         CycleSeq::LimInf(inner) => {
-            process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count);
-            process_infinite(&mut total_amount, &mut time, &inner.p2_data);
+            process_limited_regular(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count);
+            process_infinite_regular(&mut total_amount, &mut time, &inner.p2_data);
         }
         CycleSeq::LimSinInf(inner) => {
-            process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count);
-            process_single(&mut total_amount, &mut time, &inner.p2_data);
-            process_infinite(&mut total_amount, &mut time, &inner.p3_data);
+            process_limited_regular(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count);
+            process_single_regular(&mut total_amount, &mut time, &inner.p2_data);
+            process_infinite_regular(&mut total_amount, &mut time, &inner.p3_data);
         }
         CycleSeq::LoopLimSin(inner) => {
             if time >= OF(0.0) {
@@ -97,7 +97,7 @@ where
     total_amount
 }
 
-fn process_single<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+fn process_single_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
@@ -111,7 +111,7 @@ where
     *time -= data.time;
 }
 
-fn process_limited<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_count: Count)
+fn process_limited_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_count: Count)
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
@@ -128,7 +128,7 @@ where
     }
 }
 
-fn process_infinite<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+fn process_infinite_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
@@ -144,7 +144,7 @@ where
     }
 }
 
-fn get_count_full_repeats(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> AttrVal {
+pub(super) fn get_count_full_repeats(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> AttrVal {
     let time_no_tail = time - cycle_tail_time;
     if time_no_tail < cycle_time {
         return OF(0.0);

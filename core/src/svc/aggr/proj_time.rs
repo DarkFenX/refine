@@ -1,10 +1,10 @@
 use super::{
-    precalc::aggr_precalc_by_time,
+    precalc::{AggrPartData, aggr_precalc_by_time, get_count_full_repeats},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output},
     traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, OF},
+    def::{AttrVal, Count, OF},
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::UItemKey,
@@ -47,7 +47,7 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Private functions
+// Non-spool
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn aggr_total_regular<T>(
     ctx: SvcCtx,
@@ -101,6 +101,9 @@ where
     Some(aggr_precalc_by_time(precalc, time))
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Spool-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn aggr_total_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -148,8 +151,86 @@ where
                 false => None,
             }
         }
-        CycleSeq::LimInf(inner) => None,
-        CycleSeq::LimSinInf(inner) => None,
-        CycleSeq::LoopLimSin(inner) => None,
+        CycleSeq::LimInf(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
+            // Non-spool handling for case when interruptions happen every cycle
+            true => {
+                let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
+                let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+                let precalc = inner.convert_extend(p1_opc, p2_opc);
+                Some(aggr_precalc_by_time(precalc, time))
+            }
+            false => None,
+        },
+        CycleSeq::LimSinInf(inner) => match inner.p1_data.interrupt.is_some()
+            && inner.p2_data.interrupt.is_some()
+            && inner.p3_data.interrupt.is_some()
+        {
+            // Non-spool handling for case when interruptions happen every cycle
+            true => {
+                let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
+                let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+                let p3_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p3_data.chargedness);
+                let precalc = inner.convert_extend(p1_opc, p2_opc, p3_opc);
+                Some(aggr_precalc_by_time(precalc, time))
+            }
+            false => None,
+        },
+        CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
+            // Non-spool handling for case when interruptions happen every cycle
+            true => {
+                let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
+                let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+                let precalc = inner.convert_extend(p1_opc, p2_opc);
+                Some(aggr_precalc_by_time(precalc, time))
+            }
+            false => None,
+        },
+    }
+}
+
+fn process_single_spool<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+where
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+{
+    if *time < OF(0.0) {
+        return;
+    }
+    match *time >= data.time + data.tail_time {
+        true => *total_amount += data.output.get_amount_sum(),
+        false => *total_amount += data.output.get_amount_sum_by_time(*time),
+    }
+    *time -= data.time;
+}
+
+fn process_limited_spool<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_count: Count)
+where
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+{
+    if *time < OF(0.0) {
+        return;
+    }
+    let full_repeats = repeat_count.min(get_count_full_repeats(*time, data.time, data.tail_time).into_inner() as Count);
+    *total_amount += data.output.get_amount_sum() * AttrVal::from(full_repeats);
+    let mut remaining_repeats = repeat_count - full_repeats;
+    while *time >= OF(0.0) && remaining_repeats > 0 {
+        *total_amount += data.output.get_amount_sum_by_time(*time);
+        *time -= data.time;
+        remaining_repeats -= 1;
+    }
+}
+
+fn process_infinite_spool<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+where
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+{
+    if *time < OF(0.0) {
+        return;
+    }
+    let full_repeats = get_count_full_repeats(*time, data.time, data.tail_time);
+    *total_amount += data.output.get_amount_sum() * full_repeats;
+    *time -= data.time * full_repeats;
+    while *time >= OF(0.0) {
+        *total_amount += data.output.get_amount_sum_by_time(*time);
+        *time -= data.time;
     }
 }
