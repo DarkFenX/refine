@@ -5,3 +5,7 @@ pub(crate) trait Named {
 pub(crate) trait GetId<T> {
     fn get_id(&self) -> T;
 }
+
+pub(crate) trait Extend<T, U> {
+    fn extend(&mut self, extra_data: T) -> U;
+}
