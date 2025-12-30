@@ -1,6 +1,6 @@
 use super::{
     proj_shared::{AggrProjInvData, get_proj_output, get_proj_output_spool},
-    shared::{AggrAmount, AggrOutput},
+    shared::{AggrAmount, AggrOutput, calc_charge_mult},
     traits::LimitAmount,
 };
 use crate::{
@@ -90,12 +90,7 @@ where
         && let Some(spool_attrs) = effect.spool_attr_keys
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_key, effect, spool, spool_attrs)
     {
-        let charge_mult = match ospec.charge_mult {
-            Some(charge_mult_getter) if let Some(chargedness) = cycle.chargedness => {
-                charge_mult_getter(ctx, calc, projector_key, chargedness)
-            }
-            _ => None,
-        };
+        let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle.chargedness);
         get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - OF(1.0))
     } else {
         get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle.chargedness)

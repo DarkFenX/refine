@@ -1,6 +1,6 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
-    shared::AggrAmount,
+    shared::{AggrAmount, calc_charge_mult},
     traits::{LimitAmount, Maximum},
 };
 use crate::{
@@ -146,12 +146,7 @@ where
     let mut total_time = OF(0.0);
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = match ospec.charge_mult {
-            Some(charge_mult_getter) if let Some(chargedness) = cycle_part.data.chargedness => {
-                charge_mult_getter(ctx, calc, projector_key, chargedness)
-            }
-            _ => None,
-        };
+        let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_part.data.chargedness);
         for i in 0..cycle_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
@@ -251,12 +246,7 @@ where
     let mut max_amount = T::default();
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = match ospec.charge_mult {
-            Some(charge_mult_getter) if let Some(chargedness) = cycle_part.data.chargedness => {
-                charge_mult_getter(ctx, calc, projector_key, chargedness)
-            }
-            _ => None,
-        };
+        let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_part.data.chargedness);
         for i in 0..cycle_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {

@@ -1,6 +1,6 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
-    shared::AggrAmount,
+    shared::{AggrAmount, calc_charge_mult},
     traits::LimitAmount,
 };
 use crate::{
@@ -78,12 +78,7 @@ where
             },
         };
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = match ospec.charge_mult {
-            Some(charge_mult_getter) if let Some(chargedness) = cycle_part.data.chargedness => {
-                charge_mult_getter(ctx, calc, projector_key, chargedness)
-            }
-            _ => None,
-        };
+        let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_part.data.chargedness);
         for i in 0..part_cycle_count {
             // Case when the rest of cycle part is at full spool
             if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {

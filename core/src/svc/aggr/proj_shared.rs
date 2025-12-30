@@ -1,5 +1,6 @@
 use ordered_float::Float;
 
+use super::shared::process_mult;
 use crate::{
     def::{AttrVal, Count, OF},
     misc::{AttrSpec, EffectSpec},
@@ -82,13 +83,6 @@ where
             amount_limit,
             mult_post,
         })
-    }
-}
-
-fn process_mult(mult: AttrVal) -> Option<AttrVal> {
-    match mult {
-        OF(1.0) => None,
-        v => Some(v),
     }
 }
 
