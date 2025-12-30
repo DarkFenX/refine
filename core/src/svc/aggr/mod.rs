@@ -12,16 +12,18 @@ pub(in crate::svc) use proj_first::{
 };
 pub(in crate::svc) use proj_looped::{aggr_proj_looped_amount, aggr_proj_looped_max, aggr_proj_looped_ps};
 pub(in crate::svc) use proj_shared::{AggrProjInvData, get_proj_output};
+pub(in crate::svc) use proj_time::aggr_proj_time_amount;
 
-mod cache;
 mod local_clip;
 mod local_first;
 mod local_looped;
 mod local_shared;
 mod local_time;
+mod precalc;
 mod proj_clip;
 mod proj_first;
 mod proj_looped;
 mod proj_shared;
+mod proj_time;
 mod shared;
 mod traits;
