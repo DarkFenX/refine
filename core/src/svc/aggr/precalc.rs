@@ -1,4 +1,3 @@
-use super::traits::LimitAmount;
 use crate::{
     def::{AttrVal, Count, OF},
     svc::{
@@ -43,36 +42,22 @@ where
     let mut total_amount = T::default();
     match precalc {
         CycleSeq::Lim(inner) => {
-            if time > OF(0.0) {
-                process_limited(&mut total_amount, &mut time, &inner.data, inner.repeat_count)
-            }
+            process_limited(&mut total_amount, &mut time, &inner.data, inner.repeat_count);
         }
         CycleSeq::Inf(inner) => {
-            if time > OF(0.0) {
-                process_infinite(&mut total_amount, &mut time, &inner.data)
-            }
+            process_infinite(&mut total_amount, &mut time, &inner.data);
         }
         CycleSeq::LimInf(inner) => {
-            if time > OF(0.0) {
-                process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count)
-            }
-            if time > OF(0.0) {
-                process_infinite(&mut total_amount, &mut time, &inner.p2_data)
-            }
+            process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count);
+            process_infinite(&mut total_amount, &mut time, &inner.p2_data);
         }
         CycleSeq::LimSinInf(inner) => {
-            if time > OF(0.0) {
-                process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count)
-            }
-            if time > OF(0.0) {
-                process_single(&mut total_amount, &mut time, &inner.p2_data)
-            }
-            if time > OF(0.0) {
-                process_infinite(&mut total_amount, &mut time, &inner.p3_data)
-            }
+            process_limited(&mut total_amount, &mut time, &inner.p1_data, inner.p1_repeat_count);
+            process_single(&mut total_amount, &mut time, &inner.p2_data);
+            process_infinite(&mut total_amount, &mut time, &inner.p3_data);
         }
         CycleSeq::LoopLimSin(inner) => {
-            if time > OF(0.0) {
+            if time >= OF(0.0) {
                 // Calculate total "tail time" for whole looped sequence. Data format implies that
                 // output can be different, so theoretically tail from first part can be longer than
                 // second part with its tail
@@ -116,6 +101,9 @@ fn process_single<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartDa
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
+    if *time < OF(0.0) {
+        return;
+    }
     match *time >= data.time + data.tail_time {
         true => *total_amount += data.output.get_amount_sum(),
         false => *total_amount += data.output.get_amount_sum_by_time(*time),
@@ -127,6 +115,9 @@ fn process_limited<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartD
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
+    if *time < OF(0.0) {
+        return;
+    }
     let full_repeats = repeat_count.min(get_count_full_repeats(*time, data.time, data.tail_time).into_inner() as Count);
     *total_amount += data.output.get_amount_sum() * AttrVal::from(full_repeats);
     let mut remaining_repeats = repeat_count - full_repeats;
@@ -141,6 +132,9 @@ fn process_infinite<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPart
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
+    if *time < OF(0.0) {
+        return;
+    }
     let full_repeats = get_count_full_repeats(*time, data.time, data.tail_time);
     *total_amount += data.output.get_amount_sum() * full_repeats;
     *time -= data.time * full_repeats;
