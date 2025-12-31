@@ -1,5 +1,5 @@
 use super::{
-    precalc::{aggr_precalc_by_time, get_count_full_repeats},
+    precalc::{aggr_precalc_by_time, get_full_repeats_count},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     traits::LimitAmount,
 };
@@ -297,6 +297,8 @@ where
                 let mut total_amount = T::default();
                 let mut uninterrupted_cycles = 0;
                 while time >= OF(0.0) {
+                    let mut loop_total_amount = T::default();
+                    let saved_interrupted_cycles = uninterrupted_cycles;
                     process_limited_spool(
                         ctx,
                         calc,
@@ -305,7 +307,7 @@ where
                         &inv_proj,
                         &inv_spool,
                         inner.p1_data,
-                        &mut total_amount,
+                        &mut loop_total_amount,
                         &mut time,
                         &mut uninterrupted_cycles,
                         inner.p1_repeat_count,
@@ -318,10 +320,25 @@ where
                         &inv_proj,
                         &inv_spool,
                         inner.p2_data,
-                        &mut total_amount,
+                        &mut loop_total_amount,
                         &mut time,
                         &mut uninterrupted_cycles,
                     );
+                    total_amount += loop_total_amount;
+                    // We detect if next loop result is going to be the same as previous one by
+                    // tracking uninterrupted cycle count. If they are the same, then output added
+                    // by next loop should be the same, provided there is enough time for full loop
+                    if uninterrupted_cycles == saved_interrupted_cycles && time >= OF(0.0) {
+                        let loop_time = inner.p1_data.time * AttrVal::from(inner.p1_repeat_count) + inner.p2_data.time;
+                        let loop_tail_time = (inv_proj.output.get_completion_time() - inner.p2_data.time).max(OF(0.0));
+                        let loop_full_repeat_count = get_full_repeats_count(time, loop_time, loop_tail_time);
+                        // Fast-forward by count of full repeating loops remaining time can fit
+                        if loop_full_repeat_count > 0 {
+                            let loop_full_repeat_count = AttrVal::from(loop_full_repeat_count);
+                            total_amount += loop_total_amount * loop_full_repeat_count;
+                            time -= loop_time * loop_full_repeat_count;
+                        }
+                    }
                 }
                 Some(total_amount)
             }
@@ -393,12 +410,14 @@ fn process_limited_spool<T>(
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == 0 {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, OF(0.0));
-            let full_repeats = repeat_limit.min(get_count_full_repeats(*time, cycle_data.time, cycle_tail_time));
+            let full_repeats = repeat_limit.min(get_full_repeats_count(*time, cycle_data.time, cycle_tail_time));
             // Full repeats
-            repeat_limit -= full_repeats;
-            let full_repeats = AttrVal::from(full_repeats);
-            *total_amount += cycle_output.get_amount_sum() * full_repeats;
-            *time -= cycle_data.time * full_repeats;
+            if full_repeats > 0 {
+                repeat_limit -= full_repeats;
+                let full_repeats = AttrVal::from(full_repeats);
+                *total_amount += cycle_output.get_amount_sum() * full_repeats;
+                *time -= cycle_data.time * full_repeats;
+            }
             // Partial repeats
             while *time >= OF(0.0) && repeat_limit > 0 {
                 repeat_limit -= 1;
@@ -409,13 +428,15 @@ fn process_limited_spool<T>(
         } else if cycle_data.interrupt.is_none() && *uninterrupted_cycles >= inv_spool.cycles_to_max {
             // Shortcut #2: we're at max spool and sequence is not interruptable
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, inv_spool.max);
-            let full_repeats = repeat_limit.min(get_count_full_repeats(*time, cycle_data.time, cycle_tail_time));
+            let full_repeats = repeat_limit.min(get_full_repeats_count(*time, cycle_data.time, cycle_tail_time));
             // Full repeats
-            repeat_limit -= full_repeats;
-            *uninterrupted_cycles += full_repeats;
-            let full_repeats = AttrVal::from(full_repeats);
-            *total_amount += cycle_output.get_amount_sum() * full_repeats;
-            *time -= cycle_data.time * full_repeats;
+            if full_repeats > 0 {
+                repeat_limit -= full_repeats;
+                *uninterrupted_cycles += full_repeats;
+                let full_repeats = AttrVal::from(full_repeats);
+                *total_amount += cycle_output.get_amount_sum() * full_repeats;
+                *time -= cycle_data.time * full_repeats;
+            }
             // Partial repeats
             while *time >= OF(0.0) && repeat_limit > 0 {
                 repeat_limit -= 1;
@@ -470,7 +491,7 @@ fn process_infinite_spool<T>(
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == 0 {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, OF(0.0));
-            let full_repeats = AttrVal::from(get_count_full_repeats(*time, cycle_data.time, cycle_tail_time));
+            let full_repeats = AttrVal::from(get_full_repeats_count(*time, cycle_data.time, cycle_tail_time));
             // Full repeats
             *total_amount += cycle_output.get_amount_sum() * full_repeats;
             *time -= cycle_data.time * full_repeats;
@@ -483,7 +504,7 @@ fn process_infinite_spool<T>(
         } else if cycle_data.interrupt.is_none() && *uninterrupted_cycles >= inv_spool.cycles_to_max {
             // Shortcut #2: we're at max spool and sequence is not interruptable
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, inv_spool.max);
-            let full_repeats = get_count_full_repeats(*time, cycle_data.time, cycle_tail_time);
+            let full_repeats = get_full_repeats_count(*time, cycle_data.time, cycle_tail_time);
             // Full repeats
             *uninterrupted_cycles += full_repeats;
             let full_repeats = AttrVal::from(full_repeats);
