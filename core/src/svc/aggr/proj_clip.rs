@@ -91,7 +91,7 @@ where
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
-            let spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, spool);
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = 0,

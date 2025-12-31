@@ -17,7 +17,7 @@ pub(in crate::svc) struct AggrProjInvData<T>
 where
     T: Copy,
 {
-    output: Output<T>,
+    pub(super) output: Output<T>,
     amount_limit: Option<AttrVal>,
     mult_post: Option<AttrVal>,
 }
@@ -90,7 +90,7 @@ where
 // Spool-related invariant data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct AggrSpoolInvData {
-    pub(super) step: AttrVal,
+    step: AttrVal,
     pub(super) max: AttrVal,
     pub(super) cycles_to_max: Count,
 }
@@ -126,6 +126,9 @@ impl AggrSpoolInvData {
             max,
             cycles_to_max: ceil_unerr(cycles).into_inner() as Count,
         })
+    }
+    pub(super) fn calc_cycle_spool(&self, uninterrupted_cycles: Count) -> AttrVal {
+        Float::min(self.max, self.step * uninterrupted_cycles as f64)
     }
 }
 

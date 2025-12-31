@@ -170,7 +170,7 @@ where
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
-            let cycle_spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update total values
             total_amount += cycle_output.get_amount_sum();
@@ -267,7 +267,7 @@ where
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
-            let cycle_spool = inv_spool.max.min(inv_spool.step * uninterrupted_cycles as f64);
+            let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update result
             max_amount = max_amount.maximum(cycle_output.get_max_amount());
