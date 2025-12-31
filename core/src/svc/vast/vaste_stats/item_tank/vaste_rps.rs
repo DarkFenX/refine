@@ -194,7 +194,8 @@ fn get_irr_data(
                             time,
                         ) {
                             // Adjust averaged reps per second to initial cycle duration to for
-                            // purposes of RR stacking penalty calculation
+                            // purposes of RR stacking penalty calculation. This does not provide
+                            // accurate result, but is likely to be a good enough approximation.
                             let first_cycle_duration = cseq.get_first_cycle().time;
                             result.push(IrrEntry {
                                 amount: effect_rps * first_cycle_duration,
@@ -213,7 +214,8 @@ fn get_irr_data(
                             Some(projectee_item_key),
                         ) {
                             // Adjust averaged reps per second to initial cycle duration to for
-                            // purposes of RR stacking penalty calculation
+                            // purposes of RR stacking penalty calculation. This does not provide
+                            // accurate result, but is likely to be a good enough approximation.
                             let first_cycle_duration = cseq.get_first_cycle().time;
                             result.push(IrrEntry {
                                 amount: effect_rps * first_cycle_duration,

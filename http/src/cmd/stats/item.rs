@@ -395,9 +395,9 @@ fn get_rps_stats(
 ) -> Option<Vec<HStatTankRegen<HStatLayerRps, HStatLayerRpsRegen>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
+        let core_time_options = option.time_options.into();
         let core_shield = rc::UnitInterval::new_clamped(option.shield_perc);
-        let core_spool = option.spool.map(Into::into);
-        match core_item.get_stat_rps(core_shield, core_spool) {
+        match core_item.get_stat_rps(core_time_options, core_shield) {
             Ok(core_stat) => results.push(core_stat.into()),
             Err(_) => return None,
         }
@@ -411,9 +411,9 @@ fn get_erps_stats(
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(Into::into);
+        let core_time_options = option.time_options.into();
         let core_shield = rc::UnitInterval::new_clamped(option.shield_perc);
-        let core_spool = option.spool.map(Into::into);
-        match core_item.get_stat_erps(core_incoming_dps, core_shield, core_spool) {
+        match core_item.get_stat_erps(core_incoming_dps, core_time_options, core_shield) {
             Ok(core_stat) => results.push(HStatTankRegen::from_opt(core_stat)),
             Err(_) => return None,
         }

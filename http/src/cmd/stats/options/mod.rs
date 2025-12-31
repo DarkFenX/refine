@@ -23,6 +23,7 @@ mod option_resolved;
 mod outgoing_cps;
 mod outgoing_nps;
 mod outgoing_rps;
+mod shared;
 mod tank_ehp;
 mod tank_erps;
 mod tank_rps;
