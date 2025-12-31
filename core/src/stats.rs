@@ -6,6 +6,6 @@ pub use crate::{
         StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatJamApplied, StatLayerEhp, StatLayerErps,
         StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatMiningItemKinds,
         StatNeutItemKinds, StatOutRepItemKinds, StatRes, StatSensors, StatSensorsKind, StatSlot, StatTank,
-        StatTankRegen,
+        StatTankRegen, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
 };

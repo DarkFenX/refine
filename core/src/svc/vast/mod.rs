@@ -11,6 +11,7 @@ pub(crate) use vaste_stats::StatCapSimStaggerInt;
 pub use vaste_stats::{
     StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatLayerEhp,
     StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatRes, StatSlot,
+    StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
 };
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
