@@ -1,12 +1,12 @@
 use super::shared::get_tanking_efficiency;
 use crate::{
     def::AttrVal,
-    misc::{DpsProfile, Spool},
+    misc::DpsProfile,
     svc::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{StatTankRegen, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
+        vast::{StatTankRegen, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::UItemKey,
     util::UnitInterval,
@@ -34,11 +34,11 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         incoming_dps: Option<DpsProfile>,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
-        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, shield_perc, spool);
+        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, time_options, shield_perc);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_key);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(&resists.shield, incoming_dps);

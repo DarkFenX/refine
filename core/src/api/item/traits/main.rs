@@ -16,7 +16,7 @@ use crate::{
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
             StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensors,
-            StatTank, StatTankRegen,
+            StatTank, StatTankRegen, StatTimeOptions,
         },
     },
     ud::{UEffectUpdates, UItemKey},
@@ -283,25 +283,25 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn get_stat_rps(
         &mut self,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_rps(&sol.u_data, item_key, shield_perc, spool)
+            .get_stat_item_rps(&sol.u_data, item_key, time_options, shield_perc)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_erps(
         &mut self,
         incoming_dps: Option<DpsProfile>,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_erps(&sol.u_data, item_key, incoming_dps, shield_perc, spool)
+            .get_stat_item_erps(&sol.u_data, item_key, incoming_dps, time_options, shield_perc)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

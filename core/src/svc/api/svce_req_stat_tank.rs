@@ -1,12 +1,12 @@
 use crate::{
     def::AttrVal,
-    misc::{DmgKinds, DpsProfile, Spool},
+    misc::{DmgKinds, DpsProfile},
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
         vast::{
             StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatTank,
-            StatTankRegen, Vast,
+            StatTankRegen, StatTimeOptions, Vast,
         },
     },
     ud::{UData, UItemKey},
@@ -47,15 +47,15 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
         self.vast.get_stat_item_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
+            time_options,
             shield_perc,
-            spool,
         )
     }
     pub(crate) fn get_stat_item_erps(
@@ -63,16 +63,16 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
         incoming_dps: Option<DpsProfile>,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, StatItemCheckError> {
         self.vast.get_stat_item_erps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             incoming_dps,
+            time_options,
             shield_perc,
-            spool,
         )
     }
     pub(crate) fn get_stat_item_resists(

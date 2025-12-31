@@ -2,10 +2,10 @@ use crate::{
     api::{FitMut, ItemMutCommon},
     def::AttrVal,
     err::FitShipStatError,
-    misc::{DmgKinds, DpsProfile, Spool},
+    misc::{DmgKinds, DpsProfile},
     svc::vast::{
         StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatTank,
-        StatTankRegen,
+        StatTankRegen, StatTimeOptions,
     },
     util::UnitInterval,
 };
@@ -28,19 +28,19 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stat_rps(
         &mut self,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_rps(shield_perc, spool)?)
+        Ok(self.get_ship_for_stats()?.get_stat_rps(time_options, shield_perc)?)
     }
     pub fn get_stat_erps(
         &mut self,
         incoming_dps: Option<DpsProfile>,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, FitShipStatError> {
         Ok(self
             .get_ship_for_stats()?
-            .get_stat_erps(incoming_dps, shield_perc, spool)?)
+            .get_stat_erps(incoming_dps, time_options, shield_perc)?)
     }
 }

@@ -1,14 +1,19 @@
 use crate::{
     def::{AttrVal, OF},
-    misc::Spool,
     rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_first_ps, aggr_proj_first_amount},
+        aggr::{
+            aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time_ps, aggr_proj_first_amount, aggr_proj_looped_ps,
+            aggr_proj_time_ps,
+        },
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::get_item_cseq_map,
         err::StatItemCheckError,
-        vast::{StatTankRegen, Vast, shared::calc_regen, vaste_stats::item_checks::check_drone_fighter_ship},
+        vast::{
+            StatTankRegen, StatTimeOptions, Vast, shared::calc_regen,
+            vaste_stats::item_checks::check_drone_fighter_ship,
+        },
     },
     ud::{UItem, UItemKey},
     util::{RMapRMap, RMapRMapRMap, UnitInterval, trunc_unerr},
@@ -33,11 +38,11 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, shield_perc, spool))
+        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_key, item, time_options, shield_perc))
     }
     pub(super) fn get_stat_item_rps_unchecked(
         &self,
@@ -45,24 +50,24 @@ impl Vast {
         calc: &mut Calc,
         item_key: UItemKey,
         item: &UItem,
+        time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-        spool: Option<Spool>,
     ) -> StatTankRegen<StatLayerRps, StatLayerRpsRegen> {
         // Local reps
         let (local_shield, local_armor, local_hull) = match item {
             UItem::Ship(u_ship) => {
                 let fit_data = self.get_fit_data(&u_ship.get_fit_key());
-                let local_shield = get_local_rps(ctx, calc, &fit_data.lr_shield);
-                let local_armor = get_local_rps(ctx, calc, &fit_data.lr_armor);
-                let local_hull = get_local_rps(ctx, calc, &fit_data.lr_hull);
+                let local_shield = get_local_rps(ctx, calc, time_options, &fit_data.lr_shield);
+                let local_armor = get_local_rps(ctx, calc, time_options, &fit_data.lr_armor);
+                let local_hull = get_local_rps(ctx, calc, time_options, &fit_data.lr_hull);
                 (local_shield, local_armor, local_hull)
             }
             _ => (OF(0.0), OF(0.0), OF(0.0)),
         };
         // Incoming remote reps
-        let shield_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_shield);
-        let armor_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_armor);
-        let hull_irr_data = get_irr_data(ctx, calc, item_key, spool, &self.irr_hull);
+        let shield_irr_data = get_irr_data(ctx, calc, item_key, time_options, &self.irr_shield);
+        let armor_irr_data = get_irr_data(ctx, calc, item_key, time_options, &self.irr_armor);
+        let hull_irr_data = get_irr_data(ctx, calc, item_key, time_options, &self.irr_hull);
         // Regen
         let shield_regen = get_shield_regen(ctx, calc, item_key, shield_perc);
         StatTankRegen {
@@ -86,16 +91,16 @@ impl Vast {
     }
 }
 
-const RPS_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Burst;
-
 fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    rep_data: &RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    time_options: StatTimeOptions,
+    lrr_data: &RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
-    for (&item_key, item_data) in rep_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, RPS_CYCLE_OPTIONS, false) {
+    let cycling_options = time_options.into();
+    for (&item_key, item_data) in lrr_data.iter() {
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
             Some(cseq_map) => cseq_map,
             None => continue,
         };
@@ -105,8 +110,24 @@ fn get_local_rps(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_rps) = aggr_local_first_ps(ctx, calc, item_key, effect, cseq, ospec) {
-                total_rps += effect_rps;
+            match time_options {
+                StatTimeOptions::Burst(_) => {
+                    if let Some(effect_rps) = aggr_local_first_ps(ctx, calc, item_key, effect, cseq, ospec) {
+                        total_rps += effect_rps;
+                    }
+                }
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > OF(0.0) => {
+                        if let Some(effect_rps) = aggr_local_time_ps(ctx, calc, item_key, effect, cseq, ospec, time) {
+                            total_rps += effect_rps;
+                        }
+                    }
+                    _ => {
+                        if let Some(effect_rps) = aggr_local_looped_ps(ctx, calc, item_key, effect, cseq, ospec) {
+                            total_rps += effect_rps;
+                        }
+                    }
+                },
             }
         }
     }
@@ -122,16 +143,17 @@ fn get_irr_data(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_key: UItemKey,
-    spool: Option<Spool>,
-    sol_irrs: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    time_options: StatTimeOptions,
+    irr_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
-    let incoming_reps = match sol_irrs.get_l1(&projectee_item_key) {
+    let incoming_reps = match irr_data.get_l1(&projectee_item_key) {
         Some(incoming_reps) => incoming_reps,
         None => return result,
     };
+    let cycling_options = time_options.into();
     for (&projector_item_key, projector_data) in incoming_reps.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_key, RPS_CYCLE_OPTIONS, false) {
+        let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_key, cycling_options, false) {
             Some(cseq_map) => cseq_map,
             None => continue,
         };
@@ -141,22 +163,65 @@ fn get_irr_data(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            if let Some(effect_rep) = aggr_proj_first_amount(
-                ctx,
-                calc,
-                projector_item_key,
-                effect,
-                cseq,
-                ospec,
-                Some(projectee_item_key),
-                spool,
-            ) {
-                result.push(IrrEntry {
-                    // For now there are no reps which spread effect over multiple cycles, so we just
-                    // record total amount for the purposes of RR penalty
-                    amount: effect_rep.amount,
-                    cycle_time: effect_rep.time,
-                });
+            match time_options {
+                StatTimeOptions::Burst(burst_opts) => {
+                    if let Some(effect_rep) = aggr_proj_first_amount(
+                        ctx,
+                        calc,
+                        projector_item_key,
+                        effect,
+                        cseq,
+                        ospec,
+                        Some(projectee_item_key),
+                        burst_opts.spool,
+                    ) {
+                        result.push(IrrEntry {
+                            amount: effect_rep.amount,
+                            cycle_time: effect_rep.time,
+                        });
+                    }
+                }
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > OF(0.0) => {
+                        if let Some(effect_rps) = aggr_proj_time_ps(
+                            ctx,
+                            calc,
+                            projector_item_key,
+                            effect,
+                            cseq,
+                            ospec,
+                            Some(projectee_item_key),
+                            time,
+                        ) {
+                            // Adjust averaged reps per second to initial cycle duration to for
+                            // purposes of RR stacking penalty calculation
+                            let first_cycle_duration = cseq.get_first_cycle().time;
+                            result.push(IrrEntry {
+                                amount: effect_rps * first_cycle_duration,
+                                cycle_time: first_cycle_duration,
+                            });
+                        }
+                    }
+                    _ => {
+                        if let Some(effect_rps) = aggr_proj_looped_ps(
+                            ctx,
+                            calc,
+                            projector_item_key,
+                            effect,
+                            cseq,
+                            ospec,
+                            Some(projectee_item_key),
+                        ) {
+                            // Adjust averaged reps per second to initial cycle duration to for
+                            // purposes of RR stacking penalty calculation
+                            let first_cycle_duration = cseq.get_first_cycle().time;
+                            result.push(IrrEntry {
+                                amount: effect_rps * first_cycle_duration,
+                                cycle_time: first_cycle_duration,
+                            });
+                        }
+                    }
+                },
             }
         }
     }

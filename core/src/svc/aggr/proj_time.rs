@@ -16,6 +16,29 @@ use crate::{
 };
 
 // Projected effects, aggregates total output by specified time
+pub(in crate::svc) fn aggr_proj_time_ps<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    effect: &REffect,
+    cseq: &CycleSeq,
+    ospec: &REffectProjOpcSpec<T>,
+    projectee_key: Option<UItemKey>,
+    time: AttrVal,
+) -> Option<T>
+where
+    T: Default
+        + Copy
+        + Eq
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + std::ops::Div<AttrVal, Output = T>
+        + LimitAmount,
+{
+    aggr_proj_time_amount(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, time).map(|v| v / time)
+}
+
 pub(in crate::svc) fn aggr_proj_time_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,

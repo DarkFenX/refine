@@ -11,6 +11,28 @@ use crate::{
 };
 
 // Local effects, aggregates total output by specified time
+pub(in crate::svc) fn aggr_local_time_ps<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_key: UItemKey,
+    effect: &REffect,
+    cseq: &CycleSeq,
+    ospec: &REffectLocalOpcSpec<T>,
+    time: AttrVal,
+) -> Option<T>
+where
+    T: Default
+        + Copy
+        + Eq
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + std::ops::Div<AttrVal, Output = T>
+        + LimitAmount,
+{
+    aggr_local_time_amount(ctx, calc, item_key, effect, cseq, ospec, time).map(|v| v / time)
+}
+
 pub(in crate::svc) fn aggr_local_time_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
