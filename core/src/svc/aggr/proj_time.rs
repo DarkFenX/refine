@@ -1,5 +1,5 @@
 use super::{
-    precalc::{AggrPartData, aggr_precalc_by_time, get_count_full_repeats},
+    precalc::{aggr_precalc_by_time, get_count_full_repeats},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     traits::LimitAmount,
 };
@@ -143,7 +143,24 @@ where
                     Some(aggr_precalc_by_time(precalc, time))
                 }
                 // Spool is considered
-                false => None,
+                false => {
+                    let mut total_amount = T::default();
+                    let mut uninterrupted_cycles = 0;
+                    process_limited_spool(
+                        ctx,
+                        calc,
+                        projector_key,
+                        ospec,
+                        &inv_proj,
+                        &inv_spool,
+                        inner.data,
+                        &mut total_amount,
+                        &mut time,
+                        &mut uninterrupted_cycles,
+                        inner.repeat_count,
+                    );
+                    Some(total_amount)
+                }
             }
         }
         CycleSeq::Inf(inner) => {
@@ -164,7 +181,7 @@ where
                         projector_key,
                         ospec,
                         &inv_proj,
-                        inv_spool,
+                        &inv_spool,
                         inner.data,
                         &mut total_amount,
                         &mut time,
@@ -182,7 +199,36 @@ where
                 let precalc = inner.convert_extend(p1_opc, p2_opc);
                 Some(aggr_precalc_by_time(precalc, time))
             }
-            false => None,
+            false => {
+                let mut total_amount = T::default();
+                let mut uninterrupted_cycles = 0;
+                process_limited_spool(
+                    ctx,
+                    calc,
+                    projector_key,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    inner.p1_data,
+                    &mut total_amount,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                    inner.p1_repeat_count,
+                );
+                process_infinite_spool(
+                    ctx,
+                    calc,
+                    projector_key,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    inner.p2_data,
+                    &mut total_amount,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                );
+                Some(total_amount)
+            }
         },
         CycleSeq::LimSinInf(inner) => match inner.p1_data.interrupt.is_some()
             && inner.p2_data.interrupt.is_some()
@@ -196,7 +242,48 @@ where
                 let precalc = inner.convert_extend(p1_opc, p2_opc, p3_opc);
                 Some(aggr_precalc_by_time(precalc, time))
             }
-            false => None,
+            false => {
+                let mut total_amount = T::default();
+                let mut uninterrupted_cycles = 0;
+                process_limited_spool(
+                    ctx,
+                    calc,
+                    projector_key,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    inner.p1_data,
+                    &mut total_amount,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                    inner.p1_repeat_count,
+                );
+                process_single_spool(
+                    ctx,
+                    calc,
+                    projector_key,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    inner.p2_data,
+                    &mut total_amount,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                );
+                process_infinite_spool(
+                    ctx,
+                    calc,
+                    projector_key,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    inner.p3_data,
+                    &mut total_amount,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                );
+                Some(total_amount)
+            }
         },
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
@@ -211,44 +298,13 @@ where
     }
 }
 
-fn process_single_spool<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
-where
-    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
-{
-    if *time < OF(0.0) {
-        return;
-    }
-    match *time >= data.time + data.tail_time {
-        true => *total_amount += data.output.get_amount_sum(),
-        false => *total_amount += data.output.get_amount_sum_by_time(*time),
-    }
-    *time -= data.time;
-}
-
-fn process_limited_spool<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_count: Count)
-where
-    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
-{
-    if *time < OF(0.0) {
-        return;
-    }
-    let full_repeats = repeat_count.min(get_count_full_repeats(*time, data.time, data.tail_time).into_inner() as Count);
-    *total_amount += data.output.get_amount_sum() * AttrVal::from(full_repeats);
-    let mut remaining_repeats = repeat_count - full_repeats;
-    while *time >= OF(0.0) && remaining_repeats > 0 {
-        *total_amount += data.output.get_amount_sum_by_time(*time);
-        *time -= data.time;
-        remaining_repeats -= 1;
-    }
-}
-
-fn process_infinite_spool<T>(
+fn process_single_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_key: UItemKey,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
-    inv_spool: AggrSpoolInvData,
+    inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
     total_amount: &mut T,
     time: &mut AttrVal,
@@ -264,9 +320,85 @@ fn process_infinite_spool<T>(
     if *time < OF(0.0) {
         return;
     }
+    let cycle_completion_time = cycle_data.time.max(inv_proj.output.get_completion_time());
     let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_data.chargedness);
+    let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
+    let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
+    match *time >= cycle_completion_time {
+        true => *total_amount += cycle_output.get_amount_sum(),
+        false => *total_amount += cycle_output.get_amount_sum_by_time(*time),
+    }
+    *time -= cycle_data.time;
+    match cycle_data.interrupt {
+        Some(_) => *uninterrupted_cycles = 0,
+        None => *uninterrupted_cycles += 1,
+    }
+}
+
+fn process_limited_spool<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    ospec: &REffectProjOpcSpec<T>,
+    inv_proj: &AggrProjInvData<T>,
+    inv_spool: &AggrSpoolInvData,
+    cycle_data: CycleDataFull,
+    total_amount: &mut T,
+    time: &mut AttrVal,
+    uninterrupted_cycles: &mut Count,
+    mut repeat_limit: Count,
+) where
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
+{
     let cycle_tail_time = (inv_proj.output.get_completion_time() - cycle_data.time).max(OF(0.0));
     let cycle_completion_time = cycle_data.time + cycle_tail_time;
+    let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_data.chargedness);
+    while *time >= OF(0.0) && repeat_limit > 0 {
+        let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
+        let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
+        match *time >= cycle_completion_time {
+            true => *total_amount += cycle_output.get_amount_sum(),
+            false => *total_amount += cycle_output.get_amount_sum_by_time(*time),
+        }
+        *time -= cycle_data.time;
+        match cycle_data.interrupt {
+            Some(_) => *uninterrupted_cycles = 0,
+            None => *uninterrupted_cycles += 1,
+        }
+        repeat_limit -= 1;
+    }
+}
+
+fn process_infinite_spool<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_key: UItemKey,
+    ospec: &REffectProjOpcSpec<T>,
+    inv_proj: &AggrProjInvData<T>,
+    inv_spool: &AggrSpoolInvData,
+    cycle_data: CycleDataFull,
+    total_amount: &mut T,
+    time: &mut AttrVal,
+    uninterrupted_cycles: &mut Count,
+) where
+    T: Default
+        + Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<AttrVal, Output = T>
+        + std::ops::MulAssign<AttrVal>
+        + LimitAmount,
+{
+    if *time < OF(0.0) {
+        return;
+    }
+    let cycle_tail_time = (inv_proj.output.get_completion_time() - cycle_data.time).max(OF(0.0));
+    let cycle_completion_time = cycle_data.time + cycle_tail_time;
+    let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_data.chargedness);
     while *time >= OF(0.0) {
         let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
         let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
@@ -275,5 +407,9 @@ fn process_infinite_spool<T>(
             false => *total_amount += cycle_output.get_amount_sum_by_time(*time),
         }
         *time -= cycle_data.time;
+        match cycle_data.interrupt {
+            Some(_) => *uninterrupted_cycles = 0,
+            None => *uninterrupted_cycles += 1,
+        }
     }
 }

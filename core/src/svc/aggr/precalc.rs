@@ -111,16 +111,16 @@ where
     *time -= data.time;
 }
 
-fn process_limited_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_count: Count)
+fn process_limited_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_limit: Count)
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
     if *time < OF(0.0) {
         return;
     }
-    let full_repeats = repeat_count.min(get_count_full_repeats(*time, data.time, data.tail_time).into_inner() as Count);
+    let full_repeats = repeat_limit.min(get_count_full_repeats(*time, data.time, data.tail_time).into_inner() as Count);
     *total_amount += data.output.get_amount_sum() * AttrVal::from(full_repeats);
-    let mut remaining_repeats = repeat_count - full_repeats;
+    let mut remaining_repeats = repeat_limit - full_repeats;
     while *time >= OF(0.0) && remaining_repeats > 0 {
         *total_amount += data.output.get_amount_sum_by_time(*time);
         *time -= data.time;
