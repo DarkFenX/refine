@@ -293,7 +293,38 @@ where
                 let precalc = inner.convert_extend(p1_opc, p2_opc);
                 Some(aggr_precalc_by_time(precalc, time))
             }
-            false => None,
+            false => {
+                let mut total_amount = T::default();
+                let mut uninterrupted_cycles = 0;
+                while time >= OF(0.0) {
+                    process_limited_spool(
+                        ctx,
+                        calc,
+                        projector_key,
+                        ospec,
+                        &inv_proj,
+                        &inv_spool,
+                        inner.p1_data,
+                        &mut total_amount,
+                        &mut time,
+                        &mut uninterrupted_cycles,
+                        inner.p1_repeat_count,
+                    );
+                    process_single_spool(
+                        ctx,
+                        calc,
+                        projector_key,
+                        ospec,
+                        &inv_proj,
+                        &inv_spool,
+                        inner.p2_data,
+                        &mut total_amount,
+                        &mut time,
+                        &mut uninterrupted_cycles,
+                    );
+                }
+                Some(total_amount)
+            }
         },
     }
 }
