@@ -23,7 +23,7 @@ impl Vast {
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
         let orps = StatTank {
-            shield: get_orr_item_key(
+            shield: get_orps(
                 ctx,
                 calc,
                 item_key,
@@ -32,7 +32,7 @@ impl Vast {
                 projectee_key,
                 get_getter_shield,
             ),
-            armor: get_orr_item_key(
+            armor: get_orps(
                 ctx,
                 calc,
                 item_key,
@@ -41,7 +41,7 @@ impl Vast {
                 projectee_key,
                 get_getter_armor,
             ),
-            hull: get_orr_item_key(
+            hull: get_orps(
                 ctx,
                 calc,
                 item_key,
@@ -53,29 +53,9 @@ impl Vast {
         };
         Ok(orps)
     }
-    pub(in crate::svc) fn get_stat_item_outgoing_cps(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_key: UItemKey,
-        time_options: StatTimeOptions,
-        ignore_state: bool,
-        projectee_key: Option<UItemKey>,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        check_drone_fighter_module(ctx.u_data, item_key)?;
-        let ocps = get_orr_item_key(
-            ctx,
-            calc,
-            item_key,
-            time_options,
-            ignore_state,
-            projectee_key,
-            get_getter_cap,
-        );
-        Ok(ocps)
-    }
 }
 
-fn get_orr_item_key(
+fn get_orps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
@@ -142,8 +122,4 @@ fn get_getter_armor(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
 
 fn get_getter_hull(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
     effect.outgoing_hull_rep_opc_spec
-}
-
-fn get_getter_cap(effect_id: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {
-    effect_id.outgoing_cap_opc_spec
 }

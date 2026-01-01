@@ -6,54 +6,55 @@ use crate::{
         aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
-        vast::{StatOutRepItemKinds, StatTank, StatTimeOptions, Vast},
+        vast::{StatOutRepItemKinds, StatTimeOptions, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_fits_outgoing_rps(
+    pub(in crate::svc) fn get_stat_fits_outgoing_cps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
-        item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_key: Option<UItemKey>,
-    ) -> StatTank<AttrVal> {
-        let mut rps = StatTank {
-            shield: OF(0.0),
-            armor: OF(0.0),
-            hull: OF(0.0),
-        };
-        for fit_key in fit_keys {
-            let fit_data = self.get_fit_data(&fit_key);
-            rps.shield += get_orps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_shield);
-            rps.armor += get_orps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_armor);
-            rps.hull += get_orps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_hull);
-        }
-        rps
+    ) -> AttrVal {
+        fit_keys
+            .map(|fit_key| {
+                get_ocps(
+                    ctx,
+                    calc,
+                    StatOutRepItemKinds::all_enabled(),
+                    time_options,
+                    projectee_key,
+                    &self.get_fit_data(&fit_key).out_cap,
+                )
+            })
+            .sum()
     }
-    pub(in crate::svc) fn get_stat_fit_outgoing_rps(
+    pub(in crate::svc) fn get_stat_fit_outgoing_cps(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_key: UFitKey,
-        item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_key: Option<UItemKey>,
-    ) -> StatTank<AttrVal> {
+    ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
-        StatTank {
-            shield: get_orps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_shield),
-            armor: get_orps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_armor),
-            hull: get_orps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_hull),
-        }
+        get_ocps(
+            ctx,
+            calc,
+            StatOutRepItemKinds::all_enabled(),
+            time_options,
+            projectee_key,
+            &fit_data.out_cap,
+        )
     }
 }
 
-fn get_orps(
+fn get_ocps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
