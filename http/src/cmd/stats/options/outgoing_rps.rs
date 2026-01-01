@@ -1,14 +1,18 @@
 use super::shared::HStatTimeOptions;
 use crate::util::default_true;
 
+#[serde_with::serde_as]
 #[derive(Copy, Clone, Default, serde::Deserialize)]
 pub(in crate::cmd) struct HStatOptionFitOutRps {
     #[serde(default)]
     pub(in crate::cmd) item_kinds: HOutRepItemKinds,
     #[serde(default)]
     pub(in crate::cmd) time_options: HStatTimeOptions,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
+    pub(in crate::cmd) projectee_item_id: Option<rc::ItemId>,
 }
 
+#[serde_with::serde_as]
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionItemOutRps {
@@ -17,6 +21,8 @@ pub(in crate::cmd) struct HStatOptionItemOutRps {
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) ignore_state: bool,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
+    pub(in crate::cmd) projectee_item_id: Option<rc::ItemId>,
 }
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]

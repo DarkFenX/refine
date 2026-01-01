@@ -228,36 +228,29 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(Into::into);
-        match option.projectee_item_id {
+        match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_dps_applied(
                     option.reload,
                     core_spool,
                     option.include_charges,
                     option.ignore_state,
-                    &projectee_item_id,
+                    projectee_item_id,
                 ) {
                     Ok(core_stat) => results.push(Some(core_stat.into())),
-                    Err(core_err) => {
-                        match core_err {
-                            rc::err::ItemStatAppliedError::ItemNotLoaded(_)
-                            | rc::err::ItemStatAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
-                            | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
-                        };
-                    }
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
                 };
             }
             None => {
                 match core_item.get_stat_dps(option.reload, core_spool, option.include_charges, option.ignore_state) {
                     Ok(core_stat) => results.push(Some(core_stat.into())),
-                    Err(core_err) => {
-                        return match core_err {
-                            rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => {
-                                None
-                            }
-                        };
-                    }
+                    Err(core_err) => match is_fatal(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
                 };
             }
         }
@@ -268,35 +261,28 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(Into::into);
-        match option.projectee_item_id {
+        match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_volley_applied(
                     core_spool,
                     option.include_charges,
                     option.ignore_state,
-                    &projectee_item_id,
+                    projectee_item_id,
                 ) {
                     Ok(core_stat) => results.push(Some(core_stat.into())),
-                    Err(core_err) => {
-                        match core_err {
-                            rc::err::ItemStatAppliedError::ItemNotLoaded(_)
-                            | rc::err::ItemStatAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
-                            | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
-                        };
-                    }
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
                 };
             }
             None => {
                 match core_item.get_stat_volley(core_spool, option.include_charges, option.ignore_state) {
                     Ok(core_stat) => results.push(Some(core_stat.into())),
-                    Err(core_err) => {
-                        return match core_err {
-                            rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => {
-                                None
-                            }
-                        };
-                    }
+                    Err(core_err) => match is_fatal(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
                 };
             }
         }
@@ -316,13 +302,28 @@ fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining
 fn get_outgoing_rps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemOutRps>,
-) -> Option<Vec<HStatTank<rc::AttrVal>>> {
+) -> Option<Vec<Option<HStatTank<rc::AttrVal>>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
-        match core_item.get_stat_outgoing_rps(core_time_options, option.ignore_state) {
-            Ok(result) => results.push(result.into()),
-            Err(_) => return None,
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_outgoing_rps_applied(core_time_options, option.ignore_state, projectee_item_id)
+                {
+                    Ok(result) => results.push(Some(result.into())),
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
+                }
+            }
+            None => match core_item.get_stat_outgoing_rps(core_time_options, option.ignore_state) {
+                Ok(result) => results.push(Some(result.into())),
+                Err(core_err) => match is_fatal(core_err) {
+                    true => return None,
+                    false => results.push(None),
+                },
+            },
         }
     }
     Some(results)
@@ -333,22 +334,18 @@ fn get_outgoing_nps_stats(
 ) -> Option<Vec<Option<rc::AttrVal>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match option.projectee_item_id {
+        match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_outgoing_nps_applied(
                     option.include_charges,
                     option.ignore_state,
-                    &projectee_item_id,
+                    projectee_item_id,
                 ) {
                     Ok(result) => results.push(Some(result)),
-                    Err(core_err) => {
-                        match core_err {
-                            rc::err::ItemStatAppliedError::ItemNotLoaded(_)
-                            | rc::err::ItemStatAppliedError::UnsupportedStat(_) => return None,
-                            rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
-                            | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => results.push(None),
-                        };
-                    }
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
                 }
             }
             None => match core_item.get_stat_outgoing_nps(option.include_charges, option.ignore_state) {
@@ -362,13 +359,25 @@ fn get_outgoing_nps_stats(
 fn get_outgoing_cps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemOutCps>,
-) -> Option<Vec<rc::AttrVal>> {
+) -> Option<Vec<Option<rc::AttrVal>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
-        match core_item.get_stat_outgoing_cps(core_time_options, option.ignore_state) {
-            Ok(result) => results.push(result),
-            Err(_) => return None,
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_outgoing_cps_applied(core_time_options, option.ignore_state, projectee_item_id)
+                {
+                    Ok(result) => results.push(Some(result)),
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => results.push(None),
+                    },
+                }
+            }
+            None => match core_item.get_stat_outgoing_cps(core_time_options, option.ignore_state) {
+                Ok(result) => results.push(Some(result)),
+                Err(_) => return None,
+            },
         }
     }
     Some(results)
@@ -448,4 +457,21 @@ fn get_cap_sim_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapSim
         }
     }
     Some(results)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn is_fatal(core_err: rc::err::ItemStatError) -> bool {
+    match core_err {
+        rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => true,
+    }
+}
+
+fn is_fatal_app(core_err: rc::err::ItemStatAppliedError) -> bool {
+    match core_err {
+        rc::err::ItemStatAppliedError::ItemNotLoaded(_) | rc::err::ItemStatAppliedError::UnsupportedStat(_) => true,
+        rc::err::ItemStatAppliedError::ProjecteeNotFound(_)
+        | rc::err::ItemStatAppliedError::ProjecteeCantTakeProjs(_) => false,
+    }
 }

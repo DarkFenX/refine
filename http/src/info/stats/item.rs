@@ -18,9 +18,9 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) outgoing_nps: TriStateField<Vec<Option<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) outgoing_rps: TriStateField<Vec<HStatTank<rc::AttrVal>>>,
+    pub(crate) outgoing_rps: TriStateField<Vec<Option<HStatTank<rc::AttrVal>>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) outgoing_cps: TriStateField<Vec<rc::AttrVal>>,
+    pub(crate) outgoing_cps: TriStateField<Vec<Option<rc::AttrVal>>>,
     // Tank
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,

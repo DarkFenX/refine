@@ -11,9 +11,9 @@ pub(crate) struct HFleetStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) outgoing_nps: Option<Vec<Option<rc::AttrVal>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_rps: Option<Vec<HStatTank<rc::AttrVal>>>,
+    pub(crate) outgoing_rps: Option<Vec<Option<HStatTank<rc::AttrVal>>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_cps: Option<Vec<rc::AttrVal>>,
+    pub(crate) outgoing_cps: Option<Vec<Option<rc::AttrVal>>>,
 }
 impl HFleetStats {
     pub(crate) fn new() -> Self {

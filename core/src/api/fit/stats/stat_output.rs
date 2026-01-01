@@ -78,7 +78,7 @@ impl<'a> FitMut<'a> {
             .svc
             .get_stat_fit_outgoing_cps(&self.sol.u_data, self.key, time_options, None)
     }
-    pub fn get_stat_outgoing_applied(
+    pub fn get_stat_outgoing_cps_applied(
         &mut self,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,

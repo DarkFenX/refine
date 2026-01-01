@@ -319,9 +319,9 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
         let core_spool = option.spool.map(Into::into);
-        match option.projectee_item_id {
+        match &option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, &projectee_item_id) {
+                match core_fit.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, projectee_item_id) {
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(_) => results.push(None),
                 };
@@ -339,9 +339,9 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
         let core_spool = option.spool.map(Into::into);
-        match option.projectee_item_id {
+        match &option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_volley_applied(core_item_kinds, core_spool, &projectee_item_id) {
+                match core_fit.get_stat_volley_applied(core_item_kinds, core_spool, projectee_item_id) {
                     Ok(core_stat) => results.push(Some(core_stat.into())),
                     Err(_) => results.push(None),
                 };
@@ -366,9 +366,9 @@ fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        match option.projectee_item_id {
+        match &option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_outgoing_nps_applied(core_item_kinds, &projectee_item_id) {
+                match core_fit.get_stat_outgoing_nps_applied(core_item_kinds, projectee_item_id) {
                     Ok(result) => results.push(Some(result)),
                     Err(_) => results.push(None),
                 }
@@ -384,26 +384,44 @@ fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
 fn get_outgoing_rps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<HStatOptionFitOutRps>,
-) -> Vec<HStatTank<rc::AttrVal>> {
-    options
-        .iter()
-        .map(|option| {
-            let core_item_kinds = (&option.item_kinds).into();
-            let core_time_options = option.time_options.into();
-            core_fit
-                .get_stat_outgoing_rps(core_item_kinds, core_time_options)
-                .into()
-        })
-        .collect()
+) -> Vec<Option<HStatTank<rc::AttrVal>>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_item_kinds = (&option.item_kinds).into();
+        let core_time_options = option.time_options.into();
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fit.get_stat_outgoing_rps_applied(core_item_kinds, core_time_options, projectee_item_id) {
+                    Ok(result) => results.push(Some(result.into())),
+                    Err(_) => results.push(None),
+                }
+            }
+            None => {
+                let result = core_fit.get_stat_outgoing_rps(core_item_kinds, core_time_options);
+                results.push(Some(result.into()));
+            }
+        }
+    }
+    results
 }
-fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutCps>) -> Vec<rc::AttrVal> {
-    options
-        .iter()
-        .map(|option| {
-            let core_time_options = option.time_options.into();
-            core_fit.get_stat_outgoing_cps(core_time_options)
-        })
-        .collect()
+fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutCps>) -> Vec<Option<rc::AttrVal>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_time_options = option.time_options.into();
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fit.get_stat_outgoing_cps_applied(core_time_options, projectee_item_id) {
+                    Ok(result) => results.push(Some(result)),
+                    Err(_) => results.push(None),
+                }
+            }
+            None => {
+                let result = core_fit.get_stat_outgoing_cps(core_time_options);
+                results.push(Some(result));
+            }
+        }
+    }
+    results
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
