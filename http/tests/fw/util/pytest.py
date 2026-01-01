@@ -25,6 +25,6 @@ def approx(expected: float, accuracy: int = 7):  # noqa: ANN201
 
 
 @contextlib.contextmanager
-def check_no_field() -> Generator[None]:
+def check_no_field():  # noqa: ANN201
     with pytest.raises(AttributeError):
         yield
