@@ -6,6 +6,8 @@ from fw.api import (
     StatMiningItemKinds,
     StatsOptionFitMining,
     StatsOptionItemMining,
+    StatTimeBurst,
+    StatTimeSim,
 )
 
 
@@ -324,24 +326,24 @@ def test_reload(client, consts):
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
         StatsOptionFitMining(),
-        StatsOptionFitMining(reload=True),
-        StatsOptionFitMining(reload=False)])))
+        StatsOptionFitMining(time_options=StatTimeSim()),
+        StatsOptionFitMining(time_options=StatTimeBurst())])))
     assert api_fleet_stats.mps.map(lambda i: i.ore) == [
         [approx(2.126077), approx(57.316985)],
         [approx(2.125831), approx(57.310355)],
         [approx(2.126077), approx(57.316985)]]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
-        StatsOptionFitMining(reload=True),
-        StatsOptionFitMining(reload=False)])))
+        StatsOptionFitMining(time_options=StatTimeSim()),
+        StatsOptionFitMining(time_options=StatTimeBurst())])))
     assert api_fit_stats.mps.map(lambda i: i.ore) == [
         [approx(2.126077), approx(57.316985)],
         [approx(2.125831), approx(57.310355)],
         [approx(2.126077), approx(57.316985)]]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=(True, [
         StatsOptionItemMining(),
-        StatsOptionItemMining(reload=True),
-        StatsOptionItemMining(reload=False)])))
+        StatsOptionItemMining(time_options=StatTimeSim()),
+        StatsOptionItemMining(time_options=StatTimeBurst())])))
     assert api_module_stats.mps.map(lambda i: i.ore) == [
         [approx(2.126077), approx(57.316985)],
         [approx(2.125831), approx(57.310355)],

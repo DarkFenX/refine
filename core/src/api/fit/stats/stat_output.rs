@@ -44,10 +44,10 @@ impl<'a> FitMut<'a> {
             .svc
             .get_stat_fit_volley_applied(&self.sol.u_data, self.key, item_kinds, spool, projectee_key))
     }
-    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds, reload: bool) -> StatMining {
+    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds, time_options: StatTimeOptions) -> StatMining {
         self.sol
             .svc
-            .get_stat_fit_mps(&self.sol.u_data, self.key, item_kinds, reload)
+            .get_stat_fit_mps(&self.sol.u_data, self.key, item_kinds, time_options)
     }
     pub fn get_stat_outgoing_rps(
         &mut self,

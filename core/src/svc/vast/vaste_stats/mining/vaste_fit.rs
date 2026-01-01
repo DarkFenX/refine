@@ -1,13 +1,13 @@
-use super::shared::get_mps_cycling_options;
 use crate::{
+    def::OF,
     misc::MiningAmount,
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
-        vast::{StatMining, StatMiningItemKinds, Vast},
+        vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
@@ -20,13 +20,31 @@ impl Vast {
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatMiningItemKinds,
-        reload: bool,
+        time_options: StatTimeOptions,
     ) -> StatMining {
         fit_keys
             .map(|fit_key| StatMining {
-                ore: get_mps(ctx, calc, item_kinds, reload, &self.get_fit_data(&fit_key).mining_ore),
-                ice: get_mps(ctx, calc, item_kinds, reload, &self.get_fit_data(&fit_key).mining_ice),
-                gas: get_mps(ctx, calc, item_kinds, reload, &self.get_fit_data(&fit_key).mining_gas),
+                ore: get_mps(
+                    ctx,
+                    calc,
+                    item_kinds,
+                    time_options,
+                    &self.get_fit_data(&fit_key).mining_ore,
+                ),
+                ice: get_mps(
+                    ctx,
+                    calc,
+                    item_kinds,
+                    time_options,
+                    &self.get_fit_data(&fit_key).mining_ice,
+                ),
+                gas: get_mps(
+                    ctx,
+                    calc,
+                    item_kinds,
+                    time_options,
+                    &self.get_fit_data(&fit_key).mining_gas,
+                ),
             })
             .sum()
     }
@@ -36,13 +54,13 @@ impl Vast {
         calc: &mut Calc,
         fit_key: UFitKey,
         item_kinds: StatMiningItemKinds,
-        reload: bool,
+        time_options: StatTimeOptions,
     ) -> StatMining {
         let fit_data = self.get_fit_data(&fit_key);
         StatMining {
-            ore: get_mps(ctx, calc, item_kinds, reload, &fit_data.mining_ore),
-            ice: get_mps(ctx, calc, item_kinds, reload, &fit_data.mining_ice),
-            gas: get_mps(ctx, calc, item_kinds, reload, &fit_data.mining_gas),
+            ore: get_mps(ctx, calc, item_kinds, time_options, &fit_data.mining_ore),
+            ice: get_mps(ctx, calc, item_kinds, time_options, &fit_data.mining_ice),
+            gas: get_mps(ctx, calc, item_kinds, time_options, &fit_data.mining_gas),
         }
     }
 }
@@ -51,11 +69,11 @@ fn get_mps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
-    reload: bool,
+    time_options: StatTimeOptions,
     fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
-    let cycling_options = get_mps_cycling_options(reload);
     let mut mps = MiningAmount::default();
+    let cycling_options = time_options.into();
     for (&item_key, item_data) in fit_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
             Some(cseq_map) => cseq_map,
@@ -71,17 +89,28 @@ fn get_mps(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            match reload {
-                true => {
-                    if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, None) {
+            match time_options {
+                StatTimeOptions::Burst(burst_opts) => {
+                    if let Some(effect_mps) =
+                        aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, None, burst_opts.spool)
+                    {
                         mps += effect_mps;
                     }
                 }
-                false => {
-                    if let Some(effect_mps) = aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, None, None) {
-                        mps += effect_mps;
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > OF(0.0) => {
+                        if let Some(effect_mps) =
+                            aggr_proj_time_ps(ctx, calc, item_key, effect, cseq, ospec, None, time)
+                        {
+                            mps += effect_mps;
+                        }
                     }
-                }
+                    _ => {
+                        if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, None) {
+                            mps += effect_mps;
+                        }
+                    }
+                },
             }
         }
     }

@@ -196,11 +196,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             )
             .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_mps(&mut self, reload: bool, ignore_state: bool) -> Result<StatMining, ItemStatError> {
+    fn get_stat_mps(&mut self, time_options: StatTimeOptions, ignore_state: bool) -> Result<StatMining, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_mps(&sol.u_data, item_key, reload, ignore_state)
+            .get_stat_item_mps(&sol.u_data, item_key, time_options, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_outgoing_nps(

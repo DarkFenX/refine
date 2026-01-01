@@ -292,7 +292,8 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
 fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining>) -> Option<Vec<HStatMining>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_item.get_stat_mps(option.reload, option.ignore_state) {
+        let core_time_options = option.time_options.into();
+        match core_item.get_stat_mps(core_time_options, option.ignore_state) {
             Ok(core_stat) => results.push(core_stat.into()),
             Err(_) => return None,
         }

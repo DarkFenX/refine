@@ -1,14 +1,14 @@
-use super::shared::get_mps_cycling_options;
 use crate::{
+    def::OF,
     misc::MiningAmount,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::get_item_cseq_map,
         err::StatItemCheckError,
-        vast::{StatMining, Vast, vaste_stats::item_checks::check_drone_module},
+        vast::{StatMining, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_module},
     },
     ud::UItemKey,
 };
@@ -18,15 +18,14 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        reload: bool,
+        time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_key)?;
-        let cycling_options = get_mps_cycling_options(reload);
         let mps = StatMining {
-            ore: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_ore),
-            ice: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_ice),
-            gas: get_mps_item_key(ctx, calc, item_key, cycling_options, ignore_state, get_getter_gas),
+            ore: get_mps_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_ore),
+            ice: get_mps_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_ice),
+            gas: get_mps_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_gas),
         };
         Ok(mps)
     }
@@ -36,14 +35,15 @@ fn get_mps_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    cycling_options: CyclingOptions,
+    time_options: StatTimeOptions,
     ignore_state: bool,
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
-    let mut item_mps = MiningAmount::default();
+    let mut mps = MiningAmount::default();
+    let cycling_options = time_options.into();
     let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, ignore_state) {
         Some(cseq_map) => cseq_map,
-        None => return item_mps,
+        None => return mps,
     };
     for (effect_key, cseq) in cseq_map {
         let effect = ctx.u_data.src.get_effect(effect_key);
@@ -51,20 +51,30 @@ fn get_mps_item_key(
             Some(ospec) => ospec,
             None => continue,
         };
-        match cycling_options {
-            CyclingOptions::Burst => {
-                if let Some(effect_mps) = aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, None) {
-                    item_mps += effect_mps;
+        match time_options {
+            StatTimeOptions::Burst(burst_opts) => {
+                if let Some(effect_mps) =
+                    aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, burst_opts.spool)
+                {
+                    mps += effect_mps;
                 }
             }
-            CyclingOptions::Sim(_) => {
-                if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
-                    item_mps += effect_mps;
+            StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                Some(time) if time > OF(0.0) => {
+                    if let Some(effect_mps) = aggr_proj_time_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, time)
+                    {
+                        mps += effect_mps;
+                    }
                 }
-            }
+                _ => {
+                    if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
+                        mps += effect_mps;
+                    }
+                }
+            },
         }
     }
-    item_mps
+    mps
 }
 
 fn get_getter_ore(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {

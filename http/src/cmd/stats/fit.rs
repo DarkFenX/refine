@@ -357,7 +357,9 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
 fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitMining>) -> Vec<HStatMining> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_result = core_fit.get_stat_mps((&option.item_kinds).into(), option.reload);
+        let core_item_kinds = (&option.item_kinds).into();
+        let core_time_options = option.time_options.into();
+        let core_result = core_fit.get_stat_mps(core_item_kinds, core_time_options);
         results.push(core_result.into());
     }
     results
