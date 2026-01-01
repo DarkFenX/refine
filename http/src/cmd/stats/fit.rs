@@ -483,7 +483,8 @@ fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapB
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = (&option.src_kinds).into();
-        match core_fit.get_stat_cap_balance(core_src_kinds) {
+        let core_time_options = option.time_options.into();
+        match core_fit.get_stat_cap_balance(core_src_kinds, core_time_options) {
             Ok(result) => results.push(result),
             Err(_) => return None,
         }

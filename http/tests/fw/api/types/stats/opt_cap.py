@@ -1,12 +1,17 @@
 import dataclasses
+import typing
 
 from fw.util import Absent
+
+if typing.TYPE_CHECKING:
+    from .opt_shared import StatTimeBurst, StatTimeSim
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionCapBalance:
 
     src_kinds: StatCapSrcKinds | type[Absent] = Absent
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -16,7 +21,7 @@ class StatCapSrcKinds:
     regen: bool | tuple[bool, StatCapRegenOptions] | type[Absent] = Absent
     cap_injectors: bool | type[Absent] = Absent
     nosfs: bool | type[Absent] = Absent
-    consumers: bool | tuple[bool, StatCapConsumerOptions] | type[Absent] = Absent
+    consumers: bool | type[Absent] = Absent
     incoming_transfers: bool | type[Absent] = Absent
     incoming_neuts: bool | type[Absent] = Absent
 
@@ -25,12 +30,6 @@ class StatCapSrcKinds:
 class StatCapRegenOptions:
 
     cap_perc: float | type[Absent] = Absent
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatCapConsumerOptions:
-
-    reload: bool | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)

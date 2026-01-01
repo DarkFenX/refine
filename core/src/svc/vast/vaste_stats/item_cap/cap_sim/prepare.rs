@@ -13,9 +13,9 @@ use crate::{
         SvcCtx,
         aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
         calc::Calc,
-        cycle::get_item_cseq_map,
+        cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         output::{Output, OutputSimple},
-        vast::{Vast, VastFitData, vaste_stats::item_cap::shared::CYCLE_OPTIONS_SIM},
+        vast::{Vast, VastFitData},
     },
     ud::UItemKey,
     util::{FLOAT_TOLERANCE, RMapVec},
@@ -38,6 +38,11 @@ pub(super) fn prepare_events(
     fill_injectors(ctx, calc, &mut events, fit_data);
     events
 }
+
+const CYCLE_OPTIONS_SIM: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
+    reload_optionals: Some(true),
+    ..
+});
 
 fn fill_consumers(
     ctx: SvcCtx,

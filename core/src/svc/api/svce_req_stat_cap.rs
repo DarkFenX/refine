@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatCapSim, StatCapSimStaggerInt, StatCapSrcKinds, Vast},
+        vast::{StatCapSim, StatCapSimStaggerInt, StatCapSrcKinds, StatTimeOptions, Vast},
     },
     ud::{UData, UItemKey},
     util::UnitInterval,
@@ -22,12 +22,14 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
         src_kinds: StatCapSrcKinds,
+        time_options: StatTimeOptions,
     ) -> Result<AttrVal, StatItemCheckError> {
         self.vast.get_stat_item_cap_balance(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
             src_kinds,
+            time_options,
         )
     }
     pub(crate) fn get_stat_item_cap_sim(

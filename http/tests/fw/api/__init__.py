@@ -4,7 +4,6 @@ from .types import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
-    StatCapConsumerOptions,
     StatCapRegenOptions,
     StatCapSrcKinds,
     StatDmgItemKinds,

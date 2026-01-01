@@ -1,9 +1,25 @@
+use super::shared::HStatTimeOptions;
 use crate::util::default_true;
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, serde::Deserialize)]
 pub(in crate::cmd) struct HStatOptionCapBalance {
     #[serde(default)]
     pub(in crate::cmd) src_kinds: HStatCapSrcKinds,
+    #[serde(default = "default_time_options")]
+    pub(in crate::cmd) time_options: HStatTimeOptions,
+}
+// Custom default implementation to use Sim mode instead of default Burst mode
+impl Default for HStatOptionCapBalance {
+    fn default() -> Self {
+        Self {
+            src_kinds: Default::default(),
+            time_options: default_time_options(),
+        }
+    }
+}
+
+fn default_time_options() -> HStatTimeOptions {
+    HStatTimeOptions::Sim(Default::default())
 }
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
@@ -15,7 +31,7 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
     regen: Option<HStatCapRegenOptions>,
     cap_injectors: Option<bool>,
     nosfs: Option<bool>,
-    consumers: Option<HStatCapConsumerOptions>,
+    consumers: Option<bool>,
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
 }
@@ -37,10 +53,7 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
             core_src_kinds.nosfs = nosfs;
         }
         if let Some(consumers) = h_src_kinds.consumers {
-            core_src_kinds.consumers.enabled = consumers.is_enabled();
-            if let Some(reload) = consumers.is_reload() {
-                core_src_kinds.consumers.reload = reload;
-            }
+            core_src_kinds.consumers = consumers;
         }
         if let Some(incoming_transfers) = h_src_kinds.incoming_transfers {
             core_src_kinds.incoming_transfers = incoming_transfers;
@@ -75,29 +88,4 @@ impl HStatCapRegenOptions {
 #[derive(Copy, Clone, serde::Deserialize)]
 struct HStatCapRegenOptionsFull {
     cap_perc: Option<rc::AttrVal>,
-}
-
-#[derive(Copy, Clone, serde::Deserialize)]
-#[serde(untagged)]
-enum HStatCapConsumerOptions {
-    Simple(bool),
-    Extended(bool, HStatCapConsumerOptionsFull),
-}
-impl HStatCapConsumerOptions {
-    fn is_enabled(&self) -> bool {
-        match self {
-            Self::Simple(enabled) => *enabled,
-            Self::Extended(enabled, _) => *enabled,
-        }
-    }
-    fn is_reload(&self) -> Option<bool> {
-        match self {
-            Self::Simple(_) => None,
-            Self::Extended(_, options) => options.reload,
-        }
-    }
-}
-#[derive(Copy, Clone, serde::Deserialize)]
-struct HStatCapConsumerOptionsFull {
-    reload: Option<bool>,
 }

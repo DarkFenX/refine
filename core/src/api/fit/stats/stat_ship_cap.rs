@@ -1,7 +1,7 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
     def::AttrVal,
-    svc::vast::{StatCapSim, StatCapSimStagger, StatCapSrcKinds},
+    svc::vast::{StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatTimeOptions},
     util::UnitInterval,
 };
 
@@ -9,8 +9,14 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_cap_amount(&mut self) -> Result<AttrVal, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_cap_amount()?)
     }
-    pub fn get_stat_cap_balance(&mut self, src_kinds: StatCapSrcKinds) -> Result<AttrVal, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_cap_balance(src_kinds)?)
+    pub fn get_stat_cap_balance(
+        &mut self,
+        src_kinds: StatCapSrcKinds,
+        time_options: StatTimeOptions,
+    ) -> Result<AttrVal, FitShipStatError> {
+        Ok(self
+            .get_ship_for_stats()?
+            .get_stat_cap_balance(src_kinds, time_options)?)
     }
     pub fn get_stat_cap_sim(
         &mut self,

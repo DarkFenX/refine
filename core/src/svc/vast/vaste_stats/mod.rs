@@ -1,5 +1,5 @@
 pub(crate) use item_cap::StatCapSimStaggerInt;
-pub use item_cap::{StatCapConsumerOptions, StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
+pub use item_cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
 pub use item_tank::{StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen};
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
 pub use vaste_fit_resource::StatRes;

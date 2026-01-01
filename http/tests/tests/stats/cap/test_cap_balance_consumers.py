@@ -1,11 +1,5 @@
 from fw import approx
-from fw.api import (
-    FitStatsOptions,
-    ItemStatsOptions,
-    StatCapConsumerOptions,
-    StatCapSrcKinds,
-    StatsOptionCapBalance,
-)
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
 
 
 def test_state(client, consts):
