@@ -6,6 +6,7 @@ from fw.api import (
     StatOutRepItemKinds,
     StatsOptionFitOutRps,
     StatsOptionItemOutRps,
+    StatTimeBurst,
 )
 from tests.stats.tank import (
     make_eve_drone_armor,
@@ -152,25 +153,25 @@ def test_spool(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=(True, [
-        StatsOptionFitOutRps(spool=Spool.spool_scale_to_api(val=0)),
+        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
         StatsOptionFitOutRps(),
-        StatsOptionFitOutRps(spool=Spool.spool_scale_to_api(val=1))])))
+        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     assert api_fleet_stats.outgoing_rps.map(lambda i: i.armor) == [
         approx(85.333333),
         approx(167.253333),
         approx(238.933333)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=(True, [
-        StatsOptionFitOutRps(spool=Spool.spool_scale_to_api(val=0)),
+        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
         StatsOptionFitOutRps(),
-        StatsOptionFitOutRps(spool=Spool.spool_scale_to_api(val=1))])))
+        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     assert api_fit_stats.outgoing_rps.map(lambda i: i.armor) == [
         approx(85.333333),
         approx(167.253333),
         approx(238.933333)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=(True, [
-        StatsOptionItemOutRps(spool=Spool.spool_scale_to_api(val=0)),
+        StatsOptionItemOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
         StatsOptionItemOutRps(),
-        StatsOptionItemOutRps(spool=Spool.spool_scale_to_api(val=1))])))
+        StatsOptionItemOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     assert api_module_stats.outgoing_rps.map(lambda i: i.armor) == [
         approx(85.333333),
         approx(167.253333),
