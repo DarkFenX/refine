@@ -1,5 +1,5 @@
 from fw import ANY_VALUE, Spool, approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps, StatTimeBurst
 from tests.stats.tank import (
     make_eve_drone_armor,
     make_eve_local_aar,
@@ -258,9 +258,9 @@ def test_hp_limit_and_spool(client, consts):
     # Verification - at zero spool isn't limited, at on-module default of 0.5 slightly limited, at
     # max spool is limited as well
     api_stat_options = [
-        StatsOptionRps(spool=Spool.spool_scale_to_api(val=0)),
+        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
         StatsOptionRps(),
-        StatsOptionRps(spool=Spool.spool_scale_to_api(val=1))]
+        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, api_stat_options)))
     assert api_tgt_fit_stats.rps.map(lambda i: i.armor.remote) == [approx(85.333333), approx(150), approx(150)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, api_stat_options)))

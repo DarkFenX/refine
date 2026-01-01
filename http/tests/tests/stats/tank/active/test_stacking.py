@@ -1,5 +1,5 @@
 from fw import ANY_VALUE, Spool, approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps, StatTimeBurst
 from tests.stats.tank import (
     make_eve_remote_ar,
     make_eve_remote_hr,
@@ -156,9 +156,9 @@ def test_spool(client, consts):
         api_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification - as spool is increased, penalty is increased as well
     api_stat_options = [
-        StatsOptionRps(spool=Spool.spool_scale_to_api(val=0)),
-        StatsOptionRps(spool=Spool.spool_scale_to_api(val=0.5)),
-        StatsOptionRps(spool=Spool.spool_scale_to_api(val=1))]
+        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0.5))),
+        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, api_stat_options)))
     api_tgt_fit_stats_prespool, api_tgt_fit_stats_midspool, api_tgt_fit_stats_spooled = api_tgt_fit_stats.rps
     assert api_tgt_fit_stats_prespool.armor == [0, approx(3413.333333), approx(3225.597)]
