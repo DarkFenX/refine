@@ -38,7 +38,7 @@ class AarBasicInfo:
 def setup_aar_basics(
         *,
         client: TestClient,
-        consts,  # noqa: ANN001
+        consts,
         effect_duration: bool = True,
 ) -> AarBasicInfo:
     # Attributes
