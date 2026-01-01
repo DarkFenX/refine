@@ -2,8 +2,8 @@ use crate::{
     cmd::{
         shared::get_primary_fleet,
         stats::options::{
-            HStatOption, HStatOptionFitDps, HStatOptionFitMining, HStatOptionFitOutNps, HStatOptionFitOutRps,
-            HStatOptionFitVolley, HStatResolvedOption,
+            HStatOption, HStatOptionFitDps, HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps,
+            HStatOptionFitOutRps, HStatOptionFitVolley, HStatResolvedOption,
         },
     },
     info::{
@@ -24,7 +24,7 @@ pub(crate) struct HGetFleetStatsCmd {
     mps: Option<HStatOption<HStatOptionFitMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
-    outgoing_cps: Option<bool>,
+    outgoing_cps: Option<HStatOption<HStatOptionFitOutCps>>,
 }
 impl HGetFleetStatsCmd {
     pub(crate) fn execute(
@@ -54,8 +54,9 @@ impl HGetFleetStatsCmd {
         if out_rps_opt.enabled {
             stats.outgoing_rps = Some(get_outgoing_rps_stats(&mut core_fleet, out_rps_opt.options));
         }
-        if self.outgoing_cps.unwrap_or(self.default) {
-            stats.outgoing_cps = Some(core_fleet.get_stat_outgoing_cps());
+        let out_cps_opt = HStatResolvedOption::new(&self.outgoing_cps, self.default);
+        if out_cps_opt.enabled {
+            stats.outgoing_cps = Some(get_outgoing_cps_stats(&mut core_fleet, out_cps_opt.options));
         }
         Ok(stats)
     }
@@ -143,6 +144,15 @@ fn get_outgoing_rps_stats(
             core_fleet
                 .get_stat_outgoing_rps(core_item_kinds, core_time_options)
                 .into()
+        })
+        .collect()
+}
+fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitOutCps>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|option| {
+            let core_time_options = option.time_options.into();
+            core_fleet.get_stat_outgoing_cps(core_time_options)
         })
         .collect()
 }

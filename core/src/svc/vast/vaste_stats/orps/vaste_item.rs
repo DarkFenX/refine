@@ -1,4 +1,3 @@
-use super::shared::CAP_TRANSFER_OPTIONS;
 use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectProjOpcSpec},
@@ -33,10 +32,11 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
+        time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
-        let ocps = get_orr_item_key(ctx, calc, item_key, CAP_TRANSFER_OPTIONS, ignore_state, get_getter_cap);
+        let ocps = get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_cap);
         Ok(ocps)
     }
 }

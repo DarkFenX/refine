@@ -21,18 +21,18 @@ def test_state(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
-    assert api_fleet_stats.outgoing_cps == approx(70.2)
+    assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
-    assert api_fit_stats.outgoing_cps == approx(70.2)
+    assert api_fit_stats.outgoing_cps.one() == approx(70.2)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
     assert api_module_stats.outgoing_cps.one() == approx(70.2)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
-    assert api_fleet_stats.outgoing_cps == 0
+    assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
-    assert api_fit_stats.outgoing_cps == 0
+    assert api_fit_stats.outgoing_cps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=(True, [
         StatsOptionItemOutCps(ignore_state=False),
         StatsOptionItemOutCps(ignore_state=True)])))
@@ -41,9 +41,9 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
-    assert api_fleet_stats.outgoing_cps == approx(70.2)
+    assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
-    assert api_fit_stats.outgoing_cps == approx(70.2)
+    assert api_fit_stats.outgoing_cps.one() == approx(70.2)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
     assert api_module_stats.outgoing_cps.one() == approx(70.2)
 
@@ -67,9 +67,9 @@ def test_zero_cycle_time(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
-    assert api_fleet_stats.outgoing_cps == 0
+    assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
-    assert api_fit_stats.outgoing_cps == 0
+    assert api_fit_stats.outgoing_cps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
     assert api_module_stats.outgoing_cps.one() == 0
 
@@ -92,9 +92,9 @@ def test_no_cycle_time(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
-    assert api_fleet_stats.outgoing_cps == 0
+    assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
-    assert api_fit_stats.outgoing_cps == 0
+    assert api_fit_stats.outgoing_cps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
     assert api_module_stats.outgoing_cps.one() == 0
 
@@ -109,9 +109,9 @@ def test_item_not_loaded(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
-    assert api_fleet_stats.outgoing_cps == 0
+    assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
-    assert api_fit_stats.outgoing_cps == 0
+    assert api_fit_stats.outgoing_cps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
     assert api_module_stats.outgoing_cps is None
 

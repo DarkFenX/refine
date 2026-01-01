@@ -365,7 +365,8 @@ fn get_outgoing_cps_stats(
 ) -> Option<Vec<rc::AttrVal>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_item.get_stat_outgoing_cps(option.ignore_state) {
+        let core_time_options = option.time_options.into();
+        match core_item.get_stat_outgoing_cps(core_time_options, option.ignore_state) {
             Ok(result) => results.push(result),
             Err(_) => return None,
         }

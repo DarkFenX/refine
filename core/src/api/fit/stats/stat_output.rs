@@ -58,8 +58,10 @@ impl<'a> FitMut<'a> {
             .svc
             .get_stat_fit_outgoing_rps(&self.sol.u_data, self.key, item_kinds, time_options)
     }
-    pub fn get_stat_outgoing_cps(&mut self) -> AttrVal {
-        self.sol.svc.get_stat_fit_outgoing_cps(&self.sol.u_data, self.key)
+    pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> AttrVal {
+        self.sol
+            .svc
+            .get_stat_fit_outgoing_cps(&self.sol.u_data, self.key, time_options)
     }
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds) -> AttrVal {
         self.sol

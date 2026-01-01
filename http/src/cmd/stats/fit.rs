@@ -3,8 +3,8 @@ use crate::{
         shared::get_primary_fit,
         stats::options::{
             HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
-            HStatOptionFitMining, HStatOptionFitOutNps, HStatOptionFitOutRps, HStatOptionFitVolley, HStatOptionRps,
-            HStatResolvedOption,
+            HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps, HStatOptionFitOutRps,
+            HStatOptionFitVolley, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -29,7 +29,7 @@ pub(crate) struct HGetFitStatsCmd {
     mps: Option<HStatOption<HStatOptionFitMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
-    outgoing_cps: Option<bool>,
+    outgoing_cps: Option<HStatOption<HStatOptionFitOutCps>>,
     // Fit resources
     cpu: Option<bool>,
     powergrid: Option<bool>,
@@ -118,8 +118,9 @@ impl HGetFitStatsCmd {
         if out_rps_opt.enabled {
             stats.outgoing_rps = Some(get_outgoing_rps_stats(&mut core_fit, out_rps_opt.options));
         }
-        if self.outgoing_cps.unwrap_or(self.default) {
-            stats.outgoing_cps = Some(core_fit.get_stat_outgoing_cps());
+        let out_cps_opt = HStatResolvedOption::new(&self.outgoing_cps, self.default);
+        if out_cps_opt.enabled {
+            stats.outgoing_cps = Some(get_outgoing_cps_stats(&mut core_fit, out_cps_opt.options));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit resources
@@ -392,6 +393,15 @@ fn get_outgoing_rps_stats(
             core_fit
                 .get_stat_outgoing_rps(core_item_kinds, core_time_options)
                 .into()
+        })
+        .collect()
+}
+fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutCps>) -> Vec<rc::AttrVal> {
+    options
+        .iter()
+        .map(|option| {
+            let core_time_options = option.time_options.into();
+            core_fit.get_stat_outgoing_cps(core_time_options)
         })
         .collect()
 }

@@ -1,4 +1,3 @@
-use super::shared::CAP_TRANSFER_OPTIONS;
 use crate::{
     def::{AttrVal, OF},
     rd::{REffectKey, REffectProjOpcSpec},
@@ -55,6 +54,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        time_options: StatTimeOptions,
     ) -> AttrVal {
         fit_keys
             .map(|fit_key| {
@@ -62,19 +62,25 @@ impl Vast {
                     ctx,
                     calc,
                     StatOutRepItemKinds::all_enabled(),
-                    CAP_TRANSFER_OPTIONS,
+                    time_options,
                     &self.get_fit_data(&fit_key).out_cap,
                 )
             })
             .sum()
     }
-    pub(in crate::svc) fn get_stat_fit_outgoing_cps(&self, ctx: SvcCtx, calc: &mut Calc, fit_key: UFitKey) -> AttrVal {
+    pub(in crate::svc) fn get_stat_fit_outgoing_cps(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_key: UFitKey,
+        time_options: StatTimeOptions,
+    ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
         get_orrps(
             ctx,
             calc,
             StatOutRepItemKinds::all_enabled(),
-            CAP_TRANSFER_OPTIONS,
+            time_options,
             &fit_data.out_cap,
         )
     }

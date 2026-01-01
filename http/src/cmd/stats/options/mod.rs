@@ -5,7 +5,7 @@ pub(in crate::cmd::stats) use dmg_volley::{HStatOptionFitVolley, HStatOptionItem
 pub(in crate::cmd::stats) use mining::{HStatOptionFitMining, HStatOptionItemMining};
 pub(in crate::cmd::stats) use option::HStatOption;
 pub(in crate::cmd::stats) use option_resolved::HStatResolvedOption;
-pub(in crate::cmd::stats) use outgoing_cps::HStatOptionItemOutCps;
+pub(in crate::cmd::stats) use outgoing_cps::{HStatOptionFitOutCps, HStatOptionItemOutCps};
 pub(in crate::cmd::stats) use outgoing_nps::{HStatOptionFitOutNps, HStatOptionItemOutNps};
 pub(in crate::cmd::stats) use outgoing_rps::{HStatOptionFitOutRps, HStatOptionItemOutRps};
 pub(in crate::cmd::stats) use tank_ehp::HStatOptionEhp;

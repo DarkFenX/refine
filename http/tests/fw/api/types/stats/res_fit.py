@@ -29,6 +29,7 @@ class FitStats(AttrDict):
             'outgoing_rps': AttrHookDef(func=lambda d: (
                 NttList(StatOutRps(data=e) for e in d)
                 if d is not None else None)),
+            'outgoing_cps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             # Fit resources
             'cpu': AttrHookDef(func=lambda d: StatResource(data=d)),
             'powergrid': AttrHookDef(func=lambda d: StatResource(data=d)),

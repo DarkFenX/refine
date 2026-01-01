@@ -16,6 +16,7 @@ from .stats import (
     StatsOptionErps,
     StatsOptionFitDps,
     StatsOptionFitMining,
+    StatsOptionFitOutCps,
     StatsOptionFitOutNps,
     StatsOptionFitOutRps,
     StatsOptionFitVolley,

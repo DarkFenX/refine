@@ -58,24 +58,40 @@ impl Svc {
         &mut self,
         u_data: &UData,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        time_options: StatTimeOptions,
     ) -> AttrVal {
-        self.vast
-            .get_stat_fits_outgoing_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_keys)
+        self.vast.get_stat_fits_outgoing_cps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            fit_keys,
+            time_options,
+        )
     }
-    pub(crate) fn get_stat_fit_outgoing_cps(&mut self, u_data: &UData, fit_key: UFitKey) -> AttrVal {
-        self.vast
-            .get_stat_fit_outgoing_cps(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_key)
+    pub(crate) fn get_stat_fit_outgoing_cps(
+        &mut self,
+        u_data: &UData,
+        fit_key: UFitKey,
+        time_options: StatTimeOptions,
+    ) -> AttrVal {
+        self.vast.get_stat_fit_outgoing_cps(
+            SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            fit_key,
+            time_options,
+        )
     }
     pub(crate) fn get_stat_item_outgoing_cps(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
+        time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_outgoing_cps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
+            time_options,
             ignore_state,
         )
     }
