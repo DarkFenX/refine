@@ -56,12 +56,38 @@ impl<'a> FitMut<'a> {
     ) -> StatTank<AttrVal> {
         self.sol
             .svc
-            .get_stat_fit_outgoing_rps(&self.sol.u_data, self.key, item_kinds, time_options)
+            .get_stat_fit_outgoing_rps(&self.sol.u_data, self.key, item_kinds, time_options, None)
+    }
+    pub fn get_stat_outgoing_rps_applied(
+        &mut self,
+        item_kinds: StatOutRepItemKinds,
+        time_options: StatTimeOptions,
+        projectee_item_id: &ItemId,
+    ) -> Result<StatTank<AttrVal>, FitStatAppliedError> {
+        let projectee_key = self.get_stat_applied_projectee_key(projectee_item_id)?;
+        Ok(self.sol.svc.get_stat_fit_outgoing_rps(
+            &self.sol.u_data,
+            self.key,
+            item_kinds,
+            time_options,
+            Some(projectee_key),
+        ))
     }
     pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> AttrVal {
         self.sol
             .svc
-            .get_stat_fit_outgoing_cps(&self.sol.u_data, self.key, time_options)
+            .get_stat_fit_outgoing_cps(&self.sol.u_data, self.key, time_options, None)
+    }
+    pub fn get_stat_outgoing_applied(
+        &mut self,
+        time_options: StatTimeOptions,
+        projectee_item_id: &ItemId,
+    ) -> Result<AttrVal, FitStatAppliedError> {
+        let projectee_key = self.get_stat_applied_projectee_key(projectee_item_id)?;
+        Ok(self
+            .sol
+            .svc
+            .get_stat_fit_outgoing_cps(&self.sol.u_data, self.key, time_options, Some(projectee_key)))
     }
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds) -> AttrVal {
         self.sol

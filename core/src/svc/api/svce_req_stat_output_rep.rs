@@ -15,6 +15,7 @@ impl Svc {
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> StatTank<AttrVal> {
         self.vast.get_stat_fits_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -22,6 +23,7 @@ impl Svc {
             fit_keys,
             item_kinds,
             time_options,
+            projectee_key,
         )
     }
     pub(crate) fn get_stat_fit_outgoing_rps(
@@ -30,6 +32,7 @@ impl Svc {
         fit_key: UFitKey,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> StatTank<AttrVal> {
         self.vast.get_stat_fit_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -37,6 +40,7 @@ impl Svc {
             fit_key,
             item_kinds,
             time_options,
+            projectee_key,
         )
     }
     pub(crate) fn get_stat_item_outgoing_rps(
@@ -45,6 +49,7 @@ impl Svc {
         item_key: UItemKey,
         time_options: StatTimeOptions,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -52,6 +57,7 @@ impl Svc {
             item_key,
             time_options,
             ignore_state,
+            projectee_key,
         )
     }
     pub(crate) fn get_stat_fits_outgoing_cps(
@@ -59,12 +65,14 @@ impl Svc {
         u_data: &UData,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         self.vast.get_stat_fits_outgoing_cps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_keys,
             time_options,
+            projectee_key,
         )
     }
     pub(crate) fn get_stat_fit_outgoing_cps(
@@ -72,12 +80,14 @@ impl Svc {
         u_data: &UData,
         fit_key: UFitKey,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         self.vast.get_stat_fit_outgoing_cps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_key,
             time_options,
+            projectee_key,
         )
     }
     pub(crate) fn get_stat_item_outgoing_cps(
@@ -86,6 +96,7 @@ impl Svc {
         item_key: UItemKey,
         time_options: StatTimeOptions,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_outgoing_cps(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -93,6 +104,7 @@ impl Svc {
             item_key,
             time_options,
             ignore_state,
+            projectee_key,
         )
     }
 }

@@ -20,6 +20,7 @@ impl Vast {
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> StatTank<AttrVal> {
         let mut rps = StatTank {
             shield: OF(0.0),
@@ -28,9 +29,9 @@ impl Vast {
         };
         for fit_key in fit_keys {
             let fit_data = self.get_fit_data(&fit_key);
-            rps.shield += get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_shield);
-            rps.armor += get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_armor);
-            rps.hull += get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_hull);
+            rps.shield += get_orrps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_shield);
+            rps.armor += get_orrps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_armor);
+            rps.hull += get_orrps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_hull);
         }
         rps
     }
@@ -41,12 +42,13 @@ impl Vast {
         fit_key: UFitKey,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> StatTank<AttrVal> {
         let fit_data = self.get_fit_data(&fit_key);
         StatTank {
-            shield: get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_shield),
-            armor: get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_armor),
-            hull: get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_hull),
+            shield: get_orrps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_shield),
+            armor: get_orrps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_armor),
+            hull: get_orrps(ctx, calc, item_kinds, time_options, projectee_key, &fit_data.orr_hull),
         }
     }
     pub(in crate::svc) fn get_stat_fits_outgoing_cps(
@@ -55,6 +57,7 @@ impl Vast {
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         fit_keys
             .map(|fit_key| {
@@ -63,6 +66,7 @@ impl Vast {
                     calc,
                     StatOutRepItemKinds::all_enabled(),
                     time_options,
+                    projectee_key,
                     &self.get_fit_data(&fit_key).out_cap,
                 )
             })
@@ -74,6 +78,7 @@ impl Vast {
         calc: &mut Calc,
         fit_key: UFitKey,
         time_options: StatTimeOptions,
+        projectee_key: Option<UItemKey>,
     ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
         get_orrps(
@@ -81,6 +86,7 @@ impl Vast {
             calc,
             StatOutRepItemKinds::all_enabled(),
             time_options,
+            projectee_key,
             &fit_data.out_cap,
         )
     }
@@ -91,6 +97,7 @@ fn get_orrps(
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,
+    projectee_key: Option<UItemKey>,
     fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut orps = OF(0.0);
@@ -112,22 +119,31 @@ fn get_orrps(
             let effect = ctx.u_data.src.get_effect(effect_key);
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
-                    if let Some(effect_orps) =
-                        aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, None, burst_opts.spool)
-                    {
+                    if let Some(effect_orps) = aggr_proj_first_ps(
+                        ctx,
+                        calc,
+                        item_key,
+                        effect,
+                        cseq,
+                        ospec,
+                        projectee_key,
+                        burst_opts.spool,
+                    ) {
                         orps += effect_orps;
                     }
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > OF(0.0) => {
                         if let Some(effect_orps) =
-                            aggr_proj_time_ps(ctx, calc, item_key, effect, cseq, ospec, None, time)
+                            aggr_proj_time_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key, time)
                         {
                             orps += effect_orps;
                         }
                     }
                     _ => {
-                        if let Some(effect_orps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, None) {
+                        if let Some(effect_orps) =
+                            aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, projectee_key)
+                        {
                             orps += effect_orps;
                         }
                     }

@@ -19,12 +19,37 @@ impl Vast {
         item_key: UItemKey,
         time_options: StatTimeOptions,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
         let orps = StatTank {
-            shield: get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_shield),
-            armor: get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_armor),
-            hull: get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_hull),
+            shield: get_orr_item_key(
+                ctx,
+                calc,
+                item_key,
+                time_options,
+                ignore_state,
+                projectee_key,
+                get_getter_shield,
+            ),
+            armor: get_orr_item_key(
+                ctx,
+                calc,
+                item_key,
+                time_options,
+                ignore_state,
+                projectee_key,
+                get_getter_armor,
+            ),
+            hull: get_orr_item_key(
+                ctx,
+                calc,
+                item_key,
+                time_options,
+                ignore_state,
+                projectee_key,
+                get_getter_hull,
+            ),
         };
         Ok(orps)
     }
@@ -34,9 +59,18 @@ impl Vast {
         item_key: UItemKey,
         time_options: StatTimeOptions,
         ignore_state: bool,
+        projectee_key: Option<UItemKey>,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
-        let ocps = get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_cap);
+        let ocps = get_orr_item_key(
+            ctx,
+            calc,
+            item_key,
+            time_options,
+            ignore_state,
+            projectee_key,
+            get_getter_cap,
+        );
         Ok(ocps)
     }
 }
@@ -47,6 +81,7 @@ fn get_orr_item_key(
     item_key: UItemKey,
     time_options: StatTimeOptions,
     ignore_state: bool,
+    projectee_key: Option<UItemKey>,
     rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut orps = OF(0.0);
@@ -63,21 +98,31 @@ fn get_orr_item_key(
         };
         match time_options {
             StatTimeOptions::Burst(burst_opts) => {
-                if let Some(effect_orps) =
-                    aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, burst_opts.spool)
-                {
+                if let Some(effect_orps) = aggr_proj_first_ps(
+                    ctx,
+                    calc,
+                    item_key,
+                    effect,
+                    &cseq,
+                    &ospec,
+                    projectee_key,
+                    burst_opts.spool,
+                ) {
                     orps += effect_orps;
                 }
             }
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > OF(0.0) => {
-                    if let Some(effect_orps) = aggr_proj_time_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, time)
+                    if let Some(effect_orps) =
+                        aggr_proj_time_ps(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key, time)
                     {
                         orps += effect_orps;
                     }
                 }
                 _ => {
-                    if let Some(effect_orps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
+                    if let Some(effect_orps) =
+                        aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, projectee_key)
+                    {
                         orps += effect_orps;
                     }
                 }

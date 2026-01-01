@@ -237,8 +237,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_outgoing_rps(&sol.u_data, item_key, time_options, ignore_state)
+            .get_stat_item_outgoing_rps(&sol.u_data, item_key, time_options, ignore_state, None)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_outgoing_rps_applied(
+        &mut self,
+        time_options: StatTimeOptions,
+        ignore_state: bool,
+        projectee_item_id: &ItemId,
+    ) -> Result<StatTank<AttrVal>, ItemStatAppliedError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
+        sol.svc
+            .get_stat_item_outgoing_rps(&sol.u_data, item_key, time_options, ignore_state, Some(projectee_key))
+            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_outgoing_cps(
         &mut self,
@@ -248,8 +261,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_outgoing_cps(&sol.u_data, item_key, time_options, ignore_state)
+            .get_stat_item_outgoing_cps(&sol.u_data, item_key, time_options, ignore_state, None)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
+    }
+    fn get_stat_outgoing_cps_applied(
+        &mut self,
+        time_options: StatTimeOptions,
+        ignore_state: bool,
+        projectee_item_id: &ItemId,
+    ) -> Result<AttrVal, ItemStatAppliedError> {
+        let item_key = self.get_key();
+        let sol = self.get_sol_mut();
+        let projectee_key = get_stat_applied_projectee_key(sol, projectee_item_id)?;
+        sol.svc
+            .get_stat_item_outgoing_cps(&sol.u_data, item_key, time_options, ignore_state, Some(projectee_key))
+            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - tank
