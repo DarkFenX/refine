@@ -1,11 +1,11 @@
 import typing
 
+from fw.api.types import FleetStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from fw.api.types import FleetStatsOptions
     from fw.consts import ApiFleetInfoMode
 
 

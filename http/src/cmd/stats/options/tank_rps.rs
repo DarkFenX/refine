@@ -4,6 +4,7 @@ use crate::util::default_quarter;
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionRps {
+    #[serde(default)]
     pub(in crate::cmd) time_options: HStatTimeOptions,
     #[serde(default = "default_quarter")]
     #[educe(Default = 0.25)]

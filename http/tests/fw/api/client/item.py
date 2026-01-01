@@ -1,12 +1,12 @@
 import typing
 
+from fw.api.types import ItemStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import MutaAdd, MutaChange
-    from fw.api.types import ItemStatsOptions
     from fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,

@@ -5,6 +5,7 @@ use crate::{shared::HDpsProfile, util::default_quarter};
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionErps {
     pub(in crate::cmd) incoming_dps: Option<HDpsProfile>,
+    #[serde(default)]
     pub(in crate::cmd) time_options: HStatTimeOptions,
     #[serde(default = "default_quarter")]
     #[educe(Default = 0.25)]
