@@ -1,7 +1,7 @@
 use crate::shared::HSpool;
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "mode", rename_all = "snake_case")]
 #[educe(Default)]
 pub(in crate::cmd) enum HStatTimeOptions {
     #[educe(Default)]

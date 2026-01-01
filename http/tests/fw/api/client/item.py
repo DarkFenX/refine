@@ -62,7 +62,7 @@ class ApiClientItem(ApiClientBase):
             'url': f'{self._base_url}/sol/{sol_id}/item/{item_id}/stats'}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
-        if options is not Absent:
+        if isinstance(options, ItemStatsOptions):
             kwargs['json'] = options.to_dict()
         return Request(client=self, **kwargs)
 

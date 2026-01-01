@@ -1,7 +1,7 @@
 import dataclasses
 import typing
 
-from fw.util import Absent, dc_to_dict
+from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import DpsProfile
@@ -11,6 +11,3 @@ if typing.TYPE_CHECKING:
 class StatsOptionEhp:
 
     incoming_dps: DpsProfile | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)

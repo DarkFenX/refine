@@ -1,15 +1,12 @@
 import dataclasses
 
-from fw.util import Absent, dc_to_dict
+from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionCapBalance:
 
     src_kinds: StatCapSrcKinds | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -23,17 +20,11 @@ class StatCapSrcKinds:
     incoming_transfers: bool | type[Absent] = Absent
     incoming_neuts: bool | type[Absent] = Absent
 
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
 
 @dataclasses.dataclass(kw_only=True)
 class StatCapRegenOptions:
 
     cap_perc: float | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -41,15 +32,9 @@ class StatCapConsumerOptions:
 
     reload: bool | type[Absent] = Absent
 
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionCapSim:
 
     cap_perc: float | type[Absent] = Absent
     stagger: bool | tuple[bool, list[str]] | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)

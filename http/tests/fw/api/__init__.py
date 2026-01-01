@@ -27,5 +27,7 @@ from .types import (
     StatsOptionItemOutRps,
     StatsOptionItemVolley,
     StatsOptionRps,
+    StatTimeBurst,
+    StatTimeSim,
     ValOptions,
 )

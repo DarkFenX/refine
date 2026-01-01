@@ -1,6 +1,6 @@
 import dataclasses
 
-from fw.util import Absent, dc_to_dict
+from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -8,9 +8,6 @@ class StatsOptionFitOutNps:
 
     item_kinds: StatNeutItemKinds | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -20,9 +17,6 @@ class StatsOptionItemOutNps:
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
 
 @dataclasses.dataclass(kw_only=True)
 class StatNeutItemKinds:
@@ -31,6 +25,3 @@ class StatNeutItemKinds:
     module: bool | type[Absent] = Absent
     minion: bool | type[Absent] = Absent
     bomb: bool | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)

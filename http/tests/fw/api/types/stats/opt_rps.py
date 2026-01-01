@@ -1,28 +1,23 @@
 import dataclasses
 import typing
 
-from fw.util import Absent, dc_to_dict
+from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import DpsProfile
+    from .opt_shared import StatTimeBurst, StatTimeSim
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionRps:
 
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     shield_perc: float | type[Absent] = Absent
-    spool: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionErps:
 
     incoming_dps: DpsProfile | type[Absent] = Absent
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     shield_perc: float | type[Absent] = Absent
-    spool: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)

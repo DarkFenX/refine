@@ -1,12 +1,9 @@
 import dataclasses
 
-from fw.util import Absent, dc_to_dict
+from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemOutCps:
 
     ignore_state: bool | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)

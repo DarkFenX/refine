@@ -26,5 +26,7 @@ from .stats import (
     StatsOptionItemOutRps,
     StatsOptionItemVolley,
     StatsOptionRps,
+    StatTimeBurst,
+    StatTimeSim,
 )
 from .validation import ValOptions

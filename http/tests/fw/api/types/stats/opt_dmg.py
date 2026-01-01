@@ -1,6 +1,6 @@
 import dataclasses
 
-from fw.util import Absent, dc_to_dict
+from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -11,9 +11,6 @@ class StatsOptionFitDps:
     spool: str | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitVolley:
@@ -21,9 +18,6 @@ class StatsOptionFitVolley:
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
     spool: str | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -35,9 +29,6 @@ class StatsOptionItemDps:
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
-
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemVolley:
@@ -46,9 +37,6 @@ class StatsOptionItemVolley:
     include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -64,6 +52,3 @@ class StatDmgItemKinds:
     superweapon: bool | type[Absent] = Absent
     minion_mobile: bool | type[Absent] = Absent
     minion_static: bool | type[Absent] = Absent
-
-    def to_dict(self) -> dict:
-        return dc_to_dict(data=self)
