@@ -231,13 +231,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn get_stat_outgoing_rps(
         &mut self,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_outgoing_rps(&sol.u_data, item_key, spool, ignore_state)
+            .get_stat_item_outgoing_rps(&sol.u_data, item_key, time_options, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_outgoing_cps(&mut self, ignore_state: bool) -> Result<AttrVal, ItemStatError> {

@@ -4,7 +4,7 @@ use crate::{
     misc::Spool,
     svc::vast::{
         StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-        StatOutRepItemKinds, StatTank,
+        StatOutRepItemKinds, StatTank, StatTimeOptions,
     },
 };
 
@@ -52,11 +52,11 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_outgoing_rps(
         &mut self,
         item_kinds: StatOutRepItemKinds,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
     ) -> StatTank<AttrVal> {
         self.sol
             .svc
-            .get_stat_fit_outgoing_rps(&self.sol.u_data, self.key, item_kinds, spool)
+            .get_stat_fit_outgoing_rps(&self.sol.u_data, self.key, item_kinds, time_options)
     }
     pub fn get_stat_outgoing_cps(&mut self) -> AttrVal {
         self.sol.svc.get_stat_fit_outgoing_cps(&self.sol.u_data, self.key)

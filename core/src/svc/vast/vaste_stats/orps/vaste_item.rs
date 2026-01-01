@@ -1,15 +1,14 @@
-use super::shared::get_orps_cycling_options;
+use super::shared::CAP_TRANSFER_OPTIONS;
 use crate::{
     def::{AttrVal, OF},
-    misc::Spool,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::get_item_cseq_map,
         err::StatItemCheckError,
-        vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_module},
+        vast::{StatTank, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_fighter_module},
     },
     ud::UItemKey,
 };
@@ -19,14 +18,14 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemKey,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
         let orps = StatTank {
-            shield: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_shield),
-            armor: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_armor),
-            hull: get_orr_item_key(ctx, calc, item_key, spool, ignore_state, get_getter_hull),
+            shield: get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_shield),
+            armor: get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_armor),
+            hull: get_orr_item_key(ctx, calc, item_key, time_options, ignore_state, get_getter_hull),
         };
         Ok(orps)
     }
@@ -37,7 +36,7 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
-        let ocps = get_orr_item_key(ctx, calc, item_key, None, ignore_state, get_getter_cap);
+        let ocps = get_orr_item_key(ctx, calc, item_key, CAP_TRANSFER_OPTIONS, ignore_state, get_getter_cap);
         Ok(ocps)
     }
 }
@@ -46,15 +45,15 @@ fn get_orr_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemKey,
-    spool: Option<Spool>,
+    time_options: StatTimeOptions,
     ignore_state: bool,
     rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
-    let mut item_orr = OF(0.0);
-    let cycling_options = get_orps_cycling_options(false);
+    let mut orps = OF(0.0);
+    let cycling_options = time_options.into();
     let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, ignore_state) {
         Some(cseq_map) => cseq_map,
-        None => return item_orr,
+        None => return orps,
     };
     for (effect_key, cseq) in cseq_map {
         let effect = ctx.u_data.src.get_effect(effect_key);
@@ -62,20 +61,30 @@ fn get_orr_item_key(
             Some(ospec) => ospec,
             None => continue,
         };
-        match cycling_options {
-            CyclingOptions::Burst => {
-                if let Some(effect_orr) = aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, spool) {
-                    item_orr += effect_orr;
+        match time_options {
+            StatTimeOptions::Burst(burst_opts) => {
+                if let Some(effect_orps) =
+                    aggr_proj_first_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, burst_opts.spool)
+                {
+                    orps += effect_orps;
                 }
             }
-            CyclingOptions::Sim(_) => {
-                if let Some(effect_orr) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
-                    item_orr += effect_orr;
+            StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                Some(time) if time > OF(0.0) => {
+                    if let Some(effect_orps) = aggr_proj_time_ps(ctx, calc, item_key, effect, &cseq, &ospec, None, time)
+                    {
+                        orps += effect_orps;
+                    }
                 }
-            }
+                _ => {
+                    if let Some(effect_orps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, &cseq, &ospec, None) {
+                        orps += effect_orps;
+                    }
+                }
+            },
         }
     }
-    item_orr
+    orps
 }
 
 fn get_getter_shield(effect: &REffect) -> Option<REffectProjOpcSpec<AttrVal>> {

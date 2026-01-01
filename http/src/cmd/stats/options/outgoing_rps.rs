@@ -1,16 +1,19 @@
-use crate::{shared::HSpool, util::default_true};
+use super::shared::HStatTimeOptions;
+use crate::util::default_true;
 
 #[derive(Copy, Clone, Default, serde::Deserialize)]
 pub(in crate::cmd) struct HStatOptionFitOutRps {
     #[serde(default)]
     pub(in crate::cmd) item_kinds: HOutRepItemKinds,
-    pub(in crate::cmd) spool: Option<HSpool>,
+    #[serde(default)]
+    pub(in crate::cmd) time_options: HStatTimeOptions,
 }
 
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionItemOutRps {
-    pub(in crate::cmd) spool: Option<HSpool>,
+    #[serde(default)]
+    pub(in crate::cmd) time_options: HStatTimeOptions,
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) ignore_state: bool,

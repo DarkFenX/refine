@@ -1,14 +1,13 @@
-use super::shared::get_orps_cycling_options;
+use super::shared::CAP_TRANSFER_OPTIONS;
 use crate::{
     def::{AttrVal, OF},
-    misc::Spool,
     rd::{REffectKey, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps},
+        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
-        vast::{StatOutRepItemKinds, StatTank, Vast},
+        cycle::get_item_cseq_map,
+        vast::{StatOutRepItemKinds, StatTank, StatTimeOptions, Vast},
     },
     ud::{UFitKey, UItemKey},
     util::RMapRMap,
@@ -21,7 +20,7 @@ impl Vast {
         calc: &mut Calc,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatOutRepItemKinds,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
     ) -> StatTank<AttrVal> {
         let mut rps = StatTank {
             shield: OF(0.0),
@@ -30,9 +29,9 @@ impl Vast {
         };
         for fit_key in fit_keys {
             let fit_data = self.get_fit_data(&fit_key);
-            rps.shield += get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_shield);
-            rps.armor += get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_armor);
-            rps.hull += get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_hull);
+            rps.shield += get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_shield);
+            rps.armor += get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_armor);
+            rps.hull += get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_hull);
         }
         rps
     }
@@ -42,13 +41,13 @@ impl Vast {
         calc: &mut Calc,
         fit_key: UFitKey,
         item_kinds: StatOutRepItemKinds,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
     ) -> StatTank<AttrVal> {
         let fit_data = self.get_fit_data(&fit_key);
         StatTank {
-            shield: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_shield),
-            armor: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_armor),
-            hull: get_orrps(ctx, calc, item_kinds, spool, &fit_data.orr_hull),
+            shield: get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_shield),
+            armor: get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_armor),
+            hull: get_orrps(ctx, calc, item_kinds, time_options, &fit_data.orr_hull),
         }
     }
     pub(in crate::svc) fn get_stat_fits_outgoing_cps(
@@ -63,7 +62,7 @@ impl Vast {
                     ctx,
                     calc,
                     StatOutRepItemKinds::all_enabled(),
-                    None,
+                    CAP_TRANSFER_OPTIONS,
                     &self.get_fit_data(&fit_key).out_cap,
                 )
             })
@@ -71,7 +70,13 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_fit_outgoing_cps(&self, ctx: SvcCtx, calc: &mut Calc, fit_key: UFitKey) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
-        get_orrps(ctx, calc, StatOutRepItemKinds::all_enabled(), None, &fit_data.out_cap)
+        get_orrps(
+            ctx,
+            calc,
+            StatOutRepItemKinds::all_enabled(),
+            CAP_TRANSFER_OPTIONS,
+            &fit_data.out_cap,
+        )
     }
 }
 
@@ -79,11 +84,11 @@ fn get_orrps(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
-    spool: Option<Spool>,
+    time_options: StatTimeOptions,
     fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
-    let mut rps = OF(0.0);
-    let cycling_options = get_orps_cycling_options(false);
+    let mut orps = OF(0.0);
+    let cycling_options = time_options.into();
     for (&item_key, item_data) in fit_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
             Some(cseq_map) => cseq_map,
@@ -99,20 +104,30 @@ fn get_orrps(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect(effect_key);
-            match cycling_options {
-                CyclingOptions::Burst => {
-                    if let Some(effect_rps) = aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, None, spool)
+            match time_options {
+                StatTimeOptions::Burst(burst_opts) => {
+                    if let Some(effect_orps) =
+                        aggr_proj_first_ps(ctx, calc, item_key, effect, cseq, ospec, None, burst_opts.spool)
                     {
-                        rps += effect_rps;
+                        orps += effect_orps;
                     }
                 }
-                CyclingOptions::Sim(_) => {
-                    if let Some(effect_rps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, None) {
-                        rps += effect_rps;
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > OF(0.0) => {
+                        if let Some(effect_orps) =
+                            aggr_proj_time_ps(ctx, calc, item_key, effect, cseq, ospec, None, time)
+                        {
+                            orps += effect_orps;
+                        }
                     }
-                }
+                    _ => {
+                        if let Some(effect_orps) = aggr_proj_looped_ps(ctx, calc, item_key, effect, cseq, ospec, None) {
+                            orps += effect_orps;
+                        }
+                    }
+                },
             }
         }
     }
-    rps
+    orps
 }

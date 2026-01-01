@@ -319,7 +319,8 @@ fn get_outgoing_rps_stats(
 ) -> Option<Vec<HStatTank<rc::AttrVal>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        match core_item.get_stat_outgoing_rps(option.spool.map(Into::into), option.ignore_state) {
+        let core_time_options = option.time_options.into();
+        match core_item.get_stat_outgoing_rps(core_time_options, option.ignore_state) {
             Ok(result) => results.push(result.into()),
             Err(_) => return None,
         }

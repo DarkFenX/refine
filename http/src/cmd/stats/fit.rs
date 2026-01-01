@@ -388,8 +388,10 @@ fn get_outgoing_rps_stats(
         .iter()
         .map(|option| {
             let core_item_kinds = (&option.item_kinds).into();
-            let core_spool = option.spool.map(Into::into);
-            core_fit.get_stat_outgoing_rps(core_item_kinds, core_spool).into()
+            let core_time_options = option.time_options.into();
+            core_fit
+                .get_stat_outgoing_rps(core_item_kinds, core_time_options)
+                .into()
         })
         .collect()
 }

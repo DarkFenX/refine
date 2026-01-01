@@ -1,10 +1,9 @@
 use crate::{
     def::AttrVal,
-    misc::Spool,
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatOutRepItemKinds, StatTank, Vast},
+        vast::{StatOutRepItemKinds, StatTank, StatTimeOptions, Vast},
     },
     ud::{UData, UFitKey, UItemKey},
 };
@@ -15,14 +14,14 @@ impl Svc {
         u_data: &UData,
         fit_keys: impl ExactSizeIterator<Item = UFitKey>,
         item_kinds: StatOutRepItemKinds,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
     ) -> StatTank<AttrVal> {
         self.vast.get_stat_fits_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_keys,
             item_kinds,
-            spool,
+            time_options,
         )
     }
     pub(crate) fn get_stat_fit_outgoing_rps(
@@ -30,28 +29,28 @@ impl Svc {
         u_data: &UData,
         fit_key: UFitKey,
         item_kinds: StatOutRepItemKinds,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
     ) -> StatTank<AttrVal> {
         self.vast.get_stat_fit_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_key,
             item_kinds,
-            spool,
+            time_options,
         )
     }
     pub(crate) fn get_stat_item_outgoing_rps(
         &mut self,
         u_data: &UData,
         item_key: UItemKey,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         Vast::get_stat_item_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_key,
-            spool,
+            time_options,
             ignore_state,
         )
     }

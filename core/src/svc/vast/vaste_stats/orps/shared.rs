@@ -1,11 +1,3 @@
-use crate::svc::cycle::{CycleOptionsSim, CyclingOptions};
+use crate::svc::vast::{StatTimeOptions, StatTimeOptionsBurst};
 
-pub(super) fn get_orps_cycling_options(reload: bool) -> CyclingOptions {
-    match reload {
-        true => CyclingOptions::Sim(CycleOptionsSim {
-            reload_optionals: Some(true),
-            ..
-        }),
-        false => CyclingOptions::Burst,
-    }
-}
+pub(super) const CAP_TRANSFER_OPTIONS: StatTimeOptions = StatTimeOptions::Burst(StatTimeOptionsBurst { .. });
