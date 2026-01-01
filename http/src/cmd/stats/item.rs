@@ -334,9 +334,11 @@ fn get_outgoing_nps_stats(
 ) -> Option<Vec<Option<rc::AttrVal>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
+        let core_time_options = option.time_options.into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_outgoing_nps_applied(
+                    core_time_options,
                     option.include_charges,
                     option.ignore_state,
                     projectee_item_id,
@@ -348,10 +350,12 @@ fn get_outgoing_nps_stats(
                     },
                 }
             }
-            None => match core_item.get_stat_outgoing_nps(option.include_charges, option.ignore_state) {
-                Ok(result) => results.push(Some(result)),
-                Err(_) => return None,
-            },
+            None => {
+                match core_item.get_stat_outgoing_nps(core_time_options, option.include_charges, option.ignore_state) {
+                    Ok(result) => results.push(Some(result)),
+                    Err(_) => return None,
+                }
+            }
         }
     }
     Some(results)

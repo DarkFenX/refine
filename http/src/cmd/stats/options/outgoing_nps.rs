@@ -1,3 +1,4 @@
+use super::shared::HStatTimeOptions;
 use crate::util::default_true;
 
 #[serde_with::serde_as]
@@ -5,6 +6,8 @@ use crate::util::default_true;
 pub(in crate::cmd) struct HStatOptionFitOutNps {
     #[serde(default)]
     pub(in crate::cmd) item_kinds: HStatNeutItemKinds,
+    #[serde(default)]
+    pub(in crate::cmd) time_options: HStatTimeOptions,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     pub(in crate::cmd) projectee_item_id: Option<rc::ItemId>,
 }
@@ -13,6 +16,8 @@ pub(in crate::cmd) struct HStatOptionFitOutNps {
 #[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionItemOutNps {
+    #[serde(default)]
+    pub(in crate::cmd) time_options: HStatTimeOptions,
     #[serde(default)]
     #[educe(Default = false)]
     pub(in crate::cmd) include_charges: bool,

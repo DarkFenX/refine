@@ -203,15 +203,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_mps(&sol.u_data, item_key, reload, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_outgoing_nps(&mut self, include_charges: bool, ignore_state: bool) -> Result<AttrVal, ItemStatError> {
+    fn get_stat_outgoing_nps(
+        &mut self,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+    ) -> Result<AttrVal, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_outgoing_nps(&sol.u_data, item_key, include_charges, ignore_state, None)
+            .get_stat_item_outgoing_nps(&sol.u_data, item_key, time_options, include_charges, ignore_state, None)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_outgoing_nps_applied(
         &mut self,
+        time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
@@ -223,6 +229,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_outgoing_nps(
                 &sol.u_data,
                 item_key,
+                time_options,
                 include_charges,
                 ignore_state,
                 Some(projectee_key),

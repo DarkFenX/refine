@@ -117,15 +117,16 @@ fn get_outgoing_nps_stats(
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
+        let core_time_options = option.time_options.into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_outgoing_nps_applied(core_item_kinds, projectee_item_id) {
+                match core_fleet.get_stat_outgoing_nps_applied(core_item_kinds, core_time_options, projectee_item_id) {
                     Ok(result) => results.push(Some(result)),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let result = core_fleet.get_stat_outgoing_nps(core_item_kinds);
+                let result = core_fleet.get_stat_outgoing_nps(core_item_kinds, core_time_options);
                 results.push(Some(result));
             }
         }
