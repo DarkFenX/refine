@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
 
 
 def test_state(client, consts):
@@ -140,13 +140,12 @@ def test_reload(client, consts):
     # Verification
     api_options = [
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True)),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions()))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions(reload=False)))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions(reload=True))))]
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeBurst()),
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim())]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
-    assert api_fit_stats.cap_balance == [approx(-1.2), approx(-1.2), approx(-1.2), approx(-1.180328)]
+    assert api_fit_stats.cap_balance == [approx(-1.180328), approx(-1.2), approx(-1.180328)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
-    assert api_ship_stats.cap_balance == [approx(-1.2), approx(-1.2), approx(-1.2), approx(-1.180328)]
+    assert api_ship_stats.cap_balance == [approx(-1.180328), approx(-1.2), approx(-1.180328)]
 
 
 def test_ancil(client, consts):
@@ -180,8 +179,12 @@ def test_ancil(client, consts):
         charge_type_id=eve_charge_id)
     # Verification
     api_options = [
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions(reload=False)))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions(reload=True))))]
+        StatsOptionCapBalance(
+            src_kinds=StatCapSrcKinds(consumers=True),
+            time_options=StatTimeSim(reload_optionals=False)),
+        StatsOptionCapBalance(
+            src_kinds=StatCapSrcKinds(consumers=True),
+            time_options=StatTimeSim(reload_optionals=True))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
     assert api_fit_stats.cap_balance == [approx(-8.888889), approx(-3.333333)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
@@ -190,8 +193,12 @@ def test_ancil(client, consts):
     api_module.change_module(charge_type_id=None)
     # Verification
     api_options = [
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions(reload=False)))),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=(True, StatCapConsumerOptions(reload=True))))]
+        StatsOptionCapBalance(
+            src_kinds=StatCapSrcKinds(consumers=True),
+            time_options=StatTimeSim(reload_optionals=False)),
+        StatsOptionCapBalance(
+            src_kinds=StatCapSrcKinds(consumers=True),
+            time_options=StatTimeSim(reload_optionals=True))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
     assert api_fit_stats.cap_balance == [approx(-8.888889), approx(-8.888889)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
