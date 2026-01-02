@@ -8,6 +8,7 @@ license = "LGPL-3.0-or-later"
 
 [dependencies]
 angle-sc = ">=1.1.4"
+derive_more = { version = ">=2.1.1", features = ["display"] }
 either = ">=0.15.0"
 itertools = ">=0.14.0"
 lender = ">=0.4.2"

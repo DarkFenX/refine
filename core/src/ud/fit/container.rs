@@ -1,6 +1,7 @@
 use crate::{
+    def::FitId,
     err::basic::FitFoundError,
-    ud::{container::UEntityContainer, fit::UFit},
+    ud::{UFit, UFitKey, container::UEntityContainer},
 };
 
-pub(crate) type UFits = UEntityContainer<UFit, FitFoundError>;
+pub(crate) type UFits = UEntityContainer<UFit, UFitKey, FitId, FitFoundError>;

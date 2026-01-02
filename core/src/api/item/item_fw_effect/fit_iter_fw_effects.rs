@@ -1,7 +1,7 @@
 use crate::{
     api::{Fit, FitMut, FwEffect, FwEffectMut, MutIter},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::{UFitKey, UItemKey},
 };
 
 impl<'a> Fit<'a> {

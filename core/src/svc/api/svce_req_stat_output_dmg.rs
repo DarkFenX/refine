@@ -84,7 +84,7 @@ impl Svc {
     pub(crate) fn get_stat_item_dps_raw(
         &mut self,
         u_data: &UData,
-        item_key: UFitKey,
+        item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
@@ -103,7 +103,7 @@ impl Svc {
     pub(crate) fn get_stat_item_dps_applied(
         &mut self,
         u_data: &UData,
-        item_key: UFitKey,
+        item_key: UItemKey,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
@@ -188,7 +188,7 @@ impl Svc {
     pub(crate) fn get_stat_item_volley_raw(
         &mut self,
         u_data: &UData,
-        item_key: UFitKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
@@ -205,7 +205,7 @@ impl Svc {
     pub(crate) fn get_stat_item_volley_applied(
         &mut self,
         u_data: &UData,
-        item_key: UFitKey,
+        item_key: UItemKey,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,

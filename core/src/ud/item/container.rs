@@ -1,6 +1,7 @@
 use crate::{
+    def::ItemId,
     err::basic::ItemFoundError,
-    ud::{container::UEntityContainer, item::UItem},
+    ud::{UItem, UItemKey, container::UEntityContainer},
 };
 
-pub(crate) type UItems = UEntityContainer<UItem, ItemFoundError>;
+pub(crate) type UItems = UEntityContainer<UItem, UItemKey, ItemId, ItemFoundError>;

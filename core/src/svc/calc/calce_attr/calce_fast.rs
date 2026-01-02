@@ -106,7 +106,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: Option<UItemKey>,
-        attr_key: Option<UItemKey>,
+        attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
         match self.get_item_oattr_rfull(ctx, item_key?, attr_key) {
@@ -125,7 +125,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: Option<UItemKey>,
-        attr_key: Option<UItemKey>,
+        attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> AttrVal {
         match (item_key, attr_key) {

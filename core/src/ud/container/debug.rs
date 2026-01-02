@@ -1,10 +1,15 @@
+use std::hash::Hash;
+
 use crate::{
     dbg::{DebugError, DebugResult},
     ud::container::UEntityContainer,
     util::RSet,
 };
 
-impl<T, E> UEntityContainer<T, E> {
+impl<T, Key, Id, Err> UEntityContainer<T, Key, Id, Err>
+where
+    Id: Eq + Hash,
+{
     pub(in crate::ud) fn consistency_check(&self) -> DebugResult {
         let seen_data: RSet<_> = self.data.iter().map(|(key, _)| key).collect();
         let seen_map: RSet<_> = self.id_to_key.values().copied().collect();

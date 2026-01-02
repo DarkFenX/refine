@@ -23,6 +23,7 @@ pub(crate) use item_skill::USkill;
 pub(crate) use item_stance::UStance;
 pub(crate) use item_subsystem::USubsystem;
 pub(crate) use item_sw_effect::USwEffect;
+pub(crate) use key::UItemKey;
 pub(crate) use misc::{UAutocharges, UNpcProp, UPhysics, UProjData, UProjs};
 use misc::{bool_to_state_active, bool_to_state_offline, state_to_bool};
 
@@ -46,4 +47,5 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod key;
 mod misc;
