@@ -1,7 +1,7 @@
 use crate::{
     api::{Fighter, FighterMut, Fit, FitMut, MutIter},
     sol::SolarSystem,
-    ud::{UFitKey, UItemKey},
+    ud::UFitKey,
 };
 
 impl<'a> Fit<'a> {

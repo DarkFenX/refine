@@ -26,12 +26,12 @@ use crate::{
 mod private {
     use crate::{sol::SolarSystem, ud::UItemKey};
 
-    pub trait ItemSealed: Sized {
+    pub(crate) trait ItemSealed: Sized {
         fn get_sol(&self) -> &SolarSystem;
         fn get_key(&self) -> UItemKey;
     }
 
-    pub trait ItemMutSealed: ItemSealed {
+    pub(crate) trait ItemMutSealed: ItemSealed {
         fn get_sol_mut(&mut self) -> &mut SolarSystem;
     }
 }
