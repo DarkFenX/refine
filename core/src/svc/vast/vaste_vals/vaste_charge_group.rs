@@ -38,9 +38,9 @@ impl VastFitData {
         let mut charges = HashMap::new();
         for (&charge_key, &cont_key) in self.charge_group.difference(kfs) {
             charges.insert(
-                ctx.u_data.items.ext_id_by_int_id(charge_key),
+                ctx.u_data.items.eid_by_iid(charge_key),
                 ValChargeGroupChargeInfo {
-                    parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_key),
+                    parent_item_id: ctx.u_data.items.eid_by_iid(cont_key),
                     charge_group_id: ctx.u_data.items.get(charge_key).get_group_id().unwrap(),
                     allowed_group_ids: ctx
                         .u_data

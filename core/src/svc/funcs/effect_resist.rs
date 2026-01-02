@@ -1,12 +1,12 @@
 use crate::{
     def::{AttrVal, OF},
     misc::AttrSpec,
-    rd::{RAttrKey, REffect},
+    rd::{RAttrId, REffect},
     svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemId},
 };
 
-pub(in crate::svc) fn get_resist_attr_key(item: &UItem, effect: &REffect) -> Option<RAttrKey> {
+pub(in crate::svc) fn get_resist_attr_key(item: &UItem, effect: &REffect) -> Option<RAttrId> {
     match effect.resist_attr_key {
         Some(resist_attr_key) => Some(resist_attr_key),
         None => match item.get_axt() {

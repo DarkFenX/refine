@@ -9,7 +9,7 @@ use crate::{
     def::AttrVal,
     misc::EffectSpec,
     nd::NProjMultGetter,
-    rd::{RAttrKey, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModifier},
+    rd::{RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModifier},
     svc::{
         SvcCtx,
         calc::{
@@ -28,13 +28,13 @@ pub(crate) struct RawModifier {
     pub(crate) op: CalcOp,
     pub(crate) aggr_mode: AggrMode,
     pub(crate) affectee_filter: AffecteeFilter,
-    pub(crate) affectee_attr_key: RAttrKey,
+    pub(crate) affectee_attr_key: RAttrId,
     // Buff-related
-    pub(crate) buff_type_attr_key: Option<RAttrKey> = None,
+    pub(crate) buff_type_attr_key: Option<RAttrId> = None,
     // Projection-related
     pub(crate) proj_mult_getter: Option<NProjMultGetter> = None,
-    pub(crate) proj_attr_keys: [Option<RAttrKey>; 2] = [None, None],
-    pub(crate) resist_attr_key: Option<RAttrKey> = None,
+    pub(crate) proj_attr_keys: [Option<RAttrId>; 2] = [None, None],
+    pub(crate) resist_attr_key: Option<RAttrId> = None,
 }
 impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {
@@ -97,8 +97,8 @@ impl RawModifier {
         buff: &RBuff,
         buff_scope: &REffectBuffScope,
         buff_mod: &RBuffModifier,
-        buff_type_attr_key: Option<RAttrKey>,
-        buff_str_attr_key: RAttrKey,
+        buff_type_attr_key: Option<RAttrId>,
+        buff_str_attr_key: RAttrId,
     ) -> Option<Self> {
         RawModifier::try_from_buff(
             affector_key,
@@ -138,7 +138,7 @@ impl RawModifier {
         buff: &RBuff,
         buff_scope: &REffectBuffScope,
         buff_mod: &RBuffModifier,
-        buff_type_attr_key: Option<RAttrKey>,
+        buff_type_attr_key: Option<RAttrId>,
         buff_str: AffectorValue,
     ) -> Option<Self> {
         if effect.category != ac::effcats::ACTIVE {
@@ -200,7 +200,7 @@ impl RawModifier {
             },
         })
     }
-    pub(in crate::svc::calc) fn get_affector_attr_key(&self) -> Option<RAttrKey> {
+    pub(in crate::svc::calc) fn get_affector_attr_key(&self) -> Option<RAttrId> {
         self.affector_value.get_affector_attr_key()
     }
     pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<Affector, 1> {

@@ -1,7 +1,7 @@
 use either::Either;
 
 use crate::{
-    rd::REffectKey,
+    rd::REffectId,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -18,7 +18,7 @@ pub(super) fn get_drone_cseq_map(
     item_key: UItemId,
     drone: &UDrone,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq>> {
     if !drone.is_loaded() {
         return None;
     };

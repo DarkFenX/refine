@@ -8,7 +8,7 @@ pub struct ItemLoadedError {
 impl ItemLoadedError {
     pub(crate) fn from_svc_err(u_items: &UItems, svc_err: KeyedItemLoadedError) -> Self {
         Self {
-            item_id: u_items.ext_id_by_int_id(svc_err.item_key),
+            item_id: u_items.eid_by_iid(svc_err.item_key),
         }
     }
 }

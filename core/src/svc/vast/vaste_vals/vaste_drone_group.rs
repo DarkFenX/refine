@@ -35,7 +35,7 @@ impl VastFitData {
             .drone_groups
             .iter()
             .filter(|(drone_key, _)| !kfs.contains(drone_key))
-            .map(|(drone_key, drone_a_group_id)| (ctx.u_data.items.ext_id_by_int_id(*drone_key), *drone_a_group_id))
+            .map(|(drone_key, drone_a_group_id)| (ctx.u_data.items.eid_by_iid(*drone_key), *drone_a_group_id))
             .collect();
         match drone_groups.is_empty() {
             true => None,

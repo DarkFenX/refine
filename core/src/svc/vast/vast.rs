@@ -3,7 +3,7 @@ use crate::{
     def::{AttrVal, Count},
     misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::NBreacherDmgGetter,
-    rd::{RAttrKey, REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListKey, RItemShipLimit},
+    rd::{RAttrId, REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
         vaste_vals::EffectSecZoneInfo,
@@ -18,18 +18,18 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) irr_shield_limitable:
-        RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
     pub(in crate::svc::vast) irr_armor_limitable:
-        RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
     // Cap
-    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
     // Ewar
-    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<Ecm>>,
+    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<Ecm>>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
@@ -112,38 +112,38 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) sec_zone_active: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemId, AAttrVal>,
     pub(in crate::svc::vast) sec_zone_unactivable: RSet<UItemId>,
-    pub(in crate::svc::vast) sec_zone_effect: RMapRMap<UItemId, REffectKey, EffectSecZoneInfo>,
+    pub(in crate::svc::vast) sec_zone_effect: RMapRMap<UItemId, REffectId, EffectSecZoneInfo>,
     pub(in crate::svc::vast) mods_active: RSet<UItemId>,
     pub(in crate::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<UItemId, ValShipKind>,
     pub(in crate::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
     pub(in crate::svc::vast) blockable_assistance: RMapRSet<UItemId, EffectSpec>,
     pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemId, EffectSpec>,
     pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemId, RItemListKey>,
-    pub(in crate::svc::vast) cap_consumers_all: RMap<UItemId, Vec<RAttrKey>>,
+    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemId, RItemListId>,
+    pub(in crate::svc::vast) cap_consumers_all: RMap<UItemId, Vec<RAttrId>>,
     // Stats-related - damage output
-    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<DmgKinds<AttrVal>>>,
-    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectKey, NBreacherDmgGetter>,
+    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<DmgKinds<AttrVal>>>,
+    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, NBreacherDmgGetter>,
     // Stats-related - mining output
-    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<MiningAmount>>,
-    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<MiningAmount>>,
-    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<MiningAmount>>,
+    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
+    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
+    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
     // Stats-related - RR output
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
     // Stats-related - misc output
-    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) out_cap: RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
     // Stats-related - local active tank
-    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
     // Stats-related - cap
-    pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemId, REffectKey, RAttrKey>,
-    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemId, REffectId, RAttrId>,
+    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
     // Stats-related - misc
     pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
 }

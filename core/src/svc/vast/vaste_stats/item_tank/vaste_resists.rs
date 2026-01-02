@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, OF},
     misc::DmgKinds,
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -70,10 +70,10 @@ fn get_item_layer_resists(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemId,
-    em_attr_key: Option<RAttrKey>,
-    therm_attr_key: Option<RAttrKey>,
-    kin_attr_key: Option<RAttrKey>,
-    expl_attr_key: Option<RAttrKey>,
+    em_attr_key: Option<RAttrId>,
+    therm_attr_key: Option<RAttrId>,
+    kin_attr_key: Option<RAttrId>,
+    expl_attr_key: Option<RAttrId>,
 ) -> DmgKinds<AttrVal> {
     DmgKinds {
         em: OF(1.0)

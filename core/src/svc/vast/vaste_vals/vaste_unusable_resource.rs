@@ -52,7 +52,7 @@ impl VastFitData {
             .drones_bandwidth
             .iter()
             .filter(|(item_key, item_use)| **item_use > effective_max && !kfs.contains(item_key))
-            .map(|(item_key, item_use)| (ctx.u_data.items.ext_id_by_int_id(*item_key), *item_use))
+            .map(|(item_key, item_use)| (ctx.u_data.items.eid_by_iid(*item_key), *item_use))
             .collect();
         match users.is_empty() {
             true => None,

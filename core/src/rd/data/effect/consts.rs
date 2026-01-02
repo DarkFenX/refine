@@ -1,17 +1,17 @@
-use crate::{ac, ad::AEffectId, rd::REffectKey, util::RMap};
+use crate::{ac, ad::AEffectId, rd::REffectId, util::RMap};
 
 #[derive(Clone)]
 pub(crate) struct REffectConsts {
-    pub(crate) adaptive_armor_hardener: Option<REffectKey>,
-    pub(crate) hi_power: Option<REffectKey>,
-    pub(crate) lo_power: Option<REffectKey>,
-    pub(crate) med_power: Option<REffectKey>,
-    pub(crate) online: Option<REffectKey>,
-    pub(crate) rig_slot: Option<REffectKey>,
-    pub(crate) service_slot: Option<REffectKey>,
+    pub(crate) adaptive_armor_hardener: Option<REffectId>,
+    pub(crate) hi_power: Option<REffectId>,
+    pub(crate) lo_power: Option<REffectId>,
+    pub(crate) med_power: Option<REffectId>,
+    pub(crate) online: Option<REffectId>,
+    pub(crate) rig_slot: Option<REffectId>,
+    pub(crate) service_slot: Option<REffectId>,
 }
 impl REffectConsts {
-    pub(in crate::rd) fn new(effect_id_key_map: &RMap<AEffectId, REffectKey>) -> Self {
+    pub(in crate::rd) fn new(effect_id_key_map: &RMap<AEffectId, REffectId>) -> Self {
         Self {
             adaptive_armor_hardener: effect_id_key_map.get(&ac::effects::ADAPTIVE_ARMOR_HARDENER).copied(),
             hi_power: effect_id_key_map.get(&ac::effects::HI_POWER).copied(),

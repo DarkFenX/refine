@@ -2,7 +2,7 @@ use crate::{
     ac,
     ad::{AEffectId, AState},
     misc::EffectMode,
-    rd::{REffect, REffectKey, RItem, RcEffect, Src},
+    rd::{REffect, REffectId, RItem, RcEffect, Src},
     ud::item::misc::UEffectModes,
     util::RSet,
 };
@@ -10,7 +10,7 @@ use crate::{
 const ONLINE_EFFECT_ID: AEffectId = ac::effects::ONLINE;
 
 pub(crate) struct UAutochargeActivation {
-    pub(crate) effect_key: REffectKey,
+    pub(crate) effect_key: REffectId,
     pub(crate) active: bool,
 }
 
@@ -40,7 +40,7 @@ impl UEffectUpdates {
 
 pub(super) fn process_effects(
     reuse_eupdates: &mut UEffectUpdates,
-    reffs: &mut RSet<REffectKey>,
+    reffs: &mut RSet<REffectId>,
     src: &Src,
     item: &RItem,
     item_state: AState,
@@ -52,7 +52,7 @@ pub(super) fn process_effects(
     }
 }
 
-fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectKey>, src: &Src, item: &RItem) {
+fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectId>, src: &Src, item: &RItem) {
     // We don't want to waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
     reuse_eupdates.to_stop.reserve(reffs.len());
@@ -76,7 +76,7 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
 
 fn update_running_effects(
     reuse_eupdates: &mut UEffectUpdates,
-    reffs: &mut RSet<REffectKey>,
+    reffs: &mut RSet<REffectId>,
     src: &Src,
     item: &RItem,
     item_state: AState,
@@ -155,7 +155,7 @@ fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, 
 
 fn resolve_regular_effect_status(
     item_effect_modes: &UEffectModes,
-    item_defeff_key: Option<REffectKey>,
+    item_defeff_key: Option<REffectId>,
     item_state: AState,
     online_running: bool,
     effect: &REffect,
@@ -173,7 +173,7 @@ fn resolve_regular_effect_status(
 }
 
 fn resolve_regular_effect_status_full(
-    item_defeff_key: Option<REffectKey>,
+    item_defeff_key: Option<REffectId>,
     item_state: AState,
     effect: &REffect,
     online_running: bool,

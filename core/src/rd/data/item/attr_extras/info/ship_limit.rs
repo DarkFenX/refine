@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ac,
     ad::{AAttrVal, AItemGrpId, AItemId},
-    rd::{RAttrConsts, RAttrKey},
+    rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
@@ -15,7 +15,7 @@ pub(crate) struct RItemShipLimit {
 
 pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
     a_item_id: AItemId,
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<RItemShipLimit> {
     let mut limit_type_ids = [

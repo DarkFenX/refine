@@ -1,7 +1,7 @@
 use crate::{
     ad::AState,
     misc::{AttrSpec, EffectSpec},
-    rd::{RAttrKey, REffectKey, RcEffect},
+    rd::{RAttrId, REffectId, RcEffect},
     svc::{Svc, SvcCtx},
     ud::{UData, UFighter, UFitId, UFleet, UItem, UItemId, UProjData, USkill},
 };
@@ -53,7 +53,7 @@ impl Svc {
         self.calc.item_unloaded(svc_ctx, item_key, item);
         self.vast.item_unloaded(&item_key, item);
     }
-    pub(crate) fn notify_base_attr_value_changed(&mut self, u_data: &UData, item_key: UItemId, attr_key: RAttrKey) {
+    pub(crate) fn notify_base_attr_value_changed(&mut self, u_data: &UData, item_key: UItemId, attr_key: RAttrId) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
             .force_attr_value_recalc(svc_ctx, AttrSpec::new(item_key, attr_key));
@@ -128,7 +128,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         projector_key: UItemId,
-        effect_key: REffectKey,
+        effect_key: REffectId,
         projectee_key: UItemId,
         projectee_item: &UItem,
         proj_data: Option<UProjData>,

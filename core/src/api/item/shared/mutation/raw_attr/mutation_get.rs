@@ -84,7 +84,7 @@ fn get_raw_mattr(sol: &SolarSystem, item_key: UItemId, a_attr_id: AAttrId) -> Re
     {
         Some(_) => Ok(RawMAttr::new(sol, item_key, a_attr_id)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
+            item_id: sol.u_data.items.eid_by_iid(item_key),
             attr_id: a_attr_id.into(),
         }
         .into()),
@@ -107,7 +107,7 @@ fn get_raw_mattr_mut(
     {
         Some(_) => Ok(RawMAttrMut::new(sol, item_key, a_attr_id)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
+            item_id: sol.u_data.items.eid_by_iid(item_key),
             attr_id: a_attr_id.into(),
         }
         .into()),

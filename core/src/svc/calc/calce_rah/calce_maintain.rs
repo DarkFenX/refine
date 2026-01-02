@@ -136,7 +136,7 @@ impl Calc {
             return;
         }
         let attr = ctx.u_data.src.get_attr(aspec.attr_key);
-        match attr.id {
+        match attr.a_id {
             // Ship armor resonances and RAH resonances
             ac::attrs::ARMOR_EM_DMG_RESONANCE
             | ac::attrs::ARMOR_THERM_DMG_RESONANCE

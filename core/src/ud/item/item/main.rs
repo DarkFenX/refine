@@ -4,7 +4,7 @@ use crate::{
     ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     def::{AttrVal, ItemId, OF},
     misc::{EffectMode, Spool},
-    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant, UItemId,
         UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
@@ -142,7 +142,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_category_id(),
         }
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_attrs(),
             Self::Booster(booster) => booster.get_attrs(),
@@ -163,7 +163,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_attrs(),
         }
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_effect_datas(),
             Self::Booster(booster) => booster.get_effect_datas(),
@@ -184,7 +184,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_effect_datas(),
         }
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
+    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_defeff_key(),
             Self::Booster(booster) => booster.get_defeff_key(),
@@ -268,7 +268,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.is_ice_harvester(),
         }
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
+    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_reffs(),
             Self::Booster(booster) => booster.get_reffs(),
@@ -331,7 +331,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.stop_all_reffs(reuse_eupdates, src),
         }
     }
-    pub(crate) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
+    pub(crate) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_effect_key_mode(effect_key),
             Self::Booster(booster) => booster.get_effect_key_mode(effect_key),
@@ -611,7 +611,7 @@ impl UItem {
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_key: RAttrKey) -> Option<AAttrVal> {
+    pub(crate) fn get_attr(&self, attr_key: RAttrId) -> Option<AAttrVal> {
         match self.get_attrs() {
             Some(attrs) => attrs.get(&attr_key).copied(),
             None => None,

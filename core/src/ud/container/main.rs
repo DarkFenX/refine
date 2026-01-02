@@ -7,8 +7,8 @@ use crate::util::{GetId, Named, RMap};
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: Wrapping<ExtId>,
     pub(super) data: Slab<T>,
-    pub(super) ext_id_to_slab_key: RMap<ExtId, usize>,
-    phantom_int: PhantomData<IntId>,
+    pub(super) eid_to_key: RMap<ExtId, usize>,
+    phantom_iid: PhantomData<IntId>,
     phantom_error: PhantomData<Err>,
 }
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
@@ -23,73 +23,71 @@ where
         Self {
             counter: Wrapping(ExtId::default()),
             data: Slab::with_capacity(capacity),
-            ext_id_to_slab_key: RMap::with_capacity(capacity),
-            phantom_int: PhantomData,
+            eid_to_key: RMap::with_capacity(capacity),
+            phantom_iid: PhantomData,
             phantom_error: PhantomData,
         }
     }
     pub(crate) fn alloc_id(&mut self) -> ExtId {
         let start = self.counter;
-        while self.ext_id_to_slab_key.contains_key(&self.counter.0) {
+        while self.eid_to_key.contains_key(&self.counter.0) {
             self.counter += 1;
             if start == self.counter {
                 panic!("ran out of {} ID space", T::get_name());
             }
         }
-        let item_id = self.counter.0;
+        let eid = self.counter.0;
         self.counter += 1;
-        item_id
+        eid
     }
     pub(crate) fn add(&mut self, entity: T) -> IntId {
-        let ext_id = entity.get_id();
-        let slab_key = self.data.insert(entity);
-        self.ext_id_to_slab_key.insert(ext_id, slab_key);
-        slab_key.into()
+        let eid = entity.get_id();
+        let key = self.data.insert(entity);
+        self.eid_to_key.insert(eid, key);
+        key.into()
     }
-    pub(crate) fn int_id_by_ext_id(&self, ext_id: &ExtId) -> Option<IntId> {
-        self.ext_id_to_slab_key.get(ext_id).map(|&slab_key| slab_key.into())
+    pub(crate) fn iid_by_eid(&self, eid: &ExtId) -> Option<IntId> {
+        self.eid_to_key.get(eid).map(|&key| key.into())
     }
-    pub(crate) fn int_id_by_ext_id_err(&self, ext_id: &ExtId) -> Result<IntId, Err> {
-        match self.ext_id_to_slab_key.get(ext_id) {
-            Some(&slab_key) => Ok(slab_key.into()),
-            None => Err(Err::from(*ext_id)),
+    pub(crate) fn iid_by_eid_err(&self, eid: &ExtId) -> Result<IntId, Err> {
+        match self.eid_to_key.get(eid) {
+            Some(&key) => Ok(key.into()),
+            None => Err(Err::from(*eid)),
         }
     }
-    pub(crate) fn ext_id_by_int_id(&self, int_id: IntId) -> ExtId {
-        self.get(int_id).get_id()
+    pub(crate) fn eid_by_iid(&self, iid: IntId) -> ExtId {
+        self.get(iid).get_id()
     }
-    pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {
-        self.data.get(int_id.into())
+    pub(crate) fn try_get(&self, iid: IntId) -> Option<&T> {
+        self.data.get(iid.into())
     }
-    pub(crate) fn get(&self, int_id: IntId) -> &T {
+    pub(crate) fn get(&self, iid: IntId) -> &T {
         // Internal IDs are supposed to be valid throughout whole lib, so just unwrap
-        self.data.get(int_id.into()).unwrap()
+        self.data.get(iid.into()).unwrap()
     }
-    pub(crate) fn get_mut(&mut self, int_id: IntId) -> &mut T {
+    pub(crate) fn get_mut(&mut self, iid: IntId) -> &mut T {
         // Internal IDs are supposed to be valid throughout whole lib, so just unwrap
-        self.data.get_mut(int_id.into()).unwrap()
+        self.data.get_mut(iid.into()).unwrap()
     }
-    pub(crate) fn remove(&mut self, int_id: IntId) -> T {
+    pub(crate) fn remove(&mut self, iid: IntId) -> T {
         // Keys are supposed to be valid throughout whole lib, so use non-try removal
-        let entity = self.data.remove(int_id.into());
-        self.ext_id_to_slab_key.remove(&entity.get_id());
+        let entity = self.data.remove(iid.into());
+        self.eid_to_key.remove(&entity.get_id());
         entity
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (IntId, &T)> {
-        self.ext_id_to_slab_key
+        self.eid_to_key
             .values()
-            .map(|&slab_key| (slab_key.into(), self.data.get(slab_key).unwrap()))
+            .map(|&key| (key.into(), self.data.get(key).unwrap()))
     }
     pub(crate) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (IntId, &mut T)> {
-        self.data.iter_mut().map(|(slab_key, entity)| (slab_key.into(), entity))
+        self.data.iter_mut().map(|(key, entity)| (key.into(), entity))
     }
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
-        self.ext_id_to_slab_key.values().map(|&slab_key| slab_key.into())
+        self.eid_to_key.values().map(|&key| key.into())
     }
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
-        self.ext_id_to_slab_key
-            .values()
-            .map(|&slab_key| self.data.get(slab_key).unwrap())
+        self.eid_to_key.values().map(|&key| self.data.get(key).unwrap())
     }
     pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
@@ -107,8 +105,8 @@ where
         Self {
             counter: self.counter,
             data: self.data.clone(),
-            ext_id_to_slab_key: self.ext_id_to_slab_key.clone(),
-            phantom_int: PhantomData,
+            eid_to_key: self.eid_to_key.clone(),
+            phantom_iid: PhantomData,
             phantom_error: PhantomData,
         }
     }

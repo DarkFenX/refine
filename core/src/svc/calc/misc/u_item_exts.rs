@@ -1,5 +1,5 @@
 use crate::{
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::calc::LocationKind,
     ud::{UItem, UItemId, UShipKind},
 };
@@ -52,7 +52,7 @@ impl UItem {
         matches!(self, Self::Charge(_) | Self::Drone(_) | Self::Fighter(_))
     }
     // Buff-related
-    pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListKey>> {
+    pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
         match self {
             Self::Drone(drone) => drone.get_proj_buff_item_lists(),
             Self::Fighter(fighter) => fighter.get_proj_buff_item_lists(),

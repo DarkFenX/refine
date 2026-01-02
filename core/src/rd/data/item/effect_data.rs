@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrVal, ACount, AItemEffectData, AItemId, AItemListId},
     def::OF,
-    rd::RItemListKey,
+    rd::RItemListId,
     util::RMap,
 };
 
@@ -11,12 +11,12 @@ pub(crate) struct RItemEffectData {
     pub(crate) cooldown_s: AAttrVal,
     pub(crate) charge_count: Option<ACount>,
     pub(crate) charge_reload_time_s: AAttrVal,
-    pub(crate) projectee_filter: Option<RItemListKey>,
+    pub(crate) projectee_filter: Option<RItemListId>,
 }
 impl RItemEffectData {
     pub(in crate::rd::data::item) fn from_a_effect_data(
         a_effect_data: &AItemEffectData,
-        item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
+        item_list_id_key_map: &RMap<AItemListId, RItemListId>,
     ) -> Self {
         Self {
             autocharge: a_effect_data.autocharge,

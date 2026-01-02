@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AAttrVal, AItemId, AMutaAttrRange},
     def::AttrVal,
-    rd::{RAttrKey, RMuta, RcItem, Src},
+    rd::{RAttrId, RMuta, RcItem, Src},
     ud::{UAttrMutationRequest, get_combined_attr_values},
     util::{RMap, UnitInterval},
 };
@@ -49,7 +49,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
 
 pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_attrs(
     src: &Src,
-    unmutated_attrs: &RMap<RAttrKey, AAttrVal>,
+    unmutated_attrs: &RMap<RAttrId, AAttrVal>,
     r_mutator: &RMuta,
     values: &[(AAttrId, AttrVal)],
 ) -> Vec<UAttrMutationRequest> {

@@ -6,7 +6,7 @@ use crate::{
 
 impl UFit {
     pub(in crate::ud) fn consistency_check(&self, u_data: &UData, seen_item_keys: &mut Vec<UItemId>) -> DebugResult {
-        let fit_key = match u_data.fits.int_id_by_ext_id(&self.id) {
+        let fit_key = match u_data.fits.iid_by_eid(&self.id) {
             Some(fit_key) => fit_key,
             None => return Err(DebugError {}),
         };

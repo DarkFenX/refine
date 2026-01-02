@@ -1,7 +1,7 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
     misc::{AttrSpec, EffectSpec},
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::calc::{CtxModifier, LocationKind, RawModifier},
     ud::{UFitId, UItemId},
     util::{RMapRSet, RSet},
@@ -26,10 +26,10 @@ pub(in crate::svc::calc) struct StandardRegister {
     pub(super) affectee_own_srq: RMapRSet<(UFitId, AItemId), UItemId>,
     // Buff-modifiable items, which belong to certain fit and are on specific item list
     // Map<(affectee fit key, item list key), affectee item keys>
-    pub(super) affectee_buffable: RMapRSet<(UFitId, RItemListKey), UItemId>,
+    pub(super) affectee_buffable: RMapRSet<(UFitId, RItemListId), UItemId>,
     // Fits which have ships which are modifiable by buffs via specific item list
     // Map<item list key, (fit key, ship key)>
-    pub(super) affectee_buffable_ships: RMapRSet<RItemListKey, (UFitId, UItemId, LocationKind)>,
+    pub(super) affectee_buffable_ships: RMapRSet<RItemListId, (UFitId, UItemId, LocationKind)>,
     // All raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
     pub(super) rmods_all: RMapRSet<EffectSpec, RawModifier>,

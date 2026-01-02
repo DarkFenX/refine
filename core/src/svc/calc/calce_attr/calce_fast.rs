@@ -4,7 +4,7 @@ use super::calce_shared::get_base_attr_value;
 use crate::{
     def::AttrVal,
     misc::SecZone,
-    rd::{RAttr, RAttrKey},
+    rd::{RAttr, RAttrId},
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVals, CalcModification, CalcModificationKey, ModAccumFast},
@@ -23,7 +23,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
     ) -> Option<AttrVal> {
         self.get_item_attr_rfull(ctx, item_key, attr_key).ok().map(|v| v.extra)
     }
@@ -33,7 +33,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
     ) -> Option<AttrVal> {
         self.get_item_attr_rfull(ctx, item_key, attr_key?).ok().map(|v| v.dogma)
     }
@@ -43,7 +43,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
     ) -> Option<AttrVal> {
         self.get_item_attr_rfull(ctx, item_key, attr_key?).ok().map(|v| v.extra)
     }
@@ -54,7 +54,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
         match self.get_item_oattr_rfull(ctx, item_key, attr_key) {
@@ -72,7 +72,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
         match self.get_item_oattr_rfull(ctx, item_key, attr_key) {
@@ -90,7 +90,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
         fallback: AttrVal,
     ) -> AttrVal {
         match self.get_item_oattr_rfull(ctx, item_key, attr_key) {
@@ -106,7 +106,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: Option<UItemId>,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
         match self.get_item_oattr_rfull(ctx, item_key?, attr_key) {
@@ -125,7 +125,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: Option<UItemId>,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
         fallback: AttrVal,
     ) -> AttrVal {
         match (item_key, attr_key) {
@@ -144,7 +144,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
     ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
@@ -173,7 +173,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
     ) -> Result<CalcAttrVals, GetOAttrError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_key)?;
@@ -206,7 +206,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
     ) -> Option<CalcAttrVals> {
         let attr_key = attr_key?;
         let item_attr_data = self.attrs.get_item_attr_data(&item_key)?;
@@ -226,7 +226,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVals)> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, CalcAttrVals)> + use<>, KeyedItemLoadedError> {
         // Items can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
@@ -270,7 +270,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: &UItemId,
         item: &UItem,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
     ) -> impl Iterator<Item = CalcModification> {
         let mut mods = RMap::new();
         for cmod in self
@@ -297,7 +297,7 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrKey) -> CalcAttrVals {
+    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrId) -> CalcAttrVals {
         let item = ctx.u_data.items.get(item_key);
         let attr = ctx.u_data.src.get_attr(attr_key);
         let base_val = self.calc_item_base_attr_value(ctx, item_key, item, attr);
@@ -344,7 +344,7 @@ impl Calc {
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base
         if let Some(sec_zone_attr_key) = attr_consts.security_modifier
-            && attr.key == sec_zone_attr_key
+            && attr.r_id == sec_zone_attr_key
         {
             let security_attr_key = match ctx.u_data.sec_zone {
                 SecZone::HiSec(_) => attr_consts.hisec_modifier,
@@ -356,7 +356,7 @@ impl Calc {
             {
                 // Ensure that change in any a security-specific attribute value triggers
                 // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_key, security_attr_key, attr.key);
+                self.deps.add_anonymous(item_key, security_attr_key, attr.r_id);
                 return security_full_val.dogma;
             }
         }

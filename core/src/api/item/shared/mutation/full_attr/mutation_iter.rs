@@ -65,7 +65,7 @@ fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: UItemId) -> impl Ite
         .attr_mods
         .keys()
         .filter_map(|&attr_key| match u_item.get_attrs().unwrap().contains_key(&attr_key) {
-            true => Some(sol.u_data.src.get_attr(attr_key).id),
+            true => Some(sol.u_data.src.get_attr(attr_key).a_id),
             false => None,
         })
 }

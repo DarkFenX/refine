@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAbil, AAbilId, AEffectId},
-    rd::REffectKey,
+    rd::REffectId,
     util::{GetId, RMap},
 };
 
@@ -9,7 +9,7 @@ pub(crate) struct RAbil {
     pub(crate) id: AAbilId,
     pub(crate) effect_id: AEffectId,
     // Fields which depend on slab keys
-    pub(crate) effect_key: REffectKey,
+    pub(crate) effect_key: REffectId,
 }
 impl RAbil {
     pub(in crate::rd) fn from_a_abil(a_abil: &AAbil) -> Self {
@@ -20,7 +20,7 @@ impl RAbil {
             effect_key: Default::default(),
         }
     }
-    pub(in crate::rd) fn fill_key_dependents(&mut self, effect_id_key_map: &RMap<AEffectId, REffectKey>) {
+    pub(in crate::rd) fn fill_key_dependents(&mut self, effect_id_key_map: &RMap<AEffectId, REffectId>) {
         // Adapted data guarantees that all abilities will have a backing effect
         self.effect_key = *effect_id_key_map.get(&self.effect_id).unwrap()
     }

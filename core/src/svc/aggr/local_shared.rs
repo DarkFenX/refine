@@ -1,7 +1,7 @@
 use super::traits::LimitAmount;
 use crate::{
     def::AttrVal,
-    rd::{RAttrKey, REffect, REffectLocalOpcSpec},
+    rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
 };
@@ -34,7 +34,7 @@ where
     }
 }
 
-fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
+fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: Option<RAttrId>) -> Option<AttrVal> {
     let attr_key = attr_key?;
     let fit_key = ctx.u_data.items.get(item_key).get_fit_key()?;
     let ship_key = ctx.u_data.fits.get(fit_key).ship?;

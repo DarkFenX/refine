@@ -2,7 +2,7 @@ use super::attr_val::get_volume;
 use crate::{
     ac,
     ad::{AAttrVal, AItemCatId},
-    rd::{RAttrConsts, RAttrKey},
+    rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
@@ -15,7 +15,7 @@ pub(crate) enum RShipKind {
 
 pub(in crate::rd::data::item::attr_extras) fn get_item_ship_kind(
     item_cat_id: AItemCatId,
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<RShipKind> {
     match item_cat_id {

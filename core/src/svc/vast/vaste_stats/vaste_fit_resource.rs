@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemId},
     util::round,
@@ -64,8 +64,8 @@ fn get_resource_stats_fitting<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = &'a UItemId>,
-    use_attr_key: Option<RAttrKey>,
-    output_attr_key: Option<RAttrKey>,
+    use_attr_key: Option<RAttrId>,
+    output_attr_key: Option<RAttrId>,
 ) -> StatRes {
     let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, output_attr_key, OF(0.0));
     let used = items
@@ -82,7 +82,7 @@ fn get_resource_stats_other<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items_use: impl Iterator<Item = &'a AttrVal>,
-    output_attr_key: Option<RAttrKey>,
+    output_attr_key: Option<RAttrId>,
 ) -> StatRes {
     let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, output_attr_key, OF(0.0));
     let used = items_use.sum();

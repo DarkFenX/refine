@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     ad::AItemGrpId,
     def::{Count, ItemGrpId, ItemId},
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::UItemId,
     util::{RMap, RMapRSet, RSet},
@@ -122,7 +122,7 @@ fn validate_fast(
     calc: &mut Calc,
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
-    attr_key: Option<RAttrKey>,
+    attr_key: Option<RAttrId>,
 ) -> bool {
     let attr_key = match attr_key {
         Some(attr_key) => attr_key,
@@ -144,7 +144,7 @@ fn validate_verbose(
     calc: &mut Calc,
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
-    attr_key: Option<RAttrKey>,
+    attr_key: Option<RAttrId>,
 ) -> Option<ValMaxGroupFail> {
     let attr_key = attr_key?;
     let mut groups = HashMap::new();
@@ -159,7 +159,7 @@ fn validate_verbose(
                     items: HashMap::new(),
                 })
                 .items
-                .insert(ctx.u_data.items.ext_id_by_int_id(item_key), allowed);
+                .insert(ctx.u_data.items.eid_by_iid(item_key), allowed);
         }
     }
     match groups.is_empty() {
@@ -168,7 +168,7 @@ fn validate_verbose(
     }
 }
 
-fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrKey) -> Count {
+fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrId) -> Count {
     calc.get_item_attr_oextra(ctx, item_key, attr_key).unwrap().round() as Count
 }
 fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, a_item_grp_id: &AItemGrpId) -> Count {

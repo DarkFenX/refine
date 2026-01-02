@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrId, AAttrVal, ACount, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
     misc::ItemKind,
     rd::{
-        RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemChargeLimit, RItemContLimit, RItemEffectData,
+        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemChargeLimit, RItemContLimit, RItemEffectData,
         RItemShipLimit, RShipDroneLimit, RShipKind,
         data::item::attr_extras::info::{
             attr_val::{
@@ -87,7 +87,7 @@ pub(crate) struct RItemAXt {
     // offense immunity validation
     pub(crate) disallow_vs_ew_immune_tgt: bool,
     // Attribute key which defines how affectee resists effect
-    pub(crate) remote_resist_attr_key: Option<RAttrKey>,
+    pub(crate) remote_resist_attr_key: Option<RAttrId>,
     // Unmutated and unmodified charge size
     pub(crate) charge_size: Option<AAttrVal>,
     // Unmutated and unmodified charge rate
@@ -113,9 +113,9 @@ impl RItemAXt {
         item_id: AItemId,
         item_grp_id: AItemGrpId,
         item_cat_id: AItemCatId,
-        item_attrs: &RMap<RAttrKey, AAttrVal>,
-        item_effects: &RMap<REffectKey, RItemEffectData>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        item_attrs: &RMap<RAttrId, AAttrVal>,
+        item_effects: &RMap<REffectId, RItemEffectData>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
     ) {

@@ -56,7 +56,7 @@ fn mutate_raw(
         .get(&a_attr_id)
     {
         Some(_) => Err(ItemMAttrNotFoundError {
-            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
+            item_id: sol.u_data.items.eid_by_iid(item_key),
             attr_id: a_attr_id.into(),
         }
         .into()),

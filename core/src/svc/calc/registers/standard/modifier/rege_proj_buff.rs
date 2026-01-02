@@ -1,5 +1,5 @@
 use crate::{
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::calc::{
         AffecteeFilter, CtxModifier, Location, RawModifier,
         registers::standard::{
@@ -293,14 +293,14 @@ pub(super) fn unload_affectee_for_proj_buff(
     }
 }
 
-fn is_item_buffable_by_proj_item_list(u_item: &UItem, item_list_key: &RItemListKey) -> bool {
+fn is_item_buffable_by_proj_item_list(u_item: &UItem, item_list_key: &RItemListId) -> bool {
     match u_item.get_proj_buff_item_lists() {
         Some(buff_item_lists) => buff_item_lists.contains(item_list_key),
         None => false,
     }
 }
 
-fn is_ship_buffable_by_proj_item_list<'a>(u_item: &'a UItem, item_list_key: &RItemListKey) -> Option<&'a UShip> {
+fn is_ship_buffable_by_proj_item_list<'a>(u_item: &'a UItem, item_list_key: &RItemListId) -> Option<&'a UShip> {
     match u_item {
         UItem::Ship(ship) => match ship.get_proj_buff_item_lists() {
             Some(buff_item_lists) => match buff_item_lists.contains(item_list_key) {

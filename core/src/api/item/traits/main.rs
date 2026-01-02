@@ -38,7 +38,7 @@ mod private {
 
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
-        self.get_sol().u_data.items.ext_id_by_int_id(self.get_key())
+        self.get_sol().u_data.items.eid_by_iid(self.get_key())
     }
     fn get_type_id(&self) -> ItemTypeId {
         self.get_sol().u_data.items.get(self.get_key()).get_type_id()
@@ -51,7 +51,7 @@ pub trait ItemCommon: ItemSealed {
             (Some(effect_datas), Some(reffs)) => (effect_datas.keys(), reffs),
             _ => {
                 return Err(ItemLoadedError {
-                    item_id: sol.u_data.items.ext_id_by_int_id(item_key),
+                    item_id: sol.u_data.items.eid_by_iid(item_key),
                 }
                 .into());
             }
@@ -78,7 +78,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.internal_get_item_attr(item_key, attr_key) {
             Ok(calc_val) => Ok(calc_val.into()),
             Err(error) => Err(ItemLoadedError {
-                item_id: self.get_sol().u_data.items.ext_id_by_int_id(error.item_key),
+                item_id: self.get_sol().u_data.items.eid_by_iid(error.item_key),
             }
             .into()),
         }
@@ -88,10 +88,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_key) {
             Ok(attr_iter) => {
-                Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).id.into(), val.into())))
+                Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).a_id.into(), val.into())))
             }
             Err(error) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.ext_id_by_int_id(error.item_key),
+                item_id: sol.u_data.items.eid_by_iid(error.item_key),
             }
             .into()),
         }
@@ -104,7 +104,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_mods(&sol.u_data, item_key) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.ext_id_by_int_id(err.item_key),
+                item_id: sol.u_data.items.eid_by_iid(err.item_key),
             }
             .into()),
         }
@@ -549,7 +549,7 @@ fn get_stat_applied_projectee_key(
     sol: &SolarSystem,
     projectee_item_id: &ItemId,
 ) -> Result<UItemId, ItemStatAppliedError> {
-    let projectee_key = sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
+    let projectee_key = sol.u_data.items.iid_by_eid_err(projectee_item_id)?;
     let projectee_u_item = sol.u_data.items.get(projectee_key);
     if projectee_u_item.get_direct_physics().is_none() {
         return Err(ItemReceiveProjError {

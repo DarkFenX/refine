@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    rd::{RAttrKey, REffect},
+    rd::{RAttrId, REffect},
     svc::{SvcCtx, calc::Calc, funcs},
     ud::{UItemId, UProjData},
     util::Xyz,
@@ -88,7 +88,7 @@ pub(super) fn get_radius_ratio_mult(
     calc: &mut Calc,
     projector_key: UItemId,
     projectee_key: UItemId,
-    src_attr_key: Option<RAttrKey>,
+    src_attr_key: Option<RAttrId>,
 ) -> AttrVal {
     let src_effect_radius = calc
         .get_item_oattr_ffb_extra(ctx, projector_key, src_attr_key, OF(0.0))

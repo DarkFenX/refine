@@ -4,7 +4,7 @@ use super::shared::get_max_resource;
 use crate::{
     ad::AAttrVal,
     def::{AttrVal, ItemId, OF},
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemId},
     util::{FLOAT_TOLERANCE, RSet, round},
@@ -198,8 +198,8 @@ fn validate_fast_fitting<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = &'a UItemId>,
-    use_attr_key: Option<RAttrKey>,
-    max_attr_key: Option<RAttrKey>,
+    use_attr_key: Option<RAttrId>,
+    max_attr_key: Option<RAttrId>,
 ) -> bool {
     let mut total_use = OF(0.0);
     let mut force_pass = true;
@@ -224,7 +224,7 @@ fn validate_fast_other<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = (&'a UItemId, &'a AAttrVal)>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
 ) -> bool {
     let mut total_use = OF(0.0);
     let mut force_pass = true;
@@ -247,8 +247,8 @@ fn validate_verbose_fitting<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl ExactSizeIterator<Item = &'a UItemId>,
-    use_attr_key: Option<RAttrKey>,
-    max_attr_key: Option<RAttrKey>,
+    use_attr_key: Option<RAttrId>,
+    max_attr_key: Option<RAttrId>,
 ) -> Option<ValResFail> {
     let mut total_use = OF(0.0);
     let mut users = HashMap::with_capacity(items.len());
@@ -258,7 +258,7 @@ fn validate_verbose_fitting<'a>(
             .unwrap();
         total_use += item_use;
         if item_use > FLOAT_TOLERANCE && !kfs.contains(&item_key) {
-            users.insert(ctx.u_data.items.ext_id_by_int_id(item_key), item_use);
+            users.insert(ctx.u_data.items.eid_by_iid(item_key), item_use);
         }
     }
     if users.is_empty() {
@@ -281,14 +281,14 @@ fn validate_verbose_other<'a>(
     calc: &mut Calc,
     fit: &UFit,
     items: impl ExactSizeIterator<Item = (&'a UItemId, &'a AAttrVal)>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
 ) -> Option<ValResFail> {
     let mut total_use = OF(0.0);
     let mut users = HashMap::with_capacity(items.len());
     for (item_key, &item_use) in items {
         total_use += item_use;
         if item_use > FLOAT_TOLERANCE && !kfs.contains(item_key) {
-            users.insert(ctx.u_data.items.ext_id_by_int_id(*item_key), item_use);
+            users.insert(ctx.u_data.items.eid_by_iid(*item_key), item_use);
         }
     }
     if users.is_empty() {

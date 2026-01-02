@@ -10,7 +10,7 @@ impl<'a> Proj<'a> {
         Self { sol, projectee_key }
     }
     pub fn get_projectee_item_id(&self) -> ItemId {
-        self.sol.u_data.items.ext_id_by_int_id(self.projectee_key)
+        self.sol.u_data.items.eid_by_iid(self.projectee_key)
     }
 }
 
@@ -29,6 +29,6 @@ impl<'a> ProjMut<'a> {
         }
     }
     pub fn get_projectee_item_id(&self) -> ItemId {
-        self.sol.u_data.items.ext_id_by_int_id(self.projectee_key)
+        self.sol.u_data.items.eid_by_iid(self.projectee_key)
     }
 }

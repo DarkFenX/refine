@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    rd::{REffectKey, REffectProjOpcSpec},
+    rd::{REffectId, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
@@ -55,7 +55,7 @@ fn get_nps(
     item_kinds: StatNeutItemKinds,
     time_options: StatTimeOptions,
     projectee_item_key: Option<UItemId>,
-    fit_data: &RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut nps = OF(0.0);
     let cycling_options = time_options.into();

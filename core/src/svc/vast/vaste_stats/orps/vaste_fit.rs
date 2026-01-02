@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    rd::{REffectKey, REffectProjOpcSpec},
+    rd::{REffectId, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
@@ -59,7 +59,7 @@ fn get_orps(
     item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,
     projectee_key: Option<UItemId>,
-    fit_data: &RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut orps = OF(0.0);
     let cycling_options = time_options.into();

@@ -4,7 +4,7 @@ use crate::{
     api::EffectId,
     def::ItemId,
     misc::{SecZone, SecZoneCorruption},
-    rd::REffectKey,
+    rd::REffectId,
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UItemId},
     util::RSet,
@@ -111,10 +111,10 @@ fn add_fail_entry(
     u_data: &UData,
     items: &mut HashMap<ItemId, HashMap<EffectId, Vec<SecZone>>>,
     item_key: UItemId,
-    effect_key: REffectKey,
+    effect_key: REffectId,
     sec_zone_info: &EffectSecZoneInfo,
 ) {
-    let item_id = u_data.items.ext_id_by_int_id(item_key);
+    let item_id = u_data.items.eid_by_iid(item_key);
     let effect_id = u_data.src.get_effect(effect_key).id.into();
     let mut allowed_zones = Vec::new();
     if !sec_zone_info.banned_in_hisec {

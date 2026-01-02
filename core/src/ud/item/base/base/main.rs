@@ -2,7 +2,7 @@ use crate::{
     ad::{AAbilId, AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     def::ItemId,
     misc::EffectMode,
-    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind, RcItem, Src},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RcItem, Src},
     ud::item::{
         base::{UEffectUpdates, process_effects},
         misc::UEffectModes,
@@ -77,13 +77,13 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base_get_r_item().map(|v| v.cat_id)
     }
-    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
+    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
         self.base_get_r_item().map(|v| &v.attrs)
     }
-    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
+    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base_get_r_item().map(|v| &v.effect_datas)
     }
-    pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
+    pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
         self.base_get_r_item().map(|v| v.defeff_key)
     }
     pub(in crate::ud::item) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
@@ -92,10 +92,10 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
         self.base_get_r_item().map(|v| &v.srqs)
     }
-    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListKey>> {
+    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
         self.base_get_r_item().map(|v| &v.proj_buff_item_list_keys)
     }
-    pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<RItemListKey>> {
+    pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
         self.base_get_r_item().map(|v| &v.fleet_buff_item_list_keys)
     }
     // Extra data access methods
@@ -117,7 +117,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base_get_r_item().and_then(|v| v.val_active_group_id)
     }
-    pub(in crate::ud::item) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrKey>> {
+    pub(in crate::ud::item) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrId>> {
         self.base_get_r_item().map(|v| &v.cap_use_attr_keys)
     }
     pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
@@ -148,7 +148,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn set_state(&mut self, state: AState) {
         self.state = state;
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
+    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
         self.effect_modes.get_by_key(effect_key)
     }
     pub(in crate::ud::item) fn get_effect_id_mode(&self, effect_id: &AEffectId) -> EffectMode {
@@ -208,7 +208,7 @@ impl UItemBase {
         self.cache.as_ref().map(|v| &v.r_item)
     }
     // Running effects-specific
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
+    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.cache.as_ref().map(|v| &v.reffs)
     }
     pub(in crate::ud::item) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
@@ -244,5 +244,5 @@ impl UItemBase {
 struct ItemBaseCache {
     r_item: RcItem,
     // Running effects, are available only when adapted item is set
-    reffs: RSet<REffectKey>,
+    reffs: RSet<REffectId>,
 }

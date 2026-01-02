@@ -83,19 +83,19 @@ fn get_affector_info(ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
         && let Some(speed_boost_factor_key) = ctx.ac().speed_boost_factor
         && let Some(mass_key) = ctx.ac().mass
     {
-        let item_id = ctx.u_data.items.ext_id_by_int_id(item_key);
+        let item_id = ctx.u_data.items.eid_by_iid(item_key);
         info.extend([
             Affector {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr(speed_factor_key).id.into()),
+                attr_id: Some(ctx.u_data.src.get_attr(speed_factor_key).a_id.into()),
             },
             Affector {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_key).id.into()),
+                attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_key).a_id.into()),
             },
             Affector {
-                item_id: ctx.u_data.items.ext_id_by_int_id(ship_key),
-                attr_id: Some(ctx.u_data.src.get_attr(mass_key).id.into()),
+                item_id: ctx.u_data.items.eid_by_iid(ship_key),
+                attr_id: Some(ctx.u_data.src.get_attr(mass_key).a_id.into()),
             },
         ]);
     }

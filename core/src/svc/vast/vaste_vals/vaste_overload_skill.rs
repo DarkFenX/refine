@@ -49,7 +49,7 @@ impl VastFitData {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
             } && !kfs.contains(item_key))
-            .map(|(&item_key, &req_lvl)| (ctx.u_data.items.ext_id_by_int_id(item_key), req_lvl.into()))
+            .map(|(&item_key, &req_lvl)| (ctx.u_data.items.eid_by_iid(item_key), req_lvl.into()))
             .collect();
         match module_reqs.is_empty() {
             true => None,

@@ -1,6 +1,6 @@
 use crate::{
     api::AttrId,
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{
         Svc, SvcCtx,
         calc::{CalcAttrVals, Modification},
@@ -14,7 +14,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemId,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
     ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
         self.calc
             .get_item_attr_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key, attr_key)
@@ -23,7 +23,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVals)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, CalcAttrVals)>, KeyedItemLoadedError> {
         self.calc
             .iter_item_attrs_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }

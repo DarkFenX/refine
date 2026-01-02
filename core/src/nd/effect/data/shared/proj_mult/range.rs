@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF, SERVER_TICK_HZ},
-    rd::{RAttrKey, REffect},
+    rd::{RAttrId, REffect},
     svc::{SvcCtx, calc::Calc},
     ud::{UItemId, UProjData},
     util::{FLOAT_TOLERANCE, ceil_tick, floor_tick},
@@ -285,7 +285,7 @@ pub(super) fn get_dd_neut_range_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemId, attr_key: Option<RAttrKey>) -> AttrVal {
+fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemId, attr_key: Option<RAttrId>) -> AttrVal {
     match attr_key {
         Some(attr_key) => match calc.get_item_attr_rfull(ctx, projector_key, attr_key) {
             Ok(val) => val.extra,

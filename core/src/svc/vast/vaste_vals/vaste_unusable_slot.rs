@@ -1,6 +1,6 @@
 use crate::{
     def::{Count, ItemId},
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -227,7 +227,7 @@ fn validate_fast(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> bool {
     if users.is_empty() {
@@ -244,7 +244,7 @@ fn validate_verbose(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> Option<ValUnusableSlotFail> {
     if users.is_empty() {
@@ -256,7 +256,7 @@ fn validate_verbose(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
+        .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,

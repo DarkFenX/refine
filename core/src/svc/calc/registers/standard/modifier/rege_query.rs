@@ -2,7 +2,7 @@ use std::hash::{BuildHasher, Hash};
 
 use crate::{
     misc::{AttrSpec, EffectSpec},
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::calc::{
         CtxModifier, RawModifier,
         registers::standard::{StandardRegister, modifier::iter_loc_act::ActiveLocations},
@@ -16,7 +16,7 @@ impl StandardRegister {
         &self,
         item_key: &UItemId,
         item: &UItem,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
         fits: &UFits,
     ) -> Vec<CtxModifier> {
         let fit_key = item.get_fit_key();
@@ -78,7 +78,7 @@ fn filter_and_extend<K, H1, H2>(
     vec: &mut Vec<CtxModifier>,
     storage: &MapSet<K, CtxModifier, H1, H2>,
     key: &K,
-    attr_key: RAttrKey,
+    attr_key: RAttrId,
 ) where
     K: Eq + Hash,
     H1: BuildHasher + Default,

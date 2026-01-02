@@ -1,19 +1,19 @@
 use crate::{
     ad::{AAttrId, AItemListId},
     nd::NEffectProjecteeFilter,
-    rd::{RAttrKey, RItemListKey},
+    rd::{RAttrId, RItemListId},
     util::RMap,
 };
 
 pub(crate) enum REffectProjecteeFilter {
-    ItemList(RItemListKey),
-    ItemListAttr(RAttrKey),
+    ItemList(RItemListId),
+    ItemListAttr(RAttrId),
 }
 impl REffectProjecteeFilter {
     pub(in crate::rd::data::effect) fn try_from_n_projectee_filter(
         n_projectee_filter: &NEffectProjecteeFilter,
-        item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        item_list_id_key_map: &RMap<AItemListId, RItemListId>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
     ) -> Option<Self> {
         match n_projectee_filter {
             NEffectProjecteeFilter::ItemList(item_list_id) => {
@@ -26,10 +26,10 @@ impl REffectProjecteeFilter {
             }
         }
     }
-    pub(crate) fn get_item_list_attr_key(&self) -> Option<RItemListKey> {
+    pub(crate) fn get_item_list_attr_r_id(&self) -> Option<RAttrId> {
         match self {
             Self::ItemList(_) => None,
-            Self::ItemListAttr(attr_key) => Some(*attr_key),
+            Self::ItemListAttr(attr_r_id) => Some(*attr_r_id),
         }
     }
 }

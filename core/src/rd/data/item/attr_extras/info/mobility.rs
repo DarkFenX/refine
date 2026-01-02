@@ -1,12 +1,12 @@
 use crate::{
     ad::AAttrVal,
     def::OF,
-    rd::{RAttrConsts, RAttrKey},
+    rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
 pub(in crate::rd::data::item::attr_extras) fn is_mobile(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> bool {
     match attr_consts.max_velocity.and_then(|v| item_attrs.get(&v)) {

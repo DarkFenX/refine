@@ -42,7 +42,7 @@ impl Calc {
 
 pub(super) fn get_base_attr_value(item: &UItem, attr: &RAttr) -> AttrVal {
     // Fetch unmodified on-item attribute value, or use base attribute value if it is not available
-    match item.get_attrs().unwrap().get(&attr.key) {
+    match item.get_attrs().unwrap().get(&attr.r_id) {
         Some(orig_val) => *orig_val,
         None => attr.def_val,
     }

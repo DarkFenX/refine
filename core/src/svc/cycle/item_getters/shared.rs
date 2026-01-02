@@ -1,6 +1,6 @@
 use crate::{
     def::AttrVal,
-    rd::REffectKey,
+    rd::REffectId,
     svc::vast::{StatTimeOptions, StatTimeOptionsSim},
 };
 
@@ -36,6 +36,6 @@ impl From<StatTimeOptionsSim> for CycleOptionsSim {
 }
 
 pub(super) struct SelfKillerInfo {
-    pub(super) effect_key: REffectKey,
+    pub(super) effect_key: REffectId,
     pub(super) duration: AttrVal,
 }

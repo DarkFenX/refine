@@ -3,7 +3,7 @@ use super::{
     item_fighter::get_fighter_cseq_map, item_module::get_module_cseq_map, shared::CyclingOptions,
 };
 use crate::{
-    rd::REffectKey,
+    rd::REffectId,
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::{UItem, UItemId},
     util::RMap,
@@ -15,7 +15,7 @@ pub(in crate::svc) fn get_item_cseq_map(
     item_key: UItemId,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq>> {
     let item = ctx.u_data.items.get(item_key);
     match item {
         UItem::Autocharge(autocharge) => get_autocharge_cseq_map(ctx, calc, autocharge, options, ignore_state),

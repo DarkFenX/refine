@@ -1,14 +1,14 @@
 use itertools::Itertools;
 
 use crate::{
-    rd::REffectKey,
+    rd::REffectId,
     sol::{RevProjs, SolarSystem},
     svc::Svc,
     ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemId},
 };
 
 struct AutochargeData {
-    effect_key: REffectKey,
+    effect_key: REffectId,
     autocharge_key: UItemId,
 }
 

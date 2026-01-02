@@ -1,7 +1,7 @@
 use super::shared::CyclingOptions;
 use crate::{
     def::AttrVal,
-    rd::REffectKey,
+    rd::REffectId,
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::{UFighter, UItemId},
     util::RMap,
@@ -26,7 +26,7 @@ pub(super) fn get_fighter_cseq_map(
     fighter: &UFighter,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq>> {
     if !fighter.is_loaded() {
         return None;
     };

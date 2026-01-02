@@ -39,7 +39,7 @@ impl VastFitData {
             .item_kind
             .iter()
             .filter(|(item_key, _)| !kfs.contains(item_key))
-            .map(|(item_key, item_info)| (ctx.u_data.items.ext_id_by_int_id(*item_key), *item_info))
+            .map(|(item_key, item_info)| (ctx.u_data.items.eid_by_iid(*item_key), *item_info))
             .collect();
         match item_kinds.is_empty() {
             true => None,

@@ -49,7 +49,7 @@ impl VastFitData {
         let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_key, needed_kind)| (ctx.u_data.items.ext_id_by_int_id(*item_key), *needed_kind))
+            .map(|(item_key, needed_kind)| (ctx.u_data.items.eid_by_iid(*item_key), *needed_kind))
             .collect();
         match items.is_empty() {
             true => None,

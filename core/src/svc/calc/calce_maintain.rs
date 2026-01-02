@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     misc::{AttrSpec, EffectSpec},
-    rd::{RAttrKey, RcEffect},
+    rd::{RAttrId, RcEffect},
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, ModifierKind, RawModifier},
@@ -253,7 +253,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_key: UItemId,
-        attr_key: Option<RAttrKey>,
+        attr_key: Option<RAttrId>,
     ) {
         if let Some(attr_key) = attr_key {
             self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_key, attr_key));

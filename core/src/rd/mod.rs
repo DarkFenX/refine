@@ -10,10 +10,10 @@
 
 use data::RData;
 pub(crate) use data::{
-    RAbil, RAttr, RAttrConsts, RAttrKey, RBuff, RBuffKey, RBuffModifier, REffect, REffectBuff, REffectBuffAttrMerge,
-    REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectKey,
+    RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, REffect, REffectBuff, REffectBuffAttrMerge,
+    REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectId,
     REffectLocalOpcSpec, REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, RItem, RItemAXt,
-    RItemChargeLimit, RItemContLimit, RItemEffectData, RItemList, RItemListKey, RItemShipLimit, RMuta, RShipDroneLimit,
+    RItemChargeLimit, RItemContLimit, RItemEffectData, RItemList, RItemListId, RItemShipLimit, RMuta, RShipDroneLimit,
     RShipKind, RSpoolAttrs, RcEffect, RcItem, RcMuta,
 };
 pub use src::{Src, SrcInitError};

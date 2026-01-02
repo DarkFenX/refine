@@ -1,12 +1,12 @@
 use crate::{
     ad::{AAttrId, AAttrVal, ACount, AEveAttrId, ASkillLevel},
     def::OF,
-    rd::{RAttrConsts, RAttrKey},
+    rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
 pub(in crate::rd::data::item::attr_extras) fn get_volume(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> AAttrVal {
     match attr_consts.volume.and_then(|v| item_attrs.get(&v)) {
@@ -15,7 +15,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_volume(
     }
 }
 pub(in crate::rd::data::item::attr_extras) fn get_capacity(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> AAttrVal {
     match attr_consts.capacity.and_then(|v| item_attrs.get(&v)) {
@@ -24,7 +24,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_capacity(
     }
 }
 pub(in crate::rd::data::item::attr_extras) fn get_radius(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> AAttrVal {
     match attr_consts.radius.and_then(|v| item_attrs.get(&v)) {
@@ -34,7 +34,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_radius(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_bandwidth_use(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<AAttrVal> {
     attr_consts
@@ -43,21 +43,21 @@ pub(in crate::rd::data::item::attr_extras) fn get_bandwidth_use(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_calibration_use(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<AAttrVal> {
     attr_consts.upgrade_cost.and_then(|v| item_attrs.get(&v).copied())
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_rig_size(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<AAttrVal> {
     attr_consts.rig_size.and_then(|v| item_attrs.get(&v).copied())
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_max_type_fitted_count(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<ACount> {
     attr_consts
@@ -67,7 +67,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_type_fitted_count(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_online_max_sec_class(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<AAttrVal> {
     attr_consts
@@ -76,10 +76,10 @@ pub(in crate::rd::data::item::attr_extras) fn get_online_max_sec_class(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_remote_resist_attr_id(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
-    attr_id_key_map: &RMap<AAttrId, RAttrKey>,
-) -> Option<RAttrKey> {
+    attr_id_key_map: &RMap<AAttrId, RAttrId>,
+) -> Option<RAttrId> {
     attr_consts
         .remote_resist_id
         .and_then(|v| item_attrs.get(&v))
@@ -93,7 +93,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_remote_resist_attr_id(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_overload_td_lvl(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<ASkillLevel> {
     attr_consts
@@ -102,13 +102,13 @@ pub(in crate::rd::data::item::attr_extras) fn get_overload_td_lvl(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_charge_size(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<AAttrVal> {
     attr_consts.charge_size.and_then(|v| item_attrs.get(&v).copied())
 }
 pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> ACount {
     match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
@@ -118,7 +118,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> ACount {
     match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
@@ -129,7 +129,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_fighter_refuel_time_s(
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> AAttrVal {
     match attr_consts.ftr_refueling_time.and_then(|v| item_attrs.get(&v)) {

@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     misc::EffectMode,
-    rd::{REffectKey, Src},
+    rd::{REffectId, Src},
     util::RMap,
 };
 
@@ -10,7 +10,7 @@ const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
 #[derive(Clone)]
 pub(in crate::ud::item) struct UEffectModes {
     by_id: RMap<AEffectId, EffectMode>,
-    pub(super) by_key: RMap<REffectKey, EffectMode>,
+    pub(super) by_key: RMap<REffectId, EffectMode>,
 }
 impl UEffectModes {
     pub(in crate::ud::item) fn new() -> Self {
@@ -20,7 +20,7 @@ impl UEffectModes {
         }
     }
     // Query methods
-    pub(in crate::ud::item) fn get_by_key(&self, effect_key: &REffectKey) -> EffectMode {
+    pub(in crate::ud::item) fn get_by_key(&self, effect_key: &REffectId) -> EffectMode {
         match self.by_key.get(effect_key) {
             Some(effect_mode) => *effect_mode,
             None => DEFAULT_EFFECT_MODE,

@@ -1,6 +1,6 @@
 use crate::{
     def::{Count, Idx, ItemId},
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -430,7 +430,7 @@ fn validate_fast_unordered_set(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> bool {
     let used = users.len() as Count;
@@ -442,7 +442,7 @@ fn validate_fast_unordered_map<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> bool {
     let used = users.len() as Count;
@@ -454,7 +454,7 @@ fn validate_fast_ordered(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &UItemVec,
 ) -> bool {
     let used = users.len() as Count;
@@ -473,7 +473,7 @@ fn validate_verbose_unordered_set(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
@@ -483,7 +483,7 @@ fn validate_verbose_unordered_set(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
+        .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,
@@ -495,7 +495,7 @@ fn validate_verbose_unordered_map<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
@@ -505,7 +505,7 @@ fn validate_verbose_unordered_map<T>(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|(item_key, _)| ctx.u_data.items.ext_id_by_int_id(*item_key))
+        .map(|(item_key, _)| ctx.u_data.items.eid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,
@@ -517,7 +517,7 @@ fn validate_verbose_ordered(
     ctx: SvcCtx,
     calc: &mut Calc,
     max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrKey>,
+    max_attr_key: Option<RAttrId>,
     users: &UItemVec,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
@@ -529,7 +529,7 @@ fn validate_verbose_ordered(
     let users: Vec<_> = users
         .iter_keys_from(effective_max as Idx)
         .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
+        .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,

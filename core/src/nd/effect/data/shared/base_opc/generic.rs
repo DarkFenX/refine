@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    rd::{RAttrKey, REffect},
+    rd::{RAttrId, REffect},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -15,7 +15,7 @@ pub(super) fn get_generic_base_opc(
     calc: &mut Calc,
     item_key: UItemId,
     effect: &REffect,
-    attr_key: Option<RAttrKey>,
+    attr_key: Option<RAttrId>,
     applied_at_start: bool,
 ) -> Option<Output<AttrVal>> {
     let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, attr_key, OF(0.0))?;

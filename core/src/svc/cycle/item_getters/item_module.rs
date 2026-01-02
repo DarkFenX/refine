@@ -5,7 +5,7 @@ use super::shared::{CyclingOptions, SelfKillerInfo};
 use crate::{
     def::{AttrVal, Count, OF, SERVER_TICK_S},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
-    rd::{REffectChargeLoc, REffectKey},
+    rd::{REffectChargeLoc, REffectId},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -34,7 +34,7 @@ pub(super) fn get_module_cseq_map(
     module: &UModule,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectKey, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq>> {
     if !module.is_loaded() {
         return None;
     };
@@ -70,14 +70,14 @@ pub(super) fn get_module_cseq_map(
 }
 
 fn fill_module_effect_info(
-    cseq_map: &mut RMap<REffectKey, CycleSeq>,
+    cseq_map: &mut RMap<REffectId, CycleSeq>,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_key: UItemId,
     item: &UItem,
     module: &UModule,
-    effect_key: REffectKey,
+    effect_key: REffectId,
     options: CyclingOptions,
 ) {
     let effect = ctx.u_data.src.get_effect(effect_key);

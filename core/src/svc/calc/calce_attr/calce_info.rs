@@ -8,7 +8,7 @@ use super::calce_shared::get_base_attr_value;
 use crate::{
     api::{AttrId, Op},
     misc::SecZone,
-    rd::{RAttr, RAttrKey},
+    rd::{RAttr, RAttrId},
     svc::{
         SvcCtx,
         calc::{Affector, AttrValInfo, Calc, CalcModification, CalcModificationKey, ModAccumInfo, Modification},
@@ -39,7 +39,7 @@ impl Calc {
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = ctx.u_data.src.get_attr(attr_key).id.into();
+                let attr_id = ctx.u_data.src.get_attr(attr_key).a_id.into();
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
         }
@@ -52,7 +52,7 @@ impl Calc {
         &self,
         ctx: SvcCtx,
         item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = RAttrKey> + use<>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = RAttrId> + use<>, KeyedItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_key)?;
         let base_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
         let mut attr_keys = RSet::with_capacity(item_attr_data.len().max(base_attrs.len()));
@@ -69,7 +69,7 @@ impl Calc {
         ctx: SvcCtx,
         item_key: &UItemId,
         item: &UItem,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
         for cmod in self
@@ -100,7 +100,7 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrKey) -> AttrValInfo {
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrId) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_key);
         let attr = ctx.u_data.src.get_attr(attr_key);
         let base_attr_info = self.calc_item_base_attr_info(ctx, item_key, item, attr);
@@ -133,8 +133,8 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
+                        item_id: ctx.u_data.items.eid_by_iid(item_key),
+                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).a_id.into()),
                     }],
                 })
             }
@@ -154,8 +154,8 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
+                        item_id: ctx.u_data.items.eid_by_iid(item_key),
+                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).a_id.into()),
                     }],
                 })
             }
@@ -179,7 +179,7 @@ impl Calc {
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base
         if let Some(sec_zone_attr_key) = attr_consts.security_modifier
-            && attr.key == sec_zone_attr_key
+            && attr.r_id == sec_zone_attr_key
         {
             let security_attr_key = match ctx.u_data.sec_zone {
                 SecZone::HiSec(_) => attr_consts.hisec_modifier,
@@ -191,7 +191,7 @@ impl Calc {
             {
                 // Ensure that change in any a security-specific attribute value triggers
                 // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_key, security_attr_key, attr.key);
+                self.deps.add_anonymous(item_key, security_attr_key, attr.r_id);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                 base_attr_info.effective_infos.push(Modification {
                     // Technically this modification is not pre-assignment, it is base value
@@ -205,8 +205,8 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: security_full_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).id.into()),
+                        item_id: ctx.u_data.items.eid_by_iid(item_key),
+                        attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).a_id.into()),
                     }],
                 });
                 return base_attr_info;

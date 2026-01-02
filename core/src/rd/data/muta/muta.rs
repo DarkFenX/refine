@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AItemId, AMuta, AMutaAttrRange},
-    rd::RAttrKey,
+    rd::RAttrId,
     util::{GetId, RMap},
 };
 
@@ -10,7 +10,7 @@ use crate::{
 pub(crate) struct RMuta {
     pub(crate) id: AItemId,
     pub(crate) item_map: RMap<AItemId, AItemId>,
-    pub(crate) attr_mods: RMap<RAttrKey, AMutaAttrRange>,
+    pub(crate) attr_mods: RMap<RAttrId, AMutaAttrRange>,
 }
 impl RMuta {
     pub(in crate::rd) fn from_a_muta(a_muta: &AMuta) -> Self {
@@ -23,7 +23,7 @@ impl RMuta {
     pub(in crate::rd) fn fill_key_dependents(
         &mut self,
         a_mutas: &RMap<AItemId, AMuta>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
     ) {
         let a_muta = a_mutas.get(&self.id).unwrap();
         self.attr_mods.extend(

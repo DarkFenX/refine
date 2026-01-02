@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    rd::RAttrKey,
+    rd::RAttrId,
     sol::SolarSystem,
     svc::{calc::CalcAttrVals, err::KeyedItemLoadedError},
     ud::UItemId,
@@ -11,7 +11,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_get_item_attr(
         &mut self,
         item_key: UItemId,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
     ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
         self.svc.get_item_attr_val_full(&self.u_data, item_key, attr_key)
     }

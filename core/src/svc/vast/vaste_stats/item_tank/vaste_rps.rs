@@ -1,6 +1,6 @@
 use crate::{
     def::{AttrVal, OF},
-    rd::{REffectKey, REffectLocalOpcSpec, REffectProjOpcSpec},
+    rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         aggr::{
@@ -95,7 +95,7 @@ fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
-    lrr_data: &RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    lrr_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
     let cycling_options = time_options.into();
@@ -144,7 +144,7 @@ fn get_irr_data(
     calc: &mut Calc,
     projectee_item_key: UItemId,
     time_options: StatTimeOptions,
-    irr_data: &RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    irr_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match irr_data.get_l1(&projectee_item_key) {

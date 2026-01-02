@@ -3,7 +3,7 @@ use crate::{
     ad::{
         AAbilId, AAttrId, AAttrVal, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId, ASkillLevel, AState,
     },
-    rd::{RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind},
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind},
     util::{GetId, RMap},
 };
 
@@ -24,12 +24,12 @@ pub(crate) struct RItem {
     pub(crate) is_ice_harvester: bool,
     pub(crate) disallowed_in_wspace: bool,
     // Fields which depend on slab keys
-    pub(crate) attrs: RMap<RAttrKey, AAttrVal>,
-    pub(crate) effect_datas: RMap<REffectKey, RItemEffectData>,
-    pub(crate) defeff_key: Option<REffectKey>,
-    pub(crate) proj_buff_item_list_keys: Vec<RItemListKey>,
-    pub(crate) fleet_buff_item_list_keys: Vec<RItemListKey>,
-    pub(crate) cap_use_attr_keys: Vec<RAttrKey>,
+    pub(crate) attrs: RMap<RAttrId, AAttrVal>,
+    pub(crate) effect_datas: RMap<REffectId, RItemEffectData>,
+    pub(crate) defeff_key: Option<REffectId>,
+    pub(crate) proj_buff_item_list_keys: Vec<RItemListId>,
+    pub(crate) fleet_buff_item_list_keys: Vec<RItemListId>,
+    pub(crate) cap_use_attr_keys: Vec<RAttrId>,
     pub(crate) ship_kind: Option<RShipKind>,
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
@@ -67,9 +67,9 @@ impl RItem {
     pub(in crate::rd) fn fill_key_dependents(
         &mut self,
         a_items: &RMap<AItemId, AItem>,
-        item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
-        effect_id_key_map: &RMap<AEffectId, REffectKey>,
+        item_list_id_key_map: &RMap<AItemListId, RItemListId>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        effect_id_key_map: &RMap<AEffectId, REffectId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
     ) {
@@ -127,26 +127,26 @@ impl GetId<AItemId> for RItem {
 }
 
 fn has_online_effect(
-    item_effects: &RMap<REffectKey, RItemEffectData>,
-    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+    item_effects: &RMap<REffectId, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
     has_effect(item_effects, effect_id_key_map, &ac::effects::ONLINE)
 }
 fn has_turret_effect(
-    item_effects: &RMap<REffectKey, RItemEffectData>,
-    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+    item_effects: &RMap<REffectId, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
     has_effect(item_effects, effect_id_key_map, &ac::effects::TURRET_FITTED)
 }
 fn has_launcher_effect(
-    item_effects: &RMap<REffectKey, RItemEffectData>,
-    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+    item_effects: &RMap<REffectId, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
     has_effect(item_effects, effect_id_key_map, &ac::effects::LAUNCHER_FITTED)
 }
 fn has_effect(
-    item_effects: &RMap<REffectKey, RItemEffectData>,
-    effect_id_key_map: &RMap<AEffectId, REffectKey>,
+    item_effects: &RMap<REffectId, RItemEffectData>,
+    effect_id_key_map: &RMap<AEffectId, REffectId>,
     effect_id: &AEffectId,
 ) -> bool {
     let effect_key = match effect_id_key_map.get(effect_id) {

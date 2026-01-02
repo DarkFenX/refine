@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrVal, ABuffId, AEveBuffId},
     misc::EffectSpec,
-    rd::{RAttrKey, RBuff, REffect, REffectBuffScope, REffectBuffStrength, REffectKey},
+    rd::{RAttrId, RBuff, REffect, REffectBuffScope, REffectBuffStrength, REffectId},
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
@@ -96,8 +96,8 @@ impl Calc {
         ctx: SvcCtx,
         item_key: UItemId,
         item: &UItem,
-        effect_keys: impl Iterator<Item = &'a REffectKey>,
-        buff_type_attr_key: RAttrKey,
+        effect_keys: impl Iterator<Item = &'a REffectId>,
+        buff_type_attr_key: RAttrId,
     ) -> Vec<RawModifier> {
         let mut rmods = Vec::new();
         let buff_str_attr_key = match ctx.u_data.src.get_attr(buff_type_attr_key).buff_str_attr_key {
@@ -138,8 +138,8 @@ fn add_buff_mods_with_attr(
     effect: &REffect,
     buff: &RBuff,
     buff_scope: &REffectBuffScope,
-    buff_type_attr_key: Option<RAttrKey>,
-    buff_str_attr_key: RAttrKey,
+    buff_type_attr_key: Option<RAttrId>,
+    buff_str_attr_key: RAttrId,
 ) {
     for buff_mod in buff.mods.iter() {
         let rmod = match RawModifier::try_from_buff_with_attr(

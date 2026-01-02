@@ -1,5 +1,5 @@
 use crate::{
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::calc::{CalcOp, CtxModifier},
     ud::UItemId,
 };
@@ -11,7 +11,7 @@ use crate::{
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct CalcModificationKey {
     pub(in crate::svc::calc) affector_key: UItemId,
-    pub(in crate::svc::calc) affector_attr_key: Option<RAttrKey>,
+    pub(in crate::svc::calc) affector_attr_key: Option<RAttrId>,
     pub(in crate::svc::calc) op: CalcOp,
 }
 impl From<&CtxModifier> for CalcModificationKey {

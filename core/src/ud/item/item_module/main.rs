@@ -4,7 +4,7 @@ use crate::{
     def::{Count, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{EffectMode, ModRack, Spool},
-    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
     ud::{
         UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
@@ -64,13 +64,13 @@ impl UModule {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
         self.base.get_attrs()
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
+    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
         self.base.get_defeff_key()
     }
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
@@ -91,7 +91,7 @@ impl UModule {
     pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_val_active_group_id()
     }
-    pub(crate) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrKey>> {
+    pub(crate) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrId>> {
         self.base.get_cap_use_attr_keys()
     }
     pub(crate) fn takes_turret_hardpoint(&self) -> bool {
@@ -106,7 +106,7 @@ impl UModule {
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
         self.base.is_ice_harvester()
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
+    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
@@ -115,7 +115,7 @@ impl UModule {
     pub(crate) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
+    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
         self.base.get_effect_key_mode(effect_key)
     }
     pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
@@ -145,7 +145,7 @@ impl UModule {
         &mut self,
         src: &Src,
         attr_mutations: Vec<UAttrMutationRequest>,
-    ) -> Result<Vec<RAttrKey>, ItemMutatedError> {
+    ) -> Result<Vec<RAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
     pub(crate) fn set_mutator_id(&mut self, mutator_id: AItemId, src: &Src) -> Result<(), ItemMutatedError> {

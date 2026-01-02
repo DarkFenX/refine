@@ -39,7 +39,7 @@ impl VastFitData {
             .mods_active
             .difference(kfs)
             .filter(|item_key| is_attr_flag_set(ctx, calc, **item_key, attr_key))
-            .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
+            .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
             .collect();
         match module_ids.is_empty() {
             true => None,

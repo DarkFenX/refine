@@ -3,7 +3,7 @@ use crate::{
     api::ServiceState,
     def::ItemId,
     misc::EffectMode,
-    rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
     ud::{
         UFitId,
         item::{UEffectUpdates, UItemBase},
@@ -45,13 +45,13 @@ impl UService {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrKey, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
         self.base.get_attrs()
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectKey, RItemEffectData>> {
+    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectKey>> {
+    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
         self.base.get_defeff_key()
     }
     pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
@@ -72,7 +72,7 @@ impl UService {
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
         self.base.is_ice_harvester()
     }
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectKey>> {
+    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
@@ -81,7 +81,7 @@ impl UService {
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectKey) -> EffectMode {
+    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
         self.base.get_effect_key_mode(effect_key)
     }
     pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {

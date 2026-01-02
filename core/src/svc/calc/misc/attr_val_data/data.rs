@@ -2,26 +2,26 @@ use std::collections::hash_map::Entry;
 
 use super::attr::AttrEntry;
 use crate::{
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::calc::{CalcAttrVals, ItemAttrPostprocs},
     util::RMap,
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct ItemAttrData {
-    data: RMap<RAttrKey, AttrEntry>,
+    data: RMap<RAttrId, AttrEntry>,
 }
 impl ItemAttrData {
     pub(in crate::svc::calc) fn new() -> Self {
         Self { data: RMap::new() }
     }
-    pub(in crate::svc::calc) fn get(&self, attr_key: &RAttrKey) -> Option<&AttrEntry> {
+    pub(in crate::svc::calc) fn get(&self, attr_key: &RAttrId) -> Option<&AttrEntry> {
         self.data.get(attr_key)
     }
-    pub(in crate::svc::calc) fn keys(&self) -> impl ExactSizeIterator<Item = &RAttrKey> {
+    pub(in crate::svc::calc) fn keys(&self) -> impl ExactSizeIterator<Item = &RAttrId> {
         self.data.keys()
     }
-    pub(in crate::svc::calc) fn iter(&self) -> impl ExactSizeIterator<Item = (&RAttrKey, &AttrEntry)> {
+    pub(in crate::svc::calc) fn iter(&self) -> impl ExactSizeIterator<Item = (&RAttrId, &AttrEntry)> {
         self.data.iter()
     }
     pub(in crate::svc::calc) fn len(&self) -> usize {
@@ -29,7 +29,7 @@ impl ItemAttrData {
     }
     pub(in crate::svc::calc) fn set_value_and_get_pp(
         &mut self,
-        attr_key: RAttrKey,
+        attr_key: RAttrId,
         value: CalcAttrVals,
     ) -> Option<&ItemAttrPostprocs> {
         match self.data.entry(attr_key) {
@@ -47,19 +47,19 @@ impl ItemAttrData {
             }
         }
     }
-    pub(in crate::svc::calc) fn unset_value(&mut self, attr_key: RAttrKey) -> bool {
+    pub(in crate::svc::calc) fn unset_value(&mut self, attr_key: RAttrId) -> bool {
         match self.data.entry(attr_key) {
             Entry::Occupied(mut entry) => entry.get_mut().value.take().is_some(),
             Entry::Vacant(_) => false,
         }
     }
-    pub(in crate::svc::calc) fn has_value(&self, attr_key: &RAttrKey) -> bool {
+    pub(in crate::svc::calc) fn has_value(&self, attr_key: &RAttrId) -> bool {
         match self.data.get(attr_key) {
             Some(attr_entry) => attr_entry.value.is_some(),
             None => false,
         }
     }
-    pub(in crate::svc::calc) fn reg_postproc(&mut self, attr_key: RAttrKey, postprocs: ItemAttrPostprocs) {
+    pub(in crate::svc::calc) fn reg_postproc(&mut self, attr_key: RAttrId, postprocs: ItemAttrPostprocs) {
         match self.data.entry(attr_key) {
             Entry::Occupied(mut entry) => entry.get_mut().postprocs = Some(postprocs),
             Entry::Vacant(entry) => {
@@ -70,7 +70,7 @@ impl ItemAttrData {
             }
         }
     }
-    pub(in crate::svc::calc) fn unreg_postproc(&mut self, attr_key: RAttrKey) -> bool {
+    pub(in crate::svc::calc) fn unreg_postproc(&mut self, attr_key: RAttrId) -> bool {
         match self.data.entry(attr_key) {
             Entry::Occupied(mut entry) => entry.get_mut().postprocs.take().is_some(),
             Entry::Vacant(_) => false,

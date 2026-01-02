@@ -72,7 +72,7 @@ impl VastFitData {
                 None => continue,
             };
             if max_item_use > max_cap && !kfs.contains(&item_key) {
-                items.insert(ctx.u_data.items.ext_id_by_int_id(item_key), max_item_use);
+                items.insert(ctx.u_data.items.eid_by_iid(item_key), max_item_use);
             }
         }
         match items.is_empty() {

@@ -1,7 +1,7 @@
 use crate::{
     ad::AAttrId,
     nd::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec, NProjMultGetter},
-    rd::{RAttrKey, REffectResist},
+    rd::{RAttrId, REffectResist},
     util::RMap,
 };
 
@@ -12,7 +12,7 @@ where
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
-    pub(crate) limit_attr_key: Option<RAttrKey>,
+    pub(crate) limit_attr_key: Option<RAttrId>,
 }
 impl<T> REffectLocalOpcSpec<T>
 where
@@ -20,7 +20,7 @@ where
 {
     pub(in crate::rd::data::effect) fn from_n_local_opc_spec(
         n_local_opc_spec: &NEffectLocalOpcSpec<T>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             base: n_local_opc_spec.base,
@@ -43,7 +43,7 @@ where
     pub(crate) proj_mult_str: Option<NProjMultGetter>,
     pub(crate) proj_mult_chance: Option<NProjMultGetter>,
     pub(crate) resist: Option<REffectResist>,
-    pub(crate) limit_attr_key: Option<RAttrKey>,
+    pub(crate) limit_attr_key: Option<RAttrId>,
 }
 impl<T> REffectProjOpcSpec<T>
 where
@@ -51,7 +51,7 @@ where
 {
     pub(in crate::rd::data::effect) fn from_n_proj_opc_spec(
         n_proj_opc_spec: &NEffectProjOpcSpec<T>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             base: n_proj_opc_spec.base,

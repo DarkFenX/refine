@@ -1,5 +1,5 @@
 use crate::{
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::{
         SvcCtx,
         calc::{
@@ -174,7 +174,7 @@ impl StandardRegister {
 fn is_fit_ship_on_fleet_item_list<'u>(
     ctx: SvcCtx<'u, '_>,
     fit_key: UFitId,
-    item_list_key: &RItemListKey,
+    item_list_key: &RItemListId,
 ) -> Option<(UItemId, &'u UShip)> {
     let fit = ctx.u_data.fits.get(fit_key);
     let ship_key = fit.ship?;
@@ -184,7 +184,7 @@ fn is_fit_ship_on_fleet_item_list<'u>(
         false => None,
     }
 }
-fn is_ship_on_fleet_item_list(ship: &UShip, item_list_key: &RItemListKey) -> bool {
+fn is_ship_on_fleet_item_list(ship: &UShip, item_list_key: &RItemListId) -> bool {
     match ship.get_fleet_buff_item_lists() {
         Some(item_list_keys) => item_list_keys.contains(item_list_key),
         None => false,

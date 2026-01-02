@@ -1,7 +1,7 @@
 use crate::{
     def::OF,
     misc::MiningAmount,
-    rd::{REffectKey, REffectProjOpcSpec},
+    rd::{REffectId, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
@@ -70,7 +70,7 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,
-    fit_data: &RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<MiningAmount>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();
     let cycling_options = time_options.into();

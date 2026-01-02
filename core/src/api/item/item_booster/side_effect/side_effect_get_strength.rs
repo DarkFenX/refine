@@ -4,14 +4,14 @@ use crate::{
     ad::AEffectId,
     api::{AttrId, FullSideEffect, FullSideEffectMut, Op},
     def::AttrVal,
-    rd::{RAttrKey, Src},
+    rd::{RAttrId, Src},
 };
 
 pub struct SideEffectPartialStr {
     op: Op,
     attr_id: AttrId,
     // Used only to generate full side effect strength with modification value
-    attr_key: RAttrKey,
+    attr_key: RAttrId,
 }
 impl SideEffectPartialStr {
     pub fn get_op(&self) -> Op {
@@ -90,7 +90,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
             .into_iter()
             .map(|(a_op, attr_key)| SideEffectPartialStr {
                 op: a_op.into(),
-                attr_id: src.get_attr(attr_key).id.into(),
+                attr_id: src.get_attr(attr_key).a_id.into(),
                 attr_key,
             })
             .next(),
@@ -102,7 +102,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
             {
                 true => Some(SideEffectPartialStr {
                     op: base_op.into(),
-                    attr_id: src.get_attr(base_attr_key).id.into(),
+                    attr_id: src.get_attr(base_attr_key).a_id.into(),
                     attr_key: base_attr_key,
                 }),
                 false => None,

@@ -27,5 +27,5 @@ impl<'a> FitMut<'a> {
 }
 
 fn get_fit_id(sol: &SolarSystem, fit_key: UFitId) -> FitId {
-    sol.u_data.fits.ext_id_by_int_id(fit_key)
+    sol.u_data.fits.eid_by_iid(fit_key)
 }

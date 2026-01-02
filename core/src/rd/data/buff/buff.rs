@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, ABuff, ABuffAggrMode, ABuffId, AOp},
-    rd::{RAttrKey, RBuffModifier},
+    rd::{RAttrId, RBuffModifier},
     util::RMap,
 };
 
@@ -28,7 +28,7 @@ impl RBuff {
     pub(in crate::rd) fn fill_key_dependents(
         &mut self,
         a_buffs: &RMap<ABuffId, ABuff>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
     ) {
         let a_buff = a_buffs.get(&self.id).unwrap();
         self.mods.extend(

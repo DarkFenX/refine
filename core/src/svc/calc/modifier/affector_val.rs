@@ -4,7 +4,7 @@ use crate::{
     ad::AAttrVal,
     def::AttrVal,
     misc::EffectSpec,
-    rd::RAttrKey,
+    rd::RAttrId,
     svc::{
         SvcCtx,
         calc::{Affector, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
@@ -14,7 +14,7 @@ use crate::{
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum AffectorValue {
-    Attr(RAttrKey),
+    Attr(RAttrId),
     Hardcoded(AAttrVal),
     Custom(CustomAffectorValue),
 }
@@ -22,7 +22,7 @@ impl AffectorValue {
     // Simple and fast way to get affector attribute. Variants which have actual affector attributes
     // but do not expose anything are designed to handle attribute cleanup in some other way (via
     // dependency/revision registers)
-    pub(super) fn get_affector_attr_key(&self) -> Option<RAttrKey> {
+    pub(super) fn get_affector_attr_key(&self) -> Option<RAttrId> {
         match self {
             Self::Attr(attr_key) => Some(*attr_key),
             Self::Hardcoded(_) => None,
@@ -33,11 +33,11 @@ impl AffectorValue {
     pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
         match self {
             Self::Attr(attr_key) => smallvec![Affector {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
-                attr_id: Some(ctx.u_data.src.get_attr(*attr_key).id.into()),
+                item_id: ctx.u_data.items.eid_by_iid(item_key),
+                attr_id: Some(ctx.u_data.src.get_attr(*attr_key).a_id.into()),
             }],
             Self::Hardcoded(_) => smallvec![Affector {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
+                item_id: ctx.u_data.items.eid_by_iid(item_key),
                 attr_id: None
             }],
             Self::Custom(custom) => (custom.affector_info_getter)(ctx, item_key),

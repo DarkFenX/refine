@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::ItemId,
     misc::EffectSpec,
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
@@ -36,9 +36,9 @@ impl VastFitData {
         for (projector_espec, projectee_data) in self.projectee_filter.iter() {
             for (&projectee_key, &allowed_type_list_id) in projectee_data.iter() {
                 if !validate_projection(kfs, ctx, projector_espec, allowed_type_list_id, projectee_key) {
-                    let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_key);
+                    let projector_item_id = ctx.u_data.items.eid_by_iid(projector_espec.item_key);
                     let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
-                    let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_key);
+                    let projectee_item_id = ctx.u_data.items.eid_by_iid(projectee_key);
                     if !projectee_item_ids.contains(&projectee_item_id) {
                         projectee_item_ids.push(projectee_item_id)
                     }
@@ -56,7 +56,7 @@ fn validate_projection(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     projector_espec: &EffectSpec,
-    allowed_type_list_key: RItemListKey,
+    allowed_type_list_key: RItemListId,
     projectee_key: UItemId,
 ) -> bool {
     let allowed_type_list = ctx.u_data.src.get_item_list(allowed_type_list_key);

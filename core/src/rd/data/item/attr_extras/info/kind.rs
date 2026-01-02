@@ -4,15 +4,15 @@ use crate::{
     ac,
     ad::{AAttrVal, AItemCatId, AItemGrpId},
     misc::ItemKind,
-    rd::{RAttrConsts, RAttrKey, REffectConsts, REffectKey, RItemEffectData},
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemEffectData},
     util::RMap,
 };
 
 pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
     item_grp_id: AItemGrpId,
     item_cat_id: AItemCatId,
-    item_attrs: &RMap<RAttrKey, AAttrVal>,
-    item_effects: &RMap<REffectKey, RItemEffectData>,
+    item_attrs: &RMap<RAttrId, AAttrVal>,
+    item_effects: &RMap<REffectId, RItemEffectData>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
 ) -> Option<ItemKind> {

@@ -1,5 +1,5 @@
 use crate::{
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::{
         SvcCtx,
         calc::{
@@ -142,7 +142,7 @@ impl StandardRegister {
         item_key: UItemId,
         ship: Option<&UShip>,
         fit_key: UFitId,
-        proj_buff_item_lists: &[RItemListKey],
+        proj_buff_item_lists: &[RItemListId],
     ) {
         // Direct changes can affect all buffable items
         for rmod in self.rmods_fw_buff.get(&fit_key) {
@@ -193,7 +193,7 @@ impl StandardRegister {
         item_key: UItemId,
         ship: Option<&UShip>,
         fit_key: UFitId,
-        proj_buff_item_lists: &[RItemListKey],
+        proj_buff_item_lists: &[RItemListId],
     ) {
         // Direct changes can affect all buffable items
         for rmod in self.rmods_fw_buff.get(&fit_key) {
@@ -244,7 +244,7 @@ impl StandardRegister {
 fn is_fit_ship_on_proj_item_list<'u>(
     ctx: SvcCtx<'u, '_>,
     fit_key: UFitId,
-    item_list_key: &RItemListKey,
+    item_list_key: &RItemListId,
 ) -> Option<(UItemId, &'u UShip)> {
     let fit = ctx.u_data.fits.get(fit_key);
     let ship_key = fit.ship?;

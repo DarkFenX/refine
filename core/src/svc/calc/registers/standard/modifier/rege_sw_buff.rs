@@ -1,5 +1,5 @@
 use crate::{
-    rd::RItemListKey,
+    rd::RItemListId,
     svc::{
         SvcCtx,
         calc::{
@@ -134,7 +134,7 @@ impl StandardRegister {
         &mut self,
         item_key: UItemId,
         ship: Option<&UShip>,
-        proj_buff_item_lists: &[RItemListKey],
+        proj_buff_item_lists: &[RItemListId],
     ) {
         // Direct changes can affect all buffable items
         for rmod in self.rmods_sw_buff.iter() {
@@ -184,7 +184,7 @@ impl StandardRegister {
         &mut self,
         item_key: UItemId,
         ship: Option<&UShip>,
-        proj_buff_item_lists: &[RItemListKey],
+        proj_buff_item_lists: &[RItemListId],
     ) {
         // Direct changes can affect all buffable items
         for rmod in self.rmods_sw_buff.iter() {

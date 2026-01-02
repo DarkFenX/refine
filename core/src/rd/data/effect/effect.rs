@@ -4,8 +4,8 @@ use crate::{
     misc::{DmgKinds, Ecm, MiningAmount},
     nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NProjMultGetter},
     rd::{
-        RAttrKey, RBuffKey, REffectBuff, REffectCharge, REffectChargeLoc, REffectKey, REffectLocalOpcSpec,
-        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListKey, RSpoolAttrs,
+        RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
+        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListId, RSpoolAttrs,
     },
     util::RMap,
 };
@@ -16,7 +16,7 @@ use crate::{
 // lower-level. An effect can contain any number of modifiers under a single roof, accompanied by
 // extra effect-wide properties.
 pub(crate) struct REffect {
-    pub(crate) key: REffectKey,
+    pub(crate) key: REffectId,
     pub(crate) id: AEffectId,
     pub(crate) category: AEffectCatId,
     pub(crate) state: AState,
@@ -33,19 +33,19 @@ pub(crate) struct REffect {
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
     // Fields which depend on slab keys
     pub(crate) modifiers: Vec<REffectModifier>,
-    pub(crate) stopped_effect_keys: Vec<REffectKey>,
+    pub(crate) stopped_effect_keys: Vec<REffectId>,
     pub(crate) buff: Option<REffectBuff>,
     pub(crate) charge: Option<REffectCharge>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) spool_attr_keys: Option<RSpoolAttrs>,
-    pub(crate) modifier_proj_attr_keys: [Option<RAttrKey>; 2],
-    pub(crate) discharge_attr_key: Option<RAttrKey>,
-    pub(crate) duration_attr_key: Option<RAttrKey>,
-    pub(crate) range_attr_key: Option<RAttrKey>,
-    pub(crate) falloff_attr_key: Option<RAttrKey>,
-    pub(crate) track_attr_key: Option<RAttrKey>,
-    pub(crate) chance_attr_key: Option<RAttrKey>,
-    pub(crate) resist_attr_key: Option<RAttrKey>,
+    pub(crate) modifier_proj_attr_keys: [Option<RAttrId>; 2],
+    pub(crate) discharge_attr_key: Option<RAttrId>,
+    pub(crate) duration_attr_key: Option<RAttrId>,
+    pub(crate) range_attr_key: Option<RAttrId>,
+    pub(crate) falloff_attr_key: Option<RAttrId>,
+    pub(crate) track_attr_key: Option<RAttrId>,
+    pub(crate) chance_attr_key: Option<RAttrId>,
+    pub(crate) resist_attr_key: Option<RAttrId>,
     pub(crate) is_active_with_duration: bool,
     // Output specs depend on slab keys as well
     pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<AttrVal>>>,
@@ -64,7 +64,7 @@ pub(crate) struct REffect {
     pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
 }
 impl REffect {
-    pub(in crate::rd) fn from_a_effect(effect_key: REffectKey, a_effect: &AEffect) -> Self {
+    pub(in crate::rd) fn from_a_effect(effect_key: REffectId, a_effect: &AEffect) -> Self {
         let n_effect = N_EFFECT_MAP.get(&a_effect.id);
         Self {
             key: effect_key,
@@ -117,10 +117,10 @@ impl REffect {
     pub(in crate::rd) fn fill_key_dependents(
         &mut self,
         a_effects: &RMap<AEffectId, AEffect>,
-        item_list_id_key_map: &RMap<AItemListId, RItemListKey>,
-        attr_id_key_map: &RMap<AAttrId, RAttrKey>,
-        effect_id_key_map: &RMap<AEffectId, REffectKey>,
-        buff_id_key_map: &RMap<ABuffId, RBuffKey>,
+        item_list_id_key_map: &RMap<AItemListId, RItemListId>,
+        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        effect_id_key_map: &RMap<AEffectId, REffectId>,
+        buff_id_key_map: &RMap<ABuffId, RBuffId>,
     ) {
         let a_effect = a_effects.get(&self.id).unwrap();
         self.buff = a_effect.buff.as_ref().and_then(|a_effect_buff| {

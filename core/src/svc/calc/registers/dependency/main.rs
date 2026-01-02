@@ -1,6 +1,6 @@
 use crate::{
     misc::{AttrSpec, EffectSpec},
-    rd::RAttrKey,
+    rd::RAttrId,
     ud::UItemId,
     util::RMapRSet,
 };
@@ -20,7 +20,7 @@ pub(crate) struct DependencyRegister {
     // affectee attribute to be cleared whenever linked attribute changes its value.
     pub(super) data: RMapRSet<AttrSpec, AttrSpec>,
     // Map<item ID, (affector attr key, affectee attr key)>
-    pub(super) anonymous_by_item: RMapRSet<UItemId, (RAttrKey, RAttrKey)>,
+    pub(super) anonymous_by_item: RMapRSet<UItemId, (RAttrId, RAttrId)>,
     // Map<source, (affector spec, affectee spec)>
     pub(super) by_source: RMapRSet<EffectSpec, (AttrSpec, AttrSpec)>,
     // Map<item ID, sources>
@@ -46,8 +46,8 @@ impl DependencyRegister {
     pub(in crate::svc::calc) fn add_anonymous(
         &mut self,
         item_key: UItemId,
-        affector_attr_key: RAttrKey,
-        affectee_attr_key: RAttrKey,
+        affector_attr_key: RAttrId,
+        affectee_attr_key: RAttrId,
     ) {
         let affector_spec = AttrSpec::new(item_key, affector_attr_key);
         let affectee_spec = AttrSpec::new(item_key, affectee_attr_key);
