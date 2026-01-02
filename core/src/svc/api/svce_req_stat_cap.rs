@@ -37,6 +37,7 @@ impl Svc {
         u_data: &UData,
         item_key: UItemKey,
         cap_perc: UnitInterval,
+        reload_optionals: Option<bool>,
         stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast.get_stat_item_cap_sim(
@@ -44,6 +45,7 @@ impl Svc {
             &mut self.calc,
             item_key,
             cap_perc,
+            reload_optionals,
             stagger,
         )
     }

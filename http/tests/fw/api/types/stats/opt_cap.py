@@ -36,4 +36,5 @@ class StatCapRegenOptions:
 class StatsOptionCapSim:
 
     cap_perc: float | type[Absent] = Absent
+    reload_optionals: bool | type[Absent] = Absent
     stagger: bool | tuple[bool, list[str]] | type[Absent] = Absent

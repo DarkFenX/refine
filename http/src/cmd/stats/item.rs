@@ -457,7 +457,7 @@ fn get_cap_sim_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapSim
     for option in options {
         let cap_perc = rc::UnitInterval::new_clamped(option.cap_perc);
         let stagger = (&option.stagger).into();
-        match core_item.get_stat_cap_sim(cap_perc, stagger) {
+        match core_item.get_stat_cap_sim(cap_perc, option.reload_optionals, stagger) {
             Ok(result) => results.push(result.into()),
             Err(_) => return None,
         }

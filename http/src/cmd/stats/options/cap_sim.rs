@@ -7,6 +7,8 @@ pub(in crate::cmd) struct HStatOptionCapSim {
     #[educe(Default = 1)]
     pub(in crate::cmd) cap_perc: rc::AttrVal,
     #[serde(default)]
+    pub(in crate::cmd) reload_optionals: Option<bool>,
+    #[serde(default)]
     pub(in crate::cmd) stagger: HStatOptionCapSimStagger,
 }
 
