@@ -3,13 +3,13 @@ use crate::{
     api::ModuleMut,
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_type_id(
         &mut self,
-        module_key: UItemKey,
+        module_key: UItemId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

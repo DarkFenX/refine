@@ -11,7 +11,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleDataFull, CycleSeq},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::InfCount,
 };
 
@@ -19,11 +19,11 @@ use crate::{
 pub(in crate::svc) fn aggr_proj_clip_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -45,11 +45,11 @@ where
 fn aggr_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     inv_spool: AggrSpoolInvData,
 ) -> Option<AggrAmount<T>>
 where
@@ -122,11 +122,11 @@ where
 fn aggr_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
 where
     T: Default

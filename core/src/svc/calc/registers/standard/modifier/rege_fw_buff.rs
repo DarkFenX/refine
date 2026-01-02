@@ -11,7 +11,7 @@ use crate::{
             },
         },
     },
-    ud::{UFitKey, UFwEffect, UItemKey, UShip},
+    ud::{UFitId, UFwEffect, UItemId, UShip},
 };
 
 impl StandardRegister {
@@ -139,9 +139,9 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_fw_buff(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         ship: Option<&UShip>,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         proj_buff_item_lists: &[RItemListKey],
     ) {
         // Direct changes can affect all buffable items
@@ -190,9 +190,9 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn unreg_affectee_for_fw_buff(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         ship: Option<&UShip>,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         proj_buff_item_lists: &[RItemListKey],
     ) {
         // Direct changes can affect all buffable items
@@ -243,9 +243,9 @@ impl StandardRegister {
 
 fn is_fit_ship_on_proj_item_list<'u>(
     ctx: SvcCtx<'u, '_>,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     item_list_key: &RItemListKey,
-) -> Option<(UItemKey, &'u UShip)> {
+) -> Option<(UItemId, &'u UShip)> {
     let fit = ctx.u_data.fits.get(fit_key);
     let ship_key = fit.ship?;
     let ship = ctx.u_data.items.get(ship_key).dc_ship().unwrap();

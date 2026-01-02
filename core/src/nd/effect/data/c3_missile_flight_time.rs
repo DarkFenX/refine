@@ -19,7 +19,7 @@ use crate::{
             CustomAffectorValueKind, Location, ModifierKind, RawModifier,
         },
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::RMap,
 };
 
@@ -103,7 +103,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
         && let Some(max_velocity_key) = ctx.ac().max_velocity
@@ -111,13 +111,13 @@ fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
     {
         info.extend([
             Affector {
-                item_id: ctx.u_data.items.id_by_key(item_key),
+                item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
                 attr_id: Some(ctx.u_data.src.get_attr(max_velocity_key).id.into()),
             },
             // There is no dependency on modified ship radius, but we add it for informational
             // purposes nevertheless
             Affector {
-                item_id: ctx.u_data.items.id_by_key(ship_key),
+                item_id: ctx.u_data.items.ext_id_by_int_id(ship_key),
                 attr_id: Some(ctx.u_data.src.get_attr(radius_key).id.into()),
             },
         ]);
@@ -125,12 +125,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
     info
 }
 
-fn revise_on_item_add_removal(
-    ctx: SvcCtx,
-    affector_key: UItemKey,
-    _changed_key: UItemKey,
-    changed_item: &UItem,
-) -> bool {
+fn revise_on_item_add_removal(ctx: SvcCtx, affector_key: UItemId, _changed_key: UItemId, changed_item: &UItem) -> bool {
     match changed_item {
         UItem::Ship(changed_ship) => {
             Some(changed_ship.get_fit_key()) == ctx.u_data.items.get(affector_key).get_fit_key()

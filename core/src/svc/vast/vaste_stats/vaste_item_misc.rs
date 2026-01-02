@@ -2,7 +2,7 @@ use super::item_checks::{check_character, check_fighter_ship_no_struct, check_sh
 use crate::{
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
-    ud::{UFitKey, UItemKey},
+    ud::{UFitId, UItemId},
     util::FLOAT_TOLERANCE,
 };
 
@@ -10,7 +10,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_drone_control_range(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_character(ctx.u_data, item_key)?;
         let drone_control_range = calc
@@ -21,7 +21,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_can_warp(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         check_fighter_ship_no_struct(ctx.u_data, item_key)?;
         // Warping is blocked by either of:
@@ -52,7 +52,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
         // Gating is blocked by either of:
@@ -79,7 +79,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_can_jump_drive(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         check_ship_no_struct(ctx.u_data, item_key)?;
         // Jumping (with a jump drive) is blocked by either of:
@@ -110,7 +110,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
         // Station docking is blocked by either of:
@@ -131,7 +131,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
         // Citadel docking is blocked by either of:
@@ -159,7 +159,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_key)?;
         // Tether is blocked by either of:
@@ -188,7 +188,7 @@ impl Vast {
         }
         Ok(true)
     }
-    fn is_fit_aggroed(&self, fit_key: UFitKey) -> bool {
+    fn is_fit_aggroed(&self, fit_key: UFitId) -> bool {
         !self.fit_datas.get(&fit_key).unwrap().aggro_effects.is_empty()
     }
 }

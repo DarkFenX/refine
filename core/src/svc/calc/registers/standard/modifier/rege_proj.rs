@@ -11,7 +11,7 @@ use super::{
 use crate::{
     misc::EffectSpec,
     svc::calc::{CtxModifier, ModifierKind, RawModifier, registers::StandardRegister},
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 impl StandardRegister {
@@ -28,7 +28,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn project_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Register projection and get appropriate context modifiers.
@@ -61,7 +61,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unproject_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Unregister projection and get appropriate context modifiers.
@@ -94,7 +94,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn query_projected_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Get context modifiers for projection.
@@ -115,7 +115,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_proj(
         &mut self,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_status
@@ -133,7 +133,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_proj(
         &mut self,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_status

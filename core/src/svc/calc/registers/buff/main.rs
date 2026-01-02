@@ -2,7 +2,7 @@ use crate::{
     misc::AttrSpec,
     rd::{REffect, REffectKey},
     svc::calc::RawModifier,
-    ud::UItemKey,
+    ud::UItemId,
     util::RMapRSet,
 };
 
@@ -10,7 +10,7 @@ use crate::{
 // attributes
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
-    pub(super) effect_keys: RMapRSet<UItemKey, REffectKey>,
+    pub(super) effect_keys: RMapRSet<UItemId, REffectKey>,
     pub(super) rmods: RMapRSet<AttrSpec, RawModifier>,
 }
 impl BuffRegister {
@@ -21,15 +21,15 @@ impl BuffRegister {
         }
     }
     // Effect methods
-    pub(in crate::svc::calc) fn get_effects(&self, item_key: &UItemKey) -> impl ExactSizeIterator<Item = REffectKey> {
+    pub(in crate::svc::calc) fn get_effects(&self, item_key: &UItemId) -> impl ExactSizeIterator<Item = REffectKey> {
         self.effect_keys.get(item_key).copied()
     }
-    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
+    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
             self.effect_keys.add_entry(item_key, effect.key);
         }
     }
-    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemKey, effect: &REffect) {
+    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
             self.effect_keys.remove_entry(item_key, &effect.key);
         }

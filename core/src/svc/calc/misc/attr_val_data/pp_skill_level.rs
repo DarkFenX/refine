@@ -4,13 +4,13 @@ use crate::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(super) fn skill_level_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut cval: CalcAttrVals,
 ) -> CalcAttrVals {
     let level = ctx.u_data.items.get(item_key).dc_skill().unwrap().get_level();
@@ -23,7 +23,7 @@ pub(super) fn skill_level_postproc_fast(
 pub(super) fn skill_level_postproc_info(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _info: AttrValInfo,
 ) -> AttrValInfo {
     let level = ctx.u_data.items.get(item_key).dc_skill().unwrap().get_level();

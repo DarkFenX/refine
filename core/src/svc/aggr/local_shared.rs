@@ -3,7 +3,7 @@ use crate::{
     def::AttrVal,
     rd::{RAttrKey, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ where
     pub(in crate::svc) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         effect: &REffect,
         ospec: &REffectLocalOpcSpec<T>,
     ) -> Option<Self> {
@@ -34,7 +34,7 @@ where
     }
 }
 
-fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
+fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: Option<RAttrKey>) -> Option<AttrVal> {
     let attr_key = attr_key?;
     let fit_key = ctx.u_data.items.get(item_key).get_fit_key()?;
     let ship_key = ctx.u_data.fits.get(fit_key).ship?;
@@ -47,7 +47,7 @@ fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, attr_key: Op
 pub(in crate::svc) fn get_local_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     ospec: &REffectLocalOpcSpec<T>,
     inv_local: &AggrLocalInvData<T>,
     chargeness: Option<AttrVal>,

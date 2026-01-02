@@ -6,7 +6,7 @@ use crate::{
             registers::standard::{data::StandardRegister, iter_locs_pot::PotentialLocations},
         },
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 impl StandardRegister {
@@ -14,7 +14,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_affectee(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
     ) -> Vec<CtxModifier> {
         // Let existing projections know their projectee got updated
@@ -77,7 +77,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_affectee(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
     ) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();

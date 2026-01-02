@@ -2,7 +2,7 @@ use crate::{
     def::OF,
     misc::{DpsProfile, SecZone, Spool},
     rd::Src,
-    ud::{UFits, UFleets, UItemKey, UItems},
+    ud::{UFits, UFleets, UItemId, UItems},
     util::{RSet, UnitInterval},
 };
 
@@ -13,8 +13,8 @@ pub(crate) struct UData {
     pub(crate) src: Src,
     pub(crate) fleets: UFleets,
     pub(crate) fits: UFits,
-    pub(crate) sw_effects: RSet<UItemKey>,
-    pub(crate) proj_effects: RSet<UItemKey>,
+    pub(crate) sw_effects: RSet<UItemId>,
+    pub(crate) proj_effects: RSet<UItemId>,
     pub(crate) items: UItems,
     pub(crate) sec_zone: SecZone,
     // Default setting used in stats / RAH sim

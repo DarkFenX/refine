@@ -3,16 +3,16 @@ use crate::{
     api::{FitMut, StanceMut},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UStance},
+    ud::{UEffectUpdates, UFitId, UItem, UItemId, UStance},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_stance(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_key);
         // Remove old stance, if it was set
         if let Some(old_stance_key) = u_fit.stance {

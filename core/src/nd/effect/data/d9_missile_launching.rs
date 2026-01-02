@@ -13,7 +13,7 @@ use crate::{
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::{UItem, UItemKey, UProjData},
+    ud::{UItem, UItemId, UProjData},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MISSILE_LAUNCHING;
@@ -44,9 +44,9 @@ fn internal_get_dmg_kind(u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let proj_mult_getter = match is_guided_bomb(ctx.u_data.items.get(projector_key)) {

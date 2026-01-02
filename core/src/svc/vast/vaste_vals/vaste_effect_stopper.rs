@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, ItemId, OF},
     misc::EffectSpec,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -18,7 +18,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_effect_stopper_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -37,7 +37,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_effect_stopper_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValEffectStopperFail> {
@@ -49,7 +49,7 @@ impl VastFitData {
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
                 && !kfs.contains(&stopped_espec.item_key)
             {
-                let item_id = ctx.u_data.items.id_by_key(stopped_espec.item_key);
+                let item_id = ctx.u_data.items.ext_id_by_int_id(stopped_espec.item_key);
                 let effect_id = ctx.u_data.src.get_effect(stopped_espec.effect_key).id;
                 items.entry(item_id).or_insert_with(Vec::new).push(effect_id.into());
             }
@@ -66,7 +66,7 @@ fn is_any_in_effective_range(
     ctx: SvcCtx,
     calc: &mut Calc,
     stopper_especs: impl Iterator<Item = EffectSpec>,
-    stopped_item_key: UItemKey,
+    stopped_item_key: UItemId,
 ) -> bool {
     for stopper_espec in stopper_especs {
         match get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
@@ -81,7 +81,7 @@ fn get_espec_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
 ) -> Option<AttrVal> {
     let projector_effect = ctx.u_data.src.get_effect(projector_espec.effect_key);
     let proj_mult_getter = projector_effect.modifier_proj_mult_getter?;

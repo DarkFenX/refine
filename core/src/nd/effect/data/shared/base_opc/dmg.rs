@@ -8,14 +8,14 @@ use crate::{
         calc::Calc,
         output::{Output, OutputComplex, OutputSimple},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::{FLOAT_TOLERANCE, floor_unerr},
 };
 
 pub(in crate::nd::effect::data) fn get_instant_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     Some(Output::Simple(OutputSimple {
@@ -32,7 +32,7 @@ pub(in crate::nd::effect::data) fn get_instant_dmg_base_opc(
 pub(in crate::nd::effect::data) fn get_instant_charge_mult_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let charge_key = ctx.u_data.items.get(item_key).get_charge_key()?;
@@ -65,7 +65,7 @@ pub(in crate::nd::effect::data) fn get_direct_dd_dmg_opc_spec() -> NEffectProjOp
 fn get_direct_dd_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     Some(Output::Simple(OutputSimple {
@@ -90,7 +90,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc_spec() -> NEffectProjOpcSp
 fn get_aoe_dd_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let dmg_em = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().em_dmg, OF(0.0))?;

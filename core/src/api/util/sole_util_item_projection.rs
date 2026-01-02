@@ -2,15 +2,15 @@ use super::is_a_effect_projectable;
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UItemKey, UProjData},
+    ud::{UData, UItemId, UProjData},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_item_projection(
         u_data: &UData,
         svc: &mut Svc,
-        projector_key: UItemKey,
-        projectee_key: UItemKey,
+        projector_key: UItemId,
+        projectee_key: UItemId,
         proj_data: Option<UProjData>,
     ) {
         let projector_u_item = u_data.items.get(projector_key);
@@ -36,8 +36,8 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_item_projection(
         u_data: &UData,
         svc: &mut Svc,
-        projector_key: UItemKey,
-        projectee_key: UItemKey,
+        projector_key: UItemId,
+        projectee_key: UItemId,
     ) {
         let projector_u_item = u_data.items.get(projector_key);
         let projectee_u_item = u_data.items.get(projectee_key);
@@ -61,8 +61,8 @@ impl SolarSystem {
     pub(in crate::api) fn util_change_item_proj_data(
         u_data: &UData,
         svc: &mut Svc,
-        projector_key: UItemKey,
-        projectee_key: UItemKey,
+        projector_key: UItemId,
+        projectee_key: UItemId,
         proj_data: Option<UProjData>,
     ) {
         let projector_u_item = u_data.items.get(projector_key);

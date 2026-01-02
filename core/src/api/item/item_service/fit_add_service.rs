@@ -3,17 +3,17 @@ use crate::{
     api::{FitMut, ServiceMut, ServiceState},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UService},
+    ud::{UEffectUpdates, UFitId, UItem, UItemId, UService},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_service(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         state: ServiceState,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let item_id = self.u_data.items.alloc_id();
         let u_service = UService::new(item_id, type_id, fit_key, state, &self.u_data.src);

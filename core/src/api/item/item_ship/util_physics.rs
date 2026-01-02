@@ -1,7 +1,7 @@
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemKey},
+    ud::{UData, UItemId},
 };
 
 impl SolarSystem {
@@ -9,7 +9,7 @@ impl SolarSystem {
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,
-        ship_key: UItemKey,
+        ship_key: UItemId,
     ) {
         let u_ship = u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
         let u_ship_physics = *u_ship.get_physics();

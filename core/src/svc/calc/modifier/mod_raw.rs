@@ -17,7 +17,7 @@ use crate::{
         },
         funcs,
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 #[derive(Copy, Clone)]
@@ -63,7 +63,7 @@ impl Hash for RawModifier {
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_effect_mod(
-        affector_key: UItemKey,
+        affector_key: UItemId,
         affector_item: &UItem,
         effect: &REffect,
         effect_mod: &REffectModifier,
@@ -91,7 +91,7 @@ impl RawModifier {
         })
     }
     pub(in crate::svc::calc) fn try_from_buff_with_attr(
-        affector_key: UItemKey,
+        affector_key: UItemId,
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
@@ -112,7 +112,7 @@ impl RawModifier {
         )
     }
     pub(in crate::svc::calc) fn try_from_buff_with_hardcoded(
-        affector_key: UItemKey,
+        affector_key: UItemId,
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
@@ -132,7 +132,7 @@ impl RawModifier {
         )
     }
     fn try_from_buff(
-        affector_key: UItemKey,
+        affector_key: UItemId,
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,

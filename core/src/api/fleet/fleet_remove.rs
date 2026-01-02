@@ -1,9 +1,9 @@
 use itertools::Itertools;
 
-use crate::{api::FleetMut, sol::SolarSystem, ud::UFleetKey};
+use crate::{api::FleetMut, sol::SolarSystem, ud::UFleetId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_fleet(&mut self, fleet_key: UFleetKey) {
+    pub(in crate::api) fn internal_remove_fleet(&mut self, fleet_key: UFleetId) {
         let u_fleet = self.u_data.fleets.get(fleet_key);
         let fit_keys = u_fleet.iter_fits().collect_vec();
         for fit_key in fit_keys {

@@ -1,13 +1,13 @@
 use crate::{
     api::SubsystemMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_subsystem(
         &mut self,
-        subsystem_key: UItemKey,
+        subsystem_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_key, reuse_eupdates);

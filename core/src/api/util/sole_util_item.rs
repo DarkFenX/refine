@@ -2,11 +2,11 @@ use crate::{
     ad::AState,
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_add_item(u_data: &UData, svc: &mut Svc, item_key: UItemKey, eupdates: &UEffectUpdates) {
+    pub(in crate::api) fn util_add_item(u_data: &UData, svc: &mut Svc, item_key: UItemId, eupdates: &UEffectUpdates) {
         let u_item = u_data.items.get(item_key);
         svc.notify_item_added(u_data, item_key, u_item);
         if u_item.is_loaded() {
@@ -28,7 +28,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_item(
         u_data: &UData,
         svc: &mut Svc,
-        item_key: UItemKey,
+        item_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get(item_key);

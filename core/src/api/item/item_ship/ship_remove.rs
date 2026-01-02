@@ -2,11 +2,11 @@ use crate::{
     api::ShipMut,
     def::OF,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey, UShipKind},
+    ud::{UEffectUpdates, UItemId, UShipKind},
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_ship(&mut self, ship_key: UItemKey, reuse_eupdates: &mut UEffectUpdates) {
+    pub(in crate::api) fn internal_remove_ship(&mut self, ship_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         let u_ship = self.u_data.items.get(ship_key).dc_ship().unwrap();
         let fit_key = u_ship.get_fit_key();
         // Remove incoming projections

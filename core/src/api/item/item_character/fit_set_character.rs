@@ -3,16 +3,16 @@ use crate::{
     api::{CharacterMut, FitMut},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UCharacter, UEffectUpdates, UFitKey, UItem, UItemKey},
+    ud::{UCharacter, UEffectUpdates, UFitId, UItem, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_character(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_key);
         // Remove old character, if it was set
         if let Some(old_character_key) = u_fit.character {

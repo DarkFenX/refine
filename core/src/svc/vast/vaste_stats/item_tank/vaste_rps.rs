@@ -15,7 +15,7 @@ use crate::{
             vaste_stats::item_checks::check_drone_fighter_ship,
         },
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::{RMapRMap, RMapRMapRMap, UnitInterval, trunc_unerr},
 };
 
@@ -37,7 +37,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
     ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
@@ -48,7 +48,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
@@ -95,7 +95,7 @@ fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
-    lrr_data: &RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    lrr_data: &RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_rps = OF(0.0);
     let cycling_options = time_options.into();
@@ -142,9 +142,9 @@ struct IrrEntry {
 fn get_irr_data(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projectee_item_key: UItemKey,
+    projectee_item_key: UItemId,
     time_options: StatTimeOptions,
-    irr_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    irr_data: &RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match irr_data.get_l1(&projectee_item_key) {
@@ -251,7 +251,7 @@ fn irr_data_to_penalized(irr_data: Vec<IrrEntry>) -> AttrVal {
     result
 }
 
-fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, shield_perc: UnitInterval) -> AttrVal {
+fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, shield_perc: UnitInterval) -> AttrVal {
     let attr_consts = ctx.ac();
     let shield_hp = calc
         .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.shield_capacity, OF(0.0))

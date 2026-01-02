@@ -4,11 +4,11 @@ use crate::{
     nd::{NEffectResist, NProjMultGetter},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
-pub(crate) type NBaseOutputGetter<T> = fn(SvcCtx, &mut Calc, UItemKey, &REffect) -> Option<Output<T>>;
-pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemKey, AttrVal) -> Option<AttrVal>;
+pub(crate) type NBaseOutputGetter<T> = fn(SvcCtx, &mut Calc, UItemId, &REffect) -> Option<Output<T>>;
+pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemId, AttrVal) -> Option<AttrVal>;
 
 pub(crate) struct NEffectLocalOpcSpec<T>
 where

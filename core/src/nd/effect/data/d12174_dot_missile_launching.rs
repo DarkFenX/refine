@@ -8,7 +8,7 @@ use crate::{
     nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_missile_range_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::trunc_unerr,
 };
 
@@ -32,9 +32,9 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<OutputDmgBreacher> {
     let attr_consts = ctx.ac();
     let mut abs_max = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_max_dmg_per_tick, OF(0.0))?;

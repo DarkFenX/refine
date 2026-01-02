@@ -14,14 +14,14 @@ use crate::{
             vaste_stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_dps_raw(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
@@ -34,12 +34,12 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_dps_applied(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> Result<StatDmgApplied, StatItemCheckError> {
         let (dps_normal, breacher_accum) = Vast::internal_get_stat_item_dps(
             ctx,
@@ -61,12 +61,12 @@ impl Vast {
     fn internal_get_stat_item_dps(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<(DmgKinds<AttrVal>, BreacherAccum), StatItemCheckError> {
         let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
@@ -89,12 +89,12 @@ impl Vast {
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<AttrVal>,
         breacher_accum: &mut BreacherAccum,
-        item_key: UItemKey,
+        item_key: UItemId,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let options = get_dps_cycling_options(reload);
@@ -149,7 +149,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_volley_raw(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
@@ -161,11 +161,11 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_volley_applied(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> Result<StatDmgApplied, StatItemCheckError> {
         let (volley_normal, volley_breacher) = Vast::internal_get_stat_item_volley(
             ctx,
@@ -186,11 +186,11 @@ impl Vast {
     fn internal_get_stat_item_volley(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<(DmgKinds<AttrVal>, StatDmgBreacher), StatItemCheckError> {
         let mut volley_normal = DmgKinds::default();
         let mut volley_breacher = StatDmgBreacher::new();
@@ -212,11 +212,11 @@ impl Vast {
         calc: &mut Calc,
         volley_normal: &mut DmgKinds<AttrVal>,
         volley_breacher: &mut StatDmgBreacher,
-        item_key: UItemKey,
+        item_key: UItemId,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let cseq_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, ignore_state) {

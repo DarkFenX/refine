@@ -1,14 +1,14 @@
 use itertools::Itertools;
 
 use crate::{
-    dbg::{DebugError, DebugResult, check_fit_key},
+    dbg::{DebugError, DebugResult, check_fit_id},
     ud::{UData, UFighter},
 };
 
 impl UFighter {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.base.consistency_check(u_data)?;
-        check_fit_key(u_data, self.get_fit_key())?;
+        check_fit_id(u_data, self.get_fit_key())?;
         self.get_autocharges().consistency_check(u_data)?;
         self.get_projs().consistency_check(u_data)?;
         // Radius of projector should match radius of drone, radius of projectee should match

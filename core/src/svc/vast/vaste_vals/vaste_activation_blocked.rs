@@ -2,7 +2,7 @@ use super::shared::is_attr_flag_set;
 use crate::{
     def::ItemId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -15,7 +15,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_activation_blocked_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -30,7 +30,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
@@ -39,7 +39,7 @@ impl VastFitData {
             .mods_active
             .difference(kfs)
             .filter(|item_key| is_attr_flag_set(ctx, calc, **item_key, attr_key))
-            .map(|item_key| ctx.u_data.items.id_by_key(*item_key))
+            .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
             .collect();
         match module_ids.is_empty() {
             true => None,

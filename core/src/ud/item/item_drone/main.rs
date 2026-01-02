@@ -6,7 +6,7 @@ use crate::{
     misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, Src},
     ud::{
-        UAttrMutationRequest, UFitKey, UItemMutationRequest,
+        UAttrMutationRequest, UFitId, UItemMutationRequest,
         err::ItemMutatedError,
         item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UNpcProp, UPhysics, UProjs},
     },
@@ -16,7 +16,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UDrone {
     pub(super) base: UItemBaseMutable,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     physics: UPhysics,
     prop: UNpcProp,
     projs: UProjs,
@@ -25,7 +25,7 @@ impl UDrone {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         drone_state: MinionState,
         mutation: Option<UItemMutationRequest>,
         physics: UPhysics,
@@ -135,7 +135,7 @@ impl UDrone {
     pub(crate) fn set_drone_state(&mut self, state: MinionState) {
         self.base.set_state(state.into())
     }
-    pub(crate) fn get_fit_key(&self) -> UFitKey {
+    pub(crate) fn get_fit_key(&self) -> UFitId {
         self.fit_key
     }
     pub(in crate::ud::item) fn get_radius(&self) -> AttrVal {

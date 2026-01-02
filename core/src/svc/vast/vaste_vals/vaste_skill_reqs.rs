@@ -4,7 +4,7 @@ use crate::{
     def::{ItemId, ItemTypeId},
     misc::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -23,7 +23,7 @@ pub struct ValSrqSkillInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<UItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.srqs_missing.is_empty(),
             false => self.srqs_missing.difference(kfs).next().is_none(),
@@ -32,7 +32,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_skill_reqs_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValSrqFail> {
         let items: HashMap<_, _> = self
@@ -41,7 +41,7 @@ impl VastFitData {
             .filter(|(item_key, _)| !kfs.contains(item_key))
             .map(|(item_key, missing_skills)| {
                 (
-                    ctx.u_data.items.id_by_key(*item_key),
+                    ctx.u_data.items.ext_id_by_int_id(*item_key),
                     missing_skills
                         .iter()
                         .map(|(skill_a_item_id, skill_info)| (*skill_a_item_id, *skill_info))

@@ -9,15 +9,15 @@ use crate::{
     def::{AttrVal, OF},
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::{UItemKey, UProjData},
+    ud::{UItemId, UProjData},
 };
 
 pub(in crate::nd::effect::data) fn get_null_proj_mult(
     _ctx: SvcCtx,
     _calc: &mut Calc,
-    _projector_key: UItemKey,
+    _projector_key: UItemId,
     _projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     _proj_data: UProjData,
 ) -> AttrVal {
     OF(0.0)
@@ -26,9 +26,9 @@ pub(in crate::nd::effect::data) fn get_null_proj_mult(
 pub(in crate::nd::effect::data) fn get_turret_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mut cth = get_full_unrestricted_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
@@ -45,9 +45,9 @@ pub(in crate::nd::effect::data) fn get_turret_proj_mult(
 pub(in crate::nd::effect::data) fn get_disintegrator_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mut cth = get_simple_s2s_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
@@ -64,9 +64,9 @@ pub(in crate::nd::effect::data) fn get_disintegrator_proj_mult(
 pub(in crate::nd::effect::data) fn get_vorton_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mult = get_simple_s2s_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
@@ -79,9 +79,9 @@ pub(in crate::nd::effect::data) fn get_vorton_proj_mult(
 pub(in crate::nd::effect::data) fn get_bubble_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     get_simple_c2s_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
@@ -90,9 +90,9 @@ pub(in crate::nd::effect::data) fn get_bubble_proj_mult(
 pub(in crate::nd::effect::data) fn get_aoe_burst_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mult = get_aoe_burst_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
@@ -111,9 +111,9 @@ pub(in crate::nd::effect::data) fn get_aoe_burst_proj_mult(
 pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mult = get_aoe_dd_range_mult(ctx, calc, projector_key, proj_data);
@@ -126,9 +126,9 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_proj_mult(
 pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mult = get_dd_neut_range_mult(ctx, calc, projector_key, proj_data);
@@ -147,9 +147,9 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_proj_mult(
 pub(in crate::nd::effect::data) fn get_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let mult = get_full_restricted_range_mult(ctx, calc, projector_key, projector_effect, proj_data);
@@ -169,9 +169,9 @@ pub(in crate::nd::effect::data) fn get_neut_proj_mult(
 pub(in crate::nd::effect::data) fn get_simple_s2s_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     get_simple_s2s_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
@@ -180,9 +180,9 @@ pub(in crate::nd::effect::data) fn get_simple_s2s_noapp_proj_mult(
 pub(in crate::nd::effect::data) fn get_full_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     get_full_restricted_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
@@ -191,9 +191,9 @@ pub(in crate::nd::effect::data) fn get_full_noapp_proj_mult(
 pub(in crate::nd::effect::data) fn get_aoe_burst_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     get_aoe_burst_range_mult(ctx, calc, projector_key, projector_effect, proj_data)
@@ -202,9 +202,9 @@ pub(in crate::nd::effect::data) fn get_aoe_burst_noapp_proj_mult(
 pub(in crate::nd::effect::data) fn get_aoe_dd_noapp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     get_aoe_dd_range_mult(ctx, calc, projector_key, proj_data)

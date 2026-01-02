@@ -1,7 +1,7 @@
 use crate::{
     def::FleetId,
     err::basic::FleetFoundError,
-    ud::{UFleet, UFleetKey, container::UEntityContainer},
+    ud::{UFleet, UFleetId, container::UEntityContainer},
 };
 
-pub(crate) type UFleets = UEntityContainer<UFleet, UFleetKey, FleetId, FleetFoundError>;
+pub(crate) type UFleets = UEntityContainer<UFleet, FleetId, UFleetId, FleetFoundError>;

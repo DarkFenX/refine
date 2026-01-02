@@ -3,7 +3,7 @@ use crate::{
     api::{AttrId, EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
     err::basic::{AttrFoundError, ItemMAttrMutatorError, ItemMAttrValueError},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> EffectiveMutation<'a> {
@@ -30,7 +30,7 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> Result<(), GetFullMAttrError> {
+fn check_prereqs(sol: &SolarSystem, item_key: UItemId, a_attr_id: &AAttrId) -> Result<(), GetFullMAttrError> {
     let u_item = sol.u_data.items.get(item_key);
     let attr_key = match sol.u_data.src.get_attr_key_by_id(a_attr_id) {
         Some(attr_key) => attr_key,
@@ -44,7 +44,7 @@ fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> 
     let mutation_cache = u_item.get_mutation_data().unwrap().get_cache().unwrap();
     if !mutation_cache.get_r_mutator().attr_mods.contains_key(&attr_key) {
         return Err(ItemMAttrMutatorError {
-            item_id: sol.u_data.items.id_by_key(item_key),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
             attr_id: a_attr_id.into(),
             mutator_id: mutation_cache.get_r_mutator().id,
         }
@@ -52,7 +52,7 @@ fn check_prereqs(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> 
     };
     if !u_item.get_attrs().unwrap().contains_key(&attr_key) {
         return Err(ItemMAttrValueError {
-            item_id: sol.u_data.items.id_by_key(item_key),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
             attr_id: a_attr_id.into(),
         }
         .into());

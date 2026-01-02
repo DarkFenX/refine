@@ -3,11 +3,11 @@ use crate::{
     def::FleetId,
     err::basic::FleetFoundError,
     sol::SolarSystem,
-    ud::{UFitKey, UFleetKey},
+    ud::{UFitId, UFleetId},
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fit_fleet(&mut self, fit_key: UFitKey, fleet_key: UFleetKey) {
+    pub(in crate::api) fn internal_set_fit_fleet(&mut self, fit_key: UFitId, fleet_key: UFleetId) {
         let u_fit = self.u_data.fits.get(fit_key);
         self.u_data.fleets.get(fleet_key);
         // Unassign from old fleet
@@ -33,7 +33,7 @@ impl SolarSystem {
 
 impl<'a> FitMut<'a> {
     pub fn set_fleet(&mut self, fleet_id: &FleetId) -> Result<(), SetFitFleetError> {
-        let fleet_key = self.sol.u_data.fleets.key_by_id_err(fleet_id)?;
+        let fleet_key = self.sol.u_data.fleets.int_id_by_ext_id_err(fleet_id)?;
         self.sol.internal_set_fit_fleet(self.key, fleet_key);
         Ok(())
     }

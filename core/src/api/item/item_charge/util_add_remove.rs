@@ -1,14 +1,14 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_charge(
         u_data: &mut UData,
         svc: &mut Svc,
-        charge_key: UItemKey,
+        charge_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(charge_key);
@@ -18,7 +18,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_charge(
         u_data: &mut UData,
         svc: &mut Svc,
-        charge_key: UItemKey,
+        charge_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(charge_key);

@@ -3,7 +3,7 @@ use crate::{
     misc::EffectSpec,
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::UItemKey,
+    ud::UItemId,
     util::FLOAT_TOLERANCE,
 };
 
@@ -15,7 +15,7 @@ pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSp
 pub(crate) fn get_effect_duration_s(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<AttrVal> {
     let val = calc.get_item_oattr_oextra(ctx, item_key, effect.duration_attr_key)?;

@@ -1,17 +1,17 @@
 use crate::{
     api::{EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn api_get_item_mutation(&self, item_key: UItemKey) -> Option<Mutation<'_>> {
+    pub(in crate::api) fn api_get_item_mutation(&self, item_key: UItemId) -> Option<Mutation<'_>> {
         item_has_mutation_cache(self, item_key).map(|v| match v {
             true => Mutation::Effective(EffectiveMutation::new(self, item_key)),
             false => Mutation::Incomplete(IncompleteMutation::new(self, item_key)),
         })
     }
-    pub(in crate::api) fn api_get_item_mutation_mut(&mut self, item_key: UItemKey) -> Option<MutationMut<'_>> {
+    pub(in crate::api) fn api_get_item_mutation_mut(&mut self, item_key: UItemId) -> Option<MutationMut<'_>> {
         item_has_mutation_cache(self, item_key).map(|v| match v {
             true => MutationMut::Effective(EffectiveMutationMut::new(self, item_key)),
             false => MutationMut::Incomplete(IncompleteMutationMut::new(self, item_key)),
@@ -19,7 +19,7 @@ impl SolarSystem {
     }
 }
 
-fn item_has_mutation_cache(sol: &SolarSystem, item_key: UItemKey) -> Option<bool> {
+fn item_has_mutation_cache(sol: &SolarSystem, item_key: UItemId) -> Option<bool> {
     sol.u_data
         .items
         .get(item_key)

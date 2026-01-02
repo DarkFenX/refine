@@ -8,18 +8,18 @@ use crate::{
     misc::Spool,
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // Projected effects, considers only first cycle (for "burst" stats)
 pub(in crate::svc) fn aggr_proj_first_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     spool: Option<Spool>,
 ) -> Option<T>
 where
@@ -36,11 +36,11 @@ where
 pub(in crate::svc) fn aggr_proj_first_max<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     spool: Option<Spool>,
 ) -> Option<T>
 where
@@ -53,11 +53,11 @@ where
 pub(in crate::svc) fn aggr_proj_first_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     spool: Option<Spool>,
 ) -> Option<AggrAmount<T>>
 where
@@ -74,11 +74,11 @@ where
 pub(in crate::svc) fn aggr_proj_first_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     spool: Option<Spool>,
 ) -> Option<AggrOutput<T>>
 where

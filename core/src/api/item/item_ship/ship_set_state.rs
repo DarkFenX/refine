@@ -1,13 +1,13 @@
 use crate::{
     api::ShipMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_state(
         &mut self,
-        ship_key: UItemKey,
+        ship_key: UItemId,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

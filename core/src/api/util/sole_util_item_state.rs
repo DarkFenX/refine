@@ -2,14 +2,14 @@ use crate::{
     ad::AState,
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItem, UItemKey},
+    ud::{UData, UEffectUpdates, UItem, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_switch_item_state(
         u_data: &UData,
         svc: &mut Svc,
-        item_key: UItemKey,
+        item_key: UItemId,
         old_item_a_state: AState,
         new_item_a_state: AState,
         eupdates: &UEffectUpdates,
@@ -30,7 +30,7 @@ impl SolarSystem {
     pub(in crate::api::util) fn util_internal_switch_item_state(
         u_data: &UData,
         svc: &mut Svc,
-        item_key: UItemKey,
+        item_key: UItemId,
         u_item: &UItem,
         old_item_a_state: AState,
         new_item_a_state: AState,
@@ -43,7 +43,7 @@ impl SolarSystem {
 
 fn switch_item_state(
     svc: &mut Svc,
-    item_key: UItemKey,
+    item_key: UItemId,
     u_item: &UItem,
     old_item_a_state: AState,
     new_item_a_state: AState,

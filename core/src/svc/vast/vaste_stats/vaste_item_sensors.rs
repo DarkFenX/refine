@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatSensors, StatSensorsKind, Vast},
     },
-    ud::{UItem, UItemKey, UShipKind},
+    ud::{UItem, UItemId, UShipKind},
     util::round_unerr,
 };
 
@@ -16,7 +16,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_locks(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<Count, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
         let attr_consts = ctx.ac();
@@ -44,7 +44,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_lock_range(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_fighter_ship(ctx.u_data, item_key)?;
         let lock_range = calc
@@ -55,7 +55,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_scan_res(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_fighter_ship(ctx.u_data, item_key)?;
         let scan_res = calc
@@ -66,7 +66,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_sensors(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<StatSensors, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_key))
@@ -74,7 +74,7 @@ impl Vast {
     pub(super) fn internal_get_stat_item_sensors_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> StatSensors {
         let attr_consts = ctx.ac();
         // Strength ties are resolved using the following order:
@@ -112,7 +112,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_dscan_range(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_ship(ctx.u_data, item_key)?;
         let dscan_range = calc
@@ -124,7 +124,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_probing_size(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
         let sensor_str = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_key).strength;

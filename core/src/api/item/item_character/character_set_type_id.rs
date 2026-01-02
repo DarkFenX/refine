@@ -3,13 +3,13 @@ use crate::{
     api::CharacterMut,
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_character_type_id(
         &mut self,
-        character_key: UItemKey,
+        character_key: UItemId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

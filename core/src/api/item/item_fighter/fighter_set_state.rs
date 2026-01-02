@@ -3,13 +3,13 @@ use itertools::Itertools;
 use crate::{
     api::{FighterMut, MinionState},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_state(
         &mut self,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         state: MinionState,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

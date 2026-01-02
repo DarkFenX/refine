@@ -1,7 +1,7 @@
-use crate::{api::SkillMut, misc::SkillLevel, sol::SolarSystem, ud::UItemKey};
+use crate::{api::SkillMut, misc::SkillLevel, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_skill_level(&mut self, skill_key: UItemKey, level: SkillLevel) {
+    pub(in crate::api) fn internal_set_skill_level(&mut self, skill_key: UItemId, level: SkillLevel) {
         let u_skill = self.u_data.items.get_mut(skill_key).dc_skill_mut().unwrap();
         if u_skill.get_level() == level {
             return;

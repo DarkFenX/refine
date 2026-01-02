@@ -2,14 +2,14 @@ use crate::{
     def::AttrVal,
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UFitKey},
+    ud::{UData, UFitId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_update_ship_radius_for_outgoing_projs(
         u_data: &mut UData,
         svc: &mut Svc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         ship_radius: AttrVal,
     ) {
         let mut projections_to_update = Vec::new();

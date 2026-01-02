@@ -6,7 +6,7 @@ use crate::{
     },
     err::basic::ItemMAttrFoundError,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> Mutation<'a> {
@@ -72,7 +72,7 @@ impl<'a> IncompleteMutationMut<'a> {
     }
 }
 
-fn get_raw_mattr(sol: &SolarSystem, item_key: UItemKey, a_attr_id: AAttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
+fn get_raw_mattr(sol: &SolarSystem, item_key: UItemId, a_attr_id: AAttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
     match sol
         .u_data
         .items
@@ -84,7 +84,7 @@ fn get_raw_mattr(sol: &SolarSystem, item_key: UItemKey, a_attr_id: AAttrId) -> R
     {
         Some(_) => Ok(RawMAttr::new(sol, item_key, a_attr_id)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.id_by_key(item_key),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
             attr_id: a_attr_id.into(),
         }
         .into()),
@@ -93,7 +93,7 @@ fn get_raw_mattr(sol: &SolarSystem, item_key: UItemKey, a_attr_id: AAttrId) -> R
 
 fn get_raw_mattr_mut(
     sol: &mut SolarSystem,
-    item_key: UItemKey,
+    item_key: UItemId,
     a_attr_id: AAttrId,
 ) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
     match sol
@@ -107,7 +107,7 @@ fn get_raw_mattr_mut(
     {
         Some(_) => Ok(RawMAttrMut::new(sol, item_key, a_attr_id)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.id_by_key(item_key),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
             attr_id: a_attr_id.into(),
         }
         .into()),

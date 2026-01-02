@@ -9,7 +9,7 @@ use crate::{
         cycle::get_item_cseq_map,
         vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
     },
-    ud::{UFitKey, UItemKey},
+    ud::{UFitId, UItemId},
     util::RMapRMap,
 };
 
@@ -18,7 +18,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
     ) -> StatMining {
@@ -52,7 +52,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
     ) -> StatMining {
@@ -70,7 +70,7 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,
-    fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<MiningAmount>>,
+    fit_data: &RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();
     let cycling_options = time_options.into();

@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatLayerHp, StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub struct StatLayerEhp {
@@ -23,7 +23,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
@@ -40,7 +40,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<StatTank<Option<StatLayerEhp>>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
         let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_key, item);

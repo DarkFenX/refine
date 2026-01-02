@@ -14,7 +14,7 @@ use crate::{
         calc::{Affector, AttrValInfo, Calc, CalcModification, CalcModificationKey, ModAccumInfo, Modification},
         err::KeyedItemLoadedError,
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::{RMap, RMapVec, RSet, round},
 };
 
@@ -30,7 +30,7 @@ impl Calc {
     pub(in crate::svc) fn iter_item_mods(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)> + use<>, KeyedItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_key in self.iter_item_attr_keys(ctx, item_key)? {
@@ -51,7 +51,7 @@ impl Calc {
     fn iter_item_attr_keys(
         &self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = RAttrKey> + use<>, KeyedItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_key)?;
         let base_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
@@ -67,7 +67,7 @@ impl Calc {
     fn iter_affections(
         &mut self,
         ctx: SvcCtx,
-        item_key: &UItemKey,
+        item_key: &UItemId,
         item: &UItem,
         attr_key: RAttrKey,
     ) -> impl Iterator<Item = Affection> {
@@ -100,7 +100,7 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, attr_key: RAttrKey) -> AttrValInfo {
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrKey) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_key);
         let attr = ctx.u_data.src.get_attr(attr_key);
         let base_attr_info = self.calc_item_base_attr_info(ctx, item_key, item, attr);
@@ -133,7 +133,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.id_by_key(item_key),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
                         attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
                     }],
                 })
@@ -154,7 +154,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.id_by_key(item_key),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
                         attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).id.into()),
                     }],
                 })
@@ -174,7 +174,7 @@ impl Calc {
             _ => extra_attr_info,
         }
     }
-    fn calc_item_base_attr_info(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem, attr: &RAttr) -> AttrValInfo {
+    fn calc_item_base_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, item: &UItem, attr: &RAttr) -> AttrValInfo {
         let attr_consts = ctx.ac();
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base
@@ -205,7 +205,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: security_full_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.id_by_key(item_key),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
                         attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).id.into()),
                     }],
                 });

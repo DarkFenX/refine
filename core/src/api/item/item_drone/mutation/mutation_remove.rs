@@ -1,12 +1,12 @@
 use crate::{
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey, err::ItemMutatedError},
+    ud::{UEffectUpdates, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_drone_mutation(
         &mut self,
-        drone_key: UItemKey,
+        drone_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);

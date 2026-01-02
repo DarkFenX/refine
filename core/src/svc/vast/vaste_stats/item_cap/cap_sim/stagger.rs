@@ -8,7 +8,7 @@ use crate::{
         cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
         output::Output,
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::{RMapVec, sig_round},
 };
 
@@ -27,7 +27,7 @@ impl StatCapSimStagger {
 
 pub(crate) struct StatCapSimStaggerInt {
     default: bool,
-    exception_item_keys: Vec<UItemKey>,
+    exception_item_keys: Vec<UItemId>,
 }
 impl StatCapSimStaggerInt {
     pub(crate) fn from_pub(sol: &SolarSystem, pub_opts: &StatCapSimStagger) -> Self {
@@ -36,12 +36,12 @@ impl StatCapSimStaggerInt {
             exception_item_keys: pub_opts
                 .exception_item_ids
                 .iter()
-                .filter_map(|fit_id| sol.u_data.items.key_by_id(fit_id))
+                .filter_map(|fit_id| sol.u_data.items.int_id_by_ext_id(fit_id))
                 .unique()
                 .collect(),
         }
     }
-    pub(in crate::svc::vast) fn is_staggered(&self, item_key: UItemKey) -> bool {
+    pub(in crate::svc::vast) fn is_staggered(&self, item_key: UItemId) -> bool {
         self.default ^ self.exception_item_keys.contains(&item_key)
     }
 }

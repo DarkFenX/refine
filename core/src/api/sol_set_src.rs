@@ -2,26 +2,26 @@ use crate::{
     def::AttrVal,
     rd::Src,
     sol::SolarSystem,
-    ud::{UData, UEffectUpdates, UItem, UItemKey, UShipKind},
+    ud::{UData, UEffectUpdates, UItem, UItemId, UShipKind},
 };
 
 struct ItemKeys {
-    boosters: Vec<UItemKey>,
-    characters: Vec<UItemKey>,
-    charges: Vec<UItemKey>,
-    drones: Vec<UItemKey>,
-    fighters: Vec<UItemKey>,
-    fw_effects: Vec<UItemKey>,
-    implants: Vec<UItemKey>,
-    modules: Vec<UItemKey>,
-    proj_effects: Vec<UItemKey>,
-    services: Vec<UItemKey>,
-    rigs: Vec<UItemKey>,
-    ships: Vec<UItemKey>,
-    skills: Vec<UItemKey>,
-    stances: Vec<UItemKey>,
-    subsystems: Vec<UItemKey>,
-    sw_effects: Vec<UItemKey>,
+    boosters: Vec<UItemId>,
+    characters: Vec<UItemId>,
+    charges: Vec<UItemId>,
+    drones: Vec<UItemId>,
+    fighters: Vec<UItemId>,
+    fw_effects: Vec<UItemId>,
+    implants: Vec<UItemId>,
+    modules: Vec<UItemId>,
+    proj_effects: Vec<UItemId>,
+    services: Vec<UItemId>,
+    rigs: Vec<UItemId>,
+    ships: Vec<UItemId>,
+    skills: Vec<UItemId>,
+    stances: Vec<UItemId>,
+    subsystems: Vec<UItemId>,
+    sw_effects: Vec<UItemId>,
 }
 impl ItemKeys {
     fn from_u_data(u_data: &UData) -> Self {
@@ -240,9 +240,9 @@ impl SolarSystem {
 }
 
 fn record_projection(
-    projection_updates: &mut Vec<(UItemKey, UItemKey, AttrVal, AttrVal)>,
+    projection_updates: &mut Vec<(UItemId, UItemId, AttrVal, AttrVal)>,
     u_data: &UData,
-    item_key: UItemKey,
+    item_key: UItemId,
     src_rad: AttrVal,
 ) {
     let u_item = u_data.items.get(item_key);

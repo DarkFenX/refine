@@ -1,14 +1,14 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_sw_effect(
         u_data: &mut UData,
         svc: &mut Svc,
-        sw_effect_key: UItemKey,
+        sw_effect_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(sw_effect_key);
@@ -18,7 +18,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_sw_effect(
         u_data: &mut UData,
         svc: &mut Svc,
-        sw_effect_key: UItemKey,
+        sw_effect_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(sw_effect_key);

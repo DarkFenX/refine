@@ -1,14 +1,14 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_service(
         u_data: &mut UData,
         svc: &mut Svc,
-        service_key: UItemKey,
+        service_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(service_key);
@@ -18,7 +18,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_service(
         u_data: &mut UData,
         svc: &mut Svc,
-        service_key: UItemKey,
+        service_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(service_key);

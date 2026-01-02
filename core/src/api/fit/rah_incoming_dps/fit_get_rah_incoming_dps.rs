@@ -2,11 +2,11 @@ use crate::{
     api::{Fit, FitMut},
     misc::DpsProfile,
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_get_fit_rah_incoming_dps(&self, fit_key: UFitKey) -> Option<DpsProfile> {
+    pub(in crate::api) fn internal_get_fit_rah_incoming_dps(&self, fit_key: UFitId) -> Option<DpsProfile> {
         self.u_data.fits.get(fit_key).rah_incoming_dps
     }
 }

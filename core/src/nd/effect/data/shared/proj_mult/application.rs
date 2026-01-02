@@ -2,7 +2,7 @@ use crate::{
     def::{AttrVal, OF},
     rd::{RAttrKey, REffect},
     svc::{SvcCtx, calc::Calc, funcs},
-    ud::{UItemKey, UProjData},
+    ud::{UItemId, UProjData},
     util::Xyz,
 };
 
@@ -12,9 +12,9 @@ use crate::{
 pub(in crate::nd::effect::data) fn get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let attr_consts = ctx.ac();
@@ -45,9 +45,9 @@ pub(in crate::nd::effect::data) fn get_missile_application_mult(
 pub(in crate::nd::effect::data) fn get_bomb_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     _proj_data: UProjData,
 ) -> AttrVal {
     get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
@@ -59,9 +59,9 @@ pub(in crate::nd::effect::data) fn get_bomb_application_mult(
 pub(super) fn get_turret_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let attr_consts = ctx.ac();
@@ -86,8 +86,8 @@ pub(super) fn get_turret_application_mult(
 pub(super) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
-    projectee_key: UItemKey,
+    projector_key: UItemId,
+    projectee_key: UItemId,
     src_attr_key: Option<RAttrKey>,
 ) -> AttrVal {
     let src_effect_radius = calc
@@ -107,8 +107,8 @@ pub(super) fn get_radius_ratio_mult(
 fn calc_angular(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
-    projectee_key: UItemKey,
+    projector_key: UItemId,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let coordinates = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
@@ -141,7 +141,7 @@ fn calc_angular(
     }
 }
 
-fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, direction: Xyz, speed_perc: AttrVal) -> Xyz {
+fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, direction: Xyz, speed_perc: AttrVal) -> Xyz {
     if speed_perc <= OF(0.0) {
         return Xyz::default();
     }

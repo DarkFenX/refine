@@ -5,14 +5,14 @@ use crate::{
     def::ItemId,
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::SolarSystem,
-    ud::{UItemKey, UProjData},
+    ud::{UItemId, UProjData},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_fighter_proj(
         &mut self,
-        fighter_key: UItemKey,
-        projectee_key: UItemKey,
+        fighter_key: UItemId,
+        projectee_key: UItemId,
     ) -> Result<(), AddProjError> {
         // Check projector
         let u_fighter = self.u_data.items.get(fighter_key).dc_fighter().unwrap();
@@ -70,7 +70,7 @@ impl SolarSystem {
 
 impl<'a> FighterMut<'a> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, AddProjError> {
-        let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
+        let projectee_key = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_fighter_proj(self.key, projectee_key)?;
         Ok(ProjMut::new(self.sol, self.key, projectee_key))
     }

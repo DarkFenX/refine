@@ -1,12 +1,12 @@
 use crate::{
     api::{Coordinates, ShipMut},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
     util::Xyz,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_ship_coordinates(&mut self, ship_key: UItemKey, coordinates: Xyz) {
+    pub(in crate::api) fn internal_set_ship_coordinates(&mut self, ship_key: UItemId, coordinates: Xyz) {
         let u_ship = self.u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
         if u_ship.get_physics().coordinates == coordinates {
             return;

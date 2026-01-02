@@ -4,13 +4,13 @@ use crate::{
     ad::AEffectId,
     misc::EffectMode,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_effect_id_mode(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         effect_id: AEffectId,
         effect_mode: EffectMode,
         reuse_eupdates: &mut UEffectUpdates,
@@ -22,7 +22,7 @@ impl SolarSystem {
     }
     pub(in crate::api) fn internal_set_effect_id_modes(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
@@ -31,7 +31,7 @@ impl SolarSystem {
         u_item.update_reffs(reuse_eupdates, &self.u_data.src);
         self.effect_mode_update_postprocess(item_key, reuse_eupdates);
     }
-    fn effect_mode_update_postprocess(&mut self, item_key: UItemKey, reuse_eupdates: &mut UEffectUpdates) {
+    fn effect_mode_update_postprocess(&mut self, item_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         let u_item = self.u_data.items.get(item_key);
         let charge_key = u_item.get_charge_key();

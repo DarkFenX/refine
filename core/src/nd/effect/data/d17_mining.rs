@@ -10,7 +10,7 @@ use crate::{
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::MINING;
@@ -37,7 +37,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn internal_get_ore_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_key);
@@ -50,7 +50,7 @@ fn internal_get_ore_mining_base_opc(
 fn internal_get_ice_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_key);

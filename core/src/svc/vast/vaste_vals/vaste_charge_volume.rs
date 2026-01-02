@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{AttrVal, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -23,7 +23,7 @@ pub struct ValChargeVolumeChargeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<UItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_volume_fast(&mut self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.charge_volume.is_empty(),
             false => self.charge_volume.difference(kfs).next().is_none(),
@@ -32,15 +32,15 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = HashMap::new();
         for (&charge_key, &cont_key) in self.charge_volume.difference(kfs) {
             charges.insert(
-                ctx.u_data.items.id_by_key(charge_key),
+                ctx.u_data.items.ext_id_by_int_id(charge_key),
                 ValChargeVolumeChargeInfo {
-                    parent_item_id: ctx.u_data.items.id_by_key(cont_key),
+                    parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_key),
                     charge_volume: ctx.u_data.items.get(charge_key).get_axt().unwrap().volume,
                     max_volume: ctx.u_data.items.get(cont_key).get_axt().unwrap().capacity,
                 },

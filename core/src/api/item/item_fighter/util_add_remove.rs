@@ -1,14 +1,14 @@
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_fighter(
         u_data: &mut UData,
         svc: &mut Svc,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(fighter_key);
@@ -19,7 +19,7 @@ impl SolarSystem {
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Process fighter itself
@@ -30,7 +30,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_fighter(
         u_data: &mut UData,
         svc: &mut Svc,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(fighter_key);
@@ -41,7 +41,7 @@ impl SolarSystem {
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Process autocharges

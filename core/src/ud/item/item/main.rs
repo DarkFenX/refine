@@ -6,7 +6,7 @@ use crate::{
     misc::{EffectMode, Spool},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
-        UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitKey, UFwEffect, UImplant, UItemKey,
+        UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant, UItemId,
         UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
         item::{ItemMutationData, UAutocharges, UEffectUpdates, UProjData, UProjs},
     },
@@ -460,7 +460,7 @@ impl UItem {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Access to item-specific methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    pub(crate) fn get_fit_key(&self) -> Option<UFitKey> {
+    pub(crate) fn get_fit_key(&self) -> Option<UFitId> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_fit_key()),
             Self::Booster(booster) => Some(booster.get_fit_key()),
@@ -567,7 +567,7 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_charge_key(&self) -> Option<UItemKey> {
+    pub(crate) fn get_charge_key(&self) -> Option<UItemId> {
         match self {
             Self::Module(module) => module.get_charge_key(),
             _ => None,
@@ -638,7 +638,7 @@ impl UItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (UItemKey, Option<UProjData>)>> {
+    pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (UItemId, Option<UProjData>)>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Charge(charge) => Some(charge.get_projs().iter()),
@@ -649,7 +649,7 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_projectees(&self) -> Option<impl ExactSizeIterator<Item = UItemKey>> {
+    pub(crate) fn iter_projectees(&self) -> Option<impl ExactSizeIterator<Item = UItemId>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_projectees()),
             Self::Charge(charge) => Some(charge.get_projs().iter_projectees()),
@@ -660,7 +660,7 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn iter_charges(&self) -> impl Iterator<Item = UItemKey> {
+    pub(crate) fn iter_charges(&self) -> impl Iterator<Item = UItemId> {
         let charge_key = self.get_charge_key();
         match self.get_autocharges() {
             Some(autocharges) => Either::Left(charge_key.into_iter().chain(autocharges.values())),

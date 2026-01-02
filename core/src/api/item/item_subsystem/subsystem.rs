@@ -2,15 +2,15 @@ use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     def::SlotIndex,
     sol::SolarSystem,
-    ud::{UItemKey, USubsystem},
+    ud::{UItemId, USubsystem},
 };
 
 pub struct Subsystem<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Subsystem<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -27,7 +27,7 @@ impl<'a> ItemSealed for Subsystem<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -35,10 +35,10 @@ impl<'a> ItemCommon for Subsystem<'a> {}
 
 pub struct SubsystemMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> SubsystemMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -59,7 +59,7 @@ impl<'a> ItemSealed for SubsystemMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -71,16 +71,16 @@ impl<'a> ItemMutSealed for SubsystemMut<'a> {
 impl<'a> ItemCommon for SubsystemMut<'a> {}
 impl<'a> ItemMutCommon for SubsystemMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, subsystem_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, subsystem_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_subsystem(sol, subsystem_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_slot(sol: &SolarSystem, subsystem_key: UItemKey) -> Option<SlotIndex> {
+fn get_slot(sol: &SolarSystem, subsystem_key: UItemId) -> Option<SlotIndex> {
     get_u_subsystem(sol, subsystem_key).get_slot()
 }
-fn get_state(sol: &SolarSystem, subsystem_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, subsystem_key: UItemId) -> bool {
     get_u_subsystem(sol, subsystem_key).get_subsystem_state()
 }
-fn get_u_subsystem(sol: &SolarSystem, subsystem_key: UItemKey) -> &USubsystem {
+fn get_u_subsystem(sol: &SolarSystem, subsystem_key: UItemId) -> &USubsystem {
     sol.u_data.items.get(subsystem_key).dc_subsystem().unwrap()
 }

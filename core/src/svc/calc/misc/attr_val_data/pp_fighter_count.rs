@@ -4,13 +4,13 @@ use crate::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut val: CalcAttrVals,
 ) -> CalcAttrVals {
     let count = ctx
@@ -30,7 +30,7 @@ pub(super) fn fighter_count_postproc_fast(
 pub(super) fn fighter_count_postproc_info(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _info: AttrValInfo,
 ) -> AttrValInfo {
     let count = ctx

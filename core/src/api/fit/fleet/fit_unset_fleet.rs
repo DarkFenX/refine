@@ -1,7 +1,7 @@
-use crate::{api::FitMut, err::basic::FitFleetAssignedError, sol::SolarSystem, ud::UFitKey};
+use crate::{api::FitMut, err::basic::FitFleetAssignedError, sol::SolarSystem, ud::UFitId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_unset_fit_fleet(&mut self, fit_key: UFitKey) -> Result<(), FitFleetAssignedError> {
+    pub(in crate::api) fn internal_unset_fit_fleet(&mut self, fit_key: UFitId) -> Result<(), FitFleetAssignedError> {
         let u_fit = self.u_data.fits.get(fit_key);
         let fleet_key = match u_fit.fleet {
             Some(fleet_key) => fleet_key,

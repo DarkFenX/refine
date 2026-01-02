@@ -7,7 +7,7 @@ use crate::{
         RawMAttr, RawMAttrMut,
     },
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> Mutation<'a> {
@@ -78,12 +78,12 @@ impl<'a> IncompleteMutationMut<'a> {
 // Lending iterator for attribute rolls
 pub struct RawMAttrIter<'iter> {
     sol: &'iter mut SolarSystem,
-    item_key: UItemKey,
+    item_key: UItemId,
     a_attr_ids: Vec<AAttrId>,
     index: usize,
 }
 impl<'iter> RawMAttrIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_key: UItemId) -> Self {
         let a_attr_ids = raw_mutated_attr_id_iter(sol, item_key).collect();
         Self {
             sol,
@@ -104,7 +104,7 @@ impl<'iter> Lender for RawMAttrIter<'iter> {
     }
 }
 
-fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_key: UItemKey) -> impl ExactSizeIterator<Item = AAttrId> {
+fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_key: UItemId) -> impl ExactSizeIterator<Item = AAttrId> {
     sol.u_data
         .items
         .get(item_key)
@@ -115,6 +115,6 @@ fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_key: UItemKey) -> impl Exact
         .copied()
 }
 
-fn iter_raw_mattrs(sol: &SolarSystem, item_key: UItemKey) -> impl ExactSizeIterator<Item = RawMAttr<'_>> + use<'_> {
+fn iter_raw_mattrs(sol: &SolarSystem, item_key: UItemId) -> impl ExactSizeIterator<Item = RawMAttr<'_>> + use<'_> {
     raw_mutated_attr_id_iter(sol, item_key).map(move |attr_id| RawMAttr::new(sol, item_key, attr_id))
 }

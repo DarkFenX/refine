@@ -5,16 +5,16 @@ use crate::{
     api::{Fit, FitMut, Module, ModuleMut},
     misc::ModRack,
     sol::SolarSystem,
-    ud::{UFitKey, UItemKey},
+    ud::{UFitId, UItemId},
 };
 
 pub struct ModuleIter<'iter> {
     sol: &'iter mut SolarSystem,
-    module_keys: Vec<Option<UItemKey>>,
+    module_keys: Vec<Option<UItemId>>,
     index: usize,
 }
 impl<'iter> ModuleIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, module_keys: Vec<Option<UItemKey>>) -> Self {
+    fn new(sol: &'iter mut SolarSystem, module_keys: Vec<Option<UItemId>>) -> Self {
         Self {
             sol,
             module_keys,
@@ -52,7 +52,7 @@ impl<'a> FitMut<'a> {
 
 fn iter_modules(
     sol: &SolarSystem,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     rack: ModRack,
 ) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
     let u_module_vec = get_fit_rack(&sol.u_data.fits, fit_key, rack);

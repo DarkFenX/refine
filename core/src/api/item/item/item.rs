@@ -6,7 +6,7 @@ use crate::{
         Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
     },
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub enum Item<'a> {
@@ -29,7 +29,7 @@ pub enum Item<'a> {
     SwEffect(SwEffect<'a>),
 }
 impl<'a> Item<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         sol.internal_get_item(key)
     }
 }
@@ -55,7 +55,7 @@ impl<'a> ItemSealed for Item<'a> {
             Item::SwEffect(sw_effect) => sw_effect.get_sol(),
         }
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_key(),
             Item::Booster(booster) => booster.get_key(),
@@ -99,7 +99,7 @@ pub enum ItemMut<'a> {
     SwEffect(SwEffectMut<'a>),
 }
 impl<'a> ItemMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         sol.internal_get_item_mut(key)
     }
 }
@@ -125,7 +125,7 @@ impl<'a> ItemSealed for ItemMut<'a> {
             ItemMut::SwEffect(sw_effect) => sw_effect.get_sol(),
         }
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         match self {
             ItemMut::Autocharge(autocharge) => autocharge.get_key(),
             ItemMut::Booster(booster) => booster.get_key(),

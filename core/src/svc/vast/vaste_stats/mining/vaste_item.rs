@@ -10,14 +10,14 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatMining, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_module},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_mps(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
@@ -34,7 +34,7 @@ impl Vast {
 fn get_mps_item_key(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     time_options: StatTimeOptions,
     ignore_state: bool,
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,

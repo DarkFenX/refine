@@ -9,7 +9,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatJamApplied, StatSensorsKind, Vast},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 const JAM_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim { .. });
@@ -19,7 +19,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        projectee_item_key: UItemKey,
+        projectee_item_key: UItemId,
     ) -> Result<StatJamApplied, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, projectee_item_key)?;
         let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_key) {

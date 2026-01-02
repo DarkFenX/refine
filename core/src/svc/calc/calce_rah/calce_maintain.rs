@@ -8,7 +8,7 @@ use crate::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals, ItemAttrPostprocs},
     },
-    ud::{UFitKey, UItem, UItemKey},
+    ud::{UFitId, UItem, UItemId},
 };
 
 impl Calc {
@@ -31,7 +31,7 @@ impl Calc {
     pub(in crate::svc::calc) fn rah_effects_started(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
         effects: &[RcEffect],
     ) {
@@ -92,7 +92,7 @@ impl Calc {
     pub(in crate::svc::calc) fn rah_effects_stopped(
         &mut self,
         ctx: SvcCtx,
-        item_key: &UItemKey,
+        item_key: &UItemId,
         item: &UItem,
         effects: &[RcEffect],
     ) {
@@ -184,17 +184,17 @@ impl Calc {
             _ => (),
         }
     }
-    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: UFitKey) {
+    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_key: UFitId) {
         self.clear_fit_rah_results(ctx, fit_key);
     }
     // Private methods
-    fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_key: UFitKey) {
+    fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_key: UFitId) {
         let rah_keys = self.rah.by_fit.get(&fit_key).copied().collect_vec();
         for rah_key in rah_keys {
             self.clear_rah_result(ctx, rah_key);
         }
     }
-    fn clear_rah_result(&mut self, ctx: SvcCtx, item_key: UItemKey) {
+    fn clear_rah_result(&mut self, ctx: SvcCtx, item_key: UItemId) {
         if self.rah.resonances.get_mut(&item_key).unwrap().take().is_some() {
             let attr_consts = ctx.ac();
             self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_em_dmg_resonance);
@@ -203,7 +203,7 @@ impl Calc {
             self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_expl_dmg_resonance);
         }
     }
-    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_key: UItemKey) -> DmgKinds<CalcAttrVals> {
+    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_key: UItemId) -> DmgKinds<CalcAttrVals> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.rah.resonances.get(&item_key).unwrap() {
             return *val;
@@ -222,7 +222,7 @@ impl Calc {
 fn rah_em_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _cval: CalcAttrVals,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).em
@@ -230,7 +230,7 @@ fn rah_em_resonance_postproc_fast(
 fn rah_therm_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _cval: CalcAttrVals,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).thermal
@@ -238,7 +238,7 @@ fn rah_therm_resonance_postproc_fast(
 fn rah_kin_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _cval: CalcAttrVals,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).kinetic
@@ -246,7 +246,7 @@ fn rah_kin_resonance_postproc_fast(
 fn rah_expl_resonance_postproc_fast(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _cval: CalcAttrVals,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_key).explosive
@@ -255,7 +255,7 @@ fn rah_expl_resonance_postproc_fast(
 fn rah_em_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
     info.value = calc.get_rah_resonances(ctx, item_key).em.extra;
@@ -264,7 +264,7 @@ fn rah_em_resonance_postproc_info(
 fn rah_therm_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
     info.value = calc.get_rah_resonances(ctx, item_key).thermal.extra;
@@ -273,7 +273,7 @@ fn rah_therm_resonance_postproc_info(
 fn rah_kin_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
     info.value = calc.get_rah_resonances(ctx, item_key).kinetic.extra;
@@ -282,7 +282,7 @@ fn rah_kin_resonance_postproc_info(
 fn rah_expl_resonance_postproc_info(
     calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
     info.value = calc.get_rah_resonances(ctx, item_key).explosive.extra;

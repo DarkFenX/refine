@@ -1,12 +1,12 @@
 use crate::{
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey, err::ItemMutatedError},
+    ud::{UEffectUpdates, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_module_mutation(
         &mut self,
-        module_key: UItemKey,
+        module_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         SolarSystem::util_remove_module_with_charge_act(&mut self.u_data, &mut self.svc, module_key, reuse_eupdates);

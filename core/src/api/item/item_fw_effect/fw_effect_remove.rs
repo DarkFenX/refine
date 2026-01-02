@@ -1,13 +1,13 @@
 use crate::{
     api::FwEffectMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fw_effect(
         &mut self,
-        fw_effect_key: UItemKey,
+        fw_effect_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_key, reuse_eupdates);

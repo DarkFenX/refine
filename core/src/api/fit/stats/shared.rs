@@ -5,7 +5,7 @@ use crate::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> FitMut<'a> {
@@ -14,7 +14,7 @@ impl<'a> FitMut<'a> {
             Some(char_key) => char_key,
             None => {
                 return Err(FitHasCharacterError {
-                    fit_id: self.sol.u_data.fits.id_by_key(self.key),
+                    fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.key),
                 });
             }
         };
@@ -25,7 +25,7 @@ impl<'a> FitMut<'a> {
             Some(ship_key) => ship_key,
             None => {
                 return Err(FitHasShipError {
-                    fit_id: self.sol.u_data.fits.id_by_key(self.key),
+                    fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.key),
                 });
             }
         };
@@ -34,8 +34,8 @@ impl<'a> FitMut<'a> {
     pub(super) fn get_stat_applied_projectee_key(
         &self,
         projectee_item_id: &ItemId,
-    ) -> Result<UItemKey, FitStatAppliedError> {
-        let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
+    ) -> Result<UItemId, FitStatAppliedError> {
+        let projectee_key = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         let projectee_u_item = self.sol.u_data.items.get(projectee_key);
         if projectee_u_item.get_direct_physics().is_none() {
             return Err(ItemReceiveProjError {

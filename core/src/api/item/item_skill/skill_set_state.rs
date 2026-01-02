@@ -1,13 +1,13 @@
 use crate::{
     api::SkillMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_state(
         &mut self,
-        skill_key: UItemKey,
+        skill_key: UItemId,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

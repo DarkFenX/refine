@@ -2,7 +2,7 @@ use crate::{
     ac,
     def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemKey, UShip},
+    ud::{UFit, UItemId, UShip},
     util::RSet,
 };
 
@@ -16,7 +16,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_ship_stance_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         fit: &UFit,
         ship: Option<&UShip>,
     ) -> bool {
@@ -33,7 +33,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_stance_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         fit: &UFit,
         ship: Option<&UShip>,
@@ -43,7 +43,7 @@ impl VastFitData {
             Some(ship) => ship,
             None => {
                 return Some(ValShipStanceFail {
-                    stance_item_id: ctx.u_data.items.id_by_key(stance_key),
+                    stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_key),
                 });
             }
         };
@@ -54,7 +54,7 @@ impl VastFitData {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: ctx.u_data.items.id_by_key(stance_key),
+            stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_key),
         })
     }
 }

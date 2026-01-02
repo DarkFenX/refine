@@ -1,13 +1,13 @@
 use crate::{
     api::AutochargeMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_autocharge_state(
         &mut self,
-        autocharge_key: UItemKey,
+        autocharge_key: UItemId,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

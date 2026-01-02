@@ -5,13 +5,13 @@ use crate::{
     def::ItemTypeId,
     misc::ModRack,
     sol::SolarSystem,
-    ud::{UCharge, UEffectUpdates, UFitKey, UItem, UItemKey, UItemMutationRequest, UModule},
+    ud::{UCharge, UEffectUpdates, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_module(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         rack: ModRack,
         pos_mode: AddMode,
         type_id: AItemId,
@@ -19,7 +19,7 @@ impl SolarSystem {
         mutation: Option<UItemMutationRequest>,
         charge_type_id: Option<AItemId>,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let module_item_id = self.u_data.items.alloc_id();
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_key, rack);
         // Assume some random position for now; it will be overwritten later. Record effects to

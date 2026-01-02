@@ -1,10 +1,10 @@
 use crate::{
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc},
-    ud::{UItem, UItemKey, UNpcProp},
+    ud::{UItem, UItemId, UNpcProp},
 };
 
-pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
     let attr_key = match ctx.u_data.items.get(item_key) {
         UItem::Drone(u_drone) => match u_drone.get_prop_mode() {
             UNpcProp::Cruise => ctx.ac().entity_cruise_speed,
@@ -16,7 +16,7 @@ pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Att
         .max(OF(0.0))
 }
 
-pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
     let mut sig_radius = calc
         .get_item_oattr_ffb_extra(ctx, item_key, ctx.ac().sig_radius, OF(0.0))
         .max(OF(0.0));

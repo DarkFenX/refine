@@ -8,11 +8,11 @@ use crate::{
         err::KeyedItemLoadedError,
         funcs,
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 impl Calc {
-    pub(super) fn get_item_data_with_err(&self, item_key: UItemKey) -> Result<&ItemAttrData, KeyedItemLoadedError> {
+    pub(super) fn get_item_data_with_err(&self, item_key: UItemId) -> Result<&ItemAttrData, KeyedItemLoadedError> {
         // All loaded items have attribute map created for them
         self.attrs
             .get_item_attr_data(&item_key)

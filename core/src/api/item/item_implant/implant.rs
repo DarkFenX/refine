@@ -2,15 +2,15 @@ use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     def::SlotIndex,
     sol::SolarSystem,
-    ud::{UImplant, UItemKey},
+    ud::{UImplant, UItemId},
 };
 
 pub struct Implant<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Implant<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -27,7 +27,7 @@ impl<'a> ItemSealed for Implant<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -35,10 +35,10 @@ impl<'a> ItemCommon for Implant<'a> {}
 
 pub struct ImplantMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> ImplantMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -59,7 +59,7 @@ impl<'a> ItemSealed for ImplantMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -71,16 +71,16 @@ impl<'a> ItemMutSealed for ImplantMut<'a> {
 impl<'a> ItemCommon for ImplantMut<'a> {}
 impl<'a> ItemMutCommon for ImplantMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, implant_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, implant_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_implant(sol, implant_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_slot(sol: &SolarSystem, implant_key: UItemKey) -> Option<SlotIndex> {
+fn get_slot(sol: &SolarSystem, implant_key: UItemId) -> Option<SlotIndex> {
     get_u_implant(sol, implant_key).get_slot()
 }
-fn get_state(sol: &SolarSystem, implant_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, implant_key: UItemId) -> bool {
     get_u_implant(sol, implant_key).get_implant_state()
 }
-fn get_u_implant(sol: &SolarSystem, implant_key: UItemKey) -> &UImplant {
+fn get_u_implant(sol: &SolarSystem, implant_key: UItemId) -> &UImplant {
     sol.u_data.items.get(implant_key).dc_implant().unwrap()
 }

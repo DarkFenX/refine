@@ -1,13 +1,13 @@
 use crate::{
     api::FighterMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fighter(
         &mut self,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Remove incoming projections

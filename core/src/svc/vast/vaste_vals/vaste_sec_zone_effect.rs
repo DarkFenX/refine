@@ -6,7 +6,7 @@ use crate::{
     misc::{SecZone, SecZoneCorruption},
     rd::REffectKey,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UData, UItemKey},
+    ud::{UData, UItemId},
     util::RSet,
 };
 
@@ -26,7 +26,7 @@ pub struct ValEffectSecZoneFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_sec_zone_effect_fast(&self, kfs: &RSet<UItemKey>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast) fn validate_sec_zone_effect_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
         if self.sec_zone_effect.is_empty() {
             return true;
         }
@@ -63,7 +63,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_sec_zone_effect_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValEffectSecZoneFail> {
         if self.sec_zone_effect.is_empty() {
@@ -110,11 +110,11 @@ impl VastFitData {
 fn add_fail_entry(
     u_data: &UData,
     items: &mut HashMap<ItemId, HashMap<EffectId, Vec<SecZone>>>,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect_key: REffectKey,
     sec_zone_info: &EffectSecZoneInfo,
 ) {
-    let item_id = u_data.items.id_by_key(item_key);
+    let item_id = u_data.items.ext_id_by_int_id(item_key);
     let effect_id = u_data.src.get_effect(effect_key).id.into();
     let mut allowed_zones = Vec::new();
     if !sec_zone_info.banned_in_hisec {

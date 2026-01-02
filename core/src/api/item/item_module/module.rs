@@ -6,16 +6,16 @@ use crate::{
     def::{Count, Idx},
     misc::ModRack,
     sol::SolarSystem,
-    ud::{UItemKey, UModule},
+    ud::{UItemId, UModule},
     util::InfCount,
 };
 
 pub struct Module<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Module<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -44,7 +44,7 @@ impl<'a> ItemSealed for Module<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -52,10 +52,10 @@ impl<'a> ItemCommon for Module<'a> {}
 
 pub struct ModuleMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> ModuleMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -102,7 +102,7 @@ impl<'a> ItemSealed for ModuleMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -114,30 +114,30 @@ impl<'a> ItemMutSealed for ModuleMut<'a> {
 impl<'a> ItemCommon for ModuleMut<'a> {}
 impl<'a> ItemMutCommon for ModuleMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, module_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, module_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_module(sol, module_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, module_key: UItemKey) -> ModuleState {
+fn get_state(sol: &SolarSystem, module_key: UItemId) -> ModuleState {
     get_u_module(sol, module_key).get_module_state()
 }
-fn get_rack(sol: &SolarSystem, module_key: UItemKey) -> ModRack {
+fn get_rack(sol: &SolarSystem, module_key: UItemId) -> ModRack {
     get_u_module(sol, module_key).get_rack()
 }
-fn get_pos(sol: &SolarSystem, module_key: UItemKey) -> Idx {
+fn get_pos(sol: &SolarSystem, module_key: UItemId) -> Idx {
     get_u_module(sol, module_key).get_pos()
 }
-fn get_charge(sol: &SolarSystem, module_key: UItemKey) -> Option<Charge<'_>> {
+fn get_charge(sol: &SolarSystem, module_key: UItemId) -> Option<Charge<'_>> {
     get_u_module(sol, module_key)
         .get_charge_key()
         .map(|charge_key| Charge::new(sol, charge_key))
 }
-fn get_charge_count(sol: &SolarSystem, module_key: UItemKey) -> Option<Count> {
+fn get_charge_count(sol: &SolarSystem, module_key: UItemId) -> Option<Count> {
     get_u_module(sol, module_key).get_charge_count(&sol.u_data)
 }
-fn get_reload_optionals(sol: &SolarSystem, module_key: UItemKey) -> Option<bool> {
+fn get_reload_optionals(sol: &SolarSystem, module_key: UItemId) -> Option<bool> {
     get_u_module(sol, module_key).get_reload_optionals()
 }
-fn get_u_module(sol: &SolarSystem, module_key: UItemKey) -> &UModule {
+fn get_u_module(sol: &SolarSystem, module_key: UItemId) -> &UModule {
     sol.u_data.items.get(module_key).dc_module().unwrap()
 }

@@ -5,7 +5,7 @@ use crate::{
     def::ItemId,
     misc::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemKey},
+    ud::{UFit, UItemId},
     util::RSet,
 };
 
@@ -19,7 +19,7 @@ pub struct ValOverloadSkillFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<UItemKey>, fit: &UFit) -> bool {
+    pub(in crate::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<UItemId>, fit: &UFit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
@@ -34,7 +34,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_overload_skill_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         fit: &UFit,
     ) -> Option<ValOverloadSkillFail> {
@@ -49,7 +49,7 @@ impl VastFitData {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
             } && !kfs.contains(item_key))
-            .map(|(&item_key, &req_lvl)| (ctx.u_data.items.id_by_key(item_key), req_lvl.into()))
+            .map(|(&item_key, &req_lvl)| (ctx.u_data.items.ext_id_by_int_id(item_key), req_lvl.into()))
             .collect();
         match module_reqs.is_empty() {
             true => None,

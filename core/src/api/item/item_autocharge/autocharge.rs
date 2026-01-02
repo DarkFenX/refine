@@ -1,16 +1,16 @@
 use crate::{
     api::{EffectId, Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
     sol::SolarSystem,
-    ud::{UAutocharge, UItemKey},
+    ud::{UAutocharge, UItemId},
 };
 
 // Autocharges expose no projection info, since it fully matches projections of the parent item
 pub struct Autocharge<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Autocharge<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -30,7 +30,7 @@ impl<'a> ItemSealed for Autocharge<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -38,10 +38,10 @@ impl<'a> ItemCommon for Autocharge<'a> {}
 
 pub struct AutochargeMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> AutochargeMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -69,7 +69,7 @@ impl<'a> ItemSealed for AutochargeMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -81,21 +81,21 @@ impl<'a> ItemMutSealed for AutochargeMut<'a> {
 impl<'a> ItemCommon for AutochargeMut<'a> {}
 impl<'a> ItemMutCommon for AutochargeMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, autocharge_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, autocharge_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_autocharge(sol, autocharge_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_cont_item(sol: &SolarSystem, autocharge_key: UItemKey) -> Item<'_> {
+fn get_cont_item(sol: &SolarSystem, autocharge_key: UItemId) -> Item<'_> {
     let cont_key = get_u_autocharge(sol, autocharge_key).get_cont_item_key();
     Item::new(sol, cont_key)
 }
-fn get_cont_effect_id(sol: &SolarSystem, autocharge_key: UItemKey) -> EffectId {
+fn get_cont_effect_id(sol: &SolarSystem, autocharge_key: UItemId) -> EffectId {
     let cont_effect_key = get_u_autocharge(sol, autocharge_key).get_cont_effect_key();
     sol.u_data.src.get_effect(cont_effect_key).id.into()
 }
-fn get_state(sol: &SolarSystem, autocharge_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, autocharge_key: UItemId) -> bool {
     !get_u_autocharge(sol, autocharge_key).get_force_disabled()
 }
-fn get_u_autocharge(sol: &SolarSystem, autocharge_key: UItemKey) -> &UAutocharge {
+fn get_u_autocharge(sol: &SolarSystem, autocharge_key: UItemId) -> &UAutocharge {
     sol.u_data.items.get(autocharge_key).dc_autocharge().unwrap()
 }

@@ -1,7 +1,7 @@
-use crate::{api::FitMut, misc::DpsProfile, sol::SolarSystem, ud::UFitKey};
+use crate::{api::FitMut, misc::DpsProfile, sol::SolarSystem, ud::UFitId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fit_rah_incoming_dps(&mut self, fit_key: UFitKey, dps_profile: DpsProfile) {
+    pub(in crate::api) fn internal_set_fit_rah_incoming_dps(&mut self, fit_key: UFitId, dps_profile: DpsProfile) {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         if u_fit.rah_incoming_dps == Some(dps_profile) {
             return;

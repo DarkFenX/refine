@@ -14,7 +14,7 @@ use crate::{
             CustomAffectorValueKind, Location, ModifierKind, RawModifier,
         },
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // ADG customizations
@@ -76,14 +76,14 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
     }
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(ship_key) = get_item_fit_ship_key(ctx, item_key)
         && let Some(speed_factor_key) = ctx.ac().speed_factor
         && let Some(speed_boost_factor_key) = ctx.ac().speed_boost_factor
         && let Some(mass_key) = ctx.ac().mass
     {
-        let item_id = ctx.u_data.items.id_by_key(item_key);
+        let item_id = ctx.u_data.items.ext_id_by_int_id(item_key);
         info.extend([
             Affector {
                 item_id,
@@ -94,7 +94,7 @@ fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
                 attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_key).id.into()),
             },
             Affector {
-                item_id: ctx.u_data.items.id_by_key(ship_key),
+                item_id: ctx.u_data.items.ext_id_by_int_id(ship_key),
                 attr_id: Some(ctx.u_data.src.get_attr(mass_key).id.into()),
             },
         ]);
@@ -119,7 +119,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(val)
 }
 
-fn reg_dependencies(calc: &mut Calc, attr_consts: &RAttrConsts, ship_key: UItemKey, prop_espec: EffectSpec) {
+fn reg_dependencies(calc: &mut Calc, attr_consts: &RAttrConsts, ship_key: UItemId, prop_espec: EffectSpec) {
     // Prop boost attribute is declared the usual way, everything else is declared here
     if let Some(speed_boost_factor_key) = attr_consts.speed_boost_factor
         && let Some(mass_key) = attr_consts.mass

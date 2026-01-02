@@ -3,7 +3,7 @@ use crate::{
     def::AbilId,
     err::basic::AbilityFoundError,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> Fighter<'a> {
@@ -24,7 +24,7 @@ impl<'a> FighterMut<'a> {
     }
 }
 
-fn check_ability(sol: &SolarSystem, fighter_key: UItemKey, ability_id: &AbilId) -> Result<(), AbilityFoundError> {
+fn check_ability(sol: &SolarSystem, fighter_key: UItemId, ability_id: &AbilId) -> Result<(), AbilityFoundError> {
     let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();
     if let Some(abils) = u_fighter.get_abils()
         && abils.contains(ability_id)
@@ -32,7 +32,7 @@ fn check_ability(sol: &SolarSystem, fighter_key: UItemKey, ability_id: &AbilId) 
         return Ok(());
     }
     Err(AbilityFoundError {
-        item_id: sol.u_data.items.id_by_key(fighter_key),
+        item_id: sol.u_data.items.ext_id_by_int_id(fighter_key),
         ability_id: *ability_id,
     })
 }

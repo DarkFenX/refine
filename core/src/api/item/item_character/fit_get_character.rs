@@ -1,7 +1,7 @@
 use crate::{
     api::{Character, CharacterMut, Fit, FitMut},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl<'a> Fit<'a> {
@@ -24,7 +24,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_character(sol: &SolarSystem, fit_key: UFitKey) -> Option<Character<'_>> {
+fn get_character(sol: &SolarSystem, fit_key: UFitId) -> Option<Character<'_>> {
     sol.u_data
         .fits
         .get(fit_key)

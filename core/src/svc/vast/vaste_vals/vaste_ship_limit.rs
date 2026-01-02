@@ -4,7 +4,7 @@ use crate::{
     def::{ItemGrpId, ItemId, ItemTypeId},
     rd,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UItemKey, UShip},
+    ud::{UItemId, UShip},
     util::RSet,
 };
 
@@ -34,7 +34,7 @@ impl From<&rd::RItemShipLimit> for ValShipLimitItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<UItemKey>, ship: Option<&UShip>) -> bool {
+    pub(in crate::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<UItemId>, ship: Option<&UShip>) -> bool {
         let ship = match ship {
             Some(ship) => ship,
             None => {
@@ -65,7 +65,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_limit_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         ship: Option<&UShip>,
     ) -> Option<ValShipLimitFail> {
@@ -91,7 +91,7 @@ impl VastFitData {
             if kfs.contains(limited_item_key) {
                 continue;
             }
-            mismatches.insert(ctx.u_data.items.id_by_key(*limited_item_key), ship_limit.into());
+            mismatches.insert(ctx.u_data.items.ext_id_by_int_id(*limited_item_key), ship_limit.into());
         }
         match mismatches.is_empty() {
             true => None,

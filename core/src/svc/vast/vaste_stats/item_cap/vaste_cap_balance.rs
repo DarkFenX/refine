@@ -13,7 +13,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTimeOptions, Vast, VastFitData, shared::calc_regen, vaste_stats::item_checks::check_ship},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::UnitInterval,
 };
 
@@ -63,7 +63,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         src_kinds: StatCapSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<AttrVal, StatItemCheckError> {
@@ -89,7 +89,7 @@ impl Vast {
     }
 }
 
-fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey, cap_perc: UnitInterval) -> AttrVal {
+fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, cap_perc: UnitInterval) -> AttrVal {
     let max_amount = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
     let cap_regen_time = calc
         .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().recharge_rate, OF(0.0))
@@ -174,7 +174,7 @@ fn get_cap_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
-    cap_item_key: UItemKey,
+    cap_item_key: UItemId,
     vast: &Vast,
 ) -> AttrVal {
     let mut cps = OF(0.0);
@@ -242,7 +242,7 @@ fn get_neuts(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
-    cap_item_key: UItemKey,
+    cap_item_key: UItemId,
     vast: &Vast,
 ) -> AttrVal {
     let mut nps = OF(0.0);

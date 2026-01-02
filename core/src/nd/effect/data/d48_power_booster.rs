@@ -13,7 +13,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::POWER_BOOSTER;
@@ -39,7 +39,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn internal_get_cap_inject(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     let item = ctx.u_data.items.get(item_key);

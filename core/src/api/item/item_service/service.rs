@@ -1,15 +1,15 @@
 use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ServiceState},
     sol::SolarSystem,
-    ud::{UItemKey, UService},
+    ud::{UItemId, UService},
 };
 
 pub struct Service<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Service<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> ItemSealed for Service<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -31,10 +31,10 @@ impl<'a> ItemCommon for Service<'a> {}
 
 pub struct ServiceMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> ServiceMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -52,7 +52,7 @@ impl<'a> ItemSealed for ServiceMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -64,13 +64,13 @@ impl<'a> ItemMutSealed for ServiceMut<'a> {
 impl<'a> ItemCommon for ServiceMut<'a> {}
 impl<'a> ItemMutCommon for ServiceMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, service_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, service_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_service(sol, service_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, service_key: UItemKey) -> ServiceState {
+fn get_state(sol: &SolarSystem, service_key: UItemId) -> ServiceState {
     get_u_service(sol, service_key).get_service_state()
 }
-fn get_u_service(sol: &SolarSystem, service_key: UItemKey) -> &UService {
+fn get_u_service(sol: &SolarSystem, service_key: UItemId) -> &UService {
     sol.u_data.items.get(service_key).dc_service().unwrap()
 }

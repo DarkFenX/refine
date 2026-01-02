@@ -7,14 +7,14 @@ use crate::{
         CtxModifier, RawModifier,
         registers::standard::{StandardRegister, modifier::iter_loc_act::ActiveLocations},
     },
-    ud::{UFits, UItem, UItemKey},
+    ud::{UFits, UItem, UItemId},
     util::MapSet,
 };
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn get_mods_for_affectee(
         &self,
-        item_key: &UItemKey,
+        item_key: &UItemId,
         item: &UItem,
         attr_key: RAttrKey,
         fits: &UFits,

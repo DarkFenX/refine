@@ -4,12 +4,12 @@ use crate::{
     rd::REffectKey,
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemKey},
+    ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemId},
 };
 
 struct AutochargeData {
     effect_key: REffectKey,
-    autocharge_key: UItemKey,
+    autocharge_key: UItemId,
 }
 
 impl SolarSystem {
@@ -17,7 +17,7 @@ impl SolarSystem {
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
-        item_key: UItemKey,
+        item_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Process autocharges - start with collecting some data about parent item
@@ -111,7 +111,7 @@ impl SolarSystem {
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
-        item_key: UItemKey,
+        item_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let cont_u_item = u_data.items.get(item_key);

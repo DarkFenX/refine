@@ -4,14 +4,14 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
     },
-    ud::{UData, UFitKey, UItemKey},
+    ud::{UData, UFitId, UItemId},
 };
 
 impl Svc {
     pub(crate) fn get_stat_fits_mps(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
     ) -> StatMining {
@@ -26,7 +26,7 @@ impl Svc {
     pub(crate) fn get_stat_fit_mps(
         &mut self,
         u_data: &UData,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
     ) -> StatMining {
@@ -41,7 +41,7 @@ impl Svc {
     pub(crate) fn get_stat_item_mps(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
         time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {

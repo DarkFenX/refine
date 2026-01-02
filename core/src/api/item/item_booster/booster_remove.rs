@@ -1,13 +1,13 @@
 use crate::{
     api::BoosterMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_booster(
         &mut self,
-        booster_key: UItemKey,
+        booster_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::util_remove_booster(&mut self.u_data, &mut self.svc, booster_key, reuse_eupdates);

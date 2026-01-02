@@ -5,17 +5,17 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatNeutItemKinds, StatTimeOptions, Vast},
     },
-    ud::{UData, UFitKey, UItemKey},
+    ud::{UData, UFitId, UItemId},
 };
 
 impl Svc {
     pub(crate) fn get_stat_fits_outgoing_nps(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatNeutItemKinds,
         time_options: StatTimeOptions,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> AttrVal {
         self.vast.get_stat_fits_outgoing_nps(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -29,10 +29,10 @@ impl Svc {
     pub(crate) fn get_stat_fit_outgoing_nps(
         &mut self,
         u_data: &UData,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatNeutItemKinds,
         time_options: StatTimeOptions,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> AttrVal {
         self.vast.get_stat_fit_outgoing_nps(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -46,11 +46,11 @@ impl Svc {
     pub(crate) fn get_stat_item_outgoing_nps(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<AttrVal, StatItemCheckError> {
         Vast::get_stat_item_outgoing_nps(
             SvcCtx::new(u_data, &self.eff_projs),

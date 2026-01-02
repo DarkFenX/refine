@@ -6,14 +6,14 @@ use crate::{
         err::StatItemCheckError,
         vast::{Vast, vaste_stats::item_checks::check_ship},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_amount(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key))
@@ -21,7 +21,7 @@ impl Vast {
     pub(in crate::svc::vast::vaste_stats) fn internal_get_stat_item_cap_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> AttrVal {
         calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().capacitor_capacity, OF(0.0))
             .unwrap()
@@ -29,7 +29,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_neut_resist(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_ship(ctx.u_data, item_key)?;
         let neut_resist = OF(1.0)

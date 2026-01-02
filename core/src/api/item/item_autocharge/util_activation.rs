@@ -1,14 +1,14 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_process_autocharge_activations(
         u_data: &mut UData,
         svc: &mut Svc,
-        ac_activations: Vec<(UItemKey, bool)>,
+        ac_activations: Vec<(UItemId, bool)>,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         for (ac_key, ac_activated) in ac_activations {

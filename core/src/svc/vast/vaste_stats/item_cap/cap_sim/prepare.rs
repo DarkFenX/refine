@@ -17,7 +17,7 @@ use crate::{
         output::{Output, OutputSimple},
         vast::{Vast, VastFitData},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::{FLOAT_TOLERANCE, RMapVec},
 };
 
@@ -28,7 +28,7 @@ pub(super) fn prepare_events(
     reload_optionals: Option<bool>,
     stagger: StatCapSimStaggerInt,
     fit_data: &VastFitData,
-    cap_item_key: UItemKey,
+    cap_item_key: UItemId,
 ) -> BinaryHeap<CapSimEvent> {
     let mut aggregator = Aggregator::new();
     fill_consumers(ctx, calc, &mut aggregator, reload_optionals, &stagger, fit_data);
@@ -108,7 +108,7 @@ fn fill_neuts(
     reload_optionals: Option<bool>,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
-    cap_item_key: UItemKey,
+    cap_item_key: UItemId,
 ) {
     let neut_data = match vast.in_neuts.get_l1(&cap_item_key) {
         Some(neut_data) => neut_data,
@@ -154,7 +154,7 @@ fn fill_transfers(
     reload_optionals: Option<bool>,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
-    cap_item_key: UItemKey,
+    cap_item_key: UItemId,
 ) {
     let transfer_data = match vast.in_cap.get_l1(&cap_item_key) {
         Some(transfer_data) => transfer_data,

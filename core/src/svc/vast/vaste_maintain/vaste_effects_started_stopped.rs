@@ -2,11 +2,11 @@ use crate::{
     misc::EffectSpec,
     rd::RcEffect,
     svc::vast::{Vast, vaste_vals::EffectSecZoneInfo},
-    ud::{UFitKey, UItem, UItemKey},
+    ud::{UFitId, UItem, UItemId},
 };
 
 impl Vast {
-    pub(in crate::svc) fn effects_started(&mut self, item_key: UItemKey, item: &UItem, effects: &[RcEffect]) {
+    pub(in crate::svc) fn effects_started(&mut self, item_key: UItemId, item: &UItem, effects: &[RcEffect]) {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
@@ -102,7 +102,7 @@ impl Vast {
             _ => (),
         }
     }
-    pub(in crate::svc) fn effects_stopped(&mut self, item_key: UItemKey, item: &UItem, effects: &[RcEffect]) {
+    pub(in crate::svc) fn effects_stopped(&mut self, item_key: UItemId, item: &UItem, effects: &[RcEffect]) {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
@@ -191,19 +191,19 @@ impl Vast {
             _ => (),
         }
     }
-    fn handle_aggr_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_aggr_start(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if effect.is_offense {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.aggro_effects.insert(EffectSpec::new(item_key, effect.key));
         }
     }
-    fn handle_aggr_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_aggr_stop(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if effect.is_offense {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.aggro_effects.remove(&EffectSpec::new(item_key, effect.key));
         }
     }
-    fn handle_dmg_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_dmg_start(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if let Some(dmg_ospec) = effect.normal_dmg_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.dmg_normal.add_entry(item_key, effect.key, dmg_ospec);
@@ -213,7 +213,7 @@ impl Vast {
             fit_data.dmg_breacher.add_entry(item_key, effect.key, dmg_getter);
         }
     }
-    fn handle_dmg_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_dmg_stop(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if effect.normal_dmg_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.dmg_normal.remove_l2(item_key, &effect.key);
@@ -223,7 +223,7 @@ impl Vast {
             fit_data.dmg_breacher.remove_l2(item_key, &effect.key);
         }
     }
-    fn handle_mining_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_mining_start(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if let Some(mining_ospec) = effect.mining_ore_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.mining_ore.add_entry(item_key, effect.key, mining_ospec);
@@ -237,7 +237,7 @@ impl Vast {
             fit_data.mining_gas.add_entry(item_key, effect.key, mining_ospec);
         }
     }
-    fn handle_mining_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_mining_stop(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if effect.mining_ore_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.mining_ore.remove_l2(item_key, &effect.key);
@@ -251,7 +251,7 @@ impl Vast {
             fit_data.mining_gas.remove_l2(item_key, &effect.key);
         }
     }
-    fn handle_orrs_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_orrs_start(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if let Some(rep_ospec) = effect.outgoing_shield_rep_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_shield.add_entry(item_key, effect.key, rep_ospec);
@@ -269,7 +269,7 @@ impl Vast {
             fit_data.out_cap.add_entry(item_key, effect.key, rep_ospec);
         }
     }
-    fn handle_orrs_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_orrs_stop(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if effect.outgoing_shield_rep_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.orr_shield.remove_l2(item_key, &effect.key);
@@ -287,13 +287,13 @@ impl Vast {
             fit_data.out_cap.remove_l2(item_key, &effect.key);
         }
     }
-    fn handle_neut_start(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_neut_start(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if let Some(neut_ospec) = effect.neut_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.out_neuts.add_entry(item_key, effect.key, neut_ospec);
         }
     }
-    fn handle_neut_stop(&mut self, effect: &RcEffect, item_key: UItemKey, fit_key: &UFitKey) {
+    fn handle_neut_stop(&mut self, effect: &RcEffect, item_key: UItemId, fit_key: &UFitId) {
         if effect.neut_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_key);
             fit_data.out_neuts.remove_l2(item_key, &effect.key);

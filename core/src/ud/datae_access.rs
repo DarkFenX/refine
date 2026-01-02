@@ -1,11 +1,11 @@
 use crate::{
     def::{AttrVal, OF},
     misc::{DpsProfile, Spool},
-    ud::{UData, UFit, UFitKey, UItem, UItemKey, UPhysics},
+    ud::{UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
 
 impl UData {
-    pub(crate) fn get_fit_key_rah_incoming_dps(&self, fit_key: UFitKey) -> DpsProfile {
+    pub(crate) fn get_fit_key_rah_incoming_dps(&self, fit_key: UFitId) -> DpsProfile {
         let fit = self.fits.get(fit_key);
         self.get_fit_rah_incoming_dps(fit)
     }
@@ -15,7 +15,7 @@ impl UData {
             None => self.default_incoming_dps,
         }
     }
-    pub(crate) fn get_item_key_spool(&self, item_key: UItemKey, spool: Option<Spool>) -> Spool {
+    pub(crate) fn get_item_key_spool(&self, item_key: UItemId, spool: Option<Spool>) -> Spool {
         match spool {
             Some(spool) => spool,
             None => {
@@ -27,7 +27,7 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_key_reload_optionals(&self, item_key: UItemKey, reload_optionals: Option<bool>) -> bool {
+    pub(crate) fn get_item_key_reload_optionals(&self, item_key: UItemId, reload_optionals: Option<bool>) -> bool {
         match reload_optionals {
             Some(reload_optionals) => reload_optionals,
             None => {
@@ -39,7 +39,7 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_key_rearm_minions(&self, item_key: UItemKey, rearm_minions: Option<bool>) -> bool {
+    pub(crate) fn get_item_key_rearm_minions(&self, item_key: UItemId, rearm_minions: Option<bool>) -> bool {
         match rearm_minions {
             Some(rearm_minions) => rearm_minions,
             None => {
@@ -52,21 +52,21 @@ impl UData {
         }
     }
     // Projection-related
-    pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: UFitKey) -> AttrVal {
+    pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: UFitId) -> AttrVal {
         let ship_key = match self.fits.get(fit_key).ship {
             Some(ship_key) => ship_key,
             None => return OF(0.0),
         };
         self.items.get(ship_key).get_direct_radius()
     }
-    pub(crate) fn get_ship_physics_by_fit_key(&self, fit_key: UFitKey) -> UPhysics {
+    pub(crate) fn get_ship_physics_by_fit_key(&self, fit_key: UFitId) -> UPhysics {
         let fit = self.fits.get(fit_key);
         match fit.ship {
             Some(ship_key) => *self.items.get(ship_key).dc_ship().unwrap().get_physics(),
             None => UPhysics::default(),
         }
     }
-    pub(crate) fn get_physics_carrier_key(&self, item_key: UItemKey) -> Option<UItemKey> {
+    pub(crate) fn get_physics_carrier_key(&self, item_key: UItemId) -> Option<UItemId> {
         match self.items.get(item_key) {
             UItem::Autocharge(autocharge) => self.get_physics_carrier_key(autocharge.get_cont_item_key()),
             UItem::Booster(booster) => self.fits.get(booster.get_fit_key()).ship,

@@ -1,7 +1,7 @@
 use crate::{
     api::{Fit, FitMut, MutIter, Service, ServiceMut},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl<'a> Fit<'a> {
@@ -20,7 +20,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_services(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Service<'_>> {
+fn iter_services(sol: &SolarSystem, fit_key: UFitId) -> impl ExactSizeIterator<Item = Service<'_>> {
     let service_keys = sol.u_data.fits.get(fit_key).services.iter();
     service_keys.map(|service_key| Service::new(sol, *service_key))
 }

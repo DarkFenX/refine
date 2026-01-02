@@ -3,7 +3,7 @@ use crate::{
     api::SwEffectMut,
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItem, UItemKey, USwEffect},
+    ud::{UEffectUpdates, UItem, UItemId, USwEffect},
 };
 
 impl SolarSystem {
@@ -16,7 +16,7 @@ impl SolarSystem {
         &mut self,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_sw_effect = USwEffect::new(item_id, type_id, true, &self.u_data.src);
         let u_item = UItem::SwEffect(u_sw_effect);

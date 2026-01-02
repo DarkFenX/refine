@@ -12,7 +12,7 @@ use crate::{
             shared::{BreacherAccum, apply_breacher},
         },
     },
-    ud::{UFitKey, UItemKey},
+    ud::{UFitId, UItemId},
 };
 
 impl Vast {
@@ -20,7 +20,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
@@ -33,11 +33,11 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fits_dps(ctx, calc, fit_keys, item_kinds, reload, spool, Some(projectee_key));
@@ -52,11 +52,11 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
         let cycling_options = get_dps_cycling_options(reload);
         let mut dps_normal = DmgKinds::default();
@@ -79,7 +79,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
@@ -92,11 +92,11 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fit_dps(ctx, calc, fit_key, item_kinds, reload, spool, Some(projectee_key));
@@ -111,11 +111,11 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> (DmgKinds<AttrVal>, BreacherAccum) {
         let mut dps_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
@@ -136,7 +136,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
     ) -> StatDmg {
@@ -148,10 +148,10 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fits_volley(ctx, calc, fit_keys, item_kinds, spool, Some(projectee_key));
@@ -166,10 +166,10 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> (DmgKinds<AttrVal>, StatDmgBreacher) {
         let mut volley_normal = DmgKinds::default();
         let mut volley_breacher = StatDmgBreacher::new();
@@ -190,7 +190,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
     ) -> StatDmg {
@@ -202,10 +202,10 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fit_volley(ctx, calc, fit_key, item_kinds, spool, Some(projectee_key));
@@ -220,10 +220,10 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> (DmgKinds<AttrVal>, StatDmgBreacher) {
         let mut volley_normal = DmgKinds::default();
         let mut volley_breacher = StatDmgBreacher::new();
@@ -250,7 +250,7 @@ impl VastFitData {
         item_kinds: StatDmgItemKinds,
         cycling_options: CyclingOptions,
         spool: Option<Spool>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
             let cseq_map = match get_item_cseq_map(ctx, calc, item_key, cycling_options, false) {
@@ -316,7 +316,7 @@ impl VastFitData {
         volley_breacher: &mut StatDmgBreacher,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) {
         for (&item_key, item_data) in self.dmg_normal.iter() {
             let cseq_map = match get_item_cseq_map(ctx, calc, item_key, VOLLEY_CYCLE_OPTIONS, false) {

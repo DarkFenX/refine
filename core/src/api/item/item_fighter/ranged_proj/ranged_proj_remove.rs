@@ -1,19 +1,19 @@
 use itertools::Itertools;
 
-use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemKey};
+use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fighter_proj(
         &mut self,
-        fighter_key: UItemKey,
-        projectee_key: UItemKey,
+        fighter_key: UItemId,
+        projectee_key: UItemId,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let u_fighter = self.u_data.items.get(fighter_key).dc_fighter().unwrap();
         if !u_fighter.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_fighter.get_item_id(),
-                projectee_item_id: self.u_data.items.id_by_key(projectee_key),
+                projectee_item_id: self.u_data.items.ext_id_by_int_id(projectee_key),
             });
         };
         let autocharge_keys = u_fighter.get_autocharges().values().collect_vec();

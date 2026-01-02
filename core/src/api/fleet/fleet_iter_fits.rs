@@ -1,7 +1,7 @@
 use crate::{
     api::{Fit, FitMut, Fleet, FleetMut, MutIter},
     sol::SolarSystem,
-    ud::UFleetKey,
+    ud::UFleetId,
 };
 
 impl<'a> Fleet<'a> {
@@ -20,7 +20,7 @@ impl<'a> FleetMut<'a> {
     }
 }
 
-fn iter_fits(sol: &SolarSystem, fleet_key: UFleetKey) -> impl ExactSizeIterator<Item = Fit<'_>> {
+fn iter_fits(sol: &SolarSystem, fleet_key: UFleetId) -> impl ExactSizeIterator<Item = Fit<'_>> {
     let u_fleet = sol.u_data.fleets.get(fleet_key);
     u_fleet.iter_fits().map(|fit_key| Fit::new(sol, fit_key))
 }

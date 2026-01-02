@@ -1,12 +1,12 @@
 use crate::{
     sol::SolarSystem,
-    ud::{UAttrMutationRequest, UItemKey, err::ItemMutatedError},
+    ud::{UAttrMutationRequest, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_change_module_mutation_attrs(
         &mut self,
-        module_key: UItemKey,
+        module_key: UItemId,
         attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<(), ItemMutatedError> {
         let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();

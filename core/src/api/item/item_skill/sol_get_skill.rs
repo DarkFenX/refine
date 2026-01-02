@@ -7,12 +7,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_skill(&self, item_id: &ItemId) -> Result<Skill<'_>, GetSkillError> {
-        let skill_key = self.u_data.items.key_by_id_err(item_id)?;
+        let skill_key = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(skill_key).dc_skill()?;
         Ok(Skill::new(self, skill_key))
     }
     pub fn get_skill_mut(&mut self, item_id: &ItemId) -> Result<SkillMut<'_>, GetSkillError> {
-        let skill_key = self.u_data.items.key_by_id_err(item_id)?;
+        let skill_key = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(skill_key).dc_skill()?;
         Ok(SkillMut::new(self, skill_key))
     }

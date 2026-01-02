@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTankRegen, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::UnitInterval,
 };
 
@@ -32,7 +32,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         incoming_dps: Option<DpsProfile>,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,

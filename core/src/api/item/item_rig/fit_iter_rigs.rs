@@ -1,7 +1,7 @@
 use crate::{
     api::{Fit, FitMut, MutIter, Rig, RigMut},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl<'a> Fit<'a> {
@@ -20,7 +20,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_rigs(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Rig<'_>> {
+fn iter_rigs(sol: &SolarSystem, fit_key: UFitId) -> impl ExactSizeIterator<Item = Rig<'_>> {
     let rig_keys = sol.u_data.fits.get(fit_key).rigs.iter();
     rig_keys.map(|rig_key| Rig::new(sol, *rig_key))
 }

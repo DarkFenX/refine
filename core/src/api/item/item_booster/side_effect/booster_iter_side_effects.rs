@@ -5,18 +5,18 @@ use crate::{
     ad::{AAttrId, AEffectId},
     api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
     sol: &'iter mut SolarSystem,
-    key: UItemKey,
+    key: UItemId,
     effects_with_chances: Vec<(AEffectId, AAttrId)>,
     index: usize,
 }
 impl<'iter> SideEffectIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, key: UItemKey, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
+    fn new(sol: &'iter mut SolarSystem, key: UItemId, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
         Self {
             sol,
             key,
@@ -66,7 +66,7 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn iter_side_effects(sol: &SolarSystem, booster_key: UItemKey) -> impl Iterator<Item = FullSideEffect<'_>> {
+fn iter_side_effects(sol: &SolarSystem, booster_key: UItemId) -> impl Iterator<Item = FullSideEffect<'_>> {
     let u_booster = sol.u_data.items.get(booster_key).dc_booster().unwrap();
     u_booster.get_effect_datas().into_iter().flat_map(move |effect_datas| {
         effect_datas.keys().filter_map(move |&effect_key| {

@@ -18,7 +18,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::BOMB_LAUNCHING;
@@ -63,7 +63,7 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, ctx.ac().energy_neut_amount, OF(0.0))?;
@@ -80,7 +80,7 @@ fn internal_get_neut_base_opc(
 fn internal_get_ecm_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let attr_consts = ctx.ac();

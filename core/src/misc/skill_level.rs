@@ -4,42 +4,36 @@ const LVL_MIN: i32 = 0;
 const LVL_MAX: i32 = 5;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
-pub struct SkillLevel {
-    inner: i32,
-}
+pub struct SkillLevel(i32);
 impl SkillLevel {
     pub fn new_checked(level: impl Into<i32>) -> Result<Self, SkillLevelError> {
         let level = level.into();
         match (LVL_MIN..=LVL_MAX).contains(&level) {
-            true => Ok(Self { inner: level }),
+            true => Ok(Self(level)),
             false => Err(SkillLevelError { level }),
         }
     }
     pub fn new_clamped(level: impl Into<i32>) -> Self {
-        Self {
-            inner: i32::clamp(level.into(), LVL_MIN, LVL_MAX),
-        }
+        Self(i32::clamp(level.into(), LVL_MIN, LVL_MAX))
     }
     pub fn get_inner(&self) -> i32 {
-        self.inner
+        self.0
     }
 }
 impl std::fmt::Display for SkillLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.inner.fmt(f)
+        self.0.fmt(f)
     }
 }
 // Conversion
 impl From<ad::ASkillLevel> for SkillLevel {
     fn from(a_skill_level: ad::ASkillLevel) -> Self {
-        Self {
-            inner: a_skill_level.get_inner(),
-        }
+        Self(a_skill_level.get_inner())
     }
 }
 impl From<SkillLevel> for ad::ASkillLevel {
     fn from(skill_level: SkillLevel) -> Self {
-        Self::new(skill_level.inner)
+        Self::new(skill_level.0)
     }
 }
 // Equality/ordering

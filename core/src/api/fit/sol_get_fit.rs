@@ -7,11 +7,11 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_fit(&self, fit_id: &FitId) -> Result<Fit<'_>, GetFitError> {
-        let fit_key = self.u_data.fits.key_by_id_err(fit_id)?;
+        let fit_key = self.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         Ok(Fit::new(self, fit_key))
     }
     pub fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<FitMut<'_>, GetFitError> {
-        let fit_key = self.u_data.fits.key_by_id_err(fit_id)?;
+        let fit_key = self.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         Ok(FitMut::new(self, fit_key))
     }
 }

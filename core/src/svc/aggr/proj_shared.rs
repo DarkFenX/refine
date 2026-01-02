@@ -6,7 +6,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, aggr::traits::LimitAmount, calc::Calc, funcs, output::Output},
-    ud::UItemKey,
+    ud::UItemId,
     util::{FLOAT_TOLERANCE, ceil_unerr},
 };
 
@@ -28,10 +28,10 @@ where
     pub(in crate::svc) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
-        projector_key: UItemKey,
+        projector_key: UItemId,
         effect: &REffect,
         ospec: &REffectProjOpcSpec<T>,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Option<Self> {
         let mut output = (ospec.base)(ctx, calc, projector_key, effect)?;
         let mut amount_limit = None;
@@ -98,7 +98,7 @@ impl AggrSpoolInvData {
     pub(super) fn try_make<T>(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         effect: &REffect,
         ospec: &REffectProjOpcSpec<T>,
     ) -> Option<Self>
@@ -138,7 +138,7 @@ impl AggrSpoolInvData {
 pub(in crate::svc) fn get_proj_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     chargeness: Option<AttrVal>,

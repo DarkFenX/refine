@@ -1,7 +1,7 @@
 use crate::{
     api::{Fighter, FighterMut, Fit, FitMut, MutIter},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl<'a> Fit<'a> {
@@ -20,7 +20,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_fighters(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Fighter<'_>> {
+fn iter_fighters(sol: &SolarSystem, fit_key: UFitId) -> impl ExactSizeIterator<Item = Fighter<'_>> {
     let fighter_keys = sol.u_data.fits.get(fit_key).fighters.iter();
     fighter_keys.map(|fighter_key| Fighter::new(sol, *fighter_key))
 }

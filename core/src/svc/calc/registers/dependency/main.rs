@@ -1,7 +1,7 @@
 use crate::{
     misc::{AttrSpec, EffectSpec},
     rd::RAttrKey,
-    ud::UItemKey,
+    ud::UItemId,
     util::RMapRSet,
 };
 
@@ -20,11 +20,11 @@ pub(crate) struct DependencyRegister {
     // affectee attribute to be cleared whenever linked attribute changes its value.
     pub(super) data: RMapRSet<AttrSpec, AttrSpec>,
     // Map<item ID, (affector attr key, affectee attr key)>
-    pub(super) anonymous_by_item: RMapRSet<UItemKey, (RAttrKey, RAttrKey)>,
+    pub(super) anonymous_by_item: RMapRSet<UItemId, (RAttrKey, RAttrKey)>,
     // Map<source, (affector spec, affectee spec)>
     pub(super) by_source: RMapRSet<EffectSpec, (AttrSpec, AttrSpec)>,
     // Map<item ID, sources>
-    pub(super) source_by_item: RMapRSet<UItemKey, EffectSpec>,
+    pub(super) source_by_item: RMapRSet<UItemId, EffectSpec>,
 }
 impl DependencyRegister {
     pub(in crate::svc::calc) fn new() -> Self {
@@ -45,7 +45,7 @@ impl DependencyRegister {
     // Modification methods
     pub(in crate::svc::calc) fn add_anonymous(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         affector_attr_key: RAttrKey,
         affectee_attr_key: RAttrKey,
     ) {
@@ -73,7 +73,7 @@ impl DependencyRegister {
             self.source_by_item.remove_entry(affectee_spec.item_key, source_espec);
         }
     }
-    pub(in crate::svc::calc) fn remove_item(&mut self, item_key: UItemKey) {
+    pub(in crate::svc::calc) fn remove_item(&mut self, item_key: UItemId) {
         // Anonymous dependencies
         for (affector_attr_key, affectee_attr_key) in self.anonymous_by_item.remove_key(&item_key) {
             let affector_spec = AttrSpec::new(item_key, affector_attr_key);

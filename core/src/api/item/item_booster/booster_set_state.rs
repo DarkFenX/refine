@@ -1,13 +1,13 @@
 use crate::{
     api::BoosterMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_booster_state(
         &mut self,
-        booster_key: UItemKey,
+        booster_key: UItemId,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

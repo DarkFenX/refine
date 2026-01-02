@@ -1,13 +1,13 @@
 use crate::{
     api::{ItemMut, RmMode},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItem, UItemKey},
+    ud::{UEffectUpdates, UItem, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_item(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         pos_mode: RmMode,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), RemoveItemError> {

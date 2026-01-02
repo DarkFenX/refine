@@ -5,7 +5,7 @@ use crate::{
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         spool::ResolvedSpool,
     },
-    ud::{UData, UItemKey},
+    ud::{UData, UItemId},
     util::InfCount,
 };
 
@@ -15,7 +15,7 @@ const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 });
 
 impl Svc {
-    pub(crate) fn get_item_cycles_until_empty(&mut self, u_data: &UData, item_key: UItemKey) -> Option<InfCount> {
+    pub(crate) fn get_item_cycles_until_empty(&mut self, u_data: &UData, item_key: UItemId) -> Option<InfCount> {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_key()??;
         let cycle_info = get_item_cseq_map(
@@ -56,7 +56,7 @@ impl Svc {
     pub(crate) fn get_effect_spool_cycle_count(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Option<AdjustableCount> {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_key()??;

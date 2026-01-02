@@ -3,7 +3,7 @@ use crate::{
     api::{FullMAttr, FullMAttrMut},
     def::AttrVal,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> FullMAttr<'a> {
@@ -20,7 +20,7 @@ impl<'a> FullMAttrMut<'a> {
     }
 }
 
-fn get_value(sol: &SolarSystem, item_key: UItemKey, a_attr_id: &AAttrId) -> AttrVal {
+fn get_value(sol: &SolarSystem, item_key: UItemId, a_attr_id: &AAttrId) -> AttrVal {
     let attr_key = sol.u_data.src.get_attr_key_by_id(a_attr_id).unwrap();
     sol.u_data.items.get(item_key).get_attr(attr_key).unwrap()
 }

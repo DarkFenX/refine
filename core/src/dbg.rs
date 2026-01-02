@@ -1,6 +1,6 @@
 use crate::{
     rd::{RAttrKey, REffectKey},
-    ud::{UData, UFitKey, UItemKey},
+    ud::{UData, UFitId, UItemId},
 };
 
 #[derive(thiserror::Error, Debug)]
@@ -9,15 +9,15 @@ pub(crate) struct DebugError {}
 
 pub(crate) type DebugResult = Result<(), DebugError>;
 
-pub(crate) fn check_fit_key(u_data: &UData, fit_key: UFitKey) -> DebugResult {
-    if u_data.fits.try_get(fit_key).is_none() {
+pub(crate) fn check_fit_id(data: &UData, fit_id: UFitId) -> DebugResult {
+    if data.fits.try_get(fit_id).is_none() {
         return Err(DebugError {});
     }
     Ok(())
 }
 
-pub(crate) fn check_item_key(u_data: &UData, item_key: UItemKey, check_load: bool) -> DebugResult {
-    let item = match u_data.items.try_get(item_key) {
+pub(crate) fn check_item_id(data: &UData, item_id: UItemId, check_load: bool) -> DebugResult {
+    let item = match data.items.try_get(item_id) {
         Some(item) => item,
         None => return Err(DebugError {}),
     };
@@ -27,14 +27,14 @@ pub(crate) fn check_item_key(u_data: &UData, item_key: UItemKey, check_load: boo
     Ok(())
 }
 
-pub(crate) fn check_attr_key(u_data: &UData, attr_key: RAttrKey) -> DebugResult {
+pub(crate) fn check_attr_id(data: &UData, attr_id: RAttrKey) -> DebugResult {
     // Will crash if attr key is not valid
-    u_data.src.get_attr(attr_key);
+    data.src.get_attr(attr_id);
     Ok(())
 }
 
-pub(crate) fn check_effect_key(u_data: &UData, effect_key: REffectKey) -> DebugResult {
+pub(crate) fn check_effect_id(data: &UData, effect_id: REffectKey) -> DebugResult {
     // Will crash if effect key is not valid
-    u_data.src.get_effect(effect_key);
+    data.src.get_effect(effect_id);
     Ok(())
 }

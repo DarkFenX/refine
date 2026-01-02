@@ -4,7 +4,7 @@ use crate::{
     def::ItemId,
     misc::ItemKind,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -23,7 +23,7 @@ pub struct ValItemKindItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<UItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.item_kind.is_empty(),
             false => self.item_kind.difference(kfs).next().is_none(),
@@ -32,14 +32,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_item_kind_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValItemKindFail> {
         let item_kinds: HashMap<_, _> = self
             .item_kind
             .iter()
             .filter(|(item_key, _)| !kfs.contains(item_key))
-            .map(|(item_key, item_info)| (ctx.u_data.items.id_by_key(*item_key), *item_info))
+            .map(|(item_key, item_info)| (ctx.u_data.items.ext_id_by_int_id(*item_key), *item_info))
             .collect();
         match item_kinds.is_empty() {
             true => None,

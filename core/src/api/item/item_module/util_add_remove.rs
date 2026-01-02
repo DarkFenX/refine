@@ -1,16 +1,16 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_module(
         u_data: &mut UData,
         svc: &mut Svc,
-        module_key: UItemKey,
+        module_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> Option<UItemKey> {
+    ) -> Option<UItemId> {
         let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.update_reffs(reuse_eupdates, &u_data.src);
         let charge_key = u_module.get_charge_key();
@@ -20,7 +20,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_add_module_with_charge_act(
         u_data: &mut UData,
         svc: &mut Svc,
-        module_key: UItemKey,
+        module_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Process module itself
@@ -35,9 +35,9 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_module(
         u_data: &mut UData,
         svc: &mut Svc,
-        module_key: UItemKey,
+        module_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> Option<UItemKey> {
+    ) -> Option<UItemId> {
         let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.stop_all_reffs(reuse_eupdates, &u_data.src);
         let charge_key = u_module.get_charge_key();
@@ -47,7 +47,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_module_with_charge_act(
         u_data: &mut UData,
         svc: &mut Svc,
-        module_key: UItemKey,
+        module_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Process module itself

@@ -3,13 +3,13 @@ use crate::{
     def::ItemId,
     err::basic::{ItemFoundError, ProjFoundError},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_get_ranged_proj(
         &self,
-        projector_key: UItemKey,
+        projector_key: UItemId,
         projectee_item_id: &ItemId,
     ) -> Result<RangedProj<'_>, GetRangedProjError> {
         let projectee_key = self.internal_get_ranged_projectee_key(projector_key, projectee_item_id)?;
@@ -17,7 +17,7 @@ impl SolarSystem {
     }
     pub(in crate::api) fn internal_get_ranged_proj_mut(
         &mut self,
-        projector_key: UItemKey,
+        projector_key: UItemId,
         projectee_item_id: &ItemId,
     ) -> Result<RangedProjMut<'_>, GetRangedProjError> {
         let projectee_key = self.internal_get_ranged_projectee_key(projector_key, projectee_item_id)?;
@@ -25,10 +25,10 @@ impl SolarSystem {
     }
     fn internal_get_ranged_projectee_key(
         &self,
-        projector_key: UItemKey,
+        projector_key: UItemId,
         projectee_item_id: &ItemId,
-    ) -> Result<UItemKey, GetRangedProjError> {
-        let projectee_key = self.u_data.items.key_by_id_err(projectee_item_id)?;
+    ) -> Result<UItemId, GetRangedProjError> {
+        let projectee_key = self.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         match self
             .u_data
             .items
@@ -39,7 +39,7 @@ impl SolarSystem {
         {
             true => Ok(projectee_key),
             false => Err(ProjFoundError {
-                projector_item_id: self.u_data.items.id_by_key(projector_key),
+                projector_item_id: self.u_data.items.ext_id_by_int_id(projector_key),
                 projectee_item_id: *projectee_item_id,
             }
             .into()),

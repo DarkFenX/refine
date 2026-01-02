@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     def::{FitId, ItemId},
     sol::SolarSystem,
-    ud::{UFitKey, UItemKey},
+    ud::{UFitId, UItemId},
     util::RSet,
 };
 
@@ -320,7 +320,7 @@ impl ValOption {
 // Internal variant of validation options, with fit/item keys instead of IDs.
 pub(crate) struct ValOptionsSolInt {
     pub(crate) options: ValOptionsInt,
-    pub(crate) fit_keys: Vec<UFitKey>,
+    pub(crate) fit_keys: Vec<UFitId>,
 }
 impl ValOptionsSolInt {
     pub(crate) fn from_pub(sol: &SolarSystem, pub_sol_opts: &ValOptionsSol) -> Self {
@@ -329,7 +329,7 @@ impl ValOptionsSolInt {
             fit_keys: pub_sol_opts
                 .fit_ids
                 .iter()
-                .filter_map(|fit_id| sol.u_data.fits.key_by_id(fit_id))
+                .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
                 .unique()
                 .collect(),
         }
@@ -507,7 +507,7 @@ impl ValOptionsInt {
 
 pub(in crate::svc::vast) struct ValOptionInt {
     pub(in crate::svc::vast) enabled: bool,
-    pub(in crate::svc::vast) kfs: RSet<UItemKey>,
+    pub(in crate::svc::vast) kfs: RSet<UItemId>,
 }
 impl ValOptionInt {
     fn from_pub(sol: &SolarSystem, pub_opt: &ValOption) -> Self {
@@ -516,7 +516,7 @@ impl ValOptionInt {
             kfs: pub_opt
                 .kfs
                 .iter()
-                .filter_map(|item_id| sol.u_data.items.key_by_id(item_id))
+                .filter_map(|item_id| sol.u_data.items.int_id_by_ext_id(item_id))
                 .unique()
                 .collect(),
         }

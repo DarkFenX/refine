@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::{Calc, RawModifier},
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 impl Calc {
@@ -14,7 +14,7 @@ impl Calc {
         &mut self,
         reuse_rmods: &mut Vec<RawModifier>,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
         effect: &REffect,
     ) {
@@ -94,7 +94,7 @@ impl Calc {
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
         effect_keys: impl Iterator<Item = &'a REffectKey>,
         buff_type_attr_key: RAttrKey,
@@ -133,7 +133,7 @@ impl Calc {
 
 fn add_buff_mods_with_attr(
     rmods: &mut Vec<RawModifier>,
-    item_key: UItemKey,
+    item_key: UItemId,
     item: &UItem,
     effect: &REffect,
     buff: &RBuff,
@@ -161,7 +161,7 @@ fn add_buff_mods_with_attr(
 
 fn add_buff_mods_with_hardcoded(
     rmods: &mut Vec<RawModifier>,
-    item_key: UItemKey,
+    item_key: UItemId,
     item: &UItem,
     effect: &REffect,
     buff: &RBuff,

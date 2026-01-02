@@ -4,7 +4,7 @@ use crate::{
     misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
-        UFitKey,
+        UFitId,
         item::{UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
     },
     util::{Named, RMap, RSet},
@@ -13,10 +13,10 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UCharacter {
     pub(super) base: UItemBase,
-    fit_key: UFitKey,
+    fit_key: UFitId,
 }
 impl UCharacter {
-    pub(crate) fn new(item_id: ItemId, type_id: AItemId, fit_key: UFitKey, character_state: bool, src: &Src) -> Self {
+    pub(crate) fn new(item_id: ItemId, type_id: AItemId, fit_key: UFitId, character_state: bool, src: &Src) -> Self {
         Self {
             base: UItemBase::new(item_id, type_id, bool_to_state_offline(character_state), src),
             fit_key,
@@ -94,7 +94,7 @@ impl UCharacter {
     pub(crate) fn set_character_state(&mut self, state: bool) {
         self.base.set_state(bool_to_state_offline(state))
     }
-    pub(crate) fn get_fit_key(&self) -> UFitKey {
+    pub(crate) fn get_fit_key(&self) -> UFitId {
         self.fit_key
     }
 }

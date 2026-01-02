@@ -1,15 +1,15 @@
 use derive_more::Display;
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
-pub(crate) struct UItemKey(usize);
+pub(crate) struct UItemId(usize);
 
-impl From<usize> for UItemKey {
+impl From<usize> for UItemId {
     fn from(v: usize) -> Self {
         Self(v)
     }
 }
-impl From<UItemKey> for usize {
-    fn from(v: UItemKey) -> Self {
+impl From<UItemId> for usize {
+    fn from(v: UItemId) -> Self {
         v.0
     }
 }

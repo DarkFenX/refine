@@ -7,13 +7,13 @@ use crate::{
         funcs,
         output::{Output, OutputSimple},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(super) fn get_generic_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     attr_key: Option<RAttrKey>,
     applied_at_start: bool,

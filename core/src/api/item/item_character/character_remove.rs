@@ -1,13 +1,13 @@
 use crate::{
     api::CharacterMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_character(
         &mut self,
-        character_key: UItemKey,
+        character_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::util_remove_character(&mut self.u_data, &mut self.svc, character_key, reuse_eupdates);

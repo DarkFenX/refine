@@ -16,7 +16,7 @@ use crate::{
             },
         },
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::UnitInterval,
 };
 
@@ -25,7 +25,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         cap_perc: UnitInterval,
         reload_optionals: Option<bool>,
         stagger: StatCapSimStaggerInt,

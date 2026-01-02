@@ -7,14 +7,14 @@ use crate::{
     def::{AttrVal, OF},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // Local effects, considers only infinite parts of cycles
 pub(in crate::svc) fn aggr_local_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
@@ -34,7 +34,7 @@ where
 pub(in crate::svc) fn aggr_local_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,

@@ -1,13 +1,13 @@
 use crate::{
     api::ServiceMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_service(
         &mut self,
-        service_key: UItemKey,
+        service_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_key, reuse_eupdates);

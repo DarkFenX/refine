@@ -9,7 +9,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::{RMapRMap, RMapRMapRMap},
 };
 
@@ -24,7 +24,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(self.get_stat_item_hp_unchecked(ctx, calc, item_key, item))
@@ -33,7 +33,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         item: &UItem,
     ) -> StatTank<StatLayerHp> {
         let attr_consts = ctx.ac();
@@ -88,7 +88,7 @@ const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 fn get_local_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    ancil_data: &RMapRMap<UItemKey, REffectKey, REffectLocalOpcSpec<AttrVal>>,
+    ancil_data: &RMapRMap<UItemId, REffectKey, REffectLocalOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     for (&item_key, item_data) in ancil_data.iter() {
@@ -113,8 +113,8 @@ fn get_local_ancil_hp(
 fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projectee_item_key: UItemKey,
-    ancil_data: &RMapRMapRMap<UItemKey, UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    projectee_item_key: UItemId,
+    ancil_data: &RMapRMapRMap<UItemId, UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut total_ancil_hp = OF(0.0);
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_key) {

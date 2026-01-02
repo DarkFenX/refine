@@ -2,7 +2,7 @@ use crate::{
     def::{AttrVal, OF, SERVER_TICK_HZ},
     rd::{RAttrKey, REffect},
     svc::{SvcCtx, calc::Calc},
-    ud::{UItemKey, UProjData},
+    ud::{UItemId, UProjData},
     util::{FLOAT_TOLERANCE, ceil_tick, floor_tick},
 };
 
@@ -12,7 +12,7 @@ use crate::{
 pub(super) fn get_simple_c2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
@@ -26,7 +26,7 @@ pub(super) fn get_simple_c2s_range_mult(
 pub(super) fn get_simple_s2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
@@ -40,7 +40,7 @@ pub(super) fn get_simple_s2s_range_mult(
 pub(super) fn get_full_restricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
@@ -57,7 +57,7 @@ pub(super) fn get_full_restricted_range_mult(
 pub(super) fn get_full_unrestricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
@@ -74,7 +74,7 @@ pub(super) fn get_full_unrestricted_range_mult(
 fn get_full_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
     proj_range: AttrVal,
     restricted: bool,
@@ -103,9 +103,9 @@ fn get_full_range_mult(
 pub(in crate::nd::effect::data) fn get_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let attr_consts = ctx.ac();
@@ -157,9 +157,9 @@ pub(in crate::nd::effect::data) fn get_missile_range_mult(
 pub(in crate::nd::effect::data) fn get_bomb_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     _projector_effect: &REffect,
-    _projectee_key: UItemKey,
+    _projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     // Bomb is similar to missile, but they have fixed flight range and AoE effect
@@ -236,7 +236,7 @@ fn calc_flight_range(max_velocity: AttrVal, flight_time: AttrVal, mass: AttrVal,
 pub(super) fn get_aoe_burst_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
@@ -252,7 +252,7 @@ pub(super) fn get_aoe_burst_range_mult(
 pub(super) fn get_aoe_dd_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     // AoE doomsdays' effects do not specify range attribute ID, so it is hardcoded here. Their
@@ -271,7 +271,7 @@ pub(super) fn get_aoe_dd_range_mult(
 pub(super) fn get_dd_neut_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let neut_optimal = get_effect_range(ctx, calc, projector_key, ctx.ac().doomsday_energy_neut_radius);
@@ -285,7 +285,7 @@ pub(super) fn get_dd_neut_range_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemKey, attr_key: Option<RAttrKey>) -> AttrVal {
+fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemId, attr_key: Option<RAttrKey>) -> AttrVal {
     match attr_key {
         Some(attr_key) => match calc.get_item_attr_rfull(ctx, projector_key, attr_key) {
             Ok(val) => val.extra,

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{ItemGrpId, ItemId},
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -23,7 +23,7 @@ pub struct ValChargeGroupChargeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<UItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_group_fast(&mut self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.charge_group.is_empty(),
             false => self.charge_group.difference(kfs).next().is_none(),
@@ -32,15 +32,15 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_charge_group_verbose(
         &mut self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValChargeGroupFail> {
         let mut charges = HashMap::new();
         for (&charge_key, &cont_key) in self.charge_group.difference(kfs) {
             charges.insert(
-                ctx.u_data.items.id_by_key(charge_key),
+                ctx.u_data.items.ext_id_by_int_id(charge_key),
                 ValChargeGroupChargeInfo {
-                    parent_item_id: ctx.u_data.items.id_by_key(cont_key),
+                    parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_key),
                     charge_group_id: ctx.u_data.items.get(charge_key).get_group_id().unwrap(),
                     allowed_group_ids: ctx
                         .u_data

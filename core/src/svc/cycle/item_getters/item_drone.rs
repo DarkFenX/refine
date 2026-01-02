@@ -8,14 +8,14 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq, seq_inf::CSeqInf},
         funcs,
     },
-    ud::{UDrone, UItemKey},
+    ud::{UDrone, UItemId},
     util::RMap,
 };
 
 pub(super) fn get_drone_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     drone: &UDrone,
     ignore_state: bool,
 ) -> Option<RMap<REffectKey, CycleSeq>> {

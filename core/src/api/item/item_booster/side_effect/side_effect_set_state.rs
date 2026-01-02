@@ -3,7 +3,7 @@ use crate::{
     api::{FullSideEffectMut, SideEffectMut, StubSideEffectMut},
     misc::EffectMode,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl<'a> SideEffectMut<'a> {
@@ -36,7 +36,7 @@ impl<'a> StubSideEffectMut<'a> {
     }
 }
 
-fn set_state(sol: &mut SolarSystem, booster_key: UItemKey, a_effect_id: AEffectId, state: bool) {
+fn set_state(sol: &mut SolarSystem, booster_key: UItemId, a_effect_id: AEffectId, state: bool) {
     let u_booster = sol.u_data.items.get_mut(booster_key).dc_booster_mut().unwrap();
     let effect_mode = match state {
         true => EffectMode::StateCompliance,

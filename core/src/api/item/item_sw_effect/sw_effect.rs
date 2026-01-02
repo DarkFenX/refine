@@ -1,15 +1,15 @@
 use crate::{
     api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     sol::SolarSystem,
-    ud::{UItemKey, USwEffect},
+    ud::{UItemId, USwEffect},
 };
 
 pub struct SwEffect<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> SwEffect<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_state(&self) -> bool {
@@ -20,7 +20,7 @@ impl<'a> ItemSealed for SwEffect<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -28,10 +28,10 @@ impl<'a> ItemCommon for SwEffect<'a> {}
 
 pub struct SwEffectMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> SwEffectMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_state(&self) -> bool {
@@ -42,7 +42,7 @@ impl<'a> ItemSealed for SwEffectMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -54,9 +54,9 @@ impl<'a> ItemMutSealed for SwEffectMut<'a> {
 impl<'a> ItemCommon for SwEffectMut<'a> {}
 impl<'a> ItemMutCommon for SwEffectMut<'a> {}
 
-fn get_state(sol: &SolarSystem, sw_effect_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, sw_effect_key: UItemId) -> bool {
     get_u_sw_effect(sol, sw_effect_key).get_sw_effect_state()
 }
-fn get_u_sw_effect(sol: &SolarSystem, sw_effect_key: UItemKey) -> &USwEffect {
+fn get_u_sw_effect(sol: &SolarSystem, sw_effect_key: UItemId) -> &USwEffect {
     sol.u_data.items.get(sw_effect_key).dc_sw_effect().unwrap()
 }

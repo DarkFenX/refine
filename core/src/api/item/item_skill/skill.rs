@@ -2,15 +2,15 @@ use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     misc::SkillLevel,
     sol::SolarSystem,
-    ud::{UItemKey, USkill},
+    ud::{UItemId, USkill},
 };
 
 pub struct Skill<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Skill<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -27,7 +27,7 @@ impl<'a> ItemSealed for Skill<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -35,10 +35,10 @@ impl<'a> ItemCommon for Skill<'a> {}
 
 pub struct SkillMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> SkillMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -59,7 +59,7 @@ impl<'a> ItemSealed for SkillMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -71,16 +71,16 @@ impl<'a> ItemMutSealed for SkillMut<'a> {
 impl<'a> ItemCommon for SkillMut<'a> {}
 impl<'a> ItemMutCommon for SkillMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, skill_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, skill_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_skill(sol, skill_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_level(sol: &SolarSystem, skill_key: UItemKey) -> SkillLevel {
+fn get_level(sol: &SolarSystem, skill_key: UItemId) -> SkillLevel {
     get_u_skill(sol, skill_key).get_level().into()
 }
-fn get_state(sol: &SolarSystem, skill_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, skill_key: UItemId) -> bool {
     get_u_skill(sol, skill_key).get_skill_state()
 }
-fn get_u_skill(sol: &SolarSystem, skill_key: UItemKey) -> &USkill {
+fn get_u_skill(sol: &SolarSystem, skill_key: UItemId) -> &USkill {
     sol.u_data.items.get(skill_key).dc_skill().unwrap()
 }

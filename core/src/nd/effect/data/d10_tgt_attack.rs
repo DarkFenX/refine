@@ -15,7 +15,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::TGT_ATTACK;
@@ -51,7 +51,7 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let item = ctx.u_data.items.get(item_key);

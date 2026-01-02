@@ -8,7 +8,7 @@ use crate::{
     def::OF,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
-    ud::UItemKey,
+    ud::UItemId,
     util::InfCount,
 };
 
@@ -16,7 +16,7 @@ use crate::{
 pub(in crate::svc) fn aggr_local_clip_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,

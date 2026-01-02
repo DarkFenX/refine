@@ -3,7 +3,7 @@ use crate::{
     misc::Spool,
     rd::{REffect, RSpoolAttrs},
     svc::{SvcCtx, calc::Calc, funcs},
-    ud::UItemKey,
+    ud::UItemId,
     util::{ceil_unerr, floor_unerr},
 };
 
@@ -16,7 +16,7 @@ impl ResolvedSpool {
     pub(super) fn try_build(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         effect: &REffect,
         spool: Option<Spool>,
         spool_attrs: RSpoolAttrs,

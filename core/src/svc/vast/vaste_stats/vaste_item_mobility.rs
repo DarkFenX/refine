@@ -4,7 +4,7 @@ use super::item_checks::{
 use crate::{
     def::{AttrVal, OF},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, funcs, vast::Vast},
-    ud::UItemKey,
+    ud::UItemId,
     util::{FLOAT_TOLERANCE, ceil_tick},
 };
 
@@ -15,7 +15,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_speed(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
         let speed = funcs::get_speed(ctx, calc, item_key);
@@ -24,12 +24,12 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_agility(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
     }
-    fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<AttrVal> {
+    fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> Option<AttrVal> {
         let attr_consts = ctx.ac();
         let agility = calc
             .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.agility, OF(0.0))
@@ -48,7 +48,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_align_time(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
         let agility = Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key);
@@ -58,7 +58,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_sig_radius(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key))
@@ -66,26 +66,26 @@ impl Vast {
     pub(super) fn internal_get_stat_item_sig_radius_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> AttrVal {
         funcs::get_sig_radius(ctx, calc, item_key)
     }
     pub(in crate::svc) fn get_stat_item_mass(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
         Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key))
     }
-    fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+    fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
         calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mass, OF(0.0))
             .unwrap()
     }
     pub(in crate::svc) fn get_stat_item_warp_speed(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         check_fighter_ship_no_struct(ctx.u_data, item_key)?;
         let warp_speed = calc
@@ -100,7 +100,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_max_warp_range(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<Option<AttrVal>, StatItemCheckError> {
         check_ship_no_struct(ctx.u_data, item_key)?;
         let cap = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);

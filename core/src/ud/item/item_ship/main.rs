@@ -5,7 +5,7 @@ use crate::{
     misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, RShipKind, Src},
     ud::{
-        UFitKey,
+        UFitId,
         item::{UEffectUpdates, UItemBase, UPhysics, UShipKind, bool_to_state_offline, state_to_bool},
     },
     util::{Named, RMap, RSet},
@@ -14,7 +14,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UShip {
     pub(super) base: UItemBase,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     kind: UShipKind,
     physics: UPhysics,
 }
@@ -22,7 +22,7 @@ impl UShip {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         ship_state: bool,
         physics: UPhysics,
         src: &Src,
@@ -116,7 +116,7 @@ impl UShip {
     pub(crate) fn set_ship_state(&mut self, state: bool) {
         self.base.set_state(bool_to_state_offline(state))
     }
-    pub(crate) fn get_fit_key(&self) -> UFitKey {
+    pub(crate) fn get_fit_key(&self) -> UFitId {
         self.fit_key
     }
     pub(crate) fn get_kind(&self) -> UShipKind {

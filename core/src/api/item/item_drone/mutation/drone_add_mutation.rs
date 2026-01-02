@@ -3,13 +3,13 @@ use crate::{
     def::ItemTypeId,
     err::basic::ItemNotMutatedError,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey, UItemMutationRequest},
+    ud::{UEffectUpdates, UItemId, UItemMutationRequest},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_drone_mutation(
         &mut self,
-        drone_key: UItemKey,
+        drone_key: UItemId,
         mutation: UItemMutationRequest,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {

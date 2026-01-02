@@ -2,17 +2,17 @@ use crate::{
     ad::AAbilId,
     def::{AbilId, Count},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 /// Fighter ability.
 pub struct Ability<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) fighter_key: UItemKey,
+    pub(in crate::api) fighter_key: UItemId,
     pub(in crate::api) abil_id: AAbilId,
 }
 impl<'a> Ability<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, fighter_key: UItemKey, abil_id: AAbilId) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, fighter_key: UItemId, abil_id: AAbilId) -> Self {
         Self {
             sol,
             fighter_key,
@@ -30,11 +30,11 @@ impl<'a> Ability<'a> {
 /// Fighter ability which allows changing its state.
 pub struct AbilityMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) fighter_key: UItemKey,
+    pub(in crate::api) fighter_key: UItemId,
     pub(in crate::api) abil_id: AAbilId,
 }
 impl<'a> AbilityMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, fighter_key: UItemKey, abil_id: AAbilId) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, fighter_key: UItemId, abil_id: AAbilId) -> Self {
         Self {
             sol,
             fighter_key,
@@ -49,7 +49,7 @@ impl<'a> AbilityMut<'a> {
     }
 }
 
-fn get_charge_count(sol: &SolarSystem, fighter_key: UItemKey, abil_id: &AAbilId) -> Option<Count> {
+fn get_charge_count(sol: &SolarSystem, fighter_key: UItemId, abil_id: &AAbilId) -> Option<Count> {
     // Only abilities which exist in source are exposed by API, just unwrap
     let r_abil = sol.u_data.src.get_ability(abil_id).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();

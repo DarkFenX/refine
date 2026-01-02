@@ -2,11 +2,11 @@ use crate::{
     api::{Fit, FitMut},
     misc::FitSecStatus,
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_get_fit_sec_status(&self, fit_key: UFitKey) -> FitSecStatus {
+    pub(in crate::api) fn internal_get_fit_sec_status(&self, fit_key: UFitId) -> FitSecStatus {
         self.u_data.fits.get(fit_key).sec_status
     }
 }

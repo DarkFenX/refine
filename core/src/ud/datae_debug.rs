@@ -1,6 +1,6 @@
 use crate::{
     dbg::{DebugError, DebugResult},
-    ud::{UData, UItemKey, item::UItem},
+    ud::{UData, UItemId, item::UItem},
     util::RSet,
 };
 
@@ -55,7 +55,7 @@ impl UData {
     }
 }
 
-fn check_item_duplicates(item_ids: &[UItemKey]) -> bool {
+fn check_item_duplicates(item_ids: &[UItemId]) -> bool {
     let mut uniq = RSet::new();
     !item_ids.iter().all(|x| uniq.insert(x))
 }

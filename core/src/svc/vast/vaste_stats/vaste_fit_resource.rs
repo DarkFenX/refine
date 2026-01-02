@@ -2,7 +2,7 @@ use crate::{
     def::{AttrVal, OF},
     rd::RAttrKey,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{UFit, UItemKey},
+    ud::{UFit, UItemId},
     util::round,
 };
 
@@ -63,7 +63,7 @@ fn get_resource_stats_fitting<'a>(
     ctx: SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
-    items: impl Iterator<Item = &'a UItemKey>,
+    items: impl Iterator<Item = &'a UItemId>,
     use_attr_key: Option<RAttrKey>,
     output_attr_key: Option<RAttrKey>,
 ) -> StatRes {

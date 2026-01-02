@@ -6,7 +6,7 @@ use crate::{
         calc::Calc,
         vast::{VastFitData, shared::get_attr_as_count},
     },
-    ud::{UFit, UItemKey},
+    ud::{UFit, UItemId},
     util::RSet,
 };
 
@@ -21,7 +21,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_slot_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -30,7 +30,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -39,7 +39,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_light_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -48,7 +48,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_heavy_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -57,7 +57,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_support_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -73,7 +73,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_st_light_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -89,7 +89,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_st_heavy_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -105,7 +105,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_st_support_fighter_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -122,7 +122,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_slot_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -131,7 +131,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -140,7 +140,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_light_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -149,7 +149,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_heavy_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -158,7 +158,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_support_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -174,7 +174,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_st_light_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -190,7 +190,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_st_heavy_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -206,7 +206,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_unlaunchable_st_support_fighter_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -223,12 +223,12 @@ impl VastFitData {
 }
 
 fn validate_fast(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
-    users: &RSet<UItemKey>,
+    users: &RSet<UItemId>,
 ) -> bool {
     if users.is_empty() {
         return true;
@@ -240,12 +240,12 @@ fn validate_fast(
     users.is_subset(kfs)
 }
 fn validate_verbose(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
-    users: &RSet<UItemKey>,
+    users: &RSet<UItemId>,
 ) -> Option<ValUnusableSlotFail> {
     if users.is_empty() {
         return None;
@@ -256,7 +256,7 @@ fn validate_verbose(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.id_by_key(*item_key))
+        .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
         .collect();
     match users.is_empty() {
         true => None,

@@ -3,16 +3,16 @@ use crate::{
     api::{FitMut, ImplantMut},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitKey, UImplant, UItem, UItemKey},
+    ud::{UEffectUpdates, UFitId, UImplant, UItem, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_implant(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let item_id = self.u_data.items.alloc_id();
         let u_implant = UImplant::new(item_id, type_id, fit_key, true, &self.u_data.src);

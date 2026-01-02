@@ -5,13 +5,13 @@ use crate::{
     misc::{ItemKind, ModRack},
     sol::SolarSystem,
     svc::vast::{ValOptions, ValOptionsInt},
-    ud::{UData, UEffectUpdates, UFitKey, UItemKey, UNpcProp, UPhysics},
+    ud::{UData, UEffectUpdates, UFitId, UItemId, UNpcProp, UPhysics},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_try_fit_items(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_ids: &[ItemTypeId],
         val_options: &ValOptionsInt,
         reuse_eupdates: &mut UEffectUpdates,
@@ -166,7 +166,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_chargeable_modules(u_data: &UData, fit_key: UFitKey) -> Vec<UItemKey> {
+fn get_chargeable_modules(u_data: &UData, fit_key: UFitId) -> Vec<UItemId> {
     let mut seen_a_item_ids = Vec::new();
     let mut module_keys = Vec::new();
     for module_key in u_data.fits.get(fit_key).iter_module_keys() {

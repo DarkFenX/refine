@@ -6,27 +6,27 @@ use super::{
 };
 use crate::{
     svc::calc::ItemAttrPostprocs,
-    ud::{UData, UItem, UItemKey},
+    ud::{UData, UItem, UItemId},
     util::RMap,
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
-    pub(super) data: RMap<UItemKey, ItemAttrData>,
+    pub(super) data: RMap<UItemId, ItemAttrData>,
 }
 impl AttrValData {
     pub(in crate::svc::calc) fn new() -> Self {
         Self { data: RMap::new() }
     }
     // Query methods
-    pub(in crate::svc::calc) fn get_item_attr_data(&self, item_key: &UItemKey) -> Option<&ItemAttrData> {
+    pub(in crate::svc::calc) fn get_item_attr_data(&self, item_key: &UItemId) -> Option<&ItemAttrData> {
         self.data.get(item_key)
     }
-    pub(in crate::svc::calc) fn get_item_attr_data_mut(&mut self, item_key: &UItemKey) -> Option<&mut ItemAttrData> {
+    pub(in crate::svc::calc) fn get_item_attr_data_mut(&mut self, item_key: &UItemId) -> Option<&mut ItemAttrData> {
         self.data.get_mut(item_key)
     }
     // Modification methods
-    pub(in crate::svc::calc) fn item_loaded(&mut self, u_data: &UData, item_key: UItemKey, item: &UItem) {
+    pub(in crate::svc::calc) fn item_loaded(&mut self, u_data: &UData, item_key: UItemId, item: &UItem) {
         let mut item_data = ItemAttrData::new();
         match item {
             UItem::Fighter(_) if let Some(count_attr_key) = u_data.src.get_attr_consts().ftr_sq_size => {
@@ -60,7 +60,7 @@ impl AttrValData {
         }
         self.data.insert(item_key, item_data);
     }
-    pub(in crate::svc::calc) fn item_unloaded(&mut self, item_key: &UItemKey) {
+    pub(in crate::svc::calc) fn item_unloaded(&mut self, item_key: &UItemId) {
         self.data.remove(item_key);
     }
 }

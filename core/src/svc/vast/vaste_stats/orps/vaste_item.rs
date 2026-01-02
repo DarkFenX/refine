@@ -9,17 +9,17 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTank, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_fighter_module},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_outgoing_rps(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         time_options: StatTimeOptions,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<StatTank<AttrVal>, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_key)?;
         let orps = StatTank {
@@ -58,10 +58,10 @@ impl Vast {
 fn get_orps(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     time_options: StatTimeOptions,
     ignore_state: bool,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut orps = OF(0.0);

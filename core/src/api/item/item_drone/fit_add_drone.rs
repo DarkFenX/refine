@@ -4,20 +4,20 @@ use crate::{
     def::ItemTypeId,
     misc::NpcProp,
     sol::SolarSystem,
-    ud::{UDrone, UEffectUpdates, UFitKey, UItem, UItemKey, UItemMutationRequest, UNpcProp, UPhysics},
+    ud::{UDrone, UEffectUpdates, UFitId, UItem, UItemId, UItemMutationRequest, UNpcProp, UPhysics},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_drone(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         state: MinionState,
         mutation: Option<UItemMutationRequest>,
         physics: UPhysics,
         prop_mode: UNpcProp,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_drone = UDrone::new(
             item_id,

@@ -4,7 +4,7 @@ use crate::{
     ad::AAttrId,
     api::{EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> EffectiveMutation<'a> {
@@ -28,12 +28,12 @@ impl<'a> EffectiveMutationMut<'a> {
 // Lending iterator for attribute rolls
 pub struct FullMAttrIter<'iter> {
     sol: &'iter mut SolarSystem,
-    item_key: UItemKey,
+    item_key: UItemId,
     a_attr_ids: Vec<AAttrId>,
     index: usize,
 }
 impl<'iter> FullMAttrIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_key: UItemId) -> Self {
         let a_attr_ids = full_mutated_a_attr_id_iter(sol, item_key).collect();
         Self {
             sol,
@@ -54,7 +54,7 @@ impl<'iter> Lender for FullMAttrIter<'iter> {
     }
 }
 
-fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: UItemKey) -> impl Iterator<Item = AAttrId> {
+fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: UItemId) -> impl Iterator<Item = AAttrId> {
     let u_item = sol.u_data.items.get(item_key);
     u_item
         .get_mutation_data()
@@ -70,6 +70,6 @@ fn full_mutated_a_attr_id_iter(sol: &SolarSystem, item_key: UItemKey) -> impl It
         })
 }
 
-fn iter_full_mattrs(sol: &SolarSystem, item_key: UItemKey) -> impl Iterator<Item = FullMAttr<'_>> + use<'_> {
+fn iter_full_mattrs(sol: &SolarSystem, item_key: UItemId) -> impl Iterator<Item = FullMAttr<'_>> + use<'_> {
     full_mutated_a_attr_id_iter(sol, item_key).map(move |a_attr_id| FullMAttr::new(sol, item_key, a_attr_id))
 }

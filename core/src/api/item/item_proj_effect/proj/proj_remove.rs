@@ -1,17 +1,17 @@
-use crate::{api::ProjMut, err::basic::ProjFoundError, sol::SolarSystem, ud::UItemKey};
+use crate::{api::ProjMut, err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_proj_effect_proj(
         &mut self,
-        proj_effect_key: UItemKey,
-        projectee_key: UItemKey,
+        proj_effect_key: UItemId,
+        projectee_key: UItemId,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let u_proj_effect = self.u_data.items.get(proj_effect_key).dc_proj_effect().unwrap();
         if !u_proj_effect.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_proj_effect.get_item_id(),
-                projectee_item_id: self.u_data.items.id_by_key(projectee_key),
+                projectee_item_id: self.u_data.items.ext_id_by_int_id(projectee_key),
             });
         };
         // Update services

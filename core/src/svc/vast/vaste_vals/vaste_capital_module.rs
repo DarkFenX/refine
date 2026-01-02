@@ -5,7 +5,7 @@ use crate::{
     def::{AttrVal, ItemId},
     rd,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UItemKey, UShip},
+    ud::{UItemId, UShip},
     util::RSet,
 };
 
@@ -18,11 +18,7 @@ pub struct ValCapitalModFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_capital_module_fast(
-        &self,
-        kfs: &RSet<UItemKey>,
-        ship: Option<&UShip>,
-    ) -> bool {
+    pub(in crate::svc::vast) fn validate_capital_module_fast(&self, kfs: &RSet<UItemId>, ship: Option<&UShip>) -> bool {
         if !is_ship_subcap(ship) {
             return true;
         }
@@ -34,7 +30,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_capital_module_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         ship: Option<&UShip>,
     ) -> Option<ValCapitalModFail> {
@@ -45,7 +41,7 @@ impl VastFitData {
             .mods_capital
             .iter()
             .filter(|(module_key, _)| !kfs.contains(module_key))
-            .map(|(module_key, module_volume)| (ctx.u_data.items.id_by_key(*module_key), *module_volume))
+            .map(|(module_key, module_volume)| (ctx.u_data.items.ext_id_by_int_id(*module_key), *module_volume))
             .collect();
         match module_volumes.is_empty() {
             true => None,

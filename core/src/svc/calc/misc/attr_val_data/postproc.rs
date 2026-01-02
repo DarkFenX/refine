@@ -3,11 +3,11 @@ use crate::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct ItemAttrPostprocs {
-    pub(in crate::svc::calc) fast: fn(&mut Calc, SvcCtx, UItemKey, CalcAttrVals) -> CalcAttrVals,
-    pub(in crate::svc::calc) info: fn(&mut Calc, SvcCtx, UItemKey, AttrValInfo) -> AttrValInfo,
+    pub(in crate::svc::calc) fast: fn(&mut Calc, SvcCtx, UItemId, CalcAttrVals) -> CalcAttrVals,
+    pub(in crate::svc::calc) info: fn(&mut Calc, SvcCtx, UItemId, AttrValInfo) -> AttrValInfo,
 }

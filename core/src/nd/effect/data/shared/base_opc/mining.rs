@@ -8,14 +8,14 @@ use crate::{
         funcs,
         output::{Output, OutputSimple},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::FLOAT_TOLERANCE,
 };
 
 pub(in crate::nd::effect::data) fn get_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
@@ -28,7 +28,7 @@ pub(in crate::nd::effect::data) fn get_mining_base_opc(
 pub(in crate::nd::effect::data) fn get_crit_mining_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<MiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_key, effect)?;
@@ -51,7 +51,7 @@ pub(in crate::nd::effect::data) fn get_crit_mining_base_opc(
 fn get_mining_values(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<(AttrVal, AttrVal, AttrVal)> {
     let delay = funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;

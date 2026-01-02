@@ -6,7 +6,7 @@ use crate::{
     misc::{EffectMode, ModRack, Spool},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
-        UAttrMutationRequest, UData, UFitKey, UItemKey, UItemMutationRequest,
+        UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
         item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UProjs},
     },
@@ -16,10 +16,10 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UModule {
     pub(super) base: UItemBaseMutable,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     rack: ModRack,
     pos: Idx,
-    charge_key: Option<UItemKey>,
+    charge_key: Option<UItemId>,
     projs: UProjs,
     // Optional settings related to cycling
     spool: Option<Spool>,
@@ -29,12 +29,12 @@ impl UModule {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         module_state: ModuleState,
         rack: ModRack,
         pos: Idx,
         mutation: Option<UItemMutationRequest>,
-        charge_key: Option<UItemKey>,
+        charge_key: Option<UItemId>,
         src: &Src,
     ) -> Self {
         Self {
@@ -161,7 +161,7 @@ impl UModule {
     pub(crate) fn set_module_state(&mut self, state: ModuleState) {
         self.base.set_state(state.into())
     }
-    pub(crate) fn get_fit_key(&self) -> UFitKey {
+    pub(crate) fn get_fit_key(&self) -> UFitId {
         self.fit_key
     }
     pub(crate) fn get_rack(&self) -> ModRack {
@@ -173,10 +173,10 @@ impl UModule {
     pub(crate) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(crate) fn get_charge_key(&self) -> Option<UItemKey> {
+    pub(crate) fn get_charge_key(&self) -> Option<UItemId> {
         self.charge_key
     }
-    pub(crate) fn set_charge_key(&mut self, charge_key: Option<UItemKey>) {
+    pub(crate) fn set_charge_key(&mut self, charge_key: Option<UItemId>) {
         self.charge_key = charge_key
     }
     pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<Count> {

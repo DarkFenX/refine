@@ -2,12 +2,12 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     svc::vast::{ValSrqSkillInfo, Vast},
-    ud::{UData, UItem, UItemKey},
+    ud::{UData, UItem, UItemId},
     util::RMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_added(&mut self, item_key: UItemKey, item: &UItem) {
+    pub(in crate::svc) fn item_added(&mut self, item_key: UItemId, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_key() {
                 Some(fit_key) => {
@@ -45,7 +45,7 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn item_removed(&mut self, u_data: &UData, item_key: UItemKey, item: &UItem) {
+    pub(in crate::svc) fn item_removed(&mut self, u_data: &UData, item_key: UItemId, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_key() {
                 Some(fit_key) => {

@@ -10,7 +10,7 @@ use crate::{
             },
         },
     },
-    ud::{UItemKey, UShip},
+    ud::{UItemId, UShip},
 };
 
 impl StandardRegister {
@@ -132,7 +132,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_sw_buff(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         ship: Option<&UShip>,
         proj_buff_item_lists: &[RItemListKey],
     ) {
@@ -182,7 +182,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn unreg_affectee_for_sw_buff(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         ship: Option<&UShip>,
         proj_buff_item_lists: &[RItemListKey],
     ) {

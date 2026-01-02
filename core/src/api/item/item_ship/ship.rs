@@ -1,15 +1,15 @@
 use crate::{
     api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, Movement},
     sol::SolarSystem,
-    ud::{UItemKey, UShip},
+    ud::{UItemId, UShip},
 };
 
 pub struct Ship<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Ship<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -29,7 +29,7 @@ impl<'a> ItemSealed for Ship<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -37,10 +37,10 @@ impl<'a> ItemCommon for Ship<'a> {}
 
 pub struct ShipMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> ShipMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -64,7 +64,7 @@ impl<'a> ItemSealed for ShipMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -76,19 +76,19 @@ impl<'a> ItemMutSealed for ShipMut<'a> {
 impl<'a> ItemCommon for ShipMut<'a> {}
 impl<'a> ItemMutCommon for ShipMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, ship_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, ship_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_ship(sol, ship_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, ship_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, ship_key: UItemId) -> bool {
     get_u_ship(sol, ship_key).get_ship_state()
 }
-fn get_coordinates(sol: &SolarSystem, ship_key: UItemKey) -> Coordinates {
+fn get_coordinates(sol: &SolarSystem, ship_key: UItemId) -> Coordinates {
     get_u_ship(sol, ship_key).get_physics().coordinates.into()
 }
-fn get_movement(sol: &SolarSystem, ship_key: UItemKey) -> Movement {
+fn get_movement(sol: &SolarSystem, ship_key: UItemId) -> Movement {
     get_u_ship(sol, ship_key).get_physics().into()
 }
-fn get_u_ship(sol: &SolarSystem, ship_key: UItemKey) -> &UShip {
+fn get_u_ship(sol: &SolarSystem, ship_key: UItemId) -> &UShip {
     sol.u_data.items.get(ship_key).dc_ship().unwrap()
 }

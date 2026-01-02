@@ -3,7 +3,7 @@ use crate::{
     def::ItemId,
     err::basic::{ItemFoundError, ProjFoundError},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> ProjEffect<'a> {
@@ -26,10 +26,10 @@ impl<'a> ProjEffectMut<'a> {
 
 fn get_projectee_key(
     sol: &SolarSystem,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projectee_item_id: &ItemId,
-) -> Result<UItemKey, GetProjError> {
-    let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+) -> Result<UItemId, GetProjError> {
+    let projectee_key = sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
     match sol
         .u_data
         .items
@@ -40,7 +40,7 @@ fn get_projectee_key(
     {
         true => Ok(projectee_key),
         false => Err(ProjFoundError {
-            projector_item_id: sol.u_data.items.id_by_key(projector_key),
+            projector_item_id: sol.u_data.items.ext_id_by_int_id(projector_key),
             projectee_item_id: *projectee_item_id,
         }
         .into()),

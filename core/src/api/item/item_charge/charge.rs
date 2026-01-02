@@ -1,16 +1,16 @@
 use crate::{
     api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
     sol::SolarSystem,
-    ud::{UCharge, UItemKey},
+    ud::{UCharge, UItemId},
 };
 
 // Charges expose no projection info, since it fully matches projections of the parent item
 pub struct Charge<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Charge<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -27,7 +27,7 @@ impl<'a> ItemSealed for Charge<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -35,10 +35,10 @@ impl<'a> ItemCommon for Charge<'a> {}
 
 pub struct ChargeMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> ChargeMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -63,7 +63,7 @@ impl<'a> ItemSealed for ChargeMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -75,17 +75,17 @@ impl<'a> ItemMutSealed for ChargeMut<'a> {
 impl<'a> ItemCommon for ChargeMut<'a> {}
 impl<'a> ItemMutCommon for ChargeMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, charge_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, charge_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_charge(sol, charge_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_cont_item(sol: &SolarSystem, charge_key: UItemKey) -> Item<'_> {
+fn get_cont_item(sol: &SolarSystem, charge_key: UItemId) -> Item<'_> {
     let cont_key = get_u_charge(sol, charge_key).get_cont_item_key();
     Item::new(sol, cont_key)
 }
-fn get_state(sol: &SolarSystem, charge_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, charge_key: UItemId) -> bool {
     !get_u_charge(sol, charge_key).get_force_disabled()
 }
-fn get_u_charge(sol: &SolarSystem, charge_key: UItemKey) -> &UCharge {
+fn get_u_charge(sol: &SolarSystem, charge_key: UItemId) -> &UCharge {
     sol.u_data.items.get(charge_key).dc_charge().unwrap()
 }

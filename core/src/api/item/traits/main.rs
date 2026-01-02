@@ -19,16 +19,16 @@ use crate::{
             StatTank, StatTankRegen, StatTimeOptions,
         },
     },
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
     util::UnitInterval,
 };
 
 mod private {
-    use crate::{sol::SolarSystem, ud::UItemKey};
+    use crate::{sol::SolarSystem, ud::UItemId};
 
     pub(crate) trait ItemSealed: Sized {
         fn get_sol(&self) -> &SolarSystem;
-        fn get_key(&self) -> UItemKey;
+        fn get_key(&self) -> UItemId;
     }
 
     pub(crate) trait ItemMutSealed: ItemSealed {
@@ -38,7 +38,7 @@ mod private {
 
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
-        self.get_sol().u_data.items.id_by_key(self.get_key())
+        self.get_sol().u_data.items.ext_id_by_int_id(self.get_key())
     }
     fn get_type_id(&self) -> ItemTypeId {
         self.get_sol().u_data.items.get(self.get_key()).get_type_id()
@@ -51,7 +51,7 @@ pub trait ItemCommon: ItemSealed {
             (Some(effect_datas), Some(reffs)) => (effect_datas.keys(), reffs),
             _ => {
                 return Err(ItemLoadedError {
-                    item_id: sol.u_data.items.id_by_key(item_key),
+                    item_id: sol.u_data.items.ext_id_by_int_id(item_key),
                 }
                 .into());
             }
@@ -78,7 +78,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.internal_get_item_attr(item_key, attr_key) {
             Ok(calc_val) => Ok(calc_val.into()),
             Err(error) => Err(ItemLoadedError {
-                item_id: self.get_sol().u_data.items.id_by_key(error.item_key),
+                item_id: self.get_sol().u_data.items.ext_id_by_int_id(error.item_key),
             }
             .into()),
         }
@@ -91,7 +91,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).id.into(), val.into())))
             }
             Err(error) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.id_by_key(error.item_key),
+                item_id: sol.u_data.items.ext_id_by_int_id(error.item_key),
             }
             .into()),
         }
@@ -104,7 +104,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_mods(&sol.u_data, item_key) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.id_by_key(err.item_key),
+                item_id: sol.u_data.items.ext_id_by_int_id(err.item_key),
             }
             .into()),
         }
@@ -548,8 +548,8 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
 fn get_stat_applied_projectee_key(
     sol: &SolarSystem,
     projectee_item_id: &ItemId,
-) -> Result<UItemKey, ItemStatAppliedError> {
-    let projectee_key = sol.u_data.items.key_by_id_err(projectee_item_id)?;
+) -> Result<UItemId, ItemStatAppliedError> {
+    let projectee_key = sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
     let projectee_u_item = sol.u_data.items.get(projectee_key);
     if projectee_u_item.get_direct_physics().is_none() {
         return Err(ItemReceiveProjError {

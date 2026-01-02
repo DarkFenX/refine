@@ -8,18 +8,18 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatTimeOptions, Vast, vaste_stats::item_checks::check_charge_drone_fighter_module},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_outgoing_nps(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemKey,
+        item_key: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> Result<AttrVal, StatItemCheckError> {
         check_charge_drone_fighter_module(ctx.u_data, item_key)?;
         let mut nps = OF(0.0);

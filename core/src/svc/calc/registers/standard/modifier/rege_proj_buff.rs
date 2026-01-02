@@ -7,14 +7,14 @@ use crate::{
             modifier::func::{add_cmod, remove_cmod},
         },
     },
-    ud::{UItem, UItemKey, UShip},
+    ud::{UItem, UItemId, UShip},
 };
 
 pub(super) fn proj_buff_mod(
     reg_proj_status: &mut StandardRegisterRawProjStatus,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
     match rmod.affectee_filter {
@@ -87,7 +87,7 @@ pub(super) fn unproj_buff_mod(
     reg_proj_status: &mut StandardRegisterRawProjStatus,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
     // Modifiers passed to this method were not validated, so for every valid configuration we
@@ -159,11 +159,7 @@ pub(super) fn unproj_buff_mod(
     }
 }
 
-pub(super) fn query_buff_mod(
-    rmod: RawModifier,
-    projectee_key: UItemKey,
-    projectee_item: &UItem,
-) -> Option<CtxModifier> {
+pub(super) fn query_buff_mod(rmod: RawModifier, projectee_key: UItemId, projectee_item: &UItem) -> Option<CtxModifier> {
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_key))
             if is_item_buffable_by_proj_item_list(projectee_item, &item_list_key) =>
@@ -191,7 +187,7 @@ pub(super) fn query_buff_mod(
 pub(super) fn load_affectee_for_proj_buff(
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> bool {
     match rmod.affectee_filter {
@@ -245,7 +241,7 @@ pub(super) fn load_affectee_for_proj_buff(
 pub(super) fn unload_affectee_for_proj_buff(
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> bool {
     match rmod.affectee_filter {

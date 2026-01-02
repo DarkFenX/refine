@@ -22,14 +22,14 @@ use crate::{
         },
         funcs,
     },
-    ud::{UItem, UItemKey, UModule},
+    ud::{UItem, UItemId, UModule},
     util::{FLOAT_TOLERANCE, InfCount, RMap},
 };
 
 pub(super) fn get_module_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     item: &UItem,
     module: &UModule,
     options: CyclingOptions,
@@ -74,7 +74,7 @@ fn fill_module_effect_info(
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     item: &UItem,
     module: &UModule,
     effect_key: REffectKey,
@@ -300,7 +300,7 @@ fn fill_module_effect_info(
     cseq_map.insert(effect_key, cseq);
 }
 
-fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal {
+fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
     // All reloads can't take less than server tick realistically. E.g. lasers have almost 0 reload
     // time but take 1-2 seconds to reload
     Float::max(
@@ -314,7 +314,7 @@ fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> AttrVal 
 fn part_r(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     duration: AttrVal,
     cooldown: AttrVal,
     int_cd: bool,
@@ -332,7 +332,7 @@ fn part_r(
 fn full_r(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     duration: AttrVal,
     cooldown: AttrVal,
     int_cd: bool,
@@ -365,7 +365,7 @@ fn full_r(
 fn both_r(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     duration: AttrVal,
     cooldown: AttrVal,
     int_cd: bool,

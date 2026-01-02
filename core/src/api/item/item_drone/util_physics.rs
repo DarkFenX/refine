@@ -1,7 +1,7 @@
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemKey},
+    ud::{UData, UItemId},
 };
 
 impl SolarSystem {
@@ -9,7 +9,7 @@ impl SolarSystem {
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,
-        drone_key: UItemKey,
+        drone_key: UItemId,
     ) {
         let u_drone = u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
         let u_physics = *u_drone.get_physics();

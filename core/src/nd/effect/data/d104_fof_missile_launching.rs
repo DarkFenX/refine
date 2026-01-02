@@ -13,7 +13,7 @@ use crate::{
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
-    ud::{UItem, UItemKey, UProjData},
+    ud::{UItem, UItemId, UProjData},
 };
 
 const E_EFFECT_ID: EEffectId = ec::effects::FOF_MISSILE_LAUNCHING;
@@ -41,9 +41,9 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_fof_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     // FoF missiles are limited by c2s range

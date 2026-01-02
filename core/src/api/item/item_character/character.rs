@@ -1,15 +1,15 @@
 use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
     sol::SolarSystem,
-    ud::{UCharacter, UItemKey},
+    ud::{UCharacter, UItemId},
 };
 
 pub struct Character<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> Character<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> ItemSealed for Character<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -31,10 +31,10 @@ impl<'a> ItemCommon for Character<'a> {}
 
 pub struct CharacterMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemKey,
+    pub(in crate::api) key: UItemId,
 }
 impl<'a> CharacterMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
         Self { sol, key }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -52,7 +52,7 @@ impl<'a> ItemSealed for CharacterMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemKey {
+    fn get_key(&self) -> UItemId {
         self.key
     }
 }
@@ -64,13 +64,13 @@ impl<'a> ItemMutSealed for CharacterMut<'a> {
 impl<'a> ItemCommon for CharacterMut<'a> {}
 impl<'a> ItemMutCommon for CharacterMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, character_key: UItemKey) -> Fit<'_> {
+fn get_fit(sol: &SolarSystem, character_key: UItemId) -> Fit<'_> {
     let fit_key = get_u_character(sol, character_key).get_fit_key();
     Fit::new(sol, fit_key)
 }
-fn get_state(sol: &SolarSystem, character_key: UItemKey) -> bool {
+fn get_state(sol: &SolarSystem, character_key: UItemId) -> bool {
     get_u_character(sol, character_key).get_character_state()
 }
-fn get_u_character(sol: &SolarSystem, character_key: UItemKey) -> &UCharacter {
+fn get_u_character(sol: &SolarSystem, character_key: UItemId) -> &UCharacter {
     sol.u_data.items.get(character_key).dc_character().unwrap()
 }

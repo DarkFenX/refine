@@ -3,13 +3,13 @@ use crate::{
     api::SwEffectMut,
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_sw_effect_type_id(
         &mut self,
-        sw_effect_key: UItemKey,
+        sw_effect_key: UItemId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

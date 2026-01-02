@@ -18,7 +18,7 @@ use crate::{
             CustomAffectorValueKind, Location, ModifierKind, RawModifier,
         },
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::RMap,
 };
 
@@ -95,23 +95,18 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     Some(OF(1.0))
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
+fn get_affector_info(ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(charged_armor_dmg_mult_key) = ctx.ac().charged_armor_dmg_mult {
         info.push(Affector {
-            item_id: ctx.u_data.items.id_by_key(item_key),
+            item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
             attr_id: Some(ctx.u_data.src.get_attr(charged_armor_dmg_mult_key).id.into()),
         });
     }
     info
 }
 
-fn revise_on_item_add_removal(
-    ctx: SvcCtx,
-    affector_key: UItemKey,
-    changed_key: UItemKey,
-    changed_item: &UItem,
-) -> bool {
+fn revise_on_item_add_removal(ctx: SvcCtx, affector_key: UItemId, changed_key: UItemId, changed_item: &UItem) -> bool {
     match ctx.u_data.items.get(affector_key).get_charge_key() {
         Some(charge_key) => changed_key == charge_key && changed_item.get_type_id() == ac::items::NANITE_REPAIR_PASTE,
         // Not chargeable item, or no charge on AAR -> not changing anything

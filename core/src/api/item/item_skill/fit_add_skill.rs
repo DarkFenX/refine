@@ -7,17 +7,17 @@ use crate::{
     err::basic::SkillEveTypeError,
     misc::SkillLevel,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitKey, UFitSkill, UItem, UItemKey, USkill},
+    ud::{UEffectUpdates, UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_skill(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         level: SkillLevel,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> Result<UItemKey, SkillEveTypeError> {
+    ) -> Result<UItemId, SkillEveTypeError> {
         let fit = self.u_data.fits.get_mut(fit_key);
         match fit.skills.entry(type_id) {
             Entry::Vacant(entry) => {
@@ -32,7 +32,7 @@ impl SolarSystem {
             Entry::Occupied(entry) => Err(SkillEveTypeError {
                 type_id,
                 fit_id: fit.id,
-                item_id: self.u_data.items.id_by_key(entry.get().skill_key),
+                item_id: self.u_data.items.ext_id_by_int_id(entry.get().skill_key),
             }),
         }
     }

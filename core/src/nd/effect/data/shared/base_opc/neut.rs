@@ -11,14 +11,14 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::UItemKey,
+    ud::UItemId,
     util::FLOAT_TOLERANCE,
 };
 
 pub(in crate::nd::effect::data) fn get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().energy_neut_amount, true)
@@ -27,7 +27,7 @@ pub(in crate::nd::effect::data) fn get_neut_base_opc(
 pub(in crate::nd::effect::data) fn get_nosf_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     // Not a blood raider ship - not considered as a neut
@@ -40,7 +40,7 @@ pub(in crate::nd::effect::data) fn get_nosf_base_opc(
 pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     let attr_consts = ctx.ac();
@@ -65,7 +65,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectPro
 fn get_aoe_dd_side_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().doomsday_energy_neut_amount, true)

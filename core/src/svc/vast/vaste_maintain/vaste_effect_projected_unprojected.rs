@@ -3,16 +3,16 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     rd::REffect,
     svc::{funcs, vast::Vast},
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 impl Vast {
     pub(in crate::svc) fn effect_projected(
         &mut self,
-        projector_key: UItemKey,
+        projector_key: UItemId,
         projector_item: &UItem,
         effect: &REffect,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
         if let Some(projector_fit_key) = projector_item.get_fit_key() {
@@ -99,10 +99,10 @@ impl Vast {
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
-        projector_key: UItemKey,
+        projector_key: UItemId,
         projector_item: &UItem,
         effect: &REffect,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
         if let Some(projector_fit_key) = projector_item.get_fit_key() {

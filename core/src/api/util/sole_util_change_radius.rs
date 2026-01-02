@@ -2,7 +2,7 @@ use crate::{
     def::OF,
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemKey},
+    ud::{UData, UItemId},
 };
 
 impl SolarSystem {
@@ -10,7 +10,7 @@ impl SolarSystem {
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) {
         let u_item = u_data.items.get_mut(item_key);
         // Outgoing projections - service change should be handled in calling method

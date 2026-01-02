@@ -1,11 +1,11 @@
-use crate::{def::FleetId, sol::SolarSystem, ud::UFleetKey};
+use crate::{def::FleetId, sol::SolarSystem, ud::UFleetId};
 
 pub struct Fleet<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UFleetKey,
+    pub(in crate::api) key: UFleetId,
 }
 impl<'a> Fleet<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UFleetKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UFleetId) -> Self {
         Self { sol, key }
     }
     pub fn get_fleet_id(&self) -> FleetId {
@@ -15,10 +15,10 @@ impl<'a> Fleet<'a> {
 
 pub struct FleetMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UFleetKey,
+    pub(in crate::api) key: UFleetId,
 }
 impl<'a> FleetMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UFleetKey) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UFleetId) -> Self {
         Self { sol, key }
     }
     pub fn get_fleet_id(&self) -> FleetId {
@@ -26,6 +26,6 @@ impl<'a> FleetMut<'a> {
     }
 }
 
-fn get_fleet_id(sol: &SolarSystem, fleet_key: UFleetKey) -> FleetId {
-    sol.u_data.fleets.id_by_key(fleet_key)
+fn get_fleet_id(sol: &SolarSystem, fleet_key: UFleetId) -> FleetId {
+    sol.u_data.fleets.ext_id_by_int_id(fleet_key)
 }

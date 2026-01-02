@@ -1,13 +1,13 @@
 use crate::{
     api::SwEffectMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_sw_effect_state(
         &mut self,
-        sw_effect_key: UItemKey,
+        sw_effect_key: UItemId,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {

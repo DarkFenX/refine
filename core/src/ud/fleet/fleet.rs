@@ -1,28 +1,28 @@
 use crate::{
     def::FleetId,
-    ud::UFitKey,
+    ud::UFitId,
     util::{GetId, Named, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UFleet {
     pub(crate) id: FleetId,
-    fits: RSet<UFitKey>,
+    fits: RSet<UFitId>,
 }
 impl UFleet {
     pub(crate) fn new(id: FleetId) -> Self {
         Self { id, fits: RSet::new() }
     }
-    pub(crate) fn iter_fits(&self) -> impl ExactSizeIterator<Item = UFitKey> {
+    pub(crate) fn iter_fits(&self) -> impl ExactSizeIterator<Item = UFitId> {
         self.fits.iter().copied()
     }
-    pub(crate) fn contains_fit(&self, fit: &UFitKey) -> bool {
+    pub(crate) fn contains_fit(&self, fit: &UFitId) -> bool {
         self.fits.contains(fit)
     }
-    pub(crate) fn add_fit(&mut self, fit_key: UFitKey) {
+    pub(crate) fn add_fit(&mut self, fit_key: UFitId) {
         self.fits.insert(fit_key);
     }
-    pub(crate) fn remove_fit(&mut self, fit_key: &UFitKey) {
+    pub(crate) fn remove_fit(&mut self, fit_key: &UFitId) {
         self.fits.remove(fit_key);
     }
 }

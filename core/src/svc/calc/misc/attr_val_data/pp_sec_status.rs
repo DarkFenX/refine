@@ -3,13 +3,13 @@ use crate::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     mut val: CalcAttrVals,
 ) -> CalcAttrVals {
     let fit_key = ctx.u_data.items.get(item_key).dc_ship().unwrap().get_fit_key();
@@ -22,7 +22,7 @@ pub(super) fn sec_status_postproc_fast(
 pub(super) fn sec_status_postproc_info(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemKey,
+    item_key: UItemId,
     _info: AttrValInfo,
 ) -> AttrValInfo {
     let fit_key = ctx.u_data.items.get(item_key).dc_ship().unwrap().get_fit_key();

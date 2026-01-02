@@ -1,13 +1,13 @@
 use crate::{
     api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItem, UItemKey, err::ItemMutatedError},
+    ud::{UEffectUpdates, UItem, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_item_mutation(
         &mut self,
-        item_key: UItemKey,
+        item_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         match self.u_data.items.get(item_key) {

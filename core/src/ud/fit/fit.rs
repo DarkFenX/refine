@@ -5,7 +5,7 @@ use crate::{
     def::FitId,
     misc::{DpsProfile, FitSecStatus},
     ud::{
-        UFleetKey, UItemKey,
+        UFleetId, UItemId,
         fit::{UFitSkill, UItemVec},
         item::UShipKind,
     },
@@ -15,22 +15,22 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UFit {
     pub(crate) id: FitId,
-    pub(crate) fleet: Option<UFleetKey>,
-    pub(crate) character: Option<UItemKey>,
+    pub(crate) fleet: Option<UFleetId>,
+    pub(crate) character: Option<UItemId>,
     pub(crate) skills: RMap<ad::AItemId, UFitSkill>,
-    pub(crate) implants: RSet<UItemKey>,
-    pub(crate) boosters: RSet<UItemKey>,
-    pub(crate) ship: Option<UItemKey>,
-    pub(crate) stance: Option<UItemKey>,
-    pub(crate) subsystems: RSet<UItemKey>,
+    pub(crate) implants: RSet<UItemId>,
+    pub(crate) boosters: RSet<UItemId>,
+    pub(crate) ship: Option<UItemId>,
+    pub(crate) stance: Option<UItemId>,
+    pub(crate) subsystems: RSet<UItemId>,
     pub(crate) mods_high: UItemVec,
     pub(crate) mods_mid: UItemVec,
     pub(crate) mods_low: UItemVec,
-    pub(crate) rigs: RSet<UItemKey>,
-    pub(crate) services: RSet<UItemKey>,
-    pub(crate) drones: RSet<UItemKey>,
-    pub(crate) fighters: RSet<UItemKey>,
-    pub(crate) fw_effects: RSet<UItemKey>,
+    pub(crate) rigs: RSet<UItemId>,
+    pub(crate) services: RSet<UItemId>,
+    pub(crate) drones: RSet<UItemId>,
+    pub(crate) fighters: RSet<UItemId>,
+    pub(crate) fw_effects: RSet<UItemId>,
     pub(crate) sec_status: FitSecStatus,
     pub(crate) rah_incoming_dps: Option<DpsProfile>,
     // Extra info for fast access
@@ -61,14 +61,14 @@ impl UFit {
             ship_kind: UShipKind::Unknown,
         }
     }
-    pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = UItemKey> {
+    pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = UItemId> {
         chain!(
             self.mods_high.iter_keys().copied(),
             self.mods_mid.iter_keys().copied(),
             self.mods_low.iter_keys().copied(),
         )
     }
-    pub(crate) fn all_direct_items(&self) -> Vec<UItemKey> {
+    pub(crate) fn all_direct_items(&self) -> Vec<UItemId> {
         // Calculate capacity
         let mut capacity = 0;
         if self.character.is_some() {
@@ -123,7 +123,7 @@ impl GetId<FitId> for UFit {
     }
 }
 
-fn conditional_push(items: &mut Vec<UItemKey>, opt_value: Option<UItemKey>) {
+fn conditional_push(items: &mut Vec<UItemId>, opt_value: Option<UItemId>) {
     if let Some(value) = opt_value {
         items.push(value)
     }

@@ -4,14 +4,14 @@ use crate::{
     def::ItemTypeId,
     err::basic::SkillEveTypeError,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
     util::GetId,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_type_id(
         &mut self,
-        skill_key: UItemKey,
+        skill_key: UItemId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), SkillEveTypeError> {
@@ -27,7 +27,7 @@ impl SolarSystem {
             return Err(SkillEveTypeError {
                 type_id,
                 fit_id: u_fit.get_id(),
-                item_id: self.u_data.items.id_by_key(fit_skill.skill_key),
+                item_id: self.u_data.items.ext_id_by_int_id(fit_skill.skill_key),
             });
         }
         // Unload skill

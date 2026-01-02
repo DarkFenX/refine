@@ -3,7 +3,7 @@ use crate::{
     api::{Ability, AbilityMut},
     misc::EffectMode,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> Ability<'a> {
@@ -18,7 +18,7 @@ impl<'a> AbilityMut<'a> {
     }
 }
 
-fn get_state(sol: &SolarSystem, fighter_key: UItemKey, abil_id: &AAbilId) -> bool {
+fn get_state(sol: &SolarSystem, fighter_key: UItemId, abil_id: &AAbilId) -> bool {
     // Only abilities which exist in source are exposed by API, just unwrap
     let r_abil = sol.u_data.src.get_ability(abil_id).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();

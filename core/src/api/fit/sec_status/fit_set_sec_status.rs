@@ -1,7 +1,7 @@
-use crate::{api::FitMut, misc::FitSecStatus, sol::SolarSystem, ud::UFitKey};
+use crate::{api::FitMut, misc::FitSecStatus, sol::SolarSystem, ud::UFitId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_key: UFitKey, sec_status: FitSecStatus) {
+    pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_key: UFitId, sec_status: FitSecStatus) {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let old_sec_status = u_fit.sec_status;
         if old_sec_status == sec_status {

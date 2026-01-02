@@ -9,7 +9,7 @@ use crate::{
         SvcCtx,
         calc::{Affector, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -30,14 +30,14 @@ impl AffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UItemKey) -> SmallVec<Affector, 1> {
+    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
         match self {
             Self::Attr(attr_key) => smallvec![Affector {
-                item_id: ctx.u_data.items.id_by_key(item_key),
+                item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
                 attr_id: Some(ctx.u_data.src.get_attr(*attr_key).id.into()),
             }],
             Self::Hardcoded(_) => smallvec![Affector {
-                item_id: ctx.u_data.items.id_by_key(item_key),
+                item_id: ctx.u_data.items.ext_id_by_int_id(item_key),
                 attr_id: None
             }],
             Self::Custom(custom) => (custom.affector_info_getter)(ctx, item_key),

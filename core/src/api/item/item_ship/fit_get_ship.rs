@@ -1,7 +1,7 @@
 use crate::{
     api::{Fit, FitMut, Ship, ShipMut},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl<'a> Fit<'a> {
@@ -24,7 +24,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn get_ship(sol: &SolarSystem, fit_key: UFitKey) -> Option<Ship<'_>> {
+fn get_ship(sol: &SolarSystem, fit_key: UFitId) -> Option<Ship<'_>> {
     sol.u_data
         .fits
         .get(fit_key)

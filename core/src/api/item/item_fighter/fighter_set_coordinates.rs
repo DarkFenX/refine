@@ -1,12 +1,12 @@
 use crate::{
     api::{Coordinates, FighterMut},
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
     util::Xyz,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fighter_coordinates(&mut self, fighter_key: UItemKey, coordinates: Xyz) {
+    pub(in crate::api) fn internal_set_fighter_coordinates(&mut self, fighter_key: UItemId, coordinates: Xyz) {
         let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         if u_fighter.get_physics().coordinates == coordinates {
             return;

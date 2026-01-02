@@ -4,13 +4,13 @@ use crate::{
     def::{AttrVal, OF},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(in crate::nd::effect::data) fn get_shield_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().shield_bonus, true)
@@ -19,7 +19,7 @@ pub(in crate::nd::effect::data) fn get_shield_rep_base_opc(
 pub(in crate::nd::effect::data) fn get_armor_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().armor_dmg_amount, false)
@@ -28,7 +28,7 @@ pub(in crate::nd::effect::data) fn get_armor_rep_base_opc(
 pub(in crate::nd::effect::data) fn get_hull_rep_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().struct_dmg_amount, false)
@@ -37,7 +37,7 @@ pub(in crate::nd::effect::data) fn get_hull_rep_base_opc(
 pub(in crate::nd::effect::data) fn get_cap_trans_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().power_transfer_amount, false)
@@ -49,7 +49,7 @@ pub(in crate::nd::effect::data) fn get_cap_trans_base_opc(
 pub(in crate::nd::effect::data) fn get_ancillary_armor_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     chargedness: AttrVal,
 ) -> Option<AttrVal> {
     if let Some(charge_key) = ctx.u_data.items.get(item_key).get_charge_key()

@@ -3,7 +3,7 @@ use crate::{
     def::AttrVal,
     rd::REffectKey,
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
-    ud::{UFighter, UItemKey},
+    ud::{UFighter, UItemId},
     util::RMap,
 };
 
@@ -22,7 +22,7 @@ struct FtrEffectRearmInfo {
 pub(super) fn get_fighter_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     fighter: &UFighter,
     options: CyclingOptions,
     ignore_state: bool,

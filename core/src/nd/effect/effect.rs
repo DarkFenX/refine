@@ -10,7 +10,7 @@ use crate::{
         calc::{Calc, RawModifier},
         output::OutputDmgBreacher,
     },
-    ud::{UItem, UItemKey, UProjData},
+    ud::{UItem, UItemId, UProjData},
     util::RMap,
 };
 
@@ -23,11 +23,11 @@ pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, Effect
 // Getters - projection
 // TODO: consider if proj attr getter should be a function or an enum like resists (standard/attrs)
 pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemKey, &REffect, UItemKey, UProjData) -> AttrVal;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> AttrVal;
 // Getters - damage output
 pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 pub(crate) type NBreacherDmgGetter =
-    fn(SvcCtx, &mut Calc, UItemKey, &REffect, Option<UItemKey>) -> Option<OutputDmgBreacher>;
+    fn(SvcCtx, &mut Calc, UItemId, &REffect, Option<UItemId>) -> Option<OutputDmgBreacher>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means

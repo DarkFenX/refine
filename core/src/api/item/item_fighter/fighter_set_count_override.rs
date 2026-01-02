@@ -1,9 +1,9 @@
-use crate::{api::FighterMut, misc::FighterCountOverride, sol::SolarSystem, ud::UItemKey};
+use crate::{api::FighterMut, misc::FighterCountOverride, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_count_override(
         &mut self,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         count_override: Option<FighterCountOverride>,
     ) {
         // Update user data

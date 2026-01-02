@@ -6,14 +6,14 @@ use crate::{
             modifier::func::{add_cmod, remove_cmod},
         },
     },
-    ud::{UItem, UItemKey, UShipKind},
+    ud::{UItem, UItemId, UShipKind},
 };
 
 pub(super) fn proj_target_mod(
     reg_proj_status: &mut StandardRegisterRawProjStatus,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
     match rmod.affectee_filter {
@@ -84,7 +84,7 @@ pub(super) fn unproj_target_mod(
     reg_proj_status: &mut StandardRegisterRawProjStatus,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
     match rmod.affectee_filter {
@@ -154,7 +154,7 @@ pub(super) fn unproj_target_mod(
 
 pub(super) fn query_target_mod(
     rmod: RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
     {
@@ -194,7 +194,7 @@ pub(super) fn query_target_mod(
 pub(super) fn load_affectee_for_proj_target(
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> bool {
     match rmod.affectee_filter {
@@ -249,7 +249,7 @@ pub(super) fn load_affectee_for_proj_target(
 pub(super) fn unload_affectee_for_proj_target(
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: &RawModifier,
-    projectee_key: UItemKey,
+    projectee_key: UItemId,
     projectee_item: &UItem,
 ) -> bool {
     match rmod.affectee_filter {

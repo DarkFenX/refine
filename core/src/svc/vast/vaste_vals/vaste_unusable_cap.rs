@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::{AttrVal, ItemId, OF},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -18,10 +18,10 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_unusable_cap_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
-        ship_key: Option<UItemKey>,
+        ship_key: Option<UItemId>,
     ) -> bool {
         let ship_key = match ship_key {
             Some(ship_key) => ship_key,
@@ -50,10 +50,10 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_unusable_cap_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
-        ship_key: Option<UItemKey>,
+        ship_key: Option<UItemId>,
     ) -> Option<ValUnusableCapFail> {
         let ship_key = ship_key?;
         if self.cap_consumers_all.is_empty() {
@@ -72,7 +72,7 @@ impl VastFitData {
                 None => continue,
             };
             if max_item_use > max_cap && !kfs.contains(&item_key) {
-                items.insert(ctx.u_data.items.id_by_key(item_key), max_item_use);
+                items.insert(ctx.u_data.items.ext_id_by_int_id(item_key), max_item_use);
             }
         }
         match items.is_empty() {

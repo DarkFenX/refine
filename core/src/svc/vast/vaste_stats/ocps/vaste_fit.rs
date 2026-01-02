@@ -8,7 +8,7 @@ use crate::{
         cycle::get_item_cseq_map,
         vast::{StatOutRepItemKinds, StatTimeOptions, Vast},
     },
-    ud::{UFitKey, UItemKey},
+    ud::{UFitId, UItemId},
     util::RMapRMap,
 };
 
@@ -17,9 +17,9 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         time_options: StatTimeOptions,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> AttrVal {
         fit_keys
             .map(|fit_key| {
@@ -38,9 +38,9 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         time_options: StatTimeOptions,
-        projectee_key: Option<UItemKey>,
+        projectee_key: Option<UItemId>,
     ) -> AttrVal {
         let fit_data = self.get_fit_data(&fit_key);
         get_ocps(
@@ -59,8 +59,8 @@ fn get_ocps(
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,
-    projectee_key: Option<UItemKey>,
-    fit_data: &RMapRMap<UItemKey, REffectKey, REffectProjOpcSpec<AttrVal>>,
+    projectee_key: Option<UItemId>,
+    fit_data: &RMapRMap<UItemId, REffectKey, REffectProjOpcSpec<AttrVal>>,
 ) -> AttrVal {
     let mut orps = OF(0.0);
     let cycling_options = time_options.into();

@@ -4,7 +4,7 @@ use super::shared::get_max_resource;
 use crate::{
     def::{AttrVal, ItemId, OF},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{UFit, UItemKey},
+    ud::{UFit, UItemId},
     util::RSet,
 };
 
@@ -19,7 +19,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -38,7 +38,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -52,7 +52,7 @@ impl VastFitData {
             .drones_bandwidth
             .iter()
             .filter(|(item_key, item_use)| **item_use > effective_max && !kfs.contains(item_key))
-            .map(|(item_key, item_use)| (ctx.u_data.items.id_by_key(*item_key), *item_use))
+            .map(|(item_key, item_use)| (ctx.u_data.items.ext_id_by_int_id(*item_key), *item_use))
             .collect();
         match users.is_empty() {
             true => None,

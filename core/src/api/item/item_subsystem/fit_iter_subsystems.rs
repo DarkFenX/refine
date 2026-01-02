@@ -1,7 +1,7 @@
 use crate::{
     api::{Fit, FitMut, MutIter, Subsystem, SubsystemMut},
     sol::SolarSystem,
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl<'a> Fit<'a> {
@@ -20,7 +20,7 @@ impl<'a> FitMut<'a> {
     }
 }
 
-fn iter_subsystems(sol: &SolarSystem, fit_key: UFitKey) -> impl ExactSizeIterator<Item = Subsystem<'_>> {
+fn iter_subsystems(sol: &SolarSystem, fit_key: UFitId) -> impl ExactSizeIterator<Item = Subsystem<'_>> {
     let subsystem_keys = sol.u_data.fits.get(fit_key).subsystems.iter();
     subsystem_keys.map(|subsystem_key| Subsystem::new(sol, *subsystem_key))
 }

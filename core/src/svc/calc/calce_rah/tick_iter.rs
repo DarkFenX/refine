@@ -6,7 +6,7 @@ use super::{
 };
 use crate::{
     def::{AttrVal, OF},
-    ud::UItemKey,
+    ud::UItemId,
     util::RMap,
 };
 
@@ -27,19 +27,19 @@ impl RahDataIter {
 
 pub(super) struct RahSimTickData<'a> {
     pub(super) time_passed: AttrVal,
-    pub(super) cycled: &'a Vec<UItemKey>,
-    pub(super) cycling_times: &'a RMap<UItemKey, AttrVal>,
+    pub(super) cycled: &'a Vec<UItemId>,
+    pub(super) cycling_times: &'a RMap<UItemId, AttrVal>,
 }
 
 pub(super) struct RahSimTickIter {
     tick: TickCount,
-    rah_iter_data: RMap<UItemKey, RahDataIter>,
+    rah_iter_data: RMap<UItemId, RahDataIter>,
     // Fields exposed in iter items
-    cycled: Vec<UItemKey>,
-    cycling_times: RMap<UItemKey, AttrVal>,
+    cycled: Vec<UItemId>,
+    cycling_times: RMap<UItemId, AttrVal>,
 }
 impl RahSimTickIter {
-    pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a UItemKey, &'a RahDataSim)>) -> Self {
+    pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a UItemId, &'a RahDataSim)>) -> Self {
         let mut iter_datas = RMap::with_capacity(sim_datas.len());
         for (&item_key, sim_data) in sim_datas {
             iter_datas.insert(item_key, RahDataIter::new(sim_data.info.cycle_time));

@@ -4,7 +4,7 @@ use crate::{
     api::ModuleState,
     def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::RSet,
 };
 
@@ -22,7 +22,7 @@ pub struct ValModuleStateModuleInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_module_state_fast(&self, kfs: &RSet<UItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_module_state_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.mods_state.is_empty(),
             false => self.mods_state.difference(kfs).next().is_none(),
@@ -31,14 +31,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_module_state_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValModuleStateFail> {
         let modules: HashMap<_, _> = self
             .mods_state
             .iter()
             .filter(|(module_key, _)| !kfs.contains(module_key))
-            .map(|(module_key, module_info)| (ctx.u_data.items.id_by_key(*module_key), *module_info))
+            .map(|(module_key, module_info)| (ctx.u_data.items.ext_id_by_int_id(*module_key), *module_info))
             .collect();
         match modules.is_empty() {
             true => None,

@@ -8,15 +8,15 @@ use crate::{
     def::ItemId,
     err::basic::ItemFoundError,
     sol::SolarSystem,
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
 };
 
 impl SolarSystem {
     pub fn get_item(&self, item_id: &ItemId) -> Result<Item<'_>, GetItemError> {
-        let item_key = self.u_data.items.key_by_id_err(item_id)?;
+        let item_key = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item(item_key))
     }
-    pub(in crate::api) fn internal_get_item(&self, item_key: UItemKey) -> Item<'_> {
+    pub(in crate::api) fn internal_get_item(&self, item_key: UItemId) -> Item<'_> {
         let u_item = self.u_data.items.get(item_key);
         match u_item {
             UItem::Autocharge(_) => Item::Autocharge(Autocharge::new(self, item_key)),
@@ -39,10 +39,10 @@ impl SolarSystem {
         }
     }
     pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut<'_>, GetItemError> {
-        let item_key = self.u_data.items.key_by_id_err(item_id)?;
+        let item_key = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_key))
     }
-    pub(in crate::api) fn internal_get_item_mut(&mut self, item_key: UItemKey) -> ItemMut<'_> {
+    pub(in crate::api) fn internal_get_item_mut(&mut self, item_key: UItemId) -> ItemMut<'_> {
         let u_item = self.u_data.items.get(item_key);
         match u_item {
             UItem::Autocharge(_) => ItemMut::Autocharge(AutochargeMut::new(self, item_key)),

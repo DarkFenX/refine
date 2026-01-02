@@ -11,18 +11,18 @@ use crate::{
         calc::Calc,
         cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // Projected effects, considers only infinite parts of cycles
 pub(in crate::svc) fn aggr_proj_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<T>
 where
     T: Default
@@ -40,11 +40,11 @@ where
 pub(in crate::svc) fn aggr_proj_looped_max<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<T>
 where
     T: Default
@@ -64,11 +64,11 @@ where
 pub(in crate::svc) fn aggr_proj_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -90,11 +90,11 @@ where
 fn aggr_total_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -123,11 +123,11 @@ where
 fn aggr_total_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     inv_spool: AggrSpoolInvData,
 ) -> Option<AggrAmount<T>>
 where
@@ -194,11 +194,11 @@ where
 fn aggr_max_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: CycleSeq<CycleDataTimeCharge>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
 ) -> Option<T>
 where
     T: Default
@@ -223,11 +223,11 @@ where
 fn aggr_max_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     inv_spool: AggrSpoolInvData,
 ) -> Option<T>
 where

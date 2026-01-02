@@ -5,16 +5,16 @@ use crate::{
     api::{ChargeMut, ModuleMut},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UCharge, UEffectUpdates, UItem, UItemKey},
+    ud::{UCharge, UEffectUpdates, UItem, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_charge(
         &mut self,
-        module_key: UItemKey,
+        module_key: UItemId,
         charge_type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
         let fit_key = u_module.get_fit_key();
         let module_projs = u_module.get_projs().iter().collect_vec();

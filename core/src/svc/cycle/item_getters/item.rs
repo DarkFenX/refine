@@ -5,14 +5,14 @@ use super::{
 use crate::{
     rd::REffectKey,
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::RMap,
 };
 
 pub(in crate::svc) fn get_item_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     options: CyclingOptions,
     ignore_state: bool,
 ) -> Option<RMap<REffectKey, CycleSeq>> {

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemKey, UShipKind},
+    ud::{UFit, UItemId, UShipKind},
     util::RSet,
 };
 
@@ -33,7 +33,7 @@ impl From<UShipKind> for ValShipKind {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UItemKey>) -> bool {
+    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
         if self.mods_rigs_svcs_vs_ship_kind.is_empty() {
             return true;
         }
@@ -42,14 +42,14 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_item_vs_ship_kind_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         fit: &UFit,
     ) -> Option<ValItemVsShipKindFail> {
         let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_key, needed_kind)| (ctx.u_data.items.id_by_key(*item_key), *needed_kind))
+            .map(|(item_key, needed_kind)| (ctx.u_data.items.ext_id_by_int_id(*item_key), *needed_kind))
             .collect();
         match items.is_empty() {
             true => None,

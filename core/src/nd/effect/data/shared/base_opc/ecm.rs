@@ -7,13 +7,13 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_key)?;
@@ -33,7 +33,7 @@ pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
 pub(in crate::nd::effect::data) fn get_ecm_burst_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_key)?;
@@ -52,7 +52,7 @@ pub(in crate::nd::effect::data) fn get_ecm_burst_base_opc(
 pub(in crate::nd::effect::data) fn get_aoe_ecm_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_key)?;
@@ -74,7 +74,7 @@ pub(in crate::nd::effect::data) fn get_aoe_ecm_base_opc(
 pub(in crate::nd::effect::data) fn get_ecm_drone_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     _effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_key)?;
@@ -91,7 +91,7 @@ pub(in crate::nd::effect::data) fn get_ecm_drone_base_opc(
     }))
 }
 
-fn get_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_key: UItemKey) -> Option<(AttrVal, AttrVal, AttrVal, AttrVal)> {
+fn get_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> Option<(AttrVal, AttrVal, AttrVal, AttrVal)> {
     Some((
         calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().scan_radar_strength_bonus, OF(0.0))?,
         calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().scan_magnetometric_strength_bonus, OF(0.0))?,

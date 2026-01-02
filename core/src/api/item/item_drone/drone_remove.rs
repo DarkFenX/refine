@@ -1,11 +1,11 @@
 use crate::{
     api::DroneMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_drone(&mut self, drone_key: UItemKey, reuse_eupdates: &mut UEffectUpdates) {
+    pub(in crate::api) fn internal_remove_drone(&mut self, drone_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         // Remove incoming projections
         self.internal_remove_incoming_projections(drone_key);
         // Remove outgoing projections

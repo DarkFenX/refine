@@ -3,17 +3,17 @@ use crate::{
     api::{Coordinates, FitMut, Movement, ShipMut},
     def::{ItemTypeId, OF},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitKey, UItem, UItemKey, UPhysics, UShip},
+    ud::{UEffectUpdates, UFitId, UItem, UItemId, UPhysics, UShip},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_ship(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         physics: UPhysics,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_key);
         // Remove old ship, if it was set
         if let Some(old_ship_key) = u_fit.ship {

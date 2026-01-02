@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemKey},
+    ud::{UData, UItemId},
 };
 
 impl SolarSystem {
@@ -11,7 +11,7 @@ impl SolarSystem {
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
     ) {
         let u_fighter = u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
         let u_physics = *u_fighter.get_physics();

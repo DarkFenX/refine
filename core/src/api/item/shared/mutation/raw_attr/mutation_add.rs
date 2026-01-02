@@ -3,7 +3,7 @@ use crate::{
     api::{AttrId, EffectiveMutationMut, IncompleteMutationMut, MutationMut, RawMAttrMut},
     err::basic::ItemMAttrNotFoundError,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
     util::UnitInterval,
 };
 
@@ -42,7 +42,7 @@ impl<'a> IncompleteMutationMut<'a> {
 
 fn mutate_raw(
     sol: &mut SolarSystem,
-    item_key: UItemKey,
+    item_key: UItemId,
     a_attr_id: AAttrId,
     roll: UnitInterval,
 ) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
@@ -56,7 +56,7 @@ fn mutate_raw(
         .get(&a_attr_id)
     {
         Some(_) => Err(ItemMAttrNotFoundError {
-            item_id: sol.u_data.items.id_by_key(item_key),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_key),
             attr_id: a_attr_id.into(),
         }
         .into()),

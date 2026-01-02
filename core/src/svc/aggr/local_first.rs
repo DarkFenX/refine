@@ -7,14 +7,14 @@ use crate::{
     AttrVal,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // Local effects, considers only first cycle (for "burst" stats)
 pub(in crate::svc) fn aggr_local_first_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
@@ -32,7 +32,7 @@ where
 pub(in crate::svc) fn aggr_local_first_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
@@ -49,7 +49,7 @@ where
 pub(in crate::svc) fn aggr_local_first_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,

@@ -5,14 +5,14 @@ use crate::{
         err::StatItemCheckError,
         vast::{StatDmg, StatDmgApplied, StatDmgItemKinds, Vast},
     },
-    ud::{UData, UFitKey, UItemKey},
+    ud::{UData, UFitId, UItemId},
 };
 
 impl Svc {
     pub(crate) fn get_stat_fits_dps_raw(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
@@ -29,11 +29,11 @@ impl Svc {
     pub(crate) fn get_stat_fits_dps_applied(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fits_dps_applied(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -48,7 +48,7 @@ impl Svc {
     pub(crate) fn get_stat_fit_dps_raw(
         &mut self,
         u_data: &UData,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
@@ -65,11 +65,11 @@ impl Svc {
     pub(crate) fn get_stat_fit_dps_applied(
         &mut self,
         u_data: &UData,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fit_dps_applied(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -84,7 +84,7 @@ impl Svc {
     pub(crate) fn get_stat_item_dps_raw(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
@@ -103,12 +103,12 @@ impl Svc {
     pub(crate) fn get_stat_item_dps_applied(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
         reload: bool,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> Result<StatDmgApplied, StatItemCheckError> {
         Vast::get_stat_item_dps_applied(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -124,7 +124,7 @@ impl Svc {
     pub(crate) fn get_stat_fits_volley_raw(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
     ) -> StatDmg {
@@ -139,10 +139,10 @@ impl Svc {
     pub(crate) fn get_stat_fits_volley_applied(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitKey>,
+        fit_keys: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fits_volley_applied(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -156,7 +156,7 @@ impl Svc {
     pub(crate) fn get_stat_fit_volley_raw(
         &mut self,
         u_data: &UData,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
     ) -> StatDmg {
@@ -171,10 +171,10 @@ impl Svc {
     pub(crate) fn get_stat_fit_volley_applied(
         &mut self,
         u_data: &UData,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fit_volley_applied(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -188,7 +188,7 @@ impl Svc {
     pub(crate) fn get_stat_item_volley_raw(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
@@ -205,11 +205,11 @@ impl Svc {
     pub(crate) fn get_stat_item_volley_applied(
         &mut self,
         u_data: &UData,
-        item_key: UItemKey,
+        item_key: UItemId,
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-        projectee_key: UItemKey,
+        projectee_key: UItemId,
     ) -> Result<StatDmgApplied, StatItemCheckError> {
         Vast::get_stat_item_volley_applied(
             SvcCtx::new(u_data, &self.eff_projs),

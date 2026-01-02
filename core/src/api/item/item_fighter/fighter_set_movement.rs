@@ -2,14 +2,14 @@ use crate::{
     api::{FighterMut, Movement},
     def::AttrVal,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
     util::Xyz,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_movement(
         &mut self,
-        fighter_key: UItemKey,
+        fighter_key: UItemId,
         direction: Xyz,
         speed: AttrVal,
     ) {

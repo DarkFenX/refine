@@ -4,7 +4,7 @@ use crate::{
         calc::Calc,
         vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol, Vast},
     },
-    ud::UFitKey,
+    ud::UFitId,
 };
 
 impl Vast {
@@ -36,7 +36,7 @@ impl Vast {
         for &fit_key in options.fit_keys.iter() {
             let fit_result = self.validate_fit_verbose(ctx, calc, fit_key, &options.options);
             if !fit_result.all_passed() {
-                let fit_id = ctx.u_data.fits.id_by_key(fit_key);
+                let fit_id = ctx.u_data.fits.ext_id_by_int_id(fit_key);
                 sol_result.fits.insert(fit_id, fit_result);
             }
         }
@@ -50,7 +50,7 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         options: &ValOptionsInt,
     ) -> bool {
         let fit = ctx.u_data.fits.get(fit_key);
@@ -492,7 +492,7 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         options: &ValOptionsInt,
     ) -> ValResultFit {
         let fit = ctx.u_data.fits.get(fit_key);

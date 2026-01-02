@@ -6,7 +6,7 @@ use crate::{
     def::{ItemId, OF},
     misc::{SecZone, SecZoneCorruption},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemKey,
+    ud::UItemId,
     util::{RMap, RSet},
 };
 
@@ -22,7 +22,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_sec_zone_fitted_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -34,23 +34,23 @@ impl VastFitData {
             Some(&self.sec_zone_fitted_wspace_banned),
         )
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_online_fast(&self, kfs: &RSet<UItemKey>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast) fn validate_sec_zone_online_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
         class_check_fast(kfs, ctx, &self.sec_zone_online_class)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_active_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         flags_check_fast(kfs, ctx, calc, &self.sec_zone_active, None)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_unonlineable_fast(&self, kfs: &RSet<UItemKey>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast) fn validate_sec_zone_unonlineable_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
         class_check_fast(kfs, ctx, &self.sec_zone_unonlineable_class)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_unactivable_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
@@ -59,7 +59,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_sec_zone_fitted_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValItemSecZoneFail> {
@@ -73,14 +73,14 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_sec_zone_online_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValItemSecZoneFail> {
         class_check_verbose(kfs, ctx, &self.sec_zone_online_class)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_active_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValItemSecZoneFail> {
@@ -88,14 +88,14 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_sec_zone_unonlineable_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValItemSecZoneFail> {
         class_check_verbose(kfs, ctx, &self.sec_zone_unonlineable_class)
     }
     pub(in crate::svc::vast) fn validate_sec_zone_unactivable_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValItemSecZoneFail> {
@@ -105,11 +105,11 @@ impl VastFitData {
 
 // Disallowed/allowed flag validators
 fn flags_check_fast(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    items_main: &RSet<UItemKey>,
-    items_wspace_banned: Option<&RSet<UItemKey>>,
+    items_main: &RSet<UItemId>,
+    items_wspace_banned: Option<&RSet<UItemId>>,
 ) -> bool {
     match ctx.u_data.sec_zone {
         SecZone::HiSec(corruption) => {
@@ -182,11 +182,11 @@ fn flags_check_fast(
     }
 }
 fn flags_check_verbose(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    items_main: &RSet<UItemKey>,
-    items_wspace_banned: Option<&RSet<UItemKey>>,
+    items_main: &RSet<UItemId>,
+    items_wspace_banned: Option<&RSet<UItemId>>,
 ) -> Option<ValItemSecZoneFail> {
     let mut failed_item_keys = Vec::new();
     match ctx.u_data.sec_zone {
@@ -260,7 +260,7 @@ fn flags_check_verbose(
                 .iter()
                 .map(|&item_key| {
                     (
-                        ctx.u_data.items.id_by_key(item_key),
+                        ctx.u_data.items.ext_id_by_int_id(item_key),
                         get_allowed_sec_zones(ctx, calc, item_key, items_wspace_banned),
                     )
                 })
@@ -271,8 +271,8 @@ fn flags_check_verbose(
 fn get_allowed_sec_zones(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
-    items_wspace_banned: Option<&RSet<UItemKey>>,
+    item_key: UItemId,
+    items_wspace_banned: Option<&RSet<UItemId>>,
 ) -> Vec<SecZone> {
     let mut allowed_zones = Vec::new();
     let disallow_empire = is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space);
@@ -311,7 +311,7 @@ fn get_allowed_sec_zones(
 }
 
 // Security class validators
-fn class_check_fast(kfs: &RSet<UItemKey>, ctx: SvcCtx, limitable_items: &RMap<UItemKey, ad::AAttrVal>) -> bool {
+fn class_check_fast(kfs: &RSet<UItemId>, ctx: SvcCtx, limitable_items: &RMap<UItemId, ad::AAttrVal>) -> bool {
     if limitable_items.is_empty() {
         return true;
     }
@@ -324,9 +324,9 @@ fn class_check_fast(kfs: &RSet<UItemKey>, ctx: SvcCtx, limitable_items: &RMap<UI
     true
 }
 fn class_check_verbose(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
-    limitable_items: &RMap<UItemKey, ad::AAttrVal>,
+    limitable_items: &RMap<UItemId, ad::AAttrVal>,
 ) -> Option<ValItemSecZoneFail> {
     if limitable_items.is_empty() {
         return None;
@@ -337,7 +337,7 @@ fn class_check_verbose(
         .filter(|(item_key, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_key))
         .map(|(&item_key, &item_sec_class)| {
             (
-                ctx.u_data.items.id_by_key(item_key),
+                ctx.u_data.items.ext_id_by_int_id(item_key),
                 class_to_allowed_zones(item_sec_class),
             )
         })

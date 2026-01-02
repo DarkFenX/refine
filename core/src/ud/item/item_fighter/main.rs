@@ -5,7 +5,7 @@ use crate::{
     misc::{EffectMode, FighterCountOverride},
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, RItemListKey, Src},
     ud::{
-        UEffectUpdates, UFitKey, UPhysics, UProjs,
+        UEffectUpdates, UFitId, UPhysics, UProjs,
         item::{UAutocharges, UItemBase},
     },
     util::{Named, RMap, RSet},
@@ -14,7 +14,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UFighter {
     pub(super) base: UItemBase,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     count_override: Option<FighterCountOverride>,
     autocharges: UAutocharges,
     physics: UPhysics,
@@ -26,7 +26,7 @@ impl UFighter {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         fighter_state: MinionState,
         physics: UPhysics,
         src: &Src,
@@ -120,7 +120,7 @@ impl UFighter {
     pub(crate) fn set_fighter_state(&mut self, state: MinionState) {
         self.base.set_state(state.into())
     }
-    pub(crate) fn get_fit_key(&self) -> UFitKey {
+    pub(crate) fn get_fit_key(&self) -> UFitId {
         self.fit_key
     }
     pub(crate) fn get_count(&self) -> Option<AdjustableCount> {

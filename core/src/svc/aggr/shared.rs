@@ -2,13 +2,13 @@ use crate::{
     def::{AttrVal, OF},
     nd::NChargeMultGetter,
     svc::{SvcCtx, calc::Calc, output::Output},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 pub(super) fn calc_charge_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemKey,
+    item_key: UItemId,
     charge_mult_getter: Option<NChargeMultGetter>,
     cycle_chargedness: Option<AttrVal>,
 ) -> Option<AttrVal> {

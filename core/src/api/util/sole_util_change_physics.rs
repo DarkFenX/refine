@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemKey, UPhysics},
+    ud::{UData, UItemId, UPhysics},
 };
 
 impl SolarSystem {
@@ -11,7 +11,7 @@ impl SolarSystem {
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,
-        item_key: UItemKey,
+        item_key: UItemId,
         physics: UPhysics,
     ) {
         let projector_keys = rev_projs.iter_projectors(&item_key);

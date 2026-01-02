@@ -6,7 +6,7 @@ use crate::{
         calc::Calc,
         vast::{VastFitData, shared::get_attr_as_count},
     },
-    ud::{UFit, UItemKey, UItemVec},
+    ud::{UFit, UItemId, UItemVec},
     util::{RMap, RSet},
 };
 
@@ -24,7 +24,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_high_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -33,7 +33,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_mid_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -42,7 +42,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_low_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -51,7 +51,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_turret_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -60,7 +60,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launcher_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -76,7 +76,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_rig_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -85,7 +85,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_service_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -94,7 +94,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_subsystem_slot_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -103,7 +103,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_drone_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -119,7 +119,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -128,7 +128,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_light_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -144,7 +144,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_heavy_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -160,7 +160,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_support_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -176,7 +176,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_st_light_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -192,7 +192,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_st_heavy_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -208,7 +208,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_st_support_fighter_count_fast(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -225,7 +225,7 @@ impl VastFitData {
     // Verbose validations
     pub(in crate::svc::vast) fn validate_high_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -234,7 +234,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_mid_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -243,7 +243,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_low_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -252,7 +252,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_turret_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -261,7 +261,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launcher_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -277,7 +277,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_rig_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -286,7 +286,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_service_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -295,7 +295,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -304,7 +304,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_drone_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -320,7 +320,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -329,7 +329,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_light_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -345,7 +345,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_heavy_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -361,7 +361,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_support_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -377,7 +377,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_st_light_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -393,7 +393,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_st_heavy_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -409,7 +409,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn validate_launched_st_support_fighter_count_verbose(
         &self,
-        kfs: &RSet<UItemKey>,
+        kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
@@ -426,34 +426,34 @@ impl VastFitData {
 }
 
 fn validate_fast_unordered_set(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
-    users: &RSet<UItemKey>,
+    users: &RSet<UItemId>,
 ) -> bool {
     let used = users.len() as Count;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
     used <= max || users.is_subset(kfs)
 }
 fn validate_fast_unordered_map<T>(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
-    users: &RMap<UItemKey, T>,
+    users: &RMap<UItemId, T>,
 ) -> bool {
     let used = users.len() as Count;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
     used <= max || users.is_subset(kfs)
 }
 fn validate_fast_ordered(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
     users: &UItemVec,
 ) -> bool {
@@ -469,12 +469,12 @@ fn validate_fast_ordered(
 }
 
 fn validate_verbose_unordered_set(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
-    users: &RSet<UItemKey>,
+    users: &RSet<UItemId>,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
@@ -483,7 +483,7 @@ fn validate_verbose_unordered_set(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.id_by_key(*item_key))
+        .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
         .collect();
     match users.is_empty() {
         true => None,
@@ -491,12 +491,12 @@ fn validate_verbose_unordered_set(
     }
 }
 fn validate_verbose_unordered_map<T>(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
-    users: &RMap<UItemKey, T>,
+    users: &RMap<UItemId, T>,
 ) -> Option<ValSlotCountFail> {
     let used = users.len() as Count;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
@@ -505,7 +505,7 @@ fn validate_verbose_unordered_map<T>(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|(item_key, _)| ctx.u_data.items.id_by_key(*item_key))
+        .map(|(item_key, _)| ctx.u_data.items.ext_id_by_int_id(*item_key))
         .collect();
     match users.is_empty() {
         true => None,
@@ -513,10 +513,10 @@ fn validate_verbose_unordered_map<T>(
     }
 }
 fn validate_verbose_ordered(
-    kfs: &RSet<UItemKey>,
+    kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemKey>,
+    max_item_key: Option<UItemId>,
     max_attr_key: Option<RAttrKey>,
     users: &UItemVec,
 ) -> Option<ValSlotCountFail> {
@@ -529,7 +529,7 @@ fn validate_verbose_ordered(
     let users: Vec<_> = users
         .iter_keys_from(effective_max as Idx)
         .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| ctx.u_data.items.id_by_key(*item_key))
+        .map(|item_key| ctx.u_data.items.ext_id_by_int_id(*item_key))
         .collect();
     match users.is_empty() {
         true => None,

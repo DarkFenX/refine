@@ -1,17 +1,17 @@
-use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemKey};
+use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_module_proj(
         &mut self,
-        module_key: UItemKey,
-        projectee_key: UItemKey,
+        module_key: UItemId,
+        projectee_key: UItemId,
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
         if !u_module.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_module.get_item_id(),
-                projectee_item_id: self.u_data.items.id_by_key(projectee_key),
+                projectee_item_id: self.u_data.items.ext_id_by_int_id(projectee_key),
             });
         };
         let charge_key = u_module.get_charge_key();

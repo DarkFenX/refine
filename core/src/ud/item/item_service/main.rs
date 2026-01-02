@@ -5,7 +5,7 @@ use crate::{
     misc::EffectMode,
     rd::{RAttrKey, REffectKey, RItemAXt, RItemEffectData, Src},
     ud::{
-        UFitKey,
+        UFitId,
         item::{UEffectUpdates, UItemBase},
     },
     util::{Named, RMap, RSet},
@@ -14,13 +14,13 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UService {
     pub(super) base: UItemBase,
-    fit_key: UFitKey,
+    fit_key: UFitId,
 }
 impl UService {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         service_state: ServiceState,
         src: &Src,
     ) -> Self {
@@ -107,7 +107,7 @@ impl UService {
     pub(crate) fn set_service_state(&mut self, state: ServiceState) {
         self.base.set_state(state.into())
     }
-    pub(crate) fn get_fit_key(&self) -> UFitKey {
+    pub(crate) fn get_fit_key(&self) -> UFitId {
         self.fit_key
     }
 }

@@ -10,7 +10,7 @@ use crate::{
             },
         },
     },
-    ud::{UFitKey, UFleet, UItem, UItemKey, UShip},
+    ud::{UFitId, UFleet, UItem, UItemId, UShip},
 };
 
 impl StandardRegister {
@@ -77,7 +77,7 @@ impl StandardRegister {
         &mut self,
         ctx: SvcCtx,
         fleet: &UFleet,
-        fit_key: UFitKey,
+        fit_key: UFitId,
     ) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
@@ -103,7 +103,7 @@ impl StandardRegister {
         &mut self,
         ctx: SvcCtx,
         fleet: &UFleet,
-        fit_key: UFitKey,
+        fit_key: UFitId,
     ) -> Vec<CtxModifier> {
         let mut cmods = Vec::new();
         // Outgoing fleet boosts
@@ -128,7 +128,7 @@ impl StandardRegister {
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_fleet(
         &mut self,
         ctx: SvcCtx,
-        ship_key: UItemKey,
+        ship_key: UItemId,
         ship: &UShip,
     ) {
         let fit_key = ship.get_fit_key();
@@ -150,7 +150,7 @@ impl StandardRegister {
     pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_fleet(
         &mut self,
         ctx: SvcCtx,
-        ship_key: UItemKey,
+        ship_key: UItemId,
         ship: &UShip,
     ) {
         let fit_key = ship.get_fit_key();
@@ -173,9 +173,9 @@ impl StandardRegister {
 
 fn is_fit_ship_on_fleet_item_list<'u>(
     ctx: SvcCtx<'u, '_>,
-    fit_key: UFitKey,
+    fit_key: UFitId,
     item_list_key: &RItemListKey,
-) -> Option<(UItemKey, &'u UShip)> {
+) -> Option<(UItemId, &'u UShip)> {
     let fit = ctx.u_data.fits.get(fit_key);
     let ship_key = fit.ship?;
     let ship = ctx.u_data.items.get(ship_key).dc_ship().unwrap();
@@ -199,7 +199,7 @@ fn apply_fleet_mod_with_fit_key(
     ctx: SvcCtx,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
-    fit_key: UFitKey,
+    fit_key: UFitId,
 ) -> bool {
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_key)) => {
@@ -251,7 +251,7 @@ fn unapply_fleet_mod_with_fit_key(
     ctx: SvcCtx,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
-    fit_key: UFitKey,
+    fit_key: UFitId,
 ) {
     // We don't check location here, since logic on layers above ensures we receive only
     // modifiers which passed checks when they were added, and location check is part of those
@@ -300,7 +300,7 @@ fn unapply_fleet_mod_with_fit_key(
 fn apply_fleet_mods_to_ship_fit<'a>(
     reg_cmods: &mut StandardRegisterCtxMods,
     fleet_rmods: impl Iterator<Item = &'a RawModifier>,
-    ship_key: UItemKey,
+    ship_key: UItemId,
     ship: &UShip,
 ) {
     let fit_key = ship.get_fit_key();
@@ -343,7 +343,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
 fn unapply_fleet_mods_from_ship_fit<'a>(
     reg_cmods: &mut StandardRegisterCtxMods,
     fleet_rmods: impl Iterator<Item = &'a RawModifier>,
-    ship_key: UItemKey,
+    ship_key: UItemId,
     ship: &UShip,
 ) {
     let fit_key = ship.get_fit_key();

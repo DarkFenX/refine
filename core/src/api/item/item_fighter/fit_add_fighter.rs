@@ -3,18 +3,18 @@ use crate::{
     api::{Coordinates, FighterMut, FitMut, MinionState, Movement},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFighter, UFitKey, UItem, UItemKey, UPhysics},
+    ud::{UEffectUpdates, UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_add_fighter(
         &mut self,
-        fit_key: UFitKey,
+        fit_key: UFitId,
         type_id: AItemId,
         state: MinionState,
         physics: UPhysics,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> UItemKey {
+    ) -> UItemId {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         let item_id = self.u_data.items.alloc_id();
         let u_fighter = UFighter::new(item_id, type_id, fit_key, state, physics, &self.u_data.src);

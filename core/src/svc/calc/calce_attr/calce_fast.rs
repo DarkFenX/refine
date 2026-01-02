@@ -10,7 +10,7 @@ use crate::{
         calc::{Calc, CalcAttrVals, CalcModification, CalcModificationKey, ModAccumFast},
         err::KeyedItemLoadedError,
     },
-    ud::{UItem, UItemKey},
+    ud::{UItem, UItemId},
     util::{RMap, round},
 };
 
@@ -22,7 +22,7 @@ impl Calc {
     pub(crate) fn get_item_attr_oextra(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: RAttrKey,
     ) -> Option<AttrVal> {
         self.get_item_attr_rfull(ctx, item_key, attr_key).ok().map(|v| v.extra)
@@ -32,7 +32,7 @@ impl Calc {
     pub(crate) fn get_item_oattr_odogma(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
     ) -> Option<AttrVal> {
         self.get_item_attr_rfull(ctx, item_key, attr_key?).ok().map(|v| v.dogma)
@@ -42,7 +42,7 @@ impl Calc {
     pub(crate) fn get_item_oattr_oextra(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
     ) -> Option<AttrVal> {
         self.get_item_attr_rfull(ctx, item_key, attr_key?).ok().map(|v| v.extra)
@@ -53,7 +53,7 @@ impl Calc {
     pub(crate) fn get_item_oattr_afb_odogma(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
@@ -71,7 +71,7 @@ impl Calc {
     pub(crate) fn get_item_oattr_afb_oextra(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
@@ -89,7 +89,7 @@ impl Calc {
     pub(crate) fn get_item_oattr_ffb_extra(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> AttrVal {
@@ -105,7 +105,7 @@ impl Calc {
     pub(crate) fn get_oitem_oattr_afb_oextra(
         &mut self,
         ctx: SvcCtx,
-        item_key: Option<UItemKey>,
+        item_key: Option<UItemId>,
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> Option<AttrVal> {
@@ -124,7 +124,7 @@ impl Calc {
     pub(crate) fn get_oitem_oattr_ffb_extra(
         &mut self,
         ctx: SvcCtx,
-        item_key: Option<UItemKey>,
+        item_key: Option<UItemId>,
         attr_key: Option<RAttrKey>,
         fallback: AttrVal,
     ) -> AttrVal {
@@ -143,7 +143,7 @@ impl Calc {
     pub(crate) fn get_item_attr_rfull(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: RAttrKey,
     ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
         // Try accessing cached value
@@ -172,7 +172,7 @@ impl Calc {
     fn get_item_oattr_rfull(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
     ) -> Result<CalcAttrVals, GetOAttrError> {
         // Try accessing cached value
@@ -205,7 +205,7 @@ impl Calc {
     pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
         attr_key: Option<RAttrKey>,
     ) -> Option<CalcAttrVals> {
         let attr_key = attr_key?;
@@ -225,7 +225,7 @@ impl Calc {
     pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemKey,
+        item_key: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrKey, CalcAttrVals)> + use<>, KeyedItemLoadedError> {
         // Items can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
@@ -268,7 +268,7 @@ impl Calc {
     fn iter_modifications(
         &mut self,
         ctx: SvcCtx,
-        item_key: &UItemKey,
+        item_key: &UItemId,
         item: &UItem,
         attr_key: RAttrKey,
     ) -> impl Iterator<Item = CalcModification> {
@@ -297,7 +297,7 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemKey, attr_key: RAttrKey) -> CalcAttrVals {
+    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrKey) -> CalcAttrVals {
         let item = ctx.u_data.items.get(item_key);
         let attr = ctx.u_data.src.get_attr(attr_key);
         let base_val = self.calc_item_base_attr_value(ctx, item_key, item, attr);
@@ -339,7 +339,7 @@ impl Calc {
             extra: extra_val,
         }
     }
-    fn calc_item_base_attr_value(&mut self, ctx: SvcCtx, item_key: UItemKey, item: &UItem, attr: &RAttr) -> AttrVal {
+    fn calc_item_base_attr_value(&mut self, ctx: SvcCtx, item_key: UItemId, item: &UItem, attr: &RAttr) -> AttrVal {
         let attr_consts = ctx.ac();
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base

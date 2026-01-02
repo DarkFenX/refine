@@ -2,11 +2,11 @@ use crate::{
     api::{EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut},
     def::ItemTypeId,
     sol::SolarSystem,
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl SolarSystem {
-    fn api_get_mutator_id(&self, item_key: UItemKey) -> ItemTypeId {
+    fn api_get_mutator_id(&self, item_key: UItemId) -> ItemTypeId {
         self.u_data
             .items
             .get(item_key)

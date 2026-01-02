@@ -1,14 +1,14 @@
 use crate::{
     sol::SolarSystem,
     svc::Svc,
-    ud::{UData, UEffectUpdates, UItemKey},
+    ud::{UData, UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn util_add_ship(
         u_data: &mut UData,
         svc: &mut Svc,
-        ship_key: UItemKey,
+        ship_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // TODO: consider moving fit kind update here
@@ -19,7 +19,7 @@ impl SolarSystem {
     pub(in crate::api) fn util_remove_ship(
         u_data: &mut UData,
         svc: &mut Svc,
-        ship_key: UItemKey,
+        ship_key: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // TODO: consider moving fit kind update here

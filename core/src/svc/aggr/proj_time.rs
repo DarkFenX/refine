@@ -12,18 +12,18 @@ use crate::{
         calc::Calc,
         cycle::{CycleDataFull, CycleSeq},
     },
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 // Projected effects, aggregates total output by specified time
 pub(in crate::svc) fn aggr_proj_time_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     time: AttrVal,
 ) -> Option<T>
 where
@@ -42,11 +42,11 @@ where
 pub(in crate::svc) fn aggr_proj_time_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     time: AttrVal,
 ) -> Option<T>
 where
@@ -80,11 +80,11 @@ where
 fn aggr_total_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     time: AttrVal,
 ) -> Option<T>
 where
@@ -135,11 +135,11 @@ where
 fn aggr_total_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemKey>,
+    projectee_key: Option<UItemId>,
     mut time: AttrVal,
     inv_spool: AggrSpoolInvData,
 ) -> Option<T>
@@ -372,7 +372,7 @@ where
 fn process_single_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
@@ -409,7 +409,7 @@ fn process_single_spool<T>(
 fn process_limited_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
@@ -488,7 +488,7 @@ fn process_limited_spool<T>(
 fn process_infinite_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemKey,
+    projector_key: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,

@@ -1,11 +1,11 @@
 use crate::{
     api::ChargeMut,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemKey},
+    ud::{UEffectUpdates, UItemId},
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_charge(&mut self, charge_key: UItemKey, reuse_eupdates: &mut UEffectUpdates) {
+    pub(in crate::api) fn internal_remove_charge(&mut self, charge_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         let u_charge = self.u_data.items.get(charge_key).dc_charge().unwrap();
         let module_key = u_charge.get_cont_item_key();
         // Remove outgoing projections

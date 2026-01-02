@@ -2,15 +2,15 @@ use crate::{
     api::FleetMut,
     def::ItemId,
     err::basic::{ItemFoundError, ItemReceiveProjError},
-    ud::UItemKey,
+    ud::UItemId,
 };
 
 impl<'a> FleetMut<'a> {
     pub(super) fn get_stat_applied_projectee_key(
         &self,
         projectee_item_id: &ItemId,
-    ) -> Result<UItemKey, FleetStatAppliedError> {
-        let projectee_key = self.sol.u_data.items.key_by_id_err(projectee_item_id)?;
+    ) -> Result<UItemId, FleetStatAppliedError> {
+        let projectee_key = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         let projectee_u_item = self.sol.u_data.items.get(projectee_key);
         if projectee_u_item.get_direct_physics().is_none() {
             return Err(ItemReceiveProjError {

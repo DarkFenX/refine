@@ -6,7 +6,7 @@ use crate::{
             registers::standard::data::StandardRegister,
         },
     },
-    ud::{UData, UFitKey, UItem, UItemKey, UShipKind},
+    ud::{UData, UFitId, UItem, UItemId, UShipKind},
     util::extend_vec_from_map_set_l1,
 };
 
@@ -14,7 +14,7 @@ impl StandardRegister {
     // Query methods
     pub(in crate::svc::calc) fn fill_affectees(
         &self,
-        reuse_affectees: &mut Vec<UItemKey>,
+        reuse_affectees: &mut Vec<UItemId>,
         ctx: SvcCtx,
         cmod: &CtxModifier,
     ) {
@@ -42,7 +42,7 @@ impl StandardRegister {
         }
     }
     // Private methods
-    fn fill_no_context(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier) {
+    fn fill_no_context(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier) {
         // No-context modifiers are used only for self/other modifications
         if let AffecteeFilter::Direct(loc) = rmod.affectee_filter {
             match loc {
@@ -59,7 +59,7 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_for_fit(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitKey) {
+    fn fill_for_fit(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitId) {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc)
                 if let Ok(loc_kind) = loc.try_into()
@@ -98,11 +98,11 @@ impl StandardRegister {
     }
     fn fill_for_fit_item_target(
         &self,
-        affectees: &mut Vec<UItemKey>,
+        affectees: &mut Vec<UItemId>,
         ctx: SvcCtx,
         rmod: &RawModifier,
-        fit_key: UFitKey,
-        projectee_key: UItemKey,
+        fit_key: UFitId,
+        projectee_key: UItemId,
     ) {
         match rmod.affectee_filter {
             AffecteeFilter::Loc(_) => {
@@ -139,7 +139,7 @@ impl StandardRegister {
             _ => (),
         }
     }
-    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemKey>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitKey) {
+    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier, fit_key: UFitId) {
         match rmod.affectee_filter {
             AffecteeFilter::Loc(_) => {
                 let fit = ctx.u_data.fits.get(fit_key);
@@ -165,14 +165,14 @@ impl StandardRegister {
             _ => (),
         }
     }
-    fn fill_direct_only(&self, affectees: &mut Vec<UItemKey>, rmod: &RawModifier, projectee_key: UItemKey) {
+    fn fill_direct_only(&self, affectees: &mut Vec<UItemId>, rmod: &RawModifier, projectee_key: UItemId) {
         if let AffecteeFilter::Direct(_) = rmod.affectee_filter {
             affectees.push(projectee_key);
         }
     }
 }
 
-fn check_location_root(u_data: &UData, loc: LocationKind, fit_key: UFitKey) -> bool {
+fn check_location_root(u_data: &UData, loc: LocationKind, fit_key: UFitId) -> bool {
     match loc {
         LocationKind::Character => true,
         LocationKind::Ship => {
