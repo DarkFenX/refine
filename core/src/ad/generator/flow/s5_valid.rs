@@ -5,7 +5,7 @@ use crate::{
         GSupport, get_abil_effect,
         rels::{Fk, KeyDb, KeyPart, Pk},
     },
-    ed::{EAttr, EBuff, EData, EDataCont, EEffect, EFighterAbil, EItem, EItemFighterAbil, EItemGroup, EItemList},
+    ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList},
     util::{Named, RMap, RSet},
 };
 
@@ -37,7 +37,10 @@ fn fk_check(e_data: &EData, g_supp: &GSupport) {
     fk_check_referer(&e_data.muta_items, &pkdb, g_supp);
     fk_check_referer(&e_data.muta_attrs, &pkdb, g_supp);
 }
-fn fk_check_referer<T: Fk + Named>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp: &GSupport) {
+fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp: &GSupport)
+where
+    T: Fk + Named,
+{
     fk_check_referee(rer_cont, &pkdb.items, g_supp, T::get_item_fks, EItem::get_name());
     fk_check_referee(rer_cont, &pkdb.groups, g_supp, T::get_group_fks, EItemGroup::get_name());
     fk_check_referee(
@@ -49,7 +52,7 @@ fn fk_check_referer<T: Fk + Named>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp
     );
     fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, EAttr::get_name());
     fk_check_referee(rer_cont, &pkdb.effects, g_supp, T::get_effect_fks, EEffect::get_name());
-    fk_check_referee(rer_cont, &pkdb.abils, g_supp, T::get_abil_fks, EFighterAbil::get_name());
+    fk_check_referee(rer_cont, &pkdb.abils, g_supp, T::get_abil_fks, EAbil::get_name());
     fk_check_referee(rer_cont, &pkdb.buffs, g_supp, T::get_buff_fks, EBuff::get_name());
 }
 fn fk_check_referee<T, F>(rer_cont: &EDataCont<T>, ree_pks: &RSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
@@ -59,14 +62,14 @@ where
 {
     let mut fks = RSet::new();
     rer_cont.data.iter().for_each(|v| fks.extend(func(v, g_supp)));
-    let missing = fks.difference(ree_pks).collect_vec();
+    let missing = fks.difference(ree_pks).copied().collect_vec();
     if !missing.is_empty() {
         let msg = format!(
             "{} refers to {} missing {}: {}",
             T::get_name(),
             missing.len(),
             ree_name,
-            missing.iter().sorted_unstable().join(", ")
+            missing.into_iter().map(|v| v.into_inner()).sorted_unstable().join(", ")
         );
         tracing::warn!("{msg}");
     }
@@ -119,11 +122,16 @@ fn unmapped_abilities(e_data: &mut EData) {
         let msg = format!(
             "removed {} {} and {} {} with unmappable fighter ability IDs, showing up to {}: {}",
             abils,
-            EFighterAbil::get_name(),
+            EAbil::get_name(),
             item_abils,
-            EItemFighterAbil::get_name(),
+            EItemAbil::get_name(),
             max_logged,
-            unknown_ids.iter().sorted_unstable().take(max_logged).join(", ")
+            unknown_ids
+                .into_iter()
+                .map(|v| v.into_inner())
+                .sorted_unstable()
+                .take(max_logged)
+                .join(", ")
         );
         tracing::warn!("{msg}");
     }
@@ -146,10 +154,15 @@ fn broken_ability_links(e_data: &mut EData) {
         let msg = format!(
             "removed {} {} with invalid target {}, showing up to {}: {}",
             item_abils,
-            EItemFighterAbil::get_name(),
-            EFighterAbil::get_name(),
+            EItemAbil::get_name(),
+            EAbil::get_name(),
             max_logged,
-            broken_ids.iter().sorted_unstable().take(max_logged).join(", ")
+            broken_ids
+                .into_iter()
+                .map(|v| v.into_inner())
+                .sorted_unstable()
+                .take(max_logged)
+                .join(", ")
         );
         tracing::warn!("{msg}");
     }
@@ -183,10 +196,11 @@ fn item_ability_handler_effect(e_data: &mut EData) {
         let msg = format!(
             "removed {} {} with references to missing on-item effects, showing up to {}: {}",
             invalids.len(),
-            EItemFighterAbil::get_name(),
+            EItemAbil::get_name(),
             max_logged,
             invalids
-                .iter()
+                .into_iter()
+                .map(|(v1, v2)| (v1.into_inner(), v2.into_inner()))
                 .sorted_unstable()
                 .take(max_logged)
                 .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))

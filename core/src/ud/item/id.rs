@@ -1,6 +1,4 @@
-use derive_more::Display;
-
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
 pub(crate) struct UItemId(usize);
 
 impl From<usize> for UItemId {

@@ -72,13 +72,13 @@ impl PhbFileEdh {
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         let data = self.read_json(&addr)?;
-        e_data.abils = fsd::handle::<PFighterAbil, rc::ed::EFighterAbil>(data, &addr.get_part_str())?;
+        e_data.abils = fsd::handle::<PFighterAbil, rc::ed::EAbil>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         let data = self.read_json(&addr)?;
-        e_data.item_abils = fsd::handle::<PItemFighterAbils, rc::ed::EItemFighterAbil>(data, &addr.get_part_str())?;
+        e_data.item_abils = fsd::handle::<PItemFighterAbils, rc::ed::EItemAbil>(data, &addr.get_part_str())?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {

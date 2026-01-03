@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAbil, AAbilId, AEffectId, generator::get_abil_effect},
+    ad::{AAbil, AAbilId, ADogmaEffectId, AEffectId, generator::get_abil_effect},
     ed::EData,
     util::RMap,
 };
@@ -11,11 +11,13 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_abils(e_data: &EData) ->
         .data
         .iter()
         .map(|e_abil| {
+            let abil_aid = AAbilId::new(e_abil.id.into_inner());
+            let effect_aid = AEffectId::Dogma(ADogmaEffectId::new(get_abil_effect(e_abil.id).unwrap().into_inner()));
             (
-                e_abil.id,
+                abil_aid,
                 AAbil {
-                    id: e_abil.id,
-                    effect_id: AEffectId::Dogma(get_abil_effect(e_abil.id).unwrap()),
+                    id: abil_aid,
+                    effect_id: effect_aid,
                 },
             )
         })

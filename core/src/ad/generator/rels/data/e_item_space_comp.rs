@@ -8,28 +8,28 @@ use crate::{
 
 impl Pk for EItemSpaceComp {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.item_id]
+        vec![self.item_id.into()]
     }
 }
 
 impl Fk for EItemSpaceComp {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.item_id]
+        vec![self.item_id.into()]
     }
     fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
+        let mut fks = Vec::new();
         for buff_data in self.iter_data() {
-            if let Some(item_list_id) = buff_data.item_list_filter {
-                vec.push(item_list_id);
+            if let Some(item_list_eid) = buff_data.item_list_filter {
+                fks.push(item_list_eid.into());
             }
         }
-        vec
+        fks
     }
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
+        let mut fks = Vec::new();
         for buff_data in self.iter_data() {
-            vec.extend(buff_data.buffs.iter().map(|v| v.id));
+            fks.extend(buff_data.buffs.iter().map(|v| KeyPart::from(v.id)));
         }
-        vec
+        fks
     }
 }

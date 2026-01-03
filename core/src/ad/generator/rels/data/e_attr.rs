@@ -10,58 +10,58 @@ use crate::{
 
 impl Pk for EAttr {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.id]
+        vec![self.id.into()]
     }
 }
 
 impl Fk for EAttr {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
-        if let Some(v) = self.get_fk_from_defval(ec::units::ITEM_ID) {
-            vec.push(v);
+        let mut fks = Vec::new();
+        if let Some(fk) = self.get_fk_from_defval(ec::units::ITEM_ID) {
+            fks.push(fk);
         }
-        vec
+        fks
     }
     fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
-        if let Some(v) = self.get_fk_from_defval(ec::units::GROUP_ID) {
-            vec.push(v);
+        let mut fks = Vec::new();
+        if let Some(fk) = self.get_fk_from_defval(ec::units::GROUP_ID) {
+            fks.push(fk);
         }
-        vec
+        fks
     }
     fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
+        let mut fks = Vec::new();
         if ec::extras::TYPE_LIST_ATTR_IDS.contains(&self.id)
-            && let Some(v) = attr_val_to_fk(self.default_value)
+            && let Some(fk) = attr_val_to_fk(self.default_value)
         {
-            vec.push(v);
+            fks.push(fk);
         }
-        vec
+        fks
     }
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
-        vec_push_opt(&mut vec, self.min_attr_id);
-        vec_push_opt(&mut vec, self.max_attr_id);
-        if let Some(v) = self.get_fk_from_defval(ec::units::ATTR_ID) {
-            vec.push(v);
+        let mut fks = Vec::new();
+        vec_push_opt(&mut fks, self.min_attr_id.map(Into::into));
+        vec_push_opt(&mut fks, self.max_attr_id.map(Into::into));
+        if let Some(fk) = self.get_fk_from_defval(ec::units::ATTR_ID) {
+            fks.push(fk);
         }
-        vec
+        fks
     }
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        let mut vec = Vec::new();
+        let mut fks = Vec::new();
         if ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.id)
-            && let Some(v) = attr_val_to_fk(self.default_value)
+            && let Some(fk) = attr_val_to_fk(self.default_value)
         {
-            vec.push(v);
+            fks.push(fk);
         }
-        vec
+        fks
     }
 }
 impl EAttr {
     // Receive unit ID, and if the attribute has such unit ID - push its default value to the vector
-    fn get_fk_from_defval(&self, unit: EAttrUnitId) -> Option<KeyPart> {
+    fn get_fk_from_defval(&self, check_unit_eid: EAttrUnitId) -> Option<KeyPart> {
         match (self.unit_id, attr_val_to_fk(self.default_value)) {
-            (Some(u), Some(dv_fk)) if u == unit => Some(dv_fk),
+            (Some(unit_eid), Some(fk)) if unit_eid == check_unit_eid => Some(fk),
             _ => None,
         }
     }

@@ -96,9 +96,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_overload_td_lvl(
     item_attrs: &RMap<RAttrId, AAttrVal>,
     attr_consts: &RAttrConsts,
 ) -> Option<ASkillLevel> {
-    attr_consts
-        .required_thermodynamics_skill
-        .and_then(|v| item_attrs.get(&v).map(|v| ASkillLevel::new(v.round() as i32)))
+    attr_consts.required_thermodynamics_skill.and_then(|v| {
+        item_attrs
+            .get(&v)
+            .map(|v| ASkillLevel::new_clamped_i32(v.round() as i32))
+    })
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_charge_size(

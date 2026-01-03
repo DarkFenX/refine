@@ -8,12 +8,12 @@ use crate::{
 
 impl Pk for EItem {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.id]
+        vec![self.id.into()]
     }
 }
 
 impl Fk for EItem {
     fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.group_id]
+        vec![self.group_id.into()]
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    ed::{EAttrId, EAttrUnitId, EAttrVal},
+    ed::{EAttrId, EAttrUnitId, EGenFloat},
     util::Named,
 };
 
@@ -7,7 +7,7 @@ pub struct EAttr {
     pub id: EAttrId,
     pub stackable: bool,
     pub high_is_good: bool,
-    pub default_value: EAttrVal,
+    pub default_value: EGenFloat,
     pub min_attr_id: Option<EAttrId>,
     pub max_attr_id: Option<EAttrId>,
     pub unit_id: Option<EAttrUnitId>,

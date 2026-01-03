@@ -14,7 +14,7 @@ pub(super) fn skill_level_postproc_fast(
     mut cval: CalcAttrVals,
 ) -> CalcAttrVals {
     let level = ctx.u_data.items.get(item_key).dc_skill().unwrap().get_level();
-    let level = AttrVal::from(level.get_inner());
+    let level = AttrVal::from(level.into_inner());
     cval.dogma = level;
     cval.extra = level;
     cval
@@ -27,6 +27,6 @@ pub(super) fn skill_level_postproc_info(
     _info: AttrValInfo,
 ) -> AttrValInfo {
     let level = ctx.u_data.items.get(item_key).dc_skill().unwrap().get_level();
-    let level = AttrVal::from(level.get_inner());
+    let level = AttrVal::from(level.into_inner());
     AttrValInfo::new(level)
 }

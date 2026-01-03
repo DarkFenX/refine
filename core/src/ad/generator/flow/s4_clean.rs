@@ -1,10 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    ad::generator::{
-        GSupport,
-        rels::{KeyDb, Pk},
-    },
+    ad::generator::{GSupport, rels::KeyDb},
     ec,
     ed::{EData, EDataCont},
     util::{Named, RSet, StrMsgError},
@@ -119,7 +116,7 @@ fn restore_hardcoded_item_lists(alive: &mut EData, trash: &mut EData) {
 fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
     let mut item_ids = RSet::new();
     for item in alive.items.data.iter() {
-        item_ids.extend(item.get_pk());
+        item_ids.insert(item.id);
     }
     // We need the data which describes our items directly, so some FKs are avoided deliberately.
     // For instance, having an item-attribute mapping entry restored just because its value refers
@@ -148,15 +145,21 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
 
 fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> bool {
     let fkdb = KeyDb::new_fkdb(alive, g_supp);
-    move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
-        || move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
-        || move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
-            fkdb.item_lists.contains(&v.id)
-        })
-        || move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))
-        || move_data(&mut trash.effects, &mut alive.effects, |v| fkdb.effects.contains(&v.id))
-        || move_data(&mut trash.abils, &mut alive.abils, |v| fkdb.abils.contains(&v.id))
-        || move_data(&mut trash.buffs, &mut alive.buffs, |v| fkdb.buffs.contains(&v.id))
+    move_data(&mut trash.items, &mut alive.items, |v| {
+        fkdb.items.contains(&v.id.into())
+    }) || move_data(&mut trash.groups, &mut alive.groups, |v| {
+        fkdb.groups.contains(&v.id.into())
+    }) || move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
+        fkdb.item_lists.contains(&v.id.into())
+    }) || move_data(&mut trash.attrs, &mut alive.attrs, |v| {
+        fkdb.attrs.contains(&v.id.into())
+    }) || move_data(&mut trash.effects, &mut alive.effects, |v| {
+        fkdb.effects.contains(&v.id.into())
+    }) || move_data(&mut trash.abils, &mut alive.abils, |v| {
+        fkdb.abils.contains(&v.id.into())
+    }) || move_data(&mut trash.buffs, &mut alive.buffs, |v| {
+        fkdb.buffs.contains(&v.id.into())
+    })
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

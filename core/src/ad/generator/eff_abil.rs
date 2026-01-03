@@ -1,6 +1,9 @@
-use crate::{ec, ed};
+use crate::{
+    ec,
+    ed::{EAbilId, EEffectId},
+};
 
-pub(in crate::ad::generator) fn get_abil_effect(abil_id: ed::EAbilId) -> Option<ed::EEffectId> {
+pub(in crate::ad::generator) fn get_abil_effect(abil_id: EAbilId) -> Option<EEffectId> {
     match abil_id {
         ec::abils::ATK_PULSE
         | ec::abils::ATK_BEAM

@@ -1,15 +1,15 @@
 use crate::{
-    ed::{EAttrVal, EItemGrpId, EItemId},
+    ed::{EGenFloat, EItemGrpId, EItemId},
     util::Named,
 };
 
 pub struct EItem {
     pub id: EItemId,
     pub group_id: EItemGrpId,
-    pub capacity: EAttrVal,
-    pub mass: EAttrVal,
-    pub radius: EAttrVal,
-    pub volume: EAttrVal,
+    pub capacity: EGenFloat,
+    pub mass: EGenFloat,
+    pub radius: EGenFloat,
+    pub volume: EGenFloat,
 }
 impl Named for EItem {
     fn get_name() -> &'static str {

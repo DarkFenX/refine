@@ -1,7 +1,7 @@
 pub use affectee_filter::ABuffAffecteeFilter;
 pub use aggr_mode::ABuffAggrMode;
 pub use buff::ABuff;
-pub use id::ABuffId;
+pub use id::{ABuffId, ACustomBuffId, AEveBuffId};
 pub use modifier::ABuffModifier;
 
 mod affectee_filter;

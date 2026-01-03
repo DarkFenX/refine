@@ -7,9 +7,9 @@ pub(in crate::phb) struct PFighterAbil {
     #[serde(rename = "disallowInLowSec")]
     pub(in crate::phb) disallow_lowsec: bool,
 }
-impl FsdMerge<rc::ed::EFighterAbil> for PFighterAbil {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EFighterAbil> {
-        vec![rc::ed::EFighterAbil {
+impl FsdMerge<rc::ed::EAbil> for PFighterAbil {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EAbil> {
+        vec![rc::ed::EAbil {
             id,
             disallow_hisec: self.disallow_hisec,
             disallow_lowsec: self.disallow_lowsec,

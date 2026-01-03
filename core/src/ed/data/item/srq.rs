@@ -1,12 +1,12 @@
 use crate::{
-    ed::{EItemId, ESkillLevel},
+    ed::{EGenInt, EItemId},
     util::Named,
 };
 
 pub struct EItemSkillReq {
     pub item_id: EItemId,
     pub skill_id: EItemId,
-    pub level: ESkillLevel,
+    pub level: EGenInt,
 }
 impl Named for EItemSkillReq {
     fn get_name() -> &'static str {

@@ -1,6 +1,6 @@
 use crate::{
-    ed::{EAttrId, EEffectCatId, EEffectId, EPrimitive},
-    util::{Named, RMap},
+    ed::{EAttrId, EEffectCatId, EEffectId, EEffectMod},
+    util::Named,
 };
 
 pub struct EEffect {
@@ -26,9 +26,4 @@ impl std::fmt::Display for EEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}(id={})", Self::get_name(), self.id)
     }
-}
-
-pub struct EEffectMod {
-    pub func: String,
-    pub args: RMap<String, EPrimitive>,
 }

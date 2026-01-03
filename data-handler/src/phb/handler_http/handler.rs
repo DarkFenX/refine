@@ -100,13 +100,13 @@ impl PhbHttpEdh {
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/fighterabilities.json";
         let data = self.fetch_data(suffix)?;
-        e_data.abils = fsd::handle::<PFighterAbil, rc::ed::EFighterAbil>(data, suffix)?;
+        e_data.abils = fsd::handle::<PFighterAbil, rc::ed::EAbil>(data, suffix)?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/fighterabilitiesbytype.json";
         let data = self.fetch_data(suffix)?;
-        e_data.item_abils = fsd::handle::<PItemFighterAbils, rc::ed::EItemFighterAbil>(data, suffix)?;
+        e_data.item_abils = fsd::handle::<PItemFighterAbils, rc::ed::EItemAbil>(data, suffix)?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {

@@ -3,16 +3,15 @@ use std::hash::Hash;
 use crate::{
     ac,
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp,
-        AState,
+        AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp, AState,
         generator::{GSupport, get_abil_effect},
     },
     ec,
-    ed::{EData, EEffectId, EEffectMod, EFighterAbil, EItemGrpId, EItemId, EPrimitive},
+    ed::{EAbil, EAttrId, EData, EEffectId, EEffectMod, EItemGrpId, EItemId, EPrimitive},
     util::{RMap, RSet, StrMsgError},
 };
 
-impl EFighterAbil {
+impl EAbil {
     fn get_disallow_hisec(&self) -> bool {
         self.disallow_hisec
     }
@@ -41,27 +40,27 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             }
         };
         let mut a_effect = AEffect {
-            id: AEffectId::Dogma(e_effect.id),
-            category: e_effect.category_id,
+            id: e_effect.id.into(),
+            category: e_effect.category_id.into(),
             state,
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
-            discharge_attr_id: e_effect.discharge_attr_id.map(AAttrId::Eve),
-            duration_attr_id: e_effect.duration_attr_id.map(AAttrId::Eve),
-            range_attr_id: e_effect.range_attr_id.map(AAttrId::Eve),
-            falloff_attr_id: e_effect.falloff_attr_id.map(AAttrId::Eve),
-            track_attr_id: e_effect.tracking_attr_id.map(AAttrId::Eve),
-            chance_attr_id: e_effect.usage_chance_attr_id.map(AAttrId::Eve),
-            resist_attr_id: e_effect.resist_attr_id.map(AAttrId::Eve),
+            discharge_attr_id: e_effect.discharge_attr_id.map(Into::into),
+            duration_attr_id: e_effect.duration_attr_id.map(Into::into),
+            range_attr_id: e_effect.range_attr_id.map(Into::into),
+            falloff_attr_id: e_effect.falloff_attr_id.map(Into::into),
+            track_attr_id: e_effect.tracking_attr_id.map(Into::into),
+            chance_attr_id: e_effect.usage_chance_attr_id.map(Into::into),
+            resist_attr_id: e_effect.resist_attr_id.map(Into::into),
             ..
         };
         for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
             match extract_stopper(e_modifier) {
                 Ok(Some(effect_id)) => {
-                    if !a_effect.stopped_effect_ids.contains(&AEffectId::Dogma(effect_id)) {
-                        a_effect.stopped_effect_ids.push(AEffectId::Dogma(effect_id))
+                    if !a_effect.stopped_effect_ids.contains(&effect_id.into()) {
+                        a_effect.stopped_effect_ids.push(effect_id.into())
                     };
                     continue;
                 }
@@ -95,8 +94,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
         a_effects.insert(a_effect.id, a_effect);
     }
     // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map(e_data, EFighterAbil::get_disallow_hisec);
-    let lowsec_ban_map = extract_ability_map(e_data, EFighterAbil::get_disallow_lowsec);
+    let hisec_ban_map = extract_ability_map(e_data, EAbil::get_disallow_hisec);
+    let lowsec_ban_map = extract_ability_map(e_data, EAbil::get_disallow_lowsec);
     for a_effect in a_effects.values_mut() {
         // Hisec flag
         match hisec_ban_map.get(&a_effect.id) {
@@ -145,7 +144,7 @@ fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgE
                     msg: format!("unexpected domain \"{domain}\""),
                 });
             }
-            Ok(Some(get_arg_int(&e_modifier.args, "effectID")?))
+            Ok(Some(EEffectId::new(get_arg_int(&e_modifier.args, "effectID")?)))
         }
         _ => Ok(None),
     }
@@ -153,43 +152,43 @@ fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgE
 
 fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_id(e_modifier)?,
+        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::Direct(get_mod_location(e_modifier, a_effect)?),
-        affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
+        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
     })
 }
 
 fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_id(e_modifier)?,
+        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::Loc(get_mod_location(e_modifier, a_effect)?),
-        affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
+        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
     })
 }
 
 fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_id(e_modifier)?,
+        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::LocGrp(
             get_mod_location(e_modifier, a_effect)?,
-            get_mod_grp_id(e_modifier)?,
+            get_mod_grp_eid(e_modifier)?.into(),
         ),
-        affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
+        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
     })
 }
 
 fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_id(e_modifier)?,
+        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             get_mod_location(e_modifier, a_effect)?,
-            AModifierSrq::TypeId(get_mod_skill_id(e_modifier)?),
+            AModifierSrq::TypeId(get_mod_skill_eid(e_modifier)?.into()),
         ),
-        affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
+        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
     })
 }
 
@@ -206,19 +205,19 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
         });
     }
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_id(e_modifier)?,
+        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
         op: get_mod_operation(e_modifier)?,
-        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(get_mod_skill_id(e_modifier)?)),
-        affectee_attr_id: get_mod_affectee_attr_id(e_modifier)?,
+        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(get_mod_skill_eid(e_modifier)?.into())),
+        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
     })
 }
 
-fn get_mod_src_attr_id(e_modifier: &EEffectMod) -> Result<AAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifyingAttributeID").map(AAttrId::Eve)
+fn get_mod_src_attr_eid(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "modifyingAttributeID").map(EAttrId::new)
 }
 
-fn get_mod_affectee_attr_id(e_modifier: &EEffectMod) -> Result<AAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifiedAttributeID").map(AAttrId::Eve)
+fn get_mod_affectee_attr_eid(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "modifiedAttributeID").map(EAttrId::new)
 }
 
 fn get_mod_location(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectLocation, StrMsgError> {
@@ -260,12 +259,12 @@ fn get_mod_operation(e_modifier: &EEffectMod) -> Result<AOp, StrMsgError> {
     }
 }
 
-fn get_mod_grp_id(e_modifier: &EEffectMod) -> Result<EItemGrpId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "groupID")
+fn get_mod_grp_eid(e_modifier: &EEffectMod) -> Result<EItemGrpId, StrMsgError> {
+    Ok(EItemGrpId::new(get_arg_int(&e_modifier.args, "groupID")?))
 }
 
-fn get_mod_skill_id(e_modifier: &EEffectMod) -> Result<EItemId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "skillTypeID")
+fn get_mod_skill_eid(e_modifier: &EEffectMod) -> Result<EItemId, StrMsgError> {
+    Ok(EItemId::new(get_arg_int(&e_modifier.args, "skillTypeID")?))
 }
 
 fn get_arg_int(args: &RMap<String, EPrimitive>, name: &str) -> Result<i32, StrMsgError> {
@@ -294,7 +293,7 @@ fn get_arg_str(args: &RMap<String, EPrimitive>, name: &str) -> Result<String, St
 
 fn extract_ability_map<F, T>(e_data: &EData, getter: F) -> RMap<AEffectId, RSet<T>>
 where
-    F: Fn(&EFighterAbil) -> T,
+    F: Fn(&EAbil) -> T,
     T: Eq + Hash,
 {
     let mut map = RMap::new();
@@ -302,7 +301,7 @@ where
         match get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
-                .entry(AEffectId::Dogma(effect_id))
+                .entry(effect_id.into())
                 .or_insert_with(RSet::new)
                 .insert(getter(e_abil)),
         };

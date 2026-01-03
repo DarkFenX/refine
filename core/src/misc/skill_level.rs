@@ -28,33 +28,33 @@ impl std::fmt::Display for SkillLevel {
 // Conversion
 impl From<ad::ASkillLevel> for SkillLevel {
     fn from(a_skill_level: ad::ASkillLevel) -> Self {
-        Self(a_skill_level.get_inner())
+        Self(a_skill_level.into_inner())
     }
 }
 impl From<SkillLevel> for ad::ASkillLevel {
     fn from(skill_level: SkillLevel) -> Self {
-        Self::new(skill_level.0)
+        Self::new_clamped_i32(skill_level.0)
     }
 }
 // Equality/ordering
 impl PartialEq<ad::ASkillLevel> for SkillLevel {
     fn eq(&self, other: &ad::ASkillLevel) -> bool {
-        self.get_inner().eq(&other.get_inner())
+        self.get_inner().eq(&other.into_inner())
     }
 }
 impl PartialEq<SkillLevel> for ad::ASkillLevel {
     fn eq(&self, other: &SkillLevel) -> bool {
-        self.get_inner().eq(&other.get_inner())
+        self.into_inner().eq(&other.get_inner())
     }
 }
 impl PartialOrd<ad::ASkillLevel> for SkillLevel {
     fn partial_cmp(&self, other: &ad::ASkillLevel) -> Option<std::cmp::Ordering> {
-        self.get_inner().partial_cmp(&other.get_inner())
+        self.get_inner().partial_cmp(&other.into_inner())
     }
 }
 impl PartialOrd<SkillLevel> for ad::ASkillLevel {
     fn partial_cmp(&self, other: &SkillLevel) -> Option<std::cmp::Ordering> {
-        self.get_inner().partial_cmp(&other.get_inner())
+        self.into_inner().partial_cmp(&other.get_inner())
     }
 }
 

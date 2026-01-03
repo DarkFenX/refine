@@ -9,8 +9,8 @@ pub(in crate::phb) struct PItemFighterAbils {
     #[serde(rename = "abilitySlot2")]
     pub(in crate::phb) abil2: Option<PItemFighterAbilData>,
 }
-impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemFighterAbil> {
+impl FsdMerge<rc::ed::EItemAbil> for PItemFighterAbils {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemAbil> {
         let mut vec = Vec::new();
         for (slot, p_abil_data) in [self.abil0, self.abil1, self.abil2].into_iter().enumerate() {
             let p_abil_data = match p_abil_data {
@@ -20,7 +20,7 @@ impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
             let (charge_count, charge_rearm_time) = p_abil_data
                 .charges
                 .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
-            vec.push(rc::ed::EItemFighterAbil {
+            vec.push(rc::ed::EItemAbil {
                 item_id: id,
                 abil_id: p_abil_data.abil_id,
                 slot: slot as rc::ed::ESlot,

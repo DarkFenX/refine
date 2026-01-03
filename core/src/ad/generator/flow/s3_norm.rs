@@ -1,6 +1,7 @@
 use crate::{
     ad::generator::rels::{KeyPart, Pk},
-    ed::{EAttrId, EAttrVal, EData, EDataCont, EItemAttr, EItemId},
+    ec,
+    ed::{EAttrId, EData, EDataCont, EGenFloat, EItemAttr, EItemId},
     util::RSet,
 };
 
@@ -14,24 +15,51 @@ fn move_basic_attrs(e_data: &mut EData) {
         let pk = item_attr.get_pk();
         seen_pks.insert(pk);
     }
-    let attr_ids = e_data.attrs.data.iter().map(|v| v.id).collect();
+    let attr_eids = e_data.attrs.data.iter().map(|v| v.id).collect();
     for item in e_data.items.data.iter() {
-        move_basic_attr(item.id, 38, item.capacity, &mut e_data.item_attrs, &attr_ids, &seen_pks);
-        move_basic_attr(item.id, 4, item.mass, &mut e_data.item_attrs, &attr_ids, &seen_pks);
-        move_basic_attr(item.id, 162, item.radius, &mut e_data.item_attrs, &attr_ids, &seen_pks);
-        move_basic_attr(item.id, 161, item.volume, &mut e_data.item_attrs, &attr_ids, &seen_pks);
+        move_basic_attr(
+            item.id,
+            ec::attrs::CAPACITY,
+            item.capacity,
+            &mut e_data.item_attrs,
+            &attr_eids,
+            &seen_pks,
+        );
+        move_basic_attr(
+            item.id,
+            ec::attrs::MASS,
+            item.mass,
+            &mut e_data.item_attrs,
+            &attr_eids,
+            &seen_pks,
+        );
+        move_basic_attr(
+            item.id,
+            ec::attrs::RADIUS,
+            item.radius,
+            &mut e_data.item_attrs,
+            &attr_eids,
+            &seen_pks,
+        );
+        move_basic_attr(
+            item.id,
+            ec::attrs::VOLUME,
+            item.volume,
+            &mut e_data.item_attrs,
+            &attr_eids,
+            &seen_pks,
+        );
     }
 }
 
 fn move_basic_attr(
     item_id: EItemId,
     attr_id: EAttrId,
-    basic_value: EAttrVal,
+    basic_value: EGenFloat,
     e_data_item_attrs: &mut EDataCont<EItemAttr>,
     attr_ids: &RSet<EAttrId>,
     seen_pks: &RSet<Vec<KeyPart>>,
 ) {
-    // Shouldn't be useful on actual data, but causes lots of broken relations when running tests
     if !attr_ids.contains(&attr_id) {
         return;
     }

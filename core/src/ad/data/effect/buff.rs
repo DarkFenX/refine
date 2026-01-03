@@ -1,4 +1,4 @@
-use crate::ad::{AAttrId, AAttrVal, ABuffId, AItemListId};
+use crate::ad::{AAttrId, ABuffId, AGenVal, AItemListId};
 
 #[derive(Clone)]
 pub struct AEffectBuff {
@@ -23,7 +23,7 @@ pub struct AEffectBuffFull {
 #[derive(Copy, Clone)]
 pub enum AEffectBuffStrength {
     Attr(AAttrId),
-    Hardcoded(AAttrVal),
+    Hardcoded(AGenVal),
 }
 
 #[derive(Copy, Clone)]

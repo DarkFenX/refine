@@ -5,7 +5,7 @@ use crate::{
 
 impl Pk for EItemGroup {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.id]
+        vec![self.id.into()]
     }
 }
 

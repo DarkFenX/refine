@@ -2,10 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     ad::{
-        AAttrId, AEffectId, AItem, AItemEffectData, AItemId, ASkillLevel, AState,
+        AItem, AItemEffectData, AItemId, ASkillLevel, AState,
         generator::{GSupport, get_abil_effect},
     },
-    def::OF,
     ed::{EData, EEffectId, EItemId},
     util::RMap,
 };
@@ -19,8 +18,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(
     let mut a_items = RMap::new();
     for e_item in e_data.items.data.iter() {
         // Item category ID
-        let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
-            Some(&cid) => cid,
+        let cat_eid = match g_supp.grp_cat_map.get(&e_item.group_id) {
+            Some(&cat_eid) => cat_eid,
             None => {
                 let msg = format!("unable to find category ID for {e_item}");
                 tracing::warn!("{msg}");
@@ -28,15 +27,15 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(
             }
         };
         // Item default effect
-        let defeff_id = defeff_map.get(&e_item.id).copied();
+        let defeff_eid = defeff_map.get(&e_item.id).copied();
         // Item construction
         let a_item = AItem {
-            id: e_item.id,
-            grp_id: e_item.group_id,
-            cat_id,
+            id: e_item.id.into(),
+            grp_id: e_item.group_id.into(),
+            cat_id: cat_eid.into(),
             attrs: RMap::new(),
             effect_datas: RMap::new(),
-            defeff_id: defeff_id.map(AEffectId::Dogma),
+            defeff_id: defeff_eid.map(Into::into),
             abil_ids: Vec::new(),
             srqs: RMap::new(),
             // Following fields are set to some default values, actual values will be set after
@@ -56,45 +55,53 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(
     // Item attributes
     for e_item_attr in e_data.item_attrs.data.iter() {
         a_items
-            .get_mut(&e_item_attr.item_id)
-            .and_then(|v| v.attrs.insert(AAttrId::Eve(e_item_attr.attr_id), OF(e_item_attr.value)));
+            .get_mut(&e_item_attr.item_id.into())
+            .and_then(|v| v.attrs.insert(e_item_attr.attr_id.into(), e_item_attr.value.into()));
     }
     // Item effects & extended effect data from abilities
     for e_item_effect in e_data.item_effects.data.iter() {
-        if let Some(a_item) = a_items.get_mut(&e_item_effect.item_id) {
+        if let Some(a_item) = a_items.get_mut(&e_item_effect.item_id.into()) {
             a_item
                 .effect_datas
-                .insert(AEffectId::Dogma(e_item_effect.effect_id), AItemEffectData::default());
+                .insert(e_item_effect.effect_id.into(), AItemEffectData::default());
         }
     }
     for e_item_abil in e_data.item_abils.data.iter() {
-        match a_items.get_mut(&e_item_abil.item_id) {
+        match a_items.get_mut(&e_item_abil.item_id.into()) {
             None => continue,
             Some(a_item) => match get_abil_effect(e_item_abil.abil_id) {
                 None => continue,
-                Some(e_effect_id) => match a_item.effect_datas.get_mut(&AEffectId::Dogma(e_effect_id)) {
+                Some(effect_eid) => match a_item.effect_datas.get_mut(&effect_eid.into()) {
                     None => continue,
                     Some(a_item_eff_data) => {
-                        a_item_eff_data.cooldown = e_item_abil.cooldown.map(OF);
-                        a_item_eff_data.charge_count = e_item_abil.charge_count;
-                        a_item_eff_data.charge_reload_time = e_item_abil.charge_rearm_time.map(OF);
+                        a_item_eff_data.cooldown = e_item_abil.cooldown.map(Into::into);
+                        a_item_eff_data.charge_count = e_item_abil.charge_count.map(Into::into);
+                        a_item_eff_data.charge_reload_time = e_item_abil.charge_rearm_time.map(Into::into);
                     }
                 },
             },
         }
     }
     // Item abilities
-    for e_item_abil in e_data.item_abils.data.iter().sorted_unstable_by_key(|v| v.slot) {
-        if let Some(a_item) = a_items.get_mut(&e_item_abil.item_id) {
-            a_item.abil_ids.push(e_item_abil.abil_id);
+    for e_item_abil in e_data
+        .item_abils
+        .data
+        .iter()
+        .sorted_unstable_by_key(|v| v.slot.into_inner())
+    {
+        if let Some(a_item) = a_items.get_mut(&e_item_abil.item_id.into()) {
+            a_item.abil_ids.push(e_item_abil.abil_id.into());
         }
     }
 
     // Item skill requirements
     for e_item_srq in e_data.item_srqs.data.iter() {
-        a_items
-            .get_mut(&e_item_srq.item_id)
-            .and_then(|v| v.srqs.insert(e_item_srq.skill_id, ASkillLevel::new(e_item_srq.level)));
+        a_items.get_mut(&e_item_srq.item_id.into()).and_then(|v| {
+            v.srqs.insert(
+                e_item_srq.skill_id.into(),
+                ASkillLevel::new_clamped_i32(e_item_srq.level.into_inner()),
+            )
+        });
     }
     a_items
 }

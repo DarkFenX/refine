@@ -34,8 +34,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_item_lists(e_data: &EDat
             excludes.extend(types_by_cat.get(excluded_cat_id).copied());
         }
         let item_list = AItemList {
-            id: AItemListId::Eve(item_list.id),
-            item_ids: includes.difference(&excludes).copied().collect(),
+            id: item_list.id.into(),
+            item_ids: includes.difference(&excludes).copied().map(Into::into).collect(),
         };
         result.insert(item_list.id, item_list);
     }

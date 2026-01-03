@@ -1,12 +1,12 @@
 use crate::{
-    ed::{EAttrId, EAttrVal, EItemId},
+    ed::{EAttrId, EGenFloat, EItemId},
     util::Named,
 };
 
 pub struct EItemAttr {
     pub item_id: EItemId,
     pub attr_id: EAttrId,
-    pub value: EAttrVal,
+    pub value: EGenFloat,
 }
 impl Named for EItemAttr {
     fn get_name() -> &'static str {

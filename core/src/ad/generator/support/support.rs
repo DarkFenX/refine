@@ -47,10 +47,10 @@ impl GSupport {
     }
     fn fill_effect_buff_data(&mut self) {
         for n_effect in N_EFFECT_MAP.values() {
-            if let Some(e_effect_id) = n_effect.eid
+            if let Some(effect_eid) = n_effect.eid
                 && let Some(effect_buff) = &n_effect.adg_buff
             {
-                self.eff_buff_map.insert(e_effect_id, effect_buff.clone());
+                self.eff_buff_map.insert(effect_eid, effect_buff.clone());
             }
         }
     }

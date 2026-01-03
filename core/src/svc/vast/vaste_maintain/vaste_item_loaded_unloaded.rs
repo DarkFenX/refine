@@ -28,7 +28,7 @@ impl Vast {
                 fit_data.srqs_skill_item_map.add_entry(skill_a_item_id, item_key);
                 let current_lvl = fit.skills.get(&skill_a_item_id).map(|v| v.level);
                 if match current_lvl {
-                    Some(current_lvl) => current_lvl.get_inner() < required_a_lvl.get_inner(),
+                    Some(current_lvl) => current_lvl.get_inner() < required_a_lvl.into_inner(),
                     None => true,
                 } {
                     missing_skills.insert(

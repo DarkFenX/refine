@@ -1,5 +1,5 @@
 use crate::{
-    ed::{EAttrId, EBuffId, EItemGrpId, EItemId},
+    ed::{EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM},
     util::Named,
 };
 
@@ -21,22 +21,4 @@ impl std::fmt::Display for EBuff {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}(id={})", Self::get_name(), self.id)
     }
-}
-
-pub struct EBuffIM {
-    pub attr_id: EAttrId,
-}
-
-pub struct EBuffLM {
-    pub attr_id: EAttrId,
-}
-
-pub struct EBuffLGM {
-    pub attr_id: EAttrId,
-    pub group_id: EItemGrpId,
-}
-
-pub struct EBuffLRSM {
-    pub attr_id: EAttrId,
-    pub skill_id: EItemId,
 }

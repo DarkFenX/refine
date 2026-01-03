@@ -1,11 +1,11 @@
-use crate::ad::{AAttrId, AAttrVal};
+use crate::ad::{AAttrId, AGenVal};
 
 #[derive(Clone)]
 pub struct AAttr {
     pub id: AAttrId,
     pub penalizable: bool,
     pub hig: bool,
-    pub def_val: AAttrVal,
+    pub def_val: AGenVal,
     pub min_attr_id: Option<AAttrId> = None,
     pub max_attr_id: Option<AAttrId> = None,
 }

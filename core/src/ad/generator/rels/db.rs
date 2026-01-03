@@ -3,18 +3,18 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed::{EAbilId, EAttrId, EBuffId, EData, EDataCont, EEffectId, EItemGrpId, EItemId, EItemListId},
+    ed::{EData, EDataCont},
     util::RSet,
 };
 
 pub(in crate::ad::generator) struct KeyDb {
-    pub(in crate::ad::generator) items: RSet<EItemId>,
-    pub(in crate::ad::generator) groups: RSet<EItemGrpId>,
-    pub(in crate::ad::generator) item_lists: RSet<EItemListId>,
-    pub(in crate::ad::generator) attrs: RSet<EAttrId>,
-    pub(in crate::ad::generator) effects: RSet<EEffectId>,
-    pub(in crate::ad::generator) abils: RSet<EAbilId>,
-    pub(in crate::ad::generator) buffs: RSet<EBuffId>,
+    pub(in crate::ad::generator) items: RSet<KeyPart>,
+    pub(in crate::ad::generator) groups: RSet<KeyPart>,
+    pub(in crate::ad::generator) item_lists: RSet<KeyPart>,
+    pub(in crate::ad::generator) attrs: RSet<KeyPart>,
+    pub(in crate::ad::generator) effects: RSet<KeyPart>,
+    pub(in crate::ad::generator) abils: RSet<KeyPart>,
+    pub(in crate::ad::generator) buffs: RSet<KeyPart>,
 }
 impl KeyDb {
     pub(in crate::ad::generator) fn new() -> Self {
@@ -40,7 +40,10 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &e_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut RSet<KeyPart>, cont: &EDataCont<T>) {
+    fn extend_pk_vec<T>(set: &mut RSet<KeyPart>, cont: &EDataCont<T>)
+    where
+        T: Pk,
+    {
         for i in cont.data.iter() {
             set.extend(i.get_pk())
         }
@@ -65,7 +68,10 @@ impl KeyDb {
         fkdb.process_standalone_data(g_supp);
         fkdb
     }
-    fn extend_fk_vec<T: Fk>(&mut self, cont: &EDataCont<T>, g_supp: &GSupport) {
+    fn extend_fk_vec<T>(&mut self, cont: &EDataCont<T>, g_supp: &GSupport)
+    where
+        T: Fk,
+    {
         for v in cont.data.iter() {
             self.items.extend(v.get_item_fks(g_supp));
             self.groups.extend(v.get_group_fks(g_supp));
@@ -78,19 +84,19 @@ impl KeyDb {
     }
     fn process_standalone_data(&mut self, g_supp: &GSupport) {
         for a_attr in g_supp.standalone_attrs.iter() {
-            self.attrs.extend(a_attr.iter_e_attr_ids());
+            self.attrs.extend(a_attr.iter_attr_eids().map(Into::into));
         }
         for a_effect in g_supp.standalone_effects.iter() {
-            self.items.extend(a_effect.iter_e_item_ids());
-            self.attrs.extend(a_effect.iter_e_attr_ids());
-            self.effects.extend(a_effect.iter_e_effect_ids());
-            self.buffs.extend(a_effect.iter_e_buff_ids());
-            self.item_lists.extend(a_effect.iter_e_item_list_ids());
+            self.items.extend(a_effect.iter_item_eids().map(Into::into));
+            self.attrs.extend(a_effect.iter_attr_eids().map(Into::into));
+            self.effects.extend(a_effect.iter_effect_eids().map(Into::into));
+            self.buffs.extend(a_effect.iter_buff_eids().map(Into::into));
+            self.item_lists.extend(a_effect.iter_item_list_eids().map(Into::into));
         }
         for a_buff in g_supp.standalone_buffs.iter() {
-            self.groups.extend(a_buff.iter_e_group_ids());
-            self.attrs.extend(a_buff.iter_e_attr_ids());
-            self.buffs.extend(a_buff.iter_e_buff_ids())
+            self.groups.extend(a_buff.iter_group_eids().map(Into::into));
+            self.attrs.extend(a_buff.iter_attr_eids().map(Into::into));
+            self.buffs.extend(a_buff.iter_buff_eids().map(Into::into))
         }
     }
 }

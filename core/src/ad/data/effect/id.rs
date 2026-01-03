@@ -1,4 +1,4 @@
-use crate::ad::{ACustomEffectId, ADogmaEffectId, AItemId};
+use crate::{ad::AItemId, def::Id, ed::EEffectId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum AEffectId {
@@ -17,6 +17,11 @@ pub enum AEffectId {
     // ID of an effect created by the library
     Custom(ACustomEffectId),
 }
+impl const From<EEffectId> for AEffectId {
+    fn from(effect_eid: EEffectId) -> Self {
+        Self::Dogma(ADogmaEffectId(effect_eid.into_inner()))
+    }
+}
 impl std::fmt::Display for AEffectId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -28,5 +33,27 @@ impl std::fmt::Display for AEffectId {
             Self::ScShipLink(id) => write!(f, "scsl{id}"),
             Self::Custom(id) => write!(f, "c{id}"),
         }
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+pub struct ADogmaEffectId(Id);
+impl ADogmaEffectId {
+    pub const fn new(id: Id) -> Self {
+        Self(id)
+    }
+    pub const fn into_inner(self) -> Id {
+        self.0
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+pub struct ACustomEffectId(Id);
+impl ACustomEffectId {
+    pub const fn new(id: Id) -> Self {
+        Self(id)
+    }
+    pub const fn into_inner(self) -> Id {
+        self.0
     }
 }

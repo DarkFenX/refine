@@ -24,9 +24,8 @@
 //! abilities and nothing else. During data adaptation, this assumption allows to move all the
 //! fighter ability data to data structures related to dogma effects.
 //!
-//! - Data defined on [`ed::EFighterAbil`](EFighterAbil) is moved to
-//!   [`ad::AEffect`](crate::ad::AEffect).
-//! - Data defined on [`ed::EItemFighterAbil`](EItemFighterAbil) is moved to
+//! - Data defined on [`ed::EFighterAbil`](EAbil) is moved to [`ad::AEffect`](crate::ad::AEffect).
+//! - Data defined on [`ed::EItemFighterAbil`](EItemAbil) is moved to
 //!   [`ad::AItemEffectData`](crate::ad::AItemEffectData), which describe effect properties specific
 //!   to parent [`ad::AItem`](crate::ad::AItem).
 //!
@@ -34,18 +33,16 @@
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are
 //! logged, and data is not transferred to a dogma effect.
 
-pub use cont::{EData, EDataCont};
 pub use data::{
-    EAbilId, EAttr, EAttrId, EAttrUnitId, EAttrVal, EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM, ECount,
-    EEffect, EEffectCatId, EEffectId, EEffectMod, EFighterAbil, EItem, EItemAttr, EItemCatId, EItemEffect,
-    EItemFighterAbil, EItemGroup, EItemGrpId, EItemId, EItemList, EItemListId, EItemSkillReq, EItemSpaceComp,
-    EItemSpaceCompBuffData, EItemSpaceCompBuffEntry, EMutaAttrMod, EMutaItemConv, EPrimitive, ESkillLevel, ESlot,
+    EAbil, EAbilId, EAttr, EAttrId, EAttrUnitId, EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM, EData,
+    EDataCont, EEffect, EEffectCatId, EEffectId, EEffectMod, EGenFloat, EGenInt, EItem, EItemAbil, EItemAttr,
+    EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemList, EItemListId, EItemSkillReq, EItemSpaceComp,
+    EItemSpaceCompBuffData, EItemSpaceCompBuffEntry, EMutaAttrMod, EMutaItemConv, EPrimitive,
 };
 pub use handler::EveDataHandler;
 pub use result::EResult;
 
 pub(crate) mod consts;
-mod cont;
 mod data;
 mod handler;
 mod result;

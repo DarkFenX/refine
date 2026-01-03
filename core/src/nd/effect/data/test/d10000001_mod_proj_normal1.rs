@@ -7,8 +7,8 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = 10_000_001;
-const A_EFFECT_ID: AEffectId = AEffectId::Dogma(E_EFFECT_ID);
+const E_EFFECT_ID: EEffectId = EEffectId::new(10_000_001);
+const A_EFFECT_ID: AEffectId = E_EFFECT_ID.into();
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
