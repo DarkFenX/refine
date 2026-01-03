@@ -7,12 +7,12 @@ use crate::{
 impl EffProjs {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for ((projector_espec, projectee_key), svc_proj_data) in self.proj_datas.iter() {
-            check_item_id(u_data, projector_espec.item_key, true)?;
-            check_effect_id(u_data, projector_espec.effect_key)?;
+            check_item_id(u_data, projector_espec.item_uid, true)?;
+            check_effect_id(u_data, projector_espec.effect_rid)?;
             // Projectees are not necessarily loaded
             check_item_id(u_data, *projectee_key, false)?;
             svc_proj_data.consistency_check()?;
-            let projector_projs = match u_data.items.get(projector_espec.item_key).get_projs() {
+            let projector_projs = match u_data.items.get(projector_espec.item_uid).get_projs() {
                 Some(projector_projs) => projector_projs,
                 None => return Err(DebugError {}),
             };

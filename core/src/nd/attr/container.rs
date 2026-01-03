@@ -11,6 +11,6 @@ pub(crate) static N_ATTR_MAP: LazyLock<RMap<AAttrId, NAttr>> = LazyLock::new(get
 fn get_attr_map() -> RMap<AAttrId, NAttr> {
     [data::c1_disallow_warping_jumping::mk_n_attr()]
         .into_iter()
-        .map(|v| (v.aid, v))
+        .map(|n_attr| (n_attr.aid, n_attr))
         .collect()
 }

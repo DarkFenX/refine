@@ -47,10 +47,10 @@ impl StandardRegister {
         if let AffecteeFilter::Direct(loc) = rmod.affectee_filter {
             match loc {
                 Location::Item => {
-                    affectees.push(rmod.affector_espec.item_key);
+                    affectees.push(rmod.affector_espec.item_uid);
                 }
                 Location::Other => {
-                    let item = ctx.u_data.items.get(rmod.affector_espec.item_key);
+                    let item = ctx.u_data.items.get(rmod.affector_espec.item_uid);
                     if let Some(other_item_key) = item.get_other_key() {
                         affectees.push(other_item_key);
                     }

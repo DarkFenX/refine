@@ -79,7 +79,7 @@ impl<'a> ModuleMut<'a> {
     }
     pub fn get_charge_mut(&mut self) -> Option<ChargeMut<'_>> {
         get_u_module(self.sol, self.key)
-            .get_charge_key()
+            .get_charge_uid()
             .map(|charge_key| ChargeMut::new(self.sol, charge_key))
     }
     pub fn get_charge_count(&self) -> Option<Count> {
@@ -129,7 +129,7 @@ fn get_pos(sol: &SolarSystem, module_key: UItemId) -> Idx {
 }
 fn get_charge(sol: &SolarSystem, module_key: UItemId) -> Option<Charge<'_>> {
     get_u_module(sol, module_key)
-        .get_charge_key()
+        .get_charge_uid()
         .map(|charge_key| Charge::new(sol, charge_key))
 }
 fn get_charge_count(sol: &SolarSystem, module_key: UItemId) -> Option<Count> {

@@ -16,13 +16,13 @@ use crate::{
     ud::{UItem, UItemId, UProjData},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::MISSILE_LAUNCHING;
-const A_EFFECT_ID: AEffectId = ac::effects::MISSILE_LAUNCHING;
+const EFFECT_EID: EEffectId = ec::effects::MISSILE_LAUNCHING;
+const EFFECT_AID: AEffectId = ac::effects::MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
@@ -44,16 +44,16 @@ fn internal_get_dmg_kind(u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     projector_effect: &REffect,
-    projectee_key: UItemId,
+    projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
-    let proj_mult_getter = match is_guided_bomb(ctx.u_data.items.get(projector_key)) {
+    let proj_mult_getter = match is_guided_bomb(ctx.u_data.items.get(projector_uid)) {
         true => get_bomb_application_mult,
         false => get_missile_application_mult,
     };
-    proj_mult_getter(ctx, calc, projector_key, projector_effect, projectee_key, proj_data)
+    proj_mult_getter(ctx, calc, projector_uid, projector_effect, projectee_uid, proj_data)
 }
 
 fn is_guided_bomb(u_item: &UItem) -> bool {

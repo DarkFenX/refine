@@ -15,7 +15,7 @@ impl SolarSystem {
         let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
         let fit_key = u_module.get_fit_key();
         let rack = u_module.get_rack();
-        let charge_key = u_module.get_charge_key();
+        let charge_key = u_module.get_charge_uid();
         // Remove outgoing projections for both module and charge
         if !u_module.get_projs().is_empty() {
             // Remove outgoing projections for module

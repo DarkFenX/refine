@@ -3,25 +3,25 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp},
 };
 
-pub(in crate::nd::effect::data) fn add_td_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::effect::data) fn add_td_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {a_effect_id}: TD effect has modifiers, overwriting them");
+        tracing::info!("effect {effect_aid}: TD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     add_td_modifiers(&mut a_effect.modifiers);
 }
 
-pub(in crate::nd::effect::data) fn add_gd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::effect::data) fn add_gd_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {a_effect_id}: GD effect has modifiers, overwriting them");
+        tracing::info!("effect {effect_aid}: GD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     add_gd_modifiers(&mut a_effect.modifiers);
 }
 
-pub(in crate::nd::effect::data) fn add_wd_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::effect::data) fn add_wd_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {a_effect_id}: WD effect has modifiers, overwriting them");
+        tracing::info!("effect {effect_aid}: WD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     add_td_modifiers(&mut a_effect.modifiers);
@@ -93,35 +93,35 @@ fn add_gd_modifiers(mods: &mut Vec<AEffectModifier>) {
     ]);
 }
 
-fn make_td_loc_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+fn make_td_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id,
+        affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             AEffectLocation::Target,
             AModifierSrq::TypeId(ac::items::GUNNERY),
         ),
-        affectee_attr_id,
+        affectee_attr_id: affectee_attr_aid,
     }
 }
 
-fn make_gd_loc_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+fn make_gd_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id,
+        affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             AEffectLocation::Target,
             AModifierSrq::TypeId(ac::items::MISSILE_LAUNCHER_OPERATION),
         ),
-        affectee_attr_id,
+        affectee_attr_id: affectee_attr_aid,
     }
 }
 
-fn make_direct_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+fn make_direct_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id,
+        affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
-        affectee_attr_id,
+        affectee_attr_id: affectee_attr_aid,
     }
 }

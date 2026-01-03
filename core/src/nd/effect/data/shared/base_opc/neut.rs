@@ -18,34 +18,34 @@ use crate::{
 pub(in crate::nd::effect::data) fn get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().energy_neut_amount, true)
+    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().energy_neut_amount, true)
 }
 
 pub(in crate::nd::effect::data) fn get_nosf_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     // Not a blood raider ship - not considered as a neut
-    if calc.get_item_oattr_oextra(ctx, item_key, ctx.ac().nos_override)?.abs() < FLOAT_TOLERANCE {
+    if calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().nos_override)?.abs() < FLOAT_TOLERANCE {
         return None;
     }
-    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().power_transfer_amount, false)
+    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
 }
 
 pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<AttrVal>> {
     let attr_consts = ctx.ac();
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, attr_consts.energy_neut_amount, OF(0.0))?;
-    let delay = calc.get_item_oattr_afb_oextra(ctx, item_key, attr_consts.doomsday_warning_duration, OF(0.0))?;
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_consts.energy_neut_amount, OF(0.0))?;
+    let delay = calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.doomsday_warning_duration, OF(0.0))?;
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
@@ -65,8 +65,8 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectPro
 fn get_aoe_dd_side_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    get_generic_base_opc(ctx, calc, item_key, effect, ctx.ac().doomsday_energy_neut_amount, true)
+    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true)
 }

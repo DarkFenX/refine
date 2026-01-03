@@ -23,11 +23,11 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> bool {
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
-            let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_key);
+            let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_uid);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
-                && stopped_reffs.contains(&stopped_espec.effect_key)
-                && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
-                && !kfs.contains(&stopped_espec.item_key)
+                && stopped_reffs.contains(&stopped_espec.effect_rid)
+                && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_uid)
+                && !kfs.contains(&stopped_espec.item_uid)
             {
                 return false;
             }
@@ -43,14 +43,14 @@ impl VastFitData {
     ) -> Option<ValEffectStopperFail> {
         let mut items = HashMap::new();
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
-            let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_key);
+            let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_uid);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
-                && stopped_reffs.contains(&stopped_espec.effect_key)
-                && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_key)
-                && !kfs.contains(&stopped_espec.item_key)
+                && stopped_reffs.contains(&stopped_espec.effect_rid)
+                && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_uid)
+                && !kfs.contains(&stopped_espec.item_uid)
             {
-                let item_id = ctx.u_data.items.eid_by_iid(stopped_espec.item_key);
-                let effect_id = ctx.u_data.src.get_effect(stopped_espec.effect_key).id;
+                let item_id = ctx.u_data.items.eid_by_iid(stopped_espec.item_uid);
+                let effect_id = ctx.u_data.src.get_effect(stopped_espec.effect_rid).id;
                 items.entry(item_id).or_insert_with(Vec::new).push(effect_id.into());
             }
         }
@@ -83,13 +83,13 @@ fn get_espec_proj_mult(
     projector_espec: EffectSpec,
     projectee_key: UItemId,
 ) -> Option<AttrVal> {
-    let projector_effect = ctx.u_data.src.get_effect(projector_espec.effect_key);
+    let projector_effect = ctx.u_data.src.get_effect(projector_espec.effect_rid);
     let proj_mult_getter = projector_effect.modifier_proj_mult_getter?;
     let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_key)?;
     Some(proj_mult_getter(
         ctx,
         calc,
-        projector_espec.item_key,
+        projector_espec.item_uid,
         projector_effect,
         projectee_key,
         proj_data,

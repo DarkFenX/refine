@@ -3,9 +3,9 @@ use crate::{
     ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
 };
 
-pub(in crate::nd::effect::data) fn add_tp_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::effect::data) fn add_tp_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {a_effect_id}: TP effect has modifiers, overwriting them");
+        tracing::info!("effect {effect_aid}: TP effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.push(AEffectModifier {

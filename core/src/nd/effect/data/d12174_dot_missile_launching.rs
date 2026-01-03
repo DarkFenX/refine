@@ -12,13 +12,13 @@ use crate::{
     util::trunc_unerr,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::DOT_MISSILE_LAUNCHING;
-const A_EFFECT_ID: AEffectId = ac::effects::DOT_MISSILE_LAUNCHING;
+const EFFECT_EID: EEffectId = ec::effects::DOT_MISSILE_LAUNCHING;
+const EFFECT_AID: AEffectId = ac::effects::DOT_MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
         breacher_dmg_opc_getter: Some(get_dmg_opc),
         ..
@@ -32,24 +32,22 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn get_dmg_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     projector_effect: &REffect,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
 ) -> Option<OutputDmgBreacher> {
-    let attr_consts = ctx.ac();
-    let mut abs_max = calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_max_dmg_per_tick, OF(0.0))?;
+    let mut abs_max = calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_max_dmg_per_tick, OF(0.0))?;
     let mut rel_max =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_max_hp_perc_per_tick, OF(0.0))? / OF(100.0);
-    let duration_s =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.dot_duration, OF(0.0))? / OF(1000.0);
-    if let Some(projectee_key) = projectee_key {
+        calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_max_hp_perc_per_tick, OF(0.0))? / OF(100.0);
+    let duration_s = calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_duration, OF(0.0))? / OF(1000.0);
+    if let Some(projectee_key) = projectee_uid {
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_key, projector_effect.key),
+            EffectSpec::new(projector_uid, projector_effect.key),
             projectee_key,
         );
-        let mult = get_missile_range_mult(ctx, calc, projector_key, projector_effect, projectee_key, proj_data);
+        let mult = get_missile_range_mult(ctx, calc, projector_uid, projector_effect, projectee_key, proj_data);
         abs_max *= mult;
         rel_max *= mult;
     }

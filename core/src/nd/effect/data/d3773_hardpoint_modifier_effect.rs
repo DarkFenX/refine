@@ -6,13 +6,13 @@ use crate::{
     nd::{NEffect, effect::data::shared::mods::mk_subsystem_mod},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::HARDPOINT_MODIFIER_EFFECT;
-const A_EFFECT_ID: AEffectId = ac::effects::HARDPOINT_MODIFIER_EFFECT;
+const EFFECT_EID: EEffectId = ec::effects::HARDPOINT_MODIFIER_EFFECT;
+const EFFECT_AID: AEffectId = ac::effects::HARDPOINT_MODIFIER_EFFECT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_update_effect_fn: Some(internal_update_effect),
         ..
     }
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn internal_update_effect(a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {A_EFFECT_ID}: hardpoint modifier effect has modifiers, overwriting them");
+        tracing::info!("effect {EFFECT_AID}: hardpoint modifier effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([

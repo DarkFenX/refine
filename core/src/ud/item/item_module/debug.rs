@@ -9,7 +9,7 @@ impl UModule {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.base.consistency_check(u_data)?;
         check_fit_id(u_data, self.get_fit_key())?;
-        if let Some(charge_key) = self.get_charge_key() {
+        if let Some(charge_key) = self.get_charge_uid() {
             check_item_id(u_data, charge_key, false)?;
         }
         self.get_projs().consistency_check(u_data)?;
@@ -29,7 +29,7 @@ impl UModule {
             }
         }
         // If module has a charge, make sure projections on them match
-        if let Some(charge_key) = self.get_charge_key() {
+        if let Some(charge_key) = self.get_charge_uid() {
             let module_projs = self.get_projs().iter().sorted().collect_vec();
             let charge_projs = u_data
                 .items

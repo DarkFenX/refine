@@ -45,7 +45,7 @@ impl AffectorValue {
     }
     pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
         match self {
-            Self::Attr(attr_key) => Some(calc.get_item_attr_rfull(ctx, espec.item_key, *attr_key).ok()?.dogma),
+            Self::Attr(attr_key) => Some(calc.get_item_attr_rfull(ctx, espec.item_uid, *attr_key).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
             Self::Custom(custom) => (custom.mod_val_getter)(calc, ctx, espec),
         }

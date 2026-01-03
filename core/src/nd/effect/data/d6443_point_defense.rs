@@ -13,13 +13,13 @@ use crate::{
     ud::UItem,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::POINT_DEFENSE;
-const A_EFFECT_ID: AEffectId = ac::effects::POINT_DEFENSE;
+const EFFECT_EID: EEffectId = ec::effects::POINT_DEFENSE;
+const EFFECT_AID: AEffectId = ac::effects::POINT_DEFENSE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,

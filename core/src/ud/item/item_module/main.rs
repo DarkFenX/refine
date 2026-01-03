@@ -173,7 +173,7 @@ impl UModule {
     pub(crate) fn set_pos(&mut self, pos: Idx) {
         self.pos = pos
     }
-    pub(crate) fn get_charge_key(&self) -> Option<UItemId> {
+    pub(crate) fn get_charge_uid(&self) -> Option<UItemId> {
         self.charge_key
     }
     pub(crate) fn set_charge_key(&mut self, charge_key: Option<UItemId>) {
@@ -181,7 +181,7 @@ impl UModule {
     }
     pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<Count> {
         // No charge - no info
-        let charge_key = self.get_charge_key()?;
+        let charge_key = self.get_charge_uid()?;
         let charge_item = u_data.items.get(charge_key);
         let module_capacity = match self.get_axt() {
             Some(axt) => axt.capacity,

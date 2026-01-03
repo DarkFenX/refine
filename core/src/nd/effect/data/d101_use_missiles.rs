@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::USE_MISSILES;
-const A_EFFECT_ID: AEffectId = ac::effects::USE_MISSILES;
+const EFFECT_EID: EEffectId = ec::effects::USE_MISSILES;
+const EFFECT_AID: AEffectId = ac::effects::USE_MISSILES;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: true,

@@ -10,12 +10,12 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: AEffectId = ac::effects::WDFG_SCRIPT_DEBUBBLE;
+const EFFECT_AID: AEffectId = ac::effects::WDFG_SCRIPT_DEBUBBLE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
-        aid: A_EFFECT_ID,
+        aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(assign_effect),
         ..
@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn make_effect() -> AEffect {
     AEffect {
-        id: A_EFFECT_ID,
+        id: EFFECT_AID,
         category: ac::effcats::PASSIVE,
         state: AState::Disabled,
         modifiers: vec![AEffectModifier {
@@ -45,7 +45,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
             || v.effect_datas
                 .contains_key(&ac::effects::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT)
     }) {
-        a_item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
+        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;
     }
     assigned

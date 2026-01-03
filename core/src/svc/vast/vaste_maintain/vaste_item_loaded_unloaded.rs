@@ -151,7 +151,7 @@ impl Vast {
                             .insert(item_key, a_item_grp_id);
                     }
                 }
-                if let Some(charge_key) = module.get_charge_key() {
+                if let Some(charge_key) = module.get_charge_uid() {
                     let charge_item = u_data.items.get(charge_key);
                     if let Some(charge_a_grp_id) = charge_item.get_group_id() {
                         handle_charge_group_add(fit_data, item_key, item_axt, charge_key, &charge_a_grp_id);
@@ -434,7 +434,7 @@ impl Vast {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_key);
                     }
                 }
-                if let Some(charge_key) = module.get_charge_key() {
+                if let Some(charge_key) = module.get_charge_uid() {
                     if item_axt.charge_limit.is_some() {
                         fit_data.charge_group.remove(&charge_key);
                     }

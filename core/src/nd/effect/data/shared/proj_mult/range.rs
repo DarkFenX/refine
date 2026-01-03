@@ -12,11 +12,11 @@ use crate::{
 pub(super) fn get_simple_c2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
+    projector_uid: UItemId,
+    effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.range_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
     match proj_data.get_range_c2s() <= affector_optimal {
         true => OF(1.0),
         false => OF(0.0),
@@ -26,11 +26,11 @@ pub(super) fn get_simple_c2s_range_mult(
 pub(super) fn get_simple_s2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
+    projector_uid: UItemId,
+    effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.range_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
     match proj_data.get_range_s2s() <= affector_optimal {
         true => OF(1.0),
         false => OF(0.0),
@@ -40,47 +40,33 @@ pub(super) fn get_simple_s2s_range_mult(
 pub(super) fn get_full_restricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
+    projector_uid: UItemId,
+    effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_full_range_mult(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        proj_data.get_range_s2s(),
-        true,
-    )
+    get_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), true)
 }
 
 pub(super) fn get_full_unrestricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
+    projector_uid: UItemId,
+    effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    get_full_range_mult(
-        ctx,
-        calc,
-        projector_key,
-        projector_effect,
-        proj_data.get_range_s2s(),
-        false,
-    )
+    get_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), false)
 }
 
 fn get_full_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
+    projector_uid: UItemId,
+    effect: &REffect,
     proj_range: AttrVal,
     restricted: bool,
 ) -> AttrVal {
-    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.range_attr_key);
-    let affector_falloff = get_effect_range(ctx, calc, projector_key, projector_effect.falloff_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
+    let affector_falloff = get_effect_range(ctx, calc, projector_uid, effect.falloff_attr_key);
     // Calculate actual range multiplier after collecting all the data
     match affector_falloff > FLOAT_TOLERANCE {
         true => match restricted && proj_range > affector_optimal + OF(3.0) * affector_falloff {
@@ -103,24 +89,23 @@ fn get_full_range_mult(
 pub(in crate::nd::effect::data) fn get_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    _projector_effect: &REffect,
-    _projectee_key: UItemId,
+    projector_uid: UItemId,
+    _effect: &REffect,
+    _projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
-    let attr_consts = ctx.ac();
     let max_velocity = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.max_velocity, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().max_velocity, OF(0.0))
         .max(OF(0.0));
     let flight_time = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.explosion_delay, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().explosion_delay, OF(0.0))
         .max(OF(0.0))
         / OF(1000.0);
     let mass = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.mass, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().mass, OF(0.0))
         .max(OF(0.0));
     let agility = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.agility, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().agility, OF(0.0))
         .max(OF(0.0));
     let flight_time_lower = floor_tick(flight_time);
     // Missiles appear in center of attacking ship and explode on surface of target ship
@@ -157,28 +142,27 @@ pub(in crate::nd::effect::data) fn get_missile_range_mult(
 pub(in crate::nd::effect::data) fn get_bomb_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    _projector_effect: &REffect,
-    _projectee_key: UItemId,
+    projector_uid: UItemId,
+    _effect: &REffect,
+    _projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     // Bomb is similar to missile, but they have fixed flight range and AoE effect
-    let attr_consts = ctx.ac();
     let max_velocity = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.max_velocity, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().max_velocity, OF(0.0))
         .max(OF(0.0));
     let flight_time = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.explosion_delay, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().explosion_delay, OF(0.0))
         .max(OF(0.0))
         / OF(1000.0);
     let mass = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.mass, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().mass, OF(0.0))
         .max(OF(0.0));
     let agility = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.agility, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().agility, OF(0.0))
         .max(OF(0.0));
     let aoe_range = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.emp_field_range, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().emp_field_range, OF(0.0))
         .max(OF(0.0));
     let flight_time_lower = floor_tick(flight_time);
     // Bombs appear in center of attacking ship
@@ -236,13 +220,13 @@ fn calc_flight_range(max_velocity: AttrVal, flight_time: AttrVal, mass: AttrVal,
 pub(super) fn get_aoe_burst_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
+    projector_uid: UItemId,
+    effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
     // Doomsday projectiles are launched from center of the ship, and range is extended by aoe range
-    let affector_optimal = get_effect_range(ctx, calc, projector_key, projector_effect.range_attr_key);
-    let affector_aoe = get_effect_range(ctx, calc, projector_key, ctx.ac().doomsday_aoe_range);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
+    let affector_aoe = get_effect_range(ctx, calc, projector_uid, ctx.ac().doomsday_aoe_range);
     match proj_data.get_range_c2s() <= affector_optimal + affector_aoe {
         true => OF(1.0),
         false => OF(0.0),
@@ -252,12 +236,12 @@ pub(super) fn get_aoe_burst_range_mult(
 pub(super) fn get_aoe_dd_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     // AoE doomsdays' effects do not specify range attribute ID, so it is hardcoded here. Their
     // effect starts at the edge of attacker, and goes up to specified range
-    let affector_optimal = get_effect_range(ctx, calc, projector_key, ctx.ac().max_range);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, ctx.ac().max_range);
     if proj_data.get_range_s2s() > affector_optimal {
         return OF(0.0);
     }
@@ -271,11 +255,10 @@ pub(super) fn get_aoe_dd_range_mult(
 pub(super) fn get_dd_neut_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
-    let neut_optimal = get_effect_range(ctx, calc, projector_key, ctx.ac().doomsday_energy_neut_radius);
-    // TODO: check if side-effect AoE neut range is s2s (could be c2s)
+    let neut_optimal = get_effect_range(ctx, calc, projector_uid, ctx.ac().doomsday_energy_neut_radius);
     match proj_data.get_range_s2s() <= neut_optimal {
         true => OF(1.0),
         false => OF(0.0),
@@ -285,9 +268,9 @@ pub(super) fn get_dd_neut_range_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_key: UItemId, attr_key: Option<RAttrId>) -> AttrVal {
-    match attr_key {
-        Some(attr_key) => match calc.get_item_attr_rfull(ctx, projector_key, attr_key) {
+fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_uid: UItemId, attr_rid: Option<RAttrId>) -> AttrVal {
+    match attr_rid {
+        Some(attr_rid) => match calc.get_item_attr_rfull(ctx, projector_uid, attr_rid) {
             Ok(val) => val.extra,
             _ => OF(0.0),
         },

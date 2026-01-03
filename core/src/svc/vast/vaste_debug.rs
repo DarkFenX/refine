@@ -292,14 +292,14 @@ impl VastFitData {
         }
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             // There is no logic which ensures that projection target is loaded
-            check_item_id(u_data, stopped_espec.item_key, false)?;
+            check_item_id(u_data, stopped_espec.item_uid, false)?;
             for stopper_espec in stopper_especs {
-                check_item_id(u_data, stopper_espec.item_key, true)?;
+                check_item_id(u_data, stopper_espec.item_uid, true)?;
             }
         }
         for (projector_espec, projectee_keys) in self.projectee_filter.iter() {
-            check_item_id(u_data, projector_espec.item_key, true)?;
-            check_effect_id(u_data, projector_espec.effect_key)?;
+            check_item_id(u_data, projector_espec.item_uid, true)?;
+            check_effect_id(u_data, projector_espec.effect_rid)?;
             for &projectee_key in projectee_keys.keys() {
                 // Target is not guaranteed to be loaded
                 check_item_id(u_data, projectee_key, false)?;
@@ -309,16 +309,16 @@ impl VastFitData {
             // There is no logic which ensures that projection target is loaded
             check_item_id(u_data, *projectee_key, false)?;
             for projector_espec in projector_especs {
-                check_item_id(u_data, projector_espec.item_key, true)?;
-                check_effect_id(u_data, projector_espec.effect_key)?;
+                check_item_id(u_data, projector_espec.item_uid, true)?;
+                check_effect_id(u_data, projector_espec.effect_rid)?;
             }
         }
         for (projectee_key, projector_especs) in self.blockable_offense.iter() {
             // There is no logic which ensures that projection target is loaded
             check_item_id(u_data, *projectee_key, false)?;
             for projector_espec in projector_especs {
-                check_item_id(u_data, projector_espec.item_key, true)?;
-                check_effect_id(u_data, projector_espec.effect_key)?;
+                check_item_id(u_data, projector_espec.item_uid, true)?;
+                check_effect_id(u_data, projector_espec.effect_rid)?;
             }
         }
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
@@ -326,8 +326,8 @@ impl VastFitData {
             check_item_id(u_data, projectee_aspec.item_key, false)?;
             check_attr_id(u_data, projectee_aspec.attr_key)?;
             for projector_espec in projector_especs {
-                check_item_id(u_data, projector_espec.item_key, true)?;
-                check_effect_id(u_data, projector_espec.effect_key)?;
+                check_item_id(u_data, projector_espec.item_uid, true)?;
+                check_effect_id(u_data, projector_espec.effect_rid)?;
             }
         }
         for (&item_key, attr_keys) in self.cap_consumers_all.iter() {
@@ -461,8 +461,8 @@ impl VastFitData {
         // Stats-related - misc
         ////////////////////////////////////////////////////////////////////////////////////////////
         for espec in self.aggro_effects.iter() {
-            check_item_id(u_data, espec.item_key, true)?;
-            check_effect_id(u_data, espec.effect_key)?;
+            check_item_id(u_data, espec.item_uid, true)?;
+            check_effect_id(u_data, espec.effect_rid)?;
         }
         Ok(())
     }

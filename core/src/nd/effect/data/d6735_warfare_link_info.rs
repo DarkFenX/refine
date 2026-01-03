@@ -6,13 +6,13 @@ use crate::{
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_INFO;
-const A_EFFECT_ID: AEffectId = ac::effects::MOD_BONUS_WARFARE_LINK_INFO;
+const EFFECT_EID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_INFO;
+const EFFECT_AID: AEffectId = ac::effects::MOD_BONUS_WARFARE_LINK_INFO;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
                 duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),

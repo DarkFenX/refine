@@ -20,13 +20,13 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::DOOMSDAY_SLASH;
-const A_EFFECT_ID: AEffectId = ac::effects::DOOMSDAY_SLASH;
+const EFFECT_EID: EEffectId = ec::effects::DOOMSDAY_SLASH;
+const EFFECT_AID: AEffectId = ac::effects::DOOMSDAY_SLASH;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: make_dd_self_debuffs().collect(),
             ..
@@ -49,18 +49,18 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     // Unlike other AoE doomsdays, reapers hit every ship only once, despite having damage ticks
     // spread over time. We also assume target is hit by first damage tick.
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
-            em: calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().em_dmg, OF(0.0))?,
-            thermal: calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().therm_dmg, OF(0.0))?,
-            kinetic: calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().kin_dmg, OF(0.0))?,
-            explosive: calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().expl_dmg, OF(0.0))?,
+            em: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, OF(0.0))?,
+            thermal: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, OF(0.0))?,
+            kinetic: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, OF(0.0))?,
+            explosive: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, OF(0.0))?,
         },
-        delay: calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().doomsday_warning_duration, OF(0.0))? / OF(1000.0),
+        delay: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, OF(0.0))? / OF(1000.0),
     }))
 }

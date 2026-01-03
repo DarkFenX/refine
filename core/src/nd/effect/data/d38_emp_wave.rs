@@ -10,13 +10,13 @@ use crate::{
     ud::UItem,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::EMP_WAVE;
-const A_EFFECT_ID: AEffectId = ac::effects::EMP_WAVE;
+const EFFECT_EID: EEffectId = ec::effects::EMP_WAVE;
+const EFFECT_AID: AEffectId = ac::effects::EMP_WAVE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,

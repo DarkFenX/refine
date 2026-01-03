@@ -15,13 +15,13 @@ impl StandardRegister {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Item => {
                     let cmod = CtxModifier::new(rmod);
-                    let key = cmod.raw.affector_espec.item_key;
+                    let key = cmod.raw.affector_espec.item_uid;
                     add_cmod(&mut self.cmods.direct, key, cmod, &mut self.cmods.by_aspec);
                     Some(cmod)
                 }
                 Location::Other => {
                     let cmod = CtxModifier::new(rmod);
-                    let key = cmod.raw.affector_espec.item_key;
+                    let key = cmod.raw.affector_espec.item_uid;
                     add_cmod(&mut self.cmods.other, key, cmod, &mut self.cmods.by_aspec);
                     Some(cmod)
                 }
@@ -77,13 +77,13 @@ impl StandardRegister {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Item => {
                     let cmod = CtxModifier::new(rmod);
-                    let key = cmod.raw.affector_espec.item_key;
+                    let key = cmod.raw.affector_espec.item_uid;
                     remove_cmod(&mut self.cmods.direct, key, &cmod, &mut self.cmods.by_aspec);
                     Some(cmod)
                 }
                 Location::Other => {
                     let cmod = CtxModifier::new(rmod);
-                    let key = cmod.raw.affector_espec.item_key;
+                    let key = cmod.raw.affector_espec.item_uid;
                     remove_cmod(&mut self.cmods.other, key, &cmod, &mut self.cmods.by_aspec);
                     Some(cmod)
                 }

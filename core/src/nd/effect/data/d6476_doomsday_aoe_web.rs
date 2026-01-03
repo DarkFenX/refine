@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::DOOMSDAY_AOE_WEB;
-const A_EFFECT_ID: AEffectId = ac::effects::DOOMSDAY_AOE_WEB;
+const EFFECT_EID: EEffectId = ec::effects::DOOMSDAY_AOE_WEB;
+const EFFECT_AID: AEffectId = ac::effects::DOOMSDAY_AOE_WEB;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: vec![AEffectBuffFull {
                 buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,

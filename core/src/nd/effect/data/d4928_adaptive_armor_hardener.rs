@@ -6,13 +6,13 @@ use crate::{
     nd::NEffect,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
-const A_EFFECT_ID: AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
+const EFFECT_EID: EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
+const EFFECT_AID: AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ..
     }
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {A_EFFECT_ID}: RAH effect has modifiers, overwriting them");
+        tracing::info!("effect {EFFECT_AID}: RAH effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([

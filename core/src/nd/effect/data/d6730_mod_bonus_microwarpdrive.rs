@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::MOD_BONUS_MICROWARPDRIVE;
-const A_EFFECT_ID: AEffectId = ac::effects::MOD_BONUS_MICROWARPDRIVE;
+const EFFECT_EID: EEffectId = ec::effects::MOD_BONUS_MICROWARPDRIVE;
+const EFFECT_AID: AEffectId = ac::effects::MOD_BONUS_MICROWARPDRIVE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         calc_customizer: Some(add_prop_speed_mod),
         ..
@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {A_EFFECT_ID}: MWD effect has modifiers, overwriting them");
+        tracing::info!("effect {EFFECT_AID}: MWD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([mk_prop_mass_mod(), mk_mwd_sig_mod()]);

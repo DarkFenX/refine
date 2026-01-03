@@ -8,13 +8,13 @@ use crate::{
     nd::NEffect,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::AOE_BEACON_PULSE_01;
-const A_EFFECT_ID: AEffectId = ac::effects::AOE_BEACON_PULSE_01;
+const EFFECT_EID: EEffectId = ec::effects::AOE_BEACON_PULSE_01;
+const EFFECT_AID: AEffectId = ac::effects::AOE_BEACON_PULSE_01;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
                 duration: AEffectBuffDuration::None,

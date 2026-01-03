@@ -20,7 +20,7 @@ impl SolarSystem {
         let module_projs = u_module.get_projs().iter().collect_vec();
         let mut activated = None;
         // Remove old charge, if it was set
-        if let Some(old_charge_key) = u_module.get_charge_key() {
+        if let Some(old_charge_key) = u_module.get_charge_uid() {
             // Remove outgoing projections
             let old_u_charge = self.u_data.items.get(old_charge_key).dc_charge().unwrap();
             activated = Some(old_u_charge.get_activated());

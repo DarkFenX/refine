@@ -290,7 +290,7 @@ fn check_module_charge(
     module: &UModule,
     seen_items: &mut Vec<UItemId>,
 ) -> DebugResult {
-    if let Some(charge_key) = module.get_charge_key() {
+    if let Some(charge_key) = module.get_charge_uid() {
         seen_items.push(charge_key);
         let item = match u_data.items.try_get(charge_key) {
             Some(item) => item,

@@ -12,23 +12,22 @@ use crate::{
 pub(in crate::nd::effect::data) fn get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    _projector_effect: &REffect,
-    projectee_key: UItemId,
+    projector_uid: UItemId,
+    _effect: &REffect,
+    projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
-    let attr_consts = ctx.ac();
     let src_er = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.aoe_cloud_size, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().aoe_cloud_size, OF(0.0))
         .max(OF(0.0));
     let src_ev = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.aoe_velocity, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().aoe_velocity, OF(0.0))
         .max(OF(0.0));
     let src_drf = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.aoe_dmg_reduction_factor, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().aoe_dmg_reduction_factor, OF(0.0))
         .max(OF(0.0));
-    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_key);
-    let tgt_speed = proj_data.get_tgt_speed() * funcs::get_speed(ctx, calc, projectee_key);
+    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
+    let tgt_speed = proj_data.get_tgt_speed() * funcs::get_speed(ctx, calc, projectee_uid);
     // "Static" part
     let radius_ratio = tgt_sig_radius / src_er;
     if radius_ratio.is_nan() {
@@ -45,12 +44,12 @@ pub(in crate::nd::effect::data) fn get_missile_application_mult(
 pub(in crate::nd::effect::data) fn get_bomb_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    _projector_effect: &REffect,
-    projectee_key: UItemId,
+    projector_uid: UItemId,
+    _effect: &REffect,
+    projectee_uid: UItemId,
     _proj_data: UProjData,
 ) -> AttrVal {
-    get_radius_ratio_mult(ctx, calc, projector_key, projectee_key, ctx.ac().aoe_cloud_size)
+    get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().aoe_cloud_size)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,20 +58,19 @@ pub(in crate::nd::effect::data) fn get_bomb_application_mult(
 pub(super) fn get_turret_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projector_effect: &REffect,
-    projectee_key: UItemId,
+    projector_uid: UItemId,
+    effect: &REffect,
+    projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
-    let attr_consts = ctx.ac();
-    let angular_speed = calc_angular(ctx, calc, projector_key, projectee_key, proj_data);
+    let angular_speed = calc_angular(ctx, calc, projector_uid, projectee_uid, proj_data);
     let turret_sig_radius = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, attr_consts.optimal_sig_radius, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().optimal_sig_radius, OF(0.0))
         .max(OF(0.0));
     let turret_tracking_speed = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, projector_effect.track_attr_key, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, effect.track_attr_key, OF(0.0))
         .max(OF(0.0));
-    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_key);
+    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let result = ordered_float::Float::powf(
         OF(0.5),
         OF((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2)),
@@ -86,14 +84,14 @@ pub(super) fn get_turret_application_mult(
 pub(super) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projectee_key: UItemId,
-    src_attr_key: Option<RAttrId>,
+    projector_uid: UItemId,
+    projectee_uid: UItemId,
+    effect_radius_rid: Option<RAttrId>,
 ) -> AttrVal {
     let src_effect_radius = calc
-        .get_item_oattr_ffb_extra(ctx, projector_key, src_attr_key, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, effect_radius_rid, OF(0.0))
         .max(OF(0.0));
-    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_key);
+    let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let radius_ratio = tgt_sig_radius / src_effect_radius;
     if radius_ratio.is_nan() {
         return OF(0.0);
@@ -107,12 +105,12 @@ pub(super) fn get_radius_ratio_mult(
 fn calc_angular(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
-    projectee_key: UItemId,
+    projector_uid: UItemId,
+    projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> AttrVal {
     let coordinates = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
-    let src_velocity = match ctx.u_data.get_physics_carrier_key(projector_key) {
+    let src_velocity = match ctx.u_data.get_physics_carrier_key(projector_uid) {
         Some(projector_carrier_key) => get_vector(
             ctx,
             calc,
@@ -125,7 +123,7 @@ fn calc_angular(
     let tgt_velocity = get_vector(
         ctx,
         calc,
-        projectee_key,
+        projectee_uid,
         proj_data.get_tgt_direction(),
         proj_data.get_tgt_speed(),
     );
@@ -141,11 +139,11 @@ fn calc_angular(
     }
 }
 
-fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, direction: Xyz, speed_perc: AttrVal) -> Xyz {
+fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, direction: Xyz, speed_perc: AttrVal) -> Xyz {
     if speed_perc <= OF(0.0) {
         return Xyz::default();
     }
-    let speed_max = funcs::get_speed(ctx, calc, item_key);
+    let speed_max = funcs::get_speed(ctx, calc, item_uid);
     if speed_max <= OF(0.0) {
         return Xyz::default();
     }

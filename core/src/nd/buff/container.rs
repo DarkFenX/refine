@@ -11,6 +11,6 @@ pub(crate) static N_BUFF_MAP: LazyLock<RMap<ABuffId, NBuff>> = LazyLock::new(get
 fn get_buff_map() -> RMap<ABuffId, NBuff> {
     [data::c1_disallow_warp_jump::mk_n_buff()]
         .into_iter()
-        .map(|v| (v.aid, v))
+        .map(|n_buff| (n_buff.aid, n_buff))
         .collect()
 }

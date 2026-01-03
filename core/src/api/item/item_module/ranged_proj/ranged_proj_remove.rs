@@ -14,7 +14,7 @@ impl SolarSystem {
                 projectee_item_id: self.u_data.items.eid_by_iid(projectee_key),
             });
         };
-        let charge_key = u_module.get_charge_key();
+        let charge_key = u_module.get_charge_uid();
         // Update services for charge
         if let Some(charge_key) = charge_key {
             SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_key, projectee_key);

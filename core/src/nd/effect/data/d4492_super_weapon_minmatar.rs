@@ -10,13 +10,13 @@ use crate::{
     ud::UItem,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::SUPER_WEAPON_MINMATAR;
-const A_EFFECT_ID: AEffectId = ac::effects::SUPER_WEAPON_MINMATAR;
+const EFFECT_EID: EEffectId = ec::effects::SUPER_WEAPON_MINMATAR;
+const EFFECT_AID: AEffectId = ac::effects::SUPER_WEAPON_MINMATAR;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: make_dd_self_debuffs().collect(),
             ..

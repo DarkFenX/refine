@@ -21,7 +21,7 @@ impl SolarSystem {
                 u_proj_data.update_src_physics(u_ship_physics);
                 projections_to_update.push((module_key, projectee_key, *u_proj_data));
             }
-            if let Some(charge_key) = u_module.get_charge_key() {
+            if let Some(charge_key) = u_module.get_charge_uid() {
                 let u_charge = u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
                 for (projectee_key, u_proj_data) in u_charge.get_projs_mut().iter_projectees_and_datas_mut() {
                     u_proj_data.update_src_physics(u_ship_physics);

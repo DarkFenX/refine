@@ -13,7 +13,7 @@ impl SolarSystem {
     ) {
         // Update user data for module
         let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
-        let charge_key = u_module.get_charge_key();
+        let charge_key = u_module.get_charge_uid();
         let old_a_state = u_module.get_state();
         u_module.set_module_state(state);
         let new_a_state = u_module.get_state();

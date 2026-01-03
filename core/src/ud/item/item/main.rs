@@ -567,9 +567,9 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_charge_key(&self) -> Option<UItemId> {
+    pub(crate) fn get_charge_uid(&self) -> Option<UItemId> {
         match self {
-            Self::Module(module) => module.get_charge_key(),
+            Self::Module(module) => module.get_charge_uid(),
             _ => None,
         }
     }
@@ -661,7 +661,7 @@ impl UItem {
         }
     }
     pub(crate) fn iter_charges(&self) -> impl Iterator<Item = UItemId> {
-        let charge_key = self.get_charge_key();
+        let charge_key = self.get_charge_uid();
         match self.get_autocharges() {
             Some(autocharges) => Either::Left(charge_key.into_iter().chain(autocharges.values())),
             None => Either::Right(charge_key.into_iter()),

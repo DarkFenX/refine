@@ -171,7 +171,7 @@ impl REffect {
                 )
             });
             self.spool_attr_keys = n_effect
-                .spool_attr_ids
+                .spool_attrs
                 .as_ref()
                 .and_then(|n_spool_attrs| RSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_id_key_map));
             if let Some(modifier_proj_attrs_getter) = n_effect.modifier_proj_attrs_getter {

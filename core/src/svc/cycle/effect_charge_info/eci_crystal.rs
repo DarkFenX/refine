@@ -29,7 +29,7 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
     if charge_count == 0 {
         return InfCount::Count(0);
     }
-    let charge_key = module.get_charge_key().unwrap();
+    let charge_key = module.get_charge_uid().unwrap();
     let charge_item = ctx.u_data.items.get(charge_key);
     let charge_attrs = match charge_item.get_attrs() {
         Some(attrs) => attrs,

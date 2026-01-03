@@ -50,15 +50,15 @@ impl StandardRegister {
             }
         }
         for (espec, rmods) in self.rmods_all.iter() {
-            check_item_id(u_data, espec.item_key, true)?;
-            check_effect_id(u_data, espec.effect_key)?;
+            check_item_id(u_data, espec.item_uid, true)?;
+            check_effect_id(u_data, espec.effect_rid)?;
             for rmod in rmods {
                 check_rmod(u_data, rmod)?;
             }
         }
         for (espec, rmods) in self.rmods_proj.iter() {
-            check_item_id(u_data, espec.item_key, true)?;
-            check_effect_id(u_data, espec.effect_key)?;
+            check_item_id(u_data, espec.item_uid, true)?;
+            check_effect_id(u_data, espec.effect_rid)?;
             for rmod in rmods {
                 check_rmod(u_data, rmod)?;
             }

@@ -14,12 +14,12 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: AEffectId = ac::effects::CHAR_MISSILE_DMG;
+const EFFECT_AID: AEffectId = ac::effects::CHAR_MISSILE_DMG;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
-        aid: A_EFFECT_ID,
+        aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(assign_effect),
         ..
@@ -28,7 +28,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn make_effect() -> AEffect {
     AEffect {
-        id: A_EFFECT_ID,
+        id: EFFECT_AID,
         category: ac::effcats::PASSIVE,
         state: AState::Offline,
         modifiers: vec![
@@ -43,8 +43,11 @@ fn make_effect() -> AEffect {
 
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
-    for a_item in a_items.values_mut().filter(|v| v.grp_id == ac::itemgrps::CHARACTER) {
-        a_item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
+    for a_item in a_items
+        .values_mut()
+        .filter(|a_item| a_item.grp_id == ac::itemgrps::CHARACTER)
+    {
+        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;
     }
     assigned

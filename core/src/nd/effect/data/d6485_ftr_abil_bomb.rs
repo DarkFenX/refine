@@ -6,13 +6,13 @@ use crate::{
     nd::{NEffect, NEffectCharge, NEffectChargeLoc},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::FTR_ABIL_BOMB;
-const A_EFFECT_ID: AEffectId = ac::effects::FTR_ABIL_BOMB;
+const EFFECT_EID: EEffectId = ec::effects::FTR_ABIL_BOMB;
+const EFFECT_AID: AEffectId = ac::effects::FTR_ABIL_BOMB;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Autocharge(ac::attrs::FTR_ABIL_BOMB_TYPE),
             activates_charge: true,

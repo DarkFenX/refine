@@ -30,13 +30,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
-const A_EFFECT_ID: AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
+const EFFECT_EID: EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
+const EFFECT_AID: AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: vec![
                 // Disallows warping and jumping for everything in range, including self
@@ -68,7 +68,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {A_EFFECT_ID}: WDFG bubble effect has modifiers, overwriting them");
+        tracing::info!("effect {EFFECT_AID}: WDFG bubble effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([

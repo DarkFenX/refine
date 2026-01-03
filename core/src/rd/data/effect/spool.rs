@@ -11,8 +11,8 @@ impl RSpoolAttrs {
         attr_id_key_map: &RMap<AAttrId, RAttrId>,
     ) -> Option<Self> {
         Some(Self {
-            step: attr_id_key_map.get(&n_spool_attrs.step).copied()?,
-            max: attr_id_key_map.get(&n_spool_attrs.max).copied()?,
+            step: attr_id_key_map.get(&n_spool_attrs.step_attr_id).copied()?,
+            max: attr_id_key_map.get(&n_spool_attrs.max_attr_id).copied()?,
         })
     }
 }

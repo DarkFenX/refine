@@ -13,15 +13,15 @@ use crate::{
 pub(super) fn get_generic_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
-    attr_key: Option<RAttrId>,
+    attr_rid: Option<RAttrId>,
     applied_at_start: bool,
 ) -> Option<Output<AttrVal>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, attr_key, OF(0.0))?;
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_rid, OF(0.0))?;
     let delay = match applied_at_start {
         true => OF(0.0),
-        false => funcs::get_effect_duration_s(ctx, calc, item_key, effect)?,
+        false => funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?,
     };
     Some(Output::Simple(OutputSimple { amount, delay }))
 }

@@ -6,13 +6,13 @@ use crate::{
     nd::NEffect,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::CLOAKING_TARGETING_DELAY_BONUS;
-const A_EFFECT_ID: AEffectId = ac::effects::CLOAKING_TARGETING_DELAY_BONUS;
+const EFFECT_EID: EEffectId = ec::effects::CLOAKING_TARGETING_DELAY_BONUS;
+const EFFECT_AID: AEffectId = ac::effects::CLOAKING_TARGETING_DELAY_BONUS;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ..
     }
@@ -21,7 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn update_effect(a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
         tracing::info!(
-            "effect {A_EFFECT_ID}: self-skillreq cloaking target delay effect has modifiers, overwriting them"
+            "effect {EFFECT_AID}: self-skillreq cloaking target delay effect has modifiers, overwriting them"
         );
         a_effect.modifiers.clear();
     }

@@ -42,7 +42,7 @@ impl SolarSystem {
             get_ship_axt(&self.u_data, u_module.get_fit_key()),
             projectee_u_item.get_axt(),
         ));
-        let charge_key = u_module.get_charge_key();
+        let charge_key = u_module.get_charge_uid();
         // Update user data for module
         let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.get_projs_mut().add(projectee_key, u_proj_data);

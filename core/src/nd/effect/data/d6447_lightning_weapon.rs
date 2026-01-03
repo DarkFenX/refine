@@ -7,13 +7,13 @@ use crate::{
     ud::UItem,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::LIGHTNING_WEAPON;
-const A_EFFECT_ID: AEffectId = ac::effects::LIGHTNING_WEAPON;
+const EFFECT_EID: EEffectId = ec::effects::LIGHTNING_WEAPON;
+const EFFECT_AID: AEffectId = ac::effects::LIGHTNING_WEAPON;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(ac::attrs::TGT_FILTER_TYPELIST_ID)),
         dmg_kind_getter: Some(internal_get_dmg_kind),
         // Standup vorton seems to work similarly to direct DDs - same attributes, no range limits

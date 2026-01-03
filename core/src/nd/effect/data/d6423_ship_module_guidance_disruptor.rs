@@ -12,14 +12,14 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_GUIDANCE_DISRUPTOR;
-const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_GUIDANCE_DISRUPTOR;
+const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_GUIDANCE_DISRUPTOR;
+const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_GUIDANCE_DISRUPTOR;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
-        adg_update_effect_fn: Some(|a_effect| add_gd_mods(A_EFFECT_ID, a_effect)),
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
+        adg_update_effect_fn: Some(|a_effect| add_gd_mods(EFFECT_AID, a_effect)),
         modifier_proj_attrs_getter: Some(get_full_mod_proj_attrs),
         modifier_proj_mult_getter: Some(get_full_noapp_proj_mult),
         ..

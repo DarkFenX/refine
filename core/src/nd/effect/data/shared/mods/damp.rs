@@ -3,9 +3,9 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
 };
 
-pub(in crate::nd::effect::data) fn add_damp_mods(a_effect_id: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::effect::data) fn add_damp_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {a_effect_id}: damp effect has modifiers, overwriting them");
+        tracing::info!("effect {effect_aid}: damp effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
@@ -14,11 +14,11 @@ pub(in crate::nd::effect::data) fn add_damp_mods(a_effect_id: AEffectId, a_effec
     ]);
 }
 
-fn make_damp_mod(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+fn make_damp_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id,
+        affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
-        affectee_attr_id,
+        affectee_attr_id: affectee_attr_aid,
     }
 }

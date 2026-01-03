@@ -8,8 +8,8 @@ use crate::{
 };
 
 pub(crate) fn get_espec_duration_s(ctx: SvcCtx, calc: &mut Calc, espec: EffectSpec) -> Option<AttrVal> {
-    let effect = ctx.u_data.src.get_effect(espec.effect_key);
-    get_effect_duration_s(ctx, calc, espec.item_key, effect)
+    let effect = ctx.u_data.src.get_effect(espec.effect_rid);
+    get_effect_duration_s(ctx, calc, espec.item_uid, effect)
 }
 
 pub(crate) fn get_effect_duration_s(

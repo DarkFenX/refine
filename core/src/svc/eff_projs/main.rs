@@ -28,7 +28,7 @@ impl EffProjs {
         match self.proj_datas.get(&(projector_espec, projectee_key)) {
             Some(u_proj_data) => *u_proj_data,
             None => {
-                let projector_u_item = u_data.items.get(projector_espec.item_key);
+                let projector_u_item = u_data.items.get(projector_espec.item_uid);
                 let projectee_u_item = u_data.items.get(projectee_key);
                 UProjData::from_physics_with_radii(
                     projector_u_item.get_carrier_physics(u_data),

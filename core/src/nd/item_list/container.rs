@@ -16,6 +16,6 @@ fn get_item_list_map() -> RMap<AItemListId, NItemList> {
         data::c4_panic_eligible::mk_n_item_list(),
     ]
     .into_iter()
-    .map(|v| (v.aid, v))
+    .map(|n_item_list| (n_item_list.aid, n_item_list))
     .collect()
 }

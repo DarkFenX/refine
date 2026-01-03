@@ -17,7 +17,7 @@ pub(in crate::svc::calc) struct CalcModificationKey {
 impl From<&CtxModifier> for CalcModificationKey {
     fn from(cmod: &CtxModifier) -> Self {
         CalcModificationKey {
-            affector_key: cmod.raw.affector_espec.item_key,
+            affector_key: cmod.raw.affector_espec.item_uid,
             affector_attr_key: cmod.raw.get_affector_attr_key(),
             op: cmod.raw.op,
         }

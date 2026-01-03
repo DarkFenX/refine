@@ -34,7 +34,7 @@ impl SolarSystem {
     fn effect_mode_update_postprocess(&mut self, item_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_key, reuse_eupdates);
         let u_item = self.u_data.items.get(item_key);
-        let charge_key = u_item.get_charge_key();
+        let charge_key = u_item.get_charge_uid();
         // Autocharges
         if !reuse_eupdates.autocharges.is_empty()
             && let Some(autocharges) = u_item.get_autocharges()

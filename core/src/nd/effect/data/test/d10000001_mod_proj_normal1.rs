@@ -7,13 +7,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = EEffectId::new(10_000_001);
-const A_EFFECT_ID: AEffectId = E_EFFECT_ID.into();
+const EFFECT_EID: EEffectId = EEffectId::new(10_000_001);
+const EFFECT_AID: AEffectId = EFFECT_EID.into();
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         modifier_proj_attrs_getter: Some(get_full_mod_proj_attrs),
         modifier_proj_mult_getter: Some(get_full_noapp_proj_mult),
         ..

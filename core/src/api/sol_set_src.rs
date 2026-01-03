@@ -214,7 +214,7 @@ impl SolarSystem {
             for module_key in u_fit.iter_module_keys() {
                 record_projection(&mut projection_updates, &self.u_data, module_key, ship_radius);
                 let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
-                if let Some(charge_key) = u_module.get_charge_key() {
+                if let Some(charge_key) = u_module.get_charge_uid() {
                     record_projection(&mut projection_updates, &self.u_data, charge_key, ship_radius);
                 }
             }

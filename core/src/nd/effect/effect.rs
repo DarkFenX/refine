@@ -44,7 +44,7 @@ pub(crate) struct NEffect {
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) kills_item: bool = false,
-    pub(crate) spool_attr_ids: Option<NSpoolAttrs> = None,
+    pub(crate) spool_attrs: Option<NSpoolAttrs> = None,
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_customizer: Option<NCalcCustomizer> = None,
     // Getters/specs - modifier projection

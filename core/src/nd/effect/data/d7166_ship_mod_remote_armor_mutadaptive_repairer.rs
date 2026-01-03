@@ -9,16 +9,16 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
-const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
+const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
+const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
-        spool_attr_ids: Some(NSpoolAttrs {
-            step: ac::attrs::REP_MULT_BONUS_PER_CYCLE,
-            max: ac::attrs::REP_MULT_BONUS_MAX,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
+        spool_attrs: Some(NSpoolAttrs {
+            step_attr_id: ac::attrs::REP_MULT_BONUS_PER_CYCLE,
+            max_attr_id: ac::attrs::REP_MULT_BONUS_MAX,
         }),
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_armor_rep_base_opc,

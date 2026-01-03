@@ -13,20 +13,20 @@ use crate::{
     ud::UItem,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::TGT_DISINTEGRATOR_ATTACK;
-const A_EFFECT_ID: AEffectId = ac::effects::TGT_DISINTEGRATOR_ATTACK;
+const EFFECT_EID: EEffectId = ec::effects::TGT_DISINTEGRATOR_ATTACK;
+const EFFECT_AID: AEffectId = ac::effects::TGT_DISINTEGRATOR_ATTACK;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
         }),
-        spool_attr_ids: Some(NSpoolAttrs {
-            step: ac::attrs::DMG_MULT_BONUS_PER_CYCLE,
-            max: ac::attrs::DMG_MULT_BONUS_MAX,
+        spool_attrs: Some(NSpoolAttrs {
+            step_attr_id: ac::attrs::DMG_MULT_BONUS_PER_CYCLE,
+            max_attr_id: ac::attrs::DMG_MULT_BONUS_MAX,
         }),
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {

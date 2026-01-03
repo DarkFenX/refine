@@ -50,7 +50,7 @@ impl VastFitData {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
-                        if !projector_especs.all(|v| kfs.contains(&v.item_key)) {
+                        if !projector_especs.all(|v| kfs.contains(&v.item_uid)) {
                             return false;
                         }
                     }
@@ -95,10 +95,10 @@ impl VastFitData {
             {
                 let projectee_item_id = ctx.u_data.items.eid_by_iid(projectee_aspec.item_key);
                 for projector_espec in projector_especs {
-                    if kfs.contains(&projector_espec.item_key) {
+                    if kfs.contains(&projector_espec.item_uid) {
                         continue;
                     }
-                    let projector_item_id = ctx.u_data.items.eid_by_iid(projector_espec.item_key);
+                    let projector_item_id = ctx.u_data.items.eid_by_iid(projector_espec.item_uid);
                     let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
                     if !projectee_item_ids.contains(&projectee_item_id) {
                         projectee_item_ids.push(projectee_item_id)
@@ -129,7 +129,7 @@ fn validate_fast(
             match kfs.is_empty() {
                 true => return false,
                 false => {
-                    if !projector_especs.all(|v| kfs.contains(&v.item_key)) {
+                    if !projector_especs.all(|v| kfs.contains(&v.item_uid)) {
                         return false;
                     }
                 }
@@ -152,10 +152,10 @@ fn validate_verbose(
         if is_attr_flag_set(ctx, calc, projectee_key, attr_key) && projector_especs.len() > 0 {
             let projectee_item_id = ctx.u_data.items.eid_by_iid(projectee_key);
             for projector_espec in projector_especs {
-                if kfs.contains(&projector_espec.item_key) {
+                if kfs.contains(&projector_espec.item_uid) {
                     continue;
                 }
-                let projector_item_id = ctx.u_data.items.eid_by_iid(projector_espec.item_key);
+                let projector_item_id = ctx.u_data.items.eid_by_iid(projector_espec.item_uid);
                 let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
                 if !projectee_item_ids.contains(&projectee_item_id) {
                     projectee_item_ids.push(projectee_item_id)

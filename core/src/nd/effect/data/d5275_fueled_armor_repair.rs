@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::FUELED_ARMOR_REPAIR;
-const A_EFFECT_ID: AEffectId = ac::effects::FUELED_ARMOR_REPAIR;
+const EFFECT_EID: EEffectId = ec::effects::FUELED_ARMOR_REPAIR;
+const EFFECT_AID: AEffectId = ac::effects::FUELED_ARMOR_REPAIR;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate {
                 can_run_uncharged: true,

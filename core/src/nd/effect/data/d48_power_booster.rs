@@ -16,13 +16,13 @@ use crate::{
     ud::UItemId,
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::POWER_BOOSTER;
-const A_EFFECT_ID: AEffectId = ac::effects::POWER_BOOSTER;
+const EFFECT_EID: EEffectId = ec::effects::POWER_BOOSTER;
+const EFFECT_AID: AEffectId = ac::effects::POWER_BOOSTER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
@@ -39,12 +39,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn internal_get_cap_inject(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    let item = ctx.u_data.items.get(item_key);
-    let charge_key = item.get_charge_key()?;
+    let item = ctx.u_data.items.get(item_uid);
+    let charge_uid = item.get_charge_uid()?;
     let attr_consts = ctx.ac();
-    let amount = calc.get_item_oattr_afb_oextra(ctx, charge_key, attr_consts.capacitor_bonus, OF(0.0))?;
+    let amount = calc.get_item_oattr_afb_oextra(ctx, charge_uid, attr_consts.capacitor_bonus, OF(0.0))?;
     Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
 }

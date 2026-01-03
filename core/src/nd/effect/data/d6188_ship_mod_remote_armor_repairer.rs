@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
-const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
+const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
+const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_armor_rep_base_opc,
             proj_mult_str: Some(get_full_noapp_proj_mult),

@@ -21,13 +21,13 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::BOMB_LAUNCHING;
-const A_EFFECT_ID: AEffectId = ac::effects::BOMB_LAUNCHING;
+const EFFECT_EID: EEffectId = ec::effects::BOMB_LAUNCHING;
+const EFFECT_AID: AEffectId = ac::effects::BOMB_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
@@ -63,10 +63,10 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<AttrVal>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_key, ctx.ac().energy_neut_amount, OF(0.0))?;
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, OF(0.0))?;
     // Do not return neut stats for non-neut bombs
     if amount <= OF(0.0) {
         return None;
@@ -80,22 +80,22 @@ fn internal_get_neut_base_opc(
 fn internal_get_ecm_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     _projector_effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let attr_consts = ctx.ac();
     let str_radar =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
+        calc.get_item_oattr_afb_oextra(ctx, projector_uid, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
     let str_magnet = calc.get_item_oattr_afb_oextra(
         ctx,
-        projector_key,
+        projector_uid,
         attr_consts.scan_magnetometric_strength_bonus,
         OF(0.0),
     )?;
     let str_grav =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
+        calc.get_item_oattr_afb_oextra(ctx, projector_uid, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
     let str_ladar =
-        calc.get_item_oattr_afb_oextra(ctx, projector_key, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
+        calc.get_item_oattr_afb_oextra(ctx, projector_uid, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
     // Do not return ECM stats for non-ecm bombs
     if str_radar <= OF(0.0) && str_magnet <= OF(0.0) && str_grav <= OF(0.0) && str_ladar <= OF(0.0) {
         return None;

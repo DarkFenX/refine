@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::STRUCT_ENERGY_NEUT_FALLOFF;
-const A_EFFECT_ID: AEffectId = ac::effects::STRUCT_ENERGY_NEUT_FALLOFF;
+const EFFECT_EID: EEffectId = ec::effects::STRUCT_ENERGY_NEUT_FALLOFF;
+const EFFECT_AID: AEffectId = ac::effects::STRUCT_ENERGY_NEUT_FALLOFF;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         neut_opc_spec: Some(NEffectProjOpcSpec {
             base: get_neut_base_opc,
             proj_mult_str: Some(get_neut_proj_mult),

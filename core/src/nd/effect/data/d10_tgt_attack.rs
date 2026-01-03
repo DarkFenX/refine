@@ -18,13 +18,13 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::TGT_ATTACK;
-const A_EFFECT_ID: AEffectId = ac::effects::TGT_ATTACK;
+const EFFECT_EID: EEffectId = ec::effects::TGT_ATTACK;
+const EFFECT_AID: AEffectId = ac::effects::TGT_ATTACK;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel
             // confirmed civilian guns use on-gun damage attributes, and ammo is possibly loaded
@@ -51,20 +51,20 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
 fn internal_get_dmg_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
-    let item = ctx.u_data.items.get(item_key);
-    let dmg_item_key = match item.get_axt().unwrap().capacity > OF(0.0) {
+    let item = ctx.u_data.items.get(item_uid);
+    let dmg_dealer_uid = match item.get_axt().unwrap().capacity > OF(0.0) {
         // If item has capacity but no charge - it is not dealing damage
-        true => item.get_charge_key()?,
-        false => item_key,
+        true => item.get_charge_uid()?,
+        false => item_uid,
     };
-    let dmg_mult = calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().dmg_mult, OF(0.0))?;
-    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().em_dmg, OF(0.0))?;
-    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().therm_dmg, OF(0.0))?;
-    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().kin_dmg, OF(0.0))?;
-    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, dmg_item_key, ctx.ac().expl_dmg, OF(0.0))?;
+    let dmg_mult = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_mult, OF(0.0))?;
+    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, dmg_dealer_uid, ctx.ac().em_dmg, OF(0.0))?;
+    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, dmg_dealer_uid, ctx.ac().therm_dmg, OF(0.0))?;
+    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, dmg_dealer_uid, ctx.ac().kin_dmg, OF(0.0))?;
+    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, dmg_dealer_uid, ctx.ac().expl_dmg, OF(0.0))?;
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
             em: dmg_em * dmg_mult,

@@ -22,8 +22,8 @@ impl DependencyRegister {
             }
         }
         for (source, specs) in self.by_source.iter() {
-            check_item_id(u_data, source.item_key, true)?;
-            check_effect_id(u_data, source.effect_key)?;
+            check_item_id(u_data, source.item_uid, true)?;
+            check_effect_id(u_data, source.effect_rid)?;
             for (affector_spec, affectee_spec) in specs {
                 check_item_id(u_data, affector_spec.item_key, true)?;
                 check_attr_id(u_data, affector_spec.attr_key)?;
@@ -34,8 +34,8 @@ impl DependencyRegister {
         for (&item_key, sources) in self.source_by_item.iter() {
             check_item_id(u_data, item_key, true)?;
             for source in sources {
-                check_item_id(u_data, source.item_key, true)?;
-                check_effect_id(u_data, source.effect_key)?;
+                check_item_id(u_data, source.item_uid, true)?;
+                check_effect_id(u_data, source.effect_rid)?;
             }
         }
         Ok(())

@@ -137,6 +137,6 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         data::test::d10000003_buff_fleet_filtered::mk_n_effect(),
     ]
     .into_iter()
-    .map(|v| (v.aid, v))
+    .map(|n_effect| (n_effect.aid, n_effect))
     .collect()
 }

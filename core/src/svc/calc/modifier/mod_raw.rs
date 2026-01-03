@@ -204,7 +204,7 @@ impl RawModifier {
         self.affector_value.get_affector_attr_key()
     }
     pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<Affector, 1> {
-        self.affector_value.get_affector_info(ctx, self.affector_espec.item_key)
+        self.affector_value.get_affector_info(ctx, self.affector_espec.item_uid)
     }
     pub(in crate::svc::calc) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx) -> Option<AttrVal> {
         self.affector_value.get_mod_val(calc, ctx, self.affector_espec)

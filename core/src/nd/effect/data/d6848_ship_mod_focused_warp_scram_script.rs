@@ -11,13 +11,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT;
-const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT;
+const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT;
+const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ignore_offmod_immunity: true,
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),

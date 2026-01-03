@@ -5,47 +5,46 @@ use crate::{
     ac,
     ad::{
         AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
-        AItemId, AState,
+        AGenVal, AItemId, AState,
     },
-    def::OF,
     nd::{NEffect, effect::data::shared::sov_stability_generators::assign_effect},
 };
 
 const A_ITEM_ID: AItemId = ac::items::GAMMA_STABILITY_GENERATOR;
-const A_EFFECT_ID: AEffectId = ac::effects::STABILITY_GENERATOR_GAMMA;
+const EFFECT_AID: AEffectId = ac::effects::STABILITY_GENERATOR_GAMMA;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
-        aid: A_EFFECT_ID,
+        aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
-        adg_assign_effect_fn: Some(|a_items| assign_effect(a_items, A_ITEM_ID, A_EFFECT_ID)),
+        adg_assign_effect_fn: Some(|a_items| assign_effect(a_items, A_ITEM_ID, EFFECT_AID)),
         ..
     }
 }
 
 fn make_effect() -> AEffect {
     AEffect {
-        id: A_EFFECT_ID,
+        id: EFFECT_AID,
         category: ac::effcats::ACTIVE,
         state: AState::Active,
         buff: Some(AEffectBuff {
             full: vec![
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_SHIELD_HITPOINT_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(OF(5.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(5.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_SHIELD_BOOSTER_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(OF(5.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(5.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_CAPACITOR_CAPACITY_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(OF(10.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(10.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },

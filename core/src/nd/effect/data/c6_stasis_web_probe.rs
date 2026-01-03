@@ -15,12 +15,12 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: AEffectId = ac::effects::STASIS_WEB_PROBE;
+const EFFECT_AID: AEffectId = ac::effects::STASIS_WEB_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
-        aid: A_EFFECT_ID,
+        aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(assign_effect),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
@@ -31,7 +31,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn make_effect() -> AEffect {
     AEffect {
-        id: A_EFFECT_ID,
+        id: EFFECT_AID,
         category: ac::effcats::ACTIVE,
         state: AState::Active,
         range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
@@ -52,8 +52,8 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     match a_items.get_mut(&ac::items::STASIS_WEBIFICATION_PROBE) {
         Some(a_item) => {
-            a_item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
-            a_item.defeff_id = Some(A_EFFECT_ID);
+            a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+            a_item.defeff_id = Some(EFFECT_AID);
             true
         }
         None => false,

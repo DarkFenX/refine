@@ -81,7 +81,7 @@ impl Calc {
                 Some(val) => val,
                 None => continue,
             };
-            let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_key);
+            let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = CalcModificationKey::from(cmod);
             let modification = CalcModification {

@@ -9,13 +9,13 @@ use crate::{
     },
 };
 
-const E_EFFECT_ID: EEffectId = ec::effects::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER;
-const A_EFFECT_ID: AEffectId = ac::effects::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER;
+const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER;
+const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(E_EFFECT_ID),
-        aid: A_EFFECT_ID,
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
         outgoing_cap_opc_spec: Some(NEffectProjOpcSpec {
             base: get_cap_trans_base_opc,
             proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),

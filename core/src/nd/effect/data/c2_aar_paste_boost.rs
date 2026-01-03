@@ -1,6 +1,6 @@
 // AAR paste boost in EVE does not change rep amount attribute. It seems to be applied by AAR effect
-// when repairs actually happen. However, here we apply it to "extra" value of rep amount attribute
-// for usability and simplicity of effect itself.
+// when repairs actually happen. Here, we apply it just for visibility (actual impact of rep effect
+// is processed separately, similarly to how EVE handles it, to support partially charged cycles).
 
 use smallvec::SmallVec;
 
@@ -22,12 +22,12 @@ use crate::{
     util::RMap,
 };
 
-const A_EFFECT_ID: AEffectId = ac::effects::AAR_PASTE_BOOST;
+const EFFECT_AID: AEffectId = ac::effects::AAR_PASTE_BOOST;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: None,
-        aid: A_EFFECT_ID,
+        aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(assign_effect),
         calc_customizer: Some(calc_add_custom_modifier),
@@ -38,7 +38,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 // ADG customizations
 fn make_effect() -> AEffect {
     AEffect {
-        id: A_EFFECT_ID,
+        id: EFFECT_AID,
         category: ac::effcats::PASSIVE,
         state: AState::Disabled,
         ..
@@ -52,7 +52,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
             || v.effect_datas
                 .contains_key(&ac::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
-        a_item.effect_datas.insert(A_EFFECT_ID, AItemEffectData::default());
+        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;
     }
     assigned
@@ -86,29 +86,29 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
 
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
     // Return multiplier only if everything could be fetched successfully
-    if let Some(charge_key) = ctx.u_data.items.get(espec.item_key).get_charge_key()
-        && let ac::items::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_key).get_type_id()
-        && let Some(val) = calc.get_item_oattr_odogma(ctx, espec.item_key, ctx.ac().charged_armor_dmg_mult)
+    if let Some(charge_uid) = ctx.u_data.items.get(espec.item_uid).get_charge_uid()
+        && let ac::items::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_uid).get_type_id()
+        && let Some(val) = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().charged_armor_dmg_mult)
     {
         return Some(val);
     }
     Some(OF(1.0))
 }
 
-fn get_affector_info(ctx: SvcCtx, item_key: UItemId) -> SmallVec<Affector, 1> {
+fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
-    if let Some(charged_armor_dmg_mult_key) = ctx.ac().charged_armor_dmg_mult {
+    if let Some(mult_attr_rid) = ctx.ac().charged_armor_dmg_mult {
         info.push(Affector {
-            item_id: ctx.u_data.items.eid_by_iid(item_key),
-            attr_id: Some(ctx.u_data.src.get_attr(charged_armor_dmg_mult_key).a_id.into()),
+            item_id: ctx.u_data.items.eid_by_iid(item_uid),
+            attr_id: Some(ctx.u_data.src.get_attr(mult_attr_rid).a_id.into()),
         });
     }
     info
 }
 
-fn revise_on_item_add_removal(ctx: SvcCtx, affector_key: UItemId, changed_key: UItemId, changed_item: &UItem) -> bool {
-    match ctx.u_data.items.get(affector_key).get_charge_key() {
-        Some(charge_key) => changed_key == charge_key && changed_item.get_type_id() == ac::items::NANITE_REPAIR_PASTE,
+fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, changed_uid: UItemId, changed_item: &UItem) -> bool {
+    match ctx.u_data.items.get(affector_uid).get_charge_uid() {
+        Some(charge_uid) => changed_uid == charge_uid && changed_item.get_type_id() == ac::items::NANITE_REPAIR_PASTE,
         // Not chargeable item, or no charge on AAR -> not changing anything
         None => false,
     }

@@ -5,8 +5,8 @@ use crate::{
 };
 
 pub(in crate::svc) fn check_rmod(u_data: &UData, rmod: &RawModifier) -> DebugResult {
-    check_item_id(u_data, rmod.affector_espec.item_key, true)?;
-    check_effect_id(u_data, rmod.affector_espec.effect_key)?;
+    check_item_id(u_data, rmod.affector_espec.item_uid, true)?;
+    check_effect_id(u_data, rmod.affector_espec.effect_rid)?;
     check_attr_id(u_data, rmod.affectee_attr_key)?;
     if let Some(attr_key) = rmod.buff_type_attr_key {
         check_attr_id(u_data, attr_key)?;
