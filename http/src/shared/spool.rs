@@ -7,7 +7,7 @@ const CYCLE_SCALE_PREFIX: &str = "cs";
 
 #[derive(Copy, Clone)]
 pub(crate) enum HSpool {
-    Cycles(rc::Count),
+    Cycles(rc::DefCount),
     Time(rc::AttrVal),
     SpoolScale(rc::AttrVal),
     CycleScale(rc::AttrVal),
@@ -73,7 +73,7 @@ impl<'de> serde::Deserialize<'de> for HSpool {
                     return Ok(Self::Value::CycleScale(value));
                 }
                 if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
-                    let count = rc::Count::from_str(count_str).map_err(|e| serde::de::Error::custom(e))?;
+                    let count = rc::DefCount::from_str(count_str).map_err(|e| serde::de::Error::custom(e))?;
                     return Ok(Self::Value::Cycles(count));
                 }
                 if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {

@@ -29,7 +29,7 @@ where
     ) -> Option<Self> {
         Some(AggrLocalInvData {
             output: (ospec.base)(ctx, calc, item_key, effect)?,
-            amount_limit: get_ship_limit(ctx, calc, item_key, ospec.limit_attr_key),
+            amount_limit: get_ship_limit(ctx, calc, item_key, ospec.limit_attr_rid),
         })
     }
 }

@@ -6,7 +6,7 @@ use crate::{
     ac,
     ad::{
         AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
-        AGenVal, AItem, AItemEffectData, AItemId, AState,
+        AItem, AItemEffectData, AItemId, AState, AValue,
     },
     nd::{
         NEffect,
@@ -42,14 +42,14 @@ fn make_effect() -> AEffect {
                 // citadels too. Intentionally do not apply effects onto ship which launches buff
                 AEffectBuffFull {
                     buff_id: ac::buffs::DISALLOW_WARP_JUMP,
-                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(1.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
                 },
                 // Bubble prevents dictor from tethering as long as it's up
                 AEffectBuffFull {
                     buff_id: ac::buffs::DISALLOW_TETHER,
-                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(1.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
                     duration: AEffectBuffDuration::AttrMs(ac::attrs::EXPLOSION_DELAY),
                     scope: AEffectBuffScope::Carrier,
                 },

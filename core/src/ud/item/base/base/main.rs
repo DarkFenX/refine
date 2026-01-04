@@ -29,7 +29,7 @@ impl UItemBase {
             type_id,
             state,
             effect_modes: UEffectModes::new(),
-            cache: src.get_item(&type_id).map(|r_item| ItemBaseCache {
+            cache: src.get_item_by_aid(&type_id).map(|r_item| ItemBaseCache {
                 r_item: r_item.clone(),
                 reffs: RSet::new(),
             }),
@@ -51,7 +51,7 @@ impl UItemBase {
     pub(in crate::ud::item::base) fn base_new_with_r_item(item_id: ItemId, r_item: RcItem, state: AState) -> Self {
         Self {
             item_id,
-            type_id: r_item.id,
+            type_id: r_item.aid,
             state,
             effect_modes: UEffectModes::new(),
             cache: Some(ItemBaseCache {
@@ -84,7 +84,7 @@ impl UItemBase {
         self.base_get_r_item().map(|v| &v.effect_datas)
     }
     pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
-        self.base_get_r_item().map(|v| v.defeff_key)
+        self.base_get_r_item().map(|v| v.defeff_rid)
     }
     pub(in crate::ud::item) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
         self.base_get_r_item().map(|v| &v.abil_ids)
@@ -93,10 +93,10 @@ impl UItemBase {
         self.base_get_r_item().map(|v| &v.srqs)
     }
     pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
-        self.base_get_r_item().map(|v| &v.proj_buff_item_list_keys)
+        self.base_get_r_item().map(|v| &v.proj_buff_item_list_rids)
     }
     pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
-        self.base_get_r_item().map(|v| &v.fleet_buff_item_list_keys)
+        self.base_get_r_item().map(|v| &v.fleet_buff_item_list_rids)
     }
     // Extra data access methods
     pub(in crate::ud::item) fn get_axt(&self) -> Option<&RItemAXt> {
@@ -118,7 +118,7 @@ impl UItemBase {
         self.base_get_r_item().and_then(|v| v.val_active_group_id)
     }
     pub(in crate::ud::item) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrId>> {
-        self.base_get_r_item().map(|v| &v.cap_use_attr_keys)
+        self.base_get_r_item().map(|v| &v.cap_use_attr_rids)
     }
     pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
         self.base_get_r_item().and_then(|v| v.ship_kind)
@@ -177,7 +177,7 @@ impl UItemBase {
         self.base_update_r_data(src);
     }
     pub(in crate::ud::item::base) fn base_update_r_data(&mut self, src: &Src) {
-        match src.get_item(&self.type_id) {
+        match src.get_item_by_aid(&self.type_id) {
             Some(r_item) => self.base_set_r_item(r_item.clone()),
             None => self.cache = None,
         }
@@ -191,7 +191,7 @@ impl UItemBase {
         self.cache = None;
     }
     pub(in crate::ud::item::base) fn base_set_r_item(&mut self, r_item: RcItem) {
-        self.type_id = r_item.id;
+        self.type_id = r_item.aid;
         match &mut self.cache {
             Some(cache) => {
                 cache.r_item = r_item;

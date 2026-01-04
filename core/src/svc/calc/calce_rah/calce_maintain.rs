@@ -40,7 +40,7 @@ impl Calc {
         }
         if let UItem::Module(module) = item
             && let Some(rah_effect_key) = ctx.ec().adaptive_armor_hardener
-            && effects.iter().any(|v| v.key == rah_effect_key)
+            && effects.iter().any(|v| v.rid == rah_effect_key)
         {
             let fit_key = module.get_fit_key();
             // Clear sim data for other RAHs on the same fit
@@ -101,7 +101,7 @@ impl Calc {
         }
         if let UItem::Module(module) = item
             && let Some(rah_effect_key) = ctx.ec().adaptive_armor_hardener
-            && effects.iter().any(|v| v.key == rah_effect_key)
+            && effects.iter().any(|v| v.rid == rah_effect_key)
         {
             let fit_key = module.get_fit_key();
             // Remove postprocessors
@@ -135,8 +135,8 @@ impl Calc {
         if self.rah.resonances.is_empty() {
             return;
         }
-        let attr = ctx.u_data.src.get_attr(aspec.attr_key);
-        match attr.a_id {
+        let attr = ctx.u_data.src.get_attr_by_rid(aspec.attr_key);
+        match attr.aid {
             // Ship armor resonances and RAH resonances
             ac::attrs::ARMOR_EM_DMG_RESONANCE
             | ac::attrs::ARMOR_THERM_DMG_RESONANCE
@@ -160,7 +160,7 @@ impl Calc {
                 }
             }
             // RAH cycle time
-            _ if Some(aspec.attr_key) == ctx.u_data.src.get_rah_duration_attr_key() => {
+            _ if Some(aspec.attr_key) == ctx.u_data.src.get_rah_duration_attr_rid() => {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID

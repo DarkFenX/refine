@@ -1,4 +1,4 @@
-use crate::{def::Id, ed::EAttrId};
+use crate::{def::DefId, ed::EAttrId, util::f64_to_i32};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum AAttrId {
@@ -20,23 +20,26 @@ impl std::fmt::Display for AAttrId {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct AEveAttrId(Id);
+pub struct AEveAttrId(DefId);
 impl AEveAttrId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> Id {
+    pub(crate) fn new_f64(id: f64) -> Self {
+        Self(f64_to_i32(id))
+    }
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct ACustomAttrId(Id);
+pub struct ACustomAttrId(DefId);
 impl ACustomAttrId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> Id {
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }

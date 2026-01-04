@@ -1,7 +1,7 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info) struct HAdjustableCount {
-    current: rc::Count,
-    max: rc::Count,
+    current: rc::DefCount,
+    max: rc::DefCount,
     overridden: bool,
 }
 impl From<rc::AdjustableCount> for HAdjustableCount {

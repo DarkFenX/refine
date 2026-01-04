@@ -1,6 +1,6 @@
 use crate::{
     ac,
-    ad::{AAttr, AAttrId, AGenVal},
+    ad::{AAttr, AAttrId, AValue},
     nd::NAttr,
 };
 
@@ -20,7 +20,7 @@ fn make_attr() -> AAttr {
         id: A_ATTR_ID,
         penalizable: false,
         hig: false,
-        def_val: AGenVal::new_f64(0.0),
+        def_val: AValue::new(0.0),
         ..
     }
 }

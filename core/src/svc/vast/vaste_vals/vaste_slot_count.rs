@@ -1,5 +1,5 @@
 use crate::{
-    def::{Count, Idx, ItemId},
+    def::{DefCount, Idx, ItemId},
     rd::RAttrId,
     svc::{
         SvcCtx,
@@ -12,9 +12,9 @@ use crate::{
 
 pub struct ValSlotCountFail {
     /// How many slots are taken by all the relevant items.
-    pub used: Count,
+    pub used: DefCount,
     /// How many slots available.
-    pub max: Option<Count>,
+    pub max: Option<DefCount>,
     /// IDs of items which break the validation limits. For unordered containers - all items, for
     /// ordered containers - only those which go past limit.
     pub users: Vec<ItemId>,
@@ -433,7 +433,7 @@ fn validate_fast_unordered_set(
     max_attr_key: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> bool {
-    let used = users.len() as Count;
+    let used = users.len() as DefCount;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
     used <= max || users.is_subset(kfs)
 }
@@ -445,7 +445,7 @@ fn validate_fast_unordered_map<T>(
     max_attr_key: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> bool {
-    let used = users.len() as Count;
+    let used = users.len() as DefCount;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
     used <= max || users.is_subset(kfs)
 }
@@ -457,7 +457,7 @@ fn validate_fast_ordered(
     max_attr_key: Option<RAttrId>,
     users: &UItemVec,
 ) -> bool {
-    let used = users.len() as Count;
+    let used = users.len() as DefCount;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
     match kfs.is_empty() {
         true => used <= max,
@@ -476,7 +476,7 @@ fn validate_verbose_unordered_set(
     max_attr_key: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> Option<ValSlotCountFail> {
-    let used = users.len() as Count;
+    let used = users.len() as DefCount;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
     if used <= max.unwrap_or(0) {
         return None;
@@ -498,7 +498,7 @@ fn validate_verbose_unordered_map<T>(
     max_attr_key: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> Option<ValSlotCountFail> {
-    let used = users.len() as Count;
+    let used = users.len() as DefCount;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
     if used <= max.unwrap_or(0) {
         return None;
@@ -520,7 +520,7 @@ fn validate_verbose_ordered(
     max_attr_key: Option<RAttrId>,
     users: &UItemVec,
 ) -> Option<ValSlotCountFail> {
-    let used = users.len() as Count;
+    let used = users.len() as DefCount;
     let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
     let effective_max = max.unwrap_or(0);
     if used <= effective_max {

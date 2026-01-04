@@ -37,13 +37,13 @@ impl UEffectModes {
         match effect_mode {
             DEFAULT_EFFECT_MODE => {
                 self.by_id.remove(&effect_id);
-                if let Some(effect_key) = src.get_effect_key_by_id(&effect_id) {
+                if let Some(effect_key) = src.get_effect_rid_by_aid(&effect_id) {
                     self.by_key.remove(&effect_key);
                 }
             }
             _ => {
                 self.by_id.insert(effect_id, effect_mode);
-                if let Some(effect_key) = src.get_effect_key_by_id(&effect_id) {
+                if let Some(effect_key) = src.get_effect_rid_by_aid(&effect_id) {
                     self.by_key.insert(effect_key, effect_mode);
                 }
             }
@@ -52,7 +52,7 @@ impl UEffectModes {
     pub(in crate::ud::item) fn update_keys(&mut self, src: &Src) {
         self.by_key.clear();
         for (effect_id, effect_mode) in self.by_id.iter() {
-            if let Some(effect_key) = src.get_effect_key_by_id(effect_id) {
+            if let Some(effect_key) = src.get_effect_rid_by_aid(effect_id) {
                 self.by_key.insert(effect_key, *effect_mode);
             }
         }

@@ -1,7 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    ad::{AAttrVal, AItemGrpId},
+    ad::AItemGrpId,
+    misc::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -12,7 +13,7 @@ pub(crate) struct RItemChargeLimit {
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_item_charge_limit(
-    item_attrs: &RMap<RAttrId, AAttrVal>,
+    item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> Option<RItemChargeLimit> {
     let group_ids = [
@@ -24,7 +25,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_charge_limit(
     ]
     .iter()
     .filter_map(|opt| opt.and_then(|attr_key| item_attrs.get(&attr_key)))
-    .map(|v| v.round() as AItemGrpId)
+    .map(|v| AItemGrpId::new_f64(v.into()))
     .unique()
     .collect_vec();
     if group_ids.is_empty() {

@@ -3,7 +3,7 @@ use crate::{
         AdjustableCount, Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed,
         ModuleState,
     },
-    def::{Count, Idx},
+    def::{DefCount, Idx},
     misc::ModRack,
     sol::SolarSystem,
     ud::{UItemId, UModule},
@@ -33,7 +33,7 @@ impl<'a> Module<'a> {
     pub fn get_charge(&self) -> Option<Charge<'_>> {
         get_charge(self.sol, self.key)
     }
-    pub fn get_charge_count(&self) -> Option<Count> {
+    pub fn get_charge_count(&self) -> Option<DefCount> {
         get_charge_count(self.sol, self.key)
     }
     pub fn get_reload_optionals(&self) -> Option<bool> {
@@ -82,13 +82,13 @@ impl<'a> ModuleMut<'a> {
             .get_charge_uid()
             .map(|charge_key| ChargeMut::new(self.sol, charge_key))
     }
-    pub fn get_charge_count(&self) -> Option<Count> {
+    pub fn get_charge_count(&self) -> Option<DefCount> {
         get_charge_count(self.sol, self.key)
     }
     pub fn get_reload_optionals(&self) -> Option<bool> {
         get_reload_optionals(self.sol, self.key)
     }
-    pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
+    pub fn get_cycle_count_until_reload(&mut self) -> Option<DefCount> {
         match self.sol.svc.get_item_cycles_until_empty(&self.sol.u_data, self.key) {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
@@ -132,7 +132,7 @@ fn get_charge(sol: &SolarSystem, module_key: UItemId) -> Option<Charge<'_>> {
         .get_charge_uid()
         .map(|charge_key| Charge::new(sol, charge_key))
 }
-fn get_charge_count(sol: &SolarSystem, module_key: UItemId) -> Option<Count> {
+fn get_charge_count(sol: &SolarSystem, module_key: UItemId) -> Option<DefCount> {
     get_u_module(sol, module_key).get_charge_count(&sol.u_data)
 }
 fn get_reload_optionals(sol: &SolarSystem, module_key: UItemId) -> Option<bool> {

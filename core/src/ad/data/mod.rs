@@ -11,7 +11,7 @@ pub use item::{AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLe
 pub use item_list::{ACustomItemListId, AEveItemListId, AItemList, AItemListId};
 pub use muta::{AMuta, AMutaAttrRange};
 pub use shared::{AModifierSrq, AOp, AState};
-pub use value::{ACount, AGenVal, ATimeVal};
+pub use value::{ACount, AValue};
 
 mod abil;
 mod attr;

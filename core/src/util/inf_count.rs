@@ -1,7 +1,7 @@
-use crate::def::Count;
+use crate::def::DefCount;
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub(crate) enum InfCount {
-    Count(Count),
+    Count(DefCount),
     Infinite,
 }

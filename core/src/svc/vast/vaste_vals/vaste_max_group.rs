@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     ad::AItemGrpId,
-    def::{Count, ItemGrpId, ItemId},
+    def::{DefCount, ItemGrpId, ItemId},
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::UItemId,
@@ -16,9 +16,9 @@ pub struct ValMaxGroupFail {
 
 pub struct ValMaxGroupGroupInfo {
     /// How many items from that group are in an appropriate state.
-    pub group_item_count: Count,
+    pub group_item_count: DefCount,
     /// Map between offending item IDs and per-item group count limits.
-    pub items: HashMap<ItemId, Count>,
+    pub items: HashMap<ItemId, DefCount>,
 }
 
 impl VastFitData {
@@ -168,9 +168,9 @@ fn validate_verbose(
     }
 }
 
-fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrId) -> Count {
-    calc.get_item_attr_oextra(ctx, item_key, attr_key).unwrap().round() as Count
+fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrId) -> DefCount {
+    calc.get_item_attr_oextra(ctx, item_key, attr_key).unwrap().round() as DefCount
 }
-fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, a_item_grp_id: &AItemGrpId) -> Count {
-    max_group_all.get(a_item_grp_id).len() as Count
+fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, a_item_grp_id: &AItemGrpId) -> DefCount {
+    max_group_all.get(a_item_grp_id).len() as DefCount
 }

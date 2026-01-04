@@ -28,7 +28,7 @@ impl Vast {
             None => return Ok(ocps),
         };
         for (effect_key, cseq) in cseq_map {
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             let ospec = match effect.outgoing_cap_opc_spec {
                 Some(ospec) => ospec,
                 None => continue,

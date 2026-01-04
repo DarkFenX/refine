@@ -77,12 +77,12 @@ impl<'a> FullSideEffectMut<'a> {
 }
 
 fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPartialStr> {
-    let effect_key = src.get_effect_key_by_id(effect_id).unwrap();
+    let effect_key = src.get_effect_rid_by_aid(effect_id).unwrap();
     let mut se_strs = src
-        .get_effect(effect_key)
+        .get_effect_by_rid(effect_key)
         .modifiers
         .iter()
-        .map(|modifier| (modifier.op, modifier.affector_attr_key))
+        .map(|modifier| (modifier.op, modifier.affector_attr_rid))
         .collect_vec();
     match se_strs.len() {
         0 => None,
@@ -90,7 +90,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
             .into_iter()
             .map(|(a_op, attr_key)| SideEffectPartialStr {
                 op: a_op.into(),
-                attr_id: src.get_attr(attr_key).a_id.into(),
+                attr_id: src.get_attr_by_rid(attr_key).aid.into(),
                 attr_key,
             })
             .next(),
@@ -102,7 +102,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
             {
                 true => Some(SideEffectPartialStr {
                     op: base_op.into(),
-                    attr_id: src.get_attr(base_attr_key).a_id.into(),
+                    attr_id: src.get_attr_by_rid(base_attr_key).aid.into(),
                     attr_key: base_attr_key,
                 }),
                 false => None,

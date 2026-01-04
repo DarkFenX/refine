@@ -259,7 +259,7 @@ impl VastFitData {
             };
             let item = ctx.u_data.items.get(item_key);
             for (&effect_key, ospec) in item_data.iter() {
-                let effect = ctx.u_data.src.get_effect(effect_key);
+                let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
                 if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
@@ -292,7 +292,7 @@ impl VastFitData {
             };
             let item = ctx.u_data.items.get(item_key);
             for (&effect_key, dmg_getter) in item_data.iter() {
-                let effect = ctx.u_data.src.get_effect(effect_key);
+                let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
                 if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
@@ -325,7 +325,7 @@ impl VastFitData {
             };
             let item = ctx.u_data.items.get(item_key);
             for (&effect_key, ospec) in item_data.iter() {
-                let effect = ctx.u_data.src.get_effect(effect_key);
+                let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
                 if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
@@ -347,7 +347,7 @@ impl VastFitData {
             };
             let u_item = ctx.u_data.items.get(item_key);
             for (&effect_key, dmg_getter) in item_data.iter() {
-                let r_effect = ctx.u_data.src.get_effect(effect_key);
+                let r_effect = ctx.u_data.src.get_effect_by_rid(effect_key);
                 if !item_kinds.resolve(ctx, u_item, r_effect) {
                     continue;
                 }

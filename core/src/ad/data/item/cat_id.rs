@@ -1,12 +1,12 @@
-use crate::{def::Id, ed::EItemCatId};
+use crate::{def::DefId, ed::EItemCatId};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub struct AItemCatId(Id);
+pub struct AItemCatId(DefId);
 impl AItemCatId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> Id {
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }

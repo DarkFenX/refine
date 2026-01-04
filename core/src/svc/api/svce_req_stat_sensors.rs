@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, Count},
+    def::{AttrVal, DefCount},
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
@@ -13,7 +13,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemId,
-    ) -> Result<Count, StatItemCheckError> {
+    ) -> Result<DefCount, StatItemCheckError> {
         Vast::get_stat_item_locks(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
     }
     pub(crate) fn get_stat_item_lock_range(

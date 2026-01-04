@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     svc::{
         cycle::{CycleDataFull, CycleSeq},
         output::Output,
@@ -116,7 +116,7 @@ where
     *time -= data.time;
 }
 
-fn process_limited_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_limit: Count)
+fn process_limited_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_limit: DefCount)
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
 {
@@ -149,10 +149,10 @@ where
     }
 }
 
-pub(super) fn get_full_repeats_count(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> Count {
+pub(super) fn get_full_repeats_count(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> DefCount {
     let time_no_tail = time - cycle_tail_time;
     if time_no_tail < cycle_time {
         return 0;
     }
-    trunc_unerr(time_no_tail / cycle_time).into_inner() as Count
+    trunc_unerr(time_no_tail / cycle_time).into_inner() as DefCount
 }

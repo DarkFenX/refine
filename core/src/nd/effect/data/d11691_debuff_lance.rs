@@ -2,9 +2,7 @@ use itertools::chain;
 
 use crate::{
     ac,
-    ad::{
-        AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId, AGenVal,
-    },
+    ad::{AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId, AValue},
     ec,
     ed::EEffectId,
     nd::{
@@ -31,25 +29,25 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 [
                     AEffectBuffFull {
                         buff_id: ac::buffs::REMOTE_REPAIR_IMPEDANCE,
-                        strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(-50.0)),
+                        strength: AEffectBuffStrength::Hardcoded(AValue::new(-50.0)),
                         duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                     AEffectBuffFull {
                         buff_id: ac::buffs::WARP_PENALTY,
-                        strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(100.0)),
+                        strength: AEffectBuffStrength::Hardcoded(AValue::new(100.0)),
                         duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                     AEffectBuffFull {
                         buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
-                        strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(1.0)),
+                        strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
                         duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                     AEffectBuffFull {
                         buff_id: ac::buffs::DISALLOW_TETHER,
-                        strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(1.0)),
+                        strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
                         duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },

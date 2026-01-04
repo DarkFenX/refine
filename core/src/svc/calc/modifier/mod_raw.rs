@@ -77,15 +77,15 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            affector_espec: EffectSpec::new(affector_key, effect.key),
-            affector_value: AffectorValue::Attr(effect_mod.affector_attr_key),
+            affector_espec: EffectSpec::new(affector_key, effect.rid),
+            affector_value: AffectorValue::Attr(effect_mod.affector_attr_rid),
             op: (&effect_mod.op).into(),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
-            affectee_attr_key: effect_mod.affectee_attr_key,
+            affectee_attr_key: effect_mod.affectee_attr_rid,
             buff_type_attr_key: None,
             proj_mult_getter: effect.modifier_proj_mult_getter,
-            proj_attr_keys: effect.modifier_proj_attr_keys,
+            proj_attr_keys: effect.modifier_proj_attr_rids,
             resist_attr_key,
             ..
         })
@@ -150,7 +150,7 @@ impl RawModifier {
             // local modifiers which affect just ship for simplicity of further processing
             REffectBuffScope::Carrier => Self {
                 kind: ModifierKind::Local,
-                affector_espec: EffectSpec::new(affector_key, effect.key),
+                affector_espec: EffectSpec::new(affector_key, effect.rid),
                 affector_value: buff_str,
                 op: (&buff.op).into(),
                 aggr_mode: AggrMode::from_buff(buff),
@@ -159,14 +159,14 @@ impl RawModifier {
                     Location::Ship,
                     affector_item,
                 ),
-                affectee_attr_key: buff_mod.affectee_attr_key,
+                affectee_attr_key: buff_mod.affectee_attr_rid,
                 buff_type_attr_key,
                 ..
             },
             // Projected modifiers can be range-reduced and resisted
             REffectBuffScope::Projected(item_list_key) => Self {
                 kind: ModifierKind::Buff,
-                affector_espec: EffectSpec::new(affector_key, effect.key),
+                affector_espec: EffectSpec::new(affector_key, effect.rid),
                 affector_value: buff_str,
                 op: (&buff.op).into(),
                 aggr_mode: AggrMode::from_buff(buff),
@@ -175,17 +175,17 @@ impl RawModifier {
                     Location::ItemList(*item_list_key),
                     affector_item,
                 ),
-                affectee_attr_key: buff_mod.affectee_attr_key,
+                affectee_attr_key: buff_mod.affectee_attr_rid,
                 buff_type_attr_key,
                 proj_mult_getter: effect.modifier_proj_mult_getter,
-                proj_attr_keys: effect.modifier_proj_attr_keys,
+                proj_attr_keys: effect.modifier_proj_attr_rids,
                 resist_attr_key: funcs::get_resist_attr_key(affector_item, effect),
                 ..
             },
             // Fleet buffs cannot be resisted and range-reduced regardless of what effect says
             REffectBuffScope::Fleet(item_list_key) => Self {
                 kind: ModifierKind::FleetBuff,
-                affector_espec: EffectSpec::new(affector_key, effect.key),
+                affector_espec: EffectSpec::new(affector_key, effect.rid),
                 affector_value: buff_str,
                 op: (&buff.op).into(),
                 aggr_mode: AggrMode::from_buff(buff),
@@ -194,7 +194,7 @@ impl RawModifier {
                     Location::ItemList(*item_list_key),
                     affector_item,
                 ),
-                affectee_attr_key: buff_mod.affectee_attr_key,
+                affectee_attr_key: buff_mod.affectee_attr_rid,
                 buff_type_attr_key,
                 ..
             },

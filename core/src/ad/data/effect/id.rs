@@ -1,4 +1,4 @@
-use crate::{ad::AItemId, def::Id, ed::EEffectId};
+use crate::{ad::AItemId, def::DefId, ed::EEffectId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum AEffectId {
@@ -37,23 +37,23 @@ impl std::fmt::Display for AEffectId {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct ADogmaEffectId(Id);
+pub struct ADogmaEffectId(DefId);
 impl ADogmaEffectId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> Id {
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct ACustomEffectId(Id);
+pub struct ACustomEffectId(DefId);
 impl ACustomEffectId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> Id {
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }

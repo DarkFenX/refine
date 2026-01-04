@@ -17,20 +17,20 @@ impl RMuta {
         Self {
             id: a_muta.id,
             item_map: a_muta.item_map.clone(),
+            // Fields which depend on data not available during instantiation
             attr_mods: RMap::new(),
         }
     }
-    pub(in crate::rd) fn fill_key_dependents(
+    pub(in crate::rd) fn fill_runtime(
         &mut self,
         a_mutas: &RMap<AItemId, AMuta>,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) {
         let a_muta = a_mutas.get(&self.id).unwrap();
-        self.attr_mods.extend(
-            a_muta.attr_mods.iter().filter_map(|(attr_id, attr_range)| {
-                attr_id_key_map.get(attr_id).map(|attr_key| (*attr_key, *attr_range))
-            }),
-        )
+        self.attr_mods
+            .extend(a_muta.attr_mods.iter().filter_map(|(attr_aid, attr_range)| {
+                attr_aid_rid_map.get(attr_aid).map(|attr_rid| (*attr_rid, *attr_range))
+            }))
     }
 }
 impl GetId<AItemId> for RMuta {

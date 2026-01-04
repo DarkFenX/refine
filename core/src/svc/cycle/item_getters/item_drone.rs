@@ -28,7 +28,7 @@ pub(super) fn get_drone_cseq_map(
         false => Either::Right(drone.get_reffs().unwrap().iter().copied()),
     };
     for effect_key in effect_keys {
-        let effect = ctx.u_data.src.get_effect(effect_key);
+        let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
         if !effect.is_active_with_duration {
             continue;
         }

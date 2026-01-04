@@ -101,7 +101,7 @@ fn get_local_ancil_hp(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             if let Some(effect_clip_data) = aggr_local_clip_amount(ctx, calc, item_key, effect, cseq, ospec) {
                 total_ancil_hp += effect_clip_data.amount;
             }
@@ -131,7 +131,7 @@ fn get_remote_ancil_hp(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             if let Some(effect_clip_data) = aggr_proj_clip_amount(
                 ctx,
                 calc,

@@ -3,7 +3,7 @@ use ordered_float::Float;
 
 use super::shared::{CyclingOptions, SelfKillerInfo};
 use crate::{
-    def::{AttrVal, Count, OF, SERVER_TICK_S},
+    def::{AttrVal, DefCount, OF, SERVER_TICK_S},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     rd::{REffectChargeLoc, REffectId},
     svc::{
@@ -80,7 +80,7 @@ fn fill_module_effect_info(
     effect_key: REffectId,
     options: CyclingOptions,
 ) {
-    let effect = ctx.u_data.src.get_effect(effect_key);
+    let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
     if !effect.is_active_with_duration {
         return;
     }
@@ -92,7 +92,7 @@ fn fill_module_effect_info(
     // Charge count info
     let charge_info = match &effect.charge {
         Some(n_charge) => match n_charge.location {
-            REffectChargeLoc::Autocharge(_) => get_eci_autocharge(item, effect.key),
+            REffectChargeLoc::Autocharge(_) => get_eci_autocharge(item, effect.rid),
             REffectChargeLoc::Loaded(n_charge_depletion) => match n_charge_depletion {
                 NEffectChargeDepl::ChargeRate(n_charge_rate) => get_eci_charge_rate(ctx, module, n_charge_rate),
                 NEffectChargeDepl::Crystal(n_charge_crystal) => get_eci_crystal(ctx, calc, module, n_charge_crystal),
@@ -336,7 +336,7 @@ fn full_r(
     duration: AttrVal,
     cooldown: AttrVal,
     int_cd: bool,
-    full_count: Count,
+    full_count: DefCount,
 ) -> CycleSeq {
     match full_count {
         1 => CycleSeq::Inf(CSeqInf {
@@ -369,7 +369,7 @@ fn both_r(
     duration: AttrVal,
     cooldown: AttrVal,
     int_cd: bool,
-    full_count: Count,
+    full_count: DefCount,
     part_value: Option<AttrVal>,
 ) -> CycleSeq {
     CycleSeq::LoopLimSin(CycleSeqLoopLimSin {

@@ -5,7 +5,7 @@ use crate::{
     ac,
     ad::{
         AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
-        AGenVal, AItemId, AState,
+        AItemId, AState, AValue,
     },
     nd::{NEffect, effect::data::shared::sov_stability_generators::assign_effect},
 };
@@ -32,19 +32,19 @@ fn make_effect() -> AEffect {
             full: vec![
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_ARMOR_HITPOINT_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(5.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AValue::new(5.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_ARMOR_REPAIRER_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(5.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AValue::new(5.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ac::buffs::SOV_SMOD_MODULE_OVERHEAT_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AGenVal::new_f64(10.0)),
+                    strength: AEffectBuffStrength::Hardcoded(AValue::new(10.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
                 },

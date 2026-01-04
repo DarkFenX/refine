@@ -10,8 +10,8 @@ pub use data::{
     ACustomAttrId, ACustomBuffId, ACustomEffectId, ACustomItemListId, AData, ADogmaEffectId, AEffect,
     AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
     AEffectBuffStrength, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AEveAttrId, AEveBuffId,
-    AEveItemListId, AGenVal, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemList, AItemListId,
-    AModifierSrq, AMuta, AMutaAttrRange, AOp, ASkillLevel, AState, ATimeVal,
+    AEveItemListId, AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, AItemList, AItemListId, AModifierSrq,
+    AMuta, AMutaAttrRange, AOp, ASkillLevel, AState, AValue,
 };
 pub(crate) use generator::generate_adapted_data;
 pub use result::AResult;

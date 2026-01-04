@@ -87,15 +87,15 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
         info.extend([
             Affector {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr(speed_factor_rid).a_id.into()),
+                attr_id: Some(ctx.u_data.src.get_attr_by_rid(speed_factor_rid).aid.into()),
             },
             Affector {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr(speed_boost_factor_rid).a_id.into()),
+                attr_id: Some(ctx.u_data.src.get_attr_by_rid(speed_boost_factor_rid).aid.into()),
             },
             Affector {
                 item_id: ctx.u_data.items.eid_by_iid(ship_uid),
-                attr_id: Some(ctx.u_data.src.get_attr(mass_rid).a_id.into()),
+                attr_id: Some(ctx.u_data.src.get_attr_by_rid(mass_rid).aid.into()),
             },
         ]);
     }

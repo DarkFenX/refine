@@ -57,7 +57,7 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
     // before e.g. item removal)
     reuse_eupdates.to_stop.reserve(reffs.len());
     for effect_key in reffs.drain() {
-        let effect = src.get_effect(effect_key).clone();
+        let effect = src.get_effect_by_rid(effect_key).clone();
         if effect.activates_charge_for_item(item) {
             reuse_eupdates.charge = Some(false);
         }
@@ -69,9 +69,11 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
         }
         reuse_eupdates.to_stop.push(effect);
     }
-    reuse_eupdates
-        .to_stop
-        .extend(reffs.drain().map(|effect_key| src.get_effect(effect_key).clone()));
+    reuse_eupdates.to_stop.extend(
+        reffs
+            .drain()
+            .map(|effect_key| src.get_effect_by_rid(effect_key).clone()),
+    );
 }
 
 fn update_running_effects(
@@ -100,10 +102,10 @@ fn update_running_effects(
         if Some(effect_key) == src.get_effect_consts().online {
             continue;
         }
-        let effect = src.get_effect(effect_key);
+        let effect = src.get_effect_by_rid(effect_key);
         let should_run = resolve_regular_effect_status(
             item_effect_modes,
-            item.defeff_key,
+            item.defeff_rid,
             item_state,
             online_should_run,
             effect,
@@ -133,9 +135,9 @@ fn update_running_effects(
             }
         };
     }
-    reffs.extend(reuse_eupdates.to_start.iter().map(|effect| effect.key));
+    reffs.extend(reuse_eupdates.to_start.iter().map(|effect| effect.rid));
     for effect in reuse_eupdates.to_stop.iter() {
-        reffs.remove(&effect.key);
+        reffs.remove(&effect.rid);
     }
 }
 
@@ -162,7 +164,7 @@ fn resolve_regular_effect_status(
 ) -> bool {
     // Ghosted items should never affect anything regardless of effect mode, so check it first
     // wherever applicable
-    match item_effect_modes.get_by_key(&effect.key) {
+    match item_effect_modes.get_by_key(&effect.rid) {
         EffectMode::FullCompliance => {
             resolve_regular_effect_status_full(item_defeff_key, item_state, effect, online_running)
         }
@@ -183,7 +185,7 @@ fn resolve_regular_effect_status_full(
         AState::Disabled => item_state >= effect.state,
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
-        AState::Offline => item_state >= effect.state && effect.chance_attr_key.is_none(),
+        AState::Offline => item_state >= effect.state && effect.chance_attr_rid.is_none(),
         // Online effects depend on 'online' effect, ignoring everything else
         AState::Online => online_running,
         // Only default active effect is run, and only if item is in active+ state
@@ -192,7 +194,7 @@ fn resolve_regular_effect_status_full(
                 return false;
             };
             match item_defeff_key {
-                Some(defeff_key) => defeff_key == effect.key,
+                Some(defeff_key) => defeff_key == effect.rid,
                 _ => false,
             }
         }

@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, Count},
+    def::{AttrVal, DefCount},
     svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::{ConvertExtend, InfCount},
 };
@@ -12,7 +12,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleSeqLoopLimSin<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
-    pub(in crate::svc) p1_repeat_count: Count,
+    pub(in crate::svc) p1_repeat_count: DefCount,
     pub(in crate::svc) p2_data: T,
 }
 impl<T> CycleSeqLoopLimSin<T> {
@@ -90,7 +90,7 @@ impl CycleSeqLoopLimSin<CycleDataTime> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CSeqLoopLimSinCycleIter<T> {
     cseq: CycleSeqLoopLimSin<T>,
-    p1_repeats_done: Count,
+    p1_repeats_done: DefCount,
 }
 impl<T> CSeqLoopLimSinCycleIter<T> {
     fn new(cseq: CycleSeqLoopLimSin<T>) -> Self {

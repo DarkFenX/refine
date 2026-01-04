@@ -2,7 +2,7 @@
 
 use crate::{
     ac,
-    ad::{AAttrId, AData, AEffectId, AGenVal},
+    ad::{AAttrId, AData, AEffectId, AValue},
 };
 
 const BUBBLE_ATTR: AAttrId = ac::attrs::DISALLOW_WARPING_JUMPING;
@@ -14,7 +14,7 @@ pub(in crate::ad::generator::flow::s7_custom) fn add_wdfg_bubble_strength(a_data
         if !item.effect_datas.contains_key(&BUBBLE_EFFECT) {
             continue;
         }
-        item.attrs.insert(BUBBLE_ATTR, AGenVal::new_f64(1.0));
+        item.attrs.insert(BUBBLE_ATTR, AValue::new(1.0));
         applied = true;
     }
     if !applied {

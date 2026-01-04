@@ -60,8 +60,8 @@ impl Svc {
     ) -> Option<AdjustableCount> {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_key()??;
-        let defeff = u_data.src.get_effect(defeff_key);
-        let spool_attrs = defeff.spool_attr_keys?;
+        let defeff = u_data.src.get_effect_by_rid(defeff_key);
+        let spool_attrs = defeff.spool_attr_rids?;
         // TODO: limit by non-interrupted spool cycle count
         let ctx = SvcCtx::new(u_data, &self.eff_projs);
         let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_key, defeff, None, spool_attrs)?;

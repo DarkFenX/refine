@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
-    def::{AttrVal, Count},
+    def::{AttrVal, DefCount},
     misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::NBreacherDmgGetter,
     rd::{RAttrId, REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
@@ -105,7 +105,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) drone_groups: RMap<UItemId, AItemGrpId>,
     pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeFighterInfo>,
     pub(in crate::svc::vast) overload_td_lvl: RMap<UItemId, ASkillLevel>,
-    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Count>,
+    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, DefCount>,
     pub(in crate::svc::vast) sec_zone_fitted: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_fitted_wspace_banned: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_online_class: RMap<UItemId, AAttrVal>,

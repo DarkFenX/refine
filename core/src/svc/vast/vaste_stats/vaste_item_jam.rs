@@ -44,7 +44,7 @@ impl Vast {
                     Some(cseq) => cseq,
                     None => continue,
                 };
-                let effect = ctx.u_data.src.get_effect(effect_key);
+                let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
                 let projector_ecm_output = match aggr_proj_first_output(
                     ctx,
                     calc,

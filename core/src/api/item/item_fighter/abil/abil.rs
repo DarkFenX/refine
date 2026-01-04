@@ -1,6 +1,6 @@
 use crate::{
     ad::AAbilId,
-    def::{AbilId, Count},
+    def::{AbilId, DefCount},
     sol::SolarSystem,
     ud::UItemId,
 };
@@ -22,7 +22,7 @@ impl<'a> Ability<'a> {
     pub fn get_id(&self) -> AbilId {
         self.abil_id
     }
-    pub fn get_charge_count(&self) -> Option<Count> {
+    pub fn get_charge_count(&self) -> Option<DefCount> {
         get_charge_count(self.sol, self.fighter_key, &self.abil_id)
     }
 }
@@ -44,14 +44,14 @@ impl<'a> AbilityMut<'a> {
     pub fn get_id(&self) -> AbilId {
         self.abil_id
     }
-    pub fn get_charge_count(&self) -> Option<Count> {
+    pub fn get_charge_count(&self) -> Option<DefCount> {
         get_charge_count(self.sol, self.fighter_key, &self.abil_id)
     }
 }
 
-fn get_charge_count(sol: &SolarSystem, fighter_key: UItemId, abil_id: &AAbilId) -> Option<Count> {
+fn get_charge_count(sol: &SolarSystem, fighter_key: UItemId, abil_id: &AAbilId) -> Option<DefCount> {
     // Only abilities which exist in source are exposed by API, just unwrap
-    let r_abil = sol.u_data.src.get_ability(abil_id).unwrap();
+    let r_abil = sol.u_data.src.get_ability_by_aid(abil_id).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();
-    u_fighter.get_effect_datas()?.get(&r_abil.effect_key)?.charge_count
+    u_fighter.get_effect_datas()?.get(&r_abil.effect_rid)?.charge_count
 }

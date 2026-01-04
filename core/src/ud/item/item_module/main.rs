@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
     api::ModuleState,
-    def::{Count, Idx, ItemId, OF},
+    def::{DefCount, Idx, ItemId, OF},
     err::basic::ItemNotMutatedError,
     misc::{EffectMode, ModRack, Spool},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
@@ -179,7 +179,7 @@ impl UModule {
     pub(crate) fn set_charge_key(&mut self, charge_key: Option<UItemId>) {
         self.charge_key = charge_key
     }
-    pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<Count> {
+    pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<DefCount> {
         // No charge - no info
         let charge_key = self.get_charge_uid()?;
         let charge_item = u_data.items.get(charge_key);
@@ -197,7 +197,7 @@ impl UModule {
                 return None;
             }
         };
-        let charge_count = trunc_unerr(module_capacity / charge_volume).into_inner() as Count;
+        let charge_count = trunc_unerr(module_capacity / charge_volume).into_inner() as DefCount;
         Some(charge_count)
     }
     pub(crate) fn get_projs(&self) -> &UProjs {

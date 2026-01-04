@@ -1,10 +1,10 @@
-use crate::{api::FighterMut, misc::FighterCountOverride, sol::SolarSystem, ud::UItemId};
+use crate::{api::FighterMut, misc::FighterCount, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_count_override(
         &mut self,
         fighter_key: UItemId,
-        count_override: Option<FighterCountOverride>,
+        count_override: Option<FighterCount>,
     ) {
         // Update user data
         let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
@@ -21,7 +21,7 @@ impl SolarSystem {
 }
 
 impl<'a> FighterMut<'a> {
-    pub fn set_count_override(&mut self, count_override: Option<FighterCountOverride>) {
+    pub fn set_count_override(&mut self, count_override: Option<FighterCount>) {
         self.sol.internal_set_fighter_count_override(self.key, count_override);
     }
 }

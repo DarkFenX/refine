@@ -34,11 +34,11 @@ impl Src {
         let rah_duration_attr_rid = r_data
             .effect_consts
             .adaptive_armor_hardener
-            .and_then(|v| r_data.effects.get(v.0).unwrap().duration_attr_key);
+            .and_then(|effect_rid| r_data.effects.get(effect_rid.into_inner()).unwrap().duration_attr_rid);
         let online_effect = r_data
             .effect_consts
             .online
-            .map(|v| r_data.effects.get(v.0).unwrap().clone());
+            .map(|effect_rid| r_data.effects.get(effect_rid.into_inner()).unwrap().clone());
         Ok(Self {
             r_data: Arc::new(r_data),
             online_effect,
@@ -46,60 +46,60 @@ impl Src {
         })
     }
     // Item methods
-    pub(crate) fn get_item(&self, id: &AItemId) -> Option<&RcItem> {
-        self.r_data.items.get(id)
+    pub(crate) fn get_item_by_aid(&self, item_aid: &AItemId) -> Option<&RcItem> {
+        self.r_data.items.get(item_aid)
     }
     // Item list methods
-    pub(crate) fn get_item_list(&self, rid: RItemListId) -> &RItemList {
-        self.r_data.item_lists.get(rid.0).unwrap()
+    pub(crate) fn get_item_list_by_rid(&self, item_list_rid: RItemListId) -> &RItemList {
+        self.r_data.item_lists.get(item_list_rid.into_inner()).unwrap()
     }
-    pub(crate) fn get_item_list_key_by_id(&self, id: &AItemListId) -> Option<RItemListId> {
-        self.r_data.item_list_aid_rid_map.get(id).copied()
+    pub(crate) fn get_item_list_rid_by_aid(&self, item_list_aid: &AItemListId) -> Option<RItemListId> {
+        self.r_data.item_list_aid_rid_map.get(item_list_aid).copied()
     }
     // Attr methods
-    pub(crate) fn get_attr(&self, r_id: RAttrId) -> &RAttr {
-        self.r_data.attrs.get(r_id.0).unwrap()
+    pub(crate) fn get_attr_by_rid(&self, attr_rid: RAttrId) -> &RAttr {
+        self.r_data.attrs.get(attr_rid.into_inner()).unwrap()
     }
-    pub(crate) fn get_attr_key_by_id(&self, id: &AAttrId) -> Option<RAttrId> {
-        self.r_data.attr_aid_rid_map.get(id).copied()
+    pub(crate) fn get_attr_rid_by_aid(&self, attr_aid: &AAttrId) -> Option<RAttrId> {
+        self.r_data.attr_aid_rid_map.get(attr_aid).copied()
     }
-    pub(crate) fn get_attr_id_key_map(&self) -> &RMap<AAttrId, RAttrId> {
+    pub(crate) fn get_attr_aid_rid_map(&self) -> &RMap<AAttrId, RAttrId> {
         &self.r_data.attr_aid_rid_map
     }
     pub(crate) fn get_attr_consts(&self) -> &RAttrConsts {
         &self.r_data.attr_consts
     }
     // Attr methods
-    pub(crate) fn get_effect(&self, rid: REffectId) -> &RcEffect {
-        self.r_data.effects.get(rid.0).unwrap()
+    pub(crate) fn get_effect_by_rid(&self, effect_rid: REffectId) -> &RcEffect {
+        self.r_data.effects.get(effect_rid.into_inner()).unwrap()
     }
-    pub(crate) fn get_effect_key_by_id(&self, id: &AEffectId) -> Option<REffectId> {
-        self.r_data.effect_aid_rid_map.get(id).copied()
+    pub(crate) fn get_effect_rid_by_aid(&self, effect_aid: &AEffectId) -> Option<REffectId> {
+        self.r_data.effect_aid_rid_map.get(effect_aid).copied()
     }
     pub(crate) fn get_effect_consts(&self) -> &REffectConsts {
         &self.r_data.effect_consts
     }
     // Buff methods
-    pub(crate) fn get_buff(&self, rid: RBuffId) -> &RBuff {
-        self.r_data.buffs.get(rid.0).unwrap()
+    pub(crate) fn get_buff_by_rid(&self, buff_rid: RBuffId) -> &RBuff {
+        self.r_data.buffs.get(buff_rid.0).unwrap()
     }
-    pub(crate) fn get_buff_by_id(&self, id: &ABuffId) -> Option<&RBuff> {
-        let buff_key = *self.r_data.buff_aid_rid_map.get(id)?;
-        Some(self.get_buff(buff_key))
+    pub(crate) fn get_buff_by_aid(&self, buff_aid: &ABuffId) -> Option<&RBuff> {
+        let buff_rid = *self.r_data.buff_aid_rid_map.get(buff_aid)?;
+        Some(self.get_buff_by_rid(buff_rid))
     }
     // Mutator methods
-    pub(crate) fn get_mutator(&self, id: &AItemId) -> Option<&RcMuta> {
-        self.r_data.mutas.get(id)
+    pub(crate) fn get_mutator_by_aid(&self, item_aid: &AItemId) -> Option<&RcMuta> {
+        self.r_data.mutas.get(item_aid)
     }
     // Abilitu methods
-    pub(crate) fn get_ability(&self, id: &AAbilId) -> Option<&RAbil> {
-        self.r_data.abils.get(id)
+    pub(crate) fn get_ability_by_aid(&self, ability_aid: &AAbilId) -> Option<&RAbil> {
+        self.r_data.abils.get(ability_aid)
     }
     // Misc getters
     pub(crate) fn get_online_effect(&self) -> Option<&RcEffect> {
         self.online_effect.as_ref()
     }
-    pub(crate) fn get_rah_duration_attr_key(&self) -> Option<RAttrId> {
+    pub(crate) fn get_rah_duration_attr_rid(&self) -> Option<RAttrId> {
         self.rah_duration_attr_rid
     }
 }

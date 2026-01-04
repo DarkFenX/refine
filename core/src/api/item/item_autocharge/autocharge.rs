@@ -91,7 +91,7 @@ fn get_cont_item(sol: &SolarSystem, autocharge_key: UItemId) -> Item<'_> {
 }
 fn get_cont_effect_id(sol: &SolarSystem, autocharge_key: UItemId) -> EffectId {
     let cont_effect_key = get_u_autocharge(sol, autocharge_key).get_cont_effect_key();
-    sol.u_data.src.get_effect(cont_effect_key).id.into()
+    sol.u_data.src.get_effect_by_rid(cont_effect_key).aid.into()
 }
 fn get_state(sol: &SolarSystem, autocharge_key: UItemId) -> bool {
     !get_u_autocharge(sol, autocharge_key).get_force_disabled()

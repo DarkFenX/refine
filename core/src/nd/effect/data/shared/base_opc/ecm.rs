@@ -17,7 +17,7 @@ pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
     effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
-    let duration = calc.get_item_oattr_afb_oextra(ctx, item_uid, effect.duration_attr_key, OF(0.0))? / OF(1000.0);
+    let duration = calc.get_item_oattr_afb_oextra(ctx, item_uid, effect.duration_attr_rid, OF(0.0))? / OF(1000.0);
     Some(Output::Simple(OutputSimple {
         amount: Ecm {
             radar,

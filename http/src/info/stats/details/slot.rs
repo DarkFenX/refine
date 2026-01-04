@@ -1,7 +1,7 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HStatSlot {
-    used: rc::Count,
-    total: Option<rc::Count>,
+    used: rc::DefCount,
+    total: Option<rc::DefCount>,
 }
 impl From<rc::stats::StatSlot> for HStatSlot {
     fn from(core_stat: rc::stats::StatSlot) -> Self {

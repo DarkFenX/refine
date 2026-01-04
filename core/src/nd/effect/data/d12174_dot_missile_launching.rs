@@ -1,7 +1,7 @@
 use crate::{
     ac,
     ad::AEffectId,
-    def::{Count, OF, SERVER_TICK_S},
+    def::{DefCount, OF, SERVER_TICK_S},
     ec,
     ed::EEffectId,
     misc::EffectSpec,
@@ -44,7 +44,7 @@ fn get_dmg_opc(
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
             ctx.u_data,
-            EffectSpec::new(projector_uid, projector_effect.key),
+            EffectSpec::new(projector_uid, projector_effect.rid),
             projectee_key,
         );
         let mult = get_missile_range_mult(ctx, calc, projector_uid, projector_effect, projectee_key, proj_data);
@@ -54,6 +54,6 @@ fn get_dmg_opc(
     OutputDmgBreacher::new(
         abs_max,
         rel_max,
-        trunc_unerr(duration_s / SERVER_TICK_S).into_inner() as Count,
+        trunc_unerr(duration_s / SERVER_TICK_S).into_inner() as DefCount,
     )
 }

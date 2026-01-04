@@ -34,7 +34,7 @@ fn get_roll(sol: &SolarSystem, item_key: UItemId, a_attr_id: &AAttrId) -> Option
         return Some(roll);
     }
     // If roll data was not available, calculate it using unmutated attribute value
-    let attr_key = sol.u_data.src.get_attr_key_by_id(a_attr_id).unwrap();
+    let attr_key = sol.u_data.src.get_attr_rid_by_aid(a_attr_id).unwrap();
     let a_mutation_range = u_item
         .get_mutation_data()
         .unwrap()

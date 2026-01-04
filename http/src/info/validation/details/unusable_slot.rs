@@ -1,7 +1,7 @@
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::validation) struct HValUnusableSlotFail {
-    max: Option<rc::Count>,
+    max: Option<rc::DefCount>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     users: Vec<rc::ItemId>,
 }

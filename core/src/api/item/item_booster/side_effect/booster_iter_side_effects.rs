@@ -56,7 +56,7 @@ impl<'a> BoosterMut<'a> {
             .into_iter()
             .flat_map(|effect_datas| {
                 effect_datas.keys().filter_map(|&effect_key| {
-                    let effect_id = self.sol.u_data.src.get_effect(effect_key).id;
+                    let effect_id = self.sol.u_data.src.get_effect_by_rid(effect_key).aid;
                     get_se_chance_attr_id_by_effect_key(&self.sol.u_data.src, effect_key)
                         .map(|chance_attr_id| (effect_id, chance_attr_id))
                 })
@@ -74,7 +74,7 @@ fn iter_side_effects(sol: &SolarSystem, booster_key: UItemId) -> impl Iterator<I
                 FullSideEffect::new(
                     sol,
                     booster_key,
-                    sol.u_data.src.get_effect(effect_key).id,
+                    sol.u_data.src.get_effect_by_rid(effect_key).aid,
                     chance_attr_id,
                 )
             })

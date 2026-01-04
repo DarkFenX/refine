@@ -4,7 +4,7 @@ use super::{
     traits::{LimitAmount, Maximum},
 };
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -284,7 +284,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> Count {
+fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> DefCount {
     let mut uninterrupted_cycles = 0;
     let mut interruptions = false;
     for cycle_part in cseq.iter_cseq_parts() {

@@ -38,7 +38,7 @@ pub(crate) enum HExecError {
     #[error("autocharge cannot be manually removed")]
     UnremovableAutocharge,
     #[error("{0}")]
-    InvalidFighterCount(#[from] rc::err::FighterCountOverrideError),
+    InvalidFighterCount(#[from] rc::err::FighterCountError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[source] rc::err::basic::ItemReceiveProjError),
     #[error("{0}")]

@@ -68,7 +68,7 @@ pub(super) fn get_turret_application_mult(
         .get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().optimal_sig_radius, OF(0.0))
         .max(OF(0.0));
     let turret_tracking_speed = calc
-        .get_item_oattr_ffb_extra(ctx, projector_uid, effect.track_attr_key, OF(0.0))
+        .get_item_oattr_ffb_extra(ctx, projector_uid, effect.track_attr_rid, OF(0.0))
         .max(OF(0.0));
     let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let result = ordered_float::Float::powf(

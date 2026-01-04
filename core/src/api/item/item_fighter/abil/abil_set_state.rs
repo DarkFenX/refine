@@ -3,8 +3,8 @@ use crate::{api::AbilityMut, misc::EffectMode, ud::UEffectUpdates};
 impl<'a> AbilityMut<'a> {
     pub fn set_state(&mut self, state: bool) {
         // Only abilities which exist in source are exposed by API, just unwrap
-        let r_abil = self.sol.u_data.src.get_ability(&self.abil_id).unwrap();
-        let effect_id = r_abil.effect_id;
+        let r_abil = self.sol.u_data.src.get_ability_by_aid(&self.abil_id).unwrap();
+        let effect_id = r_abil.effect_aid;
         let effect_mode = match state {
             true => EffectMode::StateCompliance,
             false => EffectMode::ForceStop,

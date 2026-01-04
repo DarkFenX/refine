@@ -87,7 +87,7 @@ where
     let cycle = cseq.get_first_cycle();
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
     let output = if ospec.spoolable
-        && let Some(spool_attrs) = effect.spool_attr_keys
+        && let Some(spool_attrs) = effect.spool_attr_rids
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_key, effect, spool, spool_attrs)
     {
         let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle.chargedness);

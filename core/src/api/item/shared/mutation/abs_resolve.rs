@@ -12,7 +12,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
     mutator_id: &AItemId,
     values: &[(AAttrId, AttrVal)],
 ) -> Vec<UAttrMutationRequest> {
-    let r_mutator = match src.get_mutator(mutator_id) {
+    let r_mutator = match src.get_mutator_by_aid(mutator_id) {
         Some(a_mutator) => a_mutator,
         None => return Vec::new(),
     };
@@ -20,8 +20,8 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
         Some(&mutated_type_id) => mutated_type_id,
         None => return Vec::new(),
     };
-    let base_r_item = src.get_item(base_type_id);
-    let mutated_r_item = src.get_item(&mutated_type_id);
+    let base_r_item = src.get_item_by_aid(base_type_id);
+    let mutated_r_item = src.get_item_by_aid(&mutated_type_id);
     resolve_absolutes_into_rolls_with_items(src, base_r_item, mutated_r_item, r_mutator, values)
 }
 
@@ -55,7 +55,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
 ) -> Vec<UAttrMutationRequest> {
     let mut result = Vec::with_capacity(values.len());
     for (a_attr_id, absolute_value) in values {
-        let attr_key = match src.get_attr_key_by_id(a_attr_id) {
+        let attr_key = match src.get_attr_rid_by_aid(a_attr_id) {
             Some(attr_key) => attr_key,
             None => continue,
         };

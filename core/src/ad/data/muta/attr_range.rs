@@ -1,7 +1,7 @@
-use crate::ad::AGenVal;
+use crate::ad::AValue;
 
 #[derive(Copy, Clone)]
 pub struct AMutaAttrRange {
-    pub min_mult: AGenVal,
-    pub max_mult: AGenVal,
+    pub min_mult: AValue,
+    pub max_mult: AValue,
 }

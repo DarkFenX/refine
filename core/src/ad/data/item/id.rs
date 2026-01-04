@@ -1,18 +1,15 @@
-use crate::{
-    def::{Id, Value},
-    ed::EItemId,
-};
+use crate::{def::DefId, ed::EItemId, util::f64_to_i32};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct AItemId(Id);
+pub struct AItemId(DefId);
 impl AItemId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub(crate) fn new_of64(id: Value) -> Self {
-        Self(id.into_inner().clamp(Id::MIN as f64, Id::MAX as f64).round() as Id)
+    pub(crate) fn new_f64(id: f64) -> Self {
+        Self(f64_to_i32(id))
     }
-    pub fn into_inner(self) -> Id {
+    pub fn into_inner(self) -> DefId {
         self.0
     }
 }

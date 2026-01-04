@@ -1,5 +1,5 @@
 use crate::{
-    def::Count,
+    def::DefCount,
     svc::cycle::{
         CycleSeq, CycleSeqLooped,
         seq_inf::{CSeqInfPartIter, CSeqLoopedInfPartIter},
@@ -110,5 +110,5 @@ where
 
 pub(crate) struct CSeqLoopedPart<T> {
     pub(crate) data: T,
-    pub(crate) repeat_count: Count,
+    pub(crate) repeat_count: DefCount,
 }

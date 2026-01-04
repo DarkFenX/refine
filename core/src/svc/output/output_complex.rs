@@ -2,7 +2,7 @@ use ordered_float::Float;
 
 use super::shared::OutputIterItem;
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     util::FLOAT_TOLERANCE,
 };
 
@@ -14,7 +14,7 @@ where
     pub(crate) amount: T,
     pub(crate) delay: AttrVal,
     // Total count of times amount is output
-    pub(crate) repeats: Count,
+    pub(crate) repeats: DefCount,
     pub(crate) interval: AttrVal,
 }
 impl<T> OutputComplex<T>
@@ -88,7 +88,7 @@ where
     T: Copy,
 {
     output: &'a OutputComplex<T>,
-    cycles_done: Count,
+    cycles_done: DefCount,
 }
 impl<'a, T> OutputComplexAmountIter<'a, T>
 where

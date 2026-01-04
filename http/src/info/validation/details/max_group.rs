@@ -20,9 +20,9 @@ impl From<&rc::val::ValMaxGroupFail> for HValMaxGroupFail {
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 struct HValMaxGroupGroupInfo {
-    group_item_count: rc::Count,
+    group_item_count: rc::DefCount,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::ItemId, rc::Count>,
+    items: HashMap<rc::ItemId, rc::DefCount>,
 }
 impl From<&rc::val::ValMaxGroupGroupInfo> for HValMaxGroupGroupInfo {
     fn from(core_val_group_info: &rc::val::ValMaxGroupGroupInfo) -> Self {

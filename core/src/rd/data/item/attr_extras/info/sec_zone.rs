@@ -1,11 +1,11 @@
 use crate::{
-    ad::AAttrVal,
+    misc::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
 pub(in crate::rd::data::item::attr_extras) fn is_sec_zone_limitable(
-    item_attrs: &RMap<RAttrId, AAttrVal>,
+    item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {
     [
@@ -14,8 +14,8 @@ pub(in crate::rd::data::item::attr_extras) fn is_sec_zone_limitable(
         attr_consts.disallow_in_hazard,
     ]
     .iter()
-    .any(|attr_key| match attr_key {
-        Some(attr_key) => item_attrs.contains_key(attr_key),
+    .any(|attr_rid| match attr_rid {
+        Some(attr_rid) => item_attrs.contains_key(attr_rid),
         None => false,
     })
 }

@@ -1,6 +1,6 @@
 use super::ticks::{AbtIc, AbtIs, AbtLc, AbtLcIc, AbtLcLcIc, AbtLoopLcLc, AbtLs, AggrBreacherTicks};
 use crate::{
-    def::{AttrVal, Count, SERVER_TICK_HZ},
+    def::{AttrVal, DefCount, SERVER_TICK_HZ},
     svc::cycle::{CycleDataTime, CycleSeq},
     util::ceil_unerr,
 };
@@ -8,7 +8,7 @@ use crate::{
 // Process breacher module cycle sequence + output per cycle into some kind of aggregated value,
 // which discards all overlapping instances and aligns everything to ticks, which is needed for
 // further processing
-pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataTime>, output_ticks: Count) -> Option<AggrBreacherTicks> {
+pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataTime>, output_ticks: DefCount) -> Option<AggrBreacherTicks> {
     if output_ticks < 1 {
         return None;
     }
@@ -93,6 +93,6 @@ pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataTime>, output_ticks: Count) 
     }
 }
 
-fn time_to_ticks(time: AttrVal) -> Count {
-    ceil_unerr(time * SERVER_TICK_HZ as f64).into_inner() as Count
+fn time_to_ticks(time: AttrVal) -> DefCount {
+    ceil_unerr(time * SERVER_TICK_HZ as f64).into_inner() as DefCount
 }

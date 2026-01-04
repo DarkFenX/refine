@@ -29,12 +29,12 @@ pub(crate) fn check_item_id(data: &UData, item_id: UItemId, check_load: bool) ->
 
 pub(crate) fn check_attr_id(data: &UData, attr_id: RAttrId) -> DebugResult {
     // Will crash if attr key is not valid
-    data.src.get_attr(attr_id);
+    data.src.get_attr_by_rid(attr_id);
     Ok(())
 }
 
 pub(crate) fn check_effect_id(data: &UData, effect_id: REffectId) -> DebugResult {
     // Will crash if effect key is not valid
-    data.src.get_effect(effect_id);
+    data.src.get_effect_by_rid(effect_id);
     Ok(())
 }

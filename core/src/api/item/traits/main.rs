@@ -6,7 +6,7 @@ use super::err::{
 };
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo},
-    def::{AttrVal, Count, ItemId, ItemTypeId},
+    def::{AttrVal, DefCount, ItemId, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
     misc::{DmgKinds, DpsProfile, EffectMode, Spool},
     sol::SolarSystem,
@@ -57,7 +57,7 @@ pub trait ItemCommon: ItemSealed {
             }
         };
         let effect_infos = effect_keys.map(move |&effect_key| {
-            let effect_id = sol.u_data.src.get_effect(effect_key).id;
+            let effect_id = sol.u_data.src.get_effect_by_rid(effect_key).aid;
             let running = reffs.contains(&effect_key);
             let mode = item.get_effect_key_mode(&effect_key);
             (effect_id.into(), EffectInfo { running, mode })
@@ -71,7 +71,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         let a_attr_id = attr_id.into();
-        let attr_key = match sol.u_data.src.get_attr_key_by_id(&a_attr_id) {
+        let attr_key = match sol.u_data.src.get_attr_rid_by_aid(&a_attr_id) {
             Some(attr_key) => attr_key,
             None => return Err(AttrFoundError { attr_id: *attr_id }.into()),
         };
@@ -88,7 +88,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_key) {
             Ok(attr_iter) => {
-                Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr(attr_key).a_id.into(), val.into())))
+                Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr_by_rid(attr_key).aid.into(), val.into())))
             }
             Err(error) => Err(ItemLoadedError {
                 item_id: sol.u_data.items.eid_by_iid(error.item_key),
@@ -390,7 +390,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - sensors
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_locks(&mut self) -> Result<Count, ItemStatError> {
+    fn get_stat_locks(&mut self) -> Result<DefCount, ItemStatError> {
         let item_key = self.get_key();
         let sol = self.get_sol_mut();
         sol.svc

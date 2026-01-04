@@ -2,7 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     ac,
-    ad::{AAttrVal, AItemGrpId, AItemId},
+    ad::{AItemGrpId, AItemId},
+    misc::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -14,8 +15,8 @@ pub(crate) struct RItemShipLimit {
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
-    a_item_id: AItemId,
-    item_attrs: &RMap<RAttrId, AAttrVal>,
+    item_aid: AItemId,
+    item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> Option<RItemShipLimit> {
     let mut limit_type_ids = [
@@ -34,8 +35,8 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
         attr_consts.fits_to_ship_type,
     ]
     .iter()
-    .filter_map(|opt| opt.and_then(|attr_key| item_attrs.get(&attr_key)))
-    .map(|v| v.round() as AItemId)
+    .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
+    .map(|v| AItemId::new_f64(v.into()))
     .unique()
     .collect_vec();
     let limit_group_ids = [
@@ -61,11 +62,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
         attr_consts.can_fit_ship_group20,
     ]
     .iter()
-    .filter_map(|opt| opt.and_then(|attr_key| item_attrs.get(&attr_key)))
-    .map(|v| v.round() as AItemGrpId)
+    .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
+    .map(|v| AItemGrpId::new_f64(v.into()))
     .unique()
     .collect_vec();
-    match a_item_id {
+    match item_aid {
         ac::items::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(ac::items::CONFESSOR),
         ac::items::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(ac::items::CONFESSOR),
         ac::items::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::CONFESSOR),

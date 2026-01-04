@@ -1,11 +1,11 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
-    def::{AttrVal, Count},
+    def::{AttrVal, DefCount},
     svc::vast::{StatJamApplied, StatSensors},
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_locks(&mut self) -> Result<Count, FitShipStatError> {
+    pub fn get_stat_locks(&mut self) -> Result<DefCount, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_locks()?)
     }
     pub fn get_stat_lock_range(&mut self) -> Result<AttrVal, FitShipStatError> {

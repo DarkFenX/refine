@@ -26,12 +26,12 @@ impl BuffRegister {
     }
     pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.add_entry(item_key, effect.key);
+            self.effect_keys.add_entry(item_key, effect.rid);
         }
     }
     pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.remove_entry(item_key, &effect.key);
+            self.effect_keys.remove_entry(item_key, &effect.rid);
         }
     }
     // Modifier methods

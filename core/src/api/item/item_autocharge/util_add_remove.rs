@@ -49,7 +49,7 @@ impl SolarSystem {
                 let autocharge_item_id = u_data.items.alloc_id();
                 // Autocharge is activated only if effect controlling it is running, and activates
                 // charges
-                let activated = u_data.src.get_effect(effect_key).activates_autocharge()
+                let activated = u_data.src.get_effect_by_rid(effect_key).activates_autocharge()
                     && u_data
                         .items
                         .get(item_key)

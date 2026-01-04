@@ -20,7 +20,7 @@ impl SolarSystem {
         let u_physics = UPhysics::default();
         let chargeable_module_keys = get_chargeable_modules(&self.u_data, fit_key);
         for type_id in type_ids {
-            let r_item = match self.u_data.src.get_item(type_id) {
+            let r_item = match self.u_data.src.get_item_by_aid(type_id) {
                 Some(a_item) => a_item,
                 None => continue,
             };

@@ -17,9 +17,9 @@ impl Vast {
     ) {
         if let Some(projector_fit_key) = projector_item.get_fit_key() {
             let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-            let projector_espec = EffectSpec::new(projector_key, effect.key);
+            let projector_espec = EffectSpec::new(projector_key, effect.rid);
             if effect.projectee_filter.is_some()
-                && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.key)
+                && let Some(effect_data) = projector_item.get_effect_datas().unwrap().get(&effect.rid)
                 && let Some(item_list_key) = effect_data.projectee_filter
             {
                 projector_fit_data
@@ -46,12 +46,12 @@ impl Vast {
             }
         }
         if let Some(projectee_fit_key) = projectee_item.get_fit_key()
-            && !effect.stopped_effect_keys.is_empty()
+            && !effect.stopped_effect_rids.is_empty()
             && effect.category == ac::effcats::TARGET
         {
             let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
-            let stopper = EffectSpec::new(projector_key, effect.key);
-            for stop_effect_key in effect.stopped_effect_keys.iter() {
+            let stopper = EffectSpec::new(projector_key, effect.rid);
+            for stop_effect_key in effect.stopped_effect_rids.iter() {
                 let stopped = EffectSpec::new(projectee_key, *stop_effect_key);
                 projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
             }
@@ -59,42 +59,42 @@ impl Vast {
         if let Some(rep_ospec) = effect.outgoing_shield_rep_opc_spec {
             if effect.is_active_with_duration {
                 self.irr_shield
-                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
+                    .add_entry(projectee_key, projector_key, effect.rid, rep_ospec);
             }
             if effect.charge.is_some() {
                 self.irr_shield_limitable
-                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
+                    .add_entry(projectee_key, projector_key, effect.rid, rep_ospec);
             }
         }
         if let Some(rep_ospec) = effect.outgoing_armor_rep_opc_spec {
             if effect.is_active_with_duration {
                 self.irr_armor
-                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
+                    .add_entry(projectee_key, projector_key, effect.rid, rep_ospec);
             }
             if effect.charge.is_some() {
                 self.irr_armor_limitable
-                    .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
+                    .add_entry(projectee_key, projector_key, effect.rid, rep_ospec);
             }
         }
         if let Some(rep_ospec) = effect.outgoing_hull_rep_opc_spec
             && effect.is_active_with_duration
         {
             self.irr_hull
-                .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
+                .add_entry(projectee_key, projector_key, effect.rid, rep_ospec);
         }
         if let Some(rep_ospec) = effect.outgoing_cap_opc_spec
             && effect.is_active_with_duration
         {
             self.in_cap
-                .add_entry(projectee_key, projector_key, effect.key, rep_ospec);
+                .add_entry(projectee_key, projector_key, effect.rid, rep_ospec);
         }
         if let Some(neut_ospec) = effect.neut_opc_spec {
             self.in_neuts
-                .add_entry(projectee_key, projector_key, effect.key, neut_ospec);
+                .add_entry(projectee_key, projector_key, effect.rid, neut_ospec);
         }
         if let Some(ecm_ospec) = effect.ecm_opc_spec {
             self.in_ecm
-                .add_entry(projectee_key, projector_key, effect.key, ecm_ospec);
+                .add_entry(projectee_key, projector_key, effect.rid, ecm_ospec);
         }
     }
     pub(in crate::svc) fn effect_unprojected(
@@ -107,7 +107,7 @@ impl Vast {
     ) {
         if let Some(projector_fit_key) = projector_item.get_fit_key() {
             let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
-            let projector_espec = EffectSpec::new(projector_key, effect.key);
+            let projector_espec = EffectSpec::new(projector_key, effect.rid);
             if effect.projectee_filter.is_some() {
                 projector_fit_data
                     .projectee_filter
@@ -133,45 +133,45 @@ impl Vast {
             }
         }
         if let Some(projectee_fit_key) = projectee_item.get_fit_key()
-            && !effect.stopped_effect_keys.is_empty()
+            && !effect.stopped_effect_rids.is_empty()
             && effect.category == ac::effcats::TARGET
         {
             let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
-            let stopper = EffectSpec::new(projector_key, effect.key);
-            for stop_effect_key in effect.stopped_effect_keys.iter() {
+            let stopper = EffectSpec::new(projector_key, effect.rid);
+            for stop_effect_key in effect.stopped_effect_rids.iter() {
                 let stopped = EffectSpec::new(projectee_key, *stop_effect_key);
                 projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
             }
         }
         if effect.outgoing_shield_rep_opc_spec.is_some() {
             if effect.is_active_with_duration {
-                self.irr_shield.remove_l3(projectee_key, projector_key, &effect.key);
+                self.irr_shield.remove_l3(projectee_key, projector_key, &effect.rid);
             }
             if effect.charge.is_some() {
                 self.irr_shield_limitable
-                    .remove_l3(projectee_key, projector_key, &effect.key);
+                    .remove_l3(projectee_key, projector_key, &effect.rid);
             }
         }
         if effect.outgoing_armor_rep_opc_spec.is_some() {
             if effect.is_active_with_duration {
-                self.irr_armor.remove_l3(projectee_key, projector_key, &effect.key);
+                self.irr_armor.remove_l3(projectee_key, projector_key, &effect.rid);
             }
             if effect.charge.is_some() {
                 self.irr_armor_limitable
-                    .remove_l3(projectee_key, projector_key, &effect.key);
+                    .remove_l3(projectee_key, projector_key, &effect.rid);
             }
         }
         if effect.outgoing_hull_rep_opc_spec.is_some() && effect.is_active_with_duration {
-            self.irr_hull.remove_l3(projectee_key, projector_key, &effect.key);
+            self.irr_hull.remove_l3(projectee_key, projector_key, &effect.rid);
         }
         if effect.outgoing_cap_opc_spec.is_some() && effect.is_active_with_duration {
-            self.in_cap.remove_l3(projectee_key, projector_key, &effect.key);
+            self.in_cap.remove_l3(projectee_key, projector_key, &effect.rid);
         }
         if effect.neut_opc_spec.is_some() {
-            self.in_neuts.remove_l3(projectee_key, projector_key, &effect.key);
+            self.in_neuts.remove_l3(projectee_key, projector_key, &effect.rid);
         }
         if effect.ecm_opc_spec.is_some() {
-            self.in_ecm.remove_l3(projectee_key, projector_key, &effect.key);
+            self.in_ecm.remove_l3(projectee_key, projector_key, &effect.rid);
         }
     }
 }

@@ -39,7 +39,7 @@ impl Calc {
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = ctx.u_data.src.get_attr(attr_key).a_id.into();
+                let attr_id = ctx.u_data.src.get_attr_by_rid(attr_key).aid.into();
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
         }
@@ -102,7 +102,7 @@ impl Calc {
     }
     fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrId) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_key);
-        let attr = ctx.u_data.src.get_attr(attr_key);
+        let attr = ctx.u_data.src.get_attr_by_rid(attr_key);
         let base_attr_info = self.calc_item_base_attr_info(ctx, item_key, item, attr);
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(ctx, &item_key, item, attr_key) {
@@ -119,7 +119,7 @@ impl Calc {
         }
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, attr.hig);
         // Lower value limit
-        if let Some(limiter_attr_key) = attr.min_attr_key
+        if let Some(limiter_attr_key) = attr.min_attr_rid
             && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_key, limiter_attr_key)
         {
             self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
@@ -134,13 +134,13 @@ impl Calc {
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.eid_by_iid(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).a_id.into()),
+                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_key).aid.into()),
                     }],
                 })
             }
         }
         // Upper value limit
-        if let Some(limiter_attr_key) = attr.max_attr_key
+        if let Some(limiter_attr_key) = attr.max_attr_rid
             && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_key, limiter_attr_key)
         {
             self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
@@ -155,7 +155,7 @@ impl Calc {
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.eid_by_iid(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(limiter_attr_key).a_id.into()),
+                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_key).aid.into()),
                     }],
                 })
             }
@@ -179,7 +179,7 @@ impl Calc {
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base
         if let Some(sec_zone_attr_key) = attr_consts.security_modifier
-            && attr.r_id == sec_zone_attr_key
+            && attr.rid == sec_zone_attr_key
         {
             let security_attr_key = match ctx.u_data.sec_zone {
                 SecZone::HiSec(_) => attr_consts.hisec_modifier,
@@ -191,7 +191,7 @@ impl Calc {
             {
                 // Ensure that change in any a security-specific attribute value triggers
                 // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_key, security_attr_key, attr.r_id);
+                self.deps.add_anonymous(item_key, security_attr_key, attr.rid);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                 base_attr_info.effective_infos.push(Modification {
                     // Technically this modification is not pre-assignment, it is base value
@@ -206,7 +206,7 @@ impl Calc {
                     applied_val: security_full_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.eid_by_iid(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr(security_attr_key).a_id.into()),
+                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(security_attr_key).aid.into()),
                     }],
                 });
                 return base_attr_info;

@@ -16,7 +16,7 @@ pub(super) fn get_simple_c2s_range_mult(
     effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_rid);
     match proj_data.get_range_c2s() <= affector_optimal {
         true => OF(1.0),
         false => OF(0.0),
@@ -30,7 +30,7 @@ pub(super) fn get_simple_s2s_range_mult(
     effect: &REffect,
     proj_data: UProjData,
 ) -> AttrVal {
-    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_rid);
     match proj_data.get_range_s2s() <= affector_optimal {
         true => OF(1.0),
         false => OF(0.0),
@@ -65,8 +65,8 @@ fn get_full_range_mult(
     proj_range: AttrVal,
     restricted: bool,
 ) -> AttrVal {
-    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
-    let affector_falloff = get_effect_range(ctx, calc, projector_uid, effect.falloff_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_rid);
+    let affector_falloff = get_effect_range(ctx, calc, projector_uid, effect.falloff_attr_rid);
     // Calculate actual range multiplier after collecting all the data
     match affector_falloff > FLOAT_TOLERANCE {
         true => match restricted && proj_range > affector_optimal + OF(3.0) * affector_falloff {
@@ -225,7 +225,7 @@ pub(super) fn get_aoe_burst_range_mult(
     proj_data: UProjData,
 ) -> AttrVal {
     // Doomsday projectiles are launched from center of the ship, and range is extended by aoe range
-    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_key);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_rid);
     let affector_aoe = get_effect_range(ctx, calc, projector_uid, ctx.ac().doomsday_aoe_range);
     match proj_data.get_range_c2s() <= affector_optimal + affector_aoe {
         true => OF(1.0),

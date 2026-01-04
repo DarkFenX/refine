@@ -1,7 +1,4 @@
-use crate::{
-    def::{Id, Value},
-    ed::EItemListId,
-};
+use crate::{def::DefId, ed::EItemListId, util::f64_to_i32};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum AItemListId {
@@ -23,26 +20,26 @@ impl std::fmt::Display for AItemListId {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct AEveItemListId(Id);
+pub struct AEveItemListId(DefId);
 impl AEveItemListId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub(crate) fn new_of64(id: Value) -> Self {
-        Self(id.into_inner().clamp(Id::MIN as f64, Id::MAX as f64).round() as Id)
+    pub(crate) fn new_f64(id: f64) -> Self {
+        Self(f64_to_i32(id))
     }
-    pub const fn into_inner(self) -> Id {
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct ACustomItemListId(Id);
+pub struct ACustomItemListId(DefId);
 impl ACustomItemListId {
-    pub const fn new(id: Id) -> Self {
+    pub const fn new(id: DefId) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> Id {
+    pub const fn into_inner(self) -> DefId {
         self.0
     }
 }

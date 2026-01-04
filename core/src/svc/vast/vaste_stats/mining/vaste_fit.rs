@@ -88,7 +88,7 @@ fn get_mps(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
                     if let Some(effect_mps) =

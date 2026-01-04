@@ -92,7 +92,7 @@ pub(crate) struct HFitStats {
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
     // Ship sensors
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) locks: TriStateField<rc::Count>,
+    pub(crate) locks: TriStateField<rc::DefCount>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) lock_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

@@ -3,7 +3,7 @@
 
 use crate::{
     ac,
-    ad::{AAttrId, AData, AGenVal, AItemGrpId},
+    ad::{AAttrId, AData, AItemGrpId, AValue},
 };
 
 const SLOT_ATTR: AAttrId = ac::attrs::MAX_SUBSYSTEMS;
@@ -16,7 +16,7 @@ pub(in crate::ad::generator::flow::s7_custom) fn fix_subsysem_slot_count(a_data:
             continue;
         }
         if let std::collections::hash_map::Entry::Occupied(mut entry) = item.attrs.entry(SLOT_ATTR)
-            && entry.insert(AGenVal::new_f64(4.0)) != AGenVal::new_f64(4.0)
+            && entry.insert(AValue::new(4.0)) != AValue::new(4.0)
         {
             applied = true;
         }

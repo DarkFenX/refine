@@ -14,7 +14,7 @@ pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where
     T: GetId<ExtId> + Named,
-    IntId: Copy + Into<usize> + From<usize>,
+    IntId: Copy + From<usize> + Into<usize>,
     ExtId: Copy + Default + Eq + Hash,
     Wrapping<ExtId>: std::ops::AddAssign<u32>,
     Err: From<ExtId>,

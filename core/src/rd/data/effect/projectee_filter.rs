@@ -12,24 +12,24 @@ pub(crate) enum REffectProjecteeFilter {
 impl REffectProjecteeFilter {
     pub(in crate::rd::data::effect) fn try_from_n_projectee_filter(
         n_projectee_filter: &NEffectProjecteeFilter,
-        item_list_id_key_map: &RMap<AItemListId, RItemListId>,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Option<Self> {
         match n_projectee_filter {
-            NEffectProjecteeFilter::ItemList(item_list_id) => {
-                let item_list_key = *item_list_id_key_map.get(item_list_id)?;
-                Some(Self::ItemList(item_list_key))
+            NEffectProjecteeFilter::ItemList(item_list_aid) => {
+                let item_list_rid = *item_list_aid_rid_map.get(item_list_aid)?;
+                Some(Self::ItemList(item_list_rid))
             }
-            NEffectProjecteeFilter::ItemListAttr(attr_id) => {
-                let attr_key = *attr_id_key_map.get(attr_id)?;
-                Some(Self::ItemListAttr(attr_key))
+            NEffectProjecteeFilter::ItemListAttr(attr_aid) => {
+                let attr_rid = *attr_aid_rid_map.get(attr_aid)?;
+                Some(Self::ItemListAttr(attr_rid))
             }
         }
     }
-    pub(crate) fn get_item_list_attr_r_id(&self) -> Option<RAttrId> {
+    pub(crate) fn get_item_list_attr_rid(&self) -> Option<RAttrId> {
         match self {
             Self::ItemList(_) => None,
-            Self::ItemListAttr(attr_r_id) => Some(*attr_r_id),
+            Self::ItemListAttr(attr_rid) => Some(*attr_rid),
         }
     }
 }

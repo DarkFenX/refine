@@ -8,11 +8,11 @@ pub(crate) enum REffectResist {
 impl REffectResist {
     pub(in crate::rd::data::effect) fn try_from_n_effect_resist(
         n_effect_resist: &NEffectResist,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Option<Self> {
         Some(match n_effect_resist {
             NEffectResist::Standard => Self::Standard,
-            NEffectResist::Attr(a_attr_id) => Self::Attr(*attr_id_key_map.get(&a_attr_id)?),
+            NEffectResist::Attr(attr_aid) => Self::Attr(*attr_aid_rid_map.get(&attr_aid)?),
         })
     }
 }

@@ -11,7 +11,7 @@ use crate::{
 pub(crate) struct HAddFighterCmd {
     type_id: rc::ItemTypeId,
     state: HMinionState,
-    count: Option<rc::Count>,
+    count: Option<rc::DefCount>,
     abilities: Option<HAbilityMap>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
@@ -30,7 +30,7 @@ impl HAddFighterCmd {
             self.movement.map(Into::into),
         );
         if let Some(count) = self.count {
-            let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;
+            let fighter_count_override = rc::FighterCount::new_checked(count)?;
             core_fighter.set_count_override(Some(fighter_count_override));
         }
         apply_abilities(&mut core_fighter, &self.abilities);

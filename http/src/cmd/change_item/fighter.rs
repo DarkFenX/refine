@@ -15,7 +15,7 @@ pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
-    count: TriStateField<rc::Count>,
+    count: TriStateField<rc::DefCount>,
     #[serde(default)]
     abilities: Option<HAbilityMap>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
@@ -49,7 +49,7 @@ impl HChangeFighterCmd {
         }
         match self.count {
             TriStateField::Value(count) => {
-                let fighter_count_override = rc::FighterCountOverride::new_checked(count)?;
+                let fighter_count_override = rc::FighterCount::new_checked(count)?;
                 core_fighter.set_count_override(Some(fighter_count_override));
             }
             TriStateField::None => {

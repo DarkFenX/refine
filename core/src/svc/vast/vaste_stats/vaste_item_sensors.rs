@@ -1,7 +1,7 @@
 use super::item_checks::{check_drone_fighter_ship, check_fighter_ship, check_ship};
 use crate::{
     ac,
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -17,7 +17,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_key: UItemId,
-    ) -> Result<Count, StatItemCheckError> {
+    ) -> Result<DefCount, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_key)?;
         let attr_consts = ctx.ac();
         let mut item_locks = calc
@@ -38,7 +38,7 @@ impl Vast {
             }
         }
         // Non-integer locks can happen in Pochven where locks are halved, halves are rounded up
-        let locks = round_unerr(item_locks).into_inner() as Count;
+        let locks = round_unerr(item_locks).into_inner() as DefCount;
         Ok(locks)
     }
     pub(in crate::svc) fn get_stat_item_lock_range(

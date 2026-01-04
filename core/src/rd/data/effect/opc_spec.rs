@@ -12,7 +12,7 @@ where
 {
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
-    pub(crate) limit_attr_key: Option<RAttrId>,
+    pub(crate) limit_attr_rid: Option<RAttrId>,
 }
 impl<T> REffectLocalOpcSpec<T>
 where
@@ -20,14 +20,14 @@ where
 {
     pub(in crate::rd::data::effect) fn from_n_local_opc_spec(
         n_local_opc_spec: &NEffectLocalOpcSpec<T>,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             base: n_local_opc_spec.base,
             charge_mult: n_local_opc_spec.charge_mult,
-            limit_attr_key: n_local_opc_spec
+            limit_attr_rid: n_local_opc_spec
                 .limit_attr_id
-                .and_then(|v| attr_id_key_map.get(&v).copied()),
+                .and_then(|v| attr_aid_rid_map.get(&v).copied()),
         }
     }
 }
@@ -43,7 +43,7 @@ where
     pub(crate) proj_mult_str: Option<NProjMultGetter>,
     pub(crate) proj_mult_chance: Option<NProjMultGetter>,
     pub(crate) resist: Option<REffectResist>,
-    pub(crate) limit_attr_key: Option<RAttrId>,
+    pub(crate) limit_attr_rid: Option<RAttrId>,
 }
 impl<T> REffectProjOpcSpec<T>
 where
@@ -51,7 +51,7 @@ where
 {
     pub(in crate::rd::data::effect) fn from_n_proj_opc_spec(
         n_proj_opc_spec: &NEffectProjOpcSpec<T>,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             base: n_proj_opc_spec.base,
@@ -62,10 +62,10 @@ where
             resist: n_proj_opc_spec
                 .resist
                 .as_ref()
-                .and_then(|v| REffectResist::try_from_n_effect_resist(v, attr_id_key_map)),
-            limit_attr_key: n_proj_opc_spec
+                .and_then(|n_resist| REffectResist::try_from_n_effect_resist(n_resist, attr_aid_rid_map)),
+            limit_attr_rid: n_proj_opc_spec
                 .limit_attr_id
-                .and_then(|v| attr_id_key_map.get(&v).copied()),
+                .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()),
         }
     }
 }

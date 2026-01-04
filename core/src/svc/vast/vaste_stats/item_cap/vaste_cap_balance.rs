@@ -111,7 +111,7 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             match time_options {
                 StatTimeOptions::Burst(_) => {
                     if let Some(effect_cps) = aggr_local_first_ps(ctx, calc, item_key, effect, cseq, ospec) {
@@ -193,7 +193,7 @@ fn get_cap_transfers(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
                     if let Some(effect_cps) = aggr_proj_first_ps(
@@ -261,7 +261,7 @@ fn get_neuts(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
                     if let Some(effect_nps) = aggr_proj_first_ps(

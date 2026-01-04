@@ -1,5 +1,5 @@
 use crate::{
-    def::{Count, ItemId},
+    def::{DefCount, ItemId},
     rd::RAttrId,
     svc::{
         SvcCtx,
@@ -12,7 +12,7 @@ use crate::{
 
 pub struct ValUnusableSlotFail {
     /// How many slots available (when this validation fails, it's either None or 0).
-    pub max: Option<Count>,
+    pub max: Option<DefCount>,
     /// IDs of items which would attempt to take those slots if you used them.
     pub users: Vec<ItemId>,
 }

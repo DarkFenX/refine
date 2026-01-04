@@ -71,7 +71,7 @@ fn get_orps(
         None => return orps,
     };
     for (effect_key, cseq) in cseq_map {
-        let effect = ctx.u_data.src.get_effect(effect_key);
+        let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
         let ospec = match rep_ospec_getter(&effect) {
             Some(ospec) => ospec,
             None => continue,

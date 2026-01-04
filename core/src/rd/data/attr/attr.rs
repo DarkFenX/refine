@@ -1,6 +1,7 @@
 use crate::{
     ac,
-    ad::{AAttr, AAttrId, AAttrVal},
+    ad::{AAttr, AAttrId},
+    misc::Value,
     rd::RAttrId,
     util::RMap,
 };
@@ -10,43 +11,42 @@ use crate::{
 // An attribute carries just properties which govern how modified attribute values are calculated.
 // Values themselves are stored elsewhere as plain numbers.
 pub(crate) struct RAttr {
-    pub(crate) r_id: RAttrId,
-    pub(crate) a_id: AAttrId,
+    pub(crate) rid: RAttrId,
+    pub(crate) aid: AAttrId,
     pub(crate) penalizable: bool,
     pub(crate) hig: bool,
-    pub(crate) def_val: AAttrVal,
-    // Fields which depend on slab keys
-    pub(crate) min_attr_key: Option<RAttrId>,
-    pub(crate) max_attr_key: Option<RAttrId>,
-    pub(crate) buff_str_attr_key: Option<RAttrId>,
+    pub(crate) def_val: Value,
+    pub(crate) min_attr_rid: Option<RAttrId>,
+    pub(crate) max_attr_rid: Option<RAttrId>,
+    pub(crate) buff_str_attr_rid: Option<RAttrId>,
 }
 impl RAttr {
     pub(in crate::rd) fn from_a_attr(attr_r_id: RAttrId, a_attr: &AAttr) -> Self {
         Self {
-            r_id: attr_r_id,
-            a_id: a_attr.id,
+            rid: attr_r_id,
+            aid: a_attr.id,
             penalizable: a_attr.penalizable,
             hig: a_attr.hig,
-            def_val: a_attr.def_val,
-            // Fields which depend on slab keys
-            min_attr_key: Default::default(),
-            max_attr_key: Default::default(),
-            buff_str_attr_key: Default::default(),
+            def_val: a_attr.def_val.into(),
+            // Fields which depend on data not available during instantiation
+            min_attr_rid: Default::default(),
+            max_attr_rid: Default::default(),
+            buff_str_attr_rid: Default::default(),
         }
     }
-    pub(in crate::rd) fn fill_key_dependents(
+    pub(in crate::rd) fn fill_runtime(
         &mut self,
         a_attrs: &RMap<AAttrId, AAttr>,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) {
-        let a_attr = a_attrs.get(&self.a_id).unwrap();
-        self.min_attr_key = a_attr.min_attr_id.and_then(|id| attr_id_key_map.get(&id)).copied();
-        self.max_attr_key = a_attr.max_attr_id.and_then(|id| attr_id_key_map.get(&id)).copied();
-        for (buff_id_attr_id, buff_val_attr_id) in ac::extras::BUFF_MERGE_ATTRS {
-            if a_attr.id == buff_id_attr_id
-                && let Some(&buff_val_attr_key) = attr_id_key_map.get(&buff_val_attr_id)
+        let a_attr = a_attrs.get(&self.aid).unwrap();
+        self.min_attr_rid = a_attr.min_attr_id.and_then(|aid| attr_aid_rid_map.get(&aid)).copied();
+        self.max_attr_rid = a_attr.max_attr_id.and_then(|aid| attr_aid_rid_map.get(&aid)).copied();
+        for (buff_id_attr_aid, buff_val_attr_aid) in ac::extras::BUFF_MERGE_ATTRS {
+            if a_attr.id == buff_id_attr_aid
+                && let Some(&buff_val_attr_rid) = attr_aid_rid_map.get(&buff_val_attr_aid)
             {
-                self.buff_str_attr_key = Some(buff_val_attr_key);
+                self.buff_str_attr_rid = Some(buff_val_attr_rid);
                 break;
             }
         }

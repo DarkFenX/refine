@@ -9,3 +9,7 @@ pub(crate) trait GetId<T> {
 pub(crate) trait ConvertExtend<X, R> {
     fn convert_extend(self, xt: X) -> R;
 }
+
+pub(crate) trait Max<Rhs = Self> {
+    fn max(self, rhs: Rhs) -> Self;
+}

@@ -1,7 +1,7 @@
-use crate::def::Count;
+use crate::def::DefCount;
 
 pub struct AdjustableCount {
-    pub current: Count,
-    pub max: Count,
+    pub current: DefCount,
+    pub max: DefCount,
     pub overridden: bool,
 }

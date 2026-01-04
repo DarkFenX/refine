@@ -49,7 +49,7 @@ impl UItemBaseMutable {
         };
         let mutator_id = mutation_request.mutator_id;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
-        let mutator = match src.get_mutator(&mutator_id) {
+        let mutator = match src.get_mutator_by_aid(&mutator_id) {
             Some(mutator) => mutator,
             // No mutator - base item with ineffective user-defined mutations
             None => {
@@ -60,10 +60,10 @@ impl UItemBaseMutable {
             }
         };
         // No mutated item ID in mapping or no mutated item itself
-        let mutated_r_item = match mutator.item_map.get(&type_id).and_then(|v| src.get_item(v)) {
+        let mutated_r_item = match mutator.item_map.get(&type_id).and_then(|v| src.get_item_by_aid(v)) {
             Some(mutated_r_item) => mutated_r_item,
             None => {
-                return match src.get_item(&type_id) {
+                return match src.get_item_by_aid(&type_id) {
                     // If base item is available, return base item, but with ineffective
                     // user-defined mutations
                     Some(base_r_item) => Self {
@@ -79,7 +79,7 @@ impl UItemBaseMutable {
             }
         };
         // Make proper mutated item once we have all the data
-        let mut merged_attrs = get_combined_attr_values(src.get_item(&type_id), mutated_r_item);
+        let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&type_id), mutated_r_item);
         let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
         let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
@@ -244,10 +244,10 @@ impl UItemBaseMutable {
             Some(cache) => cache.base_type_id,
             None => self.base.get_type_id(),
         };
-        let mutator = match src.get_mutator(&item_mutation.mutator_id) {
+        let mutator = match src.get_mutator_by_aid(&item_mutation.mutator_id) {
             Some(mutator) => mutator,
             // No mutator - invalidate mutated cache and use non-mutated item
-            None => match src.get_item(&base_type_id) {
+            None => match src.get_item_by_aid(&base_type_id) {
                 Some(base_r_item) => {
                     self.base.base_set_r_item(base_r_item.clone());
                     item_mutation.cache = None;
@@ -260,11 +260,11 @@ impl UItemBaseMutable {
                 }
             },
         };
-        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item(v)) {
+        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item_by_aid(v)) {
             Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no item itself - invalidate mutated cache and use non-mutated
             // item
-            None => match src.get_item(&base_type_id) {
+            None => match src.get_item_by_aid(&base_type_id) {
                 Some(base_r_item) => {
                     self.base.base_set_r_item(base_r_item.clone());
                     item_mutation.cache = None;
@@ -278,7 +278,7 @@ impl UItemBaseMutable {
             },
         };
         // Compose attribute cache
-        let mut merged_attrs = get_combined_attr_values(src.get_item(&base_type_id), mutated_r_item);
+        let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&base_type_id), mutated_r_item);
         let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
         let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation.attr_rolls, src);
@@ -312,7 +312,7 @@ impl UItemBaseMutable {
         let base_type_id = self.base.get_type_id();
         let mutator_id = mutation_request.mutator_id;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
-        let mutator = match src.get_mutator(&mutator_id) {
+        let mutator = match src.get_mutator_by_aid(&mutator_id) {
             Some(mutator) => mutator,
             // No mutator - nothing changes, except for user-defined mutations getting stored
             None => {
@@ -320,7 +320,7 @@ impl UItemBaseMutable {
                 return Ok(());
             }
         };
-        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item(v)) {
+        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item_by_aid(v)) {
             Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no mutated item itself - nothing changes, except for
             // user-defined mutations getting stored
@@ -384,7 +384,7 @@ impl UItemBaseMutable {
             .item_map
             .get(&mutation_cache.base_type_id)
             .unwrap();
-        let mutated_r_item = src.get_item(mutated_type_id).unwrap();
+        let mutated_r_item = src.get_item_by_aid(mutated_type_id).unwrap();
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut base_r_item_cache = None;
         let mut changed_attr_keys = Vec::new();
@@ -577,7 +577,7 @@ fn apply_attr_mutations(
             Some(unmutated_value) => *unmutated_value,
             None => continue,
         };
-        let attr_id = src.get_attr(attr_key).a_id;
+        let attr_id = src.get_attr_by_rid(attr_key).aid;
         match attr_rolls.get(&attr_id) {
             Some(attr_roll) => {
                 let mutated_val = mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll);
@@ -621,7 +621,7 @@ fn get_combined_attr_value<'a>(
     mutated_r_item: &RItem,
     attr_id: &AAttrId,
 ) -> Option<AttrKeyVal> {
-    let attr_key = src.get_attr_key_by_id(attr_id)?;
+    let attr_key = src.get_attr_rid_by_aid(attr_id)?;
     let value = match mutated_r_item.attrs.get(&attr_key) {
         Some(&unmutated_value) => Some(unmutated_value),
         None => match base_r_item_cache {
@@ -630,7 +630,7 @@ fn get_combined_attr_value<'a>(
                 None => None,
             },
             None => {
-                let opt_base_r_item = src.get_item(base_type_id);
+                let opt_base_r_item = src.get_item_by_aid(base_type_id);
                 base_r_item_cache.replace(opt_base_r_item);
                 match opt_base_r_item {
                     Some(base_r_item) => base_r_item.attrs.get(&attr_key).copied(),
@@ -650,12 +650,12 @@ fn merge_effect_datas(
     let mut result = None;
     let effect_datas = &mutated_item.effect_datas;
     for (&effect_key, effect_data) in effect_datas.iter() {
-        let effect = src.get_effect(effect_key);
+        let effect = src.get_effect_by_rid(effect_key);
         // Autocharge - if effect defines autocharge attr ID, and its value references some non-zero
         // type ID, compare it to what's already in effect data; if it's different, create a copy
         // of effect data with new value
         if let Some(charge_info) = &effect.charge
-            && let Some(attr_key) = charge_info.location.get_autocharge_attr_key()
+            && let Some(attr_key) = charge_info.location.get_autocharge_attr_rid()
         {
             let new_ac_type_id = match merged_attrs.get(&attr_key) {
                 Some(&value) => match value.round() as AItemId {
@@ -671,12 +671,12 @@ fn merge_effect_datas(
         }
         // Projectee filter - same approach as for autocharges
         if let Some(projectee_filter_info) = &effect.projectee_filter
-            && let Some(attr_key) = projectee_filter_info.get_item_list_attr_r_id()
+            && let Some(attr_key) = projectee_filter_info.get_item_list_attr_rid()
         {
             let new_projectee_filter = match merged_attrs.get(&attr_key) {
                 Some(&value) => match value.round() as AEveItemListId {
                     0 => None,
-                    item_list_id => src.get_item_list_key_by_id(&AItemListId::Eve(item_list_id)),
+                    item_list_id => src.get_item_list_rid_by_aid(&AItemListId::Eve(item_list_id)),
                 },
                 None => None,
             };
@@ -714,12 +714,12 @@ fn make_axt(
 ) -> RItemAXt {
     let mut axt = RItemAXt::default();
     axt.fill(
-        r_item.id,
+        r_item.aid,
         r_item.grp_id,
         r_item.cat_id,
         item_attrs,
         item_effects_override.unwrap_or(&r_item.effect_datas),
-        src.get_attr_id_key_map(),
+        src.get_attr_aid_rid_map(),
         src.get_attr_consts(),
         src.get_effect_consts(),
     );

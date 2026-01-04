@@ -1,4 +1,4 @@
-use crate::{ac::attrs, ad::AAttrId, def::OF};
+use crate::{ac::attrs, ad::AAttrId};
 
 pub(crate) const BUFF_MERGE_ATTRS: [(AAttrId, AAttrId); 4] = [
     (attrs::WARFARE_BUFF1_ID, attrs::WARFARE_BUFF1_VAL),
@@ -10,5 +10,5 @@ pub(crate) const BUFF_MERGE_ATTRS: [(AAttrId, AAttrId); 4] = [
 pub(crate) const LIMITED_PRECISION_ATTR_IDS: [AAttrId; 4] =
     [attrs::CPU, attrs::POWER, attrs::CPU_OUTPUT, attrs::POWER_OUTPUT];
 
-pub(crate) const AU: OF<f64> = OF(149_597_870_700.0);
-pub(crate) const MAX_SUBCAP_MODULE_VOLUME: OF<f64> = OF(3500.0);
+pub(crate) const AU: f64 = 149_597_870_700.0;
+pub(crate) const MAX_SUBCAP_MODULE_VOLUME: f64 = 3500.0;

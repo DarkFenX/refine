@@ -13,7 +13,7 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_projectee_filter
                     NEffectProjecteeFilter::ItemList(item_list_aid) => *item_list_aid,
                     NEffectProjecteeFilter::ItemListAttr(attr_aid) => match a_item.attrs.get(attr_aid) {
                         Some(&attr_value) => {
-                            let eve_item_list_aid = AEveItemListId::new_of64(attr_value.into_inner());
+                            let eve_item_list_aid = AEveItemListId::new_f64(attr_value.into_inner());
                             if eve_item_list_aid == AEveItemListId::new(0) {
                                 continue;
                             }

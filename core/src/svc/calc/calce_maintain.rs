@@ -129,7 +129,7 @@ impl Calc {
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
         for effect in effects.iter() {
-            let espec = EffectSpec::new(item_key, effect.key);
+            let espec = EffectSpec::new(item_key, effect.rid);
             self.std.extract_raw_mods_for_effect(&mut reuse_rmods, espec);
             for rmod in reuse_rmods.iter() {
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_key, item, rmod)

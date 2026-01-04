@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 
 use super::{conv::cseq_to_ticks, ticks::AggrBreacherTicksLooped};
 use crate::{
-    def::{AttrVal, Count, OF, SERVER_TICK_HZ},
+    def::{AttrVal, DefCount, OF, SERVER_TICK_HZ},
     svc::{
         cycle::{CycleDataTime, CycleSeq},
         output::OutputDmgBreacher,
@@ -11,7 +11,7 @@ use crate::{
     util::RMap,
 };
 
-const DAY_TICKS: Count = 24 * 60 * 60 * SERVER_TICK_HZ as Count;
+const DAY_TICKS: DefCount = 24 * 60 * 60 * SERVER_TICK_HZ as DefCount;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 struct AggrBreacher {
@@ -21,7 +21,7 @@ struct AggrBreacher {
 }
 
 pub(in crate::svc::vast) struct BreacherAccum {
-    data: RMap<AggrBreacher, Count>,
+    data: RMap<AggrBreacher, DefCount>,
 }
 impl BreacherAccum {
     pub(in crate::svc::vast) fn new() -> Self {

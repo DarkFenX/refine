@@ -99,7 +99,7 @@ impl Svc {
         projectee_item: &UItem,
         proj_data: Option<UProjData>,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, effect.key);
+        let projector_espec = EffectSpec::new(projector_key, effect.rid);
         self.eff_projs.add_proj_data(projector_espec, projectee_key, proj_data);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
@@ -116,7 +116,7 @@ impl Svc {
         projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
-        let projector_espec = EffectSpec::new(projector_key, effect.key);
+        let projector_espec = EffectSpec::new(projector_key, effect.rid);
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc
             .effect_unprojected(svc_ctx, projector_espec, projectee_key, projectee_item);

@@ -1,55 +1,33 @@
-use crate::{
-    def::{Count, OF, Value},
-    ed::{EGenFloat, EGenInt},
-};
+use crate::ed::{EGenFloat, EGenInt};
 
 #[derive(Copy, Clone)]
-pub struct ACount(Count);
+pub struct ACount(u32);
 impl ACount {
-    pub fn new(value: Count) -> Self {
+    pub fn new(value: u32) -> Self {
         Self(value)
     }
-    pub const fn into_inner(self) -> Count {
+    pub fn into_inner(self) -> u32 {
         self.0
     }
 }
 impl From<EGenInt> for ACount {
     fn from(value: EGenInt) -> Self {
-        Self::new(value.into_inner().max(0) as Count)
+        Self::new(value.into_inner().max(0) as u32)
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub struct AGenVal(Value);
-impl AGenVal {
-    pub fn new(value: Value) -> Self {
+#[derive(Copy, Clone, PartialEq)]
+pub struct AValue(f64);
+impl AValue {
+    pub fn new(value: f64) -> Self {
         Self(value)
     }
-    pub fn new_f64(value: f64) -> Self {
-        Self(OF(value))
-    }
-    pub const fn into_inner(self) -> Value {
+    pub fn into_inner(self) -> f64 {
         self.0
     }
 }
-impl From<EGenFloat> for AGenVal {
+impl From<EGenFloat> for AValue {
     fn from(value: EGenFloat) -> Self {
-        Self::new(OF(value.into_inner()))
-    }
-}
-
-#[derive(Copy, Clone)]
-pub struct ATimeVal(Value);
-impl ATimeVal {
-    pub fn new_clamped(value: Value) -> Self {
-        Self(value.max(OF(0.0)))
-    }
-    pub const fn into_inner(self) -> Value {
-        self.0
-    }
-}
-impl From<EGenFloat> for ATimeVal {
-    fn from(value: EGenFloat) -> Self {
-        Self::new_clamped(OF(value.into_inner()))
+        Self::new(value.into_inner())
     }
 }

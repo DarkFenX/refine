@@ -1,7 +1,7 @@
 use ordered_float::Float;
 
 use crate::{
-    def::{Count, OF},
+    def::{DefCount, OF},
     nd::NEffectChargeDeplCrystal,
     svc::{SvcCtx, calc::Calc, cycle::effect_charge_info::EffectChargeInfo},
     ud::UModule,
@@ -58,6 +58,6 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
     };
     let hp = charge_attrs.get_opt(attr_consts.hp).copied().unwrap_or(OF(0.0));
     let procs_until_killed = ceil_unerr(hp / dmg);
-    let cycle_count_per_charge = trunc_unerr(procs_until_killed / chance).into_inner() as Count;
+    let cycle_count_per_charge = trunc_unerr(procs_until_killed / chance).into_inner() as DefCount;
     InfCount::Count(charge_count * cycle_count_per_charge)
 }

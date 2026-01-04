@@ -2,7 +2,7 @@ use ordered_float::Float;
 
 use super::shared::process_mult;
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     misc::{AttrSpec, EffectSpec},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, aggr::traits::LimitAmount, calc::Calc, funcs, output::Output},
@@ -39,7 +39,7 @@ where
         if let Some(projectee_key) = projectee_key {
             let proj_data = ctx.eff_projs.get_or_make_proj_data(
                 ctx.u_data,
-                EffectSpec::new(projector_key, effect.key),
+                EffectSpec::new(projector_key, effect.rid),
                 projectee_key,
             );
             let mut mult_pre = OF(1.0);
@@ -71,7 +71,7 @@ where
                 output *= mult_pre;
             }
             // Amount limit
-            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_key, ospec.limit_attr_key);
+            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_key, ospec.limit_attr_rid);
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
                 let mult = proj_mult_getter(ctx, calc, projector_key, effect, projectee_key, proj_data);
@@ -92,7 +92,7 @@ where
 pub(super) struct AggrSpoolInvData {
     step: AttrVal,
     pub(super) max: AttrVal,
-    pub(super) cycles_to_max: Count,
+    pub(super) cycles_to_max: DefCount,
 }
 impl AggrSpoolInvData {
     pub(super) fn try_make<T>(
@@ -108,12 +108,12 @@ impl AggrSpoolInvData {
         if !ospec.spoolable {
             return None;
         }
-        let spool_attr_keys = effect.spool_attr_keys?;
-        let step = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.step)?;
+        let spool_attr_keys = effect.spool_attr_rids?;
+        let step = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.step_attr_rid)?;
         if step.abs() < FLOAT_TOLERANCE {
             return None;
         }
-        let max = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.max)?;
+        let max = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.max_attr_rid)?;
         if max.abs() < FLOAT_TOLERANCE {
             return None;
         }
@@ -124,10 +124,10 @@ impl AggrSpoolInvData {
         Some(Self {
             step,
             max,
-            cycles_to_max: ceil_unerr(cycles).into_inner() as Count,
+            cycles_to_max: ceil_unerr(cycles).into_inner() as DefCount,
         })
     }
-    pub(super) fn calc_cycle_spool(&self, uninterrupted_cycles: Count) -> AttrVal {
+    pub(super) fn calc_cycle_spool(&self, uninterrupted_cycles: DefCount) -> AttrVal {
         Float::min(self.max, self.step * uninterrupted_cycles as f64)
     }
 }

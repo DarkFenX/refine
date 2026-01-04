@@ -55,7 +55,7 @@ impl SolarSystem {
                 let u_module = module_u_item.dc_module().unwrap();
                 match u_module.get_defeff_key() {
                     Some(Some(defeff_key)) => {
-                        self.u_data.src.get_effect(defeff_key).activates_charge()
+                        self.u_data.src.get_effect_by_rid(defeff_key).activates_charge()
                             && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_key))
                     }
                     _ => false,

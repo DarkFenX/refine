@@ -126,7 +126,7 @@ fn fill_neuts(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             let inv_proj = match AggrProjInvData::try_make(ctx, calc, neut_item_key, effect, ospec, Some(cap_item_key))
             {
                 Some(inv_proj) => inv_proj,
@@ -172,7 +172,7 @@ fn fill_transfers(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             let inv_proj =
                 match AggrProjInvData::try_make(ctx, calc, transfer_item_key, effect, ospec, Some(cap_item_key)) {
                     Some(inv_proj) => inv_proj,
@@ -209,7 +209,7 @@ fn fill_injectors(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec) {
                 Some(inv_local) => inv_local,
                 None => continue,

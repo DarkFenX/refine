@@ -4,7 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -379,7 +379,7 @@ fn process_single_spool<T>(
     cycle_data: CycleDataFull,
     total_amount: &mut T,
     time: &mut AttrVal,
-    uninterrupted_cycles: &mut Count,
+    uninterrupted_cycles: &mut DefCount,
 ) where
     T: Default
         + Copy
@@ -416,8 +416,8 @@ fn process_limited_spool<T>(
     cycle_data: CycleDataFull,
     total_amount: &mut T,
     time: &mut AttrVal,
-    uninterrupted_cycles: &mut Count,
-    mut repeat_limit: Count,
+    uninterrupted_cycles: &mut DefCount,
+    mut repeat_limit: DefCount,
 ) where
     T: Default
         + Copy
@@ -495,7 +495,7 @@ fn process_infinite_spool<T>(
     cycle_data: CycleDataFull,
     total_amount: &mut T,
     time: &mut AttrVal,
-    uninterrupted_cycles: &mut Count,
+    uninterrupted_cycles: &mut DefCount,
 ) where
     T: Default
         + Copy

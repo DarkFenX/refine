@@ -20,9 +20,9 @@ impl From<&rc::val::ValMaxTypeFail> for HValMaxTypeFail {
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 struct HValMaxTypeTypeInfo {
-    item_type_count: rc::Count,
+    item_type_count: rc::DefCount,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::ItemId, rc::Count>,
+    items: HashMap<rc::ItemId, rc::DefCount>,
 }
 impl From<&rc::val::ValMaxTypeTypeInfo> for HValMaxTypeTypeInfo {
     fn from(core_val_type_info: &rc::val::ValMaxTypeTypeInfo) -> Self {

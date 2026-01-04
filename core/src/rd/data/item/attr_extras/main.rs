@@ -1,13 +1,13 @@
 use crate::{
-    ad::{AAttrId, AAttrVal, ACount, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
-    misc::ItemKind,
+    ad::{AAttrId, AItemCatId, AItemGrpId, AItemId},
+    misc::{Count, FighterCount, ItemKind, PValue, SkillLevel, SlotIndex, Value},
     rd::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemChargeLimit, RItemContLimit, RItemEffectData,
         RItemShipLimit, RShipDroneLimit, RShipKind,
         data::item::attr_extras::info::{
             attr_val::{
                 get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size,
-                get_fighter_refuel_time_s, get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class,
+                get_fighter_refuel_time, get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class,
                 get_overload_td_lvl, get_radius, get_remote_resist_attr_id, get_rig_size, get_volume,
             },
             charge_limit::get_item_charge_limit,
@@ -38,11 +38,11 @@ pub(crate) struct RItemAXt {
     // Item type
     pub(crate) kind: Option<ItemKind>,
     // Unmutated and unmodified item volume
-    pub(crate) volume: AAttrVal,
+    pub(crate) volume: PValue,
     // Unmutated and unmodified item capacity
-    pub(crate) capacity: AAttrVal,
+    pub(crate) capacity: PValue,
     // Unmutated and unmodified item radius
-    pub(crate) radius: AAttrVal,
+    pub(crate) radius: PValue,
     // If set, item can be fit to a ship which fits into the limit
     pub(crate) ship_limit: Option<RItemShipLimit>,
     // If set, item can load only charges which fit into limit
@@ -50,11 +50,11 @@ pub(crate) struct RItemAXt {
     // If set, item can be loaded as charge into other items which fits this limit
     pub(crate) cont_limit: Option<RItemContLimit>,
     // Slot index an implant takes
-    pub(crate) implant_slot: Option<ASlotIndex>,
+    pub(crate) implant_slot: Option<SlotIndex>,
     // Slot index a booster takes
-    pub(crate) booster_slot: Option<ASlotIndex>,
+    pub(crate) booster_slot: Option<SlotIndex>,
     // Slot index a subsystem takes
-    pub(crate) subsystem_slot: Option<ASlotIndex>,
+    pub(crate) subsystem_slot: Option<SlotIndex>,
     // Defines if a fighter takes a light fighter slot or not
     pub(crate) is_light_fighter: bool,
     // Defines if a fighter takes a heavy fighter slot or not
@@ -72,30 +72,31 @@ pub(crate) struct RItemAXt {
     // If set, ship can use drones which fit into the limit
     pub(crate) drone_limit: Option<RShipDroneLimit>,
     // By default, a fighter squad will have this count of fighters
-    pub(crate) max_fighter_count: ACount,
+    pub(crate) max_fighter_count: FighterCount,
     // Drone bandwidth consumption
-    pub(crate) bandwidth_use: Option<AAttrVal>,
+    pub(crate) bandwidth_use: Option<Value>,
     // Required thermodynamics skill level
-    pub(crate) overload_td_lvl: Option<ASkillLevel>,
+    pub(crate) overload_td_lvl: Option<SkillLevel>,
     // Max amount of items with this type ID a fit can have
-    pub(crate) max_type_fitted: Option<ACount>,
+    pub(crate) max_type_fitted: Option<Count>,
     // Max security class this module can be online in (2 hisec, 1 lowsec, 0 the rest)
-    pub(crate) online_max_sec_class: Option<AAttrVal>,
+    pub(crate) online_max_sec_class: Option<Value>,
     // Can be limited to specific security zones if some of the limit attributes are defined
     pub(crate) sec_zone_limitable: bool,
     // True if assistive item projected to targets immune to offensive modifiers should break the
     // offense immunity validation
     pub(crate) disallow_vs_ew_immune_tgt: bool,
-    // Attribute key which defines how affectee resists effect
-    pub(crate) remote_resist_attr_key: Option<RAttrId>,
+    // Attribute ID which defines what attribute on target is used to resist some effects on this
+    // item
+    pub(crate) remote_resist_attr_rid: Option<RAttrId>,
     // Unmutated and unmodified charge size
-    pub(crate) charge_size: Option<AAttrVal>,
+    pub(crate) charge_size: Option<Value>,
     // Unmutated and unmodified charge rate
-    pub(crate) charge_rate: ACount,
+    pub(crate) charge_rate: Count,
     // True if item has some speed
     pub(crate) is_mobile: bool,
     // Rig calibration cost
-    pub(crate) calibration_use: Option<AAttrVal>,
+    pub(crate) calibration_use: Option<Value>,
     // Can item be limited by "max group fitted" limit
     pub(crate) max_group_fitted_limited: bool,
     // Can item be limited by "max group online" limit
@@ -103,9 +104,9 @@ pub(crate) struct RItemAXt {
     // Can item be limited by "max group active" limit
     pub(crate) max_group_active_limited: bool,
     // Size of a rig, or rig size used by a ship
-    pub(crate) rig_size: Option<AAttrVal>,
+    pub(crate) rig_size: Option<Value>,
     // Base time it takes to refuel a fighter, even if it did not spend any charges
-    pub(crate) fighter_refuel_time_s: AAttrVal,
+    pub(crate) fighter_refuel_time: PValue,
 }
 impl RItemAXt {
     pub(crate) fn fill(
@@ -113,9 +114,9 @@ impl RItemAXt {
         item_id: AItemId,
         item_grp_id: AItemGrpId,
         item_cat_id: AItemCatId,
-        item_attrs: &RMap<RAttrId, AAttrVal>,
+        item_attrs: &RMap<RAttrId, Value>,
         item_effects: &RMap<REffectId, RItemEffectData>,
-        attr_id_key_map: &RMap<AAttrId, RAttrId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
     ) {
@@ -151,7 +152,7 @@ impl RItemAXt {
         self.online_max_sec_class = get_online_max_sec_class(item_attrs, attr_consts);
         self.sec_zone_limitable = is_sec_zone_limitable(item_attrs, attr_consts);
         self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(item_attrs, attr_consts);
-        self.remote_resist_attr_key = get_remote_resist_attr_id(item_attrs, attr_consts, attr_id_key_map);
+        self.remote_resist_attr_rid = get_remote_resist_attr_id(item_attrs, attr_consts, attr_aid_rid_map);
         self.charge_size = get_charge_size(item_attrs, attr_consts);
         self.charge_rate = get_charge_rate(item_attrs, attr_consts);
         self.is_mobile = is_mobile(item_attrs, attr_consts);
@@ -160,6 +161,6 @@ impl RItemAXt {
         self.max_group_online_limited = get_max_group_online_limited(item_attrs, attr_consts);
         self.max_group_active_limited = get_max_group_active_limited(item_attrs, attr_consts);
         self.rig_size = get_rig_size(item_attrs, attr_consts);
-        self.fighter_refuel_time_s = get_fighter_refuel_time_s(item_attrs, attr_consts);
+        self.fighter_refuel_time = get_fighter_refuel_time(item_attrs, attr_consts);
     }
 }

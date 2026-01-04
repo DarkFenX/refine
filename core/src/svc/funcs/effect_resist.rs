@@ -7,10 +7,10 @@ use crate::{
 };
 
 pub(in crate::svc) fn get_resist_attr_key(item: &UItem, effect: &REffect) -> Option<RAttrId> {
-    match effect.resist_attr_key {
+    match effect.resist_attr_rid {
         Some(resist_attr_key) => Some(resist_attr_key),
         None => match item.get_axt() {
-            Some(item_axt) => item_axt.remote_resist_attr_key,
+            Some(item_axt) => item_axt.remote_resist_attr_rid,
             None => None,
         },
     }

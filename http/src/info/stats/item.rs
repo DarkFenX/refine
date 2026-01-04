@@ -45,7 +45,7 @@ pub(crate) struct HItemStats {
     pub(crate) neut_resist: TriStateField<rc::AttrVal>,
     // Sensors
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) locks: TriStateField<rc::Count>,
+    pub(crate) locks: TriStateField<rc::DefCount>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) lock_range: TriStateField<rc::AttrVal>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

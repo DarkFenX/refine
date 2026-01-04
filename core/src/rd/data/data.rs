@@ -52,7 +52,7 @@ impl From<AData> for RData {
         let mut item_lists = Slab::with_capacity(a_data.item_lists.len());
         for (&item_list_aid, a_item_list) in a_data.item_lists.iter() {
             let entry = item_lists.vacant_entry();
-            let item_list_rid = RItemListId(entry.key());
+            let item_list_rid = RItemListId::new(entry.key());
             let r_item_list = RItemList::from_a_item_list(item_list_rid, a_item_list);
             entry.insert(r_item_list);
             item_list_aid_rid_map.insert(item_list_aid, item_list_rid);
@@ -62,7 +62,7 @@ impl From<AData> for RData {
         let mut attrs = Slab::with_capacity(a_data.attrs.len());
         for (&attr_aid, a_attr) in a_data.attrs.iter() {
             let entry = attrs.vacant_entry();
-            let attr_rid = RAttrId(entry.key());
+            let attr_rid = RAttrId::new(entry.key());
             let r_attr = RAttr::from_a_attr(attr_rid, a_attr);
             entry.insert(r_attr);
             attr_aid_rid_map.insert(attr_aid, attr_rid);
@@ -72,7 +72,7 @@ impl From<AData> for RData {
         let mut effects = Slab::with_capacity(a_data.effects.len());
         for (&effect_aid, a_effect) in a_data.effects.iter() {
             let entry = effects.vacant_entry();
-            let effect_rid = REffectId(entry.key());
+            let effect_rid = REffectId::new(entry.key());
             let r_effect = REffect::from_a_effect(effect_rid, a_effect);
             entry.insert(Arc::new(r_effect));
             effect_aid_rid_map.insert(effect_aid, effect_rid);
@@ -90,9 +90,9 @@ impl From<AData> for RData {
         // Create runtime "constants"
         let attr_consts = RAttrConsts::new(&attr_aid_rid_map);
         let effect_consts = REffectConsts::new(&effect_aid_rid_map);
-        // Refresh data which relies on effects' slab keys
+        // Fill in data which wasn't filled during instantiation (e.g. depends on slab keys)
         for r_item in items.values_mut() {
-            Arc::get_mut(r_item).unwrap().fill_key_dependents(
+            Arc::get_mut(r_item).unwrap().fill_runtime(
                 &a_data.items,
                 &item_list_aid_rid_map,
                 &attr_aid_rid_map,
@@ -102,10 +102,10 @@ impl From<AData> for RData {
             );
         }
         for (_, r_attr) in attrs.iter_mut() {
-            r_attr.fill_key_dependents(&a_data.attrs, &attr_aid_rid_map);
+            r_attr.fill_runtime(&a_data.attrs, &attr_aid_rid_map);
         }
         for (_, r_effect) in effects.iter_mut() {
-            Arc::get_mut(r_effect).unwrap().fill_key_dependents(
+            Arc::get_mut(r_effect).unwrap().fill_runtime(
                 &a_data.effects,
                 &item_list_aid_rid_map,
                 &attr_aid_rid_map,
@@ -114,15 +114,15 @@ impl From<AData> for RData {
             );
         }
         for (_, r_buff) in buffs.iter_mut() {
-            r_buff.fill_key_dependents(&a_data.buffs, &attr_aid_rid_map);
+            r_buff.fill_runtime(&a_data.buffs, &attr_aid_rid_map);
         }
         for r_muta in mutas.values_mut() {
             Arc::get_mut(r_muta)
                 .unwrap()
-                .fill_key_dependents(&a_data.mutas, &attr_aid_rid_map);
+                .fill_runtime(&a_data.mutas, &attr_aid_rid_map);
         }
         for r_abil in abils.values_mut() {
-            r_abil.fill_key_dependents(&effect_aid_rid_map);
+            r_abil.fill_runtime(&effect_aid_rid_map);
         }
         Self {
             items,

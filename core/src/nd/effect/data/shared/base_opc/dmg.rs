@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     misc::DmgKinds,
     nd::{NEffectProjOpcSpec, effect::data::shared::proj_mult::get_aoe_dd_dmg_proj_mult},
     rd::REffect,
@@ -103,7 +103,7 @@ fn get_aoe_dd_dmg_base_opc(
         && interval_ms > FLOAT_TOLERANCE
         && let Some(duration_ms) = calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().doomsday_dmg_duration)
     {
-        let repeats = floor_unerr(duration_ms / interval_ms).into_inner() as Count;
+        let repeats = floor_unerr(duration_ms / interval_ms).into_inner() as DefCount;
         if repeats >= 2 {
             return Some(Output::Complex(OutputComplex {
                 amount: DmgKinds {

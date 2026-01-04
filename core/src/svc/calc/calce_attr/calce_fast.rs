@@ -299,7 +299,7 @@ impl Calc {
     }
     fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrId) -> CalcAttrVals {
         let item = ctx.u_data.items.get(item_key);
-        let attr = ctx.u_data.src.get_attr(attr_key);
+        let attr = ctx.u_data.src.get_attr_by_rid(attr_key);
         let base_val = self.calc_item_base_attr_value(ctx, item_key, item, attr);
         let mut accumulator = ModAccumFast::new();
         for modification in self.iter_modifications(ctx, &item_key, item, attr_key) {
@@ -315,14 +315,14 @@ impl Calc {
         }
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Lower value limit
-        if let Some(limiter_attr_key) = attr.min_attr_key
+        if let Some(limiter_attr_key) = attr.min_attr_rid
             && let Ok(limiter_cval) = self.get_item_attr_rfull(ctx, item_key, limiter_attr_key)
         {
             self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
             dogma_val = AttrVal::max(dogma_val, limiter_cval.dogma);
         }
         // Upper value limit
-        if let Some(limiter_attr_key) = attr.max_attr_key
+        if let Some(limiter_attr_key) = attr.max_attr_rid
             && let Ok(limiter_cval) = self.get_item_attr_rfull(ctx, item_key, limiter_attr_key)
         {
             self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
@@ -344,7 +344,7 @@ impl Calc {
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base
         if let Some(sec_zone_attr_key) = attr_consts.security_modifier
-            && attr.r_id == sec_zone_attr_key
+            && attr.rid == sec_zone_attr_key
         {
             let security_attr_key = match ctx.u_data.sec_zone {
                 SecZone::HiSec(_) => attr_consts.hisec_modifier,
@@ -356,7 +356,7 @@ impl Calc {
             {
                 // Ensure that change in any a security-specific attribute value triggers
                 // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_key, security_attr_key, attr.r_id);
+                self.deps.add_anonymous(item_key, security_attr_key, attr.rid);
                 return security_full_val.dogma;
             }
         }

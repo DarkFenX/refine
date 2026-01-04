@@ -22,8 +22,8 @@ impl From<&rc::val::ValFighterSquadSizeFail> for HValFighterSquadSizeFail {
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 struct HValFighterSquadSizeFighterInfo {
-    size: rc::Count,
-    max_size: rc::Count,
+    size: rc::DefCount,
+    max_size: rc::DefCount,
 }
 impl From<&rc::val::ValFighterSquadSizeFighterInfo> for HValFighterSquadSizeFighterInfo {
     fn from(core_val_fighter_info: &rc::val::ValFighterSquadSizeFighterInfo) -> Self {

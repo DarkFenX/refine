@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use super::event::{CapSimEvent, CapSimEventCycleCheck};
 use crate::{
-    def::{AttrVal, Count, OF},
+    def::{AttrVal, DefCount, OF},
     svc::{
         cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
@@ -115,7 +115,7 @@ impl From<&OutputSimple<AttrVal>> for AggrKeyOutputSimple {
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKeyOutputComplex {
     delay: AttrVal,
-    repeats: Count,
+    repeats: DefCount,
     interval: AttrVal,
 }
 impl From<&OutputComplex<AttrVal>> for AggrKeyOutputComplex {

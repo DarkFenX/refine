@@ -103,7 +103,7 @@ impl Vast {
             None => return Ok(()),
         };
         for (effect_key, cseq) in cseq_map {
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             if let Some(ospec) = effect.normal_dmg_opc_spec {
                 match reload {
                     true => {
@@ -224,7 +224,7 @@ impl Vast {
             None => return Ok(()),
         };
         for (effect_key, cseq) in cseq_map {
-            let effect = ctx.u_data.src.get_effect(effect_key);
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
             if let Some(ospec) = &effect.normal_dmg_opc_spec {
                 if let Some(dmg_max) =
                     aggr_proj_first_max(ctx, calc, item_key, effect, &cseq, ospec, projectee_key, spool)

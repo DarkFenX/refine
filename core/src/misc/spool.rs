@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, Count},
+    def::{AttrVal, DefCount},
     util::UnitInterval,
 };
 
@@ -7,7 +7,7 @@ use crate::{
 #[derive(Copy, Clone)]
 pub enum Spool {
     /// Module will use this number, or max spool cycles supported by module, whichever is lower.
-    Cycles(Count),
+    Cycles(DefCount),
     /// Module will use count of full cycles it finishes by this time, or max spool cycles supported
     /// by module, whichever is lower.
     Time(AttrVal),

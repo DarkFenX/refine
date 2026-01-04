@@ -34,12 +34,12 @@ pub use api::{
     Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub use def::{
-    AbilId, AttrVal, Count, CustomAttrId, CustomEffectId, DogmaEffectId, EveAttrId, FitId, FleetId, Idx, ItemGrpId,
+    AbilId, AttrVal, CustomAttrId, CustomEffectId, DefCount, DogmaEffectId, EveAttrId, FitId, FleetId, Idx, ItemGrpId,
     ItemId, ItemTypeId, SlotIndex, VERSION,
 };
 pub use lender::Lender;
 pub use misc::{
-    Breacher, DpsProfile, Ecm, EffectMode, FighterCountOverride, FitSecStatus, MiningAmount, ModRack, NpcProp, SecZone,
+    Breacher, DpsProfile, Ecm, EffectMode, FighterCount, FitSecStatus, MiningAmount, ModRack, NpcProp, SecZone,
     SecZoneCorruption, SkillLevel, Spool,
 };
 pub use rd::Src;

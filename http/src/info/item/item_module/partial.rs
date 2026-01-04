@@ -28,9 +28,9 @@ pub(crate) struct HModuleInfoPartial {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<HChargeInfo>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    charge_count: TriStateField<rc::Count>,
+    charge_count: TriStateField<rc::DefCount>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    cycles_until_empty: TriStateField<rc::Count>,
+    cycles_until_empty: TriStateField<rc::DefCount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     spool_cycles: Option<HAdjustableCount>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
