@@ -97,7 +97,7 @@ fn get_movement(sol: &SolarSystem, drone_key: UItemId) -> Movement {
     get_u_drone(sol, drone_key).get_physics().into()
 }
 fn get_prop_mode(sol: &SolarSystem, drone_key: UItemId) -> NpcProp {
-    get_u_drone(sol, drone_key).get_prop_mode().into()
+    get_u_drone(sol, drone_key).get_npc_prop().into()
 }
 fn get_u_drone(sol: &SolarSystem, drone_key: UItemId) -> &UDrone {
     sol.u_data.items.get(drone_key).dc_drone().unwrap()

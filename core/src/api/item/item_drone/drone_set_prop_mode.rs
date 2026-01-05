@@ -8,7 +8,7 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_prop_mode(&mut self, drone_key: UItemId, prop_mode: UNpcProp) {
         let u_drone = self.u_data.items.get_mut(drone_key).dc_drone_mut().unwrap();
-        u_drone.set_prop_mode(prop_mode);
+        u_drone.set_npc_prop(prop_mode);
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::{
-    misc::{DpsProfile, PValue, RearmMinions, ReloadOptionals, Spool, StOption},
+    misc::{DpsProfile, NpcProp, PValue, RearmMinions, ReloadOptionals, Spool, StOption},
     ud::{UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
 
@@ -24,6 +24,13 @@ impl UData {
                     StOption::Inherit => self.default_spool,
                 }
             }
+        }
+    }
+    pub(crate) fn get_item_npc_prop(&self, item_uid: UItemId) -> NpcProp {
+        let u_item = self.items.get(item_uid);
+        match u_item.get_npc_prop() {
+            StOption::Set(npc_prop) => npc_prop,
+            StOption::Inherit => self.default_npc_prop,
         }
     }
     pub(crate) fn get_item_reload_optionals(

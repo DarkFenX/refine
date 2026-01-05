@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::MinionState,
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, NpcProp, PValue, SkillLevel, Value},
+    misc::{EffectMode, NpcProp, PValue, SkillLevel, StOption, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
         ItemId, UAttrMutationRequest, UFitId, UItemMutationRequest,
@@ -17,7 +17,7 @@ pub(crate) struct UDrone {
     pub(super) base: UItemBaseMutable,
     fit_uid: UFitId,
     physics: UPhysics,
-    prop: NpcProp,
+    npc_prop: StOption<NpcProp>,
     projs: UProjs,
 }
 impl UDrone {
@@ -28,14 +28,13 @@ impl UDrone {
         drone_state: MinionState,
         mutation: Option<UItemMutationRequest>,
         physics: UPhysics,
-        prop: NpcProp,
         src: &Src,
     ) -> Self {
         Self {
             base: UItemBaseMutable::new(item_id, type_id, drone_state.into(), mutation, src),
             fit_uid,
             physics,
-            prop,
+            npc_prop: StOption::Inherit,
             projs: UProjs::new(),
         }
     }
@@ -149,11 +148,11 @@ impl UDrone {
     pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
         &mut self.physics
     }
-    pub(crate) fn get_prop_mode(&self) -> NpcProp {
-        self.prop
+    pub(crate) fn get_npc_prop(&self) -> StOption<NpcProp> {
+        self.npc_prop
     }
-    pub(crate) fn set_prop_mode(&mut self, prop: NpcProp) {
-        self.prop = prop
+    pub(crate) fn set_npc_prop(&mut self, npc_prop: StOption<NpcProp>) {
+        self.npc_prop = npc_prop
     }
     pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs

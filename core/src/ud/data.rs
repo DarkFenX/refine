@@ -1,5 +1,5 @@
 use crate::{
-    misc::{DpsProfile, RearmMinions, ReloadOptionals, SecZone, Spool, UnitInterval},
+    misc::{DpsProfile, NpcProp, RearmMinions, ReloadOptionals, SecZone, Spool, UnitInterval},
     rd::Src,
     ud::{UFits, UFleets, UItemId, UItems},
     util::RSet,
@@ -20,6 +20,7 @@ pub(crate) struct UData {
     pub(crate) default_incoming_dps: DpsProfile,
     // Default settings related to item cycles
     pub(crate) default_spool: Spool,
+    pub(crate) default_npc_prop: NpcProp,
     pub(crate) default_reload_optionals: ReloadOptionals,
     pub(crate) default_rearm_minions: RearmMinions,
 }
@@ -35,6 +36,7 @@ impl UData {
             sec_zone: SecZone::NullSec,
             default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
             default_spool: Spool::SpoolScale(UnitInterval::new_clamped(1.0)),
+            default_npc_prop: NpcProp::Chase,
             default_reload_optionals: ReloadOptionals::Enabled,
             default_rearm_minions: RearmMinions::Disabled,
         }

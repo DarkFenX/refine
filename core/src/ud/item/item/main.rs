@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, PValue, RearmMinions, ReloadOptionals, SkillLevel, Spool, StOption, Value},
+    misc::{EffectMode, NpcProp, PValue, RearmMinions, ReloadOptionals, SkillLevel, Spool, StOption, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant,
@@ -575,6 +575,12 @@ impl UItem {
     pub(crate) fn get_spool(&self) -> StOption<Spool> {
         match self {
             Self::Module(module) => module.get_spool(),
+            _ => StOption::Inherit,
+        }
+    }
+    pub(crate) fn get_npc_prop(&self) -> StOption<NpcProp> {
+        match self {
+            Self::Drone(drone) => drone.get_npc_prop(),
             _ => StOption::Inherit,
         }
     }
