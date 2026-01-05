@@ -10,7 +10,7 @@ use super::shared::{
 };
 use crate::{
     ad::AItemCatId,
-    def::{AttrVal, OF},
+    misc::{PValue, Value},
     svc::calc::{AggrKey, AggrMode, CalcOp},
     util::RMap,
 };
@@ -48,9 +48,9 @@ impl ModAccumFast {
     }
     pub(in crate::svc::calc) fn add_val(
         &mut self,
-        val: AttrVal,
-        proj_mult: Option<AttrVal>,
-        res_mult: Option<AttrVal>,
+        val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
         op: &CalcOp,
         attr_pen: bool,
         item_cat: &AItemCatId,
@@ -142,7 +142,7 @@ impl ModAccumFast {
             }
         };
     }
-    pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
+    pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: Value, hig: bool) -> Value {
         let val = apply_assign(
             base_val,
             self.pre_assign
@@ -187,7 +187,7 @@ impl ModAccumFast {
                 .get_comb_val(combine_assigns, hig, &mut self.reuse_pen_chains),
         )
     }
-    pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: AttrVal, hig: bool) -> AttrVal {
+    pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: Value, hig: bool) -> Value {
         let val = apply_add(
             val,
             self.extra_add
@@ -214,16 +214,16 @@ impl AttrStack {
     }
     fn add_val<N, D>(
         &mut self,
-        val: AttrVal,
-        proj_mult: Option<AttrVal>,
-        res_mult: Option<AttrVal>,
+        val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
         normalize_func: N,
         diminish_func: D,
         penalizable: bool,
         aggr_mode: &AggrMode,
     ) where
-        N: Fn(AttrVal) -> Option<AttrVal>,
-        D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
+        N: Fn(Value) -> Option<Value>,
+        D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
     {
         let attr_aggr = match penalizable {
             true => &mut self.penalized,
@@ -237,10 +237,10 @@ impl AttrStack {
         pen_func: F2,
         hig: bool,
         reuse_pen_chains: &mut PenChains,
-    ) -> Option<AttrVal>
+    ) -> Option<Value>
     where
-        F1: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
-        F2: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
+        F1: Fn(&[Value], bool, &mut PenChains) -> Option<Value>,
+        F2: Fn(&[Value], bool, &mut PenChains) -> Option<Value>,
     {
         if let Some(val) = self.penalized.get_comb_val(pen_func, hig, reuse_pen_chains) {
             self.stacked.add_processed_val(val, &AggrMode::Stack);
@@ -250,9 +250,9 @@ impl AttrStack {
 }
 
 struct AttrAggr {
-    stack: Vec<AttrVal>,
-    aggr_min: RMap<AggrKey, Vec<AttrVal>>,
-    aggr_max: RMap<AggrKey, Vec<AttrVal>>,
+    stack: Vec<Value>,
+    aggr_min: RMap<AggrKey, Vec<Value>>,
+    aggr_max: RMap<AggrKey, Vec<Value>>,
 }
 impl AttrAggr {
     fn new() -> Self {
@@ -264,15 +264,15 @@ impl AttrAggr {
     }
     fn add_val<N, D>(
         &mut self,
-        val: AttrVal,
-        proj_mult: Option<AttrVal>,
-        res_mult: Option<AttrVal>,
+        val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
         normalize_func: N,
         diminish_func: D,
         aggr_mode: &AggrMode,
     ) where
-        N: Fn(AttrVal) -> Option<AttrVal>,
-        D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
+        N: Fn(Value) -> Option<Value>,
+        D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
     {
         let mut val = match normalize_func(val) {
             Some(val) => val,
@@ -281,16 +281,16 @@ impl AttrAggr {
         val = diminish_func(val, proj_mult, res_mult);
         self.add_processed_val(val, aggr_mode);
     }
-    fn add_processed_val(&mut self, val: AttrVal, aggr_mode: &AggrMode) {
+    fn add_processed_val(&mut self, val: Value, aggr_mode: &AggrMode) {
         match aggr_mode {
             AggrMode::Stack => self.stack.push(val),
             AggrMode::Min(key) => self.aggr_min.entry(*key).or_default().push(val),
             AggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
         }
     }
-    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<AttrVal>
+    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<Value>
     where
-        F: Fn(&[AttrVal], bool, &mut PenChains) -> Option<AttrVal>,
+        F: Fn(&[Value], bool, &mut PenChains) -> Option<Value>,
     {
         // Resolve aggregations
         for vals in self.aggr_min.values() {
@@ -308,8 +308,8 @@ impl AttrAggr {
 }
 
 struct PenChains {
-    positive: Vec<AttrVal>,
-    negative: Vec<AttrVal>,
+    positive: Vec<Value>,
+    negative: Vec<Value>,
 }
 impl PenChains {
     fn new() -> Self {
@@ -328,16 +328,16 @@ impl PenChains {
 }
 
 // Application functions
-fn apply_assign(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
+fn apply_assign(base_val: Value, other_val: Option<Value>) -> Value {
     other_val.unwrap_or(base_val)
 }
-fn apply_add(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
+fn apply_add(base_val: Value, other_val: Option<Value>) -> Value {
     match other_val {
         Some(other_val) => base_val + other_val,
         None => base_val,
     }
 }
-fn apply_mul(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
+fn apply_mul(base_val: Value, other_val: Option<Value>) -> Value {
     match other_val {
         Some(other_val) => base_val * other_val,
         None => base_val,
@@ -345,19 +345,19 @@ fn apply_mul(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
 }
 
 // Regular combination functions
-fn combine_assigns(vals: &[AttrVal], high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_assigns(vals: &[Value], high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
     match high_is_good {
         true => get_max(vals),
         false => get_min(vals),
     }
 }
-fn combine_adds(vals: &[AttrVal], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_adds(vals: &[Value], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
     if vals.is_empty() {
         return None;
     }
     Some(vals.iter().sum())
 }
-fn combine_muls(vals: &[AttrVal], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_muls(vals: &[Value], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
     if vals.is_empty() {
         return None;
     }
@@ -365,14 +365,14 @@ fn combine_muls(vals: &[AttrVal], _high_is_good: bool, _reuse_pen_chains: &mut P
 }
 
 // Penalized combination functions
-fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<AttrVal> {
+fn combine_muls_pen(vals: &[Value], _high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<Value> {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
     reuse_pen_chains.clear();
     for val in vals.iter() {
-        if *val > OF(1.0) {
+        if *val > Value::ONE {
             reuse_pen_chains.positive.push(*val);
-        } else if *val < OF(1.0) {
+        } else if *val < Value::ONE {
             reuse_pen_chains.negative.push(*val);
         }
     }
@@ -383,18 +383,18 @@ fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool, reuse_pen_chains: &mu
     reuse_pen_chains.negative.sort_unstable();
     Some(get_chain_val(&reuse_pen_chains.positive) * get_chain_val(&reuse_pen_chains.negative))
 }
-fn get_chain_val(vals: &[AttrVal]) -> AttrVal {
-    let mut val = OF(1.0);
+fn get_chain_val(vals: &[Value]) -> Value {
+    let mut val = Value::ONE;
     for (mod_val, denominator) in std::iter::zip(vals.iter(), PENALTY_DENOMINATORS.iter()) {
-        val *= OF(1.0) + (mod_val - OF(1.0)) / denominator;
+        val *= Value::ONE + (mod_val - Value::ONE) / denominator;
     }
     val
 }
 
 // Misc functions
-fn get_min(vals: &[AttrVal]) -> Option<AttrVal> {
+fn get_min(vals: &[Value]) -> Option<Value> {
     vals.iter().min().copied()
 }
-fn get_max(vals: &[AttrVal]) -> Option<AttrVal> {
+fn get_max(vals: &[Value]) -> Option<Value> {
     vals.iter().max().copied()
 }

@@ -82,7 +82,7 @@ impl From<AData> for RData {
         let mut buffs = Slab::with_capacity(a_data.buffs.len());
         for (&buff_aid, a_buff) in a_data.buffs.iter() {
             let entry = buffs.vacant_entry();
-            let buff_rid = RBuffId(entry.key());
+            let buff_rid = RBuffId::new(entry.key());
             let r_buff = RBuff::from_a_buff(a_buff);
             entry.insert(r_buff);
             buff_aid_rid_map.insert(buff_aid, buff_rid);

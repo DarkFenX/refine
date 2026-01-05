@@ -3,7 +3,7 @@ use crate::{
     util::{round_f64_to_u32, trunc_f64_to_u32},
 };
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Default)]
 pub struct Count(u32);
 impl Count {
     pub fn new(value: u32) -> Self {

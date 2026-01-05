@@ -11,25 +11,25 @@ use super::shared::{
 };
 use crate::{
     ad::AItemCatId,
-    def::{AttrVal, OF},
+    misc::{PValue, Value},
     svc::calc::{Affector, AggrKey, AggrMode, CalcOp, Modification},
     util::RMap,
 };
 
 pub(in crate::svc::calc) struct AttrValInfo {
-    pub(in crate::svc::calc) value: AttrVal,
+    pub(in crate::svc::calc) value: Value,
     pub(in crate::svc::calc) effective_infos: Vec<Modification>,
     pub(in crate::svc::calc) filtered_infos: Vec<Modification>,
 }
 impl AttrValInfo {
-    pub(in crate::svc::calc) fn new(value: AttrVal) -> Self {
+    pub(in crate::svc::calc) fn new(value: Value) -> Self {
         Self {
             value,
             effective_infos: Vec::new(),
             filtered_infos: Vec::new(),
         }
     }
-    fn from_effective_info(value: AttrVal, info: Modification) -> Self {
+    fn from_effective_info(value: Value, info: Modification) -> Self {
         Self {
             value,
             effective_infos: vec![info],
@@ -84,9 +84,9 @@ impl ModAccumInfo {
     }
     pub(in crate::svc::calc) fn add_val(
         &mut self,
-        val: AttrVal,
-        proj_mult: Option<AttrVal>,
-        res_mult: Option<AttrVal>,
+        val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
         op: &CalcOp,
         attr_pen: bool,
         item_cat: &AItemCatId,
@@ -321,9 +321,9 @@ impl AttrStack {
     fn add_val<N, D, R>(
         &mut self,
         op: CalcOp,
-        initial_val: AttrVal,
-        proj_mult: Option<AttrVal>,
-        res_mult: Option<AttrVal>,
+        initial_val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
         normalize_func: &N,
         diminish_func: &D,
         revert_func: &R,
@@ -331,9 +331,9 @@ impl AttrStack {
         aggr_mode: &AggrMode,
         affectors: SmallVec<Affector, 1>,
     ) where
-        N: Fn(AttrVal) -> Option<AttrVal>,
-        D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
-        R: Fn(AttrVal) -> AttrVal,
+        N: Fn(Value) -> Option<Value>,
+        D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
+        R: Fn(Value) -> Value,
     {
         let attr_aggr = match penalizable {
             true => &mut self.penalized,
@@ -361,7 +361,7 @@ impl AttrStack {
     where
         C: Fn(&mut Vec<AttrValInfo>, &R, bool) -> Option<AttrValInfo>,
         P: Fn(&mut Vec<AttrValInfo>, &R, bool) -> Option<AttrValInfo>,
-        R: Fn(AttrVal) -> AttrVal,
+        R: Fn(Value) -> Value,
     {
         if let Some(attr_info) = self.penalized.get_comb_attr_info(pen_func, revert_func, hig) {
             self.stacked.add_attr_info(attr_info, &AggrMode::Stack);
@@ -386,18 +386,18 @@ impl AttrAggr {
     fn add_val<N, D, R>(
         &mut self,
         op: CalcOp,
-        initial_val: AttrVal,
-        proj_mult: Option<AttrVal>,
-        res_mult: Option<AttrVal>,
+        initial_val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
         normalize_func: &N,
         diminish_func: &D,
         revert_func: &R,
         aggr_mode: &AggrMode,
         affectors: SmallVec<Affector, 1>,
     ) where
-        N: Fn(AttrVal) -> Option<AttrVal>,
-        D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
-        R: Fn(AttrVal) -> AttrVal,
+        N: Fn(Value) -> Option<Value>,
+        D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
+        R: Fn(Value) -> Value,
     {
         let normalized_val = match normalize_func(initial_val) {
             Some(val) => val,
@@ -426,7 +426,7 @@ impl AttrAggr {
     fn get_comb_attr_info<C, R>(&mut self, comb_func: &C, revert_func: &R, high_is_good: bool) -> Option<AttrValInfo>
     where
         C: Fn(&mut Vec<AttrValInfo>, &R, bool) -> Option<AttrValInfo>,
-        R: Fn(AttrVal) -> AttrVal,
+        R: Fn(Value) -> Value,
     {
         // Resolve aggregations
         for attr_infos in self.aggr_min.values_mut() {
@@ -450,17 +450,17 @@ impl AttrAggr {
 }
 
 // Revert normalization functions
-fn revert_noop(val: AttrVal) -> AttrVal {
+fn revert_noop(val: Value) -> Value {
     val
 }
-fn revert_sub(val: AttrVal) -> AttrVal {
+fn revert_sub(val: Value) -> Value {
     -val
 }
-fn revert_div(val: AttrVal) -> AttrVal {
-    OF(1.0) / val
+fn revert_div(val: Value) -> Value {
+    Value::ONE / val
 }
-fn revert_perc(val: AttrVal) -> AttrVal {
-    (val - OF(1.0)) * OF(100.0)
+fn revert_perc(val: Value) -> Value {
+    (val - Value::ONE) * Value::HUNDRED
 }
 
 // Application functions - they treat left side and right side differently
@@ -485,12 +485,12 @@ fn apply_mul(mut base_attr_info: AttrValInfo, other_attr_info: Option<AttrValInf
     match other_attr_info {
         Some(mut other_attr_info) => match (base_attr_info.value, other_attr_info.value) {
             // Right side 0 means left side has no effect on the result
-            (_, OF(0.0)) => {
+            (_, Value::ZERO) => {
                 other_attr_info.merge_ineffective(base_attr_info);
                 other_attr_info
             }
             // Left side 0 means right side has no effect on the result
-            (OF(0.0), _) => {
+            (Value::ZERO, _) => {
                 base_attr_info.merge_ineffective(other_attr_info);
                 base_attr_info
             }
@@ -530,7 +530,7 @@ fn combine_adds<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, _high_is
     for other_attr_info in attr_infos.extract_if(.., |_| true) {
         match other_attr_info.value {
             // Adding 0 is not changing the result
-            OF(0.0) => attr_info.merge_ineffective(other_attr_info),
+            Value::ZERO => attr_info.merge_ineffective(other_attr_info),
             _ => attr_info.merge(other_attr_info),
         }
     }
@@ -545,10 +545,10 @@ fn combine_muls<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, _high_is
     match value {
         // Value of 0 means that some multipliers were 0. Expose only those, and hide the rest,
         // those we hid have no effect on value anyway
-        OF(0.0) => {
+        Value::ZERO => {
             for other_attr_info in attr_infos.extract_if(.., |_| true) {
                 match other_attr_info.value {
-                    OF(0.0) => attr_info.merge(other_attr_info),
+                    Value::ZERO => attr_info.merge(other_attr_info),
                     _ => attr_info.merge_ineffective(other_attr_info),
                 }
             }
@@ -560,7 +560,7 @@ fn combine_muls<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, _high_is
                 // can happen when stacking penalty chains are calculated and aggregated into value
                 // of 1.0; we want to expose all modifications which led to it even if final result
                 // is 1.0
-                if other_attr_info.value == OF(1.0) && other_attr_info.is_single_effective() {
+                if other_attr_info.value == Value::ONE && other_attr_info.is_single_effective() {
                     attr_info.merge_ineffective(other_attr_info)
                 } else {
                     attr_info.merge(other_attr_info);
@@ -572,7 +572,7 @@ fn combine_muls<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, _high_is
 }
 fn combine_muls_pen<R>(attr_infos: &mut Vec<AttrValInfo>, revert_func: &R, _high_is_good: bool) -> Option<AttrValInfo>
 where
-    R: Fn(AttrVal) -> AttrVal,
+    R: Fn(Value) -> Value,
 {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
@@ -580,9 +580,9 @@ where
     let mut negative = Vec::new();
     let mut neutral = Vec::new();
     for attr_info in attr_infos.extract_if(.., |_| true) {
-        if attr_info.value > OF(1.0) {
+        if attr_info.value > Value::ONE {
             positive.push(attr_info);
-        } else if attr_info.value < OF(1.0) {
+        } else if attr_info.value < Value::ONE {
             negative.push(attr_info);
         } else {
             neutral.push(attr_info)
@@ -593,14 +593,14 @@ where
     }
     positive.sort_unstable_by_key(|v| -v.value);
     negative.sort_unstable_by_key(|v| v.value);
-    let mut attr_info = AttrValInfo::new(OF(1.0));
+    let mut attr_info = AttrValInfo::new(Value::ONE);
     // Do negative chain first, since it can result in final multiplier of 0
     let negative_attr_info = get_chain_attr_info(negative, revert_func);
     attr_info.value *= negative_attr_info.value;
     attr_info.merge(negative_attr_info);
     let positive_attr_info = get_chain_attr_info(positive, revert_func);
     // It doesn't matter what is in positive chain if our multiplier is 0 already
-    if attr_info.value == OF(0.0) {
+    if attr_info.value == Value::ZERO {
         attr_info.merge_ineffective(positive_attr_info);
     } else {
         attr_info.value *= positive_attr_info.value;
@@ -632,22 +632,22 @@ fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
 }
 fn get_chain_attr_info<R>(attr_infos: Vec<AttrValInfo>, revert_func: &R) -> AttrValInfo
 where
-    R: Fn(AttrVal) -> AttrVal,
+    R: Fn(Value) -> Value,
 {
-    let mut attr_info = AttrValInfo::new(OF(1.0));
+    let mut attr_info = AttrValInfo::new(Value::ONE);
     // Special case for when first element of chain is a multiplier by 0, for the same reason as in
     // multiplication combination function. We know final chain multiplier is going to be 0, we know
     // other elements are not going to be multipliers by 0 after penalty is applied, so we just
     // expose multiplier by 0 as the only effective modification, and consider others ineffective
     let first_zero = match attr_infos.first() {
-        Some(other_attr_info) => other_attr_info.value == OF(0.0),
+        Some(other_attr_info) => other_attr_info.value == Value::ZERO,
         None => false,
     };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
         match PENALTY_DENOMINATORS.get(i) {
             Some(denominator) => {
-                let penalty_multiplier = OF(1.0) / denominator;
-                let value_multiplier = OF(1.0) + (other_attr_info.value - OF(1.0)) * penalty_multiplier;
+                let penalty_multiplier = Value::ONE / denominator;
+                let value_multiplier = Value::ONE + (other_attr_info.value - Value::ONE) * penalty_multiplier;
                 for info in other_attr_info.effective_infos.iter_mut() {
                     info.stacking_mult = Some(penalty_multiplier);
                     info.applied_val = revert_func(value_multiplier);
@@ -662,8 +662,8 @@ where
             // Modifications past those which have penalty multiplier are insignificant
             None => {
                 for info in other_attr_info.effective_infos.iter_mut() {
-                    info.stacking_mult = Some(OF(0.0));
-                    info.applied_val = revert_func(OF(1.0));
+                    info.stacking_mult = Some(Value::ZERO);
+                    info.applied_val = revert_func(Value::ONE);
                 }
                 attr_info.merge_ineffective(other_attr_info);
             }

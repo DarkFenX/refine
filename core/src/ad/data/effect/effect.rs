@@ -1,6 +1,5 @@
 use crate::ad::{AAttrId, AEffectBuff, AEffectCatId, AEffectId, AEffectModifier, AState};
 
-#[derive(Clone)]
 pub struct AEffect {
     pub id: AEffectId,
     pub category: AEffectCatId,

@@ -1,5 +1,3 @@
-use crate::util::LibDefault;
-
 const COUNT_MIN: u32 = 1;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
@@ -11,7 +9,7 @@ impl FighterCount {
             false => Err(FighterCountError { count }),
         }
     }
-    pub fn new_clamped(count: u32) -> Self {
+    pub const fn new_clamped(count: u32) -> Self {
         Self(count.max(COUNT_MIN))
     }
     pub(crate) fn new_f64_clamped(count: f64) -> Self {
@@ -21,8 +19,8 @@ impl FighterCount {
         self.0
     }
 }
-impl LibDefault for FighterCount {
-    fn lib_default() -> Self {
+impl Default for FighterCount {
+    fn default() -> Self {
         Self(COUNT_MIN)
     }
 }

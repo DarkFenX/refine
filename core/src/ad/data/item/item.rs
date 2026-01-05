@@ -6,7 +6,6 @@ use crate::{
     util::RMap,
 };
 
-#[derive(Clone)]
 pub struct AItem {
     pub id: AItemId,
     pub grp_id: AItemGrpId,

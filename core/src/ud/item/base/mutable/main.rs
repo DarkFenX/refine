@@ -596,10 +596,10 @@ fn mutate_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange, roll: 
 }
 
 fn limit_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange) -> Value {
-    if roll_range.min_mult >= Value::new(1.0) {
+    if roll_range.min_mult >= Value::ONE {
         return unmutated_value * roll_range.min_mult;
     }
-    if roll_range.max_mult <= Value::new(1.0) {
+    if roll_range.max_mult <= Value::ONE {
         return unmutated_value * roll_range.max_mult;
     }
     unmutated_value
