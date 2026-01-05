@@ -13,8 +13,11 @@ pub use numeric::{
     Count, FighterCount, FighterCountError, FitSecStatus, FitSecStatusError, Index, PValue, SkillLevel,
     SkillLevelError, SlotIndex, UnitInterval, UnitIntervalError, Value,
 };
+pub use rearm_minions::RearmMinions;
+pub use reload_optionals::ReloadOptionals;
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use spool::Spool;
+pub use structured_option::StOption;
 pub(crate) use xyz::Xyz;
 
 mod attr_spec;
@@ -28,6 +31,9 @@ mod mining_amount;
 mod mod_rack;
 mod npc_behavior;
 mod numeric;
+mod rearm_minions;
+mod reload_optionals;
 mod sec_zone;
 mod spool;
+mod structured_option;
 mod xyz;

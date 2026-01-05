@@ -15,7 +15,7 @@ impl UModule {
         self.get_projs().consistency_check(u_data)?;
         // Radius of projector should match radius of ship, radius of projectee should match
         // projectee items
-        let ship_radius = u_data.get_ship_radius_by_fit_uid(self.get_fit_uid());
+        let ship_radius = u_data.get_fit_ship_radius(self.get_fit_uid());
         for (projectee_uid, proj_data) in self.get_projs().iter() {
             let proj_data = match proj_data {
                 Some(proj_data) => proj_data,

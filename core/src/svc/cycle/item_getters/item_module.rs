@@ -202,7 +202,7 @@ fn fill_module_effect_info(
         // Only partially charged cycle, but can cycle without charges
         (false, true, true) => match ctx
             .u_data
-            .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
+            .get_item_reload_optionals(item_key, sim_options.reload_optionals)
         {
             true => part_r(
                 ctx,
@@ -232,7 +232,7 @@ fn fill_module_effect_info(
         // Only fully charged, but can cycle without charges
         (true, false, true) => match ctx
             .u_data
-            .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
+            .get_item_reload_optionals(item_key, sim_options.reload_optionals)
         {
             true => full_r(ctx, calc, item_key, duration, cooldown, int_cd, full_count),
             false => CycleSeq::LimInf(CSeqLimInf {
@@ -264,7 +264,7 @@ fn fill_module_effect_info(
         (true, true, true) => {
             match ctx
                 .u_data
-                .get_item_key_reload_optionals(item_key, sim_options.reload_optionals)
+                .get_item_reload_optionals(item_key, sim_options.reload_optionals)
             {
                 true => both_r(
                     ctx,

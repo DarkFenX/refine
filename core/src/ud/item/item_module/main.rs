@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::ModuleState,
     err::basic::ItemNotMutatedError,
-    misc::{Count, EffectMode, Index, ModRack, PValue, SkillLevel, Spool, Value},
+    misc::{Count, EffectMode, Index, ModRack, PValue, ReloadOptionals, SkillLevel, Spool, StOption, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
@@ -21,8 +21,8 @@ pub(crate) struct UModule {
     charge_uid: Option<UItemId>,
     projs: UProjs,
     // Optional settings related to cycling
-    spool: Option<Spool>,
-    reload_optionals: Option<bool>,
+    spool: StOption<Spool>,
+    reload_optionals: StOption<ReloadOptionals>,
 }
 impl UModule {
     pub(crate) fn new(
@@ -43,8 +43,8 @@ impl UModule {
             pos,
             charge_uid,
             projs: UProjs::new(),
-            spool: None,
-            reload_optionals: None,
+            spool: StOption::Inherit,
+            reload_optionals: StOption::Inherit,
         }
     }
     // Item base methods
@@ -205,16 +205,16 @@ impl UModule {
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
-    pub(crate) fn get_spool(&self) -> Option<Spool> {
+    pub(crate) fn get_spool(&self) -> StOption<Spool> {
         self.spool
     }
-    pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
+    pub(crate) fn set_spool(&mut self, spool: StOption<Spool>) {
         self.spool = spool
     }
-    pub(crate) fn get_reload_optionals(&self) -> Option<bool> {
+    pub(crate) fn get_reload_optionals(&self) -> StOption<ReloadOptionals> {
         self.reload_optionals
     }
-    pub(crate) fn set_reload_optionals(&mut self, reload_optionals: Option<bool>) {
+    pub(crate) fn set_reload_optionals(&mut self, reload_optionals: StOption<ReloadOptionals>) {
         self.reload_optionals = reload_optionals
     }
 }

@@ -110,7 +110,7 @@ fn calc_angular(
     proj_data: UProjData,
 ) -> AttrVal {
     let coordinates = proj_data.get_tgt_coordinates() - proj_data.get_src_coordinates();
-    let src_velocity = match ctx.u_data.get_physics_carrier_key(projector_uid) {
+    let src_velocity = match ctx.u_data.get_physics_carrier(projector_uid) {
         Some(projector_carrier_key) => get_vector(
             ctx,
             calc,

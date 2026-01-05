@@ -26,7 +26,7 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_key);
         u_fit.ship_kind = ship_kind;
         // Update outgoing projections for all on-ship items
-        let ship_radius = self.u_data.get_ship_radius_by_fit_uid(fit_key);
+        let ship_radius = self.u_data.get_fit_ship_radius(fit_key);
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, ship_radius);
         // Update incoming projections
         for projector_key in self.rev_projs.iter_projectors(&ship_key) {

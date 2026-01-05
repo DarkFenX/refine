@@ -35,7 +35,7 @@ impl SolarSystem {
                 .into());
             }
         };
-        let ship_physics = self.u_data.get_ship_physics_by_fit_key(u_module.get_fit_uid());
+        let ship_physics = self.u_data.get_fit_ship_physics(u_module.get_fit_uid());
         let u_proj_data = Some(UProjData::from_physics_with_axt(
             ship_physics,
             projectee_physics,

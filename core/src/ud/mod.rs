@@ -11,8 +11,8 @@ pub(crate) use fleet::{UFleet, UFleetId, UFleets};
 pub use item::ItemId;
 pub(crate) use item::{
     UAttrMutationRequest, UAutocharge, UBooster, UCharacter, UCharge, UDrone, UEffectUpdates, UFighter, UFwEffect,
-    UImplant, UItem, UItemId, UItemMutationRequest, UItems, UModule, UNpcProp, UPhysics, UProjData, UProjEffect,
-    UProjs, URig, UService, UShip, UShipKind, USkill, UStance, USubsystem, USwEffect, get_combined_attr_values,
+    UImplant, UItem, UItemId, UItemMutationRequest, UItems, UModule, UPhysics, UProjData, UProjEffect, UProjs, URig,
+    UService, UShip, UShipKind, USkill, UStance, USubsystem, USwEffect, get_combined_attr_values,
 };
 
 mod container;

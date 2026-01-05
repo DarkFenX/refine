@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, PValue, SkillLevel, Spool, Value},
+    misc::{EffectMode, PValue, RearmMinions, ReloadOptionals, SkillLevel, Spool, StOption, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant,
@@ -494,21 +494,21 @@ impl UItem {
                 .items
                 .get(autocharge.get_cont_item_uid())
                 .get_carrier_physics(u_data),
-            Self::Booster(booster) => u_data.get_ship_physics_by_fit_key(booster.get_fit_uid()),
-            Self::Character(character) => u_data.get_ship_physics_by_fit_key(character.get_fit_uid()),
+            Self::Booster(booster) => u_data.get_fit_ship_physics(booster.get_fit_uid()),
+            Self::Character(character) => u_data.get_fit_ship_physics(character.get_fit_uid()),
             Self::Charge(charge) => u_data.items.get(charge.get_cont_item_uid()).get_carrier_physics(u_data),
             Self::Drone(drone) => *drone.get_physics(),
             Self::Fighter(fighter) => *fighter.get_physics(),
             Self::FwEffect(_) => UPhysics::default(),
-            Self::Implant(implant) => u_data.get_ship_physics_by_fit_key(implant.get_fit_uid()),
-            Self::Module(module) => u_data.get_ship_physics_by_fit_key(module.get_fit_uid()),
+            Self::Implant(implant) => u_data.get_fit_ship_physics(implant.get_fit_uid()),
+            Self::Module(module) => u_data.get_fit_ship_physics(module.get_fit_uid()),
             Self::ProjEffect(_) => UPhysics::default(),
-            Self::Service(service) => u_data.get_ship_physics_by_fit_key(service.get_fit_uid()),
-            Self::Rig(rig) => u_data.get_ship_physics_by_fit_key(rig.get_fit_uid()),
+            Self::Service(service) => u_data.get_fit_ship_physics(service.get_fit_uid()),
+            Self::Rig(rig) => u_data.get_fit_ship_physics(rig.get_fit_uid()),
             Self::Ship(ship) => *ship.get_physics(),
-            Self::Skill(skill) => u_data.get_ship_physics_by_fit_key(skill.get_fit_uid()),
-            Self::Stance(stance) => u_data.get_ship_physics_by_fit_key(stance.get_fit_uid()),
-            Self::Subsystem(subsystem) => u_data.get_ship_physics_by_fit_key(subsystem.get_fit_uid()),
+            Self::Skill(skill) => u_data.get_fit_ship_physics(skill.get_fit_uid()),
+            Self::Stance(stance) => u_data.get_fit_ship_physics(stance.get_fit_uid()),
+            Self::Subsystem(subsystem) => u_data.get_fit_ship_physics(subsystem.get_fit_uid()),
             Self::SwEffect(_) => UPhysics::default(),
         }
     }
@@ -526,21 +526,21 @@ impl UItem {
                 .items
                 .get(autocharge.get_cont_item_uid())
                 .get_carrier_radius(u_data),
-            Self::Booster(booster) => u_data.get_ship_radius_by_fit_uid(booster.get_fit_uid()),
-            Self::Character(character) => u_data.get_ship_radius_by_fit_uid(character.get_fit_uid()),
+            Self::Booster(booster) => u_data.get_fit_ship_radius(booster.get_fit_uid()),
+            Self::Character(character) => u_data.get_fit_ship_radius(character.get_fit_uid()),
             Self::Charge(charge) => u_data.items.get(charge.get_cont_item_uid()).get_carrier_radius(u_data),
             Self::Drone(drone) => drone.get_radius(),
             Self::Fighter(fighter) => fighter.get_radius(),
             Self::FwEffect(_) => PValue::default(),
-            Self::Implant(implant) => u_data.get_ship_radius_by_fit_uid(implant.get_fit_uid()),
-            Self::Module(module) => u_data.get_ship_radius_by_fit_uid(module.get_fit_uid()),
+            Self::Implant(implant) => u_data.get_fit_ship_radius(implant.get_fit_uid()),
+            Self::Module(module) => u_data.get_fit_ship_radius(module.get_fit_uid()),
             Self::ProjEffect(_) => PValue::default(),
-            Self::Service(service) => u_data.get_ship_radius_by_fit_uid(service.get_fit_uid()),
-            Self::Rig(rig) => u_data.get_ship_radius_by_fit_uid(rig.get_fit_uid()),
+            Self::Service(service) => u_data.get_fit_ship_radius(service.get_fit_uid()),
+            Self::Rig(rig) => u_data.get_fit_ship_radius(rig.get_fit_uid()),
             Self::Ship(ship) => ship.get_radius(),
-            Self::Skill(skill) => u_data.get_ship_radius_by_fit_uid(skill.get_fit_uid()),
-            Self::Stance(stance) => u_data.get_ship_radius_by_fit_uid(stance.get_fit_uid()),
-            Self::Subsystem(subsystem) => u_data.get_ship_radius_by_fit_uid(subsystem.get_fit_uid()),
+            Self::Skill(skill) => u_data.get_fit_ship_radius(skill.get_fit_uid()),
+            Self::Stance(stance) => u_data.get_fit_ship_radius(stance.get_fit_uid()),
+            Self::Subsystem(subsystem) => u_data.get_fit_ship_radius(subsystem.get_fit_uid()),
             Self::SwEffect(_) => PValue::default(),
         }
     }
@@ -572,22 +572,22 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_spool(&self) -> Option<Spool> {
+    pub(crate) fn get_spool(&self) -> StOption<Spool> {
         match self {
             Self::Module(module) => module.get_spool(),
-            _ => None,
+            _ => StOption::Inherit,
         }
     }
-    pub(crate) fn get_reload_optionals(&self) -> Option<bool> {
+    pub(crate) fn get_reload_optionals(&self) -> StOption<ReloadOptionals> {
         match self {
             Self::Module(module) => module.get_reload_optionals(),
-            _ => None,
+            _ => StOption::Inherit,
         }
     }
-    pub(crate) fn get_rearm_minions(&self) -> Option<bool> {
+    pub(crate) fn get_rearm_minions(&self) -> StOption<RearmMinions> {
         match self {
             Self::Fighter(fighter) => fighter.get_rearm_minions(),
-            _ => None,
+            _ => StOption::Inherit,
         }
     }
     pub(crate) fn get_autocharges(&self) -> Option<&UAutocharges> {

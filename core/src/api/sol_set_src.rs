@@ -210,7 +210,7 @@ impl SolarSystem {
     fn update_projections(&mut self) {
         let mut projection_updates = Vec::new();
         for (fit_key, u_fit) in self.u_data.fits.iter() {
-            let ship_radius = self.u_data.get_ship_radius_by_fit_uid(fit_key);
+            let ship_radius = self.u_data.get_fit_ship_radius(fit_key);
             for module_key in u_fit.iter_module_keys() {
                 record_projection(&mut projection_updates, &self.u_data, module_key, ship_radius);
                 let u_module = self.u_data.items.get(module_key).dc_module().unwrap();

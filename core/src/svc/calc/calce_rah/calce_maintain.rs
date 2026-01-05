@@ -176,7 +176,7 @@ impl Calc {
             ac::attrs::SHIELD_CAPACITY | ac::attrs::ARMOR_HP | ac::attrs::HP => {
                 if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_key) {
                     let fit_key = ship.get_fit_uid();
-                    if ctx.u_data.get_fit_key_rah_incoming_dps(fit_key).deals_breacher_dps() {
+                    if ctx.u_data.get_fit_uid_rah_incoming_dps(fit_key).deals_breacher_dps() {
                         self.clear_fit_rah_results(ctx, fit_key);
                     }
                 }
