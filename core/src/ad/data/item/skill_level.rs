@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ASkillLevel(u8);
 impl ASkillLevel {
     pub fn new_clamped_i32(level: i32) -> Self {

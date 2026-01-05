@@ -1,7 +1,5 @@
 use ordered_float::OrderedFloat;
 
-use crate::util::LibDefault;
-
 const SS_MIN: f64 = -10.0;
 const SS_MAX: f64 = 5.0;
 

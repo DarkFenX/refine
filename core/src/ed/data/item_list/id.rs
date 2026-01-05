@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct EItemListId(i32);
 impl EItemListId {
     pub const fn new(id: i32) -> Self {

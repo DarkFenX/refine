@@ -1,6 +1,5 @@
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub(crate) struct UFleetId(usize);
-
 impl From<usize> for UFleetId {
     fn from(v: usize) -> Self {
         Self(v)

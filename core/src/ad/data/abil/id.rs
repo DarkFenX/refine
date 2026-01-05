@@ -1,6 +1,6 @@
 use crate::ed::EAbilId;
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct AAbilId(i32);
 impl AAbilId {
     pub const fn new(id: i32) -> Self {
@@ -10,7 +10,11 @@ impl AAbilId {
         self.0
     }
 }
-impl From<EAbilId> for AAbilId {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl const From<EAbilId> for AAbilId {
     fn from(abil_eid: EAbilId) -> Self {
         Self::new(abil_eid.into_inner())
     }

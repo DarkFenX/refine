@@ -1,6 +1,5 @@
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub(crate) struct UItemId(usize);
-
 impl From<usize> for UItemId {
     fn from(v: usize) -> Self {
         Self(v)

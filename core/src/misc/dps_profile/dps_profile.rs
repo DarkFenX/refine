@@ -1,47 +1,34 @@
 use crate::{
-    def::{AttrVal, OF},
     err::basic::DmgError,
-    misc::Breacher,
+    misc::{Breacher, PValue},
 };
-
-const DPS_MIN: AttrVal = OF(0.0);
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct DpsProfile {
-    em: AttrVal,
-    thermal: AttrVal,
-    kinetic: AttrVal,
-    explosive: AttrVal,
+    em: PValue,
+    thermal: PValue,
+    kinetic: PValue,
+    explosive: PValue,
     breacher: Option<Breacher>,
 }
 impl DpsProfile {
-    pub fn new_clamped(
-        em: impl Into<f64>,
-        thermal: impl Into<f64>,
-        kinetic: impl Into<f64>,
-        explosive: impl Into<f64>,
-        breacher: Option<Breacher>,
-    ) -> Self {
+    pub fn new_clamped(em: f64, thermal: f64, kinetic: f64, explosive: f64, breacher: Option<Breacher>) -> Self {
         Self {
-            em: OF(em.into()).max(DPS_MIN),
-            thermal: OF(thermal.into()).max(DPS_MIN),
-            kinetic: OF(kinetic.into()).max(DPS_MIN),
-            explosive: OF(explosive.into()).max(DPS_MIN),
+            em: PValue::new_clamped(em),
+            thermal: PValue::new_clamped(thermal),
+            kinetic: PValue::new_clamped(kinetic),
+            explosive: PValue::new_clamped(explosive),
             breacher,
         }
     }
     pub fn try_new(
-        em: impl Into<f64>,
-        thermal: impl Into<f64>,
-        kinetic: impl Into<f64>,
-        explosive: impl Into<f64>,
+        em: f64,
+        thermal: f64,
+        kinetic: f64,
+        explosive: f64,
         breacher: Option<Breacher>,
     ) -> Result<Self, DpsProfileError> {
-        let em = OF(em.into());
-        let thermal = OF(thermal.into());
-        let kinetic = OF(kinetic.into());
-        let explosive = OF(explosive.into());
-        if em < DPS_MIN {
+        if em < 0.0 {
             return Err(DmgError::Em(em).into());
         }
         if thermal < DPS_MIN {

@@ -81,7 +81,7 @@ impl Src {
     }
     // Buff methods
     pub(crate) fn get_buff_by_rid(&self, buff_rid: RBuffId) -> &RBuff {
-        self.r_data.buffs.get(buff_rid.0).unwrap()
+        self.r_data.buffs.get(buff_rid.into_inner()).unwrap()
     }
     pub(crate) fn get_buff_by_aid(&self, buff_aid: &ABuffId) -> Option<&RBuff> {
         let buff_rid = *self.r_data.buff_aid_rid_map.get(buff_aid)?;

@@ -4,7 +4,7 @@ pub use buff::{
 };
 pub use cat_id::AEffectCatId;
 pub use effect::AEffect;
-pub use id::{ACustomEffectId, ADogmaEffectId, AEffectId};
+pub use id::{ACustomEffectId, ADogmaEffectId, AEffectId, AEffectIdParseError};
 pub use location::AEffectLocation;
 pub use modifier::AEffectModifier;
 

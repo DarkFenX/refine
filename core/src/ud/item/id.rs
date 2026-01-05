@@ -2,7 +2,7 @@ use std::num::Wrapping;
 
 use crate::util::{LibDefault, LibIncrement};
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ItemId(u32);
 impl ItemId {
     pub fn new(id: u32) -> Self {

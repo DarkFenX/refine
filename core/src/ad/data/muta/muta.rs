@@ -3,7 +3,6 @@ use crate::{
     util::RMap,
 };
 
-#[derive(Clone)]
 pub struct AMuta {
     pub id: AItemId,
     pub item_map: RMap<AItemId, AItemId>,
