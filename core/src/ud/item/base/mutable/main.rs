@@ -1,6 +1,5 @@
 use crate::{
     ad::{AAttrId, AEffectId, AEveItemListId, AItemCatId, AItemGrpId, AItemId, AItemListId},
-    api::ItemId,
     err::basic::ItemNotMutatedError,
     misc::{EffectMode, SkillLevel, UnitInterval, Value},
     rd::{
@@ -8,7 +7,7 @@ use crate::{
         RcMuta, Src,
     },
     ud::{
-        UAttrMutationRequest, UItemMutationRequest,
+        ItemId, UAttrMutationRequest, UItemMutationRequest,
         err::ItemMutatedError,
         item::base::{UEffectUpdates, UItemBase},
     },

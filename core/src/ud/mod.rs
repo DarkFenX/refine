@@ -4,8 +4,11 @@
 //! store user data, so it is called like that.
 
 pub(crate) use data::UData;
+pub use fit::FitId;
 pub(crate) use fit::{UFit, UFitId, UFitSkill, UFits, UItemVec};
+pub use fleet::FleetId;
 pub(crate) use fleet::{UFleet, UFleetId, UFleets};
+pub use item::ItemId;
 pub(crate) use item::{
     UAttrMutationRequest, UAutocharge, UBooster, UCharacter, UCharge, UDrone, UEffectUpdates, UFighter, UFwEffect,
     UImplant, UItem, UItemId, UItemMutationRequest, UItems, UModule, UNpcProp, UPhysics, UProjData, UProjEffect,

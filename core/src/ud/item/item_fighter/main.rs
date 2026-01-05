@@ -1,10 +1,10 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::{AdjustableCount, ItemId, MinionState},
+    api::{AdjustableCount, MinionState},
     misc::{EffectMode, FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
-        UEffectUpdates, UFitId, UPhysics, UProjs,
+        ItemId, UEffectUpdates, UFitId, UPhysics, UProjs,
         item::{UAutocharges, UItemBase},
     },
     util::{LibNamed, RMap, RSet},

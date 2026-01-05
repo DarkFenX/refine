@@ -1,11 +1,13 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::ItemId,
     misc::{EffectMode, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState, RcItem, Src},
-    ud::item::{
-        base::{UEffectUpdates, process_effects},
-        misc::UEffectModes,
+    ud::{
+        ItemId,
+        item::{
+            base::{UEffectUpdates, process_effects},
+            misc::UEffectModes,
+        },
     },
     util::{RMap, RSet},
 };

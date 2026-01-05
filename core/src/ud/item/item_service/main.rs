@@ -1,10 +1,10 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::{ItemId, ServiceState},
+    api::ServiceState,
     misc::{EffectMode, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
-        UFitId,
+        ItemId, UFitId,
         item::{UEffectUpdates, UItemBase},
     },
     util::{LibNamed, RMap, RSet},

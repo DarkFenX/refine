@@ -1,13 +1,24 @@
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub(crate) struct UFitId(usize);
+use std::num::Wrapping;
 
-impl From<usize> for UFitId {
-    fn from(v: usize) -> Self {
-        Self(v)
+use crate::util::{LibDefault, LibIncrement};
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+pub struct FitId(u32);
+impl FitId {
+    pub fn new(id: u32) -> Self {
+        Self(id)
+    }
+    pub fn into_inner(self) -> u32 {
+        self.0
     }
 }
-impl From<UFitId> for usize {
-    fn from(v: UFitId) -> Self {
-        v.0
+impl LibDefault for FitId {
+    fn lib_default() -> Self {
+        Self(0)
+    }
+}
+impl LibIncrement for FitId {
+    fn lib_increment(&mut self) {
+        self.0 = (Wrapping(self.0) + Wrapping(1)).0;
     }
 }

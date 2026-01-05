@@ -1,11 +1,10 @@
 use crate::{
     ac,
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::ItemId,
     misc::{EffectMode, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState, Src},
     ud::{
-        UFitId,
+        ItemId, UFitId,
         item::{UEffectUpdates, UItemBase, UPhysics, UShipKind, bool_to_state_offline, state_to_bool},
     },
     util::{LibNamed, RMap, RSet},

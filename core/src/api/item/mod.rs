@@ -1,4 +1,3 @@
-pub use id::ItemId;
 pub use item::{GetItemError, Item, ItemMut, RemoveItemError};
 pub use item_autocharge::{Autocharge, AutochargeMut, GetAutochargeError};
 pub use item_booster::{
@@ -32,7 +31,6 @@ pub use traits::{
 };
 pub(in crate::api) use traits::{ItemMutSealed, ItemSealed};
 
-mod id;
 mod item;
 mod item_autocharge;
 mod item_booster;

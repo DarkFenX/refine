@@ -5,7 +5,7 @@ pub(crate) use base::{
 };
 use base::{UItemBase, UItemBaseMutable};
 pub(crate) use container::UItems;
-pub(crate) use id::UItemId;
+pub use id::ItemId;
 pub(crate) use item::UItem;
 pub(crate) use item_autocharge::UAutocharge;
 pub(crate) use item_booster::UBooster;
@@ -26,6 +26,7 @@ pub(crate) use item_subsystem::USubsystem;
 pub(crate) use item_sw_effect::USwEffect;
 pub(crate) use misc::{UAutocharges, UNpcProp, UPhysics, UProjData, UProjs};
 use misc::{bool_to_state_active, bool_to_state_offline, state_to_bool};
+pub(crate) use uid::UItemId;
 
 mod base;
 mod container;
@@ -49,3 +50,4 @@ mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
 mod misc;
+mod uid;
