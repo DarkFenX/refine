@@ -1,4 +1,4 @@
-use crate::ad;
+use crate::rd::RState;
 
 /// Drone/fighter states.
 #[derive(Copy, Clone)]
@@ -7,19 +7,19 @@ pub enum MinionState {
     InSpace,
     Engaging,
 }
-impl From<ad::AState> for MinionState {
-    fn from(a_state: ad::AState) -> Self {
-        match a_state {
-            ad::AState::Ghost => Self::InBay,
-            ad::AState::Disabled => Self::InBay,
-            ad::AState::Offline => Self::InBay,
-            ad::AState::Online => Self::InSpace,
-            ad::AState::Active => Self::Engaging,
-            ad::AState::Overload => Self::Engaging,
+impl From<RState> for MinionState {
+    fn from(r_state: RState) -> Self {
+        match r_state {
+            RState::Ghost => Self::InBay,
+            RState::Disabled => Self::InBay,
+            RState::Offline => Self::InBay,
+            RState::Online => Self::InSpace,
+            RState::Active => Self::Engaging,
+            RState::Overload => Self::Engaging,
         }
     }
 }
-impl From<MinionState> for ad::AState {
+impl From<MinionState> for RState {
     fn from(minion_state: MinionState) -> Self {
         match minion_state {
             MinionState::InBay => Self::Offline,

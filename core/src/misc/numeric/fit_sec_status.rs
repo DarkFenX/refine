@@ -5,7 +5,7 @@ use crate::util::LibDefault;
 const SS_MIN: f64 = -10.0;
 const SS_MAX: f64 = 5.0;
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Default)]
 pub struct FitSecStatus(OrderedFloat<f64>);
 impl FitSecStatus {
     pub fn new_checked(sec_status: f64) -> Result<Self, FitSecStatusError> {
@@ -19,11 +19,6 @@ impl FitSecStatus {
     }
     pub(crate) fn get_inner(&self) -> OrderedFloat<f64> {
         self.0
-    }
-}
-impl const LibDefault for FitSecStatus {
-    fn lib_default() -> Self {
-        Self(OrderedFloat(0.0))
     }
 }
 impl From<FitSecStatus> for f64 {

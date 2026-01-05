@@ -14,7 +14,7 @@ pub(crate) fn sig_round(val: f64, sig_digits: u32) -> f64 {
 
 // Round number to a specific digit after decimal dot.
 pub(crate) fn round(val: f64, digits: i32) -> f64 {
-    let mul = 10.0.powi(digits);
+    let mul = 10.0_f64.powi(digits);
     (val * mul).round() / mul
 }
 

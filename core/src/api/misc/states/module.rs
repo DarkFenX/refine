@@ -1,4 +1,4 @@
-use crate::ad;
+use crate::rd::RState;
 
 /// Module states.
 #[derive(Copy, Clone)]
@@ -9,19 +9,19 @@ pub enum ModuleState {
     Active,
     Overload,
 }
-impl From<ad::AState> for ModuleState {
-    fn from(a_state: ad::AState) -> Self {
-        match a_state {
-            ad::AState::Ghost => Self::Disabled,
-            ad::AState::Disabled => Self::Disabled,
-            ad::AState::Offline => Self::Offline,
-            ad::AState::Online => Self::Online,
-            ad::AState::Active => Self::Active,
-            ad::AState::Overload => Self::Overload,
+impl From<RState> for ModuleState {
+    fn from(r_state: RState) -> Self {
+        match r_state {
+            RState::Ghost => Self::Disabled,
+            RState::Disabled => Self::Disabled,
+            RState::Offline => Self::Offline,
+            RState::Online => Self::Online,
+            RState::Active => Self::Active,
+            RState::Overload => Self::Overload,
         }
     }
 }
-impl From<ModuleState> for ad::AState {
+impl From<ModuleState> for RState {
     fn from(module_state: ModuleState) -> Self {
         match module_state {
             ModuleState::Disabled => Self::Disabled,
