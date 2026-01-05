@@ -1,20 +1,20 @@
 use crate::{
-    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
-    def::ItemId,
-    misc::EffectMode,
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
+    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
+    api::ItemId,
+    misc::{EffectMode, SkillLevel, Value},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         UFitId, UItemId,
         item::{UEffectUpdates, UItemBase, UProjs},
     },
-    util::{Named, RMap, RSet},
+    util::{LibNamed, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UCharge {
     pub(super) base: UItemBase,
-    fit_key: UFitId,
-    cont_item_key: UItemId,
+    fit_uid: UFitId,
+    cont_item_uid: UItemId,
     projs: UProjs,
     activated: bool,
     force_disabled: bool,
@@ -23,16 +23,16 @@ impl UCharge {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitId,
-        cont_item_key: UItemId,
+        fit_uid: UFitId,
+        cont_item_uid: UItemId,
         activated: bool,
         force_disabled: bool,
         src: &Src,
     ) -> Self {
         Self {
             base: UItemBase::new(item_id, type_id, get_state(activated, force_disabled), src),
-            fit_key,
-            cont_item_key,
+            fit_uid,
+            cont_item_uid,
             projs: UProjs::new(),
             activated,
             force_disabled,
@@ -54,22 +54,22 @@ impl UCharge {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         self.base.get_attrs()
     }
     pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
-        self.base.get_defeff_key()
+    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
+        self.base.get_defeff_rid()
     }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         self.base.get_skill_reqs()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base.get_axt()
     }
-    pub(crate) fn get_state(&self) -> AState {
+    pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
@@ -84,11 +84,11 @@ impl UCharge {
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
-        self.base.get_effect_key_mode(effect_key)
+    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode(effect_rid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.base.set_effect_mode(effect_id, effect_mode, src)
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.base.set_effect_mode(effect_aid, effect_mode, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
@@ -126,11 +126,11 @@ impl UCharge {
         self.force_disabled = force_disabled;
         self.base.set_state(get_state(self.activated, self.force_disabled));
     }
-    pub(crate) fn get_fit_key(&self) -> UFitId {
-        self.fit_key
+    pub(crate) fn get_fit_uid(&self) -> UFitId {
+        self.fit_uid
     }
-    pub(crate) fn get_cont_item_key(&self) -> UItemId {
-        self.cont_item_key
+    pub(crate) fn get_cont_item_uid(&self) -> UItemId {
+        self.cont_item_uid
     }
     pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs
@@ -139,8 +139,8 @@ impl UCharge {
         &mut self.projs
     }
 }
-impl Named for UCharge {
-    fn get_name() -> &'static str {
+impl LibNamed for UCharge {
+    fn lib_get_name() -> &'static str {
         "UCharge"
     }
 }
@@ -149,19 +149,19 @@ impl std::fmt::Display for UCharge {
         write!(
             f,
             "{}(item_id={}, type_id={})",
-            Self::get_name(),
+            Self::lib_get_name(),
             self.get_item_id(),
             self.get_type_id(),
         )
     }
 }
 
-fn get_state(activated: bool, force_disabled: bool) -> AState {
+fn get_state(activated: bool, force_disabled: bool) -> RState {
     match force_disabled {
-        true => AState::Disabled,
+        true => RState::Disabled,
         false => match activated {
-            true => AState::Active,
-            false => AState::Offline,
+            true => RState::Active,
+            false => RState::Offline,
         },
     }
 }

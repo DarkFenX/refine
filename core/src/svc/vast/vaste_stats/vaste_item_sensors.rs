@@ -29,7 +29,7 @@ impl Vast {
         if let UItem::Ship(u_ship) = u_item
             && let UShipKind::Ship = u_ship.get_kind()
         {
-            let u_fit = ctx.u_data.fits.get(u_ship.get_fit_key());
+            let u_fit = ctx.u_data.fits.get(u_ship.get_fit_uid());
             if let Some(character_key) = u_fit.character
                 && let Some(character_locks) =
                     calc.get_item_oattr_afb_oextra(ctx, character_key, attr_consts.max_locked_targets, OF(0.0))

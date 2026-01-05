@@ -1,7 +1,7 @@
 use crate::{
     def::AttrVal,
     svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped},
-    util::{ConvertExtend, InfCount},
+    util::{InfCount, LibConvertExtend},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,10 +23,10 @@ impl<T> CSeqInf<T> {
     }
     pub(in crate::svc) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
     where
-        T: ConvertExtend<X, R>,
+        T: LibConvertExtend<X, R>,
     {
         CycleSeq::Inf(CSeqInf {
-            data: self.data.convert_extend(xt),
+            data: self.data.lib_convert_extend(xt),
         })
     }
 }

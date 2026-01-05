@@ -15,7 +15,7 @@ impl Vast {
         projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
-        if let Some(projector_fit_key) = projector_item.get_fit_key() {
+        if let Some(projector_fit_key) = projector_item.get_fit_uid() {
             let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
             let projector_espec = EffectSpec::new(projector_key, effect.rid);
             if effect.projectee_filter.is_some()
@@ -45,7 +45,7 @@ impl Vast {
                 }
             }
         }
-        if let Some(projectee_fit_key) = projectee_item.get_fit_key()
+        if let Some(projectee_fit_key) = projectee_item.get_fit_uid()
             && !effect.stopped_effect_rids.is_empty()
             && effect.category == ac::effcats::TARGET
         {
@@ -105,7 +105,7 @@ impl Vast {
         projectee_key: UItemId,
         projectee_item: &UItem,
     ) {
-        if let Some(projector_fit_key) = projector_item.get_fit_key() {
+        if let Some(projector_fit_key) = projector_item.get_fit_uid() {
             let projector_fit_data = self.fit_datas.get_mut(&projector_fit_key).unwrap();
             let projector_espec = EffectSpec::new(projector_key, effect.rid);
             if effect.projectee_filter.is_some() {
@@ -132,7 +132,7 @@ impl Vast {
                 }
             }
         }
-        if let Some(projectee_fit_key) = projectee_item.get_fit_key()
+        if let Some(projectee_fit_key) = projectee_item.get_fit_uid()
             && !effect.stopped_effect_rids.is_empty()
             && effect.category == ac::effcats::TARGET
         {

@@ -1,13 +1,19 @@
-use crate::{ad::ACount, util::f64_to_u32};
+use crate::{
+    ad::ACount,
+    util::{round_f64_to_u32, trunc_f64_to_u32},
+};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct Count(u32);
 impl Count {
     pub fn new(value: u32) -> Self {
         Self(value)
     }
-    pub(crate) fn new_f64(value: f64) -> Self {
-        Self(f64_to_u32(value))
+    pub(crate) fn new_f64_trunced(value: f64) -> Self {
+        Self(trunc_f64_to_u32(value))
+    }
+    pub(crate) fn new_f64_rounded(value: f64) -> Self {
+        Self(round_f64_to_u32(value))
     }
 }
 impl From<u32> for Count {

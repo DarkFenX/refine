@@ -28,7 +28,7 @@ impl SolarSystem {
         if projectee_u_item.get_direct_physics().is_none() {
             return Err(ItemReceiveProjError {
                 item_id: projectee_u_item.get_item_id(),
-                item_kind: projectee_u_item.get_name(),
+                item_kind: projectee_u_item.lib_get_name(),
             }
             .into());
         }

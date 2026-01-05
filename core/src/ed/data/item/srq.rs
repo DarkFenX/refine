@@ -1,6 +1,6 @@
 use crate::{
     ed::{EGenInt, EItemId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemSkillReq {
@@ -8,8 +8,8 @@ pub struct EItemSkillReq {
     pub skill_id: EItemId,
     pub level: EGenInt,
 }
-impl Named for EItemSkillReq {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemSkillReq {
+    fn lib_get_name() -> &'static str {
         "EItemSkillReq"
     }
 }

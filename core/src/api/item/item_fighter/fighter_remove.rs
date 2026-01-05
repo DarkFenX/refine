@@ -22,7 +22,7 @@ impl SolarSystem {
         );
         // Remove outgoing projections
         let u_fighter = self.u_data.items.get(fighter_key).dc_fighter().unwrap();
-        let fit_key = u_fighter.get_fit_key();
+        let fit_key = u_fighter.get_fit_uid();
         if !u_fighter.get_projs().is_empty() {
             for projectee_key in u_fighter.get_projs().iter_projectees() {
                 SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, fighter_key, projectee_key);

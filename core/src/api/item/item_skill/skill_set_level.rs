@@ -10,7 +10,7 @@ impl SolarSystem {
         let fit_skill = self
             .u_data
             .fits
-            .get_mut(u_skill.get_fit_key())
+            .get_mut(u_skill.get_fit_uid())
             .skills
             .get_mut(&u_skill.get_type_id())
             .unwrap();

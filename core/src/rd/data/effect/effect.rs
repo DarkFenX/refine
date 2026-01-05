@@ -1,11 +1,10 @@
 use crate::{
-    ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId, AState},
-    def::AttrVal,
-    misc::{DmgKinds, Ecm, MiningAmount},
+    ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
+    misc::{DmgKinds, Ecm, MiningAmount, Value},
     nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NProjMultGetter},
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
-        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListId, RSpoolAttrs,
+        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListId, RSpoolAttrs, RState,
     },
     util::RMap,
 };
@@ -19,7 +18,7 @@ pub(crate) struct REffect {
     pub(crate) aid: AEffectId,
     pub(crate) rid: REffectId,
     pub(crate) category: AEffectCatId,
-    pub(crate) state: AState,
+    pub(crate) state: RState,
     pub(crate) charge: Option<REffectCharge>,
     pub(crate) buff: Option<REffectBuff>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
@@ -46,34 +45,35 @@ pub(crate) struct REffect {
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
     // Output getters/specs
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
-    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<AttrVal>>>,
+    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<Value>>>,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
     pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
-    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
-    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
-    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
-    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
-    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
-    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<AttrVal>>,
-    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<AttrVal>>,
+    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<Value>>,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<Value>>,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<Value>>,
+    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<Value>>,
+    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<Value>>,
+    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<Value>>,
+    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<Value>>,
+    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<Value>>,
+    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<Value>>,
     pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
 }
 impl REffect {
     pub(in crate::rd) fn from_a_effect(effect_rid: REffectId, a_effect: &AEffect) -> Self {
         let n_effect = N_EFFECT_MAP.get(&a_effect.id);
+        let state = RState::from_a_state(&a_effect.state);
         Self {
             aid: a_effect.id,
             rid: effect_rid,
             category: a_effect.category,
-            state: a_effect.state,
-            is_assist: a_effect.is_assist && a_effect.state == AState::Active,
-            is_offense: a_effect.is_offense && a_effect.state == AState::Active,
-            banned_in_hisec: a_effect.banned_in_hisec && a_effect.state == AState::Active,
-            banned_in_lowsec: a_effect.banned_in_lowsec && a_effect.state == AState::Active,
+            state,
+            is_assist: a_effect.is_assist && state == RState::Active,
+            is_offense: a_effect.is_offense && state == RState::Active,
+            banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
+            banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             calc_customizer: n_effect.and_then(|n| n.calc_customizer),
@@ -240,10 +240,10 @@ impl REffect {
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
         }
-        self.is_active_with_duration = self.state == AState::Active && self.duration_attr_rid.is_some();
+        self.is_active_with_duration = self.state == RState::Active && self.duration_attr_rid.is_some();
     }
     pub(crate) fn is_active(&self) -> bool {
-        self.state == AState::Active
+        self.state == RState::Active
     }
     // Misc methods
     pub(crate) fn activates_charge(&self) -> bool {

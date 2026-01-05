@@ -45,7 +45,7 @@ impl<'a> SubsystemMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_subsystem(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_subsystem(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_slot(&self) -> Option<SlotIndex> {
@@ -72,7 +72,7 @@ impl<'a> ItemCommon for SubsystemMut<'a> {}
 impl<'a> ItemMutCommon for SubsystemMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, subsystem_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_subsystem(sol, subsystem_key).get_fit_key();
+    let fit_key = get_u_subsystem(sol, subsystem_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_slot(sol: &SolarSystem, subsystem_key: UItemId) -> Option<SlotIndex> {

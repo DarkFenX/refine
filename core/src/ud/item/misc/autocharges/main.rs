@@ -9,11 +9,11 @@ impl UAutocharges {
         Self { data: RMap::new() }
     }
     // Query methods
-    pub(crate) fn get_ac_key(&self, effect_key: &REffectId) -> Option<UItemId> {
-        self.data.get(effect_key).copied()
+    pub(crate) fn get_ac_uid(&self, effect_rid: &REffectId) -> Option<UItemId> {
+        self.data.get(effect_rid).copied()
     }
-    pub(crate) fn contains_ac_for_effect(&self, effect_key: &REffectId) -> bool {
-        self.data.contains_key(effect_key)
+    pub(crate) fn contains_ac_for_effect(&self, effect_rid: &REffectId) -> bool {
+        self.data.contains_key(effect_rid)
     }
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = UItemId> {
         self.data.values().copied()
@@ -22,8 +22,8 @@ impl UAutocharges {
         self.data.is_empty()
     }
     // Modification methods
-    pub(crate) fn set(&mut self, effect_id: REffectId, autocharge_key: UItemId) {
-        self.data.insert(effect_id, autocharge_key);
+    pub(crate) fn set(&mut self, effect_rid: REffectId, autocharge_uid: UItemId) {
+        self.data.insert(effect_rid, autocharge_uid);
     }
     pub(crate) fn clear(&mut self) {
         // Autocharges are supposed to be rarely used, so deallocate whenever map is empty.

@@ -3,7 +3,7 @@ use crate::{
     svc::cycle::{
         CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf,
     },
-    util::{ConvertExtend, InfCount},
+    util::{InfCount, LibConvertExtend},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,12 +55,12 @@ impl<T> CSeqLimSinInf<T> {
     }
     pub(in crate::svc) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X, p3_xt: X) -> CycleSeq<R>
     where
-        T: ConvertExtend<X, R>,
+        T: LibConvertExtend<X, R>,
         R: Eq,
     {
-        let p1_data = self.p1_data.convert_extend(p1_xt);
-        let p2_data = self.p2_data.convert_extend(p2_xt);
-        let p3_data = self.p3_data.convert_extend(p3_xt);
+        let p1_data = self.p1_data.lib_convert_extend(p1_xt);
+        let p2_data = self.p2_data.lib_convert_extend(p2_xt);
+        let p3_data = self.p3_data.lib_convert_extend(p3_xt);
         match (p1_data == p2_data, p2_data == p3_data) {
             // Nothing to merge
             (false, false) => CycleSeq::LimSinInf(CSeqLimSinInf {

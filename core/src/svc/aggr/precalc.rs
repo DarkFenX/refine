@@ -4,7 +4,7 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
         output::Output,
     },
-    util::{ConvertExtend, trunc_unerr},
+    util::{LibConvertExtend, trunc_unerr},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -19,11 +19,11 @@ where
     pub(super) output: Output<T>,
 }
 
-impl<T> ConvertExtend<Output<T>, AggrPartData<T>> for CycleDataFull
+impl<T> LibConvertExtend<Output<T>, AggrPartData<T>> for CycleDataFull
 where
     T: Copy,
 {
-    fn convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
+    fn lib_convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
         AggrPartData {
             time: self.time,
             tail_time: (xt.get_completion_time() - self.time).max(OF(0.0)),

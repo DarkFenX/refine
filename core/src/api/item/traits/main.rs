@@ -59,7 +59,7 @@ pub trait ItemCommon: ItemSealed {
         let effect_infos = effect_keys.map(move |&effect_key| {
             let effect_id = sol.u_data.src.get_effect_by_rid(effect_key).aid;
             let running = reffs.contains(&effect_key);
-            let mode = item.get_effect_key_mode(&effect_key);
+            let mode = item.get_effect_mode(&effect_key);
             (effect_id.into(), EffectInfo { running, mode })
         });
         Ok(effect_infos)
@@ -554,7 +554,7 @@ fn get_stat_applied_projectee_key(
     if projectee_u_item.get_direct_physics().is_none() {
         return Err(ItemReceiveProjError {
             item_id: projectee_u_item.get_item_id(),
-            item_kind: projectee_u_item.get_name(),
+            item_kind: projectee_u_item.lib_get_name(),
         }
         .into());
     }

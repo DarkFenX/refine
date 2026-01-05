@@ -463,7 +463,7 @@ fn validate_fast_ordered(
         true => used <= max,
         false => match used <= max {
             true => true,
-            false => users.iter_keys_from(max as Idx).all(|v| kfs.contains(v)),
+            false => users.iter_uids_from(max as Idx).all(|v| kfs.contains(v)),
         },
     }
 }
@@ -527,7 +527,7 @@ fn validate_verbose_ordered(
         return None;
     }
     let users: Vec<_> = users
-        .iter_keys_from(effective_max as Idx)
+        .iter_uids_from(effective_max as Idx)
         .filter(|item_key| !kfs.contains(item_key))
         .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
         .collect();

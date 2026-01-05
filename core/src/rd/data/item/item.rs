@@ -1,9 +1,9 @@
 use crate::{
     ac,
-    ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId, AState},
+    ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     misc::{SkillLevel, Value},
-    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind},
-    util::{GetId, RMap},
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState},
+    util::{LibGetId, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -19,7 +19,7 @@ pub(crate) struct RItem {
     pub(crate) defeff_rid: Option<REffectId>,
     pub(crate) abil_ids: Vec<AAbilId>,
     pub(crate) srqs: RMap<AItemId, SkillLevel>,
-    pub(crate) max_state: AState,
+    pub(crate) max_state: RState,
     pub(crate) ship_kind: Option<RShipKind>,
     pub(crate) proj_buff_item_list_rids: Vec<RItemListId>,
     pub(crate) fleet_buff_item_list_rids: Vec<RItemListId>,
@@ -46,7 +46,7 @@ impl RItem {
                 .iter()
                 .map(|(&item_aid, &a_skill_level)| (item_aid, a_skill_level.into()))
                 .collect(),
-            max_state: a_item.max_state,
+            max_state: RState::from_a_state(&a_item.max_state),
             val_fitted_group_id: a_item.val_fitted_group_id,
             val_online_group_id: a_item.val_online_group_id,
             val_active_group_id: a_item.val_active_group_id,
@@ -124,8 +124,8 @@ impl RItem {
         );
     }
 }
-impl GetId<AItemId> for RItem {
-    fn get_id(&self) -> AItemId {
+impl LibGetId<AItemId> for RItem {
+    fn lib_get_id(&self) -> AItemId {
         self.aid
     }
 }

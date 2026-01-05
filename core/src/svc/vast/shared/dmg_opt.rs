@@ -47,7 +47,7 @@ impl StatDmgItemKinds {
             // Here we assume that autocharges always belong to fighters, and fighters are always
             // mobile
             UItem::Autocharge(autocharge) => {
-                let cont_u_item = ctx.u_data.items.get(autocharge.get_cont_item_key());
+                let cont_u_item = ctx.u_data.items.get(autocharge.get_cont_item_uid());
                 return self.resolve(ctx, cont_u_item, r_effect);
             }
             UItem::Drone(drone) => {

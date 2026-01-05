@@ -1,25 +1,25 @@
 use crate::{
-    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, ASlotIndex, AState},
-    def::ItemId,
-    misc::EffectMode,
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
+    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
+    api::ItemId,
+    misc::{EffectMode, SkillLevel, SlotIndex, Value},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         UFitId,
         item::{UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
     },
-    util::{Named, RMap, RSet},
+    util::{LibNamed, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UImplant {
     pub(super) base: UItemBase,
-    fit_key: UFitId,
+    fit_uid: UFitId,
 }
 impl UImplant {
-    pub(crate) fn new(item_id: ItemId, type_id: AItemId, fit_key: UFitId, implant_state: bool, src: &Src) -> Self {
+    pub(crate) fn new(item_id: ItemId, type_id: AItemId, fit_uid: UFitId, implant_state: bool, src: &Src) -> Self {
         Self {
             base: UItemBase::new(item_id, type_id, bool_to_state_offline(implant_state), src),
-            fit_key,
+            fit_uid,
         }
     }
     // Item base methods
@@ -38,22 +38,22 @@ impl UImplant {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         self.base.get_attrs()
     }
     pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
-        self.base.get_defeff_key()
+    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
+        self.base.get_defeff_rid()
     }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         self.base.get_skill_reqs()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base.get_axt()
     }
-    pub(crate) fn get_state(&self) -> AState {
+    pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
@@ -68,11 +68,11 @@ impl UImplant {
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
-        self.base.get_effect_key_mode(effect_key)
+    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode(effect_rid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.base.set_effect_mode(effect_id, effect_mode, src)
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.base.set_effect_mode(effect_aid, effect_mode, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
@@ -94,18 +94,18 @@ impl UImplant {
     pub(crate) fn set_implant_state(&mut self, state: bool) {
         self.base.set_state(bool_to_state_offline(state))
     }
-    pub(crate) fn get_fit_key(&self) -> UFitId {
-        self.fit_key
+    pub(crate) fn get_fit_uid(&self) -> UFitId {
+        self.fit_uid
     }
-    pub(crate) fn get_slot(&self) -> Option<ASlotIndex> {
+    pub(crate) fn get_slot(&self) -> Option<SlotIndex> {
         match self.get_axt() {
             Some(axt) => axt.implant_slot,
             None => None,
         }
     }
 }
-impl Named for UImplant {
-    fn get_name() -> &'static str {
+impl LibNamed for UImplant {
+    fn lib_get_name() -> &'static str {
         "UImplant"
     }
 }
@@ -114,7 +114,7 @@ impl std::fmt::Display for UImplant {
         write!(
             f,
             "{}(item_id={}, type_id={})",
-            Self::get_name(),
+            Self::lib_get_name(),
             self.get_item_id(),
             self.get_type_id(),
         )

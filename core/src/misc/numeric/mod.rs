@@ -1,13 +1,21 @@
 pub use count::Count;
 pub use fighter_count::{FighterCount, FighterCountError};
+pub use fit_sec_status::{FitSecStatus, FitSecStatusError};
+pub use index::Index;
+pub(crate) use inf_count::InfCount;
 pub use pvalue::PValue;
 pub use skill_level::{SkillLevel, SkillLevelError};
 pub use slot_index::SlotIndex;
+pub use unit_interval::{UnitInterval, UnitIntervalError};
 pub use value::Value;
 
 mod count;
 mod fighter_count;
+mod fit_sec_status;
+mod index;
+mod inf_count;
 mod pvalue;
 mod skill_level;
 mod slot_index;
+mod unit_interval;
 mod value;

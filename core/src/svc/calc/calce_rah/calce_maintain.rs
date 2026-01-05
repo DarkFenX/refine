@@ -17,7 +17,7 @@ impl Calc {
             return;
         }
         if let UItem::Ship(ship) = item {
-            self.clear_fit_rah_results(ctx, ship.get_fit_key());
+            self.clear_fit_rah_results(ctx, ship.get_fit_uid());
         }
     }
     pub(in crate::svc::calc) fn rah_item_unloaded(&mut self, ctx: SvcCtx, item: &UItem) {
@@ -25,7 +25,7 @@ impl Calc {
             return;
         }
         if let UItem::Ship(ship) = item {
-            self.clear_fit_rah_results(ctx, ship.get_fit_key());
+            self.clear_fit_rah_results(ctx, ship.get_fit_uid());
         }
     }
     pub(in crate::svc::calc) fn rah_effects_started(
@@ -42,7 +42,7 @@ impl Calc {
             && let Some(rah_effect_key) = ctx.ec().adaptive_armor_hardener
             && effects.iter().any(|v| v.rid == rah_effect_key)
         {
-            let fit_key = module.get_fit_key();
+            let fit_key = module.get_fit_uid();
             // Clear sim data for other RAHs on the same fit
             self.clear_fit_rah_results(ctx, fit_key);
             // Add sim data for RAH being started
@@ -103,7 +103,7 @@ impl Calc {
             && let Some(rah_effect_key) = ctx.ec().adaptive_armor_hardener
             && effects.iter().any(|v| v.rid == rah_effect_key)
         {
-            let fit_key = module.get_fit_key();
+            let fit_key = module.get_fit_uid();
             // Remove postprocessors
             let attr_consts = ctx.ac();
             let item_attr_data = self.attrs.get_item_attr_data_mut(item_key).unwrap();
@@ -142,10 +142,10 @@ impl Calc {
             | ac::attrs::ARMOR_THERM_DMG_RESONANCE
             | ac::attrs::ARMOR_KIN_DMG_RESONANCE
             | ac::attrs::ARMOR_EXPL_DMG_RESONANCE => match ctx.u_data.items.get(aspec.item_key) {
-                UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_key()),
+                UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_uid()),
                 UItem::Module(module) => {
                     if self.rah.resonances.contains_key(&aspec.item_key) {
-                        self.clear_fit_rah_results(ctx, module.get_fit_key());
+                        self.clear_fit_rah_results(ctx, module.get_fit_uid());
                     }
                 }
                 _ => (),
@@ -155,7 +155,7 @@ impl Calc {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_key = ctx.u_data.items.get(aspec.item_key).get_fit_key().unwrap();
+                    let fit_key = ctx.u_data.items.get(aspec.item_key).get_fit_uid().unwrap();
                     self.clear_fit_rah_results(ctx, fit_key);
                 }
             }
@@ -164,7 +164,7 @@ impl Calc {
                 if self.rah.resonances.contains_key(&aspec.item_key) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
-                    let fit_key = ctx.u_data.items.get(aspec.item_key).get_fit_key().unwrap();
+                    let fit_key = ctx.u_data.items.get(aspec.item_key).get_fit_uid().unwrap();
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
                     if self.rah.by_fit.get(&fit_key).len() >= 2 {
@@ -175,7 +175,7 @@ impl Calc {
             // Ship HP - need to clear results since breacher DPS depends on those
             ac::attrs::SHIELD_CAPACITY | ac::attrs::ARMOR_HP | ac::attrs::HP => {
                 if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_key) {
-                    let fit_key = ship.get_fit_key();
+                    let fit_key = ship.get_fit_uid();
                     if ctx.u_data.get_fit_key_rah_incoming_dps(fit_key).deals_breacher_dps() {
                         self.clear_fit_rah_results(ctx, fit_key);
                     }
@@ -209,7 +209,7 @@ impl Calc {
             return *val;
         }
         // Unwrap fit ID, since registered RAHs are supposed to be modules, which have fit ID
-        let fit_key = ctx.u_data.items.get(item_key).get_fit_key().unwrap();
+        let fit_key = ctx.u_data.items.get(item_key).get_fit_uid().unwrap();
         self.rah.sim_running = true;
         self.rah_run_simulation(ctx, fit_key);
         self.rah.sim_running = false;

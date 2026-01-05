@@ -1,6 +1,6 @@
 use crate::{
     ed::{EEffectId, EItemId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemEffect {
@@ -8,8 +8,8 @@ pub struct EItemEffect {
     pub effect_id: EEffectId,
     pub is_default: bool,
 }
-impl Named for EItemEffect {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemEffect {
+    fn lib_get_name() -> &'static str {
         "EItemEffect"
     }
 }

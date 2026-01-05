@@ -10,8 +10,7 @@ pub use effect::{
 pub use item::{AItem, AItemCatId, AItemEffectData, AItemGrpId, AItemId, ASkillLevel};
 pub use item_list::{ACustomItemListId, AEveItemListId, AItemList, AItemListId};
 pub use muta::{AMuta, AMutaAttrRange};
-pub use shared::{AModifierSrq, AOp, AState};
-pub use value::{ACount, AValue};
+pub use shared::{ACount, AModifierSrq, AOp, AState, AValue};
 
 mod abil;
 mod attr;
@@ -22,4 +21,3 @@ mod item;
 mod item_list;
 mod muta;
 mod shared;
-mod value;

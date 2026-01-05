@@ -55,7 +55,7 @@ fn internal_get_dmg_base_opc(
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<AttrVal>>> {
     let item = ctx.u_data.items.get(item_uid);
-    let dmg_dealer_uid = match item.get_axt().unwrap().capacity > PValue::new_unchecked(0.0) {
+    let dmg_dealer_uid = match item.get_axt().unwrap().capacity > PValue::new_f64_unchecked(0.0) {
         // If item has capacity but no charge - it is not dealing damage
         true => item.get_charge_uid()?,
         false => item_uid,

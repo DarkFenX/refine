@@ -19,9 +19,9 @@ pub(super) fn get_autocharge_cseq_map(
         return None;
     };
     // Autocharge cycles rely on parent item cycles
-    let mut cseq_map = get_item_cseq_map(ctx, calc, autocharge.get_cont_item_key(), options, ignore_state)?;
+    let mut cseq_map = get_item_cseq_map(ctx, calc, autocharge.get_cont_item_uid(), options, ignore_state)?;
     // If effect controlling the autocharge doesn't cycle, autocharge doesn't cycle either
-    let cont_effect_cycle = cseq_map.remove(&autocharge.get_cont_effect_key())?;
+    let cont_effect_cycle = cseq_map.remove(&autocharge.get_cont_effect_rid())?;
     cseq_map.clear();
     let effect_keys = match ignore_state {
         true => Either::Left(autocharge.get_effect_datas().unwrap().keys().copied()),

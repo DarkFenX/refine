@@ -1,15 +1,15 @@
 use itertools::chain;
 
 use crate::{
-    ad,
-    def::FitId,
+    ad::AItemId,
+    api::FitId,
     misc::{DpsProfile, FitSecStatus},
     ud::{
         UFleetId, UItemId,
         fit::{UFitSkill, UItemVec},
         item::UShipKind,
     },
-    util::{GetId, Named, RMap, RSet},
+    util::{LibGetId, LibNamed, RMap, RSet},
 };
 
 #[derive(Clone)]
@@ -17,7 +17,7 @@ pub(crate) struct UFit {
     pub(crate) id: FitId,
     pub(crate) fleet: Option<UFleetId>,
     pub(crate) character: Option<UItemId>,
-    pub(crate) skills: RMap<ad::AItemId, UFitSkill>,
+    pub(crate) skills: RMap<AItemId, UFitSkill>,
     pub(crate) implants: RSet<UItemId>,
     pub(crate) boosters: RSet<UItemId>,
     pub(crate) ship: Option<UItemId>,
@@ -56,16 +56,16 @@ impl UFit {
             drones: RSet::new(),
             fighters: RSet::new(),
             fw_effects: RSet::new(),
-            sec_status: FitSecStatus::new_clamped(0.0),
+            sec_status: FitSecStatus::default(),
             rah_incoming_dps: None,
             ship_kind: UShipKind::Unknown,
         }
     }
     pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = UItemId> {
         chain!(
-            self.mods_high.iter_keys().copied(),
-            self.mods_mid.iter_keys().copied(),
-            self.mods_low.iter_keys().copied(),
+            self.mods_high.iter_uids().copied(),
+            self.mods_mid.iter_uids().copied(),
+            self.mods_low.iter_uids().copied(),
         )
     }
     pub(crate) fn all_direct_items(&self) -> Vec<UItemId> {
@@ -95,15 +95,15 @@ impl UFit {
         // Fill the data
         let mut items = Vec::with_capacity(capacity);
         conditional_push(&mut items, self.character);
-        items.extend(self.skills.values().map(|v| v.skill_key));
+        items.extend(self.skills.values().map(|v| v.skill_uid));
         items.extend(self.implants.iter());
         items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);
         conditional_push(&mut items, self.stance);
         items.extend(self.subsystems.iter());
-        items.extend(self.mods_high.iter_keys());
-        items.extend(self.mods_mid.iter_keys());
-        items.extend(self.mods_low.iter_keys());
+        items.extend(self.mods_high.iter_uids());
+        items.extend(self.mods_mid.iter_uids());
+        items.extend(self.mods_low.iter_uids());
         items.extend(self.rigs.iter());
         items.extend(self.services.iter());
         items.extend(self.drones.iter());
@@ -112,13 +112,13 @@ impl UFit {
         items
     }
 }
-impl Named for UFit {
-    fn get_name() -> &'static str {
+impl LibNamed for UFit {
+    fn lib_get_name() -> &'static str {
         "UFit"
     }
 }
-impl GetId<FitId> for UFit {
-    fn get_id(&self) -> FitId {
+impl LibGetId<FitId> for UFit {
+    fn lib_get_id(&self) -> FitId {
         self.id
     }
 }

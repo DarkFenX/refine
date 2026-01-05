@@ -25,14 +25,17 @@ impl SolarSystem {
                 let skill = USkill::new(item_id, type_id, fit_key, level.into(), true, &self.u_data.src);
                 let item = UItem::Skill(skill);
                 let skill_key = self.u_data.items.add(item);
-                entry.insert(UFitSkill { skill_key, level });
+                entry.insert(UFitSkill {
+                    skill_uid: skill_key,
+                    level,
+                });
                 SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
                 Ok(skill_key)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
                 type_id,
                 fit_id: fit.id,
-                item_id: self.u_data.items.eid_by_iid(entry.get().skill_key),
+                item_id: self.u_data.items.eid_by_iid(entry.get().skill_uid),
             }),
         }
     }

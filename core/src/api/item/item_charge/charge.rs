@@ -45,14 +45,14 @@ impl<'a> ChargeMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_charge(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_charge(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_cont_item(&self) -> Item<'_> {
         get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
-        let cont_key = get_u_charge(self.sol, self.key).get_cont_item_key();
+        let cont_key = get_u_charge(self.sol, self.key).get_cont_item_uid();
         ItemMut::new(self.sol, cont_key)
     }
     pub fn get_state(&self) -> bool {
@@ -76,11 +76,11 @@ impl<'a> ItemCommon for ChargeMut<'a> {}
 impl<'a> ItemMutCommon for ChargeMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, charge_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_charge(sol, charge_key).get_fit_key();
+    let fit_key = get_u_charge(sol, charge_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_cont_item(sol: &SolarSystem, charge_key: UItemId) -> Item<'_> {
-    let cont_key = get_u_charge(sol, charge_key).get_cont_item_key();
+    let cont_key = get_u_charge(sol, charge_key).get_cont_item_uid();
     Item::new(sol, cont_key)
 }
 fn get_state(sol: &SolarSystem, charge_key: UItemId) -> bool {

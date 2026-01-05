@@ -1,8 +1,8 @@
 use crate::{
     ac,
-    ad::{AEffectId, AState},
+    ad::AEffectId,
     misc::EffectMode,
-    rd::{REffect, REffectId, RItem, RcEffect, Src},
+    rd::{REffect, REffectId, RItem, RState, RcEffect, Src},
     ud::item::misc::UEffectModes,
     util::RSet,
 };
@@ -43,11 +43,11 @@ pub(super) fn process_effects(
     reffs: &mut RSet<REffectId>,
     src: &Src,
     item: &RItem,
-    item_state: AState,
+    item_state: RState,
     item_effect_modes: &UEffectModes,
 ) {
     match item_state {
-        AState::Ghost => stop_all_effects(reuse_eupdates, reffs, src, item),
+        RState::Ghost => stop_all_effects(reuse_eupdates, reffs, src, item),
         _ => update_running_effects(reuse_eupdates, reffs, src, item, item_state, item_effect_modes),
     }
 }
@@ -81,7 +81,7 @@ fn update_running_effects(
     reffs: &mut RSet<REffectId>,
     src: &Src,
     item: &RItem,
-    item_state: AState,
+    item_state: RState,
     item_effect_modes: &UEffectModes,
 ) {
     // Separate handling for the online effect
@@ -141,14 +141,14 @@ fn update_running_effects(
     }
 }
 
-fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, item_state: AState) -> bool {
+fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, item_state: RState) -> bool {
     if !item.has_online_effect {
         return false;
     }
-    match item_effect_modes.get_by_id(&ONLINE_EFFECT_ID) {
+    match item_effect_modes.get_by_aid(&ONLINE_EFFECT_ID) {
         // Since other effects from online category depend on the online effect in full compliance
         // mode, use simplified resolution for the online effect itself
-        EffectMode::FullCompliance | EffectMode::StateCompliance => item_state >= AState::Online,
+        EffectMode::FullCompliance | EffectMode::StateCompliance => item_state >= RState::Online,
         // Shouldn't run anything in ghost state even with force run mode
         EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,
@@ -158,13 +158,13 @@ fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, 
 fn resolve_regular_effect_status(
     item_effect_modes: &UEffectModes,
     item_defeff_key: Option<REffectId>,
-    item_state: AState,
+    item_state: RState,
     online_running: bool,
     effect: &REffect,
 ) -> bool {
     // Ghosted items should never affect anything regardless of effect mode, so check it first
     // wherever applicable
-    match item_effect_modes.get_by_key(&effect.rid) {
+    match item_effect_modes.get_by_rid(&effect.rid) {
         EffectMode::FullCompliance => {
             resolve_regular_effect_status_full(item_defeff_key, item_state, effect, online_running)
         }
@@ -176,20 +176,20 @@ fn resolve_regular_effect_status(
 
 fn resolve_regular_effect_status_full(
     item_defeff_key: Option<REffectId>,
-    item_state: AState,
+    item_state: RState,
     effect: &REffect,
     online_running: bool,
 ) -> bool {
     match effect.state {
-        AState::Ghost => false,
-        AState::Disabled => item_state >= effect.state,
+        RState::Ghost => false,
+        RState::Disabled => item_state >= effect.state,
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
-        AState::Offline => item_state >= effect.state && effect.chance_attr_rid.is_none(),
+        RState::Offline => item_state >= effect.state && effect.chance_attr_rid.is_none(),
         // Online effects depend on 'online' effect, ignoring everything else
-        AState::Online => online_running,
+        RState::Online => online_running,
         // Only default active effect is run, and only if item is in active+ state
-        AState::Active => {
+        RState::Active => {
             if effect.state > item_state {
                 return false;
             };
@@ -199,6 +199,6 @@ fn resolve_regular_effect_status_full(
             }
         }
         // No additional restrictions for overload effects except for item being overloaded
-        AState::Overload => item_state >= effect.state,
+        RState::Overload => item_state >= effect.state,
     }
 }

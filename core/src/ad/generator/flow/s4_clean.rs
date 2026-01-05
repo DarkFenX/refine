@@ -4,7 +4,7 @@ use crate::{
     ad::generator::{GSupport, rels::KeyDb},
     ec,
     ed::{EData, EDataCont},
-    util::{Named, RSet, StrMsgError},
+    util::{LibNamed, RSet, StrMsgError},
 };
 
 const MAX_CYCLES: u32 = 100;
@@ -186,14 +186,14 @@ fn cleanup_report(alive: &EData, trash: &EData) {
     }
 }
 
-fn cont_report<T: Named>(alive: &EDataCont<T>, trash: &EDataCont<T>) -> bool {
+fn cont_report<T: LibNamed>(alive: &EDataCont<T>, trash: &EDataCont<T>) -> bool {
     let total = alive.data.len() + trash.data.len();
     if total == 0 {
         return false;
     }
     let ratio = trash.data.len() as f64 / total as f64;
     if ratio > 0.0 {
-        tracing::info!("cleaned {:.1}% of {}", ratio * 100.0, T::get_name());
+        tracing::info!("cleaned {:.1}% of {}", ratio * 100.0, T::lib_get_name());
         return true;
     }
     false

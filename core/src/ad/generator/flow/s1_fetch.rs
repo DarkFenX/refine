@@ -1,6 +1,6 @@
 use crate::{
     ed::{EData, EDataCont, EveDataHandler},
-    util::{Named, StrMsgError},
+    util::{LibNamed, StrMsgError},
 };
 
 const MAX_WARNS: usize = 5;
@@ -27,14 +27,14 @@ pub(in crate::ad::generator) fn fetch_data(ed_handler: &dyn EveDataHandler) -> R
 
 fn report_warnings<T>(data_cont: &EDataCont<T>)
 where
-    T: Named,
+    T: LibNamed,
 {
     let warn_count = data_cont.warns.len();
     if warn_count > 0 {
         tracing::warn!(
             "{} warnings encountered during fetching of {}, showing up to {}:",
             warn_count,
-            T::get_name(),
+            T::lib_get_name(),
             MAX_WARNS
         );
         for warn_msg in data_cont.warns.iter().take(MAX_WARNS) {

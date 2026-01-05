@@ -1,5 +1,3 @@
-use crate::def::Idx;
-
 /// Defines how a module is added.
 pub enum AddMode {
     /// Add to the end of a rack.

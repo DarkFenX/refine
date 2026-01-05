@@ -52,7 +52,7 @@ impl UData {
         }
     }
     // Projection-related
-    pub(crate) fn get_ship_radius_by_fit_key(&self, fit_key: UFitId) -> AttrVal {
+    pub(crate) fn get_ship_radius_by_fit_uid(&self, fit_key: UFitId) -> AttrVal {
         let ship_key = match self.fits.get(fit_key).ship {
             Some(ship_key) => ship_key,
             None => return OF(0.0),
@@ -68,22 +68,22 @@ impl UData {
     }
     pub(crate) fn get_physics_carrier_key(&self, item_key: UItemId) -> Option<UItemId> {
         match self.items.get(item_key) {
-            UItem::Autocharge(autocharge) => self.get_physics_carrier_key(autocharge.get_cont_item_key()),
-            UItem::Booster(booster) => self.fits.get(booster.get_fit_key()).ship,
-            UItem::Character(character) => self.fits.get(character.get_fit_key()).ship,
-            UItem::Charge(charge) => self.get_physics_carrier_key(charge.get_cont_item_key()),
+            UItem::Autocharge(autocharge) => self.get_physics_carrier_key(autocharge.get_cont_item_uid()),
+            UItem::Booster(booster) => self.fits.get(booster.get_fit_uid()).ship,
+            UItem::Character(character) => self.fits.get(character.get_fit_uid()).ship,
+            UItem::Charge(charge) => self.get_physics_carrier_key(charge.get_cont_item_uid()),
             UItem::Drone(_) => Some(item_key),
             UItem::Fighter(_) => Some(item_key),
             UItem::FwEffect(_) => None,
-            UItem::Implant(implant) => self.fits.get(implant.get_fit_key()).ship,
-            UItem::Module(module) => self.fits.get(module.get_fit_key()).ship,
+            UItem::Implant(implant) => self.fits.get(implant.get_fit_uid()).ship,
+            UItem::Module(module) => self.fits.get(module.get_fit_uid()).ship,
             UItem::ProjEffect(_) => None,
-            UItem::Service(service) => self.fits.get(service.get_fit_key()).ship,
-            UItem::Rig(rig) => self.fits.get(rig.get_fit_key()).ship,
+            UItem::Service(service) => self.fits.get(service.get_fit_uid()).ship,
+            UItem::Rig(rig) => self.fits.get(rig.get_fit_uid()).ship,
             UItem::Ship(_) => Some(item_key),
-            UItem::Skill(skill) => self.fits.get(skill.get_fit_key()).ship,
-            UItem::Stance(stance) => self.fits.get(stance.get_fit_key()).ship,
-            UItem::Subsystem(subsystem) => self.fits.get(subsystem.get_fit_key()).ship,
+            UItem::Skill(skill) => self.fits.get(skill.get_fit_uid()).ship,
+            UItem::Stance(stance) => self.fits.get(stance.get_fit_uid()).ship,
+            UItem::Subsystem(subsystem) => self.fits.get(subsystem.get_fit_uid()).ship,
             UItem::SwEffect(_) => None,
         }
     }

@@ -41,7 +41,7 @@ impl<'a> StanceMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_stance(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_stance(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_state(&self) -> bool {
@@ -65,7 +65,7 @@ impl<'a> ItemCommon for StanceMut<'a> {}
 impl<'a> ItemMutCommon for StanceMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, stance_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_stance(sol, stance_key).get_fit_key();
+    let fit_key = get_u_stance(sol, stance_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_state(sol: &SolarSystem, stance_key: UItemId) -> bool {

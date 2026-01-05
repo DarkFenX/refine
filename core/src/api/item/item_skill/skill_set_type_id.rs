@@ -5,7 +5,7 @@ use crate::{
     err::basic::SkillEveTypeError,
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
-    util::GetId,
+    util::LibGetId,
 };
 
 impl SolarSystem {
@@ -20,14 +20,14 @@ impl SolarSystem {
         if old_type_id == type_id {
             return Ok(());
         }
-        let fit_key = u_item.dc_skill().unwrap().get_fit_key();
+        let fit_key = u_item.dc_skill().unwrap().get_fit_uid();
         // Check for collisions before doing anything
         let u_fit = self.u_data.fits.get(fit_key);
         if let Some(fit_skill) = u_fit.skills.get(&type_id) {
             return Err(SkillEveTypeError {
                 type_id,
-                fit_id: u_fit.get_id(),
-                item_id: self.u_data.items.eid_by_iid(fit_skill.skill_key),
+                fit_id: u_fit.lib_get_id(),
+                item_id: self.u_data.items.eid_by_iid(fit_skill.skill_uid),
             });
         }
         // Unload skill

@@ -63,7 +63,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_type_fitted_count(
     attr_consts
         .max_type_fitted
         .and_then(|v| item_attrs.get(&v))
-        .map(|&v| Count::new_f64(v.into()))
+        .map(|&v| Count::new_f64_rounded(v.into()))
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_online_max_sec_class(
@@ -82,7 +82,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_remote_resist_attr_id(
 ) -> Option<RAttrId> {
     let attr_rid = attr_consts.remote_resist_id?;
     let attr_value = *item_attrs.get(&attr_rid)?;
-    let eve_attr_aid = AEveAttrId::new_f64(attr_value.into());
+    let eve_attr_aid = AEveAttrId::new_f64_rounded(attr_value.into());
     if eve_attr_aid == AEveAttrId::new(0) {
         return None;
     }
@@ -109,7 +109,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
     attr_consts: &RAttrConsts,
 ) -> Count {
     match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
-        Some(&val) => Count::new_f64(val.into()),
+        Some(&val) => Count::new_f64_rounded(val.into()),
         None => Count::new(1),
     }
 }

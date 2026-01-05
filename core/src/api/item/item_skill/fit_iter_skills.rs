@@ -16,12 +16,12 @@ impl<'a> FitMut<'a> {
     }
     pub fn iter_skills_mut(&mut self) -> MutIter<'_, SkillMut<'_>> {
         let fit_skills = self.sol.u_data.fits.get(self.key).skills.values();
-        let skill_keys = fit_skills.map(|fit_skill| fit_skill.skill_key).collect();
+        let skill_keys = fit_skills.map(|fit_skill| fit_skill.skill_uid).collect();
         MutIter::new(self.sol, skill_keys)
     }
 }
 
 fn iter_skills(sol: &SolarSystem, fit_key: UFitId) -> impl ExactSizeIterator<Item = Skill<'_>> {
     let fit_skills = sol.u_data.fits.get(fit_key).skills.values();
-    fit_skills.map(|fit_skill| Skill::new(sol, fit_skill.skill_key))
+    fit_skills.map(|fit_skill| Skill::new(sol, fit_skill.skill_uid))
 }

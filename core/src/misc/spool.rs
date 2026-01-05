@@ -1,16 +1,13 @@
-use crate::{
-    def::{AttrVal, DefCount},
-    util::UnitInterval,
-};
+use crate::misc::{Count, PValue, UnitInterval};
 
 /// Controls on which spool cycle spoolable modules will be set.
 #[derive(Copy, Clone)]
 pub enum Spool {
     /// Module will use this number, or max spool cycles supported by module, whichever is lower.
-    Cycles(DefCount),
+    Cycles(Count),
     /// Module will use count of full cycles it finishes by this time, or max spool cycles supported
     /// by module, whichever is lower.
-    Time(AttrVal),
+    Time(PValue),
     /// Specify a point on damage multiplier range, which is then used to choose count of cycles
     /// sufficient to reach it. For example, with max spool = 0.455 and spool step = 0.1, spool
     /// scale = 0.42:

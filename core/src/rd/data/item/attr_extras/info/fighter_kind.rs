@@ -1,5 +1,4 @@
 use crate::{
-    def::OF,
     misc::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,

@@ -1,3 +1,5 @@
+use crate::util::LibDefault;
+
 const COUNT_MIN: u32 = 1;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
@@ -19,8 +21,8 @@ impl FighterCount {
         self.0
     }
 }
-impl Default for FighterCount {
-    fn default() -> Self {
+impl LibDefault for FighterCount {
+    fn lib_default() -> Self {
         Self(COUNT_MIN)
     }
 }

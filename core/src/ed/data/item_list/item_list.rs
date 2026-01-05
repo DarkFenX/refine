@@ -1,6 +1,6 @@
 use crate::{
     ed::{EItemCatId, EItemGrpId, EItemId, EItemListId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemList {
@@ -12,8 +12,8 @@ pub struct EItemList {
     pub excluded_grp_ids: Vec<EItemGrpId>,
     pub excluded_cat_ids: Vec<EItemCatId>,
 }
-impl Named for EItemList {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemList {
+    fn lib_get_name() -> &'static str {
         "EItemList"
     }
 }

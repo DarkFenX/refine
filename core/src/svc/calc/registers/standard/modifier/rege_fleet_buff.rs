@@ -22,7 +22,7 @@ impl StandardRegister {
         rmod: RawModifier,
     ) -> bool {
         reuse_cmods.clear();
-        let fit_key = match item.get_fit_key() {
+        let fit_key = match item.get_fit_uid() {
             Some(fit_key) => fit_key,
             None => return false,
         };
@@ -53,7 +53,7 @@ impl StandardRegister {
         rmod: RawModifier,
     ) {
         reuse_cmods.clear();
-        let fit_key = match item.get_fit_key() {
+        let fit_key = match item.get_fit_uid() {
             Some(fit_key) => fit_key,
             None => return,
         };
@@ -131,7 +131,7 @@ impl StandardRegister {
         ship_key: UItemId,
         ship: &UShip,
     ) {
-        let fit_key = ship.get_fit_key();
+        let fit_key = ship.get_fit_uid();
         let fit = ctx.u_data.fits.get(fit_key);
         match fit.fleet {
             Some(fleet_key) => {
@@ -153,7 +153,7 @@ impl StandardRegister {
         ship_key: UItemId,
         ship: &UShip,
     ) {
-        let fit_key = ship.get_fit_key();
+        let fit_key = ship.get_fit_uid();
         let fit = ctx.u_data.fits.get(fit_key);
         match fit.fleet {
             Some(fleet_key) => {
@@ -303,7 +303,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
     ship_key: UItemId,
     ship: &UShip,
 ) {
-    let fit_key = ship.get_fit_key();
+    let fit_key = ship.get_fit_uid();
     for rmod in fleet_rmods {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_key))
@@ -346,7 +346,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
     ship_key: UItemId,
     ship: &UShip,
 ) {
-    let fit_key = ship.get_fit_key();
+    let fit_key = ship.get_fit_uid();
     for rmod in fleet_rmods {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_key))

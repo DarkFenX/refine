@@ -98,7 +98,7 @@ impl SolarSystem {
         // Update on-module data regarding position and charge
         let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
         u_module.set_pos(pos);
-        u_module.set_charge_key(charge_key);
+        u_module.set_charge_uid(charge_key);
         // Add module to services. While adding module, effect updates structure records if charge
         // needs to be activated
         SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_key, reuse_eupdates);

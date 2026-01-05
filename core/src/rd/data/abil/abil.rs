@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAbil, AAbilId, AEffectId},
     rd::REffectId,
-    util::{GetId, RMap},
+    util::{LibGetId, RMap},
 };
 
 // Represents a fighter ability.
@@ -24,8 +24,8 @@ impl RAbil {
         self.effect_rid = *effect_aid_rid_map.get(&self.effect_aid).unwrap()
     }
 }
-impl GetId<AAbilId> for RAbil {
-    fn get_id(&self) -> AAbilId {
+impl LibGetId<AAbilId> for RAbil {
+    fn lib_get_id(&self) -> AAbilId {
         self.aid
     }
 }

@@ -19,14 +19,14 @@ impl SolarSystem {
         }
         SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_key, reuse_eupdates);
         let u_ship = self.u_data.items.get_mut(ship_key).dc_ship_mut().unwrap();
-        let fit_key = u_ship.get_fit_key();
+        let fit_key = u_ship.get_fit_uid();
         u_ship.set_type_id(type_id, &self.u_data.src);
         // Update on-fit ship kind
         let ship_kind = u_ship.get_kind();
         let u_fit = self.u_data.fits.get_mut(fit_key);
         u_fit.ship_kind = ship_kind;
         // Update outgoing projections for all on-ship items
-        let ship_radius = self.u_data.get_ship_radius_by_fit_key(fit_key);
+        let ship_radius = self.u_data.get_ship_radius_by_fit_uid(fit_key);
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_key, ship_radius);
         // Update incoming projections
         for projector_key in self.rev_projs.iter_projectors(&ship_key) {

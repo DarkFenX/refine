@@ -12,7 +12,8 @@ pub(crate) use item::{
     RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemShipLimit, RShipDroneLimit, RShipKind,
 };
 pub(crate) use item_list::{RItemList, RItemListId};
-pub(crate) use muta::RMuta;
+pub(crate) use muta::{RMuta, RMutaAttrRange};
+pub(crate) use shared::RState;
 
 mod abil;
 mod attr;
@@ -22,3 +23,4 @@ mod effect;
 mod item;
 mod item_list;
 mod muta;
+mod shared;

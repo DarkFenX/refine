@@ -3,7 +3,7 @@
 use crate::{
     ad::generator::rels::Pk,
     ed::{EData, EDataCont},
-    util::{Named, RSet},
+    util::{LibNamed, RSet},
 };
 
 pub(in crate::ad::generator) fn dedup_pks(e_data: &mut EData) {
@@ -23,7 +23,7 @@ pub(in crate::ad::generator) fn dedup_pks(e_data: &mut EData) {
     dedup_pks_vec(&mut e_data.muta_attrs);
 }
 
-fn dedup_pks_vec<T: Pk + Named>(cont: &mut EDataCont<T>) {
+fn dedup_pks_vec<T: Pk + LibNamed>(cont: &mut EDataCont<T>) {
     let mut seen_pks = RSet::new();
     let removed = cont
         .data
@@ -38,7 +38,7 @@ fn dedup_pks_vec<T: Pk + Named>(cont: &mut EDataCont<T>) {
         })
         .count();
     if removed > 0 {
-        let msg = format!("cleaned up {} PK duplicates for {}", removed, T::get_name());
+        let msg = format!("cleaned up {} PK duplicates for {}", removed, T::lib_get_name());
         tracing::warn!("{msg}");
     }
 }

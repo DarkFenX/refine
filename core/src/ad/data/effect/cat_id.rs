@@ -1,12 +1,12 @@
-use crate::{def::DefId, ed::EEffectCatId};
+use crate::ed::EEffectCatId;
 
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub struct AEffectCatId(DefId);
+#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+pub struct AEffectCatId(i32);
 impl AEffectCatId {
-    pub const fn new(id: DefId) -> Self {
+    pub const fn new(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> DefId {
+    pub const fn into_inner(self) -> i32 {
         self.0
     }
 }

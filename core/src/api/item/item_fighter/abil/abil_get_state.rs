@@ -22,9 +22,9 @@ fn get_state(sol: &SolarSystem, fighter_key: UItemId, abil_id: &AAbilId) -> bool
     // Only abilities which exist in source are exposed by API, just unwrap
     let r_abil = sol.u_data.src.get_ability_by_aid(abil_id).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_key).dc_fighter().unwrap();
-    match u_fighter.get_effect_key_mode(&r_abil.effect_rid) {
+    match u_fighter.get_effect_mode(&r_abil.effect_rid) {
         // Default active effects are ran if fighter becomes active, others are not
-        EffectMode::FullCompliance => Some(r_abil.effect_rid) == u_fighter.get_defeff_key().unwrap(),
+        EffectMode::FullCompliance => Some(r_abil.effect_rid) == u_fighter.get_defeff_rid().unwrap(),
         EffectMode::StateCompliance => true,
         EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,

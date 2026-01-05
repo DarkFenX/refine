@@ -1,6 +1,6 @@
 use crate::{
     ed::{EAttrId, EGenFloat, EItemId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EMutaAttrMod {
@@ -9,8 +9,8 @@ pub struct EMutaAttrMod {
     pub min_attr_mult: EGenFloat,
     pub max_attr_mult: EGenFloat,
 }
-impl Named for EMutaAttrMod {
-    fn get_name() -> &'static str {
+impl LibNamed for EMutaAttrMod {
+    fn lib_get_name() -> &'static str {
         "EMutaAttrMod"
     }
 }

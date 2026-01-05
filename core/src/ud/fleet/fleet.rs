@@ -1,7 +1,7 @@
 use crate::{
-    def::FleetId,
+    api::FleetId,
     ud::UFitId,
-    util::{GetId, Named, RSet},
+    util::{LibGetId, LibNamed, RSet},
 };
 
 #[derive(Clone)]
@@ -26,13 +26,13 @@ impl UFleet {
         self.fits.remove(fit_key);
     }
 }
-impl Named for UFleet {
-    fn get_name() -> &'static str {
+impl LibNamed for UFleet {
+    fn lib_get_name() -> &'static str {
         "UFleet"
     }
 }
-impl GetId<FleetId> for UFleet {
-    fn get_id(&self) -> FleetId {
+impl LibGetId<FleetId> for UFleet {
+    fn lib_get_id(&self) -> FleetId {
         self.id
     }
 }

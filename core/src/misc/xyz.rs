@@ -1,18 +1,16 @@
-use ordered_float::Float;
+use crate::misc::Value;
 
-use crate::def::AttrVal;
-
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub(crate) struct Xyz {
-    pub(crate) x: AttrVal,
-    pub(crate) y: AttrVal,
-    pub(crate) z: AttrVal,
+    pub(crate) x: Value,
+    pub(crate) y: Value,
+    pub(crate) z: Value,
 }
 impl Xyz {
-    pub(crate) fn get_vector_dot_product(self, rhs: Self) -> AttrVal {
+    pub(crate) fn get_vector_dot_product(self, rhs: Self) -> Value {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
-    pub(crate) fn get_vector_magnitude(self) -> AttrVal {
+    pub(crate) fn get_vector_magnitude(self) -> Value {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
     pub(crate) fn get_vector_unit(self) -> Self {
@@ -46,10 +44,10 @@ impl std::ops::Sub<Xyz> for Xyz {
         }
     }
 }
-impl std::ops::Mul<AttrVal> for Xyz {
+impl std::ops::Mul<Value> for Xyz {
     type Output = Self;
 
-    fn mul(self, rhs: AttrVal) -> Self::Output {
+    fn mul(self, rhs: Value) -> Self::Output {
         Self {
             x: self.x * rhs,
             y: self.y * rhs,

@@ -1,6 +1,6 @@
 use crate::{
     ed::{EAttrId, EAttrUnitId, EGenFloat},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EAttr {
@@ -12,8 +12,8 @@ pub struct EAttr {
     pub max_attr_id: Option<EAttrId>,
     pub unit_id: Option<EAttrUnitId>,
 }
-impl Named for EAttr {
-    fn get_name() -> &'static str {
+impl LibNamed for EAttr {
+    fn lib_get_name() -> &'static str {
         "EAttr"
     }
 }

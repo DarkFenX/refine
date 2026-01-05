@@ -4,7 +4,7 @@ use crate::{
         UAutocharge, UBooster, UCharacter, UCharge, UDrone, UFighter, UFwEffect, UImplant, UItem, UModule, UProjEffect,
         URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
     },
-    util::Named,
+    util::LibNamed,
 };
 
 impl UItem {
@@ -13,8 +13,8 @@ impl UItem {
             Self::Autocharge(autocharge) => Ok(autocharge),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UAutocharge::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UAutocharge::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -23,8 +23,8 @@ impl UItem {
             Self::Autocharge(autocharge) => Ok(autocharge),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UAutocharge::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UAutocharge::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -33,8 +33,8 @@ impl UItem {
             Self::Booster(booster) => Ok(booster),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UBooster::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UBooster::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -43,8 +43,8 @@ impl UItem {
             Self::Booster(booster) => Ok(booster),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UBooster::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UBooster::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -53,8 +53,8 @@ impl UItem {
             Self::Character(character) => Ok(character),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UCharacter::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UCharacter::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -63,8 +63,8 @@ impl UItem {
             Self::Character(character) => Ok(character),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UCharacter::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UCharacter::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -73,8 +73,8 @@ impl UItem {
             Self::Charge(charge) => Ok(charge),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UCharge::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UCharge::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -83,8 +83,8 @@ impl UItem {
             Self::Charge(charge) => Ok(charge),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UCharge::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UCharge::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -93,8 +93,8 @@ impl UItem {
             Self::Drone(drone) => Ok(drone),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UDrone::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UDrone::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -103,8 +103,8 @@ impl UItem {
             Self::Drone(drone) => Ok(drone),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UDrone::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UDrone::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -113,8 +113,8 @@ impl UItem {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UFighter::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UFighter::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -123,8 +123,8 @@ impl UItem {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UFighter::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UFighter::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -133,8 +133,8 @@ impl UItem {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UFwEffect::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UFwEffect::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -143,8 +143,8 @@ impl UItem {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UFwEffect::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UFwEffect::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -153,8 +153,8 @@ impl UItem {
             Self::Implant(implant) => Ok(implant),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UImplant::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UImplant::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -163,8 +163,8 @@ impl UItem {
             Self::Implant(implant) => Ok(implant),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UImplant::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UImplant::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -173,8 +173,8 @@ impl UItem {
             Self::Module(module) => Ok(module),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UModule::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UModule::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -183,8 +183,8 @@ impl UItem {
             Self::Module(module) => Ok(module),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UModule::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UModule::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -193,8 +193,8 @@ impl UItem {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UProjEffect::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UProjEffect::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -203,8 +203,8 @@ impl UItem {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UProjEffect::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UProjEffect::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -213,8 +213,8 @@ impl UItem {
             Self::Rig(rig) => Ok(rig),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: URig::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: URig::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -223,8 +223,8 @@ impl UItem {
             Self::Rig(rig) => Ok(rig),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: URig::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: URig::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -233,8 +233,8 @@ impl UItem {
             Self::Service(service) => Ok(service),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UService::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UService::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -243,8 +243,8 @@ impl UItem {
             Self::Service(service) => Ok(service),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UService::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UService::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -253,8 +253,8 @@ impl UItem {
             Self::Ship(ship) => Ok(ship),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UShip::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UShip::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -263,8 +263,8 @@ impl UItem {
             Self::Ship(ship) => Ok(ship),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UShip::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UShip::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -273,8 +273,8 @@ impl UItem {
             Self::Skill(skill) => Ok(skill),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: USkill::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: USkill::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -283,8 +283,8 @@ impl UItem {
             Self::Skill(skill) => Ok(skill),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: USkill::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: USkill::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -293,8 +293,8 @@ impl UItem {
             Self::Stance(stance) => Ok(stance),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UStance::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UStance::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -303,8 +303,8 @@ impl UItem {
             Self::Stance(stance) => Ok(stance),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: UStance::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: UStance::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -313,8 +313,8 @@ impl UItem {
             Self::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: USubsystem::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: USubsystem::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -323,8 +323,8 @@ impl UItem {
             Self::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: USubsystem::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: USubsystem::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -333,8 +333,8 @@ impl UItem {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: USwEffect::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: USwEffect::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }
@@ -343,8 +343,8 @@ impl UItem {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
             _ => Err(ItemKindMatchError {
                 item_id: self.get_item_id(),
-                expected_kind: USwEffect::get_name(),
-                actual_kind: self.get_name(),
+                expected_kind: USwEffect::lib_get_name(),
+                actual_kind: self.lib_get_name(),
             }),
         }
     }

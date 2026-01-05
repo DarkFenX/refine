@@ -1,14 +1,14 @@
 use crate::{
     ed::{EItemCatId, EItemGrpId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemGroup {
     pub id: EItemGrpId,
     pub category_id: EItemCatId,
 }
-impl Named for EItemGroup {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemGroup {
+    fn lib_get_name() -> &'static str {
         "EItemGroup"
     }
 }

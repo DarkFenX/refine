@@ -1,12 +1,12 @@
-use crate::{def::DefId, ed::EAbilId};
+use crate::ed::EAbilId;
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct AAbilId(DefId);
+#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
+pub struct AAbilId(i32);
 impl AAbilId {
-    pub const fn new(id: DefId) -> Self {
+    pub const fn new(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> DefId {
+    pub const fn into_inner(self) -> i32 {
         self.0
     }
 }

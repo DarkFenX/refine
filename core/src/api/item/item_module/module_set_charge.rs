@@ -16,7 +16,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
-        let fit_key = u_module.get_fit_key();
+        let fit_key = u_module.get_fit_uid();
         let module_projs = u_module.get_projs().iter().collect_vec();
         let mut activated = None;
         // Remove old charge, if it was set
@@ -77,7 +77,7 @@ impl SolarSystem {
         let charge_u_item = UItem::Charge(u_charge);
         let new_charge_key = self.u_data.items.add(charge_u_item);
         let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
-        u_module.set_charge_key(Some(new_charge_key));
+        u_module.set_charge_uid(Some(new_charge_key));
         // Update services
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, new_charge_key, reuse_eupdates);
         // Reapply module projections to charge

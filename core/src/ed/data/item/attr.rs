@@ -1,6 +1,6 @@
 use crate::{
     ed::{EAttrId, EGenFloat, EItemId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemAttr {
@@ -8,8 +8,8 @@ pub struct EItemAttr {
     pub attr_id: EAttrId,
     pub value: EGenFloat,
 }
-impl Named for EItemAttr {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemAttr {
+    fn lib_get_name() -> &'static str {
         "EItemAttr"
     }
 }

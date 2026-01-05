@@ -1,20 +1,19 @@
 use crate::{
-    def::DefId,
     ed::{EAbilId, EAttrId, EBuffId, EEffectId, EItemGrpId, EItemId, EItemListId},
-    util::f64_to_i32,
+    util::round_f64_to_i32,
 };
 
 // Part of primary and foreign keys
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::ad::generator) struct KeyPart(DefId);
+pub(in crate::ad::generator) struct KeyPart(i32);
 impl KeyPart {
-    pub(in crate::ad::generator) fn new(id: DefId) -> Self {
+    pub(in crate::ad::generator) fn new(id: i32) -> Self {
         Self(id)
     }
-    pub(in crate::ad::generator) fn new_f64(id: f64) -> Self {
-        Self(f64_to_i32(id))
+    pub(in crate::ad::generator) fn new_f64_rounded(id: f64) -> Self {
+        Self(round_f64_to_i32(id))
     }
-    pub(in crate::ad::generator) fn into_inner(self) -> DefId {
+    pub(in crate::ad::generator) fn into_inner(self) -> i32 {
         self.0
     }
 }

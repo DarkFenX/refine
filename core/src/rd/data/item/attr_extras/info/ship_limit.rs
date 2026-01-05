@@ -36,7 +36,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
     ]
     .iter()
     .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemId::new_f64(v.into()))
+    .map(|v| AItemId::new_f64_rounded(v.into()))
     .unique()
     .collect_vec();
     let limit_group_ids = [
@@ -63,7 +63,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
     ]
     .iter()
     .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemGrpId::new_f64(v.into()))
+    .map(|v| AItemGrpId::new_f64_rounded(v.into()))
     .unique()
     .collect_vec();
     match item_aid {

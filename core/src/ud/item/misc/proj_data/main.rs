@@ -1,20 +1,20 @@
 use crate::{
-    def::{AttrVal, OF},
+    misc::{PValue, Xyz},
     rd::RItemAXt,
     ud::UPhysics,
-    util::Xyz,
+    util::LibDefault,
 };
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub(crate) struct UProjData {
     pub(super) src_physics: UPhysics,
     pub(super) tgt_physics: UPhysics,
     // Center-to-center range
-    pub(super) range_c2c: AttrVal,
+    pub(super) range_c2c: PValue,
     // Surface-to-surface range
-    pub(super) range_s2s: AttrVal,
-    pub(super) src_radius: AttrVal,
-    pub(super) tgt_radius: AttrVal,
+    pub(super) range_s2s: PValue,
+    pub(super) src_radius: PValue,
+    pub(super) tgt_radius: PValue,
 }
 impl UProjData {
     pub(crate) fn from_physics_with_axt(
@@ -33,11 +33,11 @@ impl UProjData {
     pub(crate) fn from_physics_with_radii(
         src_physics: UPhysics,
         tgt_physics: UPhysics,
-        src_radius: Option<AttrVal>,
-        tgt_radius: Option<AttrVal>,
+        src_radius: Option<PValue>,
+        tgt_radius: Option<PValue>,
     ) -> Self {
-        let src_radius = src_radius.unwrap_or(OF(0.0));
-        let tgt_radius = tgt_radius.unwrap_or(OF(0.0));
+        let src_radius = src_radius.unwrap_or(LibDefault::lib_default());
+        let tgt_radius = tgt_radius.unwrap_or(LibDefault::lib_default());
         let range_c2c = calc_range_c2c(src_physics.coordinates, tgt_physics.coordinates);
         Self {
             src_physics,
@@ -48,19 +48,19 @@ impl UProjData {
             tgt_radius,
         }
     }
-    pub(crate) fn get_range_c2c(&self) -> AttrVal {
+    pub(crate) fn get_range_c2c(&self) -> PValue {
         self.range_c2c
     }
-    pub(crate) fn get_range_s2s(&self) -> AttrVal {
+    pub(crate) fn get_range_s2s(&self) -> PValue {
         self.range_s2s
     }
-    pub(crate) fn get_range_c2s(&self) -> AttrVal {
+    pub(crate) fn get_range_c2s(&self) -> PValue {
         calc_range_c2s(self.range_c2c, self.tgt_radius)
     }
-    pub(crate) fn get_src_radius(&self) -> AttrVal {
+    pub(crate) fn get_src_radius(&self) -> PValue {
         self.src_radius
     }
-    pub(crate) fn get_tgt_radius(&self) -> AttrVal {
+    pub(crate) fn get_tgt_radius(&self) -> PValue {
         self.tgt_radius
     }
     pub(crate) fn get_src_coordinates(&self) -> Xyz {
@@ -75,10 +75,10 @@ impl UProjData {
     pub(crate) fn get_tgt_direction(&self) -> Xyz {
         self.tgt_physics.direction
     }
-    pub(crate) fn get_src_speed(&self) -> AttrVal {
+    pub(crate) fn get_src_speed(&self) -> PValue {
         self.src_physics.speed
     }
-    pub(crate) fn get_tgt_speed(&self) -> AttrVal {
+    pub(crate) fn get_tgt_speed(&self) -> PValue {
         self.tgt_physics.speed
     }
     pub(crate) fn update_src_physics(&mut self, src_physics: UPhysics) {
@@ -91,7 +91,7 @@ impl UProjData {
         self.range_c2c = calc_range_c2c(self.src_physics.coordinates, self.tgt_physics.coordinates);
         self.range_s2s = calc_range_s2s(self.range_c2c, self.src_radius, self.tgt_radius);
     }
-    pub(crate) fn update_src_radius(&mut self, src_radius: AttrVal) -> bool {
+    pub(crate) fn update_src_radius(&mut self, src_radius: PValue) -> bool {
         if self.src_radius == src_radius {
             return false;
         };
@@ -99,7 +99,7 @@ impl UProjData {
         self.update_s2s_range();
         true
     }
-    pub(crate) fn update_tgt_radius(&mut self, tgt_radius: AttrVal) -> bool {
+    pub(crate) fn update_tgt_radius(&mut self, tgt_radius: PValue) -> bool {
         if self.tgt_radius == tgt_radius {
             return false;
         };
@@ -107,7 +107,7 @@ impl UProjData {
         self.update_s2s_range();
         true
     }
-    pub(crate) fn update_radii(&mut self, src_radius: AttrVal, tgt_radius: AttrVal) {
+    pub(crate) fn update_radii(&mut self, src_radius: PValue, tgt_radius: PValue) {
         self.src_radius = src_radius;
         self.tgt_radius = tgt_radius;
         self.update_s2s_range();
@@ -117,17 +117,21 @@ impl UProjData {
     }
 }
 
-fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> AttrVal {
-    OF(((tgt_coordinates.x - src_coordinates.x).powi(2)
-        + (tgt_coordinates.y - src_coordinates.y).powi(2)
-        + (tgt_coordinates.z - src_coordinates.z).powi(2))
-    .sqrt())
+fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> PValue {
+    // Do not check anything because result will always be positive
+    PValue::new_of64_unchecked(
+        ((tgt_coordinates.x - src_coordinates.x).powi(2)
+            + (tgt_coordinates.y - src_coordinates.y).powi(2)
+            + (tgt_coordinates.z - src_coordinates.z).powi(2))
+        .sqrt()
+        .into_inner_of64(),
+    )
 }
 
-fn calc_range_c2s(range_c2c: AttrVal, tgt_radius: AttrVal) -> AttrVal {
-    AttrVal::max(OF(0.0), range_c2c - tgt_radius)
+fn calc_range_c2s(range_c2c: PValue, tgt_radius: PValue) -> PValue {
+    PValue::new_clamped(range_c2c.into_inner() - tgt_radius.into_inner())
 }
 
-fn calc_range_s2s(range_c2c: AttrVal, src_radius: AttrVal, tgt_radius: AttrVal) -> AttrVal {
-    AttrVal::max(OF(0.0), range_c2c - src_radius - tgt_radius)
+fn calc_range_s2s(range_c2c: PValue, src_radius: PValue, tgt_radius: PValue) -> PValue {
+    PValue::new_clamped(range_c2c.into_inner() - src_radius.into_inner() - tgt_radius.into_inner())
 }

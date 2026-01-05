@@ -1,22 +1,22 @@
-use crate::ad;
+use crate::rd::RState;
 
-pub(in crate::ud::item) fn bool_to_state_offline(bool_state: bool) -> ad::AState {
+pub(in crate::ud::item) fn bool_to_state_offline(bool_state: bool) -> RState {
     match bool_state {
-        true => ad::AState::Offline,
-        false => ad::AState::Disabled,
+        true => RState::Offline,
+        false => RState::Disabled,
     }
 }
 
-pub(in crate::ud::item) fn bool_to_state_active(bool_state: bool) -> ad::AState {
+pub(in crate::ud::item) fn bool_to_state_active(bool_state: bool) -> RState {
     match bool_state {
-        true => ad::AState::Active,
-        false => ad::AState::Disabled,
+        true => RState::Active,
+        false => RState::Disabled,
     }
 }
 
-pub(in crate::ud::item) fn state_to_bool(state: ad::AState) -> bool {
+pub(in crate::ud::item) fn state_to_bool(state: RState) -> bool {
     match state {
-        ad::AState::Ghost | ad::AState::Disabled => false,
-        ad::AState::Offline | ad::AState::Online | ad::AState::Active | ad::AState::Overload => true,
+        RState::Ghost | RState::Disabled => false,
+        RState::Offline | RState::Online | RState::Active | RState::Overload => true,
     }
 }

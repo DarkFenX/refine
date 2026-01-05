@@ -1,9 +1,8 @@
 use crate::{
-    def::OF,
     misc::{DpsProfile, SecZone, Spool},
     rd::Src,
     ud::{UFits, UFleets, UItemId, UItems},
-    util::{RSet, UnitInterval},
+    util::RSet,
 };
 
 // UAD stands for User and Adapted Data. Per definition, contains user-defined data, as well as some

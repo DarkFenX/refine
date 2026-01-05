@@ -1,23 +1,23 @@
 use crate::{
-    dbg::{DebugResult, check_attr_id, check_effect_id},
+    dbg::{DebugResult, check_attr_rid, check_effect_rid},
     ud::{UData, item::base::UItemBase},
 };
 
 impl UItemBase {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         if let Some(attrs) = self.get_attrs() {
-            for &attr_key in attrs.keys() {
-                check_attr_id(u_data, attr_key)?;
+            for &attr_rid in attrs.keys() {
+                check_attr_rid(u_data, attr_rid)?;
             }
         }
-        if let Some(reffs) = self.get_reffs() {
-            for &effect_key in reffs.iter() {
-                check_effect_id(u_data, effect_key)?;
+        if let Some(reff_rids) = self.get_reffs() {
+            for &effect_rid in reff_rids.iter() {
+                check_effect_rid(u_data, effect_rid)?;
             }
         }
-        if let Some(attr_keys) = self.get_cap_use_attr_keys() {
-            for &attr_key in attr_keys.iter() {
-                check_attr_id(u_data, attr_key)?;
+        if let Some(attr_rids) = self.get_cap_use_attr_rids() {
+            for &attr_rid in attr_rids.iter() {
+                check_attr_rid(u_data, attr_rid)?;
             }
         }
         if let Some(axt) = self.get_axt() {

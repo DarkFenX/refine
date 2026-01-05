@@ -1,25 +1,24 @@
 use crate::{
-    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
-    api::ModuleState,
-    def::{DefCount, Idx, ItemId, OF},
+    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
+    api::{ItemId, ModuleState},
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, ModRack, Spool},
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
+    misc::{Count, EffectMode, Index, ModRack, PValue, SkillLevel, Spool, Value},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
         item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UProjs},
     },
-    util::{Named, RMap, RSet, trunc_unerr},
+    util::{LibNamed, RMap, RSet},
 };
 
 #[derive(Clone)]
 pub(crate) struct UModule {
     pub(super) base: UItemBaseMutable,
-    fit_key: UFitId,
+    fit_uid: UFitId,
     rack: ModRack,
-    pos: Idx,
-    charge_key: Option<UItemId>,
+    pos: Index,
+    charge_uid: Option<UItemId>,
     projs: UProjs,
     // Optional settings related to cycling
     spool: Option<Spool>,
@@ -29,20 +28,20 @@ impl UModule {
     pub(crate) fn new(
         item_id: ItemId,
         type_id: AItemId,
-        fit_key: UFitId,
+        fit_uid: UFitId,
         module_state: ModuleState,
         rack: ModRack,
-        pos: Idx,
+        pos: Index,
         mutation: Option<UItemMutationRequest>,
-        charge_key: Option<UItemId>,
+        charge_uid: Option<UItemId>,
         src: &Src,
     ) -> Self {
         Self {
             base: UItemBaseMutable::new(item_id, type_id, module_state.into(), mutation, src),
-            fit_key,
+            fit_uid,
             rack,
             pos,
-            charge_key,
+            charge_uid,
             projs: UProjs::new(),
             spool: None,
             reload_optionals: None,
@@ -64,22 +63,22 @@ impl UModule {
     pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base.get_category_id()
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         self.base.get_attrs()
     }
     pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
-        self.base.get_defeff_key()
+    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
+        self.base.get_defeff_rid()
     }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         self.base.get_skill_reqs()
     }
     pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base.get_axt()
     }
-    pub(crate) fn get_max_state(&self) -> Option<AState> {
+    pub(crate) fn get_max_state(&self) -> Option<RState> {
         self.base.get_max_state()
     }
     pub(crate) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
@@ -91,8 +90,8 @@ impl UModule {
     pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_val_active_group_id()
     }
-    pub(crate) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrId>> {
-        self.base.get_cap_use_attr_keys()
+    pub(crate) fn get_cap_use_attr_rids(&self) -> Option<&Vec<RAttrId>> {
+        self.base.get_cap_use_attr_rids()
     }
     pub(crate) fn takes_turret_hardpoint(&self) -> bool {
         self.base.takes_turret_hardpoint()
@@ -100,7 +99,7 @@ impl UModule {
     pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
         self.base.takes_launcher_hardpoint()
     }
-    pub(crate) fn get_state(&self) -> AState {
+    pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
@@ -115,11 +114,11 @@ impl UModule {
     pub(crate) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
-        self.base.get_effect_key_mode(effect_key)
+    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode(effect_rid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.base.set_effect_mode(effect_id, effect_mode, src)
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.base.set_effect_mode(effect_aid, effect_mode, src)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
@@ -161,28 +160,28 @@ impl UModule {
     pub(crate) fn set_module_state(&mut self, state: ModuleState) {
         self.base.set_state(state.into())
     }
-    pub(crate) fn get_fit_key(&self) -> UFitId {
-        self.fit_key
+    pub(crate) fn get_fit_uid(&self) -> UFitId {
+        self.fit_uid
     }
     pub(crate) fn get_rack(&self) -> ModRack {
         self.rack
     }
-    pub(crate) fn get_pos(&self) -> Idx {
+    pub(crate) fn get_pos(&self) -> Index {
         self.pos
     }
-    pub(crate) fn set_pos(&mut self, pos: Idx) {
+    pub(crate) fn set_pos(&mut self, pos: Index) {
         self.pos = pos
     }
     pub(crate) fn get_charge_uid(&self) -> Option<UItemId> {
-        self.charge_key
+        self.charge_uid
     }
-    pub(crate) fn set_charge_key(&mut self, charge_key: Option<UItemId>) {
-        self.charge_key = charge_key
+    pub(crate) fn set_charge_uid(&mut self, charge_uid: Option<UItemId>) {
+        self.charge_uid = charge_uid
     }
-    pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<DefCount> {
+    pub(crate) fn get_charge_count(&self, u_data: &UData) -> Option<Count> {
         // No charge - no info
-        let charge_key = self.get_charge_uid()?;
-        let charge_item = u_data.items.get(charge_key);
+        let charge_uid = self.get_charge_uid()?;
+        let charge_item = u_data.items.get(charge_uid);
         let module_capacity = match self.get_axt() {
             Some(axt) => axt.capacity,
             // Module not loaded - no info
@@ -191,13 +190,13 @@ impl UModule {
             }
         };
         let charge_volume = match charge_item.get_axt() {
-            Some(axt) if axt.volume != OF(0.0) => axt.volume,
+            Some(axt) if axt.volume != PValue::new_f64_unchecked(0.0) => axt.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;
             }
         };
-        let charge_count = trunc_unerr(module_capacity / charge_volume).into_inner() as DefCount;
+        let charge_count = Count::new_f64_trunced(module_capacity.into_inner() / charge_volume.into_inner());
         Some(charge_count)
     }
     pub(crate) fn get_projs(&self) -> &UProjs {
@@ -219,8 +218,8 @@ impl UModule {
         self.reload_optionals = reload_optionals
     }
 }
-impl Named for UModule {
-    fn get_name() -> &'static str {
+impl LibNamed for UModule {
+    fn lib_get_name() -> &'static str {
         "UModule"
     }
 }
@@ -229,7 +228,7 @@ impl std::fmt::Display for UModule {
         write!(
             f,
             "{}(item_id={}, type_id={})",
-            Self::get_name(),
+            Self::lib_get_name(),
             self.get_item_id(),
             self.get_type_id(),
         )

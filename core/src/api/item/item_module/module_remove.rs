@@ -13,7 +13,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_module = self.u_data.items.get(module_key).dc_module().unwrap();
-        let fit_key = u_module.get_fit_key();
+        let fit_key = u_module.get_fit_uid();
         let rack = u_module.get_rack();
         let charge_key = u_module.get_charge_uid();
         // Remove outgoing projections for both module and charge

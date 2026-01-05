@@ -20,9 +20,9 @@ pub(super) fn get_charge_cseq_map(
     };
     // Default effect of parent item is assumed to control the charge. If there is none, charge is
     // not cycling
-    let cont_effect_key = ctx.u_data.items.get(charge.get_cont_item_key()).get_defeff_key()??;
+    let cont_effect_key = ctx.u_data.items.get(charge.get_cont_item_uid()).get_defeff_rid()??;
     // If cycle info for parent item is not available, charge is not cycling
-    let mut cseq_map = get_item_cseq_map(ctx, calc, charge.get_cont_item_key(), options, ignore_state)?;
+    let mut cseq_map = get_item_cseq_map(ctx, calc, charge.get_cont_item_uid(), options, ignore_state)?;
     // If controlling effect is not cycling, charge is not cycling either
     let cont_effect_cycle = cseq_map.remove(&cont_effect_key)?;
     cseq_map.clear();

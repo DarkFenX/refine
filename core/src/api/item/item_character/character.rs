@@ -41,7 +41,7 @@ impl<'a> CharacterMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_character(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_character(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_state(&self) -> bool {
@@ -65,7 +65,7 @@ impl<'a> ItemCommon for CharacterMut<'a> {}
 impl<'a> ItemMutCommon for CharacterMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, character_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_character(sol, character_key).get_fit_key();
+    let fit_key = get_u_character(sol, character_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_state(sol: &SolarSystem, character_key: UItemId) -> bool {

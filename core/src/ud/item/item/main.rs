@@ -1,16 +1,16 @@
 use either::Either;
 
 use crate::{
-    ad::{AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
-    def::{AttrVal, ItemId, OF},
-    misc::{EffectMode, Spool},
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, Src},
+    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
+    api::ItemId,
+    misc::{EffectMode, PValue, SkillLevel, Spool, Value},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant, UItemId,
         UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
         item::{ItemMutationData, UAutocharges, UEffectUpdates, UProjData, UProjs},
     },
-    util::{GetId, Named, RMap, RSet},
+    util::{LibGetId, LibNamed, RMap, RSet},
 };
 
 #[derive(Clone)]
@@ -34,25 +34,25 @@ pub(crate) enum UItem {
     SwEffect(USwEffect),
 }
 impl UItem {
-    pub(crate) fn get_name(&self) -> &'static str {
+    pub(crate) fn lib_get_name(&self) -> &'static str {
         match self {
-            Self::Autocharge(_) => UAutocharge::get_name(),
-            Self::Booster(_) => UBooster::get_name(),
-            Self::Character(_) => UCharacter::get_name(),
-            Self::Charge(_) => UCharge::get_name(),
-            Self::Drone(_) => UDrone::get_name(),
-            Self::Fighter(_) => UFighter::get_name(),
-            Self::FwEffect(_) => UFwEffect::get_name(),
-            Self::Implant(_) => UImplant::get_name(),
-            Self::Module(_) => UModule::get_name(),
-            Self::ProjEffect(_) => UProjEffect::get_name(),
-            Self::Rig(_) => URig::get_name(),
-            Self::Service(_) => UService::get_name(),
-            Self::Ship(_) => UShip::get_name(),
-            Self::Skill(_) => USkill::get_name(),
-            Self::Stance(_) => UStance::get_name(),
-            Self::Subsystem(_) => USubsystem::get_name(),
-            Self::SwEffect(_) => USwEffect::get_name(),
+            Self::Autocharge(_) => UAutocharge::lib_get_name(),
+            Self::Booster(_) => UBooster::lib_get_name(),
+            Self::Character(_) => UCharacter::lib_get_name(),
+            Self::Charge(_) => UCharge::lib_get_name(),
+            Self::Drone(_) => UDrone::lib_get_name(),
+            Self::Fighter(_) => UFighter::lib_get_name(),
+            Self::FwEffect(_) => UFwEffect::lib_get_name(),
+            Self::Implant(_) => UImplant::lib_get_name(),
+            Self::Module(_) => UModule::lib_get_name(),
+            Self::ProjEffect(_) => UProjEffect::lib_get_name(),
+            Self::Rig(_) => URig::lib_get_name(),
+            Self::Service(_) => UService::lib_get_name(),
+            Self::Ship(_) => UShip::lib_get_name(),
+            Self::Skill(_) => USkill::lib_get_name(),
+            Self::Stance(_) => UStance::lib_get_name(),
+            Self::Subsystem(_) => USubsystem::lib_get_name(),
+            Self::SwEffect(_) => USwEffect::lib_get_name(),
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_category_id(),
         }
     }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
+    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_attrs(),
             Self::Booster(booster) => booster.get_attrs(),
@@ -184,28 +184,28 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_effect_datas(),
         }
     }
-    pub(crate) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
+    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_defeff_key(),
-            Self::Booster(booster) => booster.get_defeff_key(),
-            Self::Character(character) => character.get_defeff_key(),
-            Self::Charge(charge) => charge.get_defeff_key(),
-            Self::Drone(drone) => drone.get_defeff_key(),
-            Self::Fighter(fighter) => fighter.get_defeff_key(),
-            Self::FwEffect(fw_effect) => fw_effect.get_defeff_key(),
-            Self::Implant(implant) => implant.get_defeff_key(),
-            Self::Module(module) => module.get_defeff_key(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_defeff_key(),
-            Self::Rig(rig) => rig.get_defeff_key(),
-            Self::Service(service) => service.get_defeff_key(),
-            Self::Ship(ship) => ship.get_defeff_key(),
-            Self::Skill(skill) => skill.get_defeff_key(),
-            Self::Stance(stance) => stance.get_defeff_key(),
-            Self::Subsystem(subsystem) => subsystem.get_defeff_key(),
-            Self::SwEffect(sw_effect) => sw_effect.get_defeff_key(),
+            Self::Autocharge(autocharge) => autocharge.get_defeff_rid(),
+            Self::Booster(booster) => booster.get_defeff_rid(),
+            Self::Character(character) => character.get_defeff_rid(),
+            Self::Charge(charge) => charge.get_defeff_rid(),
+            Self::Drone(drone) => drone.get_defeff_rid(),
+            Self::Fighter(fighter) => fighter.get_defeff_rid(),
+            Self::FwEffect(fw_effect) => fw_effect.get_defeff_rid(),
+            Self::Implant(implant) => implant.get_defeff_rid(),
+            Self::Module(module) => module.get_defeff_rid(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_defeff_rid(),
+            Self::Rig(rig) => rig.get_defeff_rid(),
+            Self::Service(service) => service.get_defeff_rid(),
+            Self::Ship(ship) => ship.get_defeff_rid(),
+            Self::Skill(skill) => skill.get_defeff_rid(),
+            Self::Stance(stance) => stance.get_defeff_rid(),
+            Self::Subsystem(subsystem) => subsystem.get_defeff_rid(),
+            Self::SwEffect(sw_effect) => sw_effect.get_defeff_rid(),
         }
     }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_skill_reqs(),
             Self::Booster(booster) => booster.get_skill_reqs(),
@@ -331,46 +331,46 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.stop_all_reffs(reuse_eupdates, src),
         }
     }
-    pub(crate) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
+    pub(crate) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_effect_key_mode(effect_key),
-            Self::Booster(booster) => booster.get_effect_key_mode(effect_key),
-            Self::Character(character) => character.get_effect_key_mode(effect_key),
-            Self::Charge(charge) => charge.get_effect_key_mode(effect_key),
-            Self::Drone(drone) => drone.get_effect_key_mode(effect_key),
-            Self::Fighter(fighter) => fighter.get_effect_key_mode(effect_key),
-            Self::FwEffect(fw_effect) => fw_effect.get_effect_key_mode(effect_key),
-            Self::Implant(implant) => implant.get_effect_key_mode(effect_key),
-            Self::Module(module) => module.get_effect_key_mode(effect_key),
-            Self::ProjEffect(proj_effect) => proj_effect.get_effect_key_mode(effect_key),
-            Self::Rig(rig) => rig.get_effect_key_mode(effect_key),
-            Self::Service(service) => service.get_effect_key_mode(effect_key),
-            Self::Ship(ship) => ship.get_effect_key_mode(effect_key),
-            Self::Skill(skill) => skill.get_effect_key_mode(effect_key),
-            Self::Stance(stance) => stance.get_effect_key_mode(effect_key),
-            Self::Subsystem(subsystem) => subsystem.get_effect_key_mode(effect_key),
-            Self::SwEffect(sw_effect) => sw_effect.get_effect_key_mode(effect_key),
+            Self::Autocharge(autocharge) => autocharge.get_effect_mode(effect_rid),
+            Self::Booster(booster) => booster.get_effect_mode(effect_rid),
+            Self::Character(character) => character.get_effect_mode(effect_rid),
+            Self::Charge(charge) => charge.get_effect_mode(effect_rid),
+            Self::Drone(drone) => drone.get_effect_mode(effect_rid),
+            Self::Fighter(fighter) => fighter.get_effect_mode(effect_rid),
+            Self::FwEffect(fw_effect) => fw_effect.get_effect_mode(effect_rid),
+            Self::Implant(implant) => implant.get_effect_mode(effect_rid),
+            Self::Module(module) => module.get_effect_mode(effect_rid),
+            Self::ProjEffect(proj_effect) => proj_effect.get_effect_mode(effect_rid),
+            Self::Rig(rig) => rig.get_effect_mode(effect_rid),
+            Self::Service(service) => service.get_effect_mode(effect_rid),
+            Self::Ship(ship) => ship.get_effect_mode(effect_rid),
+            Self::Skill(skill) => skill.get_effect_mode(effect_rid),
+            Self::Stance(stance) => stance.get_effect_mode(effect_rid),
+            Self::Subsystem(subsystem) => subsystem.get_effect_mode(effect_rid),
+            Self::SwEffect(sw_effect) => sw_effect.get_effect_mode(effect_rid),
         }
     }
-    pub(crate) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
+    pub(crate) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.set_effect_mode(effect_id, effect_mode, src),
-            Self::Booster(booster) => booster.set_effect_mode(effect_id, effect_mode, src),
-            Self::Character(character) => character.set_effect_mode(effect_id, effect_mode, src),
-            Self::Charge(charge) => charge.set_effect_mode(effect_id, effect_mode, src),
-            Self::Drone(drone) => drone.set_effect_mode(effect_id, effect_mode, src),
-            Self::Fighter(fighter) => fighter.set_effect_mode(effect_id, effect_mode, src),
-            Self::FwEffect(fw_effect) => fw_effect.set_effect_mode(effect_id, effect_mode, src),
-            Self::Implant(implant) => implant.set_effect_mode(effect_id, effect_mode, src),
-            Self::Module(module) => module.set_effect_mode(effect_id, effect_mode, src),
-            Self::ProjEffect(proj_effect) => proj_effect.set_effect_mode(effect_id, effect_mode, src),
-            Self::Rig(rig) => rig.set_effect_mode(effect_id, effect_mode, src),
-            Self::Service(service) => service.set_effect_mode(effect_id, effect_mode, src),
-            Self::Ship(ship) => ship.set_effect_mode(effect_id, effect_mode, src),
-            Self::Skill(skill) => skill.set_effect_mode(effect_id, effect_mode, src),
-            Self::Stance(stance) => stance.set_effect_mode(effect_id, effect_mode, src),
-            Self::Subsystem(subsystem) => subsystem.set_effect_mode(effect_id, effect_mode, src),
-            Self::SwEffect(sw_effect) => sw_effect.set_effect_mode(effect_id, effect_mode, src),
+            Self::Autocharge(autocharge) => autocharge.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Booster(booster) => booster.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Character(character) => character.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Charge(charge) => charge.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Drone(drone) => drone.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Fighter(fighter) => fighter.set_effect_mode(effect_aid, effect_mode, src),
+            Self::FwEffect(fw_effect) => fw_effect.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Implant(implant) => implant.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Module(module) => module.set_effect_mode(effect_aid, effect_mode, src),
+            Self::ProjEffect(proj_effect) => proj_effect.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Rig(rig) => rig.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Service(service) => service.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Ship(ship) => ship.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Skill(skill) => skill.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Stance(stance) => stance.set_effect_mode(effect_aid, effect_mode, src),
+            Self::Subsystem(subsystem) => subsystem.set_effect_mode(effect_aid, effect_mode, src),
+            Self::SwEffect(sw_effect) => sw_effect.set_effect_mode(effect_aid, effect_mode, src),
         }
     }
     pub(crate) fn set_effect_modes(&mut self, effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>, src: &Src) {
@@ -394,7 +394,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.set_effect_modes(effect_modes, src),
         }
     }
-    pub(crate) fn get_state(&self) -> AState {
+    pub(crate) fn get_state(&self) -> RState {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_state(),
             Self::Booster(booster) => booster.get_state(),
@@ -460,24 +460,24 @@ impl UItem {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Access to item-specific methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    pub(crate) fn get_fit_key(&self) -> Option<UFitId> {
+    pub(crate) fn get_fit_uid(&self) -> Option<UFitId> {
         match self {
-            Self::Autocharge(autocharge) => Some(autocharge.get_fit_key()),
-            Self::Booster(booster) => Some(booster.get_fit_key()),
-            Self::Character(character) => Some(character.get_fit_key()),
-            Self::Charge(charge) => Some(charge.get_fit_key()),
-            Self::Drone(drone) => Some(drone.get_fit_key()),
-            Self::Fighter(fighter) => Some(fighter.get_fit_key()),
-            Self::FwEffect(fw_effect) => Some(fw_effect.get_fit_key()),
-            Self::Implant(implant) => Some(implant.get_fit_key()),
-            Self::Module(module) => Some(module.get_fit_key()),
+            Self::Autocharge(autocharge) => Some(autocharge.get_fit_uid()),
+            Self::Booster(booster) => Some(booster.get_fit_uid()),
+            Self::Character(character) => Some(character.get_fit_uid()),
+            Self::Charge(charge) => Some(charge.get_fit_uid()),
+            Self::Drone(drone) => Some(drone.get_fit_uid()),
+            Self::Fighter(fighter) => Some(fighter.get_fit_uid()),
+            Self::FwEffect(fw_effect) => Some(fw_effect.get_fit_uid()),
+            Self::Implant(implant) => Some(implant.get_fit_uid()),
+            Self::Module(module) => Some(module.get_fit_uid()),
             Self::ProjEffect(_) => None,
-            Self::Rig(rig) => Some(rig.get_fit_key()),
-            Self::Service(service) => Some(service.get_fit_key()),
-            Self::Ship(ship) => Some(ship.get_fit_key()),
-            Self::Skill(skill) => Some(skill.get_fit_key()),
-            Self::Stance(stance) => Some(stance.get_fit_key()),
-            Self::Subsystem(subsystem) => Some(subsystem.get_fit_key()),
+            Self::Rig(rig) => Some(rig.get_fit_uid()),
+            Self::Service(service) => Some(service.get_fit_uid()),
+            Self::Ship(ship) => Some(ship.get_fit_uid()),
+            Self::Skill(skill) => Some(skill.get_fit_uid()),
+            Self::Stance(stance) => Some(stance.get_fit_uid()),
+            Self::Subsystem(subsystem) => Some(subsystem.get_fit_uid()),
             Self::SwEffect(_) => None,
         }
     }
@@ -493,56 +493,56 @@ impl UItem {
         match self {
             Self::Autocharge(autocharge) => u_data
                 .items
-                .get(autocharge.get_cont_item_key())
+                .get(autocharge.get_cont_item_uid())
                 .get_carrier_physics(u_data),
-            Self::Booster(booster) => u_data.get_ship_physics_by_fit_key(booster.get_fit_key()),
-            Self::Character(character) => u_data.get_ship_physics_by_fit_key(character.get_fit_key()),
-            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_key()).get_carrier_physics(u_data),
+            Self::Booster(booster) => u_data.get_ship_physics_by_fit_key(booster.get_fit_uid()),
+            Self::Character(character) => u_data.get_ship_physics_by_fit_key(character.get_fit_uid()),
+            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_uid()).get_carrier_physics(u_data),
             Self::Drone(drone) => *drone.get_physics(),
             Self::Fighter(fighter) => *fighter.get_physics(),
             Self::FwEffect(_) => UPhysics::default(),
-            Self::Implant(implant) => u_data.get_ship_physics_by_fit_key(implant.get_fit_key()),
-            Self::Module(module) => u_data.get_ship_physics_by_fit_key(module.get_fit_key()),
+            Self::Implant(implant) => u_data.get_ship_physics_by_fit_key(implant.get_fit_uid()),
+            Self::Module(module) => u_data.get_ship_physics_by_fit_key(module.get_fit_uid()),
             Self::ProjEffect(_) => UPhysics::default(),
-            Self::Service(service) => u_data.get_ship_physics_by_fit_key(service.get_fit_key()),
-            Self::Rig(rig) => u_data.get_ship_physics_by_fit_key(rig.get_fit_key()),
+            Self::Service(service) => u_data.get_ship_physics_by_fit_key(service.get_fit_uid()),
+            Self::Rig(rig) => u_data.get_ship_physics_by_fit_key(rig.get_fit_uid()),
             Self::Ship(ship) => *ship.get_physics(),
-            Self::Skill(skill) => u_data.get_ship_physics_by_fit_key(skill.get_fit_key()),
-            Self::Stance(stance) => u_data.get_ship_physics_by_fit_key(stance.get_fit_key()),
-            Self::Subsystem(subsystem) => u_data.get_ship_physics_by_fit_key(subsystem.get_fit_key()),
+            Self::Skill(skill) => u_data.get_ship_physics_by_fit_key(skill.get_fit_uid()),
+            Self::Stance(stance) => u_data.get_ship_physics_by_fit_key(stance.get_fit_uid()),
+            Self::Subsystem(subsystem) => u_data.get_ship_physics_by_fit_key(subsystem.get_fit_uid()),
             Self::SwEffect(_) => UPhysics::default(),
         }
     }
-    pub(crate) fn get_direct_radius(&self) -> AttrVal {
+    pub(crate) fn get_direct_radius(&self) -> PValue {
         match self {
             Self::Drone(drone) => drone.get_radius(),
             Self::Fighter(fighter) => fighter.get_radius(),
             Self::Ship(ship) => ship.get_radius(),
-            _ => OF(0.0),
+            _ => PValue::default(),
         }
     }
-    pub(crate) fn get_carrier_radius(&self, u_data: &UData) -> AttrVal {
+    pub(crate) fn get_carrier_radius(&self, u_data: &UData) -> PValue {
         match self {
             Self::Autocharge(autocharge) => u_data
                 .items
-                .get(autocharge.get_cont_item_key())
+                .get(autocharge.get_cont_item_uid())
                 .get_carrier_radius(u_data),
-            Self::Booster(booster) => u_data.get_ship_radius_by_fit_key(booster.get_fit_key()),
-            Self::Character(character) => u_data.get_ship_radius_by_fit_key(character.get_fit_key()),
-            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_key()).get_carrier_radius(u_data),
+            Self::Booster(booster) => u_data.get_ship_radius_by_fit_uid(booster.get_fit_uid()),
+            Self::Character(character) => u_data.get_ship_radius_by_fit_uid(character.get_fit_uid()),
+            Self::Charge(charge) => u_data.items.get(charge.get_cont_item_uid()).get_carrier_radius(u_data),
             Self::Drone(drone) => drone.get_radius(),
             Self::Fighter(fighter) => fighter.get_radius(),
-            Self::FwEffect(_) => AttrVal::default(),
-            Self::Implant(implant) => u_data.get_ship_radius_by_fit_key(implant.get_fit_key()),
-            Self::Module(module) => u_data.get_ship_radius_by_fit_key(module.get_fit_key()),
-            Self::ProjEffect(_) => AttrVal::default(),
-            Self::Service(service) => u_data.get_ship_radius_by_fit_key(service.get_fit_key()),
-            Self::Rig(rig) => u_data.get_ship_radius_by_fit_key(rig.get_fit_key()),
+            Self::FwEffect(_) => PValue::default(),
+            Self::Implant(implant) => u_data.get_ship_radius_by_fit_uid(implant.get_fit_uid()),
+            Self::Module(module) => u_data.get_ship_radius_by_fit_uid(module.get_fit_uid()),
+            Self::ProjEffect(_) => PValue::default(),
+            Self::Service(service) => u_data.get_ship_radius_by_fit_uid(service.get_fit_uid()),
+            Self::Rig(rig) => u_data.get_ship_radius_by_fit_uid(rig.get_fit_uid()),
             Self::Ship(ship) => ship.get_radius(),
-            Self::Skill(skill) => u_data.get_ship_radius_by_fit_key(skill.get_fit_key()),
-            Self::Stance(stance) => u_data.get_ship_radius_by_fit_key(stance.get_fit_key()),
-            Self::Subsystem(subsystem) => u_data.get_ship_radius_by_fit_key(subsystem.get_fit_key()),
-            Self::SwEffect(_) => AttrVal::default(),
+            Self::Skill(skill) => u_data.get_ship_radius_by_fit_uid(skill.get_fit_uid()),
+            Self::Stance(stance) => u_data.get_ship_radius_by_fit_uid(stance.get_fit_uid()),
+            Self::Subsystem(subsystem) => u_data.get_ship_radius_by_fit_uid(subsystem.get_fit_uid()),
+            Self::SwEffect(_) => PValue::default(),
         }
     }
     pub(crate) fn get_projs(&self) -> Option<&UProjs> {
@@ -611,13 +611,13 @@ impl UItem {
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_key: RAttrId) -> Option<AAttrVal> {
+    pub(crate) fn get_attr(&self, attr_key: RAttrId) -> Option<Value> {
         match self.get_attrs() {
             Some(attrs) => attrs.get(&attr_key).copied(),
             None => None,
         }
     }
-    pub(crate) fn get_effective_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+    pub(crate) fn get_effective_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         match self {
             Self::Autocharge(_) => None,
             Self::Booster(booster) => booster.get_skill_reqs(),
@@ -669,13 +669,13 @@ impl UItem {
         .into_iter()
     }
 }
-impl Named for UItem {
-    fn get_name() -> &'static str {
+impl LibNamed for UItem {
+    fn lib_get_name() -> &'static str {
         "UItem"
     }
 }
-impl GetId<ItemId> for UItem {
-    fn get_id(&self) -> ItemId {
+impl LibGetId<ItemId> for UItem {
+    fn lib_get_id(&self) -> ItemId {
         self.get_item_id()
     }
 }

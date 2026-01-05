@@ -48,14 +48,14 @@ impl<'a> AutochargeMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_autocharge(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_autocharge(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_cont_item(&self) -> Item<'_> {
         get_cont_item(self.sol, self.key)
     }
     pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
-        let cont_key = get_u_autocharge(self.sol, self.key).get_cont_item_key();
+        let cont_key = get_u_autocharge(self.sol, self.key).get_cont_item_uid();
         ItemMut::new(self.sol, cont_key)
     }
     pub fn get_cont_effect_id(&self) -> EffectId {
@@ -82,15 +82,15 @@ impl<'a> ItemCommon for AutochargeMut<'a> {}
 impl<'a> ItemMutCommon for AutochargeMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, autocharge_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_autocharge(sol, autocharge_key).get_fit_key();
+    let fit_key = get_u_autocharge(sol, autocharge_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_cont_item(sol: &SolarSystem, autocharge_key: UItemId) -> Item<'_> {
-    let cont_key = get_u_autocharge(sol, autocharge_key).get_cont_item_key();
+    let cont_key = get_u_autocharge(sol, autocharge_key).get_cont_item_uid();
     Item::new(sol, cont_key)
 }
 fn get_cont_effect_id(sol: &SolarSystem, autocharge_key: UItemId) -> EffectId {
-    let cont_effect_key = get_u_autocharge(sol, autocharge_key).get_cont_effect_key();
+    let cont_effect_key = get_u_autocharge(sol, autocharge_key).get_cont_effect_rid();
     sol.u_data.src.get_effect_by_rid(cont_effect_key).aid.into()
 }
 fn get_state(sol: &SolarSystem, autocharge_key: UItemId) -> bool {

@@ -30,16 +30,16 @@ impl SolarSystem {
             None => {
                 return Err(ItemReceiveProjError {
                     item_id: projectee_u_item.get_item_id(),
-                    item_kind: projectee_u_item.get_name(),
+                    item_kind: projectee_u_item.lib_get_name(),
                 }
                 .into());
             }
         };
-        let ship_physics = self.u_data.get_ship_physics_by_fit_key(u_module.get_fit_key());
+        let ship_physics = self.u_data.get_ship_physics_by_fit_key(u_module.get_fit_uid());
         let u_proj_data = Some(UProjData::from_physics_with_axt(
             ship_physics,
             projectee_physics,
-            get_ship_axt(&self.u_data, u_module.get_fit_key()),
+            get_ship_axt(&self.u_data, u_module.get_fit_uid()),
             projectee_u_item.get_axt(),
         ));
         let charge_key = u_module.get_charge_uid();

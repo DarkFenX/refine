@@ -6,7 +6,7 @@ use crate::{
         rels::{Fk, KeyDb, KeyPart, Pk},
     },
     ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList},
-    util::{Named, RMap, RSet},
+    util::{LibNamed, RMap, RSet},
 };
 
 /// Ensure that assumptions refine makes about the data are true.
@@ -39,25 +39,37 @@ fn fk_check(e_data: &EData, g_supp: &GSupport) {
 }
 fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, g_supp: &GSupport)
 where
-    T: Fk + Named,
+    T: Fk + LibNamed,
 {
-    fk_check_referee(rer_cont, &pkdb.items, g_supp, T::get_item_fks, EItem::get_name());
-    fk_check_referee(rer_cont, &pkdb.groups, g_supp, T::get_group_fks, EItemGroup::get_name());
+    fk_check_referee(rer_cont, &pkdb.items, g_supp, T::get_item_fks, EItem::lib_get_name());
+    fk_check_referee(
+        rer_cont,
+        &pkdb.groups,
+        g_supp,
+        T::get_group_fks,
+        EItemGroup::lib_get_name(),
+    );
     fk_check_referee(
         rer_cont,
         &pkdb.item_lists,
         g_supp,
         T::get_item_list_fks,
-        EItemList::get_name(),
+        EItemList::lib_get_name(),
     );
-    fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, EAttr::get_name());
-    fk_check_referee(rer_cont, &pkdb.effects, g_supp, T::get_effect_fks, EEffect::get_name());
-    fk_check_referee(rer_cont, &pkdb.abils, g_supp, T::get_abil_fks, EAbil::get_name());
-    fk_check_referee(rer_cont, &pkdb.buffs, g_supp, T::get_buff_fks, EBuff::get_name());
+    fk_check_referee(rer_cont, &pkdb.attrs, g_supp, T::get_attr_fks, EAttr::lib_get_name());
+    fk_check_referee(
+        rer_cont,
+        &pkdb.effects,
+        g_supp,
+        T::get_effect_fks,
+        EEffect::lib_get_name(),
+    );
+    fk_check_referee(rer_cont, &pkdb.abils, g_supp, T::get_abil_fks, EAbil::lib_get_name());
+    fk_check_referee(rer_cont, &pkdb.buffs, g_supp, T::get_buff_fks, EBuff::lib_get_name());
 }
 fn fk_check_referee<T, F>(rer_cont: &EDataCont<T>, ree_pks: &RSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
 where
-    T: Fk + Named,
+    T: Fk + LibNamed,
     F: Fn(&T, &GSupport) -> Vec<KeyPart>,
 {
     let mut fks = RSet::new();
@@ -66,7 +78,7 @@ where
     if !missing.is_empty() {
         let msg = format!(
             "{} refers to {} missing {}: {}",
-            T::get_name(),
+            T::lib_get_name(),
             missing.len(),
             ree_name,
             missing.into_iter().map(|v| v.into_inner()).sorted_unstable().join(", ")
@@ -122,9 +134,9 @@ fn unmapped_abilities(e_data: &mut EData) {
         let msg = format!(
             "removed {} {} and {} {} with unmappable fighter ability IDs, showing up to {}: {}",
             abils,
-            EAbil::get_name(),
+            EAbil::lib_get_name(),
             item_abils,
-            EItemAbil::get_name(),
+            EItemAbil::lib_get_name(),
             max_logged,
             unknown_ids
                 .into_iter()
@@ -154,8 +166,8 @@ fn broken_ability_links(e_data: &mut EData) {
         let msg = format!(
             "removed {} {} with invalid target {}, showing up to {}: {}",
             item_abils,
-            EItemAbil::get_name(),
-            EAbil::get_name(),
+            EItemAbil::lib_get_name(),
+            EAbil::lib_get_name(),
             max_logged,
             broken_ids
                 .into_iter()
@@ -196,7 +208,7 @@ fn item_ability_handler_effect(e_data: &mut EData) {
         let msg = format!(
             "removed {} {} with references to missing on-item effects, showing up to {}: {}",
             invalids.len(),
-            EItemAbil::get_name(),
+            EItemAbil::lib_get_name(),
             max_logged,
             invalids
                 .into_iter()

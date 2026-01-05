@@ -59,7 +59,7 @@ impl Vast {
         // - having aggro modules active
         // - gate scram status (scripted HIC ray)
         // - special attribute which disallows docking (disruptive lance)
-        if self.is_fit_aggroed(ship.get_fit_key()) {
+        if self.is_fit_aggroed(ship.get_fit_uid()) {
             return Ok(false);
         }
         let gate_status = calc
@@ -116,7 +116,7 @@ impl Vast {
         // Station docking is blocked by either of:
         // - having any aggro effects active
         // - special attribute which disallows docking (scripted HIC ray)
-        if self.is_fit_aggroed(ship.get_fit_key()) {
+        if self.is_fit_aggroed(ship.get_fit_uid()) {
             return Ok(false);
         }
         let dock_status = calc
@@ -138,7 +138,7 @@ impl Vast {
         // - having any aggro effects active
         // - scramble status
         // - special attribute which disallows docking
-        if self.is_fit_aggroed(ship.get_fit_key()) {
+        if self.is_fit_aggroed(ship.get_fit_uid()) {
             return Ok(false);
         }
         let warp_status = calc
@@ -167,7 +167,7 @@ impl Vast {
         // - any drones or fighters being outside
         // - warp scram status
         // - special attribute which disallows tethering
-        let fit_data = self.fit_datas.get(&ship.get_fit_key()).unwrap();
+        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
         if !fit_data.aggro_effects.is_empty() {
             return Ok(false);
         }

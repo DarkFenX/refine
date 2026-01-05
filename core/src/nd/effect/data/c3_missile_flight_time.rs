@@ -128,7 +128,7 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
 fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, _changed_uid: UItemId, changed_item: &UItem) -> bool {
     match changed_item {
         UItem::Ship(changed_ship) => {
-            Some(changed_ship.get_fit_key()) == ctx.u_data.items.get(affector_uid).get_fit_key()
+            Some(changed_ship.get_fit_uid()) == ctx.u_data.items.get(affector_uid).get_fit_uid()
         }
         _ => false,
     }

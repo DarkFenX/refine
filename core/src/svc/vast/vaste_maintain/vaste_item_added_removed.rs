@@ -9,7 +9,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn item_added(&mut self, item_key: UItemId, item: &UItem) {
         if !item.is_loaded() {
-            match item.get_fit_key() {
+            match item.get_fit_uid() {
                 Some(fit_key) => {
                     let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data.not_loaded.insert(item_key);
@@ -21,7 +21,7 @@ impl Vast {
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
-            let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
+            let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
                 // If a skill is being added, then all items are in skill-to-item map should have a
                 // missing entry
@@ -47,7 +47,7 @@ impl Vast {
     }
     pub(in crate::svc) fn item_removed(&mut self, u_data: &UData, item_key: UItemId, item: &UItem) {
         if !item.is_loaded() {
-            match item.get_fit_key() {
+            match item.get_fit_uid() {
                 Some(fit_key) => {
                     let fit_data = self.get_fit_data_mut(&fit_key);
                     fit_data.not_loaded.remove(&item_key);
@@ -59,7 +59,7 @@ impl Vast {
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
-            let fit_data = self.get_fit_data_mut(&skill.get_fit_key());
+            let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
             for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
                 match fit_data.srqs_missing.entry(other_item_key) {
                     Entry::Occupied(mut missing_skills_entry) => {

@@ -1,6 +1,6 @@
 use crate::{
     ed::{EBuffId, EGenFloat, EItemId, EItemListId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemSpaceComp {
@@ -32,8 +32,8 @@ impl EItemSpaceComp {
         false
     }
 }
-impl Named for EItemSpaceComp {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemSpaceComp {
+    fn lib_get_name() -> &'static str {
         "EItemSpaceComp"
     }
 }

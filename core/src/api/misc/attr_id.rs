@@ -4,7 +4,7 @@ use crate::{
 };
 
 /// ID of an attribute.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum AttrId {
     /// ID of an EVE attribute.
     Eve(EveAttrId),

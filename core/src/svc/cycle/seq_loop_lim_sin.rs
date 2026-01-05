@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, DefCount},
     svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
-    util::{ConvertExtend, InfCount},
+    util::{InfCount, LibConvertExtend},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,11 +36,11 @@ impl<T> CycleSeqLoopLimSin<T> {
     }
     pub(in crate::svc) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X) -> CycleSeq<R>
     where
-        T: ConvertExtend<X, R>,
+        T: LibConvertExtend<X, R>,
         R: Eq,
     {
-        let p1_data = self.p1_data.convert_extend(p1_xt);
-        let p2_data = self.p2_data.convert_extend(p2_xt);
+        let p1_data = self.p1_data.lib_convert_extend(p1_xt);
+        let p2_data = self.p2_data.lib_convert_extend(p2_xt);
         match p1_data == p2_data {
             true => CycleSeq::Inf(CSeqInf { data: p1_data }),
             false => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {

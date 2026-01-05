@@ -1,7 +1,7 @@
 use crate::{
     def::{AttrVal, DefCount},
     svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped},
-    util::{ConvertExtend, InfCount},
+    util::{InfCount, LibConvertExtend},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,10 +30,10 @@ impl<T> CSeqLim<T> {
     }
     pub(in crate::svc) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
     where
-        T: ConvertExtend<X, R>,
+        T: LibConvertExtend<X, R>,
     {
         CycleSeq::Lim(CSeqLim {
-            data: self.data.convert_extend(xt),
+            data: self.data.lib_convert_extend(xt),
             repeat_count: self.repeat_count,
         })
     }

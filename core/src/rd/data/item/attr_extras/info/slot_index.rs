@@ -26,5 +26,5 @@ pub(in crate::rd::data::item::attr_extras) fn get_subsystem_slot(
 }
 
 fn get_slot_from_attr(item_attrs: &RMap<RAttrId, Value>, attr_key: Option<RAttrId>) -> Option<SlotIndex> {
-    attr_key.and_then(|v| item_attrs.get(&v).map(|v| SlotIndex::new_f64(v.into())))
+    attr_key.and_then(|v| item_attrs.get(&v).map(|v| SlotIndex::new_f64_rounded(v.into())))
 }

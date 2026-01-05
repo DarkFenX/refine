@@ -51,7 +51,7 @@ impl<'a> DroneMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_drone(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_drone(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_state(&self) -> MinionState {
@@ -84,7 +84,7 @@ impl<'a> ItemCommon for DroneMut<'a> {}
 impl<'a> ItemMutCommon for DroneMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, drone_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_drone(sol, drone_key).get_fit_key();
+    let fit_key = get_u_drone(sol, drone_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_state(sol: &SolarSystem, drone_key: UItemId) -> MinionState {

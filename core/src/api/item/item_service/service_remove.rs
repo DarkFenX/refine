@@ -12,7 +12,7 @@ impl SolarSystem {
     ) {
         SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_key, reuse_eupdates);
         let u_service = self.u_data.items.get(service_key).dc_service().unwrap();
-        let u_fit = self.u_data.fits.get_mut(u_service.get_fit_key());
+        let u_fit = self.u_data.fits.get_mut(u_service.get_fit_uid());
         u_fit.services.remove(&service_key);
         self.u_data.items.remove(service_key);
     }

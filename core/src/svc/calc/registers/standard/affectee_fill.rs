@@ -110,7 +110,7 @@ impl StandardRegister {
                 if let UItem::Ship(projectee_ship) = projectee_item
                     && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
                 {
-                    let key = (projectee_ship.get_fit_key(), loc_kind);
+                    let key = (projectee_ship.get_fit_uid(), loc_kind);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
                 }
             }
@@ -119,7 +119,7 @@ impl StandardRegister {
                 if let UItem::Ship(projectee_ship) = projectee_item
                     && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
                 {
-                    let key = (projectee_ship.get_fit_key(), loc_kind, item_grp_id);
+                    let key = (projectee_ship.get_fit_uid(), loc_kind, item_grp_id);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
                 }
             }
@@ -128,7 +128,7 @@ impl StandardRegister {
                 if let UItem::Ship(projectee_ship) = projectee_item
                     && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
                 {
-                    let key = (projectee_ship.get_fit_key(), loc_kind, srq_type_id);
+                    let key = (projectee_ship.get_fit_uid(), loc_kind, srq_type_id);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
                 }
             }

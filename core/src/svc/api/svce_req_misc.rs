@@ -17,7 +17,7 @@ const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 impl Svc {
     pub(crate) fn get_item_cycles_until_empty(&mut self, u_data: &UData, item_key: UItemId) -> Option<InfCount> {
         let u_item = u_data.items.get(item_key);
-        let defeff_key = u_item.get_defeff_key()??;
+        let defeff_key = u_item.get_defeff_rid()??;
         let cycle_info = get_item_cseq_map(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -59,7 +59,7 @@ impl Svc {
         item_key: UItemId,
     ) -> Option<AdjustableCount> {
         let u_item = u_data.items.get(item_key);
-        let defeff_key = u_item.get_defeff_key()??;
+        let defeff_key = u_item.get_defeff_rid()??;
         let defeff = u_data.src.get_effect_by_rid(defeff_key);
         let spool_attrs = defeff.spool_attr_rids?;
         // TODO: limit by non-interrupted spool cycle count

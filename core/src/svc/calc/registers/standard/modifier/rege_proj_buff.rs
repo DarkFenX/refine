@@ -35,7 +35,7 @@ pub(super) fn proj_buff_mod(
         AffecteeFilter::Loc(Location::ItemList(item_list_key)) => {
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_key) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_kind().try_into() => {
-                    let fit_key = projectee_ship.get_fit_key();
+                    let fit_key = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_key, projectee_key);
                     let key = (fit_key, loc_kind);
                     add_cmod(&mut reg_cmods.loc, key, cmod, &mut reg_cmods.by_aspec);
@@ -51,7 +51,7 @@ pub(super) fn proj_buff_mod(
         AffecteeFilter::LocGrp(Location::ItemList(item_list_key), item_grp_id) => {
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_key) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_kind().try_into() => {
-                    let fit_key = projectee_ship.get_fit_key();
+                    let fit_key = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_key, projectee_key);
                     let key = (fit_key, loc_kind, item_grp_id);
                     add_cmod(&mut reg_cmods.loc_grp, key, cmod, &mut reg_cmods.by_aspec);
@@ -67,7 +67,7 @@ pub(super) fn proj_buff_mod(
         AffecteeFilter::LocSrq(Location::ItemList(item_list_key), srq_type_id) => {
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_key) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_kind().try_into() => {
-                    let fit_key = projectee_ship.get_fit_key();
+                    let fit_key = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_key, projectee_key);
                     let key = (fit_key, loc_kind, srq_type_id);
                     add_cmod(&mut reg_cmods.loc_srq, key, cmod, &mut reg_cmods.by_aspec);
@@ -110,7 +110,7 @@ pub(super) fn unproj_buff_mod(
         AffecteeFilter::Loc(Location::ItemList(item_list_key)) => {
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_key) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_kind().try_into() => {
-                    let fit_key = projectee_ship.get_fit_key();
+                    let fit_key = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_key, projectee_key);
                     let key = (fit_key, loc_kind);
                     remove_cmod(&mut reg_cmods.loc, key, &cmod, &mut reg_cmods.by_aspec);
@@ -126,7 +126,7 @@ pub(super) fn unproj_buff_mod(
         AffecteeFilter::LocGrp(Location::ItemList(item_list_key), item_grp_id) => {
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_key) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_kind().try_into() => {
-                    let fit_key = projectee_ship.get_fit_key();
+                    let fit_key = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_key, projectee_key);
                     let key = (fit_key, loc_kind, item_grp_id);
                     remove_cmod(&mut reg_cmods.loc_grp, key, &cmod, &mut reg_cmods.by_aspec);
@@ -142,7 +142,7 @@ pub(super) fn unproj_buff_mod(
         AffecteeFilter::LocSrq(Location::ItemList(item_list_key), srq_type_id) => {
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_key) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_kind().try_into() => {
-                    let fit_key = projectee_ship.get_fit_key();
+                    let fit_key = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_key, projectee_key);
                     let key = (fit_key, loc_kind, srq_type_id);
                     remove_cmod(&mut reg_cmods.loc_srq, key, &cmod, &mut reg_cmods.by_aspec);

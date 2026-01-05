@@ -7,7 +7,7 @@ use crate::{
 impl UItem {
     pub(in crate::svc::calc) fn get_other_key(&self) -> Option<UItemId> {
         match self {
-            Self::Charge(charge) => Some(charge.get_cont_item_key()),
+            Self::Charge(charge) => Some(charge.get_cont_item_uid()),
             Self::Module(module) => module.get_charge_uid(),
             _ => None,
         }

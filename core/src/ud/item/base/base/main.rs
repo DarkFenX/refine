@@ -1,8 +1,8 @@
 use crate::{
-    ad::{AAbilId, AAttrVal, AEffectId, AItemCatId, AItemGrpId, AItemId, ASkillLevel, AState},
-    def::ItemId,
-    misc::EffectMode,
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RcItem, Src},
+    ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
+    api::ItemId,
+    misc::{EffectMode, SkillLevel, Value},
+    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState, RcItem, Src},
     ud::item::{
         base::{UEffectUpdates, process_effects},
         misc::UEffectModes,
@@ -16,14 +16,14 @@ pub(in crate::ud::item) struct UItemBase {
     // User-defined data
     item_id: ItemId,
     type_id: AItemId,
-    state: AState,
+    state: RState,
     pub(super) effect_modes: UEffectModes,
     // Source-dependent data
     cache: Option<ItemBaseCache>,
 }
 impl UItemBase {
     // Constructors
-    pub(in crate::ud::item) fn new(item_id: ItemId, type_id: AItemId, state: AState, src: &Src) -> Self {
+    pub(in crate::ud::item) fn new(item_id: ItemId, type_id: AItemId, state: RState, src: &Src) -> Self {
         Self {
             item_id,
             type_id,
@@ -38,7 +38,7 @@ impl UItemBase {
     pub(in crate::ud::item::base) fn base_new_with_type_id_not_loaded(
         item_id: ItemId,
         type_id: AItemId,
-        state: AState,
+        state: RState,
     ) -> Self {
         Self {
             item_id,
@@ -48,7 +48,7 @@ impl UItemBase {
             cache: None,
         }
     }
-    pub(in crate::ud::item::base) fn base_new_with_r_item(item_id: ItemId, r_item: RcItem, state: AState) -> Self {
+    pub(in crate::ud::item::base) fn base_new_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
         Self {
             item_id,
             type_id: r_item.aid,
@@ -77,19 +77,19 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_category_id(&self) -> Option<AItemCatId> {
         self.base_get_r_item().map(|v| v.cat_id)
     }
-    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrId, AAttrVal>> {
+    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         self.base_get_r_item().map(|v| &v.attrs)
     }
     pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         self.base_get_r_item().map(|v| &v.effect_datas)
     }
-    pub(in crate::ud::item) fn get_defeff_key(&self) -> Option<Option<REffectId>> {
+    pub(in crate::ud::item) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
         self.base_get_r_item().map(|v| v.defeff_rid)
     }
     pub(in crate::ud::item) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
         self.base_get_r_item().map(|v| &v.abil_ids)
     }
-    pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, ASkillLevel>> {
+    pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         self.base_get_r_item().map(|v| &v.srqs)
     }
     pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
@@ -102,7 +102,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_axt(&self) -> Option<&RItemAXt> {
         self.base_get_r_item().map(|v| &v.axt)
     }
-    pub(in crate::ud::item) fn get_max_state(&self) -> Option<AState> {
+    pub(in crate::ud::item) fn get_max_state(&self) -> Option<RState> {
         self.base_get_r_item().map(|v| v.max_state)
     }
     pub(in crate::ud::item) fn get_disallowed_in_wspace(&self) -> Option<bool> {
@@ -117,7 +117,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base_get_r_item().and_then(|v| v.val_active_group_id)
     }
-    pub(in crate::ud::item) fn get_cap_use_attr_keys(&self) -> Option<&Vec<RAttrId>> {
+    pub(in crate::ud::item) fn get_cap_use_attr_rids(&self) -> Option<&Vec<RAttrId>> {
         self.base_get_r_item().map(|v| &v.cap_use_attr_rids)
     }
     pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
@@ -142,20 +142,20 @@ impl UItemBase {
         }
     }
     // Misc methods
-    pub(in crate::ud::item) fn get_state(&self) -> AState {
+    pub(in crate::ud::item) fn get_state(&self) -> RState {
         self.state
     }
-    pub(in crate::ud::item) fn set_state(&mut self, state: AState) {
+    pub(in crate::ud::item) fn set_state(&mut self, state: RState) {
         self.state = state;
     }
-    pub(in crate::ud::item) fn get_effect_key_mode(&self, effect_key: &REffectId) -> EffectMode {
-        self.effect_modes.get_by_key(effect_key)
+    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+        self.effect_modes.get_by_rid(effect_rid)
     }
-    pub(in crate::ud::item) fn get_effect_id_mode(&self, effect_id: &AEffectId) -> EffectMode {
-        self.effect_modes.get_by_id(effect_id)
+    pub(in crate::ud::item) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
+        self.effect_modes.get_by_aid(effect_aid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_id: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.effect_modes.set_by_id(effect_id, effect_mode, src);
+    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
+        self.effect_modes.set_by_aid(effect_aid, effect_mode, src);
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
@@ -163,11 +163,11 @@ impl UItemBase {
         src: &Src,
     ) {
         for (effect_id, effect_mode) in effect_modes {
-            self.effect_modes.set_by_id(effect_id, effect_mode, src);
+            self.effect_modes.set_by_aid(effect_id, effect_mode, src);
         }
     }
     pub(in crate::ud::item::base) fn base_update_effect_modes(&mut self, src: &Src) {
-        self.effect_modes.update_keys(src);
+        self.effect_modes.update_rids(src);
     }
     pub(in crate::ud::item) fn is_loaded(&self) -> bool {
         self.cache.is_some()
@@ -233,7 +233,7 @@ impl UItemBase {
                 &mut cache.reffs,
                 src,
                 &cache.r_item,
-                AState::Ghost,
+                RState::Ghost,
                 &self.effect_modes,
             )
         }

@@ -1,6 +1,6 @@
 use crate::{
     ed::{EAbilId, EGenFloat, EGenInt, EItemId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItemAbil {
@@ -11,8 +11,8 @@ pub struct EItemAbil {
     pub charge_count: Option<EGenInt>,
     pub charge_rearm_time: Option<EGenFloat>,
 }
-impl Named for EItemAbil {
-    fn get_name() -> &'static str {
+impl LibNamed for EItemAbil {
+    fn lib_get_name() -> &'static str {
         "EItemAbil"
     }
 }

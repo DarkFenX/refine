@@ -19,7 +19,7 @@ impl StandardRegister {
         attr_key: RAttrId,
         fits: &UFits,
     ) -> Vec<CtxModifier> {
-        let fit_key = item.get_fit_key();
+        let fit_key = item.get_fit_uid();
         let root_loc = item.get_root_loc_kind();
         let item_grp_id = item.get_group_id().unwrap();
         let srqs = item.get_skill_reqs().unwrap();

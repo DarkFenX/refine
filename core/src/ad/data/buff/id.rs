@@ -1,4 +1,4 @@
-use crate::{def::DefId, ed::EBuffId};
+use crate::ed::EBuffId;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum ABuffId {
@@ -20,23 +20,23 @@ impl std::fmt::Display for ABuffId {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct AEveBuffId(DefId);
+pub struct AEveBuffId(i32);
 impl AEveBuffId {
-    pub const fn new(id: DefId) -> Self {
+    pub const fn new(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> DefId {
+    pub const fn into_inner(self) -> i32 {
         self.0
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
-pub struct ACustomBuffId(DefId);
+pub struct ACustomBuffId(i32);
 impl ACustomBuffId {
-    pub const fn new(id: DefId) -> Self {
+    pub const fn new(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> DefId {
+    pub const fn into_inner(self) -> i32 {
         self.0
     }
 }

@@ -26,7 +26,7 @@ impl SolarSystem {
             return;
         }
         // Add autocharge items themselves, and record which have been added
-        let fit_key = match u_item.get_fit_key() {
+        let fit_key = match u_item.get_fit_uid() {
             Some(fit_key) => fit_key,
             None => return,
         };

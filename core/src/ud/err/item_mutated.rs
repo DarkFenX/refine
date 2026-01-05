@@ -1,4 +1,4 @@
-use crate::def::ItemId;
+use crate::api::ItemId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("item {item_id} is not mutated")]

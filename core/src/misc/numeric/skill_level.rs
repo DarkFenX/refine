@@ -1,6 +1,6 @@
 use crate::ad::ASkillLevel;
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd, derive_more::Display)]
 pub struct SkillLevel(u8);
 impl SkillLevel {
     pub fn new_checked(level: i32) -> Result<Self, SkillLevelError> {

@@ -1,6 +1,6 @@
 use crate::{
     ed::{EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EBuff {
@@ -12,13 +12,13 @@ pub struct EBuff {
     pub locgroup_mods: Vec<EBuffLGM>,
     pub locsrq_mods: Vec<EBuffLRSM>,
 }
-impl Named for EBuff {
-    fn get_name() -> &'static str {
+impl LibNamed for EBuff {
+    fn lib_get_name() -> &'static str {
         "EBuff"
     }
 }
 impl std::fmt::Display for EBuff {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}(id={})", Self::get_name(), self.id)
+        write!(f, "{}(id={})", Self::lib_get_name(), self.id)
     }
 }

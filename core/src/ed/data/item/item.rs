@@ -1,6 +1,6 @@
 use crate::{
     ed::{EGenFloat, EItemGrpId, EItemId},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EItem {
@@ -11,13 +11,13 @@ pub struct EItem {
     pub radius: EGenFloat,
     pub volume: EGenFloat,
 }
-impl Named for EItem {
-    fn get_name() -> &'static str {
+impl LibNamed for EItem {
+    fn lib_get_name() -> &'static str {
         "EItem"
     }
 }
 impl std::fmt::Display for EItem {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}(id={})", Self::get_name(), self.id)
+        write!(f, "{}(id={})", Self::lib_get_name(), self.id)
     }
 }

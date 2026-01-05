@@ -1,6 +1,6 @@
 use crate::{
     ed::{EAttrId, EEffectCatId, EEffectId, EEffectMod},
-    util::Named,
+    util::LibNamed,
 };
 
 pub struct EEffect {
@@ -17,13 +17,13 @@ pub struct EEffect {
     pub resist_attr_id: Option<EAttrId>,
     pub mods: Vec<EEffectMod>,
 }
-impl Named for EEffect {
-    fn get_name() -> &'static str {
+impl LibNamed for EEffect {
+    fn lib_get_name() -> &'static str {
         "EEffect"
     }
 }
 impl std::fmt::Display for EEffect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}(id={})", Self::get_name(), self.id)
+        write!(f, "{}(id={})", Self::lib_get_name(), self.id)
     }
 }

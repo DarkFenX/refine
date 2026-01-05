@@ -25,7 +25,7 @@ impl StandardRegister {
         reuse_cmods.clear();
         let valid = match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_key)) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 let affectee_keys = self.affectee_buffable.get(&(fit_key, item_list_key));
                 reuse_cmods.reserve(affectee_keys.len());
                 for &affectee_key in affectee_keys {
@@ -36,7 +36,7 @@ impl StandardRegister {
                 true
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_key)) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 if let Some((ship_key, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_key, &item_list_key)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
@@ -48,7 +48,7 @@ impl StandardRegister {
                 true
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_key), item_grp_id) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 if let Some((ship_key, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_key, &item_list_key)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
@@ -60,7 +60,7 @@ impl StandardRegister {
                 true
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_key), srq_type_id) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 if let Some((ship_key, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_key, &item_list_key)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
@@ -74,7 +74,7 @@ impl StandardRegister {
             _ => false,
         };
         if valid {
-            self.rmods_fw_buff.add_entry(fw_effect.get_fit_key(), rmod);
+            self.rmods_fw_buff.add_entry(fw_effect.get_fit_uid(), rmod);
             self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
         valid
@@ -89,7 +89,7 @@ impl StandardRegister {
         reuse_cmods.clear();
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_key)) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 let affectee_keys = self.affectee_buffable.get(&(fit_key, item_list_key));
                 reuse_cmods.reserve(affectee_keys.len());
                 for &affectee_key in affectee_keys {
@@ -99,7 +99,7 @@ impl StandardRegister {
                 }
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_key)) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 if let Some((ship_key, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_key, &item_list_key)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
@@ -110,7 +110,7 @@ impl StandardRegister {
                 }
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_key), item_grp_id) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 if let Some((ship_key, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_key, &item_list_key)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
@@ -121,7 +121,7 @@ impl StandardRegister {
                 }
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_key), srq_type_id) => {
-                let fit_key = fw_effect.get_fit_key();
+                let fit_key = fw_effect.get_fit_uid();
                 if let Some((ship_key, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_key, &item_list_key)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
@@ -135,7 +135,7 @@ impl StandardRegister {
         };
         // Only modifiers which passed validation during registration should reach this function, so
         // we don't do extra validation and just remove them
-        self.rmods_fw_buff.remove_entry(fw_effect.get_fit_key(), &rmod);
+        self.rmods_fw_buff.remove_entry(fw_effect.get_fit_uid(), &rmod);
     }
     pub(in crate::svc::calc::registers::standard) fn reg_affectee_for_fw_buff(
         &mut self,

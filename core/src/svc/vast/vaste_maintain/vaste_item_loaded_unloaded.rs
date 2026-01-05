@@ -13,7 +13,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn item_loaded(&mut self, u_data: &UData, item_key: UItemId, item: &UItem) {
-        let fit_key = match item.get_fit_key() {
+        let fit_key = match item.get_fit_uid() {
             Some(fit_key) => fit_key,
             None => return,
         };
@@ -58,7 +58,7 @@ impl Vast {
             }
             UItem::Charge(charge) => {
                 let item_axt = charge.get_axt().unwrap();
-                let cont_key = charge.get_cont_item_key();
+                let cont_key = charge.get_cont_item_uid();
                 let cont_item = u_data.items.get(cont_key);
                 item_kind_add(fit_data, item_key, item_axt.kind, ItemKind::Charge);
                 if let Some(cont_axt) = cont_item.get_axt() {
@@ -178,7 +178,7 @@ impl Vast {
                 if item_axt.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_key);
                 }
-                if let Some(cap_attr_keys) = module.get_cap_use_attr_keys()
+                if let Some(cap_attr_keys) = module.get_cap_use_attr_rids()
                     && !cap_attr_keys.is_empty()
                 {
                     fit_data.cap_consumers_all.insert(item_key, cap_attr_keys.clone());
@@ -188,7 +188,7 @@ impl Vast {
                     fit_data,
                     item_key,
                     module.get_category_id().unwrap(),
-                    module.get_fit_key(),
+                    module.get_fit_uid(),
                 );
             }
             UItem::Rig(rig) => {
@@ -216,7 +216,7 @@ impl Vast {
                     fit_data,
                     item_key,
                     rig.get_category_id().unwrap(),
-                    rig.get_fit_key(),
+                    rig.get_fit_uid(),
                 );
             }
             UItem::Service(service) => {
@@ -251,7 +251,7 @@ impl Vast {
                     fit_data,
                     item_key,
                     service.get_category_id().unwrap(),
-                    service.get_fit_key(),
+                    service.get_fit_uid(),
                 );
             }
             UItem::Ship(ship) => {
@@ -330,7 +330,7 @@ impl Vast {
         }
     }
     pub(in crate::svc) fn item_unloaded(&mut self, item_key: &UItemId, item: &UItem) {
-        let fit_key = match item.get_fit_key() {
+        let fit_key = match item.get_fit_uid() {
             Some(fit_key) => fit_key,
             None => return,
         };
@@ -459,7 +459,7 @@ impl Vast {
                     fit_data.sec_zone_unactivable.remove(item_key);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.remove(item_key);
-                if let Some(cap_attr_keys) = module.get_cap_use_attr_keys()
+                if let Some(cap_attr_keys) = module.get_cap_use_attr_rids()
                     && !cap_attr_keys.is_empty()
                 {
                     fit_data.cap_consumers_all.remove(item_key);

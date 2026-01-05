@@ -7,7 +7,7 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_charge(&mut self, charge_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         let u_charge = self.u_data.items.get(charge_key).dc_charge().unwrap();
-        let module_key = u_charge.get_cont_item_key();
+        let module_key = u_charge.get_cont_item_uid();
         // Remove outgoing projections
         if !u_charge.get_projs().is_empty() {
             for projectee_key in u_charge.get_projs().iter_projectees() {
@@ -23,7 +23,7 @@ impl SolarSystem {
         SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_key, reuse_eupdates);
         // Update user data
         let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
-        u_module.set_charge_key(None);
+        u_module.set_charge_uid(None);
         self.u_data.items.remove(charge_key);
     }
 }

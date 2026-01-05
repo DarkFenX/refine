@@ -45,7 +45,7 @@ impl<'a> SkillMut<'a> {
         get_fit(self.sol, self.key)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_skill(self.sol, self.key).get_fit_key();
+        let fit_key = get_u_skill(self.sol, self.key).get_fit_uid();
         FitMut::new(self.sol, fit_key)
     }
     pub fn get_level(&self) -> SkillLevel {
@@ -72,7 +72,7 @@ impl<'a> ItemCommon for SkillMut<'a> {}
 impl<'a> ItemMutCommon for SkillMut<'a> {}
 
 fn get_fit(sol: &SolarSystem, skill_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_skill(sol, skill_key).get_fit_key();
+    let fit_key = get_u_skill(sol, skill_key).get_fit_uid();
     Fit::new(sol, fit_key)
 }
 fn get_level(sol: &SolarSystem, skill_key: UItemId) -> SkillLevel {

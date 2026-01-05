@@ -8,7 +8,7 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_ship(&mut self, ship_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         let u_ship = self.u_data.items.get(ship_key).dc_ship().unwrap();
-        let fit_key = u_ship.get_fit_key();
+        let fit_key = u_ship.get_fit_uid();
         // Remove incoming projections
         self.internal_remove_incoming_projections(ship_key);
         // Remove ship from services

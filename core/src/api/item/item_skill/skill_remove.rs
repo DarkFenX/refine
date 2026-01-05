@@ -8,7 +8,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_remove_skill(&mut self, skill_key: UItemId, reuse_eupdates: &mut UEffectUpdates) {
         SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
         let u_skill = self.u_data.items.get(skill_key).dc_skill().unwrap();
-        let u_fit = self.u_data.fits.get_mut(u_skill.get_fit_key());
+        let u_fit = self.u_data.fits.get_mut(u_skill.get_fit_uid());
         u_fit.skills.remove(&u_skill.get_type_id());
         self.u_data.items.remove(skill_key);
     }
