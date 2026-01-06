@@ -5,47 +5,42 @@ use lender::Lender;
 use ordered_float::Float;
 
 use super::{
-    rah_data_sim::RahDataSim,
-    rah_history_entry::RahSimHistoryEntry,
-    rah_info::RahInfo,
-    shared::{TickCount, rah_round},
-    ship_stats::RahShipStats,
-    tick_iter::RahSimTickIter,
+    rah_data_sim::RahDataSim, rah_history_entry::RahSimHistoryEntry, rah_info::RahInfo, shared::TickCount,
+    ship_stats::RahShipStats, tick_iter::RahSimTickIter,
 };
 use crate::{
-    def::{AttrVal, OF},
-    misc::{DmgKinds, EffectSpec},
+    misc::{DmgKinds, EffectSpec, PValue, Value},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcAttrVals},
+        calc::{Calc, CalcAttrVals, calce_rah::shared::SIG_ROUND_DIGITS},
         funcs,
     },
     ud::{UFitId, UItemId},
-    util::{RMap, RSet},
+    util::{RMap, RSet, ceil_f64_to_usize},
 };
 
 const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {
-    base: OF(1.0),
-    dogma: OF(1.0),
-    extra: OF(1.0),
+    base: Value::ONE,
+    dogma: Value::ONE,
+    extra: Value::ONE,
 };
 
 impl Calc {
-    pub(super) fn rah_run_simulation(&mut self, ctx: SvcCtx, fit_key: UFitId) {
-        let fit = ctx.u_data.fits.get(fit_key);
-        let ship_key = match fit.ship {
-            Some(ship_key) => ship_key,
+    pub(super) fn rah_run_simulation(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
+        let fit = ctx.u_data.fits.get(fit_uid);
+        let ship_uid = match fit.ship {
+            Some(ship_uid) => ship_uid,
             None => {
                 // Since there were no calculated values stored in sim prior to simulation, and we
                 // are setting unadapted values - effectively values of resonances do not change,
                 // and no updates needed
-                self.set_fit_rahs_unadapted(ctx, &fit_key, false);
+                self.set_fit_rahs_unadapted(ctx, &fit_uid, false);
                 return;
             }
         };
         // Keys in this map have to be sorted, since it defines RAH order in simulation history,
         // which hashes vectors with history entries
-        let mut sim_datas = self.get_fit_rah_sim_datas(ctx, &fit_key);
+        let mut sim_datas = self.get_fit_rah_sim_datas(ctx, &fit_uid);
         // If the map is empty, no setting fallbacks needed, they were set in the data getter
         if sim_datas.is_empty() {
             return;
@@ -55,12 +50,12 @@ impl Calc {
         let mut sim_history = Vec::new();
         // Run "zero" simulation tick - write initial results and record initial state in history
         let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
-        for (&item_key, item_sim_data) in sim_datas.iter() {
+        for (&item_uid, item_sim_data) in sim_datas.iter() {
             // Sets unadapted values, since info contains unadapted resonance values
-            self.set_rah_result(ctx, item_key, item_sim_data.info.resos, false);
+            self.set_rah_result(ctx, item_uid, item_sim_data.info.resos, false);
             // Round resonances for the zero history tick. Later they will be rounded by function
             // which adapts resonances to damage
-            let item_history_entry = RahSimHistoryEntry::new(item_key, OF(0.0), &item_sim_data.info.resos, true);
+            let item_history_entry = RahSimHistoryEntry::new(item_uid, PValue::ZERO, &item_sim_data.info.resos, true);
             sim_history_entry.push(item_history_entry);
         }
         history_entries_seen.insert(sim_history_entry.clone());
@@ -69,13 +64,13 @@ impl Calc {
         let mut tick_iter = RahSimTickIter::new(sim_datas.iter());
         while let Some(tick_data) = tick_iter.next() {
             // For each RAH, calculate damage received during this tick
-            let ship_stats = match self.get_ship_stats(ctx, ship_key) {
+            let ship_stats = match self.get_ship_stats(ctx, ship_uid) {
                 Some(ship_stats) => ship_stats,
                 None => {
-                    for &item_key in sim_datas.keys() {
+                    for &item_uid in sim_datas.keys() {
                         // Any issues with ship resonance fetch should happen on the very first sim
                         // tick, so results should coincide to default state
-                        self.set_rah_unadapted(ctx, item_key, false);
+                        self.set_rah_unadapted(ctx, item_uid, false);
                     }
                     return;
                 }
@@ -98,31 +93,31 @@ impl Calc {
                 }
             }
             // If RAH just finished its cycle, make resist switch
-            for &cycled_item_key in tick_data.cycled {
-                let item_sim_data = sim_datas.get_mut(&cycled_item_key).unwrap();
+            for &cycled_item_uid in tick_data.cycled {
+                let item_sim_data = sim_datas.get_mut(&cycled_item_uid).unwrap();
                 let mut taken_dmg = DmgKinds {
-                    em: OF(0.0),
-                    thermal: OF(0.0),
-                    kinetic: OF(0.0),
-                    explosive: OF(0.0),
+                    em: Value::ZERO,
+                    thermal: Value::ZERO,
+                    kinetic: Value::ZERO,
+                    explosive: Value::ZERO,
                 };
                 // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut item_sim_data.taken_dmg);
                 let next_resos = get_next_resonances(
-                    self.rah.resonances.get(&cycled_item_key).unwrap().unwrap(),
+                    self.rah.resonances.get(&cycled_item_uid).unwrap().unwrap(),
                     taken_dmg,
                     item_sim_data.info.shift_amount,
                 );
                 // Write new resonances to results, letting everyone know about the changes. This is
                 // needed to get updated ship resonances next tick.
-                self.set_rah_result(ctx, cycled_item_key, next_resos, true);
+                self.set_rah_result(ctx, cycled_item_uid, next_resos, true);
             }
             // Compose history entry of current tick
             let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
-            for &item_key in sim_datas.keys() {
-                let item_cycling_time = *tick_data.cycling_times.get(&item_key).unwrap();
-                let item_resos = self.rah.resonances.get(&item_key).unwrap().unwrap();
-                let item_history_entry = RahSimHistoryEntry::new(item_key, item_cycling_time, &item_resos, false);
+            for &item_uid in sim_datas.keys() {
+                let item_cycling_time = *tick_data.cycling_times.get(&item_uid).unwrap();
+                let item_resos = self.rah.resonances.get(&item_uid).unwrap().unwrap();
+                let item_history_entry = RahSimHistoryEntry::new(item_uid, item_cycling_time, &item_resos, false);
                 sim_history_entry.push(item_history_entry);
             }
             // See if we're in a loop, if we are - calculate average resists across tick states
@@ -132,8 +127,8 @@ impl Calc {
                 // unadapted resonances as results to avoid unnecessary for this case rounding.
                 // Normal process uses history values, which contains rounded resonances
                 if sim_history.len() <= 1 {
-                    for (&item_key, item_sim_data) in sim_datas.iter() {
-                        self.set_rah_result(ctx, item_key, item_sim_data.info.resos, false);
+                    for (&item_uid, item_sim_data) in sim_datas.iter() {
+                        self.set_rah_result(ctx, item_uid, item_sim_data.info.resos, false);
                     }
                     return;
                 }
@@ -154,16 +149,18 @@ impl Calc {
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
         self.set_partial_fit_rahs_result(ctx, avg_resos, &sim_datas);
     }
-    fn get_ship_stats(&mut self, ctx: SvcCtx, ship_key: UItemId) -> Option<RahShipStats> {
+    fn get_ship_stats(&mut self, ctx: SvcCtx, ship_uid: UItemId) -> Option<RahShipStats> {
         let attr_consts = ctx.ac();
         // Fail if ship is not loaded, or any of resonance attributes are not available
-        let em = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_em_dmg_resonance)?;
-        let therm = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_therm_dmg_resonance)?;
-        let kin = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_kin_dmg_resonance)?;
-        let expl = self.get_item_oattr_odogma(ctx, ship_key, attr_consts.armor_expl_dmg_resonance)?;
-        let shield_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.shield_capacity, OF(0.0))?;
-        let armor_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.armor_hp, OF(0.0))?;
-        let hull_hp = self.get_item_oattr_afb_odogma(ctx, ship_key, attr_consts.hp, OF(0.0))?;
+        let em = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_em_dmg_resonance)?;
+        let therm = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_therm_dmg_resonance)?;
+        let kin = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_kin_dmg_resonance)?;
+        let expl = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_expl_dmg_resonance)?;
+        let shield_hp =
+            PValue::from(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.shield_capacity, Value::ZERO)?);
+        let armor_hp =
+            PValue::from(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.armor_hp, Value::ZERO)?);
+        let hull_hp = PValue::from(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
         Some(RahShipStats {
             resos: DmgKinds {
                 em,
@@ -174,68 +171,68 @@ impl Calc {
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
-    fn get_fit_rah_sim_datas(&mut self, ctx: SvcCtx, fit_key: &UFitId) -> BTreeMap<UItemId, RahDataSim> {
+    fn get_fit_rah_sim_datas(&mut self, ctx: SvcCtx, fit_uid: &UFitId) -> BTreeMap<UItemId, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
-        for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
-            let rah_attrs = match self.get_rah_sim_data(ctx, item_key) {
+        for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
+            let rah_attrs = match self.get_rah_sim_data(ctx, item_uid) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
                 // don't add it to the map. No updates needed, since this method should be called
                 // before sim makes any changes
                 None => {
-                    self.set_rah_unadapted(ctx, item_key, false);
+                    self.set_rah_unadapted(ctx, item_uid, false);
                     continue;
                 }
             };
-            rah_datas.insert(item_key, rah_attrs);
+            rah_datas.insert(item_uid, rah_attrs);
         }
         rah_datas
     }
-    fn get_rah_sim_data(&mut self, ctx: SvcCtx, item_key: UItemId) -> Option<RahDataSim> {
+    fn get_rah_sim_data(&mut self, ctx: SvcCtx, item_uid: UItemId) -> Option<RahDataSim> {
         // Get resonances bypassing postprocessing functions, since we already installed them
         let attr_consts = ctx.ac();
-        let res_em = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance)?;
-        let res_therm = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_therm_dmg_resonance)?;
-        let res_kin = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance)?;
-        let res_expl = self.get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_expl_dmg_resonance)?;
-        if res_em.dogma == OF(1.0)
-            && res_therm.dogma == OF(1.0)
-            && res_kin.dogma == OF(1.0)
-            && res_expl.dogma == OF(1.0)
+        let res_em = self.get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_em_dmg_resonance)?;
+        let res_therm = self.get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_therm_dmg_resonance)?;
+        let res_kin = self.get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_kin_dmg_resonance)?;
+        let res_expl = self.get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_expl_dmg_resonance)?;
+        if res_em.dogma == Value::ONE
+            && res_therm.dogma == Value::ONE
+            && res_kin.dogma == Value::ONE
+            && res_expl.dogma == Value::ONE
         {
             return None;
         }
         // Other attributes using regular getters
         // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
         // resonances are in absolute form
-        let shift_amount = self.get_item_oattr_odogma(ctx, item_key, attr_consts.resist_shift_amount)? / OF(100.0);
-        if shift_amount <= OF(0.0) {
+        let shift_amount = self.get_item_oattr_odogma(ctx, item_uid, attr_consts.resist_shift_amount)? / Value::HUNDRED;
+        if shift_amount <= Value::ZERO {
             return None;
         }
-        let rah_espec = EffectSpec::new(item_key, ctx.ec().adaptive_armor_hardener?);
+        let rah_espec = EffectSpec::new(item_uid, ctx.ec().adaptive_armor_hardener?);
         let cycle_s = funcs::get_espec_duration_s(ctx, self, rah_espec)?;
-        let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount);
+        let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount.into());
         Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_key: &UFitId, notify: bool) {
-        for item_key in self.rah.by_fit.get(fit_key).copied().collect_vec() {
-            self.set_rah_unadapted(ctx, item_key, notify);
+    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: &UFitId, notify: bool) {
+        for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
+            self.set_rah_unadapted(ctx, item_uid, notify);
         }
     }
-    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_key: UItemId, notify: bool) {
+    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_uid: UItemId, notify: bool) {
         let attr_consts = ctx.ac();
         let em = self
-            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_em_dmg_resonance)
+            .get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_em_dmg_resonance)
             .unwrap_or(FALLBACK_RESONANCE);
         let therm = self
-            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_therm_dmg_resonance)
+            .get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_therm_dmg_resonance)
             .unwrap_or(FALLBACK_RESONANCE);
         let kin = self
-            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_kin_dmg_resonance)
+            .get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_kin_dmg_resonance)
             .unwrap_or(FALLBACK_RESONANCE);
         let expl = self
-            .get_item_oattr_ofull_nopp(ctx, item_key, attr_consts.armor_expl_dmg_resonance)
+            .get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_expl_dmg_resonance)
             .unwrap_or(FALLBACK_RESONANCE);
         let rah_resos = DmgKinds {
             em,
@@ -243,30 +240,30 @@ impl Calc {
             kinetic: kin,
             explosive: expl,
         };
-        self.set_rah_result(ctx, item_key, rah_resos, notify);
+        self.set_rah_result(ctx, item_uid, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(&mut self, ctx: SvcCtx, item_key: UItemId, resos: DmgKinds<CalcAttrVals>, notify: bool) {
-        self.rah.resonances.get_mut(&item_key).unwrap().replace(resos);
+    fn set_rah_result(&mut self, ctx: SvcCtx, item_uid: UItemId, resos: DmgKinds<CalcAttrVals>, notify: bool) {
+        self.rah.resonances.get_mut(&item_uid).unwrap().replace(resos);
         if notify {
             let attr_consts = ctx.ac();
-            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_em_dmg_resonance);
-            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_therm_dmg_resonance);
-            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_kin_dmg_resonance);
-            self.force_oattr_postproc_recalc(ctx, item_key, attr_consts.armor_expl_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_em_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_therm_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_kin_dmg_resonance);
+            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_expl_dmg_resonance);
         }
     }
     fn set_partial_fit_rahs_result(
         &mut self,
         ctx: SvcCtx,
-        resos: RMap<UItemId, DmgKinds<AttrVal>>,
+        resos: RMap<UItemId, DmgKinds<Value>>,
         sim_datas: &BTreeMap<UItemId, RahDataSim>,
     ) {
-        for (&item_key, item_sim_data) in sim_datas.iter() {
+        for (&item_uid, item_sim_data) in sim_datas.iter() {
             // Average resonance is what passed as resonances for this method; average resonance
             // getter might not return resonances for all RAHs, and it's hard to trace when/why this
             // might happen. For safety, just use unadapted values if that happens
-            let item_resos = match resos.get(&item_key) {
+            let item_resos = match resos.get(&item_uid) {
                 Some(item_avg_resos) => DmgKinds {
                     em: CalcAttrVals {
                         base: item_sim_data.info.resos.em.base,
@@ -291,15 +288,15 @@ impl Calc {
                 },
                 None => item_sim_data.info.resos,
             };
-            self.set_rah_result(ctx, item_key, item_resos, true)
+            self.set_rah_result(ctx, item_uid, item_resos, true)
         }
     }
 }
 
 fn get_next_resonances(
     mut resonances: DmgKinds<CalcAttrVals>,
-    taken_dmg: DmgKinds<AttrVal>,
-    shift_amount: AttrVal,
+    taken_dmg: DmgKinds<Value>,
+    shift_amount: PValue,
 ) -> DmgKinds<CalcAttrVals> {
     // Rounding in this function to avoid float errors serves two purposes:
     // 1) it helps in history loop detection;
@@ -307,28 +304,30 @@ fn get_next_resonances(
     // and shifts towards 0/100/0/0 with steps of 10.
     // We borrow resistances from at least 2 resist types, possibly more if ship didn't take any
     // damage of those types
-    let donors = taken_dmg.iter().filter(|v| **v <= OF(0.0)).count().max(2);
+    let donors = taken_dmg.iter().filter(|v| **v <= Value::ZERO).count().max(2);
     let recipients = 4 - donors;
     // There can be 4 donors (and thus 0 recipients) in case no damage is received, which can happen
     // when resists reach 100% / resonance reaches 0
     if recipients == 0 {
         return resonances;
     }
-    let recipients = AttrVal::from(recipients as u8);
+    let recipients = Value::new(recipients as f64);
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, thermal.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
     // since the list is in attribute ID ascending order.
     let mut sorted_indices: [usize; 4] = [0, 3, 2, 1];
     sorted_indices.sort_by_key(|v| taken_dmg[*v]); // This sort has to be stable
-    let mut total_transferred = OF(0.0);
+    let mut total_transferred = Value::ZERO;
     // Donate
     for index in sorted_indices[..donors].iter() {
         let current_value = resonances[*index];
         // Can't borrow more than it has
-        let to_donate = rah_round(Float::min(shift_amount, OF(1.0) - current_value.dogma));
+        let to_donate = Value::from(shift_amount)
+            .min(Value::ONE - current_value.dogma)
+            .sig_rounded(SIG_ROUND_DIGITS);
         total_transferred += to_donate;
-        let new_value = rah_round(current_value.dogma + to_donate);
+        let new_value = (current_value.dogma + to_donate).sig_rounded(SIG_ROUND_DIGITS);
         resonances[*index] = CalcAttrVals {
             base: current_value.base,
             dogma: new_value,
@@ -341,7 +340,7 @@ fn get_next_resonances(
         let current_value = resonances[*index];
         // Can't give more than set threshold, more than we have, and more than target res can take
         let to_take = [
-            rah_round(total_transferred / recipients),
+            (total_transferred / recipients).sig_rounded(SIG_ROUND_DIGITS),
             current_value.dogma,
             to_distribute,
         ]
@@ -349,34 +348,34 @@ fn get_next_resonances(
         .min()
         .unwrap();
         to_distribute -= to_take;
-        let new_value = rah_round(current_value.dogma - to_take);
+        let new_value = (current_value.dogma - to_take).sig_rounded(SIG_ROUND_DIGITS);
         resonances[*index] = CalcAttrVals {
             base: current_value.base,
             dogma: new_value,
             extra: new_value,
         };
-        if to_distribute <= OF(0.0) {
+        if to_distribute <= Value::ZERO {
             break;
         }
     }
     resonances
 }
 
-fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<UItemId, DmgKinds<AttrVal>> {
+fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<UItemId, DmgKinds<Value>> {
     let mut resos_used = RMap::new();
     for sim_history_entry in sim_history {
         for item_history_entry in sim_history_entry {
             // Add resonances to container only when RAH cycle is just starting
-            if item_history_entry.cycling_time_rounded == OF(0.0) {
+            if item_history_entry.cycling_time_rounded == PValue::ZERO {
                 resos_used
-                    .entry(item_history_entry.item_key)
+                    .entry(item_history_entry.item_uid)
                     .or_insert_with(Vec::new)
                     .push(item_history_entry.resonances);
             }
         }
     }
     let mut avg_resos = RMap::with_capacity(resos_used.len());
-    for (item_key, resos) in resos_used.into_iter() {
+    for (item_uid, resos) in resos_used.into_iter() {
         let reso_len = resos.len() as f64;
         let item_avg_resos = match resos.into_iter().reduce(|a, v| DmgKinds {
             em: a.em + v.em,
@@ -393,7 +392,7 @@ fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<UItem
             // Should happen when resonance container is empty
             None => continue,
         };
-        avg_resos.insert(item_key, item_avg_resos);
+        avg_resos.insert(item_uid, item_avg_resos);
     }
     avg_resos
 }
@@ -404,7 +403,7 @@ fn estimate_initial_adaptation_ticks(
 ) -> TickCount {
     // Get count of cycles it takes for each RAH to exhaust its highest resistance
     let mut exhaustion_cycles = RMap::new();
-    for (&item_key, item_sim_data) in sim_datas.iter() {
+    for (&item_uid, item_sim_data) in sim_datas.iter() {
         let min_reso = [
             item_sim_data.info.resos.em.dogma,
             item_sim_data.info.resos.thermal.dogma,
@@ -414,21 +413,20 @@ fn estimate_initial_adaptation_ticks(
         .into_iter()
         .min()
         .unwrap();
-        let item_exhaustion_cycles = ((OF(1.0) - min_reso) / item_sim_data.info.shift_amount).ceil();
-        exhaustion_cycles.insert(item_key, item_exhaustion_cycles);
+        let item_exhaustion_cycles = ((Value::ONE - min_reso) / item_sim_data.info.shift_amount).ceil();
+        exhaustion_cycles.insert(item_uid, item_exhaustion_cycles);
     }
     // Slowest RAH is the one which takes the most time to exhaust its highest resistance when it's
     // used strictly as donor
-    let slowest_item_key = sim_datas
+    let slowest_item_uid = sim_datas
         .iter()
-        .max_by_key(|(k, v)| AttrVal::from(*exhaustion_cycles.get(k).unwrap()) * v.info.cycle_time)
+        .max_by_key(|(k, v)| *exhaustion_cycles.get(k).unwrap() * v.info.cycle_time)
         .map(|v| *v.0)
         .unwrap();
     // Multiply count of resistance exhaustion cycles by 1.5, to give RAH more time for 'finer'
     // adjustments
-    let slowest_cycles = (exhaustion_cycles.get(&slowest_item_key).unwrap() * OF(1.5))
-        .ceil()
-        .into_inner() as TickCount;
+    let slowest_cycles =
+        ceil_f64_to_usize((*exhaustion_cycles.get(&slowest_item_uid).unwrap() * Value::new(1.5)).into_inner());
     if slowest_cycles == 0 {
         return 0;
     }
@@ -441,8 +439,8 @@ fn estimate_initial_adaptation_ticks(
     for sim_history_entry in sim_history[ignored_tick_count..].iter() {
         // Once slowest RAH finished last cycle, do not count this tick and break the loop
         for item_history_entry in sim_history_entry.iter() {
-            if item_history_entry.item_key == slowest_item_key {
-                if item_history_entry.cycling_time_rounded == OF(0.0) {
+            if item_history_entry.item_uid == slowest_item_uid {
+                if item_history_entry.cycling_time_rounded == PValue::ZERO {
                     cycle_count += 1;
                 }
                 break;

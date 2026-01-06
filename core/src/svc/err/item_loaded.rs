@@ -1,7 +1,7 @@
 use crate::ud::UItemId;
 
 #[derive(thiserror::Error, Debug)]
-#[error("item with key {item_key} is not loaded")]
-pub(crate) struct KeyedItemLoadedError {
-    pub(crate) item_key: UItemId,
+#[error("item with UID {item_uid} is not loaded")]
+pub(crate) struct UItemLoadedError {
+    pub(crate) item_uid: UItemId,
 }

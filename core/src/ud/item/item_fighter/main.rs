@@ -122,11 +122,11 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_count(&self) -> Option<AdjustableCount> {
+    pub(crate) fn get_count(&self) -> Option<AdjustableCount<FighterCount>> {
         match self.get_axt() {
             Some(axt) => match self.count_override {
                 Some(count_override) => Some(AdjustableCount {
-                    current: count_override.into_inner(),
+                    current: count_override,
                     max: axt.max_fighter_count,
                     overridden: true,
                 }),
@@ -154,7 +154,7 @@ impl UFighter {
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
         match self.get_axt() {
             Some(axt) => axt.radius,
-            None => PValue::new_f64_unchecked(0.0),
+            None => PValue::new_unchecked(0.0),
         }
     }
     pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {

@@ -323,8 +323,8 @@ impl VastFitData {
         }
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
             // There is no logic which ensures that projection target is loaded
-            check_item_uid(u_data, projectee_aspec.item_key, false)?;
-            check_attr_rid(u_data, projectee_aspec.attr_key)?;
+            check_item_uid(u_data, projectee_aspec.item_uid, false)?;
+            check_attr_rid(u_data, projectee_aspec.attr_rid)?;
             for projector_espec in projector_especs {
                 check_item_uid(u_data, projector_espec.item_uid, true)?;
                 check_effect_rid(u_data, projector_espec.effect_rid)?;

@@ -119,12 +119,12 @@ impl UProjData {
 
 fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> PValue {
     // Do not check anything because result will always be positive
-    PValue::new_of64_unchecked(
+    PValue::new_unchecked(
         ((tgt_coordinates.x - src_coordinates.x).powi(2)
             + (tgt_coordinates.y - src_coordinates.y).powi(2)
             + (tgt_coordinates.z - src_coordinates.z).powi(2))
         .sqrt()
-        .into_inner_of64(),
+        .into_inner(),
     )
 }
 

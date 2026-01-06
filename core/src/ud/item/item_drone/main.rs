@@ -139,7 +139,7 @@ impl UDrone {
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
         match self.get_axt() {
             Some(axt) => axt.radius,
-            None => PValue::new_f64_unchecked(0.0),
+            None => PValue::new_unchecked(0.0),
         }
     }
     pub(crate) fn get_physics(&self) -> &UPhysics {

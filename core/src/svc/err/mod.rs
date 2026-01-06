@@ -1,4 +1,4 @@
-pub(crate) use item_loaded::KeyedItemLoadedError;
+pub(crate) use item_loaded::UItemLoadedError;
 pub(crate) use stat_item_check::StatItemCheckError;
 pub(crate) use stat_item_kind::KeyedItemKindVsStatError;
 

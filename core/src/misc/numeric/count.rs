@@ -9,6 +9,9 @@ impl Count {
     pub fn new(value: u32) -> Self {
         Self(value)
     }
+    pub fn into_inner(self) -> u32 {
+        self.0
+    }
     pub(crate) fn new_f64_trunced(value: f64) -> Self {
         Self(trunc_f64_to_u32(value))
     }

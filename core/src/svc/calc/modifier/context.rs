@@ -8,10 +8,10 @@ pub(in crate::svc::calc) enum Context {
     FitItem(UFitId, UItemId),
 }
 impl Context {
-    pub(in crate::svc::calc) fn get_item_key(&self) -> Option<UItemId> {
+    pub(in crate::svc::calc) fn get_item_uid(&self) -> Option<UItemId> {
         match self {
-            Self::Item(projectee_key) => Some(*projectee_key),
-            Self::FitItem(_, projectee_key) => Some(*projectee_key),
+            Self::Item(projectee_uid) => Some(*projectee_uid),
+            Self::FitItem(_, projectee_uid) => Some(*projectee_uid),
             _ => None,
         }
     }

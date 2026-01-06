@@ -19,7 +19,7 @@ pub(crate) struct DependencyRegister {
     // attribute, and when requested next time - it will re-add anonymous dependency, allowing the
     // affectee attribute to be cleared whenever linked attribute changes its value.
     pub(super) data: RMapRSet<AttrSpec, AttrSpec>,
-    // Map<item ID, (affector attr key, affectee attr key)>
+    // Map<item ID, (affector attr RID, affectee attr RID)>
     pub(super) anonymous_by_item: RMapRSet<UItemId, (RAttrId, RAttrId)>,
     // Map<source, (affector spec, affectee spec)>
     pub(super) by_source: RMapRSet<EffectSpec, (AttrSpec, AttrSpec)>,
@@ -45,15 +45,15 @@ impl DependencyRegister {
     // Modification methods
     pub(in crate::svc::calc) fn add_anonymous(
         &mut self,
-        item_key: UItemId,
-        affector_attr_key: RAttrId,
-        affectee_attr_key: RAttrId,
+        item_uid: UItemId,
+        affector_attr_rid: RAttrId,
+        affectee_attr_rid: RAttrId,
     ) {
-        let affector_spec = AttrSpec::new(item_key, affector_attr_key);
-        let affectee_spec = AttrSpec::new(item_key, affectee_attr_key);
+        let affector_spec = AttrSpec::new(item_uid, affector_attr_rid);
+        let affectee_spec = AttrSpec::new(item_uid, affectee_attr_rid);
         self.data.add_entry(affector_spec, affectee_spec);
         self.anonymous_by_item
-            .add_entry(item_key, (affector_attr_key, affectee_attr_key));
+            .add_entry(item_uid, (affector_attr_rid, affectee_attr_rid));
     }
     pub(crate) fn add_with_source(
         &mut self,
@@ -63,25 +63,25 @@ impl DependencyRegister {
     ) {
         self.data.add_entry(affector_aspec, affectee_aspec);
         self.by_source.add_entry(source_espec, (affector_aspec, affectee_aspec));
-        self.source_by_item.add_entry(affector_aspec.item_key, source_espec);
-        self.source_by_item.add_entry(affectee_aspec.item_key, source_espec);
+        self.source_by_item.add_entry(affector_aspec.item_uid, source_espec);
+        self.source_by_item.add_entry(affectee_aspec.item_uid, source_espec);
     }
     pub(in crate::svc::calc) fn remove_by_source(&mut self, source_espec: &EffectSpec) {
         for (affector_spec, affectee_spec) in self.by_source.remove_key(source_espec) {
             self.data.remove_entry(affector_spec, &affectee_spec);
-            self.source_by_item.remove_entry(affector_spec.item_key, source_espec);
-            self.source_by_item.remove_entry(affectee_spec.item_key, source_espec);
+            self.source_by_item.remove_entry(affector_spec.item_uid, source_espec);
+            self.source_by_item.remove_entry(affectee_spec.item_uid, source_espec);
         }
     }
-    pub(in crate::svc::calc) fn remove_item(&mut self, item_key: UItemId) {
+    pub(in crate::svc::calc) fn remove_item(&mut self, item_uid: UItemId) {
         // Anonymous dependencies
-        for (affector_attr_key, affectee_attr_key) in self.anonymous_by_item.remove_key(&item_key) {
-            let affector_spec = AttrSpec::new(item_key, affector_attr_key);
-            let affectee_spec = AttrSpec::new(item_key, affectee_attr_key);
+        for (affector_attr_rid, affectee_attr_rid) in self.anonymous_by_item.remove_key(&item_uid) {
+            let affector_spec = AttrSpec::new(item_uid, affector_attr_rid);
+            let affectee_spec = AttrSpec::new(item_uid, affectee_attr_rid);
             self.data.remove_entry(affector_spec, &affectee_spec);
         }
         // Dependencies with source
-        for source in self.source_by_item.remove_key(&item_key) {
+        for source in self.source_by_item.remove_key(&item_uid) {
             for (affector_spec, affectee_spec) in self.by_source.remove_key(&source) {
                 self.data.remove_entry(affector_spec, &affectee_spec);
             }

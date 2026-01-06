@@ -1,9 +1,9 @@
-use crate::svc::err::{KeyedItemKindVsStatError, KeyedItemLoadedError};
+use crate::svc::err::{KeyedItemKindVsStatError, UItemLoadedError};
 
 #[derive(thiserror::Error, Debug)]
 pub enum StatItemCheckError {
     #[error("{0}")]
-    ItemNotLoaded(#[from] KeyedItemLoadedError),
+    ItemNotLoaded(#[from] UItemLoadedError),
     #[error("{0}")]
     UnsupportedStat(#[from] KeyedItemKindVsStatError),
 }

@@ -1,4 +1,4 @@
-use crate::ed::EBuffId;
+use crate::{ed::EBuffId, util::round_f64_to_i32};
 
 const EVE_PREFIX: &str = "e";
 const CUSTOM_PREFIX: &str = "c";
@@ -45,6 +45,9 @@ impl AEveBuffId {
     }
     pub const fn into_inner(self) -> i32 {
         self.0
+    }
+    pub(crate) fn new_f64_rounded(id: f64) -> Self {
+        Self(round_f64_to_i32(id))
     }
 }
 

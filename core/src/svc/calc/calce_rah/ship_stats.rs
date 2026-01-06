@@ -1,6 +1,6 @@
-use crate::{def::AttrVal, misc::DmgKinds};
+use crate::misc::{DmgKinds, PValue, Value};
 
 pub(super) struct RahShipStats {
-    pub(super) resos: DmgKinds<AttrVal>,
-    pub(super) total_hp: AttrVal,
+    pub(super) resos: DmgKinds<Value>,
+    pub(super) total_hp: PValue,
 }

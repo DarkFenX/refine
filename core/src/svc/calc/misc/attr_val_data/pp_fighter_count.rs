@@ -1,5 +1,5 @@
 use crate::{
-    def::AttrVal,
+    misc::Value,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
@@ -10,18 +10,18 @@ use crate::{
 pub(super) fn fighter_count_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemId,
+    item_uid: UItemId,
     mut val: CalcAttrVals,
 ) -> CalcAttrVals {
     let count = ctx
         .u_data
         .items
-        .get(item_key)
+        .get(item_uid)
         .dc_fighter()
         .unwrap()
         .get_count()
         .unwrap();
-    let current_count = AttrVal::from(count.current);
+    let current_count = Value::from(count.current);
     val.dogma = current_count;
     val.extra = current_count;
     val
@@ -30,17 +30,17 @@ pub(super) fn fighter_count_postproc_fast(
 pub(super) fn fighter_count_postproc_info(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemId,
+    item_uid: UItemId,
     _info: AttrValInfo,
 ) -> AttrValInfo {
     let count = ctx
         .u_data
         .items
-        .get(item_key)
+        .get(item_uid)
         .dc_fighter()
         .unwrap()
         .get_count()
         .unwrap();
-    let current_count = AttrVal::from(count.current);
+    let current_count = Value::from(count.current);
     AttrValInfo::new(current_count)
 }

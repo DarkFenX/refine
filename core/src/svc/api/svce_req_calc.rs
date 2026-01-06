@@ -4,7 +4,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         calc::{CalcAttrVals, Modification},
-        err::KeyedItemLoadedError,
+        err::UItemLoadedError,
     },
     ud::{UData, UItemId},
 };
@@ -15,7 +15,7 @@ impl Svc {
         u_data: &UData,
         item_key: UItemId,
         attr_key: RAttrId,
-    ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
+    ) -> Result<CalcAttrVals, UItemLoadedError> {
         self.calc
             .get_item_attr_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key, attr_key)
     }
@@ -23,7 +23,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, CalcAttrVals)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, CalcAttrVals)>, UItemLoadedError> {
         self.calc
             .iter_item_attrs_rfull(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
@@ -31,7 +31,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)>, KeyedItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)>, UItemLoadedError> {
         self.calc.iter_item_mods(SvcCtx::new(u_data, &self.eff_projs), item_key)
     }
 }

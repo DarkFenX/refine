@@ -23,12 +23,12 @@ impl RItemEffectData {
             cooldown_s: a_effect_data
                 .cooldown
                 .map(Into::into)
-                .unwrap_or(PValue::new_f64_unchecked(0.0)),
+                .unwrap_or(PValue::new_unchecked(0.0)),
             charge_count: a_effect_data.charge_count.map(Into::into),
             charge_reload_time_s: a_effect_data
                 .charge_reload_time
                 .map(Into::into)
-                .unwrap_or(PValue::new_f64_unchecked(0.0)),
+                .unwrap_or(PValue::new_unchecked(0.0)),
             projectee_filter: a_effect_data
                 .projectee_filter
                 .as_ref()

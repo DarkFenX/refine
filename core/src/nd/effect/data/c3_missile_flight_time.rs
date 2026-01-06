@@ -71,7 +71,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
             affector_espec: espec,
             affector_value: AffectorValue::Custom(CustomAffectorValue {
                 kind: CustomAffectorValueKind::MissileFlightTime,
-                affector_attr_key: Some(max_velocity_rid),
+                affector_attr_rid: Some(max_velocity_rid),
                 affector_info_getter: get_affector_info,
                 mod_val_getter: get_mod_val,
                 item_add_reviser: Some(revise_on_item_add_removal),
@@ -80,7 +80,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
             op: CalcOp::ExtraAdd,
             aggr_mode: AggrMode::Stack,
             affectee_filter: AffecteeFilter::Direct(Location::Item),
-            affectee_attr_key: explosion_delay_rid,
+            affectee_attr_rid: explosion_delay_rid,
             ..
         };
         rmods.push(rmod);

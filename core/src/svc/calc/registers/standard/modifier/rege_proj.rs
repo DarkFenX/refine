@@ -28,7 +28,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn project_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UItemId,
+        projectee_uid: UItemId,
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Register projection and get appropriate context modifiers.
@@ -41,14 +41,14 @@ impl StandardRegister {
                     &mut self.rmods_proj_status,
                     &mut self.cmods,
                     rmod,
-                    projectee_key,
+                    projectee_uid,
                     projectee_item,
                 ),
                 ModifierKind::Buff => proj_buff_mod(
                     &mut self.rmods_proj_status,
                     &mut self.cmods,
                     rmod,
-                    projectee_key,
+                    projectee_uid,
                     projectee_item,
                 ),
                 _ => None,
@@ -61,7 +61,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unproject_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UItemId,
+        projectee_uid: UItemId,
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Unregister projection and get appropriate context modifiers.
@@ -74,14 +74,14 @@ impl StandardRegister {
                     &mut self.rmods_proj_status,
                     &mut self.cmods,
                     rmod,
-                    projectee_key,
+                    projectee_uid,
                     projectee_item,
                 ),
                 ModifierKind::Buff => unproj_buff_mod(
                     &mut self.rmods_proj_status,
                     &mut self.cmods,
                     rmod,
-                    projectee_key,
+                    projectee_uid,
                     projectee_item,
                 ),
                 _ => None,
@@ -94,7 +94,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn query_projected_effect(
         &mut self,
         projector_espec: &EffectSpec,
-        projectee_key: UItemId,
+        projectee_uid: UItemId,
         projectee_item: &UItem,
     ) -> Vec<CtxModifier> {
         // Get context modifiers for projection.
@@ -104,8 +104,8 @@ impl StandardRegister {
             if let Some(cmod) = match rmod.kind {
                 // System modifiers are not requested, since their application does not depend on
                 // projection attributes (like range)
-                ModifierKind::Targeted => query_target_mod(rmod, projectee_key, projectee_item),
-                ModifierKind::Buff => query_buff_mod(rmod, projectee_key, projectee_item),
+                ModifierKind::Targeted => query_target_mod(rmod, projectee_uid, projectee_item),
+                ModifierKind::Buff => query_buff_mod(rmod, projectee_uid, projectee_item),
                 _ => None,
             } {
                 cmods.push(cmod);
@@ -115,38 +115,38 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_proj(
         &mut self,
-        projectee_key: UItemId,
+        projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_status
             .inactive
-            .buffer_if(projectee_key, |r| match r.kind {
+            .buffer_if(projectee_uid, |r| match r.kind {
                 ModifierKind::Targeted => {
-                    load_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
+                    load_affectee_for_proj_target(&mut self.cmods, r, projectee_uid, projectee_item)
                 }
-                ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
+                ModifierKind::Buff => load_affectee_for_proj_buff(&mut self.cmods, r, projectee_uid, projectee_item),
                 _ => false,
             });
         self.rmods_proj_status
             .active
-            .extend_entries(projectee_key, self.rmods_proj_status.inactive.drain_buffer());
+            .extend_entries(projectee_uid, self.rmods_proj_status.inactive.drain_buffer());
     }
     pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_proj(
         &mut self,
-        projectee_key: UItemId,
+        projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_status
             .active
-            .buffer_if(projectee_key, |r| match r.kind {
+            .buffer_if(projectee_uid, |r| match r.kind {
                 ModifierKind::Targeted => {
-                    unload_affectee_for_proj_target(&mut self.cmods, r, projectee_key, projectee_item)
+                    unload_affectee_for_proj_target(&mut self.cmods, r, projectee_uid, projectee_item)
                 }
-                ModifierKind::Buff => unload_affectee_for_proj_buff(&mut self.cmods, r, projectee_key, projectee_item),
+                ModifierKind::Buff => unload_affectee_for_proj_buff(&mut self.cmods, r, projectee_uid, projectee_item),
                 _ => false,
             });
         self.rmods_proj_status
             .inactive
-            .extend_entries(projectee_key, self.rmods_proj_status.active.drain_buffer());
+            .extend_entries(projectee_uid, self.rmods_proj_status.active.drain_buffer());
     }
 }

@@ -37,7 +37,7 @@ impl Vast {
                         .blockable_offense
                         .add_entry(projectee_key, projector_espec);
                 }
-                if let Some(resist_attr_key) = funcs::get_resist_attr_key(projector_item, effect) {
+                if let Some(resist_attr_key) = funcs::get_resist_attr_rid(projector_item, effect) {
                     let projectee_aspec = AttrSpec::new(projectee_key, resist_attr_key);
                     projector_fit_data
                         .resist_immunity
@@ -124,7 +124,7 @@ impl Vast {
                         .blockable_offense
                         .remove_entry(projectee_key, &projector_espec);
                 }
-                if let Some(resist_attr_key) = funcs::get_resist_attr_key(projector_item, effect) {
+                if let Some(resist_attr_key) = funcs::get_resist_attr_rid(projector_item, effect) {
                     let projectee_aspec = AttrSpec::new(projectee_key, resist_attr_key);
                     projector_fit_data
                         .resist_immunity

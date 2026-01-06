@@ -3,8 +3,7 @@ use std::hash::{Hash, Hasher};
 use smallvec::SmallVec;
 
 use crate::{
-    def::AttrVal,
-    misc::EffectSpec,
+    misc::{EffectSpec, Value},
     rd::RAttrId,
     svc::{
         SvcCtx,
@@ -34,11 +33,11 @@ pub(crate) struct CustomAffectorValue {
     // - more expensive and flexible way via registering arbitrary attribute dependencies in the
     //  dependency register during attribute value calculation.
     // Use this field over the dependency approach whenever possible.
-    pub(crate) affector_attr_key: Option<RAttrId>,
+    pub(crate) affector_attr_rid: Option<RAttrId>,
     // Should return all the affecting attributes. Can be slow, used only when fetching modification
     // info
     pub(crate) affector_info_getter: fn(SvcCtx, UItemId) -> SmallVec<Affector, 1>,
-    pub(crate) mod_val_getter: fn(&mut Calc, SvcCtx, EffectSpec) -> Option<AttrVal>,
+    pub(crate) mod_val_getter: fn(&mut Calc, SvcCtx, EffectSpec) -> Option<Value>,
     // Reviser functions are triggered upon certain events; if they return true, affected attribute
     // values are marked for recalculation.
     pub(crate) item_add_reviser: Option<ItemAddReviser> = None,

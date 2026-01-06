@@ -646,7 +646,7 @@ where
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
         match PENALTY_DENOMINATORS.get(i) {
             Some(denominator) => {
-                let penalty_multiplier = Value::ONE / denominator;
+                let penalty_multiplier = PValue::ONE / denominator;
                 let value_multiplier = Value::ONE + (other_attr_info.value - Value::ONE) * penalty_multiplier;
                 for info in other_attr_info.effective_infos.iter_mut() {
                     info.stacking_mult = Some(penalty_multiplier);
@@ -662,7 +662,7 @@ where
             // Modifications past those which have penalty multiplier are insignificant
             None => {
                 for info in other_attr_info.effective_infos.iter_mut() {
-                    info.stacking_mult = Some(Value::ZERO);
+                    info.stacking_mult = Some(PValue::ZERO);
                     info.applied_val = revert_func(Value::ONE);
                 }
                 attr_info.merge_ineffective(other_attr_info);

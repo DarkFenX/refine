@@ -12,10 +12,10 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Affector, AttrValInfo, Calc, CalcModification, CalcModificationKey, ModAccumInfo, Modification},
-        err::KeyedItemLoadedError,
+        err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
-    util::{RMap, RMapVec, RSet, round},
+    util::{RMap, RMapVec, RSet},
 };
 
 struct Affection {
@@ -30,16 +30,16 @@ impl Calc {
     pub(in crate::svc) fn iter_item_mods(
         &mut self,
         ctx: SvcCtx,
-        item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)> + use<>, KeyedItemLoadedError> {
+        item_uid: UItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)> + use<>, UItemLoadedError> {
         let mut info_map = RMapVec::new();
-        for attr_key in self.iter_item_attr_keys(ctx, item_key)? {
-            let mut attr_info = self.calc_item_attr_info(ctx, item_key, attr_key);
+        for attr_rid in self.iter_item_attr_rids(ctx, item_uid)? {
+            let mut attr_info = self.calc_item_attr_info(ctx, item_uid, attr_rid);
             let mut info_vec = Vec::new();
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = ctx.u_data.src.get_attr_by_rid(attr_key).aid.into();
+                let attr_id = ctx.u_data.src.get_attr_by_rid(attr_rid).aid.into();
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
         }
@@ -48,33 +48,33 @@ impl Calc {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Private methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn iter_item_attr_keys(
+    fn iter_item_attr_rids(
         &self,
         ctx: SvcCtx,
-        item_key: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = RAttrId> + use<>, KeyedItemLoadedError> {
-        let item_attr_data = self.get_item_data_with_err(item_key)?;
-        let base_attrs = ctx.u_data.items.get(item_key).get_attrs().unwrap();
-        let mut attr_keys = RSet::with_capacity(item_attr_data.len().max(base_attrs.len()));
-        for (&attr_key, attr_entry) in item_attr_data.iter() {
+        item_uid: UItemId,
+    ) -> Result<impl ExactSizeIterator<Item = RAttrId> + use<>, UItemLoadedError> {
+        let item_attr_data = self.get_item_data_with_err(item_uid)?;
+        let base_attrs = ctx.u_data.items.get(item_uid).get_attrs().unwrap();
+        let mut attr_rids = RSet::with_capacity(item_attr_data.len().max(base_attrs.len()));
+        for (&attr_rid, attr_entry) in item_attr_data.iter() {
             if attr_entry.value.is_some() {
-                attr_keys.insert(attr_key);
+                attr_rids.insert(attr_rid);
             }
         }
-        attr_keys.extend(base_attrs.keys().copied());
-        Ok(attr_keys.into_iter())
+        attr_rids.extend(base_attrs.keys().copied());
+        Ok(attr_rids.into_iter())
     }
     fn iter_affections(
         &mut self,
         ctx: SvcCtx,
-        item_key: &UItemId,
+        item_uid: &UItemId,
         item: &UItem,
-        attr_key: RAttrId,
+        attr_rid: RAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
         for cmod in self
             .std
-            .get_mods_for_affectee(item_key, item, attr_key, &ctx.u_data.fits)
+            .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
             .iter()
         {
             let val = match cmod.raw.get_mod_val(self, ctx) {
@@ -100,12 +100,12 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, attr_key: RAttrId) -> AttrValInfo {
-        let item = ctx.u_data.items.get(item_key);
-        let attr = ctx.u_data.src.get_attr_by_rid(attr_key);
-        let base_attr_info = self.calc_item_base_attr_info(ctx, item_key, item, attr);
+    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> AttrValInfo {
+        let item = ctx.u_data.items.get(item_uid);
+        let attr = ctx.u_data.src.get_attr_by_rid(attr_rid);
+        let base_attr_info = self.calc_item_base_attr_info(ctx, item_uid, item, attr);
         let mut accumulator = ModAccumInfo::new();
-        for affection in self.iter_affections(ctx, &item_key, item, attr_key) {
+        for affection in self.iter_affections(ctx, &item_uid, item, attr_rid) {
             accumulator.add_val(
                 affection.modification.val,
                 affection.modification.proj_mult,
@@ -119,10 +119,10 @@ impl Calc {
         }
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_attr_info, attr.hig);
         // Lower value limit
-        if let Some(limiter_attr_key) = attr.min_attr_rid
-            && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_key, limiter_attr_key)
+        if let Some(limiter_attr_rid) = attr.min_attr_rid
+            && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_uid, limiter_attr_rid)
         {
-            self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
+            self.deps.add_anonymous(item_uid, limiter_attr_rid, attr_rid);
             if limiter_val.dogma > dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(Modification {
@@ -133,17 +133,17 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.eid_by_iid(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_key).aid.into()),
+                        item_id: ctx.u_data.items.eid_by_iid(item_uid),
+                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid.into()),
                     }],
                 })
             }
         }
         // Upper value limit
-        if let Some(limiter_attr_key) = attr.max_attr_rid
-            && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_key, limiter_attr_key)
+        if let Some(limiter_attr_rid) = attr.max_attr_rid
+            && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_uid, limiter_attr_rid)
         {
-            self.deps.add_anonymous(item_key, limiter_attr_key, attr_key);
+            self.deps.add_anonymous(item_uid, limiter_attr_rid, attr_rid);
             if limiter_val.dogma < dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(Modification {
@@ -154,44 +154,44 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.eid_by_iid(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_key).aid.into()),
+                        item_id: ctx.u_data.items.eid_by_iid(item_uid),
+                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid.into()),
                     }],
                 })
             }
         }
-        if ctx.ac().limited_precision.contains(&attr_key) {
-            dogma_attr_info.value = round(dogma_attr_info.value, 2);
+        if ctx.ac().limited_precision.contains(&attr_rid) {
+            dogma_attr_info.value.round_to_digits(2);
         }
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, attr.hig);
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
-        match self.attrs.get_item_attr_data(&item_key).unwrap().get(&attr_key) {
+        match self.attrs.get_item_attr_data(&item_uid).unwrap().get(&attr_rid) {
             Some(attr_entry) if let Some(postprocs) = &attr_entry.postprocs => {
                 let pp_fn = postprocs.info;
-                pp_fn(self, ctx, item_key, extra_attr_info)
+                pp_fn(self, ctx, item_uid, extra_attr_info)
             }
             _ => extra_attr_info,
         }
     }
-    fn calc_item_base_attr_info(&mut self, ctx: SvcCtx, item_key: UItemId, item: &UItem, attr: &RAttr) -> AttrValInfo {
+    fn calc_item_base_attr_info(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem, attr: &RAttr) -> AttrValInfo {
         let attr_consts = ctx.ac();
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base
-        if let Some(sec_zone_attr_key) = attr_consts.security_modifier
-            && attr.rid == sec_zone_attr_key
+        if let Some(sec_zone_attr_rid) = attr_consts.security_modifier
+            && attr.rid == sec_zone_attr_rid
         {
-            let security_attr_key = match ctx.u_data.sec_zone {
+            let security_attr_rid = match ctx.u_data.sec_zone {
                 SecZone::HiSec(_) => attr_consts.hisec_modifier,
                 SecZone::LowSec(_) => attr_consts.lowsec_modifier,
                 SecZone::NullSec | SecZone::WSpace | SecZone::Hazard => attr_consts.nullsec_modifier,
             };
-            if let Some(security_attr_key) = security_attr_key
-                && let Ok(security_full_val) = self.get_item_attr_rfull(ctx, item_key, security_attr_key)
+            if let Some(security_attr_rid) = security_attr_rid
+                && let Ok(security_full_val) = self.get_item_attr_rfull(ctx, item_uid, security_attr_rid)
             {
                 // Ensure that change in any a security-specific attribute value triggers
                 // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_key, security_attr_key, attr.rid);
+                self.deps.add_anonymous(item_uid, security_attr_rid, attr.rid);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                 base_attr_info.effective_infos.push(Modification {
                     // Technically this modification is not pre-assignment, it is base value
@@ -205,8 +205,8 @@ impl Calc {
                     stacking_mult: None,
                     applied_val: security_full_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.eid_by_iid(item_key),
-                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(security_attr_key).aid.into()),
+                        item_id: ctx.u_data.items.eid_by_iid(item_uid),
+                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(security_attr_rid).aid.into()),
                     }],
                 });
                 return base_attr_info;

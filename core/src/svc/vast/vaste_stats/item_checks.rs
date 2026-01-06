@@ -1,5 +1,5 @@
 use crate::{
-    svc::err::{KeyedItemKindVsStatError, KeyedItemLoadedError, StatItemCheckError},
+    svc::err::{KeyedItemKindVsStatError, StatItemCheckError, UItemLoadedError},
     ud::{UData, UItem, UItemId, UShip, UShipKind},
 };
 
@@ -11,7 +11,7 @@ pub(super) fn check_character(u_data: &UData, item_key: UItemId) -> Result<(), S
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -23,7 +23,7 @@ pub(super) fn check_ship(u_data: &UData, item_key: UItemId) -> Result<&UShip, St
     };
     match ship.is_loaded() {
         true => Ok(ship),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -38,7 +38,7 @@ pub(super) fn check_ship_no_struct(u_data: &UData, item_key: UItemId) -> Result<
     };
     match ship.is_loaded() {
         true => Ok(ship),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -51,7 +51,7 @@ pub(super) fn check_fighter_ship(u_data: &UData, item_key: UItemId) -> Result<()
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -67,7 +67,7 @@ pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_key: UItemId) ->
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -81,7 +81,7 @@ pub(super) fn check_drone_fighter_ship(u_data: &UData, item_key: UItemId) -> Res
     };
     match is_loaded {
         true => Ok(item),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -98,7 +98,7 @@ pub(super) fn check_drone_fighter_ship_no_struct(u_data: &UData, item_key: UItem
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -112,7 +112,7 @@ pub(super) fn check_drone_fighter_module(u_data: &UData, item_key: UItemId) -> R
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -125,7 +125,7 @@ pub(super) fn check_drone_module(u_data: &UData, item_key: UItemId) -> Result<()
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -140,7 +140,7 @@ pub(super) fn check_charge_drone_fighter_module(u_data: &UData, item_key: UItemI
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }
 
@@ -159,6 +159,6 @@ pub(super) fn check_autocharge_charge_drone_fighter_module(
     };
     match is_loaded {
         true => Ok(()),
-        false => Err(KeyedItemLoadedError { item_key }.into()),
+        false => Err(UItemLoadedError { item_uid: item_key }.into()),
     }
 }

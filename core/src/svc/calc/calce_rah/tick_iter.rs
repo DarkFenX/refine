@@ -2,33 +2,29 @@ use lender::{Lender, Lending};
 
 use super::{
     rah_data_sim::RahDataSim,
-    shared::{TICK_LIMIT, TickCount, rah_round},
+    shared::{SIG_ROUND_DIGITS, TICK_LIMIT, TickCount},
 };
-use crate::{
-    def::{AttrVal, OF},
-    ud::UItemId,
-    util::RMap,
-};
+use crate::{misc::PValue, ud::UItemId, util::RMap};
 
 struct RahDataIter {
-    cycle_time: AttrVal,
-    cycle_time_rounded: AttrVal,
-    cycling_time: AttrVal,
+    cycle_time: PValue,
+    cycle_time_rounded: PValue,
+    cycling_time: PValue,
 }
 impl RahDataIter {
-    fn new(cycle_time: AttrVal) -> Self {
+    fn new(cycle_time: PValue) -> Self {
         Self {
             cycle_time,
-            cycle_time_rounded: rah_round(cycle_time),
-            cycling_time: OF(0.0),
+            cycle_time_rounded: cycle_time.sig_rounded(SIG_ROUND_DIGITS),
+            cycling_time: PValue::ZERO,
         }
     }
 }
 
 pub(super) struct RahSimTickData<'a> {
-    pub(super) time_passed: AttrVal,
+    pub(super) time_passed: PValue,
     pub(super) cycled: &'a Vec<UItemId>,
-    pub(super) cycling_times: &'a RMap<UItemId, AttrVal>,
+    pub(super) cycling_times: &'a RMap<UItemId, PValue>,
 }
 
 pub(super) struct RahSimTickIter {
@@ -36,13 +32,13 @@ pub(super) struct RahSimTickIter {
     rah_iter_data: RMap<UItemId, RahDataIter>,
     // Fields exposed in iter items
     cycled: Vec<UItemId>,
-    cycling_times: RMap<UItemId, AttrVal>,
+    cycling_times: RMap<UItemId, PValue>,
 }
 impl RahSimTickIter {
     pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a UItemId, &'a RahDataSim)>) -> Self {
         let mut iter_datas = RMap::with_capacity(sim_datas.len());
-        for (&item_key, sim_data) in sim_datas {
-            iter_datas.insert(item_key, RahDataIter::new(sim_data.info.cycle_time));
+        for (&item_uid, sim_data) in sim_datas {
+            iter_datas.insert(item_uid, RahDataIter::new(sim_data.info.cycle_time));
         }
         Self {
             tick: 0,
@@ -72,18 +68,20 @@ impl Lender for RahSimTickIter {
             .min()
             .unwrap();
         // Compose list of RAHs which finish their cycle this tick
-        for (item_key, item_iter_data) in self.rah_iter_data.iter() {
+        for (item_uid, item_iter_data) in self.rah_iter_data.iter() {
             // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
             // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
             // heated one does 20, but sum of 20x 0.85 f64's is less than 17.
-            if rah_round(item_iter_data.cycling_time + time_passed) >= item_iter_data.cycle_time_rounded {
-                self.cycled.push(*item_key);
+            if (item_iter_data.cycling_time + time_passed).sig_rounded(SIG_ROUND_DIGITS)
+                >= item_iter_data.cycle_time_rounded
+            {
+                self.cycled.push(*item_uid);
             }
         }
         // Update iterator state
-        for (item_key, item_iter_data) in self.rah_iter_data.iter_mut() {
-            match self.cycled.contains(item_key) {
-                true => item_iter_data.cycling_time = OF(0.0),
+        for (item_uid, item_iter_data) in self.rah_iter_data.iter_mut() {
+            match self.cycled.contains(item_uid) {
+                true => item_iter_data.cycling_time = PValue::ZERO,
                 false => item_iter_data.cycling_time += time_passed,
             }
         }

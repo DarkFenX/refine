@@ -78,7 +78,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.internal_get_item_attr(item_key, attr_key) {
             Ok(calc_val) => Ok(calc_val.into()),
             Err(error) => Err(ItemLoadedError {
-                item_id: self.get_sol().u_data.items.eid_by_iid(error.item_key),
+                item_id: self.get_sol().u_data.items.eid_by_iid(error.item_uid),
             }
             .into()),
         }
@@ -91,7 +91,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 Ok(attr_iter.map(|(attr_key, val)| (sol.u_data.src.get_attr_by_rid(attr_key).aid.into(), val.into())))
             }
             Err(error) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.eid_by_iid(error.item_key),
+                item_id: sol.u_data.items.eid_by_iid(error.item_uid),
             }
             .into()),
         }
@@ -104,7 +104,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_mods(&sol.u_data, item_key) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.eid_by_iid(err.item_key),
+                item_id: sol.u_data.items.eid_by_iid(err.item_uid),
             }
             .into()),
         }

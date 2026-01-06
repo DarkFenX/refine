@@ -68,7 +68,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
             affector_espec: espec,
             affector_value: AffectorValue::Custom(CustomAffectorValue {
                 kind: CustomAffectorValueKind::AarRepAmount,
-                affector_attr_key: Some(charged_armor_dmg_mult_key),
+                affector_attr_rid: Some(charged_armor_dmg_mult_key),
                 affector_info_getter: get_affector_info,
                 mod_val_getter: get_mod_val,
                 item_add_reviser: Some(revise_on_item_add_removal),
@@ -77,7 +77,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
             op: CalcOp::ExtraMul,
             aggr_mode: AggrMode::Stack,
             affectee_filter: AffecteeFilter::Direct(Location::Item),
-            affectee_attr_key: armor_dmg_amount_key,
+            affectee_attr_rid: armor_dmg_amount_key,
             ..
         };
         rmods.push(rmod);

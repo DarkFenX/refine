@@ -14,45 +14,45 @@ use crate::{
 impl StandardRegister {
     pub(in crate::svc::calc) fn get_mods_for_affectee(
         &self,
-        item_key: &UItemId,
+        item_uid: &UItemId,
         item: &UItem,
-        attr_key: RAttrId,
+        attr_rid: RAttrId,
         fits: &UFits,
     ) -> Vec<CtxModifier> {
-        let fit_key = item.get_fit_uid();
+        let fit_uid = item.get_fit_uid();
         let root_loc = item.get_root_loc_kind();
         let item_grp_id = item.get_group_id().unwrap();
         let srqs = item.get_skill_reqs().unwrap();
         let mut cmods = Vec::new();
-        filter_and_extend(&mut cmods, &self.cmods.direct, item_key, attr_key);
-        if let Some(other_item_key) = item.get_other_key() {
-            filter_and_extend(&mut cmods, &self.cmods.other, &other_item_key, attr_key);
+        filter_and_extend(&mut cmods, &self.cmods.direct, item_uid, attr_rid);
+        if let Some(other_item_uid) = item.get_other_uid() {
+            filter_and_extend(&mut cmods, &self.cmods.other, &other_item_uid, attr_rid);
         }
-        if let Some(fit_key) = fit_key {
-            let fit = fits.get(fit_key);
+        if let Some(fit_uid) = fit_uid {
+            let fit = fits.get(fit_uid);
             if let Some(root_loc) = root_loc {
-                filter_and_extend(&mut cmods, &self.cmods.root, &(fit_key, root_loc), attr_key);
+                filter_and_extend(&mut cmods, &self.cmods.root, &(fit_uid, root_loc), attr_rid);
             }
             for loc_kind in ActiveLocations::new(item, fit) {
-                filter_and_extend(&mut cmods, &self.cmods.loc, &(fit_key, loc_kind), attr_key);
+                filter_and_extend(&mut cmods, &self.cmods.loc, &(fit_uid, loc_kind), attr_rid);
                 filter_and_extend(
                     &mut cmods,
                     &self.cmods.loc_grp,
-                    &(fit_key, loc_kind, item_grp_id),
-                    attr_key,
+                    &(fit_uid, loc_kind, item_grp_id),
+                    attr_rid,
                 );
                 for &srq_type_id in srqs.keys() {
                     filter_and_extend(
                         &mut cmods,
                         &self.cmods.loc_srq,
-                        &(fit_key, loc_kind, srq_type_id),
-                        attr_key,
+                        &(fit_uid, loc_kind, srq_type_id),
+                        attr_rid,
                     );
                 }
             }
             if item.is_owner_modifiable() {
                 for &srq_type_id in srqs.keys() {
-                    filter_and_extend(&mut cmods, &self.cmods.own_srq, &(fit_key, srq_type_id), attr_key);
+                    filter_and_extend(&mut cmods, &self.cmods.own_srq, &(fit_uid, srq_type_id), attr_rid);
                 }
             }
         }
@@ -78,7 +78,7 @@ fn filter_and_extend<K, H1, H2>(
     vec: &mut Vec<CtxModifier>,
     storage: &MapSet<K, CtxModifier, H1, H2>,
     key: &K,
-    attr_key: RAttrId,
+    attr_rid: RAttrId,
 ) where
     K: Eq + Hash,
     H1: BuildHasher + Default,
@@ -87,7 +87,7 @@ fn filter_and_extend<K, H1, H2>(
     vec.extend(
         storage
             .get(key)
-            .filter(|v| v.raw.affectee_attr_key == attr_key)
+            .filter(|v| v.raw.affectee_attr_rid == attr_rid)
             .copied(),
     )
 }

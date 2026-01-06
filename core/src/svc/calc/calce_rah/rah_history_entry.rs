@@ -1,37 +1,41 @@
-use super::shared::rah_round;
-use crate::{def::AttrVal, misc::DmgKinds, svc::calc::CalcAttrVals, ud::UItemId};
+use super::shared::SIG_ROUND_DIGITS;
+use crate::{
+    misc::{DmgKinds, PValue, Value},
+    svc::calc::CalcAttrVals,
+    ud::UItemId,
+};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct RahSimHistoryEntry {
-    pub(super) item_key: UItemId,
-    pub(super) resonances: DmgKinds<AttrVal>,
-    pub(super) cycling_time_rounded: AttrVal,
+    pub(super) item_uid: UItemId,
+    pub(super) resonances: DmgKinds<Value>,
+    pub(super) cycling_time_rounded: PValue,
 }
 impl RahSimHistoryEntry {
     pub(super) fn new(
-        item_key: UItemId,
-        cycling_time: AttrVal,
+        item_uid: UItemId,
+        cycling_time: PValue,
         resonances: &DmgKinds<CalcAttrVals>,
         round_resos: bool,
     ) -> Self {
         let resonances = match round_resos {
             true => DmgKinds {
-                em: rah_round(resonances.em.dogma),
-                thermal: rah_round(resonances.thermal.dogma),
-                kinetic: rah_round(resonances.kinetic.dogma),
-                explosive: rah_round(resonances.explosive.dogma),
+                em: resonances.em.dogma.sig_rounded(SIG_ROUND_DIGITS),
+                thermal: resonances.thermal.dogma.sig_rounded(SIG_ROUND_DIGITS),
+                kinetic: resonances.kinetic.dogma.sig_rounded(SIG_ROUND_DIGITS),
+                explosive: resonances.explosive.dogma.sig_rounded(SIG_ROUND_DIGITS),
             },
             false => DmgKinds {
-                em: resonances.em.dogma,
-                thermal: resonances.thermal.dogma,
-                kinetic: resonances.kinetic.dogma,
-                explosive: resonances.explosive.dogma,
+                em: resonances.em.dogma.into(),
+                thermal: resonances.thermal.dogma.into(),
+                kinetic: resonances.kinetic.dogma.into(),
+                explosive: resonances.explosive.dogma.into(),
             },
         };
         Self {
-            item_key,
+            item_uid,
             resonances,
-            cycling_time_rounded: rah_round(cycling_time),
+            cycling_time_rounded: cycling_time.sig_rounded(SIG_ROUND_DIGITS),
         }
     }
 }

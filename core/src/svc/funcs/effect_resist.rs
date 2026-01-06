@@ -6,7 +6,7 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-pub(in crate::svc) fn get_resist_attr_key(item: &UItem, effect: &REffect) -> Option<RAttrId> {
+pub(in crate::svc) fn get_resist_attr_rid(item: &UItem, effect: &REffect) -> Option<RAttrId> {
     match effect.resist_attr_rid {
         Some(resist_attr_key) => Some(resist_attr_key),
         None => match item.get_axt() {
@@ -22,7 +22,7 @@ pub(crate) fn get_resist_mult_by_projectee_aspec(
     projectee_aspec: &AttrSpec,
 ) -> Option<AttrVal> {
     let mult = calc
-        .get_item_attr_rfull(ctx, projectee_aspec.item_key, projectee_aspec.attr_key)
+        .get_item_attr_rfull(ctx, projectee_aspec.item_uid, projectee_aspec.attr_rid)
         .ok()?
         .dogma;
     Some(match mult.abs() <= 0.0001 {
@@ -39,6 +39,6 @@ pub(crate) fn get_effect_resist_mult(
     projectee_key: UItemId,
 ) -> Option<AttrVal> {
     let projector_item = ctx.u_data.items.get(projector_key);
-    let resist_attr_key = get_resist_attr_key(projector_item, projector_effect)?;
+    let resist_attr_key = get_resist_attr_rid(projector_item, projector_effect)?;
     get_resist_mult_by_projectee_aspec(ctx, calc, &AttrSpec::new(projectee_key, resist_attr_key))
 }

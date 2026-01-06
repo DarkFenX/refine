@@ -10,25 +10,25 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::svc::calc) struct StandardRegister {
     // Items which are holders of a location kind (like char, ship)
-    // Map<(affectee fit key, affectee location kind), affectee item keys>
+    // Map<(affectee fit UID, affectee location kind), affectee item UIDs>
     pub(super) affectee_root: RMapRSet<(UFitId, LocationKind), UItemId>,
     // Items belonging to certain fit and location kind (e.g. char's implants, ship's modules)
-    // Map<(affectee fit key, affectee location kind), affectee item keys>
+    // Map<(affectee fit UID, affectee location kind), affectee item UIDs>
     pub(super) affectee_loc: RMapRSet<(UFitId, LocationKind), UItemId>,
     // Items belonging to certain fit, location kind and group
-    // Map<(affectee fit key, affectee location kind, affectee agroup ID), affectee item keys>
+    // Map<(affectee fit UID, affectee location kind, affectee agroup ID), affectee item UIDs>
     pub(super) affectee_loc_grp: RMapRSet<(UFitId, LocationKind, AItemGrpId), UItemId>,
     // Items belonging to certain fit and location kind, and having certain skill requirement
-    // Map<(affectee fit key, affectee location kind, affectee srq aitem ID), affectee item keys>
+    // Map<(affectee fit UID, affectee location kind, affectee srq aitem ID), affectee item UIDs>
     pub(super) affectee_loc_srq: RMapRSet<(UFitId, LocationKind, AItemId), UItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
-    // Map<(affectee fit key, affectee srq aitem ID), affectee item keys>
+    // Map<(affectee fit UID, affectee srq aitem ID), affectee item UIDs>
     pub(super) affectee_own_srq: RMapRSet<(UFitId, AItemId), UItemId>,
     // Buff-modifiable items, which belong to certain fit and are on specific item list
-    // Map<(affectee fit key, item list key), affectee item keys>
+    // Map<(affectee fit UID, item list RID), affectee item UIDs>
     pub(super) affectee_buffable: RMapRSet<(UFitId, RItemListId), UItemId>,
     // Fits which have ships which are modifiable by buffs via specific item list
-    // Map<item list key, (fit key, ship key)>
+    // Map<item list RID, (fit UID, ship UID)>
     pub(super) affectee_buffable_ships: RMapRSet<RItemListId, (UFitId, UItemId, LocationKind)>,
     // All raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
@@ -37,7 +37,7 @@ pub(in crate::svc::calc) struct StandardRegister {
     // Map<affector effect spec, modifiers>
     pub(super) rmods_proj: RMapRSet<EffectSpec, RawModifier>,
     // Fleet modifiers on a per-fit basis
-    // Map<affector fit key, modifiers>
+    // Map<affector fit UID, modifiers>
     pub(super) rmods_fleet: RMapRSet<UFitId, RawModifier>,
     // System-wide system effect modifiers
     pub(super) rmods_sw_system: RSet<RawModifier>,
@@ -77,28 +77,28 @@ pub(in crate::svc::calc) struct StandardRegisterCtxMods {
     // Map<attr spec, modifiers>
     pub(super) by_aspec: RMapRSet<AttrSpec, CtxModifier>,
     // Modifiers which modify item directly
-    // Map<affectee item key, modifiers>
+    // Map<affectee item UID, modifiers>
     pub(super) direct: RMapRSet<UItemId, CtxModifier>,
     // Modifiers which modify 'other' location are always stored here, regardless if they actually
     // modify something or not
-    // Map<affector item key, modifiers>
+    // Map<affector item UID, modifiers>
     pub(super) other: RMapRSet<UItemId, CtxModifier>,
     // All modifiers which modify root entities (via ship or character reference) are kept here
-    // Map<(affectee fit key, affectee location kind), modifiers>
+    // Map<(affectee fit UID, affectee location kind), modifiers>
     pub(super) root: RMapRSet<(UFitId, LocationKind), CtxModifier>,
     // Modifiers influencing all items belonging to certain fit and location kind
-    // Map<(affectee fit key, affectee location kind), modifiers>
+    // Map<(affectee fit UID, affectee location kind), modifiers>
     pub(super) loc: RMapRSet<(UFitId, LocationKind), CtxModifier>,
     // Modifiers influencing items belonging to certain fit, location and group
-    // Map<(affectee fit key, affectee location, affectee agroup ID), modifiers>
+    // Map<(affectee fit UID, affectee location, affectee agroup ID), modifiers>
     pub(super) loc_grp: RMapRSet<(UFitId, LocationKind, AItemGrpId), CtxModifier>,
     // Modifiers influencing items belonging to certain fit and location, and having certain skill
     // requirement
-    // Map<(affectee fit key, affectee location, affectee srq aitem ID), modifiers>
+    // Map<(affectee fit UID, affectee location, affectee srq aitem ID), modifiers>
     pub(super) loc_srq: RMapRSet<(UFitId, LocationKind, AItemId), CtxModifier>,
     // Modifiers influencing owner-modifiable items belonging to certain fit and having certain
     // skill requirement
-    // Map<(affectee fit key, affectee srq aitem ID), modifiers>
+    // Map<(affectee fit UID, affectee srq aitem ID), modifiers>
     pub(super) own_srq: RMapRSet<(UFitId, AItemId), CtxModifier>,
 }
 impl StandardRegisterCtxMods {

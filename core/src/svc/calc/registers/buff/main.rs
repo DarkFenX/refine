@@ -10,28 +10,28 @@ use crate::{
 // attributes
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
-    pub(super) effect_keys: RMapRSet<UItemId, REffectId>,
+    pub(super) effect_rids: RMapRSet<UItemId, REffectId>,
     pub(super) rmods: RMapRSet<AttrSpec, RawModifier>,
 }
 impl BuffRegister {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            effect_keys: RMapRSet::new(),
+            effect_rids: RMapRSet::new(),
             rmods: RMapRSet::new(),
         }
     }
     // Effect methods
-    pub(in crate::svc::calc) fn get_effects(&self, item_key: &UItemId) -> impl ExactSizeIterator<Item = REffectId> {
-        self.effect_keys.get(item_key).copied()
+    pub(in crate::svc::calc) fn get_effects(&self, item_uid: &UItemId) -> impl ExactSizeIterator<Item = REffectId> {
+        self.effect_rids.get(item_uid).copied()
     }
-    pub(in crate::svc::calc) fn reg_effect(&mut self, item_key: UItemId, effect: &REffect) {
+    pub(in crate::svc::calc) fn reg_effect(&mut self, item_uid: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.add_entry(item_key, effect.rid);
+            self.effect_rids.add_entry(item_uid, effect.rid);
         }
     }
-    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_key: UItemId, effect: &REffect) {
+    pub(in crate::svc::calc) fn unreg_effect(&mut self, item_uid: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
-            self.effect_keys.remove_entry(item_key, &effect.rid);
+            self.effect_rids.remove_entry(item_uid, &effect.rid);
         }
     }
     // Modifier methods

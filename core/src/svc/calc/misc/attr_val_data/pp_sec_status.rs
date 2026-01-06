@@ -9,23 +9,23 @@ use crate::{
 pub(super) fn sec_status_postproc_fast(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemId,
+    item_uid: UItemId,
     mut val: CalcAttrVals,
 ) -> CalcAttrVals {
-    let fit_key = ctx.u_data.items.get(item_key).dc_ship().unwrap().get_fit_uid();
-    let fit = ctx.u_data.fits.get(fit_key);
-    val.dogma = fit.sec_status.get_inner();
-    val.extra = fit.sec_status.get_inner();
+    let fit_uid = ctx.u_data.items.get(item_uid).dc_ship().unwrap().get_fit_uid();
+    let fit = ctx.u_data.fits.get(fit_uid);
+    val.dogma = fit.sec_status.into();
+    val.extra = fit.sec_status.into();
     val
 }
 
 pub(super) fn sec_status_postproc_info(
     _calc: &mut Calc,
     ctx: SvcCtx,
-    item_key: UItemId,
+    item_uid: UItemId,
     _info: AttrValInfo,
 ) -> AttrValInfo {
-    let fit_key = ctx.u_data.items.get(item_key).dc_ship().unwrap().get_fit_uid();
-    let fit = ctx.u_data.fits.get(fit_key);
-    AttrValInfo::new(fit.sec_status.get_inner())
+    let fit_uid = ctx.u_data.items.get(item_uid).dc_ship().unwrap().get_fit_uid();
+    let fit = ctx.u_data.fits.get(fit_uid);
+    AttrValInfo::new(fit.sec_status.into())
 }

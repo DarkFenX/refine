@@ -15,22 +15,22 @@ impl CtxModifier {
             ctx: Context::None,
         }
     }
-    pub(in crate::svc::calc) fn new_with_item(raw: RawModifier, item_key: UItemId) -> Self {
+    pub(in crate::svc::calc) fn new_with_item(raw: RawModifier, item_uid: UItemId) -> Self {
         Self {
             raw,
-            ctx: Context::Item(item_key),
+            ctx: Context::Item(item_uid),
         }
     }
-    pub(in crate::svc::calc) fn new_with_fit(raw: RawModifier, fit_key: UFitId) -> Self {
+    pub(in crate::svc::calc) fn new_with_fit(raw: RawModifier, fit_uid: UFitId) -> Self {
         Self {
             raw,
-            ctx: Context::Fit(fit_key),
+            ctx: Context::Fit(fit_uid),
         }
     }
-    pub(in crate::svc::calc) fn new_with_fit_item(raw: RawModifier, fit_key: UFitId, item_key: UItemId) -> Self {
+    pub(in crate::svc::calc) fn new_with_fit_item(raw: RawModifier, fit_uid: UFitId, item_uid: UItemId) -> Self {
         Self {
             raw,
-            ctx: Context::FitItem(fit_key, item_key),
+            ctx: Context::FitItem(fit_uid, item_uid),
         }
     }
 }

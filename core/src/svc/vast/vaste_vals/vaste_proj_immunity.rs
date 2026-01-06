@@ -93,7 +93,7 @@ impl VastFitData {
             if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
                 && projector_especs.len() > 0
             {
-                let projectee_item_id = ctx.u_data.items.eid_by_iid(projectee_aspec.item_key);
+                let projectee_item_id = ctx.u_data.items.eid_by_iid(projectee_aspec.item_uid);
                 for projector_espec in projector_especs {
                     if kfs.contains(&projector_espec.item_uid) {
                         continue;

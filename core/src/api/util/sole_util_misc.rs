@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     rd::RAttrId,
     sol::SolarSystem,
-    svc::{calc::CalcAttrVals, err::KeyedItemLoadedError},
+    svc::{calc::CalcAttrVals, err::UItemLoadedError},
     ud::UItemId,
 };
 
@@ -12,7 +12,7 @@ impl SolarSystem {
         &mut self,
         item_key: UItemId,
         attr_key: RAttrId,
-    ) -> Result<CalcAttrVals, KeyedItemLoadedError> {
+    ) -> Result<CalcAttrVals, UItemLoadedError> {
         self.svc.get_item_attr_val_full(&self.u_data, item_key, attr_key)
     }
     pub(in crate::api) fn internal_remove_incoming_projections(&mut self, projectee_key: UItemId) {

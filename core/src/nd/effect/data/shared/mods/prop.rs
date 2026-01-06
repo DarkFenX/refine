@@ -61,7 +61,7 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
                 kind: CustomAffectorValueKind::PropSpeedBoost,
                 // Exposing just 1 on-item attribute here which should change more than the other
                 // one, not to handle it via dependencies
-                affector_attr_key: Some(speed_factor_rid),
+                affector_attr_rid: Some(speed_factor_rid),
                 affector_info_getter: get_affector_info,
                 mod_val_getter: get_mod_val,
                 ..
@@ -69,7 +69,7 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
             op: CalcOp::PostMul,
             aggr_mode: AggrMode::Stack,
             affectee_filter: AffecteeFilter::Direct(Location::Ship),
-            affectee_attr_key: max_velocity_rid,
+            affectee_attr_rid: max_velocity_rid,
             ..
         };
         rmods.push(rmod);
