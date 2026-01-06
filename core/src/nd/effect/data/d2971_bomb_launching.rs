@@ -21,8 +21,8 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::BOMB_LAUNCHING;
-const EFFECT_AID: AEffectId = ac::effects::BOMB_LAUNCHING;
+const EFFECT_EID: EEffectId = EEffectId::BOMB_LAUNCHING;
+const EFFECT_AID: AEffectId = AEffectId::BOMB_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -40,7 +40,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             proj_mult_str: Some(get_bomb_application_mult),
             proj_mult_chance: Some(get_bomb_range_mult),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),
         ecm_opc_spec: Some(NEffectProjOpcSpec {

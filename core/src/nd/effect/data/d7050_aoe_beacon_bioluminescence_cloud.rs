@@ -8,8 +8,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD;
-const EFFECT_AID: AEffectId = ac::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD;
+const EFFECT_EID: EEffectId = EEffectId::AOE_BEACON_BIOLUMINESCENCE_CLOUD;
+const EFFECT_AID: AEffectId = AEffectId::AOE_BEACON_BIOLUMINESCENCE_CLOUD;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -18,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
                 duration: AEffectBuffDuration::None,
-                scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
             }),
             ..
         }),

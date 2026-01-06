@@ -56,8 +56,8 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectPro
     NEffectProjOpcSpec {
         base: get_aoe_dd_side_neut_base_opc,
         proj_mult_str: Some(get_aoe_dd_side_neut_proj_mult),
-        resist: Some(NEffectResist::Attr(ac::attrs::DOOMSDAY_ENERGY_NEUT_RESIST_ID)),
-        limit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+        resist: Some(NEffectResist::Attr(AAttrId::DOOMSDAY_ENERGY_NEUT_RESIST_ID)),
+        limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
         ..
     }
 }

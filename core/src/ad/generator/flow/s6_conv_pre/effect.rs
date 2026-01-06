@@ -1,13 +1,12 @@
 use std::hash::Hash;
 
 use crate::{
-    ac,
     ad::{
-        AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp, AState,
+        AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp,
+        AState,
         generator::{GSupport, get_abil_effect},
     },
-    ec,
-    ed::{EAbil, EAttrId, EData, EEffectId, EEffectMod, EItemGrpId, EItemId, EPrimitive},
+    ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EItemGrpId, EItemId, EPrimitive},
     util::{RMap, RSet, StrMsgError},
 };
 
@@ -27,12 +26,12 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
     let mut a_effects = RMap::new();
     for e_effect in e_data.effects.data.iter() {
         let state = match e_effect.category_id {
-            ec::effcats::PASSIVE => AState::Offline,
-            ec::effcats::ACTIVE => AState::Active,
-            ec::effcats::TARGET => AState::Active,
-            ec::effcats::ONLINE => AState::Online,
-            ec::effcats::OVERLOAD => AState::Overload,
-            ec::effcats::SYSTEM => AState::Offline,
+            EEffectCatId::PASSIVE => AState::Offline,
+            EEffectCatId::ACTIVE => AState::Active,
+            EEffectCatId::TARGET => AState::Active,
+            EEffectCatId::ONLINE => AState::Online,
+            EEffectCatId::OVERLOAD => AState::Overload,
+            EEffectCatId::SYSTEM => AState::Offline,
             _ => {
                 let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
                 tracing::warn!("{msg}");
@@ -144,7 +143,7 @@ fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgE
                     msg: format!("unexpected domain \"{domain}\""),
                 });
             }
-            Ok(Some(EEffectId::new(get_arg_int(&e_modifier.args, "effectID")?)))
+            Ok(Some(EEffectId::from_i32(get_arg_int(&e_modifier.args, "effectID")?)))
         }
         _ => Ok(None),
     }
@@ -213,11 +212,11 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
 }
 
 fn get_mod_src_attr_eid(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifyingAttributeID").map(EAttrId::new)
+    get_arg_int(&e_modifier.args, "modifyingAttributeID").map(EAttrId::from_i32)
 }
 
 fn get_mod_affectee_attr_eid(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifiedAttributeID").map(EAttrId::new)
+    get_arg_int(&e_modifier.args, "modifiedAttributeID").map(EAttrId::from_i32)
 }
 
 fn get_mod_location(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectLocation, StrMsgError> {
@@ -228,7 +227,7 @@ fn get_mod_location(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffe
         "shipID" => Ok(AEffectLocation::Ship),
         "structureID" => Ok(AEffectLocation::Structure),
         "targetID" => match a_effect.category {
-            ac::effcats::TARGET => Ok(AEffectLocation::Target),
+            AEffectCatId::TARGET => Ok(AEffectLocation::Target),
             _ => Err(StrMsgError {
                 msg: format!("modifier uses {domain} domain on untargeted effect"),
             }),
@@ -260,11 +259,11 @@ fn get_mod_operation(e_modifier: &EEffectMod) -> Result<AOp, StrMsgError> {
 }
 
 fn get_mod_grp_eid(e_modifier: &EEffectMod) -> Result<EItemGrpId, StrMsgError> {
-    Ok(EItemGrpId::new(get_arg_int(&e_modifier.args, "groupID")?))
+    Ok(EItemGrpId::from_i32(get_arg_int(&e_modifier.args, "groupID")?))
 }
 
 fn get_mod_skill_eid(e_modifier: &EEffectMod) -> Result<EItemId, StrMsgError> {
-    Ok(EItemId::new(get_arg_int(&e_modifier.args, "skillTypeID")?))
+    Ok(EItemId::from_i32(get_arg_int(&e_modifier.args, "skillTypeID")?))
 }
 
 fn get_arg_int(args: &RMap<String, EPrimitive>, name: &str) -> Result<i32, StrMsgError> {

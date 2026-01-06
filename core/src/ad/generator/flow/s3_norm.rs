@@ -1,7 +1,6 @@
 use crate::{
     ad::generator::rels::{KeyPart, Pk},
-    ec,
-    ed::{EAttrId, EData, EDataCont, EGenFloat, EItemAttr, EItemId},
+    ed::{EAttrId, EData, EDataCont, EFloat, EItemAttr, EItemId},
     util::RSet,
 };
 
@@ -19,7 +18,7 @@ fn move_basic_attrs(e_data: &mut EData) {
     for item in e_data.items.data.iter() {
         move_basic_attr(
             item.id,
-            ec::attrs::CAPACITY,
+            EAttrId::CAPACITY,
             item.capacity,
             &mut e_data.item_attrs,
             &attr_eids,
@@ -27,7 +26,7 @@ fn move_basic_attrs(e_data: &mut EData) {
         );
         move_basic_attr(
             item.id,
-            ec::attrs::MASS,
+            EAttrId::MASS,
             item.mass,
             &mut e_data.item_attrs,
             &attr_eids,
@@ -35,7 +34,7 @@ fn move_basic_attrs(e_data: &mut EData) {
         );
         move_basic_attr(
             item.id,
-            ec::attrs::RADIUS,
+            EAttrId::RADIUS,
             item.radius,
             &mut e_data.item_attrs,
             &attr_eids,
@@ -43,7 +42,7 @@ fn move_basic_attrs(e_data: &mut EData) {
         );
         move_basic_attr(
             item.id,
-            ec::attrs::VOLUME,
+            EAttrId::VOLUME,
             item.volume,
             &mut e_data.item_attrs,
             &attr_eids,
@@ -55,7 +54,7 @@ fn move_basic_attrs(e_data: &mut EData) {
 fn move_basic_attr(
     item_id: EItemId,
     attr_id: EAttrId,
-    basic_value: EGenFloat,
+    basic_value: EFloat,
     e_data_item_attrs: &mut EDataCont<EItemAttr>,
     attr_ids: &RSet<EAttrId>,
     seen_pks: &RSet<Vec<KeyPart>>,

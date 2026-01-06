@@ -2,7 +2,7 @@ use ordered_float::Float;
 
 use super::shared::OutputIterItem;
 use crate::{
-    def::{AttrVal, DefCount, OF},
+    misc::{Count, PValue, Value},
     util::FLOAT_TOLERANCE,
 };
 
@@ -12,10 +12,10 @@ where
     T: Copy,
 {
     pub(crate) amount: T,
-    pub(crate) delay: AttrVal,
+    pub(crate) delay: PValue,
     // Total count of times amount is output
-    pub(crate) repeats: DefCount,
-    pub(crate) interval: AttrVal,
+    pub(crate) repeats: Count,
+    pub(crate) interval: PValue,
 }
 impl<T> OutputComplex<T>
 where
@@ -27,22 +27,22 @@ where
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_completion_time(&self) -> AttrVal {
-        if self.repeats < 1 {
-            return OF(0.0);
+    pub(super) fn get_completion_time(&self) -> PValue {
+        if self.repeats < Count::ONE {
+            return PValue::ZERO;
         };
-        self.delay + self.interval * (self.repeats - 1) as f64
+        self.delay + self.interval * PValue::new_unchecked((self.repeats.into_inner() - 1) as f64)
     }
     pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputComplexAmountIter::new(self)
     }
 }
-impl OutputComplex<AttrVal> {
+impl OutputComplex<Value> {
     pub(super) fn has_impact(&self) -> bool {
-        self.amount.abs() > FLOAT_TOLERANCE
+        self.amount.abs() > PValue::FLOAT_TOLERANCE
     }
-    pub(super) fn absolute_impact(&self) -> AttrVal {
-        self.amount.abs() * self.repeats as f64
+    pub(super) fn absolute_impact(&self) -> PValue {
+        self.amount.abs() * PValue::new_unchecked(self.repeats.into_inner() as f64)
     }
     pub(super) fn add_amount(&mut self, amount: AttrVal) {
         self.amount += amount;

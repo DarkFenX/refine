@@ -1,7 +1,5 @@
 use crate::{
-    ac,
     ad::AEffectId,
-    ec,
     ed::EEffectId,
     nd::{
         NEffect, NEffectProjOpcSpec,
@@ -9,8 +7,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DEFENDER_MISSILE_LAUNCHING;
-const EFFECT_AID: AEffectId = ac::effects::DEFENDER_MISSILE_LAUNCHING;
+const EFFECT_EID: EEffectId = EEffectId::DEFENDER_MISSILE_LAUNCHING;
+const EFFECT_AID: AEffectId = AEffectId::DEFENDER_MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

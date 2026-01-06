@@ -34,11 +34,11 @@ impl Src {
         let rah_duration_attr_rid = r_data
             .effect_consts
             .adaptive_armor_hardener
-            .and_then(|effect_rid| r_data.effects.get(effect_rid.into_inner()).unwrap().duration_attr_rid);
+            .and_then(|effect_rid| r_data.effects.get(effect_rid.into_usize()).unwrap().duration_attr_rid);
         let online_effect = r_data
             .effect_consts
             .online
-            .map(|effect_rid| r_data.effects.get(effect_rid.into_inner()).unwrap().clone());
+            .map(|effect_rid| r_data.effects.get(effect_rid.into_usize()).unwrap().clone());
         Ok(Self {
             r_data: Arc::new(r_data),
             online_effect,
@@ -51,14 +51,14 @@ impl Src {
     }
     // Item list methods
     pub(crate) fn get_item_list_by_rid(&self, item_list_rid: RItemListId) -> &RItemList {
-        self.r_data.item_lists.get(item_list_rid.into_inner()).unwrap()
+        self.r_data.item_lists.get(item_list_rid.into_usize()).unwrap()
     }
     pub(crate) fn get_item_list_rid_by_aid(&self, item_list_aid: &AItemListId) -> Option<RItemListId> {
         self.r_data.item_list_aid_rid_map.get(item_list_aid).copied()
     }
     // Attr methods
     pub(crate) fn get_attr_by_rid(&self, attr_rid: RAttrId) -> &RAttr {
-        self.r_data.attrs.get(attr_rid.into_inner()).unwrap()
+        self.r_data.attrs.get(attr_rid.into_usize()).unwrap()
     }
     pub(crate) fn get_attr_rid_by_aid(&self, attr_aid: &AAttrId) -> Option<RAttrId> {
         self.r_data.attr_aid_rid_map.get(attr_aid).copied()
@@ -71,7 +71,7 @@ impl Src {
     }
     // Attr methods
     pub(crate) fn get_effect_by_rid(&self, effect_rid: REffectId) -> &RcEffect {
-        self.r_data.effects.get(effect_rid.into_inner()).unwrap()
+        self.r_data.effects.get(effect_rid.into_usize()).unwrap()
     }
     pub(crate) fn get_effect_rid_by_aid(&self, effect_aid: &AEffectId) -> Option<REffectId> {
         self.r_data.effect_aid_rid_map.get(effect_aid).copied()
@@ -81,7 +81,7 @@ impl Src {
     }
     // Buff methods
     pub(crate) fn get_buff_by_rid(&self, buff_rid: RBuffId) -> &RBuff {
-        self.r_data.buffs.get(buff_rid.into_inner()).unwrap()
+        self.r_data.buffs.get(buff_rid.into_usize()).unwrap()
     }
     pub(crate) fn get_buff_by_aid(&self, buff_aid: &ABuffId) -> Option<&RBuff> {
         let buff_rid = *self.r_data.buff_aid_rid_map.get(buff_aid)?;

@@ -124,7 +124,7 @@ fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> PValue {
             + (tgt_coordinates.y - src_coordinates.y).powi(2)
             + (tgt_coordinates.z - src_coordinates.z).powi(2))
         .sqrt()
-        .into_inner(),
+        .into_f64(),
     )
 }
 

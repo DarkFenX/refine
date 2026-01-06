@@ -13,8 +13,8 @@ use crate::{
     ud::UItemId,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MINING;
-const EFFECT_AID: AEffectId = ac::effects::MINING;
+const EFFECT_EID: EEffectId = EEffectId::MINING;
+const EFFECT_AID: AEffectId = AEffectId::MINING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::FUELED_SHIELD_BOOSTING;
-const EFFECT_AID: AEffectId = ac::effects::FUELED_SHIELD_BOOSTING;
+const EFFECT_EID: EEffectId = EEffectId::FUELED_SHIELD_BOOSTING;
+const EFFECT_AID: AEffectId = AEffectId::FUELED_SHIELD_BOOSTING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         local_shield_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: get_shield_rep_base_opc,
-            limit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
+            limit_attr_id: Some(AAttrId::SHIELD_CAPACITY),
             ..
         }),
         ..

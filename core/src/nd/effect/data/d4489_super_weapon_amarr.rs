@@ -10,8 +10,8 @@ use crate::{
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SUPER_WEAPON_AMARR;
-const EFFECT_AID: AEffectId = ac::effects::SUPER_WEAPON_AMARR;
+const EFFECT_EID: EEffectId = EEffectId::SUPER_WEAPON_AMARR;
+const EFFECT_AID: AEffectId = AEffectId::SUPER_WEAPON_AMARR;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -21,7 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             full: make_dd_self_debuffs().collect(),
             ..
         }),
-        projectee_filter: Some(NEffectProjecteeFilter::ItemList(ac::itemlists::CAPITALS_FREIGHTERS)),
+        projectee_filter: Some(NEffectProjecteeFilter::ItemList(AItemListId::CAPITALS_FREIGHTERS)),
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(get_direct_dd_dmg_opc_spec()),
         ..

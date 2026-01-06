@@ -1,10 +1,12 @@
-use crate::{ad::AEffectCatId, ec::effcats as ecec};
+use crate::{ad::AEffectCatId, ed::EEffectCatId};
 
-pub(crate) const PASSIVE: AEffectCatId = ecec::PASSIVE.into();
-pub(crate) const ACTIVE: AEffectCatId = ecec::ACTIVE.into();
-pub(crate) const TARGET: AEffectCatId = ecec::TARGET.into();
-pub(crate) const AREA: AEffectCatId = ecec::AREA.into();
-pub(crate) const ONLINE: AEffectCatId = ecec::ONLINE.into();
-pub(crate) const OVERLOAD: AEffectCatId = ecec::OVERLOAD.into();
-pub(crate) const DUNGEON: AEffectCatId = ecec::DUNGEON.into();
-pub(crate) const SYSTEM: AEffectCatId = ecec::SYSTEM.into();
+impl AEffectCatId {
+    pub(crate) const PASSIVE: Self = Self::from_eid(EEffectCatId::PASSIVE);
+    pub(crate) const ACTIVE: Self = Self::from_eid(EEffectCatId::ACTIVE);
+    pub(crate) const TARGET: Self = Self::from_eid(EEffectCatId::TARGET);
+    pub(crate) const AREA: Self = Self::from_eid(EEffectCatId::AREA);
+    pub(crate) const ONLINE: Self = Self::from_eid(EEffectCatId::ONLINE);
+    pub(crate) const OVERLOAD: Self = Self::from_eid(EEffectCatId::OVERLOAD);
+    pub(crate) const DUNGEON: Self = Self::from_eid(EEffectCatId::DUNGEON);
+    pub(crate) const SYSTEM: Self = Self::from_eid(EEffectCatId::SYSTEM);
+}

@@ -40,24 +40,21 @@ pub enum AAttrIdParseError {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct AEveAttrId(i32);
 impl AEveAttrId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
-    }
-    pub(crate) fn new_f64_rounded(id: f64) -> Self {
-        Self(round_f64_to_i32(id))
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ACustomAttrId(i32);
 impl ACustomAttrId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -65,8 +62,13 @@ impl ACustomAttrId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl const From<EAttrId> for AAttrId {
-    fn from(attr_eid: EAttrId) -> Self {
-        Self::Eve(AEveAttrId(attr_eid.into_inner()))
+impl AAttrId {
+    pub(in crate::ad) const fn from_eid(attr_eid: EAttrId) -> Self {
+        Self::Eve(AEveAttrId(attr_eid.into_i32()))
+    }
+}
+impl AEveAttrId {
+    pub(crate) fn from_f64_rounded(id: f64) -> Self {
+        Self(round_f64_to_i32(id))
     }
 }

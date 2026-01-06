@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::NPC_ENTITY_REMOTE_HULL_REPAIRER;
-const EFFECT_AID: AEffectId = ac::effects::NPC_ENTITY_REMOTE_HULL_REPAIRER;
+const EFFECT_EID: EEffectId = EEffectId::NPC_ENTITY_REMOTE_HULL_REPAIRER;
+const EFFECT_AID: AEffectId = AEffectId::NPC_ENTITY_REMOTE_HULL_REPAIRER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_hull_rep_base_opc,
             proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(ac::attrs::HP),
+            limit_attr_id: Some(AAttrId::HP),
             ..
         }),
         ..

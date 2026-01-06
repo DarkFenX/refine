@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    ec,
+    ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
@@ -9,8 +7,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::USE_MISSILES;
-const EFFECT_AID: AEffectId = ac::effects::USE_MISSILES;
+const EFFECT_EID: EEffectId = EEffectId::USE_MISSILES;
+const EFFECT_AID: AEffectId = AEffectId::USE_MISSILES;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -20,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: true,
         }),
-        projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(ac::attrs::VALID_TGT_WHITELIST)),
+        projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(AAttrId::VALID_TGT_WHITELIST)),
         ..
     }
 }

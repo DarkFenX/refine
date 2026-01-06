@@ -36,7 +36,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
     ]
     .iter()
     .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemId::new_f64_rounded(v.into()))
+    .map(|v| AItemId::from_f64_rounded(v.into()))
     .unique()
     .collect_vec();
     let limit_group_ids = [
@@ -63,28 +63,28 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
     ]
     .iter()
     .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemGrpId::new_f64_rounded(v.into()))
+    .map(|v| AItemGrpId::from_f64_rounded(v.into()))
     .unique()
     .collect_vec();
     match item_aid {
-        ac::items::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(ac::items::CONFESSOR),
-        ac::items::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(ac::items::CONFESSOR),
-        ac::items::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::CONFESSOR),
-        ac::items::HECATE_DEFENSE_MODE => limit_type_ids.push(ac::items::HECATE),
-        ac::items::HECATE_PROPULSION_MODE => limit_type_ids.push(ac::items::HECATE),
-        ac::items::HECATE_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::HECATE),
-        ac::items::JACKDAW_DEFENSE_MODE => limit_type_ids.push(ac::items::JACKDAW),
-        ac::items::JACKDAW_PROPULSION_MODE => limit_type_ids.push(ac::items::JACKDAW),
-        ac::items::JACKDAW_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::JACKDAW),
-        ac::items::SVIPUL_DEFENSE_MODE => limit_type_ids.push(ac::items::SVIPUL),
-        ac::items::SVIPUL_PROPULSION_MODE => limit_type_ids.push(ac::items::SVIPUL),
-        ac::items::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::SVIPUL),
-        ac::items::SKUA_DEFENSE_MODE => limit_type_ids.push(ac::items::SKUA),
-        ac::items::SKUA_PROPULSION_MODE => limit_type_ids.push(ac::items::SKUA),
-        ac::items::SKUA_SHARPSHOOTER_MODE => limit_type_ids.push(ac::items::SKUA),
-        ac::items::ANHINGA_PRIMARY_MODE => limit_type_ids.push(ac::items::ANHINGA),
-        ac::items::ANHINGA_SECONDARY_MODE => limit_type_ids.push(ac::items::ANHINGA),
-        ac::items::ANHINGA_TERTIARY_MODE => limit_type_ids.push(ac::items::ANHINGA),
+        AItemId::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(AItemId::CONFESSOR),
+        AItemId::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(AItemId::CONFESSOR),
+        AItemId::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(AItemId::CONFESSOR),
+        AItemId::HECATE_DEFENSE_MODE => limit_type_ids.push(AItemId::HECATE),
+        AItemId::HECATE_PROPULSION_MODE => limit_type_ids.push(AItemId::HECATE),
+        AItemId::HECATE_SHARPSHOOTER_MODE => limit_type_ids.push(AItemId::HECATE),
+        AItemId::JACKDAW_DEFENSE_MODE => limit_type_ids.push(AItemId::JACKDAW),
+        AItemId::JACKDAW_PROPULSION_MODE => limit_type_ids.push(AItemId::JACKDAW),
+        AItemId::JACKDAW_SHARPSHOOTER_MODE => limit_type_ids.push(AItemId::JACKDAW),
+        AItemId::SVIPUL_DEFENSE_MODE => limit_type_ids.push(AItemId::SVIPUL),
+        AItemId::SVIPUL_PROPULSION_MODE => limit_type_ids.push(AItemId::SVIPUL),
+        AItemId::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(AItemId::SVIPUL),
+        AItemId::SKUA_DEFENSE_MODE => limit_type_ids.push(AItemId::SKUA),
+        AItemId::SKUA_PROPULSION_MODE => limit_type_ids.push(AItemId::SKUA),
+        AItemId::SKUA_SHARPSHOOTER_MODE => limit_type_ids.push(AItemId::SKUA),
+        AItemId::ANHINGA_PRIMARY_MODE => limit_type_ids.push(AItemId::ANHINGA),
+        AItemId::ANHINGA_SECONDARY_MODE => limit_type_ids.push(AItemId::ANHINGA),
+        AItemId::ANHINGA_TERTIARY_MODE => limit_type_ids.push(AItemId::ANHINGA),
         _ => (),
     }
     if limit_type_ids.is_empty() && limit_group_ids.is_empty() {

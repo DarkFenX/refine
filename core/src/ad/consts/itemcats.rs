@@ -1,12 +1,14 @@
-use crate::{ad::AItemCatId, ec::itemcats as ecic};
+use crate::{ad::AItemCatId, ed::EItemCatId};
 
-pub(crate) const CHARGE: AItemCatId = ecic::CHARGE.into();
-pub(crate) const DRONE: AItemCatId = ecic::DRONE.into();
-pub(crate) const FIGHTER: AItemCatId = ecic::FIGHTER.into();
-pub(crate) const IMPLANT: AItemCatId = ecic::IMPLANT.into();
-pub(crate) const MODULE: AItemCatId = ecic::MODULE.into();
-pub(crate) const SHIP: AItemCatId = ecic::SHIP.into();
-pub(crate) const SKILL: AItemCatId = ecic::SKILL.into();
-pub(crate) const SUBSYSTEM: AItemCatId = ecic::SUBSYSTEM.into();
-pub(crate) const STRUCTURE: AItemCatId = ecic::STRUCTURE.into();
-pub(crate) const STRUCTURE_MODULE: AItemCatId = ecic::STRUCTURE_MODULE.into();
+impl AItemCatId {
+    pub(crate) const CHARGE: Self = Self::from_eid(EItemCatId::CHARGE);
+    pub(crate) const DRONE: Self = Self::from_eid(EItemCatId::DRONE);
+    pub(crate) const FIGHTER: Self = Self::from_eid(EItemCatId::FIGHTER);
+    pub(crate) const IMPLANT: Self = Self::from_eid(EItemCatId::IMPLANT);
+    pub(crate) const MODULE: Self = Self::from_eid(EItemCatId::MODULE);
+    pub(crate) const SHIP: Self = Self::from_eid(EItemCatId::SHIP);
+    pub(crate) const SKILL: Self = Self::from_eid(EItemCatId::SKILL);
+    pub(crate) const SUBSYSTEM: Self = Self::from_eid(EItemCatId::SUBSYSTEM);
+    pub(crate) const STRUCTURE: Self = Self::from_eid(EItemCatId::STRUCTURE);
+    pub(crate) const STRUCTURE_MODULE: Self = Self::from_eid(EItemCatId::STRUCTURE_MODULE);
+}

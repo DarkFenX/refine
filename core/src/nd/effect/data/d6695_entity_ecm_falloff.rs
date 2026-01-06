@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::ENTITY_ECM_FALLOFF;
-const EFFECT_AID: AEffectId = ac::effects::ENTITY_ECM_FALLOFF;
+const EFFECT_EID: EEffectId = EEffectId::ENTITY_ECM_FALLOFF;
+const EFFECT_AID: AEffectId = AEffectId::ENTITY_ECM_FALLOFF;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

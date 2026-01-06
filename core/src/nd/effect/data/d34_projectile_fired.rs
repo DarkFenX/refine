@@ -11,8 +11,8 @@ use crate::{
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::PROJECTILE_FIRED;
-const EFFECT_AID: AEffectId = ac::effects::PROJECTILE_FIRED;
+const EFFECT_EID: EEffectId = EEffectId::PROJECTILE_FIRED;
+const EFFECT_AID: AEffectId = AEffectId::PROJECTILE_FIRED;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

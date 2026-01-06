@@ -18,7 +18,7 @@ impl ABuff {
 impl ABuffId {
     pub(super) fn dc_eve(&self) -> Option<EBuffId> {
         match self {
-            ABuffId::Eve(eve_buff_aid) => Some(EBuffId::new(eve_buff_aid.into_inner())),
+            ABuffId::Eve(eve_buff_aid) => Some(EBuffId::from_i32(eve_buff_aid.into_i32())),
             ABuffId::Custom(_) => None,
         }
     }
@@ -38,7 +38,7 @@ impl ABuffAffecteeFilter {
         match self {
             Self::Direct => None,
             Self::Loc => None,
-            Self::LocGrp(group_aid) => Some(EItemGrpId::new(group_aid.into_inner())),
+            Self::LocGrp(group_aid) => Some(EItemGrpId::from_i32(group_aid.into_i32())),
             Self::LocSrq(_) => None,
         }
     }

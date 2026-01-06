@@ -13,8 +13,8 @@ use crate::{
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::POINT_DEFENSE;
-const EFFECT_AID: AEffectId = ac::effects::POINT_DEFENSE;
+const EFFECT_EID: EEffectId = EEffectId::POINT_DEFENSE;
+const EFFECT_AID: AEffectId = AEffectId::POINT_DEFENSE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

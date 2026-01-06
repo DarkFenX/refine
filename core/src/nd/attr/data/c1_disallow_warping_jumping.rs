@@ -1,10 +1,9 @@
 use crate::{
-    ac,
     ad::{AAttr, AAttrId, AValue},
     nd::NAttr,
 };
 
-const A_ATTR_ID: AAttrId = ac::attrs::DISALLOW_WARPING_JUMPING;
+const A_ATTR_ID: AAttrId = AAttrId::DISALLOW_WARPING_JUMPING;
 
 pub(in crate::nd::attr) fn mk_n_attr() -> NAttr {
     NAttr {
@@ -20,7 +19,7 @@ fn make_attr() -> AAttr {
         id: A_ATTR_ID,
         penalizable: false,
         hig: false,
-        def_val: AValue::new(0.0),
+        def_val: AValue::from_f64(0.0),
         ..
     }
 }

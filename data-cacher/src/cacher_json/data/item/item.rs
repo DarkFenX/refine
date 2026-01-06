@@ -35,7 +35,7 @@ impl From<&rc::ad::AItem> for CItem {
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (k.into(), v.into())).collect(),
             defeff_id: a_item.defeff_id.as_ref().map(Into::into),
             abil_ids: a_item.abil_ids.clone(),
-            srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.into_inner())).collect(),
+            srqs: a_item.srqs.iter().map(|(k, v)| (*k, v.into_u8())).collect(),
             max_state: (&a_item.max_state).into(),
             proj_buff_item_list_ids: a_item.proj_buff_item_list_ids.iter().map(Into::into).collect(),
             fleet_buff_item_list_ids: a_item.fleet_buff_item_list_ids.iter().map(Into::into).collect(),
@@ -61,7 +61,7 @@ impl From<&CItem> for rc::ad::AItem {
             srqs: c_item
                 .srqs
                 .iter()
-                .map(|(k, v)| (*k, rc::ad::ASkillLevel::new_clamped_i32(*v)))
+                .map(|(k, v)| (*k, rc::ad::ASkillLevel::from_i32_clamped(*v)))
                 .collect(),
             max_state: (&c_item.max_state).into(),
             proj_buff_item_list_ids: c_item.proj_buff_item_list_ids.iter().map(Into::into).collect(),

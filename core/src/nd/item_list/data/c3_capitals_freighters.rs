@@ -4,7 +4,7 @@ use crate::{
     nd::NItemList,
 };
 
-const A_ITEM_LIST_ID: AItemListId = ac::itemlists::CAPITALS_FREIGHTERS;
+const A_ITEM_LIST_ID: AItemListId = AItemListId::CAPITALS_FREIGHTERS;
 
 pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
     NItemList {
@@ -16,6 +16,6 @@ pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
 }
 
 fn item_filter(a_item: &AItem) -> bool {
-    [ac::itemgrps::FREIGHTER, ac::itemgrps::JUMP_FREIGHTER].contains(&a_item.grp_id)
-        || a_item.srqs.contains_key(&ac::items::CAPITAL_SHIPS)
+    [AItemGrpId::FREIGHTER, AItemGrpId::JUMP_FREIGHTER].contains(&a_item.grp_id)
+        || a_item.srqs.contains_key(&AItemId::CAPITAL_SHIPS)
 }

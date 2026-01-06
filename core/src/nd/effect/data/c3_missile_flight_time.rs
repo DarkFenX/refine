@@ -6,10 +6,8 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ac,
-    ad::{AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
-    def::{AttrVal, OF},
-    misc::EffectSpec,
+    ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    misc::{EffectSpec, Value},
     nd::{NEffect, effect::data::shared::util::get_item_fit_ship_key},
     rd::RAttrConsts,
     svc::{
@@ -23,7 +21,7 @@ use crate::{
     util::RMap,
 };
 
-const EFFECT_AID: AEffectId = ac::effects::MISSILE_FLIGHT_TIME;
+const EFFECT_AID: AEffectId = AEffectId::MISSILE_FLIGHT_TIME;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -40,7 +38,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::PASSIVE,
+        category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
         ..
     }
@@ -49,10 +47,10 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for item in a_items.values_mut().filter(|v| {
-        v.effect_datas.contains_key(&ac::effects::MISSILE_LAUNCHING)
-            || v.effect_datas.contains_key(&ac::effects::DEFENDER_MISSILE_LAUNCHING)
-            || v.effect_datas.contains_key(&ac::effects::FOF_MISSILE_LAUNCHING)
-            || v.effect_datas.contains_key(&ac::effects::DOT_MISSILE_LAUNCHING)
+        v.effect_datas.contains_key(&AEffectId::MISSILE_LAUNCHING)
+            || v.effect_datas.contains_key(&AEffectId::DEFENDER_MISSILE_LAUNCHING)
+            || v.effect_datas.contains_key(&AEffectId::FOF_MISSILE_LAUNCHING)
+            || v.effect_datas.contains_key(&AEffectId::DOT_MISSILE_LAUNCHING)
     }) {
         item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;
@@ -87,13 +85,13 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
     }
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
     let ship_uid = get_item_fit_ship_key(ctx, espec.item_uid)?;
     let missile_velocity = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().max_velocity)?;
     let ship_radius = ctx.u_data.items.get(ship_uid).get_direct_radius();
     // Missile flight time is stored in milliseconds
-    let val = ship_radius / missile_velocity * OF(1000.0);
-    if val.is_infinite() {
+    let val = ship_radius / missile_velocity * Value::THOUSAND;
+    if !val.is_finite() {
         return None;
     }
     // No need to register dependencies here, because missile velocity attribute is getting cleared

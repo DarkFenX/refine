@@ -1,5 +1,5 @@
 use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::OutputIterItem};
-use crate::def::AttrVal;
+use crate::misc::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) enum Output<T>
@@ -25,7 +25,7 @@ where
             Output::Complex(inner) => inner.get_max_amount(),
         }
     }
-    pub(in crate::svc) fn get_completion_time(&self) -> AttrVal {
+    pub(in crate::svc) fn get_completion_time(&self) -> PValue {
         match self {
             Output::Simple(inner) => inner.get_completion_time(),
             Output::Complex(inner) => inner.get_completion_time(),
@@ -38,20 +38,20 @@ where
         }
     }
 }
-impl Output<AttrVal> {
+impl Output<Value> {
     pub(in crate::svc) fn has_impact(&self) -> bool {
         match self {
             Output::Simple(inner) => inner.has_impact(),
             Output::Complex(inner) => inner.has_impact(),
         }
     }
-    pub(in crate::svc) fn absolute_impact(&self) -> AttrVal {
+    pub(in crate::svc) fn absolute_impact(&self) -> PValue {
         match self {
             Output::Simple(inner) => inner.absolute_impact(),
             Output::Complex(inner) => inner.absolute_impact(),
         }
     }
-    pub(in crate::svc) fn add_amount(&mut self, amount: AttrVal) {
+    pub(in crate::svc) fn add_amount(&mut self, amount: Value) {
         match self {
             Output::Simple(inner) => inner.add_amount(amount),
             Output::Complex(inner) => inner.add_amount(amount),
@@ -71,24 +71,24 @@ where
         }
     }
 }
-impl<T> std::ops::Mul<AttrVal> for Output<T>
+impl<T> std::ops::Mul<Value> for Output<T>
 where
-    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+    T: Copy + std::ops::Mul<Value, Output = T>,
 {
     type Output = Self;
 
-    fn mul(self, rhs: AttrVal) -> Self::Output {
+    fn mul(self, rhs: Value) -> Self::Output {
         match self {
             Self::Simple(inner) => Self::Simple(inner * rhs),
             Self::Complex(inner) => Self::Complex(inner * rhs),
         }
     }
 }
-impl<T> std::ops::MulAssign<AttrVal> for Output<T>
+impl<T> std::ops::MulAssign<Value> for Output<T>
 where
-    T: Copy + std::ops::MulAssign<AttrVal>,
+    T: Copy + std::ops::MulAssign<Value>,
 {
-    fn mul_assign(&mut self, rhs: AttrVal) {
+    fn mul_assign(&mut self, rhs: Value) {
         match self {
             Self::Simple(inner) => inner.mul_assign(rhs),
             Self::Complex(inner) => inner.mul_assign(rhs),

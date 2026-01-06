@@ -6,8 +6,8 @@ use crate::{
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MOD_BONUS_WARFARE_LINK_INFO;
-const EFFECT_AID: AEffectId = ac::effects::MOD_BONUS_WARFARE_LINK_INFO;
+const EFFECT_EID: EEffectId = EEffectId::MOD_BONUS_WARFARE_LINK_INFO;
+const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_WARFARE_LINK_INFO;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -15,8 +15,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
-                duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),
-                scope: AEffectBuffScope::Fleet(ac::itemlists::SHIPS),
+                duration: AEffectBuffDuration::AttrMs(AAttrId::BUFF_DURATION),
+                scope: AEffectBuffScope::Fleet(AItemListId::SHIPS),
             }),
             ..
         }),

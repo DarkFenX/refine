@@ -40,24 +40,21 @@ pub enum AItemListIdParseError {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct AEveItemListId(i32);
 impl AEveItemListId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
-    }
-    pub(crate) fn new_f64_rounded(id: f64) -> Self {
-        Self(round_f64_to_i32(id))
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ACustomItemListId(i32);
 impl ACustomItemListId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -65,8 +62,13 @@ impl ACustomItemListId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl const From<EItemListId> for AItemListId {
-    fn from(item_list_eid: EItemListId) -> Self {
-        Self::Eve(AEveItemListId(item_list_eid.into_inner()))
+impl AItemListId {
+    pub(in crate::ad) const fn from_eid(item_list_eid: EItemListId) -> Self {
+        Self::Eve(AEveItemListId(item_list_eid.into_i32()))
+    }
+}
+impl AEveItemListId {
+    pub(crate) fn from_f64_rounded(id: f64) -> Self {
+        Self(round_f64_to_i32(id))
     }
 }

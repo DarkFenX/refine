@@ -34,7 +34,7 @@ pub(in crate::nd::effect::data) fn get_missile_application_mult(
         return OF(0.0);
     }
     // "Mobile" part
-    let mobile_mult = OF((radius_ratio * src_ev / tgt_speed).powf(src_drf.into_inner()));
+    let mobile_mult = OF((radius_ratio * src_ev / tgt_speed).powf(src_drf.into_f64()));
     if mobile_mult.is_nan() {
         return OF(0.0);
     }

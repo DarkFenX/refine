@@ -6,8 +6,8 @@ use crate::{
     nd::{NEffect, effect::data::shared::mods::mk_subsystem_mod},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::HARDPOINT_MODIFIER_EFFECT;
-const EFFECT_AID: AEffectId = ac::effects::HARDPOINT_MODIFIER_EFFECT;
+const EFFECT_EID: EEffectId = EEffectId::HARDPOINT_MODIFIER_EFFECT;
+const EFFECT_AID: AEffectId = AEffectId::HARDPOINT_MODIFIER_EFFECT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,7 +24,7 @@ fn internal_update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        mk_subsystem_mod(ac::attrs::TURRET_HARDPOINT_MODIFIER, ac::attrs::TURRET_SLOTS_LEFT),
-        mk_subsystem_mod(ac::attrs::LAUNCHER_HARDPOINT_MODIFIER, ac::attrs::LAUNCHER_SLOTS_LEFT),
+        mk_subsystem_mod(AAttrId::TURRET_HARDPOINT_MODIFIER, AAttrId::TURRET_SLOTS_LEFT),
+        mk_subsystem_mod(AAttrId::LAUNCHER_HARDPOINT_MODIFIER, AAttrId::LAUNCHER_SLOTS_LEFT),
     ]);
 }

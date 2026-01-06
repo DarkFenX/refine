@@ -26,7 +26,7 @@ impl Vast {
                     .projectee_filter
                     .add_entry(projector_espec, projectee_key, item_list_key);
             }
-            if effect.category == ac::effcats::TARGET {
+            if effect.category == AEffectCatId::TARGET {
                 if effect.is_assist {
                     projector_fit_data
                         .blockable_assistance
@@ -47,7 +47,7 @@ impl Vast {
         }
         if let Some(projectee_fit_key) = projectee_item.get_fit_uid()
             && !effect.stopped_effect_rids.is_empty()
-            && effect.category == ac::effcats::TARGET
+            && effect.category == AEffectCatId::TARGET
         {
             let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
             let stopper = EffectSpec::new(projector_key, effect.rid);
@@ -113,7 +113,7 @@ impl Vast {
                     .projectee_filter
                     .remove_l2(projector_espec, &projectee_key);
             }
-            if effect.category == ac::effcats::TARGET {
+            if effect.category == AEffectCatId::TARGET {
                 if effect.is_assist {
                     projector_fit_data
                         .blockable_assistance
@@ -134,7 +134,7 @@ impl Vast {
         }
         if let Some(projectee_fit_key) = projectee_item.get_fit_uid()
             && !effect.stopped_effect_rids.is_empty()
-            && effect.category == ac::effcats::TARGET
+            && effect.category == AEffectCatId::TARGET
         {
             let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_key).unwrap();
             let stopper = EffectSpec::new(projector_key, effect.rid);

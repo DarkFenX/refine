@@ -1,15 +1,15 @@
 use crate::{
-    ed::{EAbilId, EGenFloat, EGenInt, EItemId},
+    ed::{EAbilId, EFloat, EInt, EItemId},
     util::LibNamed,
 };
 
 pub struct EItemAbil {
     pub item_id: EItemId,
     pub abil_id: EAbilId,
-    pub slot: EGenInt,
-    pub cooldown: Option<EGenFloat>,
-    pub charge_count: Option<EGenInt>,
-    pub charge_rearm_time: Option<EGenFloat>,
+    pub slot: EInt,
+    pub cooldown: Option<EFloat>,
+    pub charge_count: Option<EInt>,
+    pub charge_rearm_time: Option<EFloat>,
 }
 impl LibNamed for EItemAbil {
     fn lib_get_name() -> &'static str {

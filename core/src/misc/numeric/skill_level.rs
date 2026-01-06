@@ -12,7 +12,7 @@ impl SkillLevel {
     pub fn new_clamped(level: i32) -> Self {
         Self(level.clamp(0, 5) as u8)
     }
-    pub(crate) fn new_f64_clamped(level: f64) -> Self {
+    pub(crate) fn from_f64_rounded(level: f64) -> Self {
         Self(level.clamp(0.0, 5.0).round() as u8)
     }
     pub fn into_inner(self) -> u8 {
@@ -30,11 +30,11 @@ pub struct SkillLevelError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl From<ASkillLevel> for SkillLevel {
     fn from(a_skill_level: ASkillLevel) -> Self {
-        Self(a_skill_level.into_inner())
+        Self(a_skill_level.into_u8())
     }
 }
 impl From<SkillLevel> for Value {
     fn from(value: SkillLevel) -> Self {
-        Self::new(value.into_inner() as f64)
+        Self::from_f64(value.into_inner() as f64)
     }
 }

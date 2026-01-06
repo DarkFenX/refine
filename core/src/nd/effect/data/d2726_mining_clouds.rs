@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MINING_CLOUDS;
-const EFFECT_AID: AEffectId = ac::effects::MINING_CLOUDS;
+const EFFECT_EID: EEffectId = EEffectId::MINING_CLOUDS;
+const EFFECT_AID: AEffectId = AEffectId::MINING_CLOUDS;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

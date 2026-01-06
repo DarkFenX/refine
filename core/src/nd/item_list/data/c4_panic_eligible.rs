@@ -6,7 +6,7 @@ use crate::{
     nd::NItemList,
 };
 
-const A_ITEM_LIST_ID: AItemListId = ac::itemlists::PANIC_ELIGIBLE;
+const A_ITEM_LIST_ID: AItemListId = AItemListId::PANIC_ELIGIBLE;
 
 pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
     NItemList {
@@ -19,21 +19,21 @@ pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
 
 fn item_filter(a_item: &AItem) -> bool {
     [
-        ac::itemgrps::HAULER,
-        ac::itemgrps::BLOCKADE_RUNNER,
-        ac::itemgrps::DEEP_SPACE_TRANSPORT,
-        ac::itemgrps::EXPEDITION_FRIGATE,
-        ac::itemgrps::MINING_BARGE,
-        ac::itemgrps::EXHUMER,
-        ac::itemgrps::INDUSTRIAL_COMMAND_SHIP,
+        AItemGrpId::HAULER,
+        AItemGrpId::BLOCKADE_RUNNER,
+        AItemGrpId::DEEP_SPACE_TRANSPORT,
+        AItemGrpId::EXPEDITION_FRIGATE,
+        AItemGrpId::MINING_BARGE,
+        AItemGrpId::EXHUMER,
+        AItemGrpId::INDUSTRIAL_COMMAND_SHIP,
     ]
     .contains(&a_item.grp_id)
         || [
-            ac::items::VENTURE,
-            ac::items::VENTURE_CONSORTIUM_ISSUE,
-            ac::items::PIONEER,
-            ac::items::PIONEER_CONSORTIUM_ISSUE,
-            ac::items::OUTRIDER,
+            AItemId::VENTURE,
+            AItemId::VENTURE_CONSORTIUM_ISSUE,
+            AItemId::PIONEER,
+            AItemId::PIONEER_CONSORTIUM_ISSUE,
+            AItemId::OUTRIDER,
         ]
         .contains(&a_item.id)
 }

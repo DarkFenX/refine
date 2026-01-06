@@ -4,7 +4,7 @@ use crate::{
     nd::NItemList,
 };
 
-const A_ITEM_LIST_ID: AItemListId = ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES;
+const A_ITEM_LIST_ID: AItemListId = AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES;
 
 pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
     NItemList {

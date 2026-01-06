@@ -12,8 +12,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::REMOTE_SENSOR_DAMP_ENTITY;
-const EFFECT_AID: AEffectId = ac::effects::REMOTE_SENSOR_DAMP_ENTITY;
+const EFFECT_EID: EEffectId = EEffectId::REMOTE_SENSOR_DAMP_ENTITY;
+const EFFECT_AID: AEffectId = AEffectId::REMOTE_SENSOR_DAMP_ENTITY;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

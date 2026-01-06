@@ -87,10 +87,10 @@ pub enum AEffectIdParseError {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ADogmaEffectId(i32);
 impl ADogmaEffectId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -98,10 +98,10 @@ impl ADogmaEffectId {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ACustomEffectId(i32);
 impl ACustomEffectId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -109,8 +109,8 @@ impl ACustomEffectId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl const From<EEffectId> for AEffectId {
-    fn from(effect_eid: EEffectId) -> Self {
-        Self::Dogma(ADogmaEffectId(effect_eid.into_inner()))
+impl AEffectId {
+    pub(in crate::ad) const fn from_eid(effect_eid: EEffectId) -> Self {
+        Self::Dogma(ADogmaEffectId(effect_eid.into_i32()))
     }
 }

@@ -31,26 +31,23 @@ pub(in crate::nd::effect::data) fn add_wd_mods(effect_aid: AEffectId, a_effect: 
 fn add_td_modifiers(mods: &mut Vec<AEffectModifier>) {
     mods.extend([
         // Modules
-        make_td_loc_mod(ac::attrs::MAX_RANGE_BONUS, ac::attrs::MAX_RANGE),
-        make_td_loc_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FALLOFF),
-        make_td_loc_mod(ac::attrs::TRACKING_SPEED_BONUS, ac::attrs::TRACKING_SPEED),
+        make_td_loc_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::MAX_RANGE),
+        make_td_loc_mod(AAttrId::FALLOFF_BONUS, AAttrId::FALLOFF),
+        make_td_loc_mod(AAttrId::TRACKING_SPEED_BONUS, AAttrId::TRACKING_SPEED),
         // Drones & NPCs
-        make_direct_mod(ac::attrs::MAX_RANGE_BONUS, ac::attrs::MAX_RANGE),
-        make_direct_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FALLOFF),
-        make_direct_mod(ac::attrs::TRACKING_SPEED_BONUS, ac::attrs::TRACKING_SPEED),
+        make_direct_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::MAX_RANGE),
+        make_direct_mod(AAttrId::FALLOFF_BONUS, AAttrId::FALLOFF),
+        make_direct_mod(AAttrId::TRACKING_SPEED_BONUS, AAttrId::TRACKING_SPEED),
         // Fighters - explosion radius is actually getting improved, which is a bug on CCP side
+        make_direct_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL),
+        make_direct_mod(AAttrId::FALLOFF_BONUS, AAttrId::FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF),
         make_direct_mod(
-            ac::attrs::MAX_RANGE_BONUS,
-            ac::attrs::FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL,
-        ),
-        make_direct_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF),
-        make_direct_mod(
-            ac::attrs::TRACKING_SPEED_BONUS,
-            ac::attrs::FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS,
+            AAttrId::TRACKING_SPEED_BONUS,
+            AAttrId::FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS,
         ),
         make_direct_mod(
-            ac::attrs::TRACKING_SPEED_BONUS,
-            ac::attrs::FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY,
+            AAttrId::TRACKING_SPEED_BONUS,
+            AAttrId::FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY,
         ),
     ]);
 }
@@ -58,37 +55,37 @@ fn add_td_modifiers(mods: &mut Vec<AEffectModifier>) {
 fn add_gd_modifiers(mods: &mut Vec<AEffectModifier>) {
     mods.extend([
         // Modules
-        make_gd_loc_mod(ac::attrs::MISSILE_VELOCITY_BONUS, ac::attrs::MAX_VELOCITY),
-        make_gd_loc_mod(ac::attrs::EXPLOSION_DELAY_BONUS, ac::attrs::EXPLOSION_DELAY),
-        make_gd_loc_mod(ac::attrs::AOE_CLOUD_SIZE_BONUS, ac::attrs::AOE_CLOUD_SIZE),
-        make_gd_loc_mod(ac::attrs::AOE_VELOCITY_BONUS, ac::attrs::AOE_VELOCITY),
+        make_gd_loc_mod(AAttrId::MISSILE_VELOCITY_BONUS, AAttrId::MAX_VELOCITY),
+        make_gd_loc_mod(AAttrId::EXPLOSION_DELAY_BONUS, AAttrId::EXPLOSION_DELAY),
+        make_gd_loc_mod(AAttrId::AOE_CLOUD_SIZE_BONUS, AAttrId::AOE_CLOUD_SIZE),
+        make_gd_loc_mod(AAttrId::AOE_VELOCITY_BONUS, AAttrId::AOE_VELOCITY),
         // NPCs
         make_direct_mod(
-            ac::attrs::MISSILE_VELOCITY_BONUS,
-            ac::attrs::MISSILE_ENTITY_VELOCITY_MULTIPLIER,
+            AAttrId::MISSILE_VELOCITY_BONUS,
+            AAttrId::MISSILE_ENTITY_VELOCITY_MULTIPLIER,
         ),
         make_direct_mod(
-            ac::attrs::EXPLOSION_DELAY_BONUS,
-            ac::attrs::MISSILE_ENTITY_FLIGHT_TIME_MULTIPLIER,
+            AAttrId::EXPLOSION_DELAY_BONUS,
+            AAttrId::MISSILE_ENTITY_FLIGHT_TIME_MULTIPLIER,
         ),
         make_direct_mod(
-            ac::attrs::AOE_CLOUD_SIZE_BONUS,
-            ac::attrs::MISSILE_ENTITY_AOE_CLOUD_SIZE_MULTIPLIER,
+            AAttrId::AOE_CLOUD_SIZE_BONUS,
+            AAttrId::MISSILE_ENTITY_AOE_CLOUD_SIZE_MULTIPLIER,
         ),
         make_direct_mod(
-            ac::attrs::AOE_VELOCITY_BONUS,
-            ac::attrs::MISSILE_ENTITY_AOE_VELOCITY_MULTIPLIER,
+            AAttrId::AOE_VELOCITY_BONUS,
+            AAttrId::MISSILE_ENTITY_AOE_VELOCITY_MULTIPLIER,
         ),
         // Fighters
-        make_direct_mod(ac::attrs::MISSILE_VELOCITY_BONUS, ac::attrs::FTR_ABIL_MISSILES_RANGE),
-        make_direct_mod(ac::attrs::EXPLOSION_DELAY_BONUS, ac::attrs::FTR_ABIL_MISSILES_RANGE),
+        make_direct_mod(AAttrId::MISSILE_VELOCITY_BONUS, AAttrId::FTR_ABIL_MISSILES_RANGE),
+        make_direct_mod(AAttrId::EXPLOSION_DELAY_BONUS, AAttrId::FTR_ABIL_MISSILES_RANGE),
         make_direct_mod(
-            ac::attrs::AOE_CLOUD_SIZE_BONUS,
-            ac::attrs::FTR_ABIL_MISSILES_EXPLOSION_RADIUS,
+            AAttrId::AOE_CLOUD_SIZE_BONUS,
+            AAttrId::FTR_ABIL_MISSILES_EXPLOSION_RADIUS,
         ),
         make_direct_mod(
-            ac::attrs::AOE_VELOCITY_BONUS,
-            ac::attrs::FTR_ABIL_MISSILES_EXPLOSION_VELOCITY,
+            AAttrId::AOE_VELOCITY_BONUS,
+            AAttrId::FTR_ABIL_MISSILES_EXPLOSION_VELOCITY,
         ),
     ]);
 }
@@ -97,10 +94,7 @@ fn make_td_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AE
     AEffectModifier {
         affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
-        affectee_filter: AEffectAffecteeFilter::LocSrq(
-            AEffectLocation::Target,
-            AModifierSrq::TypeId(ac::items::GUNNERY),
-        ),
+        affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Target, AModifierSrq::TypeId(AItemId::GUNNERY)),
         affectee_attr_id: affectee_attr_aid,
     }
 }
@@ -111,7 +105,7 @@ fn make_gd_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AE
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             AEffectLocation::Target,
-            AModifierSrq::TypeId(ac::items::MISSILE_LAUNCHER_OPERATION),
+            AModifierSrq::TypeId(AItemId::MISSILE_LAUNCHER_OPERATION),
         ),
         affectee_attr_id: affectee_attr_aid,
     }

@@ -2,8 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::generator::{GSupport, rels::KeyDb},
-    ec,
-    ed::{EData, EDataCont},
+    ed::{EBuffId, EData, EDataCont, EItemCatId, EItemGrpId, EItemListId},
     util::{LibNamed, RSet, StrMsgError},
 };
 
@@ -64,21 +63,21 @@ fn trash_all(alive: &mut EData, trash: &mut EData) {
 
 fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
     let cats = [
-        ec::itemcats::CHARGE,
-        ec::itemcats::DRONE,
-        ec::itemcats::FIGHTER,
-        ec::itemcats::IMPLANT,
-        ec::itemcats::MODULE,
-        ec::itemcats::SHIP,
-        ec::itemcats::SKILL,
-        ec::itemcats::STRUCTURE,
-        ec::itemcats::STRUCTURE_MODULE,
-        ec::itemcats::SUBSYSTEM,
+        EItemCatId::CHARGE,
+        EItemCatId::DRONE,
+        EItemCatId::FIGHTER,
+        EItemCatId::IMPLANT,
+        EItemCatId::MODULE,
+        EItemCatId::SHIP,
+        EItemCatId::SKILL,
+        EItemCatId::STRUCTURE,
+        EItemCatId::STRUCTURE_MODULE,
+        EItemCatId::SUBSYSTEM,
     ];
     let mut grps = vec![
-        ec::itemgrps::CHARACTER,
-        ec::itemgrps::EFFECT_BEACON,
-        ec::itemgrps::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES,
+        EItemGrpId::CHARACTER,
+        EItemGrpId::EFFECT_BEACON,
+        EItemGrpId::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES,
     ];
     for (&grp, cat) in g_supp.grp_cat_map.iter() {
         if cats.contains(cat) {
@@ -99,14 +98,14 @@ fn restore_attrs(alive: &mut EData, trash: &mut EData) {
 fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {
     // Used in custom wubble effect
     move_data(&mut trash.buffs, &mut alive.buffs, |v| {
-        v.id == ec::buffs::STASIS_WEBIFICATION_BURST
+        v.id == EBuffId::STASIS_WEBIFICATION_BURST
     });
 }
 
 fn restore_hardcoded_item_lists(alive: &mut EData, trash: &mut EData) {
     // Used in sec zone validation
     move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
-        v.id == ec::itemlists::WORMHOLE_JUMP_BLACK_LIST
+        v.id == EItemListId::WORMHOLE_JUMP_BLACK_LIST
     });
 }
 

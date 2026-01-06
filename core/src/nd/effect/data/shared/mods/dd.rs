@@ -8,34 +8,34 @@ pub(in crate::nd::effect::data) fn make_dd_self_debuffs() -> impl Iterator<Item 
     [
         // Short debuffs
         AEffectBuffFull {
-            buff_id: ac::buffs::VELOCITY_PENALTY,
-            strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),
-            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_IMMOBILITY_DURATION),
+            buff_id: ABuffId::VELOCITY_PENALTY,
+            strength: AEffectBuffStrength::Attr(AAttrId::SPEED_FACTOR),
+            duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_IMMOBILITY_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
         AEffectBuffFull {
-            buff_id: ac::buffs::WARP_PENALTY,
-            strength: AEffectBuffStrength::Attr(ac::attrs::SIEGE_MODE_WARP_STATUS),
-            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_IMMOBILITY_DURATION),
+            buff_id: ABuffId::WARP_PENALTY,
+            strength: AEffectBuffStrength::Attr(AAttrId::SIEGE_MODE_WARP_STATUS),
+            duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_IMMOBILITY_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
         // Long debuffs
         AEffectBuffFull {
-            buff_id: ac::buffs::DISALLOW_CLOAK,
+            buff_id: ABuffId::DISALLOW_CLOAK,
             strength: AEffectBuffStrength::Hardcoded(OF(1.0)),
-            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
+            duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
         AEffectBuffFull {
-            buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
-            strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_DOCKING),
-            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
+            buff_id: ABuffId::DISALLOW_DOCK_JUMP,
+            strength: AEffectBuffStrength::Attr(AAttrId::DISALLOW_DOCKING),
+            duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
         AEffectBuffFull {
-            buff_id: ac::buffs::DISALLOW_TETHER,
-            strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_TETHERING),
-            duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
+            buff_id: ABuffId::DISALLOW_TETHER,
+            strength: AEffectBuffStrength::Attr(AAttrId::DISALLOW_TETHERING),
+            duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },
     ]

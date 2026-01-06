@@ -1,8 +1,6 @@
 use crate::{
-    ac,
     ad::AEffectId,
-    def::{AttrVal, OF},
-    ec,
+    misc::PValue,
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec,
@@ -16,8 +14,8 @@ use crate::{
     ud::{UItem, UItemId, UProjData},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::FOF_MISSILE_LAUNCHING;
-const EFFECT_AID: AEffectId = ac::effects::FOF_MISSILE_LAUNCHING;
+const EFFECT_EID: EEffectId = EEffectId::FOF_MISSILE_LAUNCHING;
+const EFFECT_AID: AEffectId = AEffectId::FOF_MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -45,12 +43,12 @@ fn internal_get_fof_missile_range_mult(
     projector_effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
-) -> AttrVal {
+) -> PValue {
     // FoF missiles are limited by c2s range
     if let Some(range_limit) = calc.get_item_oattr_oextra(ctx, projector_uid, ctx.ac().max_fof_tgt_range)
         && proj_data.get_range_c2s() > range_limit
     {
-        return OF(0.0);
+        return PValue::ZERO;
     }
     get_missile_range_mult(ctx, calc, projector_uid, projector_effect, projectee_uid, proj_data)
 }

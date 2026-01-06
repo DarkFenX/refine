@@ -1,5 +1,5 @@
 use crate::{
-    ed::{EBuffId, EGenFloat, EItemId, EItemListId},
+    ed::{EBuffId, EFloat, EItemId, EItemListId},
     util::LibNamed,
 };
 
@@ -45,5 +45,5 @@ pub struct EItemSpaceCompBuffData {
 
 pub struct EItemSpaceCompBuffEntry {
     pub id: EBuffId,
-    pub value: EGenFloat,
+    pub value: EFloat,
 }

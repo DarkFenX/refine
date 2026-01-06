@@ -1,13 +1,10 @@
 // Subsystem count attribute seems to have no effect on anything in EVE; the lib uses it to expose
 // max count of subsystem slots, so fix it from 5 in data to 4
 
-use crate::{
-    ac,
-    ad::{AAttrId, AData, AItemGrpId, AValue},
-};
+use crate::ad::{AAttrId, AData, AItemGrpId, AValue};
 
-const SLOT_ATTR: AAttrId = ac::attrs::MAX_SUBSYSTEMS;
-const SHIP_GROUP: AItemGrpId = ac::itemgrps::STRATEGIC_CRUISER;
+const SLOT_ATTR: AAttrId = AAttrId::MAX_SUBSYSTEMS;
+const SHIP_GROUP: AItemGrpId = AItemGrpId::STRATEGIC_CRUISER;
 
 pub(in crate::ad::generator::flow::s7_custom) fn fix_subsysem_slot_count(a_data: &mut AData) {
     let mut applied = false;
@@ -16,7 +13,7 @@ pub(in crate::ad::generator::flow::s7_custom) fn fix_subsysem_slot_count(a_data:
             continue;
         }
         if let std::collections::hash_map::Entry::Occupied(mut entry) = item.attrs.entry(SLOT_ATTR)
-            && entry.insert(AValue::new(4.0)) != AValue::new(4.0)
+            && entry.insert(AValue::from_f64(4.0)) != AValue::from_f64(4.0)
         {
             applied = true;
         }

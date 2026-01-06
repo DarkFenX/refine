@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     ad::{AAttrId, AData, AItem, AItemGrpId, AItemId},
     util::{RMap, RMapRSet, RSet},
 };
@@ -8,9 +7,9 @@ use crate::{
 // account that mutated item can have the limit even if raw mutated type has no such limit
 pub(in crate::ad::generator::flow::s8_conv_post) fn fill_max_group_mutations(a_data: &mut AData) {
     let grp_mutations = get_grp_mutations(a_data);
-    let limited_fitted_grp_aids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ac::attrs::MAX_GROUP_FITTED);
-    let limited_online_grp_aids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ac::attrs::MAX_GROUP_ONLINE);
-    let limited_active_grp_aids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ac::attrs::MAX_GROUP_ACTIVE);
+    let limited_fitted_grp_aids = get_item_grps_with_attr(&a_data.items, &grp_mutations, AAttrId::MAX_GROUP_FITTED);
+    let limited_online_grp_aids = get_item_grps_with_attr(&a_data.items, &grp_mutations, AAttrId::MAX_GROUP_ONLINE);
+    let limited_active_grp_aids = get_item_grps_with_attr(&a_data.items, &grp_mutations, AAttrId::MAX_GROUP_ACTIVE);
     for a_item in a_data.items.values_mut() {
         a_item.val_fitted_group_id = match limited_fitted_grp_aids.contains(&a_item.grp_id) {
             true => Some(a_item.grp_id),

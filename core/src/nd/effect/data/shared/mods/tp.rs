@@ -9,9 +9,9 @@ pub(in crate::nd::effect::data) fn add_tp_mods(effect_aid: AEffectId, a_effect: 
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.push(AEffectModifier {
-        affector_attr_id: ac::attrs::SIG_RADIUS_BONUS,
+        affector_attr_id: AAttrId::SIG_RADIUS_BONUS,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
-        affectee_attr_id: ac::attrs::SIG_RADIUS,
+        affectee_attr_id: AAttrId::SIG_RADIUS,
     });
 }

@@ -7,7 +7,7 @@ use crate::{
     util::RSet,
 };
 
-const ONLINE_EFFECT_ID: AEffectId = ac::effects::ONLINE;
+const ONLINE_EFFECT_ID: AEffectId = AEffectId::ONLINE;
 
 pub(crate) struct UAutochargeActivation {
     pub(crate) effect_key: REffectId,

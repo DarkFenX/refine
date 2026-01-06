@@ -70,8 +70,8 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
         _ => (),
     }
     match item_grp_id {
-        ac::itemgrps::CHARACTER => kinds.push(ItemKind::Character),
-        ac::itemgrps::SHIP_MODIFIER => kinds.push(ItemKind::Stance),
+        AItemGrpId::CHARACTER => kinds.push(ItemKind::Character),
+        AItemGrpId::SHIP_MODIFIER => kinds.push(ItemKind::Stance),
         _ => (),
     }
     match kinds.len() {

@@ -43,10 +43,10 @@ pub enum AttrIdParseError {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct EveAttrId(i32);
 impl EveAttrId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -54,10 +54,10 @@ impl EveAttrId {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct CustomAttrId(i32);
 impl CustomAttrId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -65,35 +65,17 @@ impl CustomAttrId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<AAttrId> for AttrId {
-    fn from(attr_aid: AAttrId) -> Self {
+impl AttrId {
+    pub(in crate::api) fn from_aid(attr_aid: AAttrId) -> Self {
         match attr_aid {
-            AAttrId::Eve(id) => Self::Eve(EveAttrId::new(id.into_inner())),
-            AAttrId::Custom(id) => Self::Custom(CustomAttrId::new(id.into_inner())),
+            AAttrId::Eve(id) => Self::Eve(EveAttrId(id.into_i32())),
+            AAttrId::Custom(id) => Self::Custom(CustomAttrId(id.into_i32())),
         }
     }
-}
-impl From<&AAttrId> for AttrId {
-    fn from(attr_aid: &AAttrId) -> Self {
-        match attr_aid {
-            AAttrId::Eve(id) => Self::Eve(EveAttrId::new(id.into_inner())),
-            AAttrId::Custom(id) => Self::Custom(CustomAttrId::new(id.into_inner())),
-        }
-    }
-}
-impl From<AttrId> for AAttrId {
-    fn from(attr_id: AttrId) -> Self {
-        match attr_id {
-            AttrId::Eve(id) => Self::Eve(AEveAttrId::new(id.into_inner())),
-            AttrId::Custom(id) => Self::Custom(ACustomAttrId::new(id.into_inner())),
-        }
-    }
-}
-impl From<&AttrId> for AAttrId {
-    fn from(attr_id: &AttrId) -> Self {
-        match attr_id {
-            AttrId::Eve(id) => Self::Eve(AEveAttrId::new(id.into_inner())),
-            AttrId::Custom(id) => Self::Custom(ACustomAttrId::new(id.into_inner())),
+    pub(in crate::api) fn into_aid(self) -> AAttrId {
+        match self {
+            AttrId::Eve(id) => AAttrId::Eve(AEveAttrId::from_i32(id.0)),
+            AttrId::Custom(id) => AAttrId::Custom(ACustomAttrId::from_i32(id.0)),
         }
     }
 }

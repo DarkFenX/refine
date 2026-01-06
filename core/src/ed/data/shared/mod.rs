@@ -1,3 +1,3 @@
-pub use value::{EGenFloat, EGenInt};
+pub use value::{EFloat, EInt};
 
 mod value;

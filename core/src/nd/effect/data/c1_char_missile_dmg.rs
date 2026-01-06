@@ -5,16 +5,15 @@
 // effect.
 
 use crate::{
-    ac,
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModifier, AItem, AItemEffectData, AItemId,
-        AModifierSrq, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectModifier, AItem, AItemEffectData,
+        AItemGrpId, AItemId, AModifierSrq, AOp, AState,
     },
     nd::NEffect,
     util::RMap,
 };
 
-const EFFECT_AID: AEffectId = ac::effects::CHAR_MISSILE_DMG;
+const EFFECT_AID: AEffectId = AEffectId::CHAR_MISSILE_DMG;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -29,13 +28,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::PASSIVE,
+        category: AEffectCatId::PASSIVE,
         state: AState::Offline,
         modifiers: vec![
-            mk_modifier(ac::attrs::EM_DMG),
-            mk_modifier(ac::attrs::THERM_DMG),
-            mk_modifier(ac::attrs::KIN_DMG),
-            mk_modifier(ac::attrs::EXPL_DMG),
+            mk_modifier(AAttrId::EM_DMG),
+            mk_modifier(AAttrId::THERM_DMG),
+            mk_modifier(AAttrId::KIN_DMG),
+            mk_modifier(AAttrId::EXPL_DMG),
         ],
         ..
     }
@@ -45,7 +44,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items
         .values_mut()
-        .filter(|a_item| a_item.grp_id == ac::itemgrps::CHARACTER)
+        .filter(|a_item| a_item.grp_id == AItemGrpId::CHARACTER)
     {
         a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;
@@ -55,9 +54,9 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
 
 fn mk_modifier(affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: ac::attrs::MISSILE_DMG_MULT,
+        affector_attr_id: AAttrId::MISSILE_DMG_MULT,
         op: AOp::PostMulImmune,
-        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(ac::items::MISSILE_LAUNCHER_OPERATION)),
+        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(AItemId::MISSILE_LAUNCHER_OPERATION)),
         affectee_attr_id,
     }
 }

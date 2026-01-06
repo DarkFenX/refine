@@ -26,11 +26,14 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_npc_prop(&self, item_uid: UItemId) -> NpcProp {
+    pub(crate) fn get_item_npc_prop(&self, item_uid: UItemId) -> Option<NpcProp> {
         let u_item = self.items.get(item_uid);
-        match u_item.get_npc_prop() {
-            StOption::Set(npc_prop) => npc_prop,
-            StOption::Inherit => self.default_npc_prop,
+        match u_item {
+            UItem::Drone(drone) => Some(match drone.get_npc_prop() {
+                StOption::Set(npc_prop) => npc_prop,
+                StOption::Inherit => self.default_npc_prop,
+            }),
+            _ => None,
         }
     }
     pub(crate) fn get_item_reload_optionals(

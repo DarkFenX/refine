@@ -5,10 +5,8 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ac,
-    ad::{AEffect, AEffectId, AItem, AItemEffectData, AItemId, AState},
-    def::{AttrVal, OF},
-    misc::EffectSpec,
+    ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    misc::{EffectSpec, Value},
     nd::NEffect,
     rd::RAttrConsts,
     svc::{
@@ -22,7 +20,7 @@ use crate::{
     util::RMap,
 };
 
-const EFFECT_AID: AEffectId = ac::effects::AAR_PASTE_BOOST;
+const EFFECT_AID: AEffectId = AEffectId::AAR_PASTE_BOOST;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -39,7 +37,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::PASSIVE,
+        category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
         ..
     }
@@ -48,9 +46,9 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items.values_mut().filter(|v| {
-        v.effect_datas.contains_key(&ac::effects::FUELED_ARMOR_REPAIR)
+        v.effect_datas.contains_key(&AEffectId::FUELED_ARMOR_REPAIR)
             || v.effect_datas
-                .contains_key(&ac::effects::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
+                .contains_key(&AEffectId::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
         a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;
@@ -84,15 +82,15 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
     }
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
     // Return multiplier only if everything could be fetched successfully
     if let Some(charge_uid) = ctx.u_data.items.get(espec.item_uid).get_charge_uid()
-        && let ac::items::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_uid).get_type_id()
+        && let AItemId::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_uid).get_type_id()
         && let Some(val) = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().charged_armor_dmg_mult)
     {
         return Some(val);
     }
-    Some(OF(1.0))
+    Some(Value::ONE)
 }
 
 fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
@@ -108,7 +106,7 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
 
 fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, changed_uid: UItemId, changed_item: &UItem) -> bool {
     match ctx.u_data.items.get(affector_uid).get_charge_uid() {
-        Some(charge_uid) => changed_uid == charge_uid && changed_item.get_type_id() == ac::items::NANITE_REPAIR_PASTE,
+        Some(charge_uid) => changed_uid == charge_uid && changed_item.get_type_id() == AItemId::NANITE_REPAIR_PASTE,
         // Not chargeable item, or no charge on AAR -> not changing anything
         None => false,
     }

@@ -6,8 +6,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::EMERGENCY_HULL_ENERGIZER;
-const EFFECT_AID: AEffectId = ac::effects::EMERGENCY_HULL_ENERGIZER;
+const EFFECT_EID: EEffectId = EEffectId::EMERGENCY_HULL_ENERGIZER;
+const EFFECT_AID: AEffectId = AEffectId::EMERGENCY_HULL_ENERGIZER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -25,10 +25,10 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        make_hull_resist_mod(ac::attrs::HULL_EM_DMG_RESONANCE, ac::attrs::EM_DMG_RESONANCE),
-        make_hull_resist_mod(ac::attrs::HULL_THERM_DMG_RESONANCE, ac::attrs::THERM_DMG_RESONANCE),
-        make_hull_resist_mod(ac::attrs::HULL_KIN_DMG_RESONANCE, ac::attrs::KIN_DMG_RESONANCE),
-        make_hull_resist_mod(ac::attrs::HULL_EXPL_DMG_RESONANCE, ac::attrs::EXPL_DMG_RESONANCE),
+        make_hull_resist_mod(AAttrId::HULL_EM_DMG_RESONANCE, AAttrId::EM_DMG_RESONANCE),
+        make_hull_resist_mod(AAttrId::HULL_THERM_DMG_RESONANCE, AAttrId::THERM_DMG_RESONANCE),
+        make_hull_resist_mod(AAttrId::HULL_KIN_DMG_RESONANCE, AAttrId::KIN_DMG_RESONANCE),
+        make_hull_resist_mod(AAttrId::HULL_EXPL_DMG_RESONANCE, AAttrId::EXPL_DMG_RESONANCE),
     ]);
 }
 

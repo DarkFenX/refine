@@ -17,7 +17,7 @@ pub(crate) use generator::generate_adapted_data;
 pub use result::AResult;
 
 mod cacher;
-pub(crate) mod consts;
+mod consts;
 mod data;
 pub mod err;
 mod generator;

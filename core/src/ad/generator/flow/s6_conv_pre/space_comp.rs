@@ -1,10 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
-    ac,
     ad::{
         AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AEffectId, AItemEffectData, AItemId, AState,
+        AEffectCatId, AEffectId, AItemEffectData, AItemId, AItemListId, AState,
     },
     ed::{EData, EItemSpaceCompBuffData},
 };
@@ -67,7 +66,7 @@ fn process_buffs(
     }
     let item_list_aid = match e_sc_buff_data.item_list_filter {
         Some(item_list_eid) => item_list_eid.into(),
-        None => ac::itemlists::SHIPS,
+        None => AItemListId::SHIPS,
     };
     let buff = AEffectBuff {
         full: valid_buffs
@@ -83,7 +82,7 @@ fn process_buffs(
     };
     let effect = AEffect {
         id: effect_aid,
-        category: ac::effcats::ACTIVE,
+        category: AEffectCatId::ACTIVE,
         state: AState::Offline,
         buff: Some(buff),
         ..

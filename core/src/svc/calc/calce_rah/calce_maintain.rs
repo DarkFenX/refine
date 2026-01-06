@@ -138,10 +138,10 @@ impl Calc {
         let attr = ctx.u_data.src.get_attr_by_rid(aspec.attr_rid);
         match attr.aid {
             // Ship armor resonances and RAH resonances
-            ac::attrs::ARMOR_EM_DMG_RESONANCE
-            | ac::attrs::ARMOR_THERM_DMG_RESONANCE
-            | ac::attrs::ARMOR_KIN_DMG_RESONANCE
-            | ac::attrs::ARMOR_EXPL_DMG_RESONANCE => match ctx.u_data.items.get(aspec.item_uid) {
+            AAttrId::ARMOR_EM_DMG_RESONANCE
+            | AAttrId::ARMOR_THERM_DMG_RESONANCE
+            | AAttrId::ARMOR_KIN_DMG_RESONANCE
+            | AAttrId::ARMOR_EXPL_DMG_RESONANCE => match ctx.u_data.items.get(aspec.item_uid) {
                 UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_uid()),
                 UItem::Module(module) => {
                     if self.rah.resonances.contains_key(&aspec.item_uid) {
@@ -151,7 +151,7 @@ impl Calc {
                 _ => (),
             },
             // RAH shift amount
-            ac::attrs::RESIST_SHIFT_AMOUNT => {
+            AAttrId::RESIST_SHIFT_AMOUNT => {
                 if self.rah.resonances.contains_key(&aspec.item_uid) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -173,7 +173,7 @@ impl Calc {
                 }
             }
             // Ship HP - need to clear results since breacher DPS depends on those
-            ac::attrs::SHIELD_CAPACITY | ac::attrs::ARMOR_HP | ac::attrs::HP => {
+            AAttrId::SHIELD_CAPACITY | AAttrId::ARMOR_HP | AAttrId::HP => {
                 if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_uid) {
                     let fit_uid = ship.get_fit_uid();
                     if ctx.u_data.get_fit_uid_rah_incoming_dps(fit_uid).deals_breacher_dps() {

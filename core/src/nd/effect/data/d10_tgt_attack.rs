@@ -18,8 +18,8 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::TGT_ATTACK;
-const EFFECT_AID: AEffectId = ac::effects::TGT_ATTACK;
+const EFFECT_EID: EEffectId = EEffectId::TGT_ATTACK;
+const EFFECT_AID: AEffectId = AEffectId::TGT_ATTACK;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -31,7 +31,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             // just for various side effects (e.g. ammo affecting module attributes, or shot
             // graphics). The library doesn't implement on-module autocharges just for this
             // effect.
-            location: NEffectChargeLoc::TargetAttack(ac::attrs::AMMO_LOADED),
+            location: NEffectChargeLoc::TargetAttack(AAttrId::AMMO_LOADED),
             activates_charge: false,
         }),
         dmg_kind_getter: Some(internal_get_dmg_kind),

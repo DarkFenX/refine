@@ -140,7 +140,7 @@ impl RawModifier {
         buff_type_attr_rid: Option<RAttrId>,
         buff_str: AffectorValue,
     ) -> Option<Self> {
-        if effect.category != ac::effcats::ACTIVE {
+        if effect.category != AEffectCatId::ACTIVE {
             return None;
         }
         Some(match buff_scope {
@@ -224,11 +224,11 @@ fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilte
         return Some(ModifierKind::Local);
     }
     match effect_cat {
-        ac::effcats::PASSIVE | ac::effcats::ONLINE | ac::effcats::ACTIVE | ac::effcats::OVERLOAD => {
+        AEffectCatId::PASSIVE | AEffectCatId::ONLINE | AEffectCatId::ACTIVE | AEffectCatId::OVERLOAD => {
             Some(ModifierKind::Local)
         }
-        ac::effcats::SYSTEM => Some(ModifierKind::System),
-        ac::effcats::TARGET => Some(ModifierKind::Targeted),
+        AEffectCatId::SYSTEM => Some(ModifierKind::System),
+        AEffectCatId::TARGET => Some(ModifierKind::Targeted),
         _ => None,
     }
 }

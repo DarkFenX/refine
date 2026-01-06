@@ -44,13 +44,13 @@ impl AEffectId {
             | Self::ScSystemEmitter(item_aid)
             | Self::ScProxyEffect(item_aid)
             | Self::ScProxyTrap(item_aid)
-            | Self::ScShipLink(item_aid) => Some(EItemId::new(item_aid.into_inner())),
+            | Self::ScShipLink(item_aid) => Some(EItemId::from_i32(item_aid.into_i32())),
             Self::Dogma(_) | Self::Custom(_) => None,
         }
     }
     fn dc_eve_effect(&self) -> Option<EEffectId> {
         match self {
-            Self::Dogma(dogma_effect_aid) => Some(EEffectId::new(dogma_effect_aid.into_inner())),
+            Self::Dogma(dogma_effect_aid) => Some(EEffectId::from_i32(dogma_effect_aid.into_i32())),
             Self::ScSystemWide(_)
             | Self::ScSystemEmitter(_)
             | Self::ScProxyEffect(_)

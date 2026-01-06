@@ -9,7 +9,7 @@ pub use item::{
 };
 pub use item_list::{EItemList, EItemListId};
 pub use muta::{EMutaAttrMod, EMutaItemConv};
-pub use shared::{EGenFloat, EGenInt};
+pub use shared::{EFloat, EInt};
 
 mod abil;
 mod attr;

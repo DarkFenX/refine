@@ -9,8 +9,8 @@ pub(in crate::nd::effect::data) fn add_damp_mods(effect_aid: AEffectId, a_effect
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        make_damp_mod(ac::attrs::MAX_TARGET_RANGE_BONUS, ac::attrs::MAX_TARGET_RANGE),
-        make_damp_mod(ac::attrs::SCAN_RESOLUTION_BONUS, ac::attrs::SCAN_RESOLUTION),
+        make_damp_mod(AAttrId::MAX_TARGET_RANGE_BONUS, AAttrId::MAX_TARGET_RANGE),
+        make_damp_mod(AAttrId::SCAN_RESOLUTION_BONUS, AAttrId::SCAN_RESOLUTION),
     ]);
 }
 

@@ -311,7 +311,7 @@ fn get_next_resonances(
     if recipients == 0 {
         return resonances;
     }
-    let recipients = Value::new(recipients as f64);
+    let recipients = Value::from_f64(recipients as f64);
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, thermal.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
@@ -426,7 +426,7 @@ fn estimate_initial_adaptation_ticks(
     // Multiply count of resistance exhaustion cycles by 1.5, to give RAH more time for 'finer'
     // adjustments
     let slowest_cycles =
-        ceil_f64_to_usize((*exhaustion_cycles.get(&slowest_item_uid).unwrap() * Value::new(1.5)).into_inner());
+        ceil_f64_to_usize((*exhaustion_cycles.get(&slowest_item_uid).unwrap() * Value::from_f64(1.5)).into_f64());
     if slowest_cycles == 0 {
         return 0;
     }

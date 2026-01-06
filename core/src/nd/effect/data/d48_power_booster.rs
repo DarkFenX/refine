@@ -16,8 +16,8 @@ use crate::{
     ud::UItemId,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::POWER_BOOSTER;
-const EFFECT_AID: AEffectId = ac::effects::POWER_BOOSTER;
+const EFFECT_EID: EEffectId = EEffectId::POWER_BOOSTER;
+const EFFECT_AID: AEffectId = AEffectId::POWER_BOOSTER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -29,7 +29,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         cap_inject_opc_spec: Some(NEffectLocalOpcSpec {
             base: internal_get_cap_inject,
-            limit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),
         ..

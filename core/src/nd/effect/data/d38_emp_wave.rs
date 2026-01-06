@@ -10,8 +10,8 @@ use crate::{
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::EMP_WAVE;
-const EFFECT_AID: AEffectId = ac::effects::EMP_WAVE;
+const EFFECT_EID: EEffectId = EEffectId::EMP_WAVE;
+const EFFECT_AID: AEffectId = AEffectId::EMP_WAVE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

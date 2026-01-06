@@ -40,24 +40,21 @@ pub enum ABuffIdParseError {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct AEveBuffId(i32);
 impl AEveBuffId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
-    }
-    pub(crate) fn new_f64_rounded(id: f64) -> Self {
-        Self(round_f64_to_i32(id))
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ACustomBuffId(i32);
 impl ACustomBuffId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -65,8 +62,13 @@ impl ACustomBuffId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl const From<EBuffId> for ABuffId {
-    fn from(buff_eid: EBuffId) -> Self {
-        Self::Eve(AEveBuffId(buff_eid.into_inner()))
+impl ABuffId {
+    pub(in crate::ad) const fn from_eid(buff_eid: EBuffId) -> Self {
+        Self::Eve(AEveBuffId(buff_eid.into_i32()))
+    }
+}
+impl AEveBuffId {
+    pub(crate) fn from_f64_rounded(id: f64) -> Self {
+        Self(round_f64_to_i32(id))
     }
 }

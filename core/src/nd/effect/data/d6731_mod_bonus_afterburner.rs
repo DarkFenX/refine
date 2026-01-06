@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MOD_BONUS_AFTERBURNER;
-const EFFECT_AID: AEffectId = ac::effects::MOD_BONUS_AFTERBURNER;
+const EFFECT_EID: EEffectId = EEffectId::MOD_BONUS_AFTERBURNER;
+const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_AFTERBURNER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

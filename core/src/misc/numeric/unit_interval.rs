@@ -55,13 +55,13 @@ impl std::ops::Mul<Value> for UnitInterval {
     type Output = Value;
 
     fn mul(self, rhs: Value) -> Self::Output {
-        Value::new(self.0 * rhs.into_inner())
+        Value::from_f64(self.0 * rhs.into_f64())
     }
 }
 impl std::ops::Mul<UnitInterval> for Value {
     type Output = Value;
 
     fn mul(self, rhs: UnitInterval) -> Self::Output {
-        Value::new(self.into_inner() * rhs.0)
+        Value::from_f64(self.into_f64() * rhs.0)
     }
 }

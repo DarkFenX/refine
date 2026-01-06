@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
-const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
+const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
+const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_REMOTE_ARMOR_REPAIRER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_armor_rep_base_opc,
             proj_mult_str: Some(get_full_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(ac::attrs::ARMOR_HP),
+            limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..
         }),
         ..

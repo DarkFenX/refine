@@ -12,8 +12,8 @@ use crate::{
     util::trunc_unerr,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DOT_MISSILE_LAUNCHING;
-const EFFECT_AID: AEffectId = ac::effects::DOT_MISSILE_LAUNCHING;
+const EFFECT_EID: EEffectId = EEffectId::DOT_MISSILE_LAUNCHING;
+const EFFECT_AID: AEffectId = AEffectId::DOT_MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

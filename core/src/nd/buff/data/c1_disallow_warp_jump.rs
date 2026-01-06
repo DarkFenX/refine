@@ -1,10 +1,9 @@
 use crate::{
-    ac,
-    ad::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, AOp},
+    ad::{AAttrId, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, AOp},
     nd::NBuff,
 };
 
-const A_BUFF_ID: ABuffId = ac::buffs::DISALLOW_WARP_JUMP;
+const A_BUFF_ID: ABuffId = ABuffId::DISALLOW_WARP_JUMP;
 
 pub(in crate::nd::buff) fn mk_n_buff() -> NBuff {
     NBuff {
@@ -22,7 +21,7 @@ fn make_buff() -> ABuff {
         op: AOp::Add,
         mods: vec![ABuffModifier {
             affectee_filter: ABuffAffecteeFilter::Direct,
-            affectee_attr_id: ac::attrs::DISALLOW_WARPING_JUMPING,
+            affectee_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
         }],
     }
 }

@@ -66,7 +66,7 @@ impl EEffect {
         for e_modifier in self.mods.iter() {
             for (k, v) in e_modifier.args.iter() {
                 if let (true, &EPrimitive::Int(fk)) = (k == field, v) {
-                    fks.push(KeyPart::new(fk));
+                    fks.push(KeyPart::from_i32(fk));
                 }
             }
         }

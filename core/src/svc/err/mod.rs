@@ -1,6 +1,6 @@
 pub(crate) use item_loaded::UItemLoadedError;
 pub(crate) use stat_item_check::StatItemCheckError;
-pub(crate) use stat_item_kind::KeyedItemKindVsStatError;
+pub(crate) use stat_item_kind::UItemKindVsStatError;
 
 mod item_loaded;
 mod stat_item_check;

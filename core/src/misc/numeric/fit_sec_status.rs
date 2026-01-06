@@ -32,7 +32,7 @@ pub struct FitSecStatusError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl From<FitSecStatus> for Value {
     fn from(value: FitSecStatus) -> Self {
-        Self::new(value.into_inner())
+        Self::from_f64(value.into_inner())
     }
 }
 

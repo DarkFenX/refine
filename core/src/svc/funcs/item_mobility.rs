@@ -1,31 +1,26 @@
 use crate::{
-    def::{AttrVal, OF},
+    misc::{NpcProp, PValue, Value},
     svc::{SvcCtx, calc::Calc},
-    ud::{UItem, UItemId, UNpcProp},
+    ud::UItemId,
 };
 
-pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
-    let attr_key = match ctx.u_data.items.get(item_key) {
-        UItem::Drone(u_drone) => match u_drone.get_npc_prop() {
-            UNpcProp::Cruise => ctx.ac().entity_cruise_speed,
-            UNpcProp::Chase => ctx.ac().max_velocity,
-        },
+pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
+    let attr_rid = match ctx.u_data.get_item_npc_prop(item_uid) {
+        Some(NpcProp::Cruise) => ctx.ac().entity_cruise_speed,
         _ => ctx.ac().max_velocity,
     };
-    calc.get_item_oattr_ffb_extra(ctx, item_key, attr_key, OF(0.0))
-        .max(OF(0.0))
+    PValue::from(calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_rid, Value::ZERO))
 }
 
-pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
-    let mut sig_radius = calc
-        .get_item_oattr_ffb_extra(ctx, item_key, ctx.ac().sig_radius, OF(0.0))
-        .max(OF(0.0));
-    if let UItem::Drone(u_drone) = ctx.u_data.items.get(item_key)
-        && matches!(u_drone.get_npc_prop(), UNpcProp::Chase)
-    {
-        sig_radius *= calc
-            .get_item_oattr_ffb_extra(ctx, item_key, ctx.ac().entity_max_velocity_sig_radius_mult, OF(1.0))
-            .max(OF(0.0))
+pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
+    let mut sig_radius = PValue::from(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().sig_radius, Value::ZERO));
+    if let Some(NpcProp::Cruise) = ctx.u_data.get_item_npc_prop(item_uid) {
+        sig_radius *= PValue::from(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            ctx.ac().entity_max_velocity_sig_radius_mult,
+            Value::ONE,
+        ))
     }
     sig_radius
 }

@@ -10,50 +10,34 @@ use crate::{
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct Value(f64);
 impl Value {
-    pub(crate) const ZERO: Value = Value::new(0.0);
-    pub(crate) const ONE: Value = Value::new(1.0);
-    pub(crate) const HUNDRED: Value = Value::new(100.0);
-    pub(crate) const FLOAT_TOLERANCE: Value = Value::new(FLOAT_TOLERANCE);
-
-    pub const fn new(v: f64) -> Self {
+    pub const fn from_f64(v: f64) -> Self {
         Self(v)
     }
-    pub fn into_inner(self) -> f64 {
+    pub const fn into_f64(self) -> f64 {
         self.0
     }
 }
-impl From<f64> for Value {
-    fn from(value: f64) -> Self {
-        Self::new(value)
-    }
-}
-impl From<Value> for f64 {
-    fn from(value: Value) -> Self {
-        value.0
-    }
-}
-impl From<&Value> for f64 {
-    fn from(value: &Value) -> Self {
-        value.0
-    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Value {
+    pub(crate) const ZERO: Self = Self::from_f64(0.0);
+    pub(crate) const ONE: Self = Self::from_f64(1.0);
+    pub(crate) const HUNDRED: Self = Self::from_f64(100.0);
+    pub(crate) const THOUSAND: Self = Self::from_f64(1000.0);
+    pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64(FLOAT_TOLERANCE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions between lib-specific types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<AValue> for Value {
-    fn from(value: AValue) -> Self {
-        Self::new(value.into_inner())
+impl Value {
+    pub(crate) fn from_a_value(a_value: AValue) -> Self {
+        Self::from_f64(a_value.into_f64())
     }
-}
-impl From<&AValue> for Value {
-    fn from(value: &AValue) -> Self {
-        Self::new(value.into_inner())
-    }
-}
-impl From<Count> for Value {
-    fn from(value: Count) -> Self {
-        Self::new(value.into_inner() as f64)
+    pub(crate) fn from_count(count: Count) -> Self {
+        Self::from_f64(count.into_inner() as f64)
     }
 }
 
@@ -90,8 +74,8 @@ impl std::hash::Hash for Value {
 // Mathematics
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
-    pub(crate) fn abs(self) -> Self {
-        Self(self.0.abs())
+    pub(crate) fn abs(self) -> PValue {
+        PValue::new_unchecked(self.0.abs())
     }
     pub(crate) fn min(self, rhs: Self) -> Self {
         Self(self.0.min(rhs.0))
@@ -110,6 +94,9 @@ impl Value {
     }
     pub(crate) fn round_to_digits(&mut self, digits: i32) {
         self.0 = round(self.0, digits);
+    }
+    pub(crate) fn is_finite(&self) -> bool {
+        self.0.is_finite()
     }
 }
 impl std::ops::Neg for Value {

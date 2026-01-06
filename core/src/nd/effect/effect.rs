@@ -1,8 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
-    def::AttrVal,
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount},
+    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, PValue, Value},
     nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolAttrs},
     rd::{RAttrConsts, REffect},
     svc::{
@@ -23,7 +22,7 @@ pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, Effect
 // Getters - projection
 // TODO: consider if proj attr getter should be a function or an enum like resists (standard/attrs)
 pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> AttrVal;
+pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> PValue;
 // Getters - damage output
 pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 pub(crate) type NBreacherDmgGetter =
@@ -52,24 +51,24 @@ pub(crate) struct NEffect {
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter> = None,
     // Getters/specs - damage output
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
-    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<AttrVal>>> = None,
+    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<Value>>> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
     // Getters/specs - mining
     pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     // Getters/specs - rep output
-    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
+    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
     // Getters/specs - local reps
-    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
-    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
-    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
+    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
+    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
+    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
     // Getters/specs - cap
-    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
-    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<AttrVal>> = None,
-    pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<AttrVal>> = None,
+    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
+    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
+    pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
     // Getters/specs - misc
     pub(crate) ecm_opc_spec: Option<NEffectProjOpcSpec<Ecm>> = None,
 }

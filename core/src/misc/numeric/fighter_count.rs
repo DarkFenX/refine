@@ -1,6 +1,6 @@
 const COUNT_MIN: u32 = 1;
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct FighterCount(u32);
 impl FighterCount {
     pub fn new_checked(count: u32) -> Result<Self, FighterCountError> {
@@ -12,7 +12,7 @@ impl FighterCount {
     pub const fn new_clamped(count: u32) -> Self {
         Self(count.max(COUNT_MIN))
     }
-    pub(crate) fn new_f64_clamped(count: f64) -> Self {
+    pub(crate) fn from_f64_rounded(count: f64) -> Self {
         Self(count.clamp(1.0, u32::MAX as f64).round() as u32)
     }
     pub fn into_inner(self) -> u32 {

@@ -12,8 +12,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_GUIDANCE_DISRUPTOR;
-const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_GUIDANCE_DISRUPTOR;
+const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_GUIDANCE_DISRUPTOR;
+const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_GUIDANCE_DISRUPTOR;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

@@ -657,8 +657,8 @@ fn merge_effect_datas(
             && let Some(attr_rid) = charge_info.location.get_autocharge_attr_rid()
         {
             let new_ac_type_id = merged_attrs.get(&attr_rid).and_then(|v| {
-                let type_id = AItemId::new_f64_rounded(v.into());
-                match type_id == AItemId::new(0) {
+                let type_id = AItemId::from_f64_rounded(v.into());
+                match type_id == AItemId::from_i32(0) {
                     true => None,
                     false => Some(type_id),
                 }
@@ -673,8 +673,8 @@ fn merge_effect_datas(
             && let Some(attr_rid) = projectee_filter_info.get_item_list_attr_rid()
         {
             let new_projectee_filter = merged_attrs.get(&attr_rid).and_then(|v| {
-                let item_list_id = AEveItemListId::new_f64_rounded(v.into());
-                match item_list_id == AEveItemListId::new(0) {
+                let item_list_id = AEveItemListId::from_f64_rounded(v.into());
+                match item_list_id == AEveItemListId::from_i32(0) {
                     true => None,
                     false => src.get_item_list_rid_by_aid(&AItemListId::Eve(item_list_id)),
                 }

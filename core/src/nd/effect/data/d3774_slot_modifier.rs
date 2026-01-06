@@ -6,8 +6,8 @@ use crate::{
     nd::{NEffect, effect::data::shared::mods::mk_subsystem_mod},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SLOT_MODIFIER;
-const EFFECT_AID: AEffectId = ac::effects::SLOT_MODIFIER;
+const EFFECT_EID: EEffectId = EEffectId::SLOT_MODIFIER;
+const EFFECT_AID: AEffectId = AEffectId::SLOT_MODIFIER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,8 +24,8 @@ fn internal_update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        mk_subsystem_mod(ac::attrs::HI_SLOT_MODIFIER, ac::attrs::HI_SLOTS),
-        mk_subsystem_mod(ac::attrs::MED_SLOT_MODIFIER, ac::attrs::MED_SLOTS),
-        mk_subsystem_mod(ac::attrs::LOW_SLOT_MODIFIER, ac::attrs::LOW_SLOTS),
+        mk_subsystem_mod(AAttrId::HI_SLOT_MODIFIER, AAttrId::HI_SLOTS),
+        mk_subsystem_mod(AAttrId::MED_SLOT_MODIFIER, AAttrId::MED_SLOTS),
+        mk_subsystem_mod(AAttrId::LOW_SLOT_MODIFIER, AAttrId::LOW_SLOTS),
     ]);
 }

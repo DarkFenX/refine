@@ -6,8 +6,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::JUMP_PORTAL_GENERATION;
-const EFFECT_AID: AEffectId = ac::effects::JUMP_PORTAL_GENERATION;
+const EFFECT_EID: EEffectId = EEffectId::JUMP_PORTAL_GENERATION;
+const EFFECT_AID: AEffectId = AEffectId::JUMP_PORTAL_GENERATION;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -23,10 +23,10 @@ fn update_effect(a_effect: &mut AEffect) {
     // active, assistance just cannot be applied to carrying ship. In the lib, we just transfer it
     // to ship for simplicity
     let modifier = AEffectModifier {
-        affector_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
+        affector_attr_id: AAttrId::DISALLOW_ASSISTANCE,
         op: AOp::Add,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
+        affectee_attr_id: AAttrId::DISALLOW_ASSISTANCE,
     };
     a_effect.modifiers.push(modifier);
 }

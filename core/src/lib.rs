@@ -43,12 +43,10 @@ pub use rd::Src;
 pub use sol::SolarSystem;
 pub use svc::calc::{Affector, Modification};
 
-mod ac;
 pub mod ad;
 mod api;
 mod dbg;
 mod def;
-mod ec;
 pub mod ed;
 pub mod err;
 mod misc;

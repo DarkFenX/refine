@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DOOMSDAY_AOE_ECM;
-const EFFECT_AID: AEffectId = ac::effects::DOOMSDAY_AOE_ECM;
+const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_ECM;
+const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_ECM;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

@@ -1,12 +1,14 @@
 use crate::ed::EItemCatId;
 
-pub(crate) const CHARGE: EItemCatId = EItemCatId::new(8);
-pub(crate) const DRONE: EItemCatId = EItemCatId::new(18);
-pub(crate) const FIGHTER: EItemCatId = EItemCatId::new(87);
-pub(crate) const IMPLANT: EItemCatId = EItemCatId::new(20);
-pub(crate) const MODULE: EItemCatId = EItemCatId::new(7);
-pub(crate) const SHIP: EItemCatId = EItemCatId::new(6);
-pub(crate) const SKILL: EItemCatId = EItemCatId::new(16);
-pub(crate) const SUBSYSTEM: EItemCatId = EItemCatId::new(32);
-pub(crate) const STRUCTURE: EItemCatId = EItemCatId::new(65);
-pub(crate) const STRUCTURE_MODULE: EItemCatId = EItemCatId::new(66);
+impl EItemCatId {
+    pub(crate) const CHARGE: Self = Self::from_i32(8);
+    pub(crate) const DRONE: Self = Self::from_i32(18);
+    pub(crate) const FIGHTER: Self = Self::from_i32(87);
+    pub(crate) const IMPLANT: Self = Self::from_i32(20);
+    pub(crate) const MODULE: Self = Self::from_i32(7);
+    pub(crate) const SHIP: Self = Self::from_i32(6);
+    pub(crate) const SKILL: Self = Self::from_i32(16);
+    pub(crate) const SUBSYSTEM: Self = Self::from_i32(32);
+    pub(crate) const STRUCTURE: Self = Self::from_i32(65);
+    pub(crate) const STRUCTURE_MODULE: Self = Self::from_i32(66);
+}

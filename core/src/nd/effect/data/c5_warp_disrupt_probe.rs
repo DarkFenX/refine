@@ -3,10 +3,9 @@
 // into separate custom effect specific to it.
 
 use crate::{
-    ac,
     ad::{
-        AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
-        AItem, AItemEffectData, AItemId, AState, AValue,
+        AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AItemListId, AState, AValue,
     },
     nd::{
         NEffect,
@@ -15,7 +14,7 @@ use crate::{
     util::RMap,
 };
 
-const EFFECT_AID: AEffectId = ac::effects::WARP_DISRUPT_PROBE;
+const EFFECT_AID: AEffectId = AEffectId::WARP_DISRUPT_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -32,25 +31,25 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::ACTIVE,
+        category: AEffectCatId::ACTIVE,
         state: AState::Active,
-        range_attr_id: Some(ac::attrs::WARP_SCRAMBLE_RANGE),
+        range_attr_id: Some(AAttrId::WARP_SCRAMBLE_RANGE),
         buff: Some(AEffectBuff {
             full: vec![
                 // Prevent projected targets within range from warping and jumping. Use custom buff
                 // for this, since using warp status attribute prevents targets from e.g. docking to
                 // citadels too. Intentionally do not apply effects onto ship which launches buff
                 AEffectBuffFull {
-                    buff_id: ac::buffs::DISALLOW_WARP_JUMP,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
+                    buff_id: ABuffId::DISALLOW_WARP_JUMP,
+                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
                     duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                 },
                 // Bubble prevents dictor from tethering as long as it's up
                 AEffectBuffFull {
-                    buff_id: ac::buffs::DISALLOW_TETHER,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
-                    duration: AEffectBuffDuration::AttrMs(ac::attrs::EXPLOSION_DELAY),
+                    buff_id: ABuffId::DISALLOW_TETHER,
+                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                    duration: AEffectBuffDuration::AttrMs(AAttrId::EXPLOSION_DELAY),
                     scope: AEffectBuffScope::Carrier,
                 },
             ],
@@ -62,7 +61,7 @@ fn make_effect() -> AEffect {
 
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
-    for a_item_id in [ac::items::WARP_DISRUPT_PROBE, ac::items::SURGICAL_WARP_DISRUPT_PROBE] {
+    for a_item_id in [AItemId::WARP_DISRUPT_PROBE, AItemId::SURGICAL_WARP_DISRUPT_PROBE] {
         if let Some(a_item) = a_items.get_mut(&a_item_id) {
             a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
             a_item.defeff_id = Some(EFFECT_AID);

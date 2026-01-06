@@ -52,7 +52,7 @@ impl From<AData> for RData {
         let mut item_lists = Slab::with_capacity(a_data.item_lists.len());
         for (&item_list_aid, a_item_list) in a_data.item_lists.iter() {
             let entry = item_lists.vacant_entry();
-            let item_list_rid = RItemListId::new(entry.key());
+            let item_list_rid = RItemListId::from_usize(entry.key());
             let r_item_list = RItemList::from_a_item_list(item_list_rid, a_item_list);
             entry.insert(r_item_list);
             item_list_aid_rid_map.insert(item_list_aid, item_list_rid);
@@ -62,7 +62,7 @@ impl From<AData> for RData {
         let mut attrs = Slab::with_capacity(a_data.attrs.len());
         for (&attr_aid, a_attr) in a_data.attrs.iter() {
             let entry = attrs.vacant_entry();
-            let attr_rid = RAttrId::new(entry.key());
+            let attr_rid = RAttrId::from_usize(entry.key());
             let r_attr = RAttr::from_a_attr(attr_rid, a_attr);
             entry.insert(r_attr);
             attr_aid_rid_map.insert(attr_aid, attr_rid);
@@ -72,7 +72,7 @@ impl From<AData> for RData {
         let mut effects = Slab::with_capacity(a_data.effects.len());
         for (&effect_aid, a_effect) in a_data.effects.iter() {
             let entry = effects.vacant_entry();
-            let effect_rid = REffectId::new(entry.key());
+            let effect_rid = REffectId::from_usize(entry.key());
             let r_effect = REffect::from_a_effect(effect_rid, a_effect);
             entry.insert(Arc::new(r_effect));
             effect_aid_rid_map.insert(effect_aid, effect_rid);
@@ -82,7 +82,7 @@ impl From<AData> for RData {
         let mut buffs = Slab::with_capacity(a_data.buffs.len());
         for (&buff_aid, a_buff) in a_data.buffs.iter() {
             let entry = buffs.vacant_entry();
-            let buff_rid = RBuffId::new(entry.key());
+            let buff_rid = RBuffId::from_usize(entry.key());
             let r_buff = RBuff::from_a_buff(a_buff);
             entry.insert(r_buff);
             buff_aid_rid_map.insert(buff_aid, buff_rid);

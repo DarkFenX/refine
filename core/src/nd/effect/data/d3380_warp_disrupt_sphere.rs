@@ -17,12 +17,11 @@
 // Script effects are defined in other files.
 
 use crate::{
-    ac,
     ad::{
-        AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectId, AEffectLocation, AEffectModifier, AOp,
+        AAttrId, ABuffId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffDuration, AEffectBuffFull,
+        AEffectBuffScope, AEffectBuffStrength, AEffectId, AEffectLocation, AEffectModifier, AItemGrpId, AItemListId,
+        AOp,
     },
-    ec,
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc,
@@ -30,8 +29,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
-const EFFECT_AID: AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
+const EFFECT_EID: EEffectId = EEffectId::WARP_DISRUPT_SPHERE;
+const EFFECT_AID: AEffectId = AEffectId::WARP_DISRUPT_SPHERE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -41,14 +40,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             full: vec![
                 // Disallows warping and jumping for everything in range, including self
                 AEffectBuffFull {
-                    buff_id: ac::buffs::DISALLOW_WARP_JUMP,
-                    strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_WARPING_JUMPING),
+                    buff_id: ABuffId::DISALLOW_WARP_JUMP,
+                    strength: AEffectBuffStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
                     duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                 },
                 AEffectBuffFull {
-                    buff_id: ac::buffs::DISALLOW_WARP_JUMP,
-                    strength: AEffectBuffStrength::Attr(ac::attrs::DISALLOW_WARPING_JUMPING),
+                    buff_id: ABuffId::DISALLOW_WARP_JUMP,
+                    strength: AEffectBuffStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Carrier,
                 },
@@ -74,57 +73,57 @@ fn update_effect(a_effect: &mut AEffect) {
     a_effect.modifiers.extend([
         // Signature radius
         AEffectModifier {
-            affector_attr_id: ac::attrs::SIG_RADIUS_BONUS,
+            affector_attr_id: AAttrId::SIG_RADIUS_BONUS,
             op: AOp::PostPerc,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: ac::attrs::SIG_RADIUS,
+            affectee_attr_id: AAttrId::SIG_RADIUS,
         },
         // Disallow assistance
         AEffectModifier {
-            affector_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
+            affector_attr_id: AAttrId::DISALLOW_ASSISTANCE,
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: ac::attrs::DISALLOW_ASSISTANCE,
+            affectee_attr_id: AAttrId::DISALLOW_ASSISTANCE,
         },
         // Transfer warp core scram strength to script
         AEffectModifier {
-            affector_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
+            affector_attr_id: AAttrId::WARP_SCRAMBLE_STRENGTH,
             op: AOp::PreAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
-            affectee_attr_id: ac::attrs::WARP_SCRAMBLE_STRENGTH,
+            affectee_attr_id: AAttrId::WARP_SCRAMBLE_STRENGTH,
         },
         // Transfer activation block strength to script
         AEffectModifier {
-            affector_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
             op: AOp::PreAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
-            affectee_attr_id: ac::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            affectee_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
         },
         // Modifiers which have been "disabled" by setting appropriate attributes to 0, but
         // modifiers themselves seem to stay according to effect code in decompiled client
         AEffectModifier {
-            affector_attr_id: ac::attrs::IMPLANT_BONUS_VELOCITY,
+            affector_attr_id: AAttrId::IMPLANT_BONUS_VELOCITY,
             op: AOp::PostPerc,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: ac::attrs::MAX_VELOCITY,
+            affectee_attr_id: AAttrId::MAX_VELOCITY,
         },
         AEffectModifier {
-            affector_attr_id: ac::attrs::MASS_BONUS_PERCENTAGE,
+            affector_attr_id: AAttrId::MASS_BONUS_PERCENTAGE,
             op: AOp::PostPerc,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: ac::attrs::MASS,
+            affectee_attr_id: AAttrId::MASS,
         },
         AEffectModifier {
-            affector_attr_id: ac::attrs::SPEED_FACTOR_BONUS,
+            affector_attr_id: AAttrId::SPEED_FACTOR_BONUS,
             op: AOp::PostPerc,
-            affectee_filter: AEffectAffecteeFilter::LocGrp(AEffectLocation::Ship, ac::itemgrps::PROPULSION_MODULE),
-            affectee_attr_id: ac::attrs::SPEED_FACTOR,
+            affectee_filter: AEffectAffecteeFilter::LocGrp(AEffectLocation::Ship, AItemGrpId::PROPULSION_MODULE),
+            affectee_attr_id: AAttrId::SPEED_FACTOR,
         },
         AEffectModifier {
-            affector_attr_id: ac::attrs::SPEED_BOOST_FACTOR_BONUS,
+            affector_attr_id: AAttrId::SPEED_BOOST_FACTOR_BONUS,
             op: AOp::PostPerc,
-            affectee_filter: AEffectAffecteeFilter::LocGrp(AEffectLocation::Ship, ac::itemgrps::PROPULSION_MODULE),
-            affectee_attr_id: ac::attrs::SPEED_BOOST_FACTOR,
+            affectee_filter: AEffectAffecteeFilter::LocGrp(AEffectLocation::Ship, AItemGrpId::PROPULSION_MODULE),
+            affectee_attr_id: AAttrId::SPEED_BOOST_FACTOR,
         },
     ]);
 }

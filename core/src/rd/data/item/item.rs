@@ -134,19 +134,19 @@ fn has_online_effect(
     item_effects: &RMap<REffectId, RItemEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
-    has_effect(item_effects, effect_aid_rid_map, &ac::effects::ONLINE)
+    has_effect(item_effects, effect_aid_rid_map, &AEffectId::ONLINE)
 }
 fn has_turret_effect(
     item_effects: &RMap<REffectId, RItemEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
-    has_effect(item_effects, effect_aid_rid_map, &ac::effects::TURRET_FITTED)
+    has_effect(item_effects, effect_aid_rid_map, &AEffectId::TURRET_FITTED)
 }
 fn has_launcher_effect(
     item_effects: &RMap<REffectId, RItemEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
-    has_effect(item_effects, effect_aid_rid_map, &ac::effects::LAUNCHER_FITTED)
+    has_effect(item_effects, effect_aid_rid_map, &AEffectId::LAUNCHER_FITTED)
 }
 fn has_effect(
     item_effects: &RMap<REffectId, RItemEffectData>,
@@ -162,7 +162,7 @@ fn has_effect(
 
 fn get_ship_kind(item_cat_aid: AItemCatId, item_srqs: &RMap<AItemId, SkillLevel>) -> Option<RShipKind> {
     match item_cat_aid {
-        ac::itemcats::SHIP => match item_srqs.contains_key(&ac::items::CAPITAL_SHIPS) {
+        ac::itemcats::SHIP => match item_srqs.contains_key(&AItemId::CAPITAL_SHIPS) {
             true => Some(RShipKind::CapitalShip),
             false => Some(RShipKind::Ship),
         },

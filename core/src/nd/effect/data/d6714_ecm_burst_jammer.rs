@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::ECM_BURST_JAMMER;
-const EFFECT_AID: AEffectId = ac::effects::ECM_BURST_JAMMER;
+const EFFECT_EID: EEffectId = EEffectId::ECM_BURST_JAMMER;
+const EFFECT_AID: AEffectId = AEffectId::ECM_BURST_JAMMER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

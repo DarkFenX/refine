@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::REMOTE_SENSOR_BOOST_FALLOFF;
-const EFFECT_AID: AEffectId = ac::effects::REMOTE_SENSOR_BOOST_FALLOFF;
+const EFFECT_EID: EEffectId = EEffectId::REMOTE_SENSOR_BOOST_FALLOFF;
+const EFFECT_AID: AEffectId = AEffectId::REMOTE_SENSOR_BOOST_FALLOFF;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -29,18 +29,18 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        make_rsb_mod(ac::attrs::MAX_TARGET_RANGE_BONUS, ac::attrs::MAX_TARGET_RANGE),
-        make_rsb_mod(ac::attrs::SCAN_RESOLUTION_BONUS, ac::attrs::SCAN_RESOLUTION),
-        make_rsb_mod(ac::attrs::SCAN_RADAR_STRENGTH_PERCENT, ac::attrs::SCAN_RADAR_STRENGTH),
+        make_rsb_mod(AAttrId::MAX_TARGET_RANGE_BONUS, AAttrId::MAX_TARGET_RANGE),
+        make_rsb_mod(AAttrId::SCAN_RESOLUTION_BONUS, AAttrId::SCAN_RESOLUTION),
+        make_rsb_mod(AAttrId::SCAN_RADAR_STRENGTH_PERCENT, AAttrId::SCAN_RADAR_STRENGTH),
         make_rsb_mod(
-            ac::attrs::SCAN_GRAVIMETRIC_STRENGTH_PERCENT,
-            ac::attrs::SCAN_GRAVIMETRIC_STRENGTH,
+            AAttrId::SCAN_GRAVIMETRIC_STRENGTH_PERCENT,
+            AAttrId::SCAN_GRAVIMETRIC_STRENGTH,
         ),
         make_rsb_mod(
-            ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH_PERCENT,
-            ac::attrs::SCAN_MAGNETOMETRIC_STRENGTH,
+            AAttrId::SCAN_MAGNETOMETRIC_STRENGTH_PERCENT,
+            AAttrId::SCAN_MAGNETOMETRIC_STRENGTH,
         ),
-        make_rsb_mod(ac::attrs::SCAN_LADAR_STRENGTH_PERCENT, ac::attrs::SCAN_LADAR_STRENGTH),
+        make_rsb_mod(AAttrId::SCAN_LADAR_STRENGTH_PERCENT, AAttrId::SCAN_LADAR_STRENGTH),
     ]);
 }
 

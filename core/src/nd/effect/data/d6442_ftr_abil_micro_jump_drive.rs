@@ -6,8 +6,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::FTR_ABIL_MJD;
-const EFFECT_AID: AEffectId = ac::effects::FTR_ABIL_MJD;
+const EFFECT_EID: EEffectId = EEffectId::FTR_ABIL_MJD;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_MJD;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,9 +24,9 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.push(AEffectModifier {
-        affector_attr_id: ac::attrs::FTR_ABIL_MJD_SIG_RADIUS_BONUS,
+        affector_attr_id: AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
-        affectee_attr_id: ac::attrs::SIG_RADIUS,
+        affectee_attr_id: AAttrId::SIG_RADIUS,
     });
 }

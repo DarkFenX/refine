@@ -16,8 +16,8 @@ use crate::{
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DEBUFF_LANCE;
-const EFFECT_AID: AEffectId = ac::effects::DEBUFF_LANCE;
+const EFFECT_EID: EEffectId = EEffectId::DEBUFF_LANCE;
+const EFFECT_AID: AEffectId = AEffectId::DEBUFF_LANCE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -28,28 +28,28 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 // Projected debuffs
                 [
                     AEffectBuffFull {
-                        buff_id: ac::buffs::REMOTE_REPAIR_IMPEDANCE,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::new(-50.0)),
-                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
-                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                        buff_id: ABuffId::REMOTE_REPAIR_IMPEDANCE,
+                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(-50.0)),
+                        duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
+                        scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                     AEffectBuffFull {
-                        buff_id: ac::buffs::WARP_PENALTY,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::new(100.0)),
-                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
-                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                        buff_id: ABuffId::WARP_PENALTY,
+                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(100.0)),
+                        duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
+                        scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                     AEffectBuffFull {
-                        buff_id: ac::buffs::DISALLOW_DOCK_JUMP,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
-                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
-                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                        buff_id: ABuffId::DISALLOW_DOCK_JUMP,
+                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                        duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
+                        scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                     AEffectBuffFull {
-                        buff_id: ac::buffs::DISALLOW_TETHER,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::new(1.0)),
-                        duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_APPLIED_DBUFF_DURATION),
-                        scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                        buff_id: ABuffId::DISALLOW_TETHER,
+                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                        duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
+                        scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                     },
                 ],
                 // Self-debuffs

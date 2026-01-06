@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DOOMSDAY_AOE_DAMP;
-const EFFECT_AID: AEffectId = ac::effects::DOOMSDAY_AOE_DAMP;
+const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_DAMP;
+const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_DAMP;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -19,16 +19,16 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_buff: Some(AEffectBuff {
             full: vec![
                 AEffectBuffFull {
-                    buff_id: ac::buffs::DAMP_BURST_TARGETING_RANGE_PENALTY,
-                    strength: AEffectBuffStrength::Attr(ac::attrs::MAX_TARGET_RANGE_BONUS),
-                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    buff_id: ABuffId::DAMP_BURST_TARGETING_RANGE_PENALTY,
+                    strength: AEffectBuffStrength::Attr(AAttrId::MAX_TARGET_RANGE_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                 },
                 AEffectBuffFull {
-                    buff_id: ac::buffs::DAMP_BURST_SCAN_RESOLUTION_PENALTY,
-                    strength: AEffectBuffStrength::Attr(ac::attrs::SCAN_RESOLUTION_BONUS),
-                    duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    buff_id: ABuffId::DAMP_BURST_SCAN_RESOLUTION_PENALTY,
+                    strength: AEffectBuffStrength::Attr(AAttrId::SCAN_RESOLUTION_BONUS),
+                    duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
                 },
             ],
             ..

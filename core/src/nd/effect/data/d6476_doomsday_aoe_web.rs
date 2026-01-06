@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DOOMSDAY_AOE_WEB;
-const EFFECT_AID: AEffectId = ac::effects::DOOMSDAY_AOE_WEB;
+const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_WEB;
+const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_WEB;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -18,10 +18,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: vec![AEffectBuffFull {
-                buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,
-                strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),
-                duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
-                scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                buff_id: ABuffId::STASIS_WEBIFICATION_BURST,
+                strength: AEffectBuffStrength::Attr(AAttrId::SPEED_FACTOR),
+                duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
+                scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
             }],
             ..
         }),

@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
-const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
+const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
+const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_shield_rep_base_opc,
             proj_mult_str: Some(get_full_noapp_proj_mult),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(ac::attrs::SHIELD_CAPACITY),
+            limit_attr_id: Some(AAttrId::SHIELD_CAPACITY),
             ..
         }),
         ..

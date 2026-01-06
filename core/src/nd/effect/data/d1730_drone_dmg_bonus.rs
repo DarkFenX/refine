@@ -6,8 +6,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DRONE_DMG_BONUS;
-const EFFECT_AID: AEffectId = ac::effects::DRONE_DMG_BONUS;
+const EFFECT_EID: EEffectId = EEffectId::DRONE_DMG_BONUS;
+const EFFECT_AID: AEffectId = AEffectId::DRONE_DMG_BONUS;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,10 +24,10 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     let modifier = AEffectModifier {
-        affector_attr_id: ac::attrs::DMG_MULT_BONUS,
+        affector_attr_id: AAttrId::DMG_MULT_BONUS,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::SelfRef),
-        affectee_attr_id: ac::attrs::DMG_MULT,
+        affectee_attr_id: AAttrId::DMG_MULT,
     };
     a_effect.modifiers.push(modifier);
 }

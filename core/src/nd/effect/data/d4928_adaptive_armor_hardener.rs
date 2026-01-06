@@ -6,8 +6,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
-const EFFECT_AID: AEffectId = ac::effects::ADAPTIVE_ARMOR_HARDENER;
+const EFFECT_EID: EEffectId = EEffectId::ADAPTIVE_ARMOR_HARDENER;
+const EFFECT_AID: AEffectId = AEffectId::ADAPTIVE_ARMOR_HARDENER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,10 +24,10 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        mk_rah_resonance_mod(ac::attrs::ARMOR_EM_DMG_RESONANCE),
-        mk_rah_resonance_mod(ac::attrs::ARMOR_THERM_DMG_RESONANCE),
-        mk_rah_resonance_mod(ac::attrs::ARMOR_KIN_DMG_RESONANCE),
-        mk_rah_resonance_mod(ac::attrs::ARMOR_EXPL_DMG_RESONANCE),
+        mk_rah_resonance_mod(AAttrId::ARMOR_EM_DMG_RESONANCE),
+        mk_rah_resonance_mod(AAttrId::ARMOR_THERM_DMG_RESONANCE),
+        mk_rah_resonance_mod(AAttrId::ARMOR_KIN_DMG_RESONANCE),
+        mk_rah_resonance_mod(AAttrId::ARMOR_EXPL_DMG_RESONANCE),
     ]);
 }
 

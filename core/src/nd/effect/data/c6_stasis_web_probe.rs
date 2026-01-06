@@ -3,10 +3,9 @@
 // into separate custom effect specific to it.
 
 use crate::{
-    ac,
     ad::{
-        AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
-        AItem, AItemEffectData, AItemId, AState,
+        AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AItemListId, AState,
     },
     nd::{
         NEffect,
@@ -15,7 +14,7 @@ use crate::{
     util::RMap,
 };
 
-const EFFECT_AID: AEffectId = ac::effects::STASIS_WEB_PROBE;
+const EFFECT_AID: AEffectId = AEffectId::STASIS_WEB_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -32,16 +31,16 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::ACTIVE,
+        category: AEffectCatId::ACTIVE,
         state: AState::Active,
-        range_attr_id: Some(ac::attrs::DOOMSDAY_AOE_RANGE),
+        range_attr_id: Some(AAttrId::DOOMSDAY_AOE_RANGE),
         buff: Some(AEffectBuff {
             // Slowdown debuff. Intentionally do not slow the carrying ship down automatically
             full: vec![AEffectBuffFull {
-                buff_id: ac::buffs::STASIS_WEBIFICATION_BURST,
-                strength: AEffectBuffStrength::Attr(ac::attrs::SPEED_FACTOR),
-                duration: AEffectBuffDuration::AttrMs(ac::attrs::DOOMSDAY_AOE_DURATION),
-                scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                buff_id: ABuffId::STASIS_WEBIFICATION_BURST,
+                strength: AEffectBuffStrength::Attr(AAttrId::SPEED_FACTOR),
+                duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
+                scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
             }],
             ..
         }),
@@ -50,7 +49,7 @@ fn make_effect() -> AEffect {
 }
 
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
-    match a_items.get_mut(&ac::items::STASIS_WEBIFICATION_PROBE) {
+    match a_items.get_mut(&AItemId::STASIS_WEBIFICATION_PROBE) {
         Some(a_item) => {
             a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
             a_item.defeff_id = Some(EFFECT_AID);

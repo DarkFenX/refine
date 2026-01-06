@@ -2,16 +2,15 @@
 // amount value to cap use, to make them used in cap-related stats.
 
 use crate::{
-    ac,
     ad::{
-        AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AItem, AItemEffectData, AItemId,
-        AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItem,
+        AItemEffectData, AItemId, AOp, AState,
     },
     nd::NEffect,
     util::RMap,
 };
 
-const EFFECT_AID: AEffectId = ac::effects::NOSF_CAP_USE;
+const EFFECT_AID: AEffectId = AEffectId::NOSF_CAP_USE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -26,13 +25,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::PASSIVE,
+        category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
         modifiers: vec![AEffectModifier {
-            affector_attr_id: ac::attrs::POWER_TRANSFER_AMOUNT,
+            affector_attr_id: AAttrId::POWER_TRANSFER_AMOUNT,
             op: AOp::Sub,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
-            affectee_attr_id: ac::attrs::CAPACITOR_NEED,
+            affectee_attr_id: AAttrId::CAPACITOR_NEED,
         }],
         ..
     }
@@ -42,7 +41,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items
         .values_mut()
-        .filter(|v| v.effect_datas.contains_key(&ac::effects::ENERGY_NOSF_FALLOFF))
+        .filter(|v| v.effect_datas.contains_key(&AEffectId::ENERGY_NOSF_FALLOFF))
     {
         a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
         assigned = true;

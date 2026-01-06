@@ -1,15 +1,15 @@
 use crate::{
-    ed::{EGenFloat, EItemGrpId, EItemId},
+    ed::{EFloat, EItemGrpId, EItemId},
     util::LibNamed,
 };
 
 pub struct EItem {
     pub id: EItemId,
     pub group_id: EItemGrpId,
-    pub capacity: EGenFloat,
-    pub mass: EGenFloat,
-    pub radius: EGenFloat,
-    pub volume: EGenFloat,
+    pub capacity: EFloat,
+    pub mass: EFloat,
+    pub radius: EFloat,
+    pub volume: EFloat,
 }
 impl LibNamed for EItem {
     fn lib_get_name() -> &'static str {

@@ -91,10 +91,10 @@ pub enum EffectIdParseError {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct DogmaEffectId(i32);
 impl DogmaEffectId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -102,10 +102,10 @@ impl DogmaEffectId {
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct CustomEffectId(i32);
 impl CustomEffectId {
-    pub const fn new(id: i32) -> Self {
+    pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
-    pub const fn into_inner(self) -> i32 {
+    pub const fn into_i32(self) -> i32 {
         self.0
     }
 }
@@ -113,55 +113,27 @@ impl CustomEffectId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<AEffectId> for EffectId {
-    fn from(effect_aid: AEffectId) -> Self {
+impl EffectId {
+    pub(in crate::api) fn from_aid(effect_aid: AEffectId) -> Self {
         match effect_aid {
-            AEffectId::Dogma(id) => Self::Dogma(DogmaEffectId::new(id.into_inner())),
-            AEffectId::ScSystemWide(id) => Self::ScSystemWide(ItemTypeId::new(id.into_inner())),
-            AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id.into()),
-            AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(id.into()),
-            AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(id.into()),
-            AEffectId::ScShipLink(id) => Self::ScShipLink(id.into()),
-            AEffectId::Custom(id) => Self::Custom(CustomEffectId::new(id.into_inner())),
+            AEffectId::Dogma(id) => Self::Dogma(DogmaEffectId(id.into_i32())),
+            AEffectId::ScSystemWide(id) => Self::ScSystemWide(ItemTypeId::from_aid(id)),
+            AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(ItemTypeId::from_aid(id)),
+            AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(ItemTypeId::from_aid(id)),
+            AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(ItemTypeId::from_aid(id)),
+            AEffectId::ScShipLink(id) => Self::ScShipLink(ItemTypeId::from_aid(id)),
+            AEffectId::Custom(id) => Self::Custom(CustomEffectId(id.into_i32())),
         }
     }
-}
-impl From<&AEffectId> for EffectId {
-    fn from(effect_aid: &AEffectId) -> Self {
-        match effect_aid {
-            AEffectId::Dogma(id) => Self::Dogma(DogmaEffectId::new(id.into_inner())),
-            AEffectId::ScSystemWide(id) => Self::ScSystemWide(id.into()),
-            AEffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id.into()),
-            AEffectId::ScProxyEffect(id) => Self::ScProxyEffect(id.into()),
-            AEffectId::ScProxyTrap(id) => Self::ScProxyTrap(id.into()),
-            AEffectId::ScShipLink(id) => Self::ScShipLink(id.into()),
-            AEffectId::Custom(id) => Self::Custom(CustomEffectId::new(id.into_inner())),
-        }
-    }
-}
-impl From<EffectId> for AEffectId {
-    fn from(effect_id: EffectId) -> Self {
-        match effect_id {
-            EffectId::Dogma(id) => Self::Dogma(ADogmaEffectId::new(id.into_inner())),
-            EffectId::ScSystemWide(id) => Self::ScSystemWide(id.into()),
-            EffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id.into()),
-            EffectId::ScProxyEffect(id) => Self::ScProxyEffect(id.into()),
-            EffectId::ScProxyTrap(id) => Self::ScProxyTrap(id.into()),
-            EffectId::ScShipLink(id) => Self::ScShipLink(id.into()),
-            EffectId::Custom(id) => Self::Custom(ACustomEffectId::new(id.into_inner())),
-        }
-    }
-}
-impl From<&EffectId> for AEffectId {
-    fn from(effect_id: &EffectId) -> Self {
-        match effect_id {
-            EffectId::Dogma(id) => Self::Dogma(ADogmaEffectId::new(id.into_inner())),
-            EffectId::ScSystemWide(id) => Self::ScSystemWide(id.into()),
-            EffectId::ScSystemEmitter(id) => Self::ScSystemEmitter(id.into()),
-            EffectId::ScProxyEffect(id) => Self::ScProxyEffect(id.into()),
-            EffectId::ScProxyTrap(id) => Self::ScProxyTrap(id.into()),
-            EffectId::ScShipLink(id) => Self::ScShipLink(id.into()),
-            EffectId::Custom(id) => Self::Custom(ACustomEffectId::new(id.into_inner())),
+    pub(in crate::api) fn into_aid(self) -> AEffectId {
+        match self {
+            EffectId::Dogma(id) => AEffectId::Dogma(ADogmaEffectId::from_i32(id.0)),
+            EffectId::ScSystemWide(id) => AEffectId::ScSystemWide(id.into_aid()),
+            EffectId::ScSystemEmitter(id) => AEffectId::ScSystemEmitter(id.into_aid()),
+            EffectId::ScProxyEffect(id) => AEffectId::ScProxyEffect(id.into_aid()),
+            EffectId::ScProxyTrap(id) => AEffectId::ScProxyTrap(id.into_aid()),
+            EffectId::ScShipLink(id) => AEffectId::ScShipLink(id.into_aid()),
+            EffectId::Custom(id) => AEffectId::Custom(ACustomEffectId::from_i32(id.0)),
         }
     }
 }

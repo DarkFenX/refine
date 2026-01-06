@@ -9,7 +9,7 @@ pub(in crate::rd::data::item::attr_extras) fn is_mobile(
     attr_consts: &RAttrConsts,
 ) -> bool {
     match attr_consts.max_velocity.and_then(|attr_rid| item_attrs.get(&attr_rid)) {
-        Some(&max_velocity) => max_velocity > Value::new(0.0001),
+        Some(&max_velocity) => max_velocity > Value::from_f64(0.0001),
         None => false,
     }
 }

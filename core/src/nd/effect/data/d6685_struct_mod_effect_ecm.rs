@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::STRUCT_MOD_EFFECT_ECM;
-const EFFECT_AID: AEffectId = ac::effects::STRUCT_MOD_EFFECT_ECM;
+const EFFECT_EID: EEffectId = EEffectId::STRUCT_MOD_EFFECT_ECM;
+const EFFECT_AID: AEffectId = AEffectId::STRUCT_MOD_EFFECT_ECM;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

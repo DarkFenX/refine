@@ -81,7 +81,7 @@ where
             T::lib_get_name(),
             missing.len(),
             ree_name,
-            missing.into_iter().map(|v| v.into_inner()).sorted_unstable().join(", ")
+            missing.into_iter().map(|v| v.into_i32()).sorted_unstable().join(", ")
         );
         tracing::warn!("{msg}");
     }
@@ -140,7 +140,7 @@ fn unmapped_abilities(e_data: &mut EData) {
             max_logged,
             unknown_ids
                 .into_iter()
-                .map(|v| v.into_inner())
+                .map(|v| v.into_i32())
                 .sorted_unstable()
                 .take(max_logged)
                 .join(", ")
@@ -171,7 +171,7 @@ fn broken_ability_links(e_data: &mut EData) {
             max_logged,
             broken_ids
                 .into_iter()
-                .map(|v| v.into_inner())
+                .map(|v| v.into_i32())
                 .sorted_unstable()
                 .take(max_logged)
                 .join(", ")
@@ -212,7 +212,7 @@ fn item_ability_handler_effect(e_data: &mut EData) {
             max_logged,
             invalids
                 .into_iter()
-                .map(|(v1, v2)| (v1.into_inner(), v2.into_inner()))
+                .map(|(v1, v2)| (v1.into_i32(), v2.into_i32()))
                 .sorted_unstable()
                 .take(max_logged)
                 .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))

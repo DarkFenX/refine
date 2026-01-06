@@ -16,8 +16,8 @@ use crate::{
     ud::{UItem, UItemId, UProjData},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MISSILE_LAUNCHING;
-const EFFECT_AID: AEffectId = ac::effects::MISSILE_LAUNCHING;
+const EFFECT_EID: EEffectId = EEffectId::MISSILE_LAUNCHING;
+const EFFECT_AID: AEffectId = AEffectId::MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -60,5 +60,5 @@ fn is_guided_bomb(u_item: &UItem) -> bool {
     // There seems to be no way to see the difference between regular missiles and guided bombs,
     // except for item type ID, group or some attributes. We stick to checking group, just because
     // it seems to be the easiest way
-    matches!(u_item.get_group_id(), Some(ac::itemgrps::GUIDED_BOMB))
+    matches!(u_item.get_group_id(), Some(AItemGrpId::GUIDED_BOMB))
 }

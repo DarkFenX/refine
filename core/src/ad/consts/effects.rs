@@ -3,152 +3,165 @@
 
 use crate::{
     ad::{ACustomEffectId, AEffectId},
-    ec::effects as ece,
+    ed::EEffectId,
 };
 
-pub(crate) const SHIELD_BOOSTING: AEffectId = ece::SHIELD_BOOSTING.into();
-pub(crate) const MISSILE_LAUNCHING: AEffectId = ece::MISSILE_LAUNCHING.into();
-pub(crate) const TGT_ATTACK: AEffectId = ece::TGT_ATTACK.into();
-pub(crate) const LO_POWER: AEffectId = ece::LO_POWER.into();
-pub(crate) const HI_POWER: AEffectId = ece::HI_POWER.into();
-pub(crate) const MED_POWER: AEffectId = ece::MED_POWER.into();
-pub(crate) const ONLINE: AEffectId = ece::ONLINE.into();
-pub(crate) const MINING: AEffectId = ece::MINING.into();
-pub(crate) const STRUCTURE_REPAIR: AEffectId = ece::STRUCTURE_REPAIR.into();
-pub(crate) const ARMOR_REPAIR: AEffectId = ece::ARMOR_REPAIR.into();
-pub(crate) const PROJECTILE_FIRED: AEffectId = ece::PROJECTILE_FIRED.into();
-pub(crate) const EMP_WAVE: AEffectId = ece::EMP_WAVE.into();
-pub(crate) const LAUNCHER_FITTED: AEffectId = ece::LAUNCHER_FITTED.into();
-pub(crate) const TURRET_FITTED: AEffectId = ece::TURRET_FITTED.into();
-pub(crate) const POWER_BOOSTER: AEffectId = ece::POWER_BOOSTER.into();
-pub(crate) const MINING_LASER: AEffectId = ece::MINING_LASER.into();
-pub(crate) const USE_MISSILES: AEffectId = ece::USE_MISSILES.into();
-pub(crate) const DEFENDER_MISSILE_LAUNCHING: AEffectId = ece::DEFENDER_MISSILE_LAUNCHING.into();
-pub(crate) const FOF_MISSILE_LAUNCHING: AEffectId = ece::FOF_MISSILE_LAUNCHING.into();
-pub(crate) const MISSILE_EM_DMG_BONUS: AEffectId = ece::MISSILE_EM_DMG_BONUS.into();
-pub(crate) const MISSILE_EXPL_DMG_BONUS: AEffectId = ece::MISSILE_EXPL_DMG_BONUS.into();
-pub(crate) const MISSILE_THERM_DMG_BONUS: AEffectId = ece::MISSILE_THERM_DMG_BONUS.into();
-pub(crate) const MISSILE_KIN_DMG_BONUS: AEffectId = ece::MISSILE_KIN_DMG_BONUS.into();
-pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: AEffectId = ece::CLOAKING_TARGETING_DELAY_BONUS.into();
-pub(crate) const DRONE_DMG_BONUS: AEffectId = ece::DRONE_DMG_BONUS.into();
-pub(crate) const SELF_ROF: AEffectId = ece::SELF_ROF.into();
-pub(crate) const JUMP_PORTAL_GENERATION: AEffectId = ece::JUMP_PORTAL_GENERATION.into();
-pub(crate) const RIG_SLOT: AEffectId = ece::RIG_SLOT.into();
-pub(crate) const MINING_CLOUDS: AEffectId = ece::MINING_CLOUDS.into();
-pub(crate) const BOMB_LAUNCHING: AEffectId = ece::BOMB_LAUNCHING.into();
-pub(crate) const JUMP_PORTAL_GENERATION_BO: AEffectId = ece::JUMP_PORTAL_GENERATION_BO.into();
-pub(crate) const HARDPOINT_MODIFIER_EFFECT: AEffectId = ece::HARDPOINT_MODIFIER_EFFECT.into();
-pub(crate) const SLOT_MODIFIER: AEffectId = ece::SLOT_MODIFIER.into();
-pub(crate) const WARP_DISRUPT_SPHERE: AEffectId = ece::WARP_DISRUPT_SPHERE.into();
-pub(crate) const SUPER_WEAPON_AMARR: AEffectId = ece::SUPER_WEAPON_AMARR.into();
-pub(crate) const SUPER_WEAPON_CALDARI: AEffectId = ece::SUPER_WEAPON_CALDARI.into();
-pub(crate) const SUPER_WEAPON_GALLENTE: AEffectId = ece::SUPER_WEAPON_GALLENTE.into();
-pub(crate) const SUPER_WEAPON_MINMATAR: AEffectId = ece::SUPER_WEAPON_MINMATAR.into();
-pub(crate) const MICRO_JUMP_DRIVE: AEffectId = ece::MICRO_JUMP_DRIVE.into();
-pub(crate) const ADAPTIVE_ARMOR_HARDENER: AEffectId = ece::ADAPTIVE_ARMOR_HARDENER.into();
-pub(crate) const FUELED_SHIELD_BOOSTING: AEffectId = ece::FUELED_SHIELD_BOOSTING.into();
-pub(crate) const FUELED_ARMOR_REPAIR: AEffectId = ece::FUELED_ARMOR_REPAIR.into();
-pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: AEffectId = ece::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER.into();
-pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: AEffectId = ece::SHIP_MOD_REMOTE_HULL_REPAIRER.into();
-pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: AEffectId = ece::SHIP_MOD_REMOTE_SHIELD_BOOSTER.into();
-pub(crate) const ENERGY_NEUT_FALLOFF: AEffectId = ece::ENERGY_NEUT_FALLOFF.into();
-pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: AEffectId = ece::SHIP_MOD_REMOTE_ARMOR_REPAIRER.into();
-pub(crate) const ENERGY_NOSF_FALLOFF: AEffectId = ece::ENERGY_NOSF_FALLOFF.into();
-pub(crate) const DOOMSDAY_SLASH: AEffectId = ece::DOOMSDAY_SLASH.into();
-pub(crate) const MICRO_JUMP_PORTAL_DRIVE: AEffectId = ece::MICRO_JUMP_PORTAL_DRIVE.into();
-pub(crate) const STRUCT_ENERGY_NEUT_FALLOFF: AEffectId = ece::STRUCT_ENERGY_NEUT_FALLOFF.into();
-pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: AEffectId = ece::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC.into();
-pub(crate) const SERVICE_SLOT: AEffectId = ece::SERVICE_SLOT.into();
-pub(crate) const REMOTE_SENSOR_DAMP_FALLOFF: AEffectId = ece::REMOTE_SENSOR_DAMP_FALLOFF.into();
-pub(crate) const SHIP_MOD_GUIDANCE_DISRUPTOR: AEffectId = ece::SHIP_MOD_GUIDANCE_DISRUPTOR.into();
-pub(crate) const SHIP_MOD_TRACKING_DISRUPTOR: AEffectId = ece::SHIP_MOD_TRACKING_DISRUPTOR.into();
-pub(crate) const REMOTE_TARGET_PAINT_FALLOFF: AEffectId = ece::REMOTE_TARGET_PAINT_FALLOFF.into();
-pub(crate) const REMOTE_WEBIFIER_FALLOFF: AEffectId = ece::REMOTE_WEBIFIER_FALLOFF.into();
-pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: AEffectId = ece::REMOTE_SENSOR_BOOST_FALLOFF.into();
-pub(crate) const SHIP_MOD_REMOTE_TRACKING_COMPUTER: AEffectId = ece::SHIP_MOD_REMOTE_TRACKING_COMPUTER.into();
-pub(crate) const FTR_ABIL_MISSILES: AEffectId = ece::FTR_ABIL_MISSILES.into();
-pub(crate) const FTR_ABIL_NEUT: AEffectId = ece::FTR_ABIL_NEUT.into();
-pub(crate) const FTR_ABIL_WEB: AEffectId = ece::FTR_ABIL_WEB.into();
-pub(crate) const FTR_ABIL_POINT: AEffectId = ece::FTR_ABIL_POINT.into();
-pub(crate) const FTR_ABIL_ECM: AEffectId = ece::FTR_ABIL_ECM.into();
-pub(crate) const FTR_ABIL_EVASION: AEffectId = ece::FTR_ABIL_EVASION.into();
-pub(crate) const FTR_ABIL_AB: AEffectId = ece::FTR_ABIL_AB.into();
-pub(crate) const FTR_ABIL_MWD: AEffectId = ece::FTR_ABIL_MWD.into();
-pub(crate) const FTR_ABIL_MJD: AEffectId = ece::FTR_ABIL_MJD.into();
-pub(crate) const POINT_DEFENSE: AEffectId = ece::POINT_DEFENSE.into();
-pub(crate) const LIGHTNING_WEAPON: AEffectId = ece::LIGHTNING_WEAPON.into();
-pub(crate) const FTR_ABIL_TACKLE: AEffectId = ece::FTR_ABIL_TACKLE.into();
-pub(crate) const FTR_ABIL_ATK_MISSILE: AEffectId = ece::FTR_ABIL_ATK_MISSILE.into();
-pub(crate) const REMOTE_ECM_FALLOFF: AEffectId = ece::REMOTE_ECM_FALLOFF.into();
-pub(crate) const DOOMSDAY_BEAM_DOT: AEffectId = ece::DOOMSDAY_BEAM_DOT.into();
-pub(crate) const DOOMSDAY_CONE_DOT: AEffectId = ece::DOOMSDAY_CONE_DOT.into();
-pub(crate) const DOOMSDAY_HOG: AEffectId = ece::DOOMSDAY_HOG.into();
-pub(crate) const DOOMSDAY_AOE_WEB: AEffectId = ece::DOOMSDAY_AOE_WEB.into();
-pub(crate) const DOOMSDAY_AOE_NEUT: AEffectId = ece::DOOMSDAY_AOE_NEUT.into();
-pub(crate) const DOOMSDAY_AOE_PAINT: AEffectId = ece::DOOMSDAY_AOE_PAINT.into();
-pub(crate) const DOOMSDAY_AOE_TRACK: AEffectId = ece::DOOMSDAY_AOE_TRACK.into();
-pub(crate) const DOOMSDAY_AOE_DAMP: AEffectId = ece::DOOMSDAY_AOE_DAMP.into();
-pub(crate) const EMERGENCY_HULL_ENERGIZER: AEffectId = ece::EMERGENCY_HULL_ENERGIZER.into();
-pub(crate) const FTR_ABIL_BOMB: AEffectId = ece::FTR_ABIL_BOMB.into();
-pub(crate) const DOOMSDAY_AOE_ECM: AEffectId = ece::DOOMSDAY_AOE_ECM.into();
-pub(crate) const FTR_ABIL_KAMIKAZE: AEffectId = ece::FTR_ABIL_KAMIKAZE.into();
-pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: AEffectId =
-    ece::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER.into();
-pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: AEffectId =
-    ece::SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER.into();
-pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: AEffectId = ece::STRUCT_MOD_EFFECT_STASIS_WEBIFIER.into();
-pub(crate) const STRUCT_MOD_EFFECT_TARGET_PAINTER: AEffectId = ece::STRUCT_MOD_EFFECT_TARGET_PAINTER.into();
-pub(crate) const STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER: AEffectId =
-    ece::STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER.into();
-pub(crate) const STRUCT_MOD_EFFECT_ECM: AEffectId = ece::STRUCT_MOD_EFFECT_ECM.into();
-pub(crate) const STRUCT_MOD_EFFECT_WEAPON_DISRUPTION: AEffectId = ece::STRUCT_MOD_EFFECT_WEAPON_DISRUPTION.into();
-pub(crate) const NPC_ENTITY_REMOTE_ARMOR_REPAIRER: AEffectId = ece::NPC_ENTITY_REMOTE_ARMOR_REPAIRER.into();
-pub(crate) const NPC_ENTITY_REMOTE_SHIELD_BOOSTER: AEffectId = ece::NPC_ENTITY_REMOTE_SHIELD_BOOSTER.into();
-pub(crate) const NPC_ENTITY_REMOTE_HULL_REPAIRER: AEffectId = ece::NPC_ENTITY_REMOTE_HULL_REPAIRER.into();
-pub(crate) const REMOTE_TARGET_PAINT_ENTITY: AEffectId = ece::REMOTE_TARGET_PAINT_ENTITY.into();
-pub(crate) const REMOTE_SENSOR_DAMP_ENTITY: AEffectId = ece::REMOTE_SENSOR_DAMP_ENTITY.into();
-pub(crate) const NPC_ENTITY_WEAPON_DISRUPTOR: AEffectId = ece::NPC_ENTITY_WEAPON_DISRUPTOR.into();
-pub(crate) const REMOTE_WEBIFIER_ENTITY: AEffectId = ece::REMOTE_WEBIFIER_ENTITY.into();
-pub(crate) const ENTITY_ENERGY_NEUT_FALLOFF: AEffectId = ece::ENTITY_ENERGY_NEUT_FALLOFF.into();
-pub(crate) const ENTITY_ECM_FALLOFF: AEffectId = ece::ENTITY_ECM_FALLOFF.into();
-pub(crate) const ECM_BURST_JAMMER: AEffectId = ece::ECM_BURST_JAMMER.into();
-pub(crate) const MOD_BONUS_INDUSTRIAL_INVULNERABILITY: AEffectId = ece::MOD_BONUS_INDUSTRIAL_INVULNERABILITY.into();
-pub(crate) const MOD_BONUS_MICROWARPDRIVE: AEffectId = ece::MOD_BONUS_MICROWARPDRIVE.into();
-pub(crate) const MOD_BONUS_AFTERBURNER: AEffectId = ece::MOD_BONUS_AFTERBURNER.into();
-pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: AEffectId = ece::MOD_BONUS_WARFARE_LINK_ARMOR.into();
-pub(crate) const MOD_BONUS_WARFARE_LINK_SHIELD: AEffectId = ece::MOD_BONUS_WARFARE_LINK_SHIELD.into();
-pub(crate) const MOD_BONUS_WARFARE_LINK_SKIRMISH: AEffectId = ece::MOD_BONUS_WARFARE_LINK_SKIRMISH.into();
-pub(crate) const MOD_BONUS_WARFARE_LINK_INFO: AEffectId = ece::MOD_BONUS_WARFARE_LINK_INFO.into();
-pub(crate) const MOD_BONUS_WARFARE_LINK_MINING: AEffectId = ece::MOD_BONUS_WARFARE_LINK_MINING.into();
-pub(crate) const MOD_TITAN_EFFECT_GENERATOR: AEffectId = ece::MOD_TITAN_EFFECT_GENERATOR.into();
-pub(crate) const SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT: AEffectId = ece::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT.into();
-pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT: AEffectId = ece::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT.into();
-pub(crate) const TGT_DISINTEGRATOR_ATTACK: AEffectId = ece::TGT_DISINTEGRATOR_ATTACK.into();
-pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: AEffectId = ece::AOE_BEACON_BIOLUMINESCENCE_CLOUD.into();
-pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: AEffectId = ece::AOE_BEACON_CAUSTIC_CLOUD.into();
-pub(crate) const AOE_BEACON_PULSE_01: AEffectId = ece::AOE_BEACON_PULSE_01.into();
-pub(crate) const AOE_BEACON_FILAMENT_CLOUD: AEffectId = ece::AOE_BEACON_FILAMENT_CLOUD.into();
-pub(crate) const WEATHER_CAUSTIC_TOXIN: AEffectId = ece::WEATHER_CAUSTIC_TOXIN.into();
-pub(crate) const WEATHER_DARKNESS: AEffectId = ece::WEATHER_DARKNESS.into();
-pub(crate) const WEATHER_ELECTRIC_STORM: AEffectId = ece::WEATHER_ELECTRIC_STORM.into();
-pub(crate) const WEATHER_INFERNAL: AEffectId = ece::WEATHER_INFERNAL.into();
-pub(crate) const WEATHER_XENON_GAS: AEffectId = ece::WEATHER_XENON_GAS.into();
-pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: AEffectId =
-    ece::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER.into();
-pub(crate) const CHAIN_LIGHTNING: AEffectId = ece::CHAIN_LIGHTNING.into();
-pub(crate) const DEBUFF_LANCE: AEffectId = ece::DEBUFF_LANCE.into();
-pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: AEffectId = ece::MICRO_JUMP_PORTAL_DRIVE_CAPITAL.into();
-pub(crate) const DOT_MISSILE_LAUNCHING: AEffectId = ece::DOT_MISSILE_LAUNCHING.into();
-
-// Library-specific effects
-pub(crate) const CHAR_MISSILE_DMG: AEffectId = AEffectId::Custom(ACustomEffectId::new(1));
-pub(crate) const AAR_PASTE_BOOST: AEffectId = AEffectId::Custom(ACustomEffectId::new(2));
-pub(crate) const MISSILE_FLIGHT_TIME: AEffectId = AEffectId::Custom(ACustomEffectId::new(3));
-pub(crate) const NOSF_CAP_USE: AEffectId = AEffectId::Custom(ACustomEffectId::new(4));
-pub(crate) const WARP_DISRUPT_PROBE: AEffectId = AEffectId::Custom(ACustomEffectId::new(5));
-pub(crate) const STASIS_WEB_PROBE: AEffectId = AEffectId::Custom(ACustomEffectId::new(6));
-pub(crate) const WDFG_SCRIPT_DEBUBBLE: AEffectId = AEffectId::Custom(ACustomEffectId::new(7));
-pub(crate) const STABILITY_GENERATOR_ELECTRIC: AEffectId = AEffectId::Custom(ACustomEffectId::new(8));
-pub(crate) const STABILITY_GENERATOR_PLASMA: AEffectId = AEffectId::Custom(ACustomEffectId::new(9));
-pub(crate) const STABILITY_GENERATOR_EXOTIC: AEffectId = AEffectId::Custom(ACustomEffectId::new(10));
-pub(crate) const STABILITY_GENERATOR_GAMMA: AEffectId = AEffectId::Custom(ACustomEffectId::new(11));
+impl AEffectId {
+    pub(crate) const SHIELD_BOOSTING: Self = Self::from_eid(EEffectId::SHIELD_BOOSTING);
+    pub(crate) const MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::MISSILE_LAUNCHING);
+    pub(crate) const TGT_ATTACK: Self = Self::from_eid(EEffectId::TGT_ATTACK);
+    pub(crate) const LO_POWER: Self = Self::from_eid(EEffectId::LO_POWER);
+    pub(crate) const HI_POWER: Self = Self::from_eid(EEffectId::HI_POWER);
+    pub(crate) const MED_POWER: Self = Self::from_eid(EEffectId::MED_POWER);
+    pub(crate) const ONLINE: Self = Self::from_eid(EEffectId::ONLINE);
+    pub(crate) const MINING: Self = Self::from_eid(EEffectId::MINING);
+    pub(crate) const STRUCTURE_REPAIR: Self = Self::from_eid(EEffectId::STRUCTURE_REPAIR);
+    pub(crate) const ARMOR_REPAIR: Self = Self::from_eid(EEffectId::ARMOR_REPAIR);
+    pub(crate) const PROJECTILE_FIRED: Self = Self::from_eid(EEffectId::PROJECTILE_FIRED);
+    pub(crate) const EMP_WAVE: Self = Self::from_eid(EEffectId::EMP_WAVE);
+    pub(crate) const LAUNCHER_FITTED: Self = Self::from_eid(EEffectId::LAUNCHER_FITTED);
+    pub(crate) const TURRET_FITTED: Self = Self::from_eid(EEffectId::TURRET_FITTED);
+    pub(crate) const POWER_BOOSTER: Self = Self::from_eid(EEffectId::POWER_BOOSTER);
+    pub(crate) const MINING_LASER: Self = Self::from_eid(EEffectId::MINING_LASER);
+    pub(crate) const USE_MISSILES: Self = Self::from_eid(EEffectId::USE_MISSILES);
+    pub(crate) const DEFENDER_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DEFENDER_MISSILE_LAUNCHING);
+    pub(crate) const FOF_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::FOF_MISSILE_LAUNCHING);
+    pub(crate) const MISSILE_EM_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EM_DMG_BONUS);
+    pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EXPL_DMG_BONUS);
+    pub(crate) const MISSILE_THERM_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_THERM_DMG_BONUS);
+    pub(crate) const MISSILE_KIN_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_KIN_DMG_BONUS);
+    pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: Self = Self::from_eid(EEffectId::CLOAKING_TARGETING_DELAY_BONUS);
+    pub(crate) const DRONE_DMG_BONUS: Self = Self::from_eid(EEffectId::DRONE_DMG_BONUS);
+    pub(crate) const SELF_ROF: Self = Self::from_eid(EEffectId::SELF_ROF);
+    pub(crate) const JUMP_PORTAL_GENERATION: Self = Self::from_eid(EEffectId::JUMP_PORTAL_GENERATION);
+    pub(crate) const RIG_SLOT: Self = Self::from_eid(EEffectId::RIG_SLOT);
+    pub(crate) const MINING_CLOUDS: Self = Self::from_eid(EEffectId::MINING_CLOUDS);
+    pub(crate) const BOMB_LAUNCHING: Self = Self::from_eid(EEffectId::BOMB_LAUNCHING);
+    pub(crate) const JUMP_PORTAL_GENERATION_BO: Self = Self::from_eid(EEffectId::JUMP_PORTAL_GENERATION_BO);
+    pub(crate) const HARDPOINT_MODIFIER_EFFECT: Self = Self::from_eid(EEffectId::HARDPOINT_MODIFIER_EFFECT);
+    pub(crate) const SLOT_MODIFIER: Self = Self::from_eid(EEffectId::SLOT_MODIFIER);
+    pub(crate) const WARP_DISRUPT_SPHERE: Self = Self::from_eid(EEffectId::WARP_DISRUPT_SPHERE);
+    pub(crate) const SUPER_WEAPON_AMARR: Self = Self::from_eid(EEffectId::SUPER_WEAPON_AMARR);
+    pub(crate) const SUPER_WEAPON_CALDARI: Self = Self::from_eid(EEffectId::SUPER_WEAPON_CALDARI);
+    pub(crate) const SUPER_WEAPON_GALLENTE: Self = Self::from_eid(EEffectId::SUPER_WEAPON_GALLENTE);
+    pub(crate) const SUPER_WEAPON_MINMATAR: Self = Self::from_eid(EEffectId::SUPER_WEAPON_MINMATAR);
+    pub(crate) const MICRO_JUMP_DRIVE: Self = Self::from_eid(EEffectId::MICRO_JUMP_DRIVE);
+    pub(crate) const ADAPTIVE_ARMOR_HARDENER: Self = Self::from_eid(EEffectId::ADAPTIVE_ARMOR_HARDENER);
+    pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_eid(EEffectId::FUELED_SHIELD_BOOSTING);
+    pub(crate) const FUELED_ARMOR_REPAIR: Self = Self::from_eid(EEffectId::FUELED_ARMOR_REPAIR);
+    pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER);
+    pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: Self = Self::from_eid(EEffectId::SHIP_MOD_REMOTE_HULL_REPAIRER);
+    pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: Self = Self::from_eid(EEffectId::SHIP_MOD_REMOTE_SHIELD_BOOSTER);
+    pub(crate) const ENERGY_NEUT_FALLOFF: Self = Self::from_eid(EEffectId::ENERGY_NEUT_FALLOFF);
+    pub(crate) const SHIP_MOD_REMOTE_ARMOR_REPAIRER: Self = Self::from_eid(EEffectId::SHIP_MOD_REMOTE_ARMOR_REPAIRER);
+    pub(crate) const ENERGY_NOSF_FALLOFF: Self = Self::from_eid(EEffectId::ENERGY_NOSF_FALLOFF);
+    pub(crate) const DOOMSDAY_SLASH: Self = Self::from_eid(EEffectId::DOOMSDAY_SLASH);
+    pub(crate) const MICRO_JUMP_PORTAL_DRIVE: Self = Self::from_eid(EEffectId::MICRO_JUMP_PORTAL_DRIVE);
+    pub(crate) const STRUCT_ENERGY_NEUT_FALLOFF: Self = Self::from_eid(EEffectId::STRUCT_ENERGY_NEUT_FALLOFF);
+    pub(crate) const STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC: Self =
+        Self::from_eid(EEffectId::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC);
+    pub(crate) const SERVICE_SLOT: Self = Self::from_eid(EEffectId::SERVICE_SLOT);
+    pub(crate) const REMOTE_SENSOR_DAMP_FALLOFF: Self = Self::from_eid(EEffectId::REMOTE_SENSOR_DAMP_FALLOFF);
+    pub(crate) const SHIP_MOD_GUIDANCE_DISRUPTOR: Self = Self::from_eid(EEffectId::SHIP_MOD_GUIDANCE_DISRUPTOR);
+    pub(crate) const SHIP_MOD_TRACKING_DISRUPTOR: Self = Self::from_eid(EEffectId::SHIP_MOD_TRACKING_DISRUPTOR);
+    pub(crate) const REMOTE_TARGET_PAINT_FALLOFF: Self = Self::from_eid(EEffectId::REMOTE_TARGET_PAINT_FALLOFF);
+    pub(crate) const REMOTE_WEBIFIER_FALLOFF: Self = Self::from_eid(EEffectId::REMOTE_WEBIFIER_FALLOFF);
+    pub(crate) const REMOTE_SENSOR_BOOST_FALLOFF: Self = Self::from_eid(EEffectId::REMOTE_SENSOR_BOOST_FALLOFF);
+    pub(crate) const SHIP_MOD_REMOTE_TRACKING_COMPUTER: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_REMOTE_TRACKING_COMPUTER);
+    pub(crate) const FTR_ABIL_MISSILES: Self = Self::from_eid(EEffectId::FTR_ABIL_MISSILES);
+    pub(crate) const FTR_ABIL_NEUT: Self = Self::from_eid(EEffectId::FTR_ABIL_NEUT);
+    pub(crate) const FTR_ABIL_WEB: Self = Self::from_eid(EEffectId::FTR_ABIL_WEB);
+    pub(crate) const FTR_ABIL_POINT: Self = Self::from_eid(EEffectId::FTR_ABIL_POINT);
+    pub(crate) const FTR_ABIL_ECM: Self = Self::from_eid(EEffectId::FTR_ABIL_ECM);
+    pub(crate) const FTR_ABIL_EVASION: Self = Self::from_eid(EEffectId::FTR_ABIL_EVASION);
+    pub(crate) const FTR_ABIL_AB: Self = Self::from_eid(EEffectId::FTR_ABIL_AB);
+    pub(crate) const FTR_ABIL_MWD: Self = Self::from_eid(EEffectId::FTR_ABIL_MWD);
+    pub(crate) const FTR_ABIL_MJD: Self = Self::from_eid(EEffectId::FTR_ABIL_MJD);
+    pub(crate) const POINT_DEFENSE: Self = Self::from_eid(EEffectId::POINT_DEFENSE);
+    pub(crate) const LIGHTNING_WEAPON: Self = Self::from_eid(EEffectId::LIGHTNING_WEAPON);
+    pub(crate) const FTR_ABIL_TACKLE: Self = Self::from_eid(EEffectId::FTR_ABIL_TACKLE);
+    pub(crate) const FTR_ABIL_ATK_MISSILE: Self = Self::from_eid(EEffectId::FTR_ABIL_ATK_MISSILE);
+    pub(crate) const REMOTE_ECM_FALLOFF: Self = Self::from_eid(EEffectId::REMOTE_ECM_FALLOFF);
+    pub(crate) const DOOMSDAY_BEAM_DOT: Self = Self::from_eid(EEffectId::DOOMSDAY_BEAM_DOT);
+    pub(crate) const DOOMSDAY_CONE_DOT: Self = Self::from_eid(EEffectId::DOOMSDAY_CONE_DOT);
+    pub(crate) const DOOMSDAY_HOG: Self = Self::from_eid(EEffectId::DOOMSDAY_HOG);
+    pub(crate) const DOOMSDAY_AOE_WEB: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_WEB);
+    pub(crate) const DOOMSDAY_AOE_NEUT: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_NEUT);
+    pub(crate) const DOOMSDAY_AOE_PAINT: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_PAINT);
+    pub(crate) const DOOMSDAY_AOE_TRACK: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_TRACK);
+    pub(crate) const DOOMSDAY_AOE_DAMP: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_DAMP);
+    pub(crate) const EMERGENCY_HULL_ENERGIZER: Self = Self::from_eid(EEffectId::EMERGENCY_HULL_ENERGIZER);
+    pub(crate) const FTR_ABIL_BOMB: Self = Self::from_eid(EEffectId::FTR_ABIL_BOMB);
+    pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_ECM);
+    pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_eid(EEffectId::FTR_ABIL_KAMIKAZE);
+    pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER);
+    pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER);
+    pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: Self =
+        Self::from_eid(EEffectId::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
+    pub(crate) const STRUCT_MOD_EFFECT_TARGET_PAINTER: Self =
+        Self::from_eid(EEffectId::STRUCT_MOD_EFFECT_TARGET_PAINTER);
+    pub(crate) const STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER: Self =
+        Self::from_eid(EEffectId::STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER);
+    pub(crate) const STRUCT_MOD_EFFECT_ECM: Self = Self::from_eid(EEffectId::STRUCT_MOD_EFFECT_ECM);
+    pub(crate) const STRUCT_MOD_EFFECT_WEAPON_DISRUPTION: Self =
+        Self::from_eid(EEffectId::STRUCT_MOD_EFFECT_WEAPON_DISRUPTION);
+    pub(crate) const NPC_ENTITY_REMOTE_ARMOR_REPAIRER: Self =
+        Self::from_eid(EEffectId::NPC_ENTITY_REMOTE_ARMOR_REPAIRER);
+    pub(crate) const NPC_ENTITY_REMOTE_SHIELD_BOOSTER: Self =
+        Self::from_eid(EEffectId::NPC_ENTITY_REMOTE_SHIELD_BOOSTER);
+    pub(crate) const NPC_ENTITY_REMOTE_HULL_REPAIRER: Self = Self::from_eid(EEffectId::NPC_ENTITY_REMOTE_HULL_REPAIRER);
+    pub(crate) const REMOTE_TARGET_PAINT_ENTITY: Self = Self::from_eid(EEffectId::REMOTE_TARGET_PAINT_ENTITY);
+    pub(crate) const REMOTE_SENSOR_DAMP_ENTITY: Self = Self::from_eid(EEffectId::REMOTE_SENSOR_DAMP_ENTITY);
+    pub(crate) const NPC_ENTITY_WEAPON_DISRUPTOR: Self = Self::from_eid(EEffectId::NPC_ENTITY_WEAPON_DISRUPTOR);
+    pub(crate) const REMOTE_WEBIFIER_ENTITY: Self = Self::from_eid(EEffectId::REMOTE_WEBIFIER_ENTITY);
+    pub(crate) const ENTITY_ENERGY_NEUT_FALLOFF: Self = Self::from_eid(EEffectId::ENTITY_ENERGY_NEUT_FALLOFF);
+    pub(crate) const ENTITY_ECM_FALLOFF: Self = Self::from_eid(EEffectId::ENTITY_ECM_FALLOFF);
+    pub(crate) const ECM_BURST_JAMMER: Self = Self::from_eid(EEffectId::ECM_BURST_JAMMER);
+    pub(crate) const MOD_BONUS_INDUSTRIAL_INVULNERABILITY: Self =
+        Self::from_eid(EEffectId::MOD_BONUS_INDUSTRIAL_INVULNERABILITY);
+    pub(crate) const MOD_BONUS_MICROWARPDRIVE: Self = Self::from_eid(EEffectId::MOD_BONUS_MICROWARPDRIVE);
+    pub(crate) const MOD_BONUS_AFTERBURNER: Self = Self::from_eid(EEffectId::MOD_BONUS_AFTERBURNER);
+    pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: Self = Self::from_eid(EEffectId::MOD_BONUS_WARFARE_LINK_ARMOR);
+    pub(crate) const MOD_BONUS_WARFARE_LINK_SHIELD: Self = Self::from_eid(EEffectId::MOD_BONUS_WARFARE_LINK_SHIELD);
+    pub(crate) const MOD_BONUS_WARFARE_LINK_SKIRMISH: Self = Self::from_eid(EEffectId::MOD_BONUS_WARFARE_LINK_SKIRMISH);
+    pub(crate) const MOD_BONUS_WARFARE_LINK_INFO: Self = Self::from_eid(EEffectId::MOD_BONUS_WARFARE_LINK_INFO);
+    pub(crate) const MOD_BONUS_WARFARE_LINK_MINING: Self = Self::from_eid(EEffectId::MOD_BONUS_WARFARE_LINK_MINING);
+    pub(crate) const MOD_TITAN_EFFECT_GENERATOR: Self = Self::from_eid(EEffectId::MOD_TITAN_EFFECT_GENERATOR);
+    pub(crate) const SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT);
+    pub(crate) const SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT);
+    pub(crate) const TGT_DISINTEGRATOR_ATTACK: Self = Self::from_eid(EEffectId::TGT_DISINTEGRATOR_ATTACK);
+    pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: Self =
+        Self::from_eid(EEffectId::AOE_BEACON_BIOLUMINESCENCE_CLOUD);
+    pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: Self = Self::from_eid(EEffectId::AOE_BEACON_CAUSTIC_CLOUD);
+    pub(crate) const AOE_BEACON_PULSE_01: Self = Self::from_eid(EEffectId::AOE_BEACON_PULSE_01);
+    pub(crate) const AOE_BEACON_FILAMENT_CLOUD: Self = Self::from_eid(EEffectId::AOE_BEACON_FILAMENT_CLOUD);
+    pub(crate) const WEATHER_CAUSTIC_TOXIN: Self = Self::from_eid(EEffectId::WEATHER_CAUSTIC_TOXIN);
+    pub(crate) const WEATHER_DARKNESS: Self = Self::from_eid(EEffectId::WEATHER_DARKNESS);
+    pub(crate) const WEATHER_ELECTRIC_STORM: Self = Self::from_eid(EEffectId::WEATHER_ELECTRIC_STORM);
+    pub(crate) const WEATHER_INFERNAL: Self = Self::from_eid(EEffectId::WEATHER_INFERNAL);
+    pub(crate) const WEATHER_XENON_GAS: Self = Self::from_eid(EEffectId::WEATHER_XENON_GAS);
+    pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: Self =
+        Self::from_eid(EEffectId::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER);
+    pub(crate) const CHAIN_LIGHTNING: Self = Self::from_eid(EEffectId::CHAIN_LIGHTNING);
+    pub(crate) const DEBUFF_LANCE: Self = Self::from_eid(EEffectId::DEBUFF_LANCE);
+    pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_eid(EEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL);
+    pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DOT_MISSILE_LAUNCHING);
+    // Library-specific effects
+    pub(crate) const CHAR_MISSILE_DMG: Self = Self::Custom(ACustomEffectId::from_i32(1));
+    pub(crate) const AAR_PASTE_BOOST: Self = Self::Custom(ACustomEffectId::from_i32(2));
+    pub(crate) const MISSILE_FLIGHT_TIME: Self = Self::Custom(ACustomEffectId::from_i32(3));
+    pub(crate) const NOSF_CAP_USE: Self = Self::Custom(ACustomEffectId::from_i32(4));
+    pub(crate) const WARP_DISRUPT_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(5));
+    pub(crate) const STASIS_WEB_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(6));
+    pub(crate) const WDFG_SCRIPT_DEBUBBLE: Self = Self::Custom(ACustomEffectId::from_i32(7));
+    pub(crate) const STABILITY_GENERATOR_ELECTRIC: Self = Self::Custom(ACustomEffectId::from_i32(8));
+    pub(crate) const STABILITY_GENERATOR_PLASMA: Self = Self::Custom(ACustomEffectId::from_i32(9));
+    pub(crate) const STABILITY_GENERATOR_EXOTIC: Self = Self::Custom(ACustomEffectId::from_i32(10));
+    pub(crate) const STABILITY_GENERATOR_GAMMA: Self = Self::Custom(ACustomEffectId::from_i32(11));
+}

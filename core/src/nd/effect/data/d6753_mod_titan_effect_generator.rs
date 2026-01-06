@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MOD_TITAN_EFFECT_GENERATOR;
-const EFFECT_AID: AEffectId = ac::effects::MOD_TITAN_EFFECT_GENERATOR;
+const EFFECT_EID: EEffectId = EEffectId::MOD_TITAN_EFFECT_GENERATOR;
+const EFFECT_AID: AEffectId = AEffectId::MOD_TITAN_EFFECT_GENERATOR;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -18,8 +18,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
-                duration: AEffectBuffDuration::AttrMs(ac::attrs::BUFF_DURATION),
-                scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
+                duration: AEffectBuffDuration::AttrMs(AAttrId::BUFF_DURATION),
+                scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
             }),
             ..
         }),

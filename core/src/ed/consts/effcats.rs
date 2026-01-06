@@ -1,10 +1,12 @@
 use crate::ed::EEffectCatId;
 
-pub(crate) const PASSIVE: EEffectCatId = EEffectCatId::new(0);
-pub(crate) const ACTIVE: EEffectCatId = EEffectCatId::new(1);
-pub(crate) const TARGET: EEffectCatId = EEffectCatId::new(2);
-pub(crate) const AREA: EEffectCatId = EEffectCatId::new(3);
-pub(crate) const ONLINE: EEffectCatId = EEffectCatId::new(4);
-pub(crate) const OVERLOAD: EEffectCatId = EEffectCatId::new(5);
-pub(crate) const DUNGEON: EEffectCatId = EEffectCatId::new(6);
-pub(crate) const SYSTEM: EEffectCatId = EEffectCatId::new(7);
+impl EEffectCatId {
+    pub(crate) const PASSIVE: Self = Self::from_i32(0);
+    pub(crate) const ACTIVE: Self = Self::from_i32(1);
+    pub(crate) const TARGET: Self = Self::from_i32(2);
+    pub(crate) const AREA: Self = Self::from_i32(3);
+    pub(crate) const ONLINE: Self = Self::from_i32(4);
+    pub(crate) const OVERLOAD: Self = Self::from_i32(5);
+    pub(crate) const DUNGEON: Self = Self::from_i32(6);
+    pub(crate) const SYSTEM: Self = Self::from_i32(7);
+}

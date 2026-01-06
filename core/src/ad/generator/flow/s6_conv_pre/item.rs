@@ -87,7 +87,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(
         .item_abils
         .data
         .iter()
-        .sorted_unstable_by_key(|v| v.slot.into_inner())
+        .sorted_unstable_by_key(|v| v.slot.into_i32())
     {
         if let Some(a_item) = a_items.get_mut(&e_item_abil.item_id.into()) {
             a_item.abil_ids.push(e_item_abil.abil_id.into());
@@ -99,7 +99,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(
         a_items.get_mut(&e_item_srq.item_id.into()).and_then(|v| {
             v.srqs.insert(
                 e_item_srq.skill_id.into(),
-                ASkillLevel::new_clamped_i32(e_item_srq.level.into_inner()),
+                ASkillLevel::from_i32_clamped(e_item_srq.level.into_i32()),
             )
         });
     }

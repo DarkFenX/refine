@@ -2,16 +2,15 @@
 // hardcoded here
 
 use crate::{
-    ac,
     ad::{
-        AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectId,
-        AItemId, AState, AValue,
+        ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
+        AEffectCatId, AEffectId, AItemId, AItemListId, AState, AValue,
     },
     nd::{NEffect, effect::data::shared::sov_stability_generators::assign_effect},
 };
 
-const A_ITEM_ID: AItemId = ac::items::ELECTRIC_STABILITY_GENERATOR;
-const EFFECT_AID: AEffectId = ac::effects::STABILITY_GENERATOR_ELECTRIC;
+const A_ITEM_ID: AItemId = AItemId::ELECTRIC_STABILITY_GENERATOR;
+const EFFECT_AID: AEffectId = AEffectId::STABILITY_GENERATOR_ELECTRIC;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -26,21 +25,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
-        category: ac::effcats::ACTIVE,
+        category: AEffectCatId::ACTIVE,
         state: AState::Active,
         buff: Some(AEffectBuff {
             full: vec![
                 AEffectBuffFull {
-                    buff_id: ac::buffs::SOV_SMOD_CAPACITOR_RECHARGE_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::new(-25.0)),
+                    buff_id: ABuffId::SOV_SMOD_CAPACITOR_RECHARGE_BONUS,
+                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(-25.0)),
                     duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
                 AEffectBuffFull {
-                    buff_id: ac::buffs::SOV_SMOD_TARGETING_AND_DSCAN_RANGE_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::new(25.0)),
+                    buff_id: ABuffId::SOV_SMOD_TARGETING_AND_DSCAN_RANGE_BONUS,
+                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(25.0)),
                     duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(ac::itemlists::SHIPS),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
             ],
             ..

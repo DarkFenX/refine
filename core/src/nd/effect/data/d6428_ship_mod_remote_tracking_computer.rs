@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SHIP_MOD_REMOTE_TRACKING_COMPUTER;
-const EFFECT_AID: AEffectId = ac::effects::SHIP_MOD_REMOTE_TRACKING_COMPUTER;
+const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_TRACKING_COMPUTER;
+const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_REMOTE_TRACKING_COMPUTER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -29,9 +29,9 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        make_rtc_mod(ac::attrs::MAX_RANGE_BONUS, ac::attrs::MAX_RANGE),
-        make_rtc_mod(ac::attrs::FALLOFF_BONUS, ac::attrs::FALLOFF),
-        make_rtc_mod(ac::attrs::TRACKING_SPEED_BONUS, ac::attrs::TRACKING_SPEED),
+        make_rtc_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::MAX_RANGE),
+        make_rtc_mod(AAttrId::FALLOFF_BONUS, AAttrId::FALLOFF),
+        make_rtc_mod(AAttrId::TRACKING_SPEED_BONUS, AAttrId::TRACKING_SPEED),
     ]);
 }
 
@@ -39,10 +39,7 @@ fn make_rtc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffe
     AEffectModifier {
         affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
-        affectee_filter: AEffectAffecteeFilter::LocSrq(
-            AEffectLocation::Target,
-            AModifierSrq::TypeId(ac::items::GUNNERY),
-        ),
+        affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Target, AModifierSrq::TypeId(AItemId::GUNNERY)),
         affectee_attr_id: affectee_attr_aid,
     }
 }

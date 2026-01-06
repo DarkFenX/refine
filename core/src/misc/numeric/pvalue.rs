@@ -3,15 +3,16 @@ use ordered_float::OrderedFloat;
 use crate::{
     ad::AValue,
     misc::Value,
-    util::{LibDefault, sig_round},
+    util::{FLOAT_TOLERANCE, LibDefault, sig_round},
 };
 
 /// Positive float value.
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct PValue(f64);
 impl PValue {
-    pub(crate) const ZERO: PValue = PValue::new_unchecked(0.0);
-    pub(crate) const ONE: PValue = PValue::new_unchecked(1.0);
+    pub(crate) const ZERO: Self = Self::new_unchecked(0.0);
+    pub(crate) const ONE: Self = Self::new_unchecked(1.0);
+    pub(crate) const FLOAT_TOLERANCE: Self = Self::new_unchecked(FLOAT_TOLERANCE);
 
     pub const fn new_clamped(v: f64) -> Self {
         Self(v.max(0.0))
@@ -42,24 +43,17 @@ impl const LibDefault for PValue {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions between lib-specific types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<AValue> for PValue {
-    fn from(value: AValue) -> Self {
-        Self::new_clamped(value.into_inner())
+impl PValue {
+    pub(crate) fn from_a_val_clamped(value: AValue) -> Self {
+        Self::new_clamped(value.into_f64())
     }
-}
-impl From<&AValue> for PValue {
-    fn from(value: &AValue) -> Self {
-        Self::new_clamped(value.into_inner())
-    }
-}
-impl From<Value> for PValue {
-    fn from(value: Value) -> Self {
-        Self::new_clamped(value.into_inner())
+    pub(crate) fn from_val_clamped(value: Value) -> Self {
+        Self::new_clamped(value.into_f64())
     }
 }
 impl From<PValue> for Value {
     fn from(value: PValue) -> Self {
-        Self::new(value.into_inner())
+        Self::from_f64(value.into_inner())
     }
 }
 
@@ -119,10 +113,28 @@ impl std::ops::Sub<PValue> for PValue {
         PValue::new_clamped(self.0 - rhs.0)
     }
 }
+// Multiplication
+impl std::ops::Mul<PValue> for PValue {
+    type Output = PValue;
+    fn mul(self, rhs: PValue) -> Self::Output {
+        PValue(self.0 * rhs.0)
+    }
+}
+impl std::ops::MulAssign<PValue> for PValue {
+    fn mul_assign(&mut self, rhs: PValue) {
+        self.0 *= rhs.0;
+    }
+}
 // Division
 impl std::ops::Div<&PValue> for PValue {
     type Output = PValue;
     fn div(self, rhs: &PValue) -> Self::Output {
         PValue(self.0 / rhs.0)
+    }
+}
+impl std::ops::Div<Value> for PValue {
+    type Output = Value;
+    fn div(self, rhs: Value) -> Self::Output {
+        Value::from_f64(self.0 / rhs.into_f64())
     }
 }

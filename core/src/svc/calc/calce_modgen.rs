@@ -33,7 +33,7 @@ impl Calc {
             if let Some(buff_attr_merge) = &effect_buff.attr_merge {
                 for (buff_type_attr_rid, buff_str_attr_rid) in ctx.ac().buff_merge_ids_strs.iter() {
                     if let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, *buff_type_attr_rid) {
-                        let buff_aid = ABuffId::Eve(AEveBuffId::new_f64_rounded(buff_id_cval.extra.into_inner()));
+                        let buff_aid = ABuffId::Eve(AEveBuffId::from_f64_rounded(buff_id_cval.extra.into_f64()));
                         let buff = match ctx.u_data.src.get_buff_by_aid(&buff_aid) {
                             Some(buff) => buff,
                             None => continue,
@@ -110,7 +110,7 @@ impl Calc {
                 && let Some(buff_attr_merge) = &effect_buff.attr_merge
                 && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, buff_type_attr_rid)
             {
-                let buff_aid = ABuffId::Eve(AEveBuffId::new_f64_rounded(buff_id_cval.extra.into_inner()));
+                let buff_aid = ABuffId::Eve(AEveBuffId::from_f64_rounded(buff_id_cval.extra.into_f64()));
                 let buff = match ctx.u_data.src.get_buff_by_aid(&buff_aid) {
                     Some(buff) => buff,
                     None => continue,

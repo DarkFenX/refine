@@ -20,8 +20,8 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-const EFFECT_EID: EEffectId = ec::effects::DOOMSDAY_SLASH;
-const EFFECT_AID: AEffectId = ac::effects::DOOMSDAY_SLASH;
+const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_SLASH;
+const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_SLASH;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

@@ -3,8 +3,7 @@ use crate::{
         GSupport,
         rels::{Fk, KeyPart, Pk, attr_val_to_fk},
     },
-    ec,
-    ed::{EAttrUnitId, EItemAttr},
+    ed::{EAttrId, EAttrUnitId, EItemAttr},
 };
 
 impl Pk for EItemAttr {
@@ -17,21 +16,21 @@ impl Fk for EItemAttr {
     fn get_item_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         fks.push(self.item_id.into());
-        if let Some(fk) = self.get_fk_from_val(ec::units::ITEM_ID, g_supp) {
+        if let Some(fk) = self.get_fk_from_val(EAttrUnitId::ITEM_ID, g_supp) {
             fks.push(fk);
         }
         fks
     }
     fn get_group_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(fk) = self.get_fk_from_val(ec::units::GROUP_ID, g_supp) {
+        if let Some(fk) = self.get_fk_from_val(EAttrUnitId::GROUP_ID, g_supp) {
             vec.push(fk);
         }
         vec
     }
     fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if ec::extras::TYPE_LIST_ATTR_IDS.contains(&self.attr_id)
+        if EAttrId::TYPE_LIST_ATTRS.contains(&self.attr_id)
             && let Some(fk) = attr_val_to_fk(self.value)
         {
             vec.push(fk)
@@ -41,14 +40,14 @@ impl Fk for EItemAttr {
     fn get_attr_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         vec.push(self.attr_id.into());
-        if let Some(fk) = self.get_fk_from_val(ec::units::ATTR_ID, g_supp) {
+        if let Some(fk) = self.get_fk_from_val(EAttrUnitId::ATTR_ID, g_supp) {
             vec.push(fk);
         }
         vec
     }
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if ec::extras::BUFF_MERGE_ATTR_IDS.contains(&self.attr_id)
+        if EAttrId::BUFF_ID_ATTRS.contains(&self.attr_id)
             && let Some(fk) = attr_val_to_fk(self.value)
         {
             vec.push(fk);

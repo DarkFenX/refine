@@ -11,8 +11,8 @@ use crate::{
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::CHAIN_LIGHTNING;
-const EFFECT_AID: AEffectId = ac::effects::CHAIN_LIGHTNING;
+const EFFECT_EID: EEffectId = EEffectId::CHAIN_LIGHTNING;
+const EFFECT_AID: AEffectId = AEffectId::CHAIN_LIGHTNING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

@@ -9,8 +9,8 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = ec::effects::STRUCT_ENERGY_NEUT_FALLOFF;
-const EFFECT_AID: AEffectId = ac::effects::STRUCT_ENERGY_NEUT_FALLOFF;
+const EFFECT_EID: EEffectId = EEffectId::STRUCT_ENERGY_NEUT_FALLOFF;
+const EFFECT_AID: AEffectId = AEffectId::STRUCT_ENERGY_NEUT_FALLOFF;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: get_neut_base_opc,
             proj_mult_str: Some(get_neut_proj_mult),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(ac::attrs::CAPACITOR_CAPACITY),
+            limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),
         ..

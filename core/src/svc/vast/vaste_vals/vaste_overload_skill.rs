@@ -23,7 +23,7 @@ impl VastFitData {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
-        let td_lvl = match fit.skills.get(&ac::items::THERMODYNAMICS) {
+        let td_lvl = match fit.skills.get(&AItemId::THERMODYNAMICS) {
             Some(skill) => skill.level,
             None => return self.overload_td_lvl.is_subset(kfs),
         };
@@ -41,7 +41,7 @@ impl VastFitData {
         if self.overload_td_lvl.is_empty() {
             return None;
         }
-        let td_lvl = fit.skills.get(&ac::items::THERMODYNAMICS).map(|v| v.level);
+        let td_lvl = fit.skills.get(&AItemId::THERMODYNAMICS).map(|v| v.level);
         let module_reqs: HashMap<_, _> = self
             .overload_td_lvl
             .iter()

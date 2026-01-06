@@ -1,5 +1,5 @@
 /// Float value.
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct Index(usize);
 impl Index {
     pub const fn new(index: usize) -> Self {

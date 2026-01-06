@@ -5,10 +5,10 @@ use crate::util::{LibDefault, LibIncrement};
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct ItemId(u32);
 impl ItemId {
-    pub fn new(id: u32) -> Self {
+    pub fn from_u32(id: u32) -> Self {
         Self(id)
     }
-    pub fn into_inner(self) -> u32 {
+    pub fn into_u32(self) -> u32 {
         self.0
     }
 }

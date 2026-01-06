@@ -13,8 +13,8 @@ use crate::{
     ud::UItemId,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::MINING_LASER;
-const EFFECT_AID: AEffectId = ac::effects::MINING_LASER;
+const EFFECT_EID: EEffectId = EEffectId::MINING_LASER;
+const EFFECT_AID: AEffectId = AEffectId::MINING_LASER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

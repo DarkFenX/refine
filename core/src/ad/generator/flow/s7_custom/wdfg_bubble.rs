@@ -1,12 +1,9 @@
 // Allows WDFGs without scripts to use bubble effect
 
-use crate::{
-    ac,
-    ad::{AAttrId, AData, AEffectId, AValue},
-};
+use crate::ad::{AAttrId, AData, AEffectId, AValue};
 
-const BUBBLE_ATTR: AAttrId = ac::attrs::DISALLOW_WARPING_JUMPING;
-const BUBBLE_EFFECT: AEffectId = ac::effects::WARP_DISRUPT_SPHERE;
+const BUBBLE_ATTR: AAttrId = AAttrId::DISALLOW_WARPING_JUMPING;
+const BUBBLE_EFFECT: AEffectId = AEffectId::WARP_DISRUPT_SPHERE;
 
 pub(in crate::ad::generator::flow::s7_custom) fn add_wdfg_bubble_strength(a_data: &mut AData) {
     let mut applied = false;
@@ -14,7 +11,7 @@ pub(in crate::ad::generator::flow::s7_custom) fn add_wdfg_bubble_strength(a_data
         if !item.effect_datas.contains_key(&BUBBLE_EFFECT) {
             continue;
         }
-        item.attrs.insert(BUBBLE_ATTR, AValue::new(1.0));
+        item.attrs.insert(BUBBLE_ATTR, AValue::from_f64(1.0));
         applied = true;
     }
     if !applied {

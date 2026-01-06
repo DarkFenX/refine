@@ -6,8 +6,8 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = ec::effects::SELF_ROF;
-const EFFECT_AID: AEffectId = ac::effects::SELF_ROF;
+const EFFECT_EID: EEffectId = EEffectId::SELF_ROF;
+const EFFECT_AID: AEffectId = AEffectId::SELF_ROF;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -24,10 +24,10 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     let modifier = AEffectModifier {
-        affector_attr_id: ac::attrs::ROF_BONUS,
+        affector_attr_id: AAttrId::ROF_BONUS,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Ship, AModifierSrq::SelfRef),
-        affectee_attr_id: ac::attrs::SPEED,
+        affectee_attr_id: AAttrId::SPEED,
     };
     a_effect.modifiers.push(modifier);
 }
