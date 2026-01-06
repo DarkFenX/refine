@@ -1,4 +1,4 @@
-use crate::{def::AttrVal, util::sig_round};
+use crate::{UnitInterval, misc::PValue, util::sig_round};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Details
@@ -6,18 +6,18 @@ use crate::{def::AttrVal, util::sig_round};
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
     // Full time (active time with any downtimes combined)
-    pub(in crate::svc) time: AttrVal,
+    pub(in crate::svc) time: PValue,
     // What kind of interruptions happen after current cycle
     pub(in crate::svc) interrupt: Option<CycleInterrupt>,
     // How charged current cycle is
-    pub(in crate::svc) chargedness: Option<AttrVal>,
+    pub(in crate::svc) chargedness: Option<UnitInterval>,
 }
 
 // Simplified cycle data types, they are useful mostly because they allow cycle optimizations during
 // cycle conversion
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc) struct CycleDataTimeInt {
-    pub(in crate::svc) time: AttrVal,
+    pub(in crate::svc) time: PValue,
     pub(in crate::svc) interrupt: bool,
 }
 impl From<CycleDataFull> for CycleDataTimeInt {
@@ -31,8 +31,8 @@ impl From<CycleDataFull> for CycleDataTimeInt {
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc) struct CycleDataTimeCharge {
-    pub(in crate::svc) time: AttrVal,
-    pub(in crate::svc) chargedness: Option<AttrVal>,
+    pub(in crate::svc) time: PValue,
+    pub(in crate::svc) chargedness: Option<UnitInterval>,
 }
 impl From<CycleDataFull> for CycleDataTimeCharge {
     fn from(details_full: CycleDataFull) -> Self {
@@ -45,12 +45,12 @@ impl From<CycleDataFull> for CycleDataTimeCharge {
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleDataTime {
-    pub(in crate::svc) time: AttrVal,
+    pub(in crate::svc) time: PValue,
 }
 impl CycleDataTime {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            time: sig_round(self.time, 10),
+            time: self.time.sig_rounded(10),
         }
     }
 }

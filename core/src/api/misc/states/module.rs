@@ -9,8 +9,12 @@ pub enum ModuleState {
     Active,
     Overload,
 }
-impl From<RState> for ModuleState {
-    fn from(r_state: RState) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModuleState {
+    pub(crate) fn from_r_state(r_state: RState) -> Self {
         match r_state {
             RState::Ghost => Self::Disabled,
             RState::Disabled => Self::Disabled,
@@ -20,15 +24,13 @@ impl From<RState> for ModuleState {
             RState::Overload => Self::Overload,
         }
     }
-}
-impl From<ModuleState> for RState {
-    fn from(module_state: ModuleState) -> Self {
-        match module_state {
-            ModuleState::Disabled => Self::Disabled,
-            ModuleState::Offline => Self::Offline,
-            ModuleState::Online => Self::Online,
-            ModuleState::Active => Self::Active,
-            ModuleState::Overload => Self::Overload,
+    pub(crate) fn into_r_state(self) -> RState {
+        match self {
+            ModuleState::Disabled => RState::Disabled,
+            ModuleState::Offline => RState::Offline,
+            ModuleState::Online => RState::Online,
+            ModuleState::Active => RState::Active,
+            ModuleState::Overload => RState::Overload,
         }
     }
 }

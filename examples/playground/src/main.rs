@@ -76,7 +76,7 @@ fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCac
     let mut fit = sol_sys.add_fit();
     let ship_id = fit.set_ship(11184, None, None).get_item_id();
     for skill_id in skill_ids.iter() {
-        fit.add_skill(skill_id.to_owned(), SkillLevel::new_clamped(5));
+        fit.add_skill(skill_id.to_owned(), SkillLevel::from_i32_clamped(5));
     }
     let fit_id = fit.get_fit_id();
     // RAH
@@ -141,7 +141,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
 
     // Skills
     for skill_id in skill_ids.iter() {
-        fit.add_skill(*skill_id, SkillLevel::new_clamped(5));
+        fit.add_skill(*skill_id, SkillLevel::from_i32_clamped(5));
     }
 
     // Implants

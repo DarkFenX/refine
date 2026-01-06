@@ -10,9 +10,13 @@ pub(crate) enum Location {
     Target,
     ItemList(RItemListId),
 }
-impl From<&AEffectLocation> for Location {
-    fn from(effect_loc: &AEffectLocation) -> Self {
-        match effect_loc {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Location {
+    pub(in crate::svc::calc) fn from_a_effect_loc(a_effect_loc: AEffectLocation) -> Self {
+        match a_effect_loc {
             AEffectLocation::Ship => Self::Ship,
             AEffectLocation::Structure => Self::Structure,
             AEffectLocation::Char => Self::Char,

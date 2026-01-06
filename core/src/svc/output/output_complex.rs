@@ -31,7 +31,7 @@ where
         if self.repeats < Count::ONE {
             return PValue::ZERO;
         };
-        self.delay + self.interval * PValue::new_unchecked((self.repeats.into_inner() - 1) as f64)
+        self.delay + self.interval * PValue::from_f64_unchecked((self.repeats.into_u32() - 1) as f64)
     }
     pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputComplexAmountIter::new(self)
@@ -42,7 +42,7 @@ impl OutputComplex<Value> {
         self.amount.abs() > PValue::FLOAT_TOLERANCE
     }
     pub(super) fn absolute_impact(&self) -> PValue {
-        self.amount.abs() * PValue::new_unchecked(self.repeats.into_inner() as f64)
+        self.amount.abs() * PValue::from_f64_unchecked(self.repeats.into_u32() as f64)
     }
     pub(super) fn add_amount(&mut self, amount: AttrVal) {
         self.amount += amount;

@@ -8,16 +8,16 @@ const SS_MAX: f64 = 5.0;
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct FitSecStatus(f64);
 impl FitSecStatus {
-    pub fn new_checked(sec_status: f64) -> Result<Self, FitSecStatusError> {
+    pub fn from_f64_checked(sec_status: f64) -> Result<Self, FitSecStatusError> {
         match (SS_MIN..=SS_MAX).contains(&sec_status) {
             true => Ok(Self(sec_status)),
             false => Err(FitSecStatusError { sec_status }),
         }
     }
-    pub const fn new_clamped(sec_status: f64) -> Self {
+    pub const fn from_f64_clamped(sec_status: f64) -> Self {
         Self(sec_status.clamp(SS_MIN, SS_MAX))
     }
-    pub const fn into_inner(self) -> f64 {
+    pub const fn into_f64(self) -> f64 {
         self.0
     }
 }
@@ -28,11 +28,11 @@ pub struct FitSecStatusError {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions between lib-specific types
+// Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<FitSecStatus> for Value {
-    fn from(value: FitSecStatus) -> Self {
-        Self::from_f64(value.into_inner())
+impl FitSecStatus {
+    pub(crate) fn into_value(self) -> Value {
+        Value::from_f64(self.0)
     }
 }
 

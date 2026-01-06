@@ -30,8 +30,8 @@ pub(in crate::rd) struct RData {
     pub(in crate::rd) mutas: RMap<AItemId, RcMuta>,
     pub(in crate::rd) abils: RMap<AAbilId, RAbil>,
 }
-impl From<AData> for RData {
-    fn from(a_data: AData) -> Self {
+impl RData {
+    pub(in crate::rd) fn from_a_data(a_data: AData) -> Self {
         let mut items: RMap<_, _> = a_data
             .items
             .values()

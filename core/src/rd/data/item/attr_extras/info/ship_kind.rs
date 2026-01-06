@@ -14,7 +14,7 @@ pub(crate) enum RShipKind {
     Structure,
 }
 
-const MAX_SUBCAP_MODULE_VOLUME: PValue = PValue::new_clamped(ac::extras::MAX_SUBCAP_MODULE_VOLUME);
+const MAX_SUBCAP_MODULE_VOLUME: PValue = PValue::from_f64_clamped(ac::extras::MAX_SUBCAP_MODULE_VOLUME);
 
 pub(in crate::rd::data::item::attr_extras) fn get_item_ship_kind(
     item_cat_id: AItemCatId,

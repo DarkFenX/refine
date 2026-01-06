@@ -59,12 +59,12 @@ struct AggrEventInfo {
     cseq: CycleSeq<CycleDataTimeCharge>,
     opc: Output<AttrVal>,
 }
-impl From<AggrEventInfo> for CapSimEvent {
-    fn from(aggr_info: AggrEventInfo) -> Self {
+impl AggrEventInfo {
+    fn into_cap_sim_event(self) -> CapSimEvent {
         CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-            time: aggr_info.start_delay,
-            cycle_iter: aggr_info.cseq.iter_cycles(),
-            opc: aggr_info.opc,
+            time: self.start_delay,
+            cycle_iter: self.cseq.iter_cycles(),
+            opc: self.opc,
         })
     }
 }
@@ -91,9 +91,9 @@ enum AggrKeyOutput {
     Simple(AggrKeyOutputSimple),
     Complex(AggrKeyOutputComplex),
 }
-impl From<&Output<AttrVal>> for AggrKeyOutput {
-    fn from(opc: &Output<AttrVal>) -> Self {
-        match opc {
+impl AggrKeyOutput {
+    fn from_output(output: &Output<AttrVal>) -> Self {
+        match output {
             Output::Simple(inner) => AggrKeyOutput::Simple(inner.into()),
             Output::Complex(inner) => AggrKeyOutput::Complex(inner.into()),
         }
@@ -104,10 +104,10 @@ impl From<&Output<AttrVal>> for AggrKeyOutput {
 struct AggrKeyOutputSimple {
     delay: AttrVal,
 }
-impl From<&OutputSimple<AttrVal>> for AggrKeyOutputSimple {
-    fn from(output: &OutputSimple<AttrVal>) -> Self {
+impl AggrKeyOutputSimple {
+    fn from_output_simple(output_simple: &OutputSimple<AttrVal>) -> Self {
         Self {
-            delay: sig_round(output.delay, 10),
+            delay: sig_round(output_simple.delay, 10),
         }
     }
 }
@@ -118,12 +118,12 @@ struct AggrKeyOutputComplex {
     repeats: DefCount,
     interval: AttrVal,
 }
-impl From<&OutputComplex<AttrVal>> for AggrKeyOutputComplex {
-    fn from(output: &OutputComplex<AttrVal>) -> Self {
+impl AggrKeyOutputComplex {
+    fn from_output_complex(output_complex: &OutputComplex<AttrVal>) -> Self {
         Self {
-            delay: sig_round(output.delay, 10),
-            repeats: output.repeats,
-            interval: sig_round(output.interval, 10),
+            delay: sig_round(output_complex.delay, 10),
+            repeats: output_complex.repeats,
+            interval: sig_round(output_complex.interval, 10),
         }
     }
 }

@@ -16,8 +16,12 @@ pub(crate) enum CalcOp {
     ExtraAdd,
     ExtraMul,
 }
-impl From<&ad::AOp> for CalcOp {
-    fn from(a_op: &ad::AOp) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CalcOp {
+    pub(in crate::svc::calc) fn from_a_op(a_op: ad::AOp) -> Self {
         match a_op {
             ad::AOp::PreAssign => Self::PreAssign,
             ad::AOp::PreMul => Self::PreMul,

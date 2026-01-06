@@ -14,8 +14,12 @@ pub(in crate::svc::calc) struct CalcModificationKey {
     pub(in crate::svc::calc) affector_attr_rid: Option<RAttrId>,
     pub(in crate::svc::calc) op: CalcOp,
 }
-impl From<&CtxModifier> for CalcModificationKey {
-    fn from(cmod: &CtxModifier) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CalcModificationKey {
+    pub(in crate::svc::calc) fn from_cmod(cmod: &CtxModifier) -> Self {
         CalcModificationKey {
             affector_uid: cmod.raw.affector_espec.item_uid,
             affector_attr_rid: cmod.raw.get_affector_attr_rid(),

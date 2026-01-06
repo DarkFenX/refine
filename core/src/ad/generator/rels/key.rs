@@ -13,42 +13,34 @@ impl KeyPart {
     pub(in crate::ad::generator) fn into_i32(self) -> i32 {
         self.0
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl KeyPart {
     pub(in crate::ad::generator) fn from_f64_rounded(id: f64) -> Self {
         Self(round_f64_to_i32(id))
     }
-}
-impl From<EItemId> for KeyPart {
-    fn from(id: EItemId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_item_eid(item_eid: EItemId) -> Self {
+        Self(item_eid.into_i32())
     }
-}
-impl From<EItemGrpId> for KeyPart {
-    fn from(id: EItemGrpId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_item_grp_eid(item_grp_eid: EItemGrpId) -> Self {
+        Self(item_grp_eid.into_i32())
     }
-}
-impl From<EItemListId> for KeyPart {
-    fn from(id: EItemListId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_item_list_eid(item_list_eid: EItemListId) -> Self {
+        Self(item_list_eid.into_i32())
     }
-}
-impl From<EAttrId> for KeyPart {
-    fn from(id: EAttrId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_attr_eid(attr_eid: EAttrId) -> Self {
+        Self(attr_eid.into_i32())
     }
-}
-impl From<EEffectId> for KeyPart {
-    fn from(id: EEffectId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_effect_eid(effect_eid: EEffectId) -> Self {
+        Self(effect_eid.into_i32())
     }
-}
-impl From<EAbilId> for KeyPart {
-    fn from(id: EAbilId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_abil_eid(abil_eid: EAbilId) -> Self {
+        Self(abil_eid.into_i32())
     }
-}
-impl From<EBuffId> for KeyPart {
-    fn from(id: EBuffId) -> Self {
-        Self(id.into_i32())
+    pub(in crate::ad::generator) fn from_buff_eid(buff_eid: EBuffId) -> Self {
+        Self(buff_eid.into_i32())
     }
 }

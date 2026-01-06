@@ -12,20 +12,6 @@ pub struct StatDmg {
     pub explosive: AttrVal,
     pub breacher: Option<StatDmgBreacher>,
 }
-impl From<(DmgKinds<AttrVal>, Option<StatDmgBreacher>)> for StatDmg {
-    fn from((dmg_kinds, breacher): (DmgKinds<AttrVal>, Option<StatDmgBreacher>)) -> Self {
-        Self {
-            em: dmg_kinds.em,
-            thermal: dmg_kinds.thermal,
-            kinetic: dmg_kinds.kinetic,
-            explosive: dmg_kinds.explosive,
-            breacher: match breacher {
-                Some(breacher) => breacher.nullified(),
-                _ => None,
-            },
-        }
-    }
-}
 
 pub struct StatDmgApplied {
     pub em: AttrVal,
@@ -33,17 +19,6 @@ pub struct StatDmgApplied {
     pub kinetic: AttrVal,
     pub explosive: AttrVal,
     pub breacher: Option<AttrVal>,
-}
-impl From<(DmgKinds<AttrVal>, Option<AttrVal>)> for StatDmgApplied {
-    fn from((dmg_kinds, breacher): (DmgKinds<AttrVal>, Option<AttrVal>)) -> Self {
-        Self {
-            em: dmg_kinds.em,
-            thermal: dmg_kinds.thermal,
-            kinetic: dmg_kinds.kinetic,
-            explosive: dmg_kinds.explosive,
-            breacher,
-        }
-    }
 }
 
 pub struct StatDmgBreacher {
@@ -68,8 +43,42 @@ impl StatDmgBreacher {
         }
     }
 }
-impl From<OutputDmgBreacher> for StatDmgBreacher {
-    fn from(output: OutputDmgBreacher) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl StatDmg {
+    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<AttrVal>, breacher: Option<StatDmgBreacher>) -> Self {
+        Self {
+            em: normal.em,
+            thermal: normal.thermal,
+            kinetic: normal.kinetic,
+            explosive: normal.explosive,
+            breacher: match breacher {
+                Some(breacher) => breacher.nullified(),
+                _ => None,
+            },
+        }
+    }
+}
+
+impl StatDmgApplied {
+    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<AttrVal>, breacher: Option<StatDmgBreacher>) -> Self {
+        Self {
+            em: normal.em,
+            thermal: normal.thermal,
+            kinetic: normal.kinetic,
+            explosive: normal.explosive,
+            breacher: match breacher {
+                Some(breacher) => breacher.nullified(),
+                _ => None,
+            },
+        }
+    }
+}
+
+impl StatDmgBreacher {
+    pub(in crate::svc::vast) fn from_output(output: OutputDmgBreacher) -> Self {
         Self {
             absolute_max: output.absolute_max,
             relative_max: output.relative_max,

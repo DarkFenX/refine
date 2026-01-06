@@ -26,7 +26,7 @@ pub(crate) fn get_resist_mult_by_projectee_aspec(
         .dogma;
     Some(match mult <= Value::from_f64(0.0001) {
         true => PValue::ZERO,
-        false => PValue::new_unchecked(mult.into_f64()),
+        false => PValue::from_f64_unchecked(mult.into_f64()),
     })
 }
 

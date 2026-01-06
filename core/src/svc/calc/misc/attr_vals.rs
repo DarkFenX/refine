@@ -6,11 +6,15 @@ pub(crate) struct CalcAttrVals {
     pub(crate) dogma: Value,
     pub(crate) extra: Value,
 }
-impl From<CalcAttrVals> for AttrVals {
-    fn from(calc_vals: CalcAttrVals) -> Self {
-        Self {
-            base: calc_vals.base,
-            modified: calc_vals.extra,
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CalcAttrVals {
+    pub(in crate::svc::calc) fn into_attr_vals(self) -> AttrVals {
+        AttrVals {
+            base: self.base,
+            modified: self.extra,
         }
     }
 }

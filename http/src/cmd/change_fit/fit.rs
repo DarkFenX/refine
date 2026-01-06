@@ -35,7 +35,7 @@ impl HChangeFitCmd {
             TriStateField::Absent => (),
         }
         if let Some(sec_status) = self.sec_status {
-            let core_sec_status = rc::FitSecStatus::new_clamped(sec_status);
+            let core_sec_status = rc::FitSecStatus::from_f64_clamped(sec_status);
             core_fit.set_sec_status(core_sec_status);
         }
         match self.rah_incoming_dps {

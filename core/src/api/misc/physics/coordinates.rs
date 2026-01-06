@@ -1,31 +1,33 @@
-use crate::{def::AttrVal, util::Xyz};
+use crate::misc::{Value, Xyz};
 
 #[derive(Copy, Clone)]
 pub struct Coordinates {
-    pub x: AttrVal,
-    pub y: AttrVal,
-    pub z: AttrVal,
+    pub x: Value,
+    pub y: Value,
+    pub z: Value,
 }
 impl Coordinates {
-    pub fn new(x: AttrVal, y: AttrVal, z: AttrVal) -> Self {
+    pub fn new(x: Value, y: Value, z: Value) -> Self {
         Self { x, y, z }
     }
 }
-impl From<Xyz> for Coordinates {
-    fn from(coordinates: Xyz) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Coordinates {
+    pub(in crate::api) fn from_xyz(xyz: Xyz) -> Self {
         Self {
-            x: coordinates.x,
-            y: coordinates.y,
-            z: coordinates.z,
+            x: xyz.x,
+            y: xyz.y,
+            z: xyz.z,
         }
     }
-}
-impl From<Coordinates> for Xyz {
-    fn from(coordinates: Coordinates) -> Self {
-        Self {
-            x: coordinates.x,
-            y: coordinates.y,
-            z: coordinates.z,
+    pub(in crate::api) fn into_xyz(self) -> Xyz {
+        Xyz {
+            x: self.x,
+            y: self.y,
+            z: self.z,
         }
     }
 }

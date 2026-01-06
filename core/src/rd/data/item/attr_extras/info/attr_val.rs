@@ -110,7 +110,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
 ) -> Count {
     match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
         Some(&val) => Count::from_f64_rounded(val.into()),
-        None => Count::new(1),
+        None => Count::from_u32(1),
     }
 }
 

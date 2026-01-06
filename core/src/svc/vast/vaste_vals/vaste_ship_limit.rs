@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemGrpId, ItemId, ItemTypeId},
+    api::{ItemGrpId, ItemTypeId},
     rd,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UItemId, UShip},
+    ud::{ItemId, UItemId, UShip},
     util::RSet,
 };
 
@@ -23,11 +23,19 @@ pub struct ValShipLimitItemInfo {
     /// Ship group IDs item can be fit to.
     pub allowed_group_ids: Vec<ItemGrpId>,
 }
-impl From<&rd::RItemShipLimit> for ValShipLimitItemInfo {
-    fn from(item_ship_limit: &rd::RItemShipLimit) -> Self {
+impl ValShipLimitItemInfo {
+    fn from_r_item_ship_limit(item_ship_limit: &rd::RItemShipLimit) -> Self {
         Self {
-            allowed_type_ids: item_ship_limit.type_ids.clone(),
-            allowed_group_ids: item_ship_limit.group_ids.clone(),
+            allowed_type_ids: item_ship_limit
+                .type_ids
+                .iter()
+                .map(|item_aid| ItemTypeId::from_aid(*item_aid))
+                .collect(),
+            allowed_group_ids: item_ship_limit
+                .group_ids
+                .iter()
+                .map(|item_grp_aid| ItemGrpId::from_aid(*item_grp_aid))
+                .collect(),
         }
     }
 }

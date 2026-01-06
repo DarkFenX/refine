@@ -190,13 +190,13 @@ impl UModule {
             }
         };
         let charge_volume = match charge_item.get_axt() {
-            Some(axt) if axt.volume != PValue::new_unchecked(0.0) => axt.volume,
+            Some(axt) if axt.volume != PValue::from_f64_unchecked(0.0) => axt.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;
             }
         };
-        let charge_count = Count::from_f64_trunced(module_capacity.into_inner() / charge_volume.into_inner());
+        let charge_count = Count::from_f64_trunced(module_capacity.into_f64() / charge_volume.into_f64());
         Some(charge_count)
     }
     pub(crate) fn get_projs(&self) -> &UProjs {

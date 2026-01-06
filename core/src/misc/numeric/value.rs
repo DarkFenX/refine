@@ -30,14 +30,17 @@ impl Value {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions between lib-specific types
+// Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
     pub(crate) fn from_a_value(a_value: AValue) -> Self {
-        Self::from_f64(a_value.into_f64())
+        Self(a_value.into_f64())
+    }
+    pub(crate) fn from_pval(pval: PValue) -> Self {
+        Self(pval.into_f64())
     }
     pub(crate) fn from_count(count: Count) -> Self {
-        Self::from_f64(count.into_inner() as f64)
+        Self(count.into_u32() as f64)
     }
 }
 
@@ -75,7 +78,7 @@ impl std::hash::Hash for Value {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
     pub(crate) fn abs(self) -> PValue {
-        PValue::new_unchecked(self.0.abs())
+        PValue::from_f64_unchecked(self.0.abs())
     }
     pub(crate) fn min(self, rhs: Self) -> Self {
         Self(self.0.min(rhs.0))
@@ -151,7 +154,7 @@ impl std::ops::Mul<Value> for Value {
 impl std::ops::Mul<PValue> for Value {
     type Output = Value;
     fn mul(self, rhs: PValue) -> Self::Output {
-        Value(self.0 * rhs.into_inner())
+        Value(self.0 * rhs.into_f64())
     }
 }
 impl std::ops::MulAssign<Value> for Value {
@@ -161,7 +164,7 @@ impl std::ops::MulAssign<Value> for Value {
 }
 impl std::ops::MulAssign<PValue> for Value {
     fn mul_assign(&mut self, rhs: PValue) {
-        self.0 *= rhs.into_inner();
+        self.0 *= rhs.into_f64();
     }
 }
 // Division
@@ -192,13 +195,13 @@ impl std::ops::Div<&Value> for Value {
 impl std::ops::Div<PValue> for Value {
     type Output = Value;
     fn div(self, rhs: PValue) -> Self::Output {
-        Value(self.0 / rhs.into_inner())
+        Value(self.0 / rhs.into_f64())
     }
 }
 impl std::ops::Div<&PValue> for Value {
     type Output = Value;
     fn div(self, rhs: &PValue) -> Self::Output {
-        Value(self.0 / rhs.into_inner())
+        Value(self.0 / rhs.into_f64())
     }
 }
 // Sum

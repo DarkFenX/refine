@@ -7,8 +7,12 @@ pub enum ServiceState {
     Offline,
     Online,
 }
-impl From<RState> for ServiceState {
-    fn from(r_state: RState) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ServiceState {
+    pub(crate) fn from_r_state(r_state: RState) -> Self {
         match r_state {
             RState::Ghost => Self::Disabled,
             RState::Disabled => Self::Disabled,
@@ -18,13 +22,11 @@ impl From<RState> for ServiceState {
             RState::Overload => Self::Online,
         }
     }
-}
-impl From<ServiceState> for RState {
-    fn from(service_state: ServiceState) -> Self {
-        match service_state {
-            ServiceState::Disabled => Self::Disabled,
-            ServiceState::Offline => Self::Offline,
-            ServiceState::Online => Self::Online,
+    pub(crate) fn into_r_state(self) -> RState {
+        match self {
+            ServiceState::Disabled => RState::Disabled,
+            ServiceState::Offline => RState::Offline,
+            ServiceState::Online => RState::Online,
         }
     }
 }

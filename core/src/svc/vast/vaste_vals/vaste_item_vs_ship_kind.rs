@@ -1,9 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemId, UShipKind},
+    ud::{ItemId, UFit, UItemId, UShipKind},
     util::RSet,
 };
 
@@ -21,9 +20,9 @@ pub enum ValShipKind {
     Structure,
     Unknown,
 }
-impl From<UShipKind> for ValShipKind {
-    fn from(ship_kind: UShipKind) -> Self {
-        match ship_kind {
+impl ValShipKind {
+    fn from_u_ship_kind(u_ship_kind: UShipKind) -> Self {
+        match u_ship_kind {
             UShipKind::Ship => Self::Ship,
             UShipKind::Structure => Self::Structure,
             UShipKind::Unknown => Self::Unknown,

@@ -14,10 +14,10 @@ pub struct DpsProfile {
 impl DpsProfile {
     pub fn new_clamped(em: f64, thermal: f64, kinetic: f64, explosive: f64, breacher: Option<Breacher>) -> Self {
         Self {
-            em: PValue::new_clamped(em),
-            thermal: PValue::new_clamped(thermal),
-            kinetic: PValue::new_clamped(kinetic),
-            explosive: PValue::new_clamped(explosive),
+            em: PValue::from_f64_clamped(em),
+            thermal: PValue::from_f64_clamped(thermal),
+            kinetic: PValue::from_f64_clamped(kinetic),
+            explosive: PValue::from_f64_clamped(explosive),
             breacher,
         }
     }

@@ -3,57 +3,42 @@ use ordered_float::OrderedFloat;
 use crate::{
     ad::AValue,
     misc::Value,
-    util::{FLOAT_TOLERANCE, LibDefault, sig_round},
+    util::{FLOAT_TOLERANCE, sig_round},
 };
 
 /// Positive float value.
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct PValue(f64);
 impl PValue {
-    pub(crate) const ZERO: Self = Self::new_unchecked(0.0);
-    pub(crate) const ONE: Self = Self::new_unchecked(1.0);
-    pub(crate) const FLOAT_TOLERANCE: Self = Self::new_unchecked(FLOAT_TOLERANCE);
-
-    pub const fn new_clamped(v: f64) -> Self {
+    pub const fn from_f64_clamped(v: f64) -> Self {
         Self(v.max(0.0))
     }
-    pub(crate) const fn new_unchecked(v: f64) -> Self {
+    pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
         Self(v)
     }
-    pub fn into_inner(self) -> f64 {
+    pub fn into_f64(self) -> f64 {
         self.0
     }
 }
-impl From<f64> for PValue {
-    fn from(value: f64) -> Self {
-        Self::new_clamped(value)
-    }
-}
-impl From<PValue> for f64 {
-    fn from(value: PValue) -> Self {
-        value.0
-    }
-}
-impl const LibDefault for PValue {
-    fn lib_default() -> Self {
-        Self(0.0)
-    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl PValue {
+    pub(crate) const ZERO: Self = Self::from_f64_clamped(0.0);
+    pub(crate) const ONE: Self = Self::from_f64_clamped(1.0);
+    pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions between lib-specific types
+// Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
     pub(crate) fn from_a_val_clamped(value: AValue) -> Self {
-        Self::new_clamped(value.into_f64())
+        Self::from_f64_clamped(value.into_f64())
     }
     pub(crate) fn from_val_clamped(value: Value) -> Self {
-        Self::new_clamped(value.into_f64())
-    }
-}
-impl From<PValue> for Value {
-    fn from(value: PValue) -> Self {
-        Self::from_f64(value.into_inner())
+        Self::from_f64_clamped(value.into_f64())
     }
 }
 
@@ -110,7 +95,7 @@ impl std::ops::AddAssign<PValue> for PValue {
 impl std::ops::Sub<PValue> for PValue {
     type Output = PValue;
     fn sub(self, rhs: PValue) -> Self::Output {
-        PValue::new_clamped(self.0 - rhs.0)
+        PValue::from_f64_clamped(self.0 - rhs.0)
     }
 }
 // Multiplication

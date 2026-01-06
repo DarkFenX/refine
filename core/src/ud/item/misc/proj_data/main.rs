@@ -36,8 +36,8 @@ impl UProjData {
         src_radius: Option<PValue>,
         tgt_radius: Option<PValue>,
     ) -> Self {
-        let src_radius = src_radius.unwrap_or(LibDefault::lib_default());
-        let tgt_radius = tgt_radius.unwrap_or(LibDefault::lib_default());
+        let src_radius = src_radius.unwrap_or(PValue::ZERO);
+        let tgt_radius = tgt_radius.unwrap_or(PValue::ZERO);
         let range_c2c = calc_range_c2c(src_physics.coordinates, tgt_physics.coordinates);
         Self {
             src_physics,
@@ -119,7 +119,7 @@ impl UProjData {
 
 fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> PValue {
     // Do not check anything because result will always be positive
-    PValue::new_unchecked(
+    PValue::from_f64_unchecked(
         ((tgt_coordinates.x - src_coordinates.x).powi(2)
             + (tgt_coordinates.y - src_coordinates.y).powi(2)
             + (tgt_coordinates.z - src_coordinates.z).powi(2))
@@ -129,9 +129,9 @@ fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> PValue {
 }
 
 fn calc_range_c2s(range_c2c: PValue, tgt_radius: PValue) -> PValue {
-    PValue::new_clamped(range_c2c.into_inner() - tgt_radius.into_inner())
+    PValue::from_f64_clamped(range_c2c.into_f64() - tgt_radius.into_f64())
 }
 
 fn calc_range_s2s(range_c2c: PValue, src_radius: PValue, tgt_radius: PValue) -> PValue {
-    PValue::new_clamped(range_c2c.into_inner() - src_radius.into_inner() - tgt_radius.into_inner())
+    PValue::from_f64_clamped(range_c2c.into_f64() - src_radius.into_f64() - tgt_radius.into_f64())
 }

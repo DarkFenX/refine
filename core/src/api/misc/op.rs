@@ -38,8 +38,12 @@ pub enum Op {
     /// Non-dogma multiplication operator.
     ExtraMul,
 }
-impl From<AOp> for Op {
-    fn from(a_op: AOp) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Op {
+    pub(in crate::api) fn from_a_op(a_op: AOp) -> Self {
         match a_op {
             AOp::PreAssign => Self::PreAssign,
             AOp::PreMul => Self::PreMul,
@@ -54,9 +58,7 @@ impl From<AOp> for Op {
             AOp::PostAssign => Self::PostAssign,
         }
     }
-}
-impl From<CalcOp> for Op {
-    fn from(calc_op: CalcOp) -> Self {
+    pub(in crate::api) fn from_calc_op(calc_op: CalcOp) -> Self {
         match calc_op {
             CalcOp::PreAssign => Self::PreAssign,
             CalcOp::PreMul => Self::PreMul,
