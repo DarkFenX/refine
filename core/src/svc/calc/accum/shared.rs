@@ -1,15 +1,14 @@
 use crate::{
-    ac,
     ad::AItemCatId,
     misc::{PValue, Value},
 };
 
 const PENALTY_IMMUNE_ITEM_CATS: [AItemCatId; 5] = [
-    ac::itemcats::SHIP,
-    ac::itemcats::CHARGE,
-    ac::itemcats::SKILL,
-    ac::itemcats::IMPLANT,
-    ac::itemcats::SUBSYSTEM,
+    AItemCatId::SHIP,
+    AItemCatId::CHARGE,
+    AItemCatId::SKILL,
+    AItemCatId::IMPLANT,
+    AItemCatId::SUBSYSTEM,
 ];
 // Result of calculation of math.exp((i / 2.67) ** 2.0) using 64-bit python 2.7, with i being
 // position of penalizable value in chain. In EVE client, it seems to have max of 8 values, after
