@@ -8,22 +8,26 @@ use crate::{
 
 impl Pk for EItemAbil {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.item_id.into(), self.abil_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.item_id),
+            KeyPart::from_abil_eid(self.abil_id),
+        ]
     }
 }
 
 impl Fk for EItemAbil {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.item_id.into()]
+        vec![KeyPart::from_item_eid(self.item_id)]
     }
     fn get_effect_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         if let Some(effect_eid) = get_abil_effect(self.abil_id) {
-            fks.push(effect_eid.into());
+            let fk = KeyPart::from_effect_eid(effect_eid);
+            fks.push(fk);
         }
         fks
     }
     fn get_abil_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.abil_id.into()]
+        vec![KeyPart::from_abil_eid(self.abil_id)]
     }
 }

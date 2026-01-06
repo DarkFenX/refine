@@ -1,5 +1,8 @@
 use crate::{
-    ad::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, AModifierSrq, AOp},
+    ad::{
+        AAttrId, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, AItemGrpId, AItemId, AModifierSrq,
+        AOp,
+    },
     ed::EData,
     util::{RMap, StrMsgError},
 };
@@ -27,29 +30,31 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_buffs(e_data: &EData) ->
         for e_item_mod in e_buff.item_mods.iter() {
             a_mods.push(ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::Direct,
-                affectee_attr_id: e_item_mod.attr_id.into(),
+                affectee_attr_id: AAttrId::from_eid(e_item_mod.attr_id),
             });
         }
         for e_loc_mod in e_buff.loc_mods.iter() {
             a_mods.push(ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::Loc,
-                affectee_attr_id: e_loc_mod.attr_id.into(),
+                affectee_attr_id: AAttrId::from_eid(e_loc_mod.attr_id),
             });
         }
         for e_locgroup_mod in e_buff.locgroup_mods.iter() {
             a_mods.push(ABuffModifier {
-                affectee_filter: ABuffAffecteeFilter::LocGrp(e_locgroup_mod.group_id.into()),
-                affectee_attr_id: e_locgroup_mod.attr_id.into(),
+                affectee_filter: ABuffAffecteeFilter::LocGrp(AItemGrpId::from_eid(e_locgroup_mod.group_id)),
+                affectee_attr_id: AAttrId::from_eid(e_locgroup_mod.attr_id),
             });
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
             a_mods.push(ABuffModifier {
-                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::TypeId(e_locsrq_mod.skill_id.into())),
-                affectee_attr_id: e_locsrq_mod.attr_id.into(),
+                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::TypeId(AItemId::from_eid(
+                    e_locsrq_mod.skill_id,
+                ))),
+                affectee_attr_id: AAttrId::from_eid(e_locsrq_mod.attr_id),
             });
         }
         let a_buff = ABuff {
-            id: e_buff.id.into(),
+            id: ABuffId::from_eid(e_buff.id),
             aggr_mode,
             op,
             mods: a_mods,

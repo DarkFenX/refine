@@ -8,14 +8,18 @@ use crate::{
 
 impl Pk for EItemAttr {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.item_id.into(), self.attr_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.item_id),
+            KeyPart::from_attr_eid(self.attr_id),
+        ]
     }
 }
 
 impl Fk for EItemAttr {
     fn get_item_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
-        fks.push(self.item_id.into());
+        let fk = KeyPart::from_item_eid(self.item_id);
+        fks.push(fk);
         if let Some(fk) = self.get_fk_from_val(EAttrUnitId::ITEM_ID, g_supp) {
             fks.push(fk);
         }
@@ -39,7 +43,8 @@ impl Fk for EItemAttr {
     }
     fn get_attr_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        vec.push(self.attr_id.into());
+        let fk = KeyPart::from_attr_eid(self.attr_id);
+        vec.push(fk);
         if let Some(fk) = self.get_fk_from_val(EAttrUnitId::ATTR_ID, g_supp) {
             vec.push(fk);
         }

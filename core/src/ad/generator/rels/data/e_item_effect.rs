@@ -8,15 +8,18 @@ use crate::{
 
 impl Pk for EItemEffect {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.item_id.into(), self.effect_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.item_id),
+            KeyPart::from_effect_eid(self.effect_id),
+        ]
     }
 }
 
 impl Fk for EItemEffect {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.item_id.into()]
+        vec![KeyPart::from_item_eid(self.item_id)]
     }
     fn get_effect_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.effect_id.into()]
+        vec![KeyPart::from_effect_eid(self.effect_id)]
     }
 }

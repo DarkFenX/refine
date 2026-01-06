@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttr, AAttrId},
+    ad::{AAttr, AAttrId, AValue},
     ed::EData,
     util::RMap,
 };
@@ -9,14 +9,14 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_attrs(e_data: &EData) ->
         .attrs
         .data
         .iter()
-        .map(|v| {
+        .map(|e_attr| {
             let a_attr = AAttr {
-                id: v.id.into(),
-                penalizable: !v.stackable,
-                hig: v.high_is_good,
-                def_val: v.default_value.into(),
-                min_attr_id: v.min_attr_id.map(Into::into),
-                max_attr_id: v.max_attr_id.map(Into::into),
+                id: AAttrId::from_eid(e_attr.id),
+                penalizable: !e_attr.stackable,
+                hig: e_attr.high_is_good,
+                def_val: AValue::from_efloat(e_attr.default_value),
+                min_attr_id: e_attr.min_attr_id.map(AAttrId::from_eid),
+                max_attr_id: e_attr.max_attr_id.map(AAttrId::from_eid),
             };
             (a_attr.id, a_attr)
         })

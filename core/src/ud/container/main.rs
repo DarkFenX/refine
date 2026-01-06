@@ -4,13 +4,7 @@ use slab::Slab;
 
 use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, RMap};
 
-pub(crate) struct UEntityContainer<T, ExtId, IntId, Err>
-where
-    T: LibGetId<ExtId> + LibNamed,
-    IntId: Copy + From<usize> + Into<usize>,
-    ExtId: Copy + Eq + Hash + LibDefault + LibIncrement,
-    Err: From<ExtId>,
-{
+pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
     pub(super) data: Slab<T>,
     pub(super) eid_to_key: RMap<ExtId, usize>,

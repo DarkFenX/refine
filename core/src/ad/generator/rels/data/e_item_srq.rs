@@ -8,12 +8,18 @@ use crate::{
 
 impl Pk for EItemSkillReq {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.item_id.into(), self.skill_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.item_id),
+            KeyPart::from_item_eid(self.skill_id),
+        ]
     }
 }
 
 impl Fk for EItemSkillReq {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.item_id.into(), self.skill_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.item_id),
+            KeyPart::from_item_eid(self.skill_id),
+        ]
     }
 }

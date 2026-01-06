@@ -84,19 +84,22 @@ impl KeyDb {
     }
     fn process_standalone_data(&mut self, g_supp: &GSupport) {
         for a_attr in g_supp.standalone_attrs.iter() {
-            self.attrs.extend(a_attr.iter_attr_eids().map(Into::into));
+            self.attrs.extend(a_attr.iter_attr_eids().map(KeyPart::from_attr_eid));
         }
         for a_effect in g_supp.standalone_effects.iter() {
-            self.items.extend(a_effect.iter_item_eids().map(Into::into));
-            self.attrs.extend(a_effect.iter_attr_eids().map(Into::into));
-            self.effects.extend(a_effect.iter_effect_eids().map(Into::into));
-            self.buffs.extend(a_effect.iter_buff_eids().map(Into::into));
-            self.item_lists.extend(a_effect.iter_item_list_eids().map(Into::into));
+            self.items.extend(a_effect.iter_item_eids().map(KeyPart::from_item_eid));
+            self.attrs.extend(a_effect.iter_attr_eids().map(KeyPart::from_attr_eid));
+            self.effects
+                .extend(a_effect.iter_effect_eids().map(KeyPart::from_effect_eid));
+            self.buffs.extend(a_effect.iter_buff_eids().map(KeyPart::from_buff_eid));
+            self.item_lists
+                .extend(a_effect.iter_item_list_eids().map(KeyPart::from_item_list_eid));
         }
         for a_buff in g_supp.standalone_buffs.iter() {
-            self.groups.extend(a_buff.iter_group_eids().map(Into::into));
-            self.attrs.extend(a_buff.iter_attr_eids().map(Into::into));
-            self.buffs.extend(a_buff.iter_buff_eids().map(Into::into))
+            self.groups
+                .extend(a_buff.iter_group_eids().map(KeyPart::from_item_grp_eid));
+            self.attrs.extend(a_buff.iter_attr_eids().map(KeyPart::from_attr_eid));
+            self.buffs.extend(a_buff.iter_buff_eids().map(KeyPart::from_buff_eid))
         }
     }
 }

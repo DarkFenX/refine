@@ -9,7 +9,7 @@ use crate::{
 
 impl Pk for EAttr {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.id.into()]
+        vec![KeyPart::from_attr_eid(self.id)]
     }
 }
 
@@ -39,8 +39,8 @@ impl Fk for EAttr {
     }
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
-        vec_push_opt(&mut fks, self.min_attr_id.map(Into::into));
-        vec_push_opt(&mut fks, self.max_attr_id.map(Into::into));
+        vec_push_opt(&mut fks, self.min_attr_id.map(KeyPart::from_attr_eid));
+        vec_push_opt(&mut fks, self.max_attr_id.map(KeyPart::from_attr_eid));
         if let Some(fk) = self.get_fk_from_defval(EAttrUnitId::ATTR_ID) {
             fks.push(fk);
         }

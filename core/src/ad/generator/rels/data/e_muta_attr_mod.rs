@@ -8,15 +8,18 @@ use crate::{
 
 impl Pk for EMutaAttrMod {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.muta_id.into(), self.attr_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.muta_id),
+            KeyPart::from_attr_eid(self.attr_id),
+        ]
     }
 }
 
 impl Fk for EMutaAttrMod {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.muta_id.into()]
+        vec![KeyPart::from_item_eid(self.muta_id)]
     }
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.attr_id.into()]
+        vec![KeyPart::from_attr_eid(self.attr_id)]
     }
 }

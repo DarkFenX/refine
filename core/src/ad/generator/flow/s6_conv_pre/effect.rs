@@ -2,8 +2,8 @@ use std::hash::Hash;
 
 use crate::{
     ad::{
-        AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp,
-        AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItemGrpId,
+        AItemId, AModifierSrq, AOp, AState,
         generator::{GSupport, get_abil_effect},
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EItemGrpId, EItemId, EPrimitive},
@@ -39,27 +39,30 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             }
         };
         let mut a_effect = AEffect {
-            id: e_effect.id.into(),
-            category: e_effect.category_id.into(),
+            id: AEffectId::from_eid(e_effect.id),
+            category: AEffectCatId::from_eid(e_effect.category_id),
             state,
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
-            discharge_attr_id: e_effect.discharge_attr_id.map(Into::into),
-            duration_attr_id: e_effect.duration_attr_id.map(Into::into),
-            range_attr_id: e_effect.range_attr_id.map(Into::into),
-            falloff_attr_id: e_effect.falloff_attr_id.map(Into::into),
-            track_attr_id: e_effect.tracking_attr_id.map(Into::into),
-            chance_attr_id: e_effect.usage_chance_attr_id.map(Into::into),
-            resist_attr_id: e_effect.resist_attr_id.map(Into::into),
+            discharge_attr_id: e_effect.discharge_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            duration_attr_id: e_effect.duration_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            range_attr_id: e_effect.range_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            falloff_attr_id: e_effect.falloff_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            track_attr_id: e_effect.tracking_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            chance_attr_id: e_effect
+                .usage_chance_attr_id
+                .map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            resist_attr_id: e_effect.resist_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
             ..
         };
         for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
             match extract_stopper(e_modifier) {
                 Ok(Some(effect_id)) => {
-                    if !a_effect.stopped_effect_ids.contains(&effect_id.into()) {
-                        a_effect.stopped_effect_ids.push(effect_id.into())
+                    let effect_aid = AEffectId::from_eid(effect_id);
+                    if !a_effect.stopped_effect_ids.contains(&effect_aid) {
+                        a_effect.stopped_effect_ids.push(effect_aid)
                     };
                     continue;
                 }
@@ -151,43 +154,43 @@ fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgE
 
 fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
+        affector_attr_id: get_mod_affector_attr_aid(e_modifier)?,
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::Direct(get_mod_location(e_modifier, a_effect)?),
-        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
+        affectee_attr_id: get_mod_affectee_attr_aid(e_modifier)?,
     })
 }
 
 fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
+        affector_attr_id: get_mod_affector_attr_aid(e_modifier)?,
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::Loc(get_mod_location(e_modifier, a_effect)?),
-        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
+        affectee_attr_id: get_mod_affectee_attr_aid(e_modifier)?,
     })
 }
 
 fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
+        affector_attr_id: get_mod_affector_attr_aid(e_modifier)?,
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::LocGrp(
             get_mod_location(e_modifier, a_effect)?,
-            get_mod_grp_eid(e_modifier)?.into(),
+            get_mod_grp_aid(e_modifier)?,
         ),
-        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
+        affectee_attr_id: get_mod_affectee_attr_aid(e_modifier)?,
     })
 }
 
 fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
+        affector_attr_id: get_mod_affector_attr_aid(e_modifier)?,
         op: get_mod_operation(e_modifier)?,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             get_mod_location(e_modifier, a_effect)?,
-            AModifierSrq::TypeId(get_mod_skill_eid(e_modifier)?.into()),
+            AModifierSrq::TypeId(get_mod_skill_aid(e_modifier)?),
         ),
-        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
+        affectee_attr_id: get_mod_affectee_attr_aid(e_modifier)?,
     })
 }
 
@@ -204,19 +207,23 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
         });
     }
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_src_attr_eid(e_modifier)?.into(),
+        affector_attr_id: get_mod_affector_attr_aid(e_modifier)?,
         op: get_mod_operation(e_modifier)?,
-        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(get_mod_skill_eid(e_modifier)?.into())),
-        affectee_attr_id: get_mod_affectee_attr_eid(e_modifier)?.into(),
+        affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::TypeId(get_mod_skill_aid(e_modifier)?)),
+        affectee_attr_id: get_mod_affectee_attr_aid(e_modifier)?,
     })
 }
 
-fn get_mod_src_attr_eid(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifyingAttributeID").map(EAttrId::from_i32)
+fn get_mod_affector_attr_aid(e_modifier: &EEffectMod) -> Result<AAttrId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "modifyingAttributeID")
+        .map(EAttrId::from_i32)
+        .map(AAttrId::from_eid)
 }
 
-fn get_mod_affectee_attr_eid(e_modifier: &EEffectMod) -> Result<EAttrId, StrMsgError> {
-    get_arg_int(&e_modifier.args, "modifiedAttributeID").map(EAttrId::from_i32)
+fn get_mod_affectee_attr_aid(e_modifier: &EEffectMod) -> Result<AAttrId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "modifiedAttributeID")
+        .map(EAttrId::from_i32)
+        .map(AAttrId::from_eid)
 }
 
 fn get_mod_location(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectLocation, StrMsgError> {
@@ -258,12 +265,16 @@ fn get_mod_operation(e_modifier: &EEffectMod) -> Result<AOp, StrMsgError> {
     }
 }
 
-fn get_mod_grp_eid(e_modifier: &EEffectMod) -> Result<EItemGrpId, StrMsgError> {
-    Ok(EItemGrpId::from_i32(get_arg_int(&e_modifier.args, "groupID")?))
+fn get_mod_grp_aid(e_modifier: &EEffectMod) -> Result<AItemGrpId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "groupID")
+        .map(EItemGrpId::from_i32)
+        .map(AItemGrpId::from_eid)
 }
 
-fn get_mod_skill_eid(e_modifier: &EEffectMod) -> Result<EItemId, StrMsgError> {
-    Ok(EItemId::from_i32(get_arg_int(&e_modifier.args, "skillTypeID")?))
+fn get_mod_skill_aid(e_modifier: &EEffectMod) -> Result<AItemId, StrMsgError> {
+    get_arg_int(&e_modifier.args, "skillTypeID")
+        .map(EItemId::from_i32)
+        .map(AItemId::from_eid)
 }
 
 fn get_arg_int(args: &RMap<String, EPrimitive>, name: &str) -> Result<i32, StrMsgError> {
@@ -283,7 +294,7 @@ fn get_arg_str(args: &RMap<String, EPrimitive>, name: &str) -> Result<String, St
         msg: format!("no \"{name}\" in args"),
     })?;
     match primitive {
-        EPrimitive::String(s) => Ok(s.into()),
+        EPrimitive::String(s) => Ok(s.clone()),
         _ => Err(StrMsgError {
             msg: format!("expected string in \"{name}\" value"),
         }),
@@ -300,7 +311,7 @@ where
         match get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
-                .entry(effect_id.into())
+                .entry(AEffectId::from_eid(effect_id))
                 .or_insert_with(RSet::new)
                 .insert(getter(e_abil)),
         };

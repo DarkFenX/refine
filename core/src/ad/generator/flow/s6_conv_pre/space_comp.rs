@@ -2,46 +2,47 @@ use itertools::Itertools;
 
 use crate::{
     ad::{
-        AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AEffectCatId, AEffectId, AItemEffectData, AItemId, AItemListId, AState,
+        ABuffId, AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItemEffectData, AItemId, AItemListId, AState, AValue,
     },
     ed::{EData, EItemSpaceCompBuffData},
 };
 
 pub(in crate::ad::generator::flow::s6_conv_pre) fn apply_space_comps(e_data: &EData, a_data: &mut AData) {
     for e_space_comp in e_data.space_comps.data.iter() {
-        if !a_data.items.contains_key(&e_space_comp.item_id.into()) {
+        let item_aid = AItemId::from_eid(e_space_comp.item_id);
+        if !a_data.items.contains_key(&item_aid) {
             continue;
         }
         process_buffs(
             &e_space_comp.system_wide_buffs,
             a_data,
-            e_space_comp.item_id.into(),
-            AEffectId::ScSystemWide(e_space_comp.item_id.into()),
+            item_aid,
+            AEffectId::ScSystemWide(item_aid),
         );
         process_buffs(
             &e_space_comp.system_emitter_buffs,
             a_data,
-            e_space_comp.item_id.into(),
-            AEffectId::ScSystemEmitter(e_space_comp.item_id.into()),
+            item_aid,
+            AEffectId::ScSystemEmitter(item_aid),
         );
         process_buffs(
             &e_space_comp.proxy_effect_buffs,
             a_data,
-            e_space_comp.item_id.into(),
-            AEffectId::ScProxyEffect(e_space_comp.item_id.into()),
+            item_aid,
+            AEffectId::ScProxyEffect(item_aid),
         );
         process_buffs(
             &e_space_comp.proxy_trigger_buffs,
             a_data,
-            e_space_comp.item_id.into(),
-            AEffectId::ScProxyTrap(e_space_comp.item_id.into()),
+            item_aid,
+            AEffectId::ScProxyTrap(item_aid),
         );
         process_buffs(
             &e_space_comp.ship_link_buffs,
             a_data,
-            e_space_comp.item_id.into(),
-            AEffectId::ScShipLink(e_space_comp.item_id.into()),
+            item_aid,
+            AEffectId::ScShipLink(item_aid),
         );
     }
 }
@@ -59,21 +60,21 @@ fn process_buffs(
     let valid_buffs = e_sc_buff_data
         .buffs
         .iter()
-        .filter(|v| a_data.buffs.contains_key(&v.id.into()))
+        .filter(|e_entry| a_data.buffs.contains_key(&ABuffId::from_eid(e_entry.id)))
         .collect_vec();
     if valid_buffs.is_empty() {
         return;
     }
     let item_list_aid = match e_sc_buff_data.item_list_filter {
-        Some(item_list_eid) => item_list_eid.into(),
+        Some(item_list_eid) => AItemListId::from_eid(item_list_eid),
         None => AItemListId::SHIPS,
     };
     let buff = AEffectBuff {
         full: valid_buffs
             .iter()
             .map(|v| AEffectBuffFull {
-                buff_id: v.id.into(),
-                strength: AEffectBuffStrength::Hardcoded(v.value.into()),
+                buff_id: ABuffId::from_eid(v.id),
+                strength: AEffectBuffStrength::Hardcoded(AValue::from_efloat(v.value)),
                 duration: AEffectBuffDuration::None,
                 scope: AEffectBuffScope::Projected(item_list_aid),
             })

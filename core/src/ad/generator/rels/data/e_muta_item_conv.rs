@@ -8,12 +8,19 @@ use crate::{
 
 impl Pk for EMutaItemConv {
     fn get_pk(&self) -> Vec<KeyPart> {
-        vec![self.muta_id.into(), self.in_item_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.muta_id),
+            KeyPart::from_item_eid(self.in_item_id),
+        ]
     }
 }
 
 impl Fk for EMutaItemConv {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
-        vec![self.muta_id.into(), self.in_item_id.into(), self.out_item_id.into()]
+        vec![
+            KeyPart::from_item_eid(self.muta_id),
+            KeyPart::from_item_eid(self.in_item_id),
+            KeyPart::from_item_eid(self.out_item_id),
+        ]
     }
 }

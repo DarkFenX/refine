@@ -1,7 +1,10 @@
 use itertools::Itertools;
 
 use crate::{
-    ad::generator::{GSupport, rels::KeyDb},
+    ad::generator::{
+        GSupport,
+        rels::{KeyDb, KeyPart},
+    },
     ed::{EBuffId, EData, EDataCont, EItemCatId, EItemGrpId, EItemListId},
     util::{LibNamed, RSet, StrMsgError},
 };
@@ -145,19 +148,19 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
 fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> bool {
     let fkdb = KeyDb::new_fkdb(alive, g_supp);
     move_data(&mut trash.items, &mut alive.items, |v| {
-        fkdb.items.contains(&v.id.into())
+        fkdb.items.contains(&KeyPart::from_item_eid(v.id))
     }) || move_data(&mut trash.groups, &mut alive.groups, |v| {
-        fkdb.groups.contains(&v.id.into())
+        fkdb.groups.contains(&KeyPart::from_item_grp_eid(v.id))
     }) || move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
-        fkdb.item_lists.contains(&v.id.into())
+        fkdb.item_lists.contains(&KeyPart::from_item_list_eid(v.id))
     }) || move_data(&mut trash.attrs, &mut alive.attrs, |v| {
-        fkdb.attrs.contains(&v.id.into())
+        fkdb.attrs.contains(&KeyPart::from_attr_eid(v.id))
     }) || move_data(&mut trash.effects, &mut alive.effects, |v| {
-        fkdb.effects.contains(&v.id.into())
+        fkdb.effects.contains(&KeyPart::from_effect_eid(v.id))
     }) || move_data(&mut trash.abils, &mut alive.abils, |v| {
-        fkdb.abils.contains(&v.id.into())
+        fkdb.abils.contains(&KeyPart::from_abil_eid(v.id))
     }) || move_data(&mut trash.buffs, &mut alive.buffs, |v| {
-        fkdb.buffs.contains(&v.id.into())
+        fkdb.buffs.contains(&KeyPart::from_buff_eid(v.id))
     })
 }
 
