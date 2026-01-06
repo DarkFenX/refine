@@ -69,8 +69,8 @@ pub(super) fn diminish_mul(val: Value, proj_mult: Option<PValue>, res_mult: Opti
 pub(super) fn preprocess_assign_diminish_mult(mult: Option<PValue>) -> Option<Option<PValue>> {
     match mult {
         // None means modification shouldn't be added
-        Some(PValue::from_f64_unchecked(0.0)) => None,
-        Some(_) => Some(Some(PValue::from_f64_unchecked(1.0))),
+        Some(PValue::ZERO) => None,
+        Some(_) => Some(Some(PValue::ONE)),
         None => Some(None),
     }
 }

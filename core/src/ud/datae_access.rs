@@ -72,7 +72,7 @@ impl UData {
     pub(crate) fn get_fit_ship_radius(&self, fit_uid: UFitId) -> PValue {
         let ship_uid = match self.fits.get(fit_uid).ship {
             Some(ship_uid) => ship_uid,
-            None => return PValue::from_f64_unchecked(0.0),
+            None => return PValue::ZERO,
         };
         self.items.get(ship_uid).get_direct_radius()
     }

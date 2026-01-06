@@ -27,8 +27,8 @@ impl From<HSpool> for rc::Spool {
         match h_spool {
             HSpool::Cycles(count) => Self::Cycles(count),
             HSpool::Time(count) => Self::Time(count),
-            HSpool::SpoolScale(value) => Self::SpoolScale(rc::UnitInterval::new_clamped(value)),
-            HSpool::CycleScale(value) => Self::CycleScale(rc::UnitInterval::new_clamped(value)),
+            HSpool::SpoolScale(value) => Self::SpoolScale(rc::UnitInterval::from_f64_clamped(value)),
+            HSpool::CycleScale(value) => Self::CycleScale(rc::UnitInterval::from_f64_clamped(value)),
         }
     }
 }

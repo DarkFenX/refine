@@ -66,7 +66,7 @@ impl CustomAttrId {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AttrId {
-    pub(in crate::api) fn from_aid(attr_aid: AAttrId) -> Self {
+    pub(crate) fn from_aid(attr_aid: AAttrId) -> Self {
         match attr_aid {
             AAttrId::Eve(id) => Self::Eve(EveAttrId(id.into_i32())),
             AAttrId::Custom(id) => Self::Custom(CustomAttrId(id.into_i32())),

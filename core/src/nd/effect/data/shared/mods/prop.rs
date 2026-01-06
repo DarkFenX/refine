@@ -1,11 +1,10 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ac,
-    ad::{AEffectAffecteeFilter, AEffectLocation, AEffectModifier, AOp},
-    def::{AttrVal, OF},
-    misc::{AttrSpec, EffectSpec},
-    nd::effect::data::shared::util::get_item_fit_ship_key,
+    ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModifier, AOp},
+    api::AttrId,
+    misc::{AttrSpec, EffectSpec, Value},
+    nd::effect::data::shared::util::get_item_fit_ship_uid,
     rd::RAttrConsts,
     svc::{
         SvcCtx,
@@ -78,7 +77,7 @@ pub(in crate::nd::effect::data) fn add_prop_speed_mod(
 
 fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
-    if let Some(ship_uid) = get_item_fit_ship_key(ctx, item_uid)
+    if let Some(ship_uid) = get_item_fit_ship_uid(ctx, item_uid)
         && let Some(speed_factor_rid) = ctx.ac().speed_factor
         && let Some(speed_boost_factor_rid) = ctx.ac().speed_boost_factor
         && let Some(mass_rid) = ctx.ac().mass
@@ -87,23 +86,25 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
         info.extend([
             Affector {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr_by_rid(speed_factor_rid).aid.into()),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(speed_factor_rid).aid)),
             },
             Affector {
                 item_id,
-                attr_id: Some(ctx.u_data.src.get_attr_by_rid(speed_boost_factor_rid).aid.into()),
+                attr_id: Some(AttrId::from_aid(
+                    ctx.u_data.src.get_attr_by_rid(speed_boost_factor_rid).aid,
+                )),
             },
             Affector {
                 item_id: ctx.u_data.items.eid_by_iid(ship_uid),
-                attr_id: Some(ctx.u_data.src.get_attr_by_rid(mass_rid).aid.into()),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(mass_rid).aid)),
             },
         ]);
     }
     info
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVal> {
-    let ship_uid = get_item_fit_ship_key(ctx, espec.item_uid)?;
+fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+    let ship_uid = get_item_fit_ship_uid(ctx, espec.item_uid)?;
     let speed_boost = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().speed_factor)?;
     let thrust = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().speed_boost_factor)?;
     let mass = calc.get_item_oattr_odogma(ctx, ship_uid, ctx.ac().mass)?;
@@ -111,7 +112,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<AttrVa
     if !perc.is_finite() {
         return None;
     }
-    let val = OF(1.0) + perc / OF(100.0);
+    let val = perc.mul_add(Value::HUNDREDTH, Value::ONE);
     // Register dependencies, so that affectee attribute is properly cleared up when any of affector
     // attributes change
     reg_dependencies(calc, ctx.ac(), ship_uid, espec);

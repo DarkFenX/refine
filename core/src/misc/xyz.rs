@@ -1,4 +1,4 @@
-use crate::misc::Value;
+use crate::misc::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub(crate) struct Xyz {
@@ -10,8 +10,8 @@ impl Xyz {
     pub(crate) fn get_vector_dot_product(self, rhs: Self) -> Value {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
-    pub(crate) fn get_vector_magnitude(self) -> Value {
-        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
+    pub(crate) fn get_vector_magnitude(self) -> PValue {
+        PValue::from_val_unchecked((self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt())
     }
     pub(crate) fn get_vector_unit(self) -> Self {
         let magnitude = self.get_vector_magnitude();
@@ -48,6 +48,17 @@ impl std::ops::Mul<Value> for Xyz {
     type Output = Self;
 
     fn mul(self, rhs: Value) -> Self::Output {
+        Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
+        }
+    }
+}
+impl std::ops::Mul<PValue> for Xyz {
+    type Output = Self;
+
+    fn mul(self, rhs: PValue) -> Self::Output {
         Self {
             x: self.x * rhs,
             y: self.y * rhs,

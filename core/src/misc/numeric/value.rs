@@ -26,6 +26,7 @@ impl Value {
     pub(crate) const ONE: Self = Self::from_f64(1.0);
     pub(crate) const HUNDRED: Self = Self::from_f64(100.0);
     pub(crate) const THOUSAND: Self = Self::from_f64(1000.0);
+    pub(crate) const HUNDREDTH: Self = Self::from_f64(0.01);
     pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64(FLOAT_TOLERANCE);
 }
 
@@ -36,8 +37,8 @@ impl Value {
     pub(crate) fn from_a_value(a_value: AValue) -> Self {
         Self(a_value.into_f64())
     }
-    pub(crate) fn from_pval(pval: PValue) -> Self {
-        Self(pval.into_f64())
+    pub(crate) fn from_pvalue(pvalue: PValue) -> Self {
+        Self(pvalue.into_f64())
     }
     pub(crate) fn from_count(count: Count) -> Self {
         Self(count.into_u32() as f64)
@@ -86,6 +87,9 @@ impl Value {
     pub(crate) fn ceil(self) -> Self {
         Self(self.0.ceil())
     }
+    pub(crate) fn exp(self) -> PValue {
+        PValue::from_f64_unchecked(self.0.exp())
+    }
     pub(crate) fn powi(self, n: i32) -> Self {
         Self(self.0.powi(n))
     }
@@ -101,14 +105,11 @@ impl Value {
     pub(crate) fn is_finite(&self) -> bool {
         self.0.is_finite()
     }
-}
-impl std::ops::Neg for Value {
-    type Output = Value;
-    fn neg(self) -> Self::Output {
-        Value(-self.0)
+    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        Self(self.0.mul_add(a.0, b.0))
     }
 }
-impl std::ops::Neg for &Value {
+impl std::ops::Neg for Value {
     type Output = Value;
     fn neg(self) -> Self::Output {
         Value(-self.0)
@@ -133,10 +134,10 @@ impl std::ops::Sub<Value> for Value {
         Value(self.0 - rhs.0)
     }
 }
-impl std::ops::Sub<Value> for &Value {
+impl std::ops::Sub<PValue> for Value {
     type Output = Value;
-    fn sub(self, rhs: Value) -> Self::Output {
-        Value(self.0 - rhs.0)
+    fn sub(self, rhs: PValue) -> Self::Output {
+        Value(self.0 - rhs.into_f64())
     }
 }
 impl std::ops::SubAssign<Value> for Value {
@@ -174,33 +175,15 @@ impl std::ops::Div<f64> for Value {
         Value(self.0 / rhs)
     }
 }
-impl std::ops::Div<f64> for &Value {
-    type Output = Value;
-    fn div(self, rhs: f64) -> Self::Output {
-        Value(self.0 / rhs)
-    }
-}
 impl std::ops::Div<Value> for Value {
     type Output = Value;
     fn div(self, rhs: Value) -> Self::Output {
         Value(self.0 / rhs.0)
     }
 }
-impl std::ops::Div<&Value> for Value {
-    type Output = Value;
-    fn div(self, rhs: &Value) -> Self::Output {
-        Value(self.0 / rhs.0)
-    }
-}
 impl std::ops::Div<PValue> for Value {
     type Output = Value;
     fn div(self, rhs: PValue) -> Self::Output {
-        Value(self.0 / rhs.into_f64())
-    }
-}
-impl std::ops::Div<&PValue> for Value {
-    type Output = Value;
-    fn div(self, rhs: &PValue) -> Self::Output {
         Value(self.0 / rhs.into_f64())
     }
 }

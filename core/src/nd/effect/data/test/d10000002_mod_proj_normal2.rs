@@ -8,7 +8,7 @@ use crate::{
 };
 
 const EFFECT_EID: EEffectId = EEffectId::from_i32(10_000_002);
-const EFFECT_AID: AEffectId = EFFECT_EID.into();
+const EFFECT_AID: AEffectId = AEffectId::from_eid(EFFECT_EID);
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

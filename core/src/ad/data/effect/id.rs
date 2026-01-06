@@ -110,7 +110,7 @@ impl ACustomEffectId {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AEffectId {
-    pub(in crate::ad) const fn from_eid(effect_eid: EEffectId) -> Self {
+    pub(crate) const fn from_eid(effect_eid: EEffectId) -> Self {
         Self::Dogma(ADogmaEffectId(effect_eid.into_i32()))
     }
 }

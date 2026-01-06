@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::{AEffect, AEffectId},
-    ec,
+    ad::{AAttrId, AEffect, AEffectId},
     ed::EEffectId,
     nd::{NEffect, effect::data::shared::mods::mk_subsystem_mod},
 };

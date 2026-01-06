@@ -1,7 +1,4 @@
-use crate::{
-    ac,
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModifier, AModifierSrq, AOp},
-};
+use crate::ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModifier, AModifierSrq, AOp};
 
 pub(in crate::nd::effect::data) fn update_effect(effect_aid: AEffectId, a_effect: &mut AEffect, attr_aid: AAttrId) {
     if !a_effect.modifiers.is_empty() {

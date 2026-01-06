@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     misc::{EffectMode, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState, Src},
@@ -127,7 +126,7 @@ impl UShip {
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
         match self.get_axt() {
             Some(axt) => axt.radius,
-            None => PValue::from_f64_unchecked(0.0),
+            None => PValue::ZERO,
         }
     }
     pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
@@ -141,8 +140,8 @@ impl UShip {
     }
     fn update_ship_kind(&mut self) {
         self.kind = match self.get_category_id() {
-            Some(ac::itemcats::SHIP) => UShipKind::Ship,
-            Some(ac::itemcats::STRUCTURE) => UShipKind::Structure,
+            Some(AItemCatId::SHIP) => UShipKind::Ship,
+            Some(AItemCatId::STRUCTURE) => UShipKind::Structure,
             _ => UShipKind::Unknown,
         };
     }

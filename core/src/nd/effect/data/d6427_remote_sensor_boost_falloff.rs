@@ -1,7 +1,5 @@
 use crate::{
-    ac,
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
-    ec,
     ed::EEffectId,
     nd::{
         NEffect,

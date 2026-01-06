@@ -1,6 +1,5 @@
 use crate::{
-    def::{AttrVal, OF},
-    misc::Ecm,
+    misc::{Ecm, PValue, Value},
     rd::REffect,
     svc::{
         SvcCtx,
@@ -17,7 +16,9 @@ pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
     effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
-    let duration = calc.get_item_oattr_afb_oextra(ctx, item_uid, effect.duration_attr_rid, OF(0.0))? / OF(1000.0);
+    let duration = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, effect.duration_attr_rid, Value::ZERO)? / Value::THOUSAND,
+    );
     Some(Output::Simple(OutputSimple {
         amount: Ecm {
             radar,
@@ -26,7 +27,7 @@ pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
             ladar,
             duration,
         },
-        delay: OF(0.0),
+        delay: PValue::ZERO,
     }))
 }
 
@@ -43,9 +44,9 @@ pub(in crate::nd::effect::data) fn get_ecm_burst_base_opc(
             magnetometric,
             gravimetric,
             ladar,
-            duration: OF(0.0),
+            duration: PValue::ZERO,
         },
-        delay: OF(0.0),
+        delay: PValue::ZERO,
     }))
 }
 
@@ -56,9 +57,13 @@ pub(in crate::nd::effect::data) fn get_aoe_ecm_base_opc(
     _effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
-    let duration = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_aoe_duration, OF(0.0))? / OF(1000.0);
-    let delay =
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, OF(0.0))? / OF(1000.0);
+    let duration = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_aoe_duration, Value::ZERO)? / Value::THOUSAND,
+    );
+    let delay = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
+            / Value::THOUSAND,
+    );
     Some(Output::Simple(OutputSimple {
         amount: Ecm {
             radar,
@@ -78,7 +83,9 @@ pub(in crate::nd::effect::data) fn get_ecm_drone_base_opc(
     _effect: &REffect,
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
-    let duration = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().ecm_jam_duration, OF(0.0))? / OF(1000.0);
+    let duration = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().ecm_jam_duration, Value::ZERO)? / Value::THOUSAND,
+    );
     Some(Output::Simple(OutputSimple {
         amount: Ecm {
             radar,
@@ -87,15 +94,35 @@ pub(in crate::nd::effect::data) fn get_ecm_drone_base_opc(
             ladar,
             duration,
         },
-        delay: OF(0.0),
+        delay: PValue::ZERO,
     }))
 }
 
-fn get_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<(AttrVal, AttrVal, AttrVal, AttrVal)> {
+fn get_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<(PValue, PValue, PValue, PValue)> {
     Some((
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_radar_strength_bonus, OF(0.0))?,
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_magnetometric_strength_bonus, OF(0.0))?,
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_gravimetric_strength_bonus, OF(0.0))?,
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_ladar_strength_bonus, OF(0.0))?,
+        PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_radar_strength_bonus,
+            Value::ZERO,
+        )?),
+        PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_magnetometric_strength_bonus,
+            Value::ZERO,
+        )?),
+        PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_gravimetric_strength_bonus,
+            Value::ZERO,
+        )?),
+        PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_ladar_strength_bonus,
+            Value::ZERO,
+        )?),
     ))
 }

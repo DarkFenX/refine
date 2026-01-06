@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::{AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId},
-    ec,
+    ad::{AAttrId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId, AItemListId},
     ed::EEffectId,
     nd::{
         NEffect,

@@ -7,8 +7,9 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    api::AttrId,
     misc::{EffectSpec, Value},
-    nd::{NEffect, effect::data::shared::util::get_item_fit_ship_key},
+    nd::{NEffect, effect::data::shared::util::get_item_fit_ship_uid},
     rd::RAttrConsts,
     svc::{
         SvcCtx,
@@ -86,7 +87,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
 }
 
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
-    let ship_uid = get_item_fit_ship_key(ctx, espec.item_uid)?;
+    let ship_uid = get_item_fit_ship_uid(ctx, espec.item_uid)?;
     let missile_velocity = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().max_velocity)?;
     let ship_radius = ctx.u_data.items.get(ship_uid).get_direct_radius();
     // Missile flight time is stored in milliseconds
@@ -103,20 +104,20 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value>
 
 fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
-    if let Some(ship_uid) = get_item_fit_ship_key(ctx, item_uid)
+    if let Some(ship_uid) = get_item_fit_ship_uid(ctx, item_uid)
         && let Some(max_velocity_rid) = ctx.ac().max_velocity
         && let Some(radius_rid) = ctx.ac().radius
     {
         info.extend([
             Affector {
                 item_id: ctx.u_data.items.eid_by_iid(item_uid),
-                attr_id: Some(ctx.u_data.src.get_attr_by_rid(max_velocity_rid).aid.into()),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(max_velocity_rid).aid)),
             },
             // There is no dependency on modified ship radius, but we add it for informational
             // purposes nevertheless
             Affector {
                 item_id: ctx.u_data.items.eid_by_iid(ship_uid),
-                attr_id: Some(ctx.u_data.src.get_attr_by_rid(radius_rid).aid.into()),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(radius_rid).aid)),
             },
         ]);
     };

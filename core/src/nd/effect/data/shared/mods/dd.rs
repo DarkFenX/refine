@@ -1,7 +1,5 @@
-use crate::{
-    ac,
-    ad::{AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength},
-    def::OF,
+use crate::ad::{
+    AAttrId, ABuffId, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AValue,
 };
 
 pub(in crate::nd::effect::data) fn make_dd_self_debuffs() -> impl Iterator<Item = AEffectBuffFull> {
@@ -22,7 +20,7 @@ pub(in crate::nd::effect::data) fn make_dd_self_debuffs() -> impl Iterator<Item 
         // Long debuffs
         AEffectBuffFull {
             buff_id: ABuffId::DISALLOW_CLOAK,
-            strength: AEffectBuffStrength::Hardcoded(OF(1.0)),
+            strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
             duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },

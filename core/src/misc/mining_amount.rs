@@ -1,15 +1,15 @@
-use crate::misc::Value;
+use crate::misc::PValue;
 
 #[derive(Copy, Clone)]
 pub struct MiningAmount {
-    pub yield_: Value,
-    pub drain: Value,
+    pub yield_: PValue,
+    pub drain: PValue,
 }
 impl Default for MiningAmount {
     fn default() -> Self {
         Self {
-            yield_: Value::default(),
-            drain: Value::default(),
+            yield_: PValue::ZERO,
+            drain: PValue::ZERO,
         }
     }
 }

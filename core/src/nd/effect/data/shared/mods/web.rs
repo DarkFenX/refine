@@ -1,7 +1,4 @@
-use crate::{
-    ac,
-    ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
-};
+use crate::ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp};
 
 pub(in crate::nd::effect::data) fn add_web_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
     if !a_effect.modifiers.is_empty() {

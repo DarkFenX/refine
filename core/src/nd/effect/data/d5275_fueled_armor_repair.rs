@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    ec,
+    ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,

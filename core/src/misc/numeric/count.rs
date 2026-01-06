@@ -6,10 +6,10 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, derive_more::Display)]
 pub struct Count(u32);
 impl Count {
-    pub fn from_u32(value: u32) -> Self {
+    pub const fn from_u32(value: u32) -> Self {
         Self(value)
     }
-    pub fn into_u32(self) -> u32 {
+    pub const fn into_u32(self) -> u32 {
         self.0
     }
 }
@@ -40,6 +40,12 @@ impl Count {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mathematics
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Addition
+impl std::ops::AddAssign<Count> for Count {
+    fn add_assign(&mut self, rhs: Count) {
+        self.0 += rhs.0;
+    }
+}
 // Subtraction
 impl std::ops::Sub<u32> for Count {
     type Output = Count;

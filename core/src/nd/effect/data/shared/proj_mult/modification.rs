@@ -1,7 +1,4 @@
-use crate::{
-    ac,
-    ad::{AAttrId, AEffect},
-};
+use crate::ad::{AAttrId, AEffect};
 
 pub(in crate::nd::effect::data) fn get_simple_mod_proj_attrs(a_effect: &AEffect) -> [Option<AAttrId>; 2] {
     [a_effect.range_attr_id, None]

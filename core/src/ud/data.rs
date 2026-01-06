@@ -35,7 +35,7 @@ impl UData {
             items: UItems::new(10000),
             sec_zone: SecZone::NullSec,
             default_incoming_dps: DpsProfile::try_new(OF(1.0), OF(1.0), OF(1.0), OF(1.0), None).unwrap(),
-            default_spool: Spool::SpoolScale(UnitInterval::new_clamped(1.0)),
+            default_spool: Spool::SpoolScale(UnitInterval::from_f64_clamped(1.0)),
             default_npc_prop: NpcProp::Chase,
             default_reload_optionals: ReloadOptionals::Enabled,
             default_rearm_minions: RearmMinions::Disabled,

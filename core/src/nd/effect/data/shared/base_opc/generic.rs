@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, OF},
+    misc::{PValue, Value},
     rd::{RAttrId, REffect},
     svc::{
         SvcCtx,
@@ -17,10 +17,10 @@ pub(super) fn get_generic_base_opc(
     effect: &REffect,
     attr_rid: Option<RAttrId>,
     applied_at_start: bool,
-) -> Option<Output<AttrVal>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_rid, OF(0.0))?;
+) -> Option<Output<Value>> {
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_rid, Value::ZERO)?;
     let delay = match applied_at_start {
-        true => OF(0.0),
+        true => PValue::ZERO,
         false => funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?,
     };
     Some(Output::Simple(OutputSimple { amount, delay }))

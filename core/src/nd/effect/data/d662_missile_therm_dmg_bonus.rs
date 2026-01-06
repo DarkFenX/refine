@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    ec,
+    ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{NEffect, effect::data::shared::missile_dmg_self_srq::update_effect},
 };

@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::{AEffectBuff, AEffectId},
-    ec,
+    ad::{AEffectBuff, AEffectId, AItemListId},
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjecteeFilter,

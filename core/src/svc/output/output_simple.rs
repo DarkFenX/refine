@@ -1,7 +1,7 @@
 use ordered_float::Float;
 
 use super::shared::OutputIterItem;
-use crate::{def::AttrVal, util::FLOAT_TOLERANCE};
+use crate::misc::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputSimple<T>
@@ -9,7 +9,7 @@ where
     T: Copy,
 {
     pub(crate) amount: T,
-    pub(crate) delay: AttrVal,
+    pub(crate) delay: PValue,
 }
 impl<T> OutputSimple<T>
 where
@@ -21,21 +21,21 @@ where
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_completion_time(&self) -> AttrVal {
+    pub(super) fn get_completion_time(&self) -> PValue {
         self.delay
     }
     pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         OutputSimpleAmountIter::new(self)
     }
 }
-impl OutputSimple<AttrVal> {
+impl OutputSimple<Value> {
     pub(super) fn has_impact(&self) -> bool {
-        self.amount.abs() > FLOAT_TOLERANCE
+        self.amount.abs() > PValue::FLOAT_TOLERANCE
     }
-    pub(super) fn absolute_impact(&self) -> AttrVal {
+    pub(super) fn absolute_impact(&self) -> PValue {
         self.amount.abs()
     }
-    pub(super) fn add_amount(&mut self, amount: AttrVal) {
+    pub(super) fn add_amount(&mut self, amount: Value) {
         self.amount += amount;
     }
 }
@@ -50,24 +50,24 @@ where
         self
     }
 }
-impl<T> std::ops::Mul<AttrVal> for OutputSimple<T>
+impl<T> std::ops::Mul<Value> for OutputSimple<T>
 where
-    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+    T: Copy + std::ops::Mul<Value, Output = T>,
 {
     type Output = Self;
 
-    fn mul(self, rhs: AttrVal) -> Self::Output {
+    fn mul(self, rhs: Value) -> Self::Output {
         Self {
             amount: self.amount * rhs,
             delay: self.delay,
         }
     }
 }
-impl<T> std::ops::MulAssign<AttrVal> for OutputSimple<T>
+impl<T> std::ops::MulAssign<Value> for OutputSimple<T>
 where
-    T: Copy + std::ops::MulAssign<AttrVal>,
+    T: Copy + std::ops::MulAssign<Value>,
 {
-    fn mul_assign(&mut self, rhs: AttrVal) {
+    fn mul_assign(&mut self, rhs: Value) {
         self.amount.mul_assign(rhs);
     }
 }

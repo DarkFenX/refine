@@ -1,14 +1,14 @@
-use crate::def::{AttrVal, DefCount};
+use crate::misc::{Count, PValue};
 
 #[derive(Copy, Clone)]
 pub(crate) struct OutputDmgBreacher {
-    pub(crate) absolute_max: AttrVal,
-    pub(crate) relative_max: AttrVal,
-    pub(crate) tick_count: DefCount,
+    pub(crate) absolute_max: PValue,
+    pub(crate) relative_max: PValue,
+    pub(crate) tick_count: Count,
 }
 impl OutputDmgBreacher {
-    pub(crate) fn new(absolute_max: AttrVal, relative_max: AttrVal, tick_count: DefCount) -> Option<Self> {
-        if tick_count == 0 {
+    pub(crate) fn new(absolute_max: PValue, relative_max: PValue, tick_count: Count) -> Option<Self> {
+        if tick_count == Count::ZERO {
             return None;
         }
         Some(Self {

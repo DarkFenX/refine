@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    ec,
+    ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{NEffect, NEffectDmgKind, NEffectProjecteeFilter, effect::data::shared::base_opc::get_direct_dd_dmg_opc_spec},
     ud::UItem,

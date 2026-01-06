@@ -2,8 +2,8 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
-    misc::Value,
-    util::{FLOAT_TOLERANCE, sig_round},
+    misc::{UnitInterval, Value},
+    util::{FLOAT_TOLERANCE, ceil_tick, floor_tick, sig_round},
 };
 
 /// Positive float value.
@@ -40,6 +40,9 @@ impl PValue {
     pub(crate) fn from_val_clamped(value: Value) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
+    pub(crate) fn from_val_unchecked(value: Value) -> Self {
+        Self::from_f64_unchecked(value.into_f64())
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,8 +78,36 @@ impl std::hash::Hash for PValue {
 // Mathematics
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
+    pub(crate) fn min(self, other: Self) -> Self {
+        Self(self.0.min(other.0))
+    }
+    pub(crate) fn clamp(self, min: Self, max: Self) -> Self {
+        Self(self.0.clamp(min.0, max.0))
+    }
+    pub(crate) fn powi(self, n: i32) -> Self {
+        Self(self.0.powi(n))
+    }
+    pub(crate) fn pow_pvalue(self, n: Self) -> Self {
+        Self(self.0.powf(n.into_f64()))
+    }
+    pub(crate) fn is_nan(self) -> bool {
+        self.0.is_nan()
+    }
     pub(crate) fn sig_rounded(self, digits: u32) -> Self {
         Self(sig_round(self.0, digits))
+    }
+    // Tick-specific math
+    pub(crate) fn floor_tick(self) -> PValue {
+        PValue(floor_tick(self.0))
+    }
+    pub(crate) fn ceil_tick(self) -> PValue {
+        PValue(ceil_tick(self.0))
+    }
+}
+impl std::ops::Neg for PValue {
+    type Output = Value;
+    fn neg(self) -> Self::Output {
+        Value::from_f64(-self.0)
     }
 }
 // Addition
@@ -93,28 +124,40 @@ impl std::ops::AddAssign<PValue> for PValue {
 }
 // Subtraction
 impl std::ops::Sub<PValue> for PValue {
-    type Output = PValue;
-    fn sub(self, rhs: PValue) -> Self::Output {
-        PValue::from_f64_clamped(self.0 - rhs.0)
+    type Output = Value;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Value::from_f64(self.0 - rhs.0)
     }
 }
 // Multiplication
 impl std::ops::Mul<PValue> for PValue {
     type Output = PValue;
-    fn mul(self, rhs: PValue) -> Self::Output {
-        PValue(self.0 * rhs.0)
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self(self.0 * rhs.0)
+    }
+}
+impl std::ops::Mul<Value> for PValue {
+    type Output = Value;
+    fn mul(self, rhs: Self) -> Self::Output {
+        Value::from_f64(self.0 * rhs.0)
+    }
+}
+impl std::ops::Mul<UnitInterval> for PValue {
+    type Output = PValue;
+    fn mul(self, rhs: UnitInterval) -> Self::Output {
+        PValue(self.0 * rhs.into_f64())
     }
 }
 impl std::ops::MulAssign<PValue> for PValue {
-    fn mul_assign(&mut self, rhs: PValue) {
+    fn mul_assign(&mut self, rhs: Self) {
         self.0 *= rhs.0;
     }
 }
 // Division
-impl std::ops::Div<&PValue> for PValue {
+impl std::ops::Div<PValue> for PValue {
     type Output = PValue;
-    fn div(self, rhs: &PValue) -> Self::Output {
-        PValue(self.0 / rhs.0)
+    fn div(self, rhs: Self) -> Self::Output {
+        Self(self.0 / rhs.0)
     }
 }
 impl std::ops::Div<Value> for PValue {

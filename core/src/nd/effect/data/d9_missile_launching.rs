@@ -1,9 +1,7 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    def::AttrVal,
-    ec,
+    ad::{AEffectId, AItemGrpId},
     ed::EEffectId,
+    misc::PValue,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec,
         effect::data::shared::{
@@ -48,7 +46,7 @@ fn internal_get_missile_application_mult(
     projector_effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
-) -> AttrVal {
+) -> PValue {
     let proj_mult_getter = match is_guided_bomb(ctx.u_data.items.get(projector_uid)) {
         true => get_bomb_application_mult,
         false => get_missile_application_mult,

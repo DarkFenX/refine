@@ -1,10 +1,7 @@
 use ordered_float::Float;
 
 use super::shared::OutputIterItem;
-use crate::{
-    misc::{Count, PValue, Value},
-    util::FLOAT_TOLERANCE,
-};
+use crate::misc::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputComplex<T>
@@ -44,7 +41,7 @@ impl OutputComplex<Value> {
     pub(super) fn absolute_impact(&self) -> PValue {
         self.amount.abs() * PValue::from_f64_unchecked(self.repeats.into_u32() as f64)
     }
-    pub(super) fn add_amount(&mut self, amount: AttrVal) {
+    pub(super) fn add_amount(&mut self, amount: Value) {
         self.amount += amount;
     }
 }
@@ -59,13 +56,13 @@ where
         self
     }
 }
-impl<T> std::ops::Mul<AttrVal> for OutputComplex<T>
+impl<T> std::ops::Mul<Value> for OutputComplex<T>
 where
-    T: Copy + std::ops::Mul<AttrVal, Output = T>,
+    T: Copy + std::ops::Mul<Value, Output = T>,
 {
     type Output = Self;
 
-    fn mul(self, rhs: AttrVal) -> Self::Output {
+    fn mul(self, rhs: Value) -> Self::Output {
         Self {
             amount: self.amount * rhs,
             delay: self.delay,
@@ -74,11 +71,11 @@ where
         }
     }
 }
-impl<T> std::ops::MulAssign<AttrVal> for OutputComplex<T>
+impl<T> std::ops::MulAssign<Value> for OutputComplex<T>
 where
-    T: Copy + std::ops::MulAssign<AttrVal>,
+    T: Copy + std::ops::MulAssign<Value>,
 {
-    fn mul_assign(&mut self, rhs: AttrVal) {
+    fn mul_assign(&mut self, rhs: Value) {
         self.amount.mul_assign(rhs);
     }
 }
@@ -88,14 +85,17 @@ where
     T: Copy,
 {
     output: &'a OutputComplex<T>,
-    cycles_done: DefCount,
+    cycles_done: Count,
 }
 impl<'a, T> OutputComplexAmountIter<'a, T>
 where
     T: Copy,
 {
     fn new(output: &'a OutputComplex<T>) -> Self {
-        Self { output, cycles_done: 0 }
+        Self {
+            output,
+            cycles_done: Count::ZERO,
+        }
     }
 }
 impl<T> Iterator for OutputComplexAmountIter<'_, T>
@@ -108,7 +108,7 @@ where
         if self.cycles_done >= self.output.repeats {
             return None;
         }
-        self.cycles_done += 1;
+        self.cycles_done += Count::ONE;
         Some(OutputIterItem {
             time: self.output.interval,
             amount: self.output.amount,

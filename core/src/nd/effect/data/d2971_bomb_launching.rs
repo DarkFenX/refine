@@ -1,10 +1,7 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    def::{AttrVal, OF},
-    ec,
+    ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    misc::Ecm,
+    misc::{Ecm, PValue, Value},
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::{
@@ -65,13 +62,16 @@ fn internal_get_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<AttrVal>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, OF(0.0))?;
+) -> Option<Output<Value>> {
+    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
     // Do not return neut stats for non-neut bombs
-    if amount <= OF(0.0) {
+    if amount <= Value::ZERO {
         return None;
     }
-    Some(Output::Simple(OutputSimple { amount, delay: OF(0.0) }))
+    Some(Output::Simple(OutputSimple {
+        amount,
+        delay: PValue::ZERO,
+    }))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,21 +83,33 @@ fn internal_get_ecm_base_opc(
     projector_uid: UItemId,
     _projector_effect: &REffect,
 ) -> Option<Output<Ecm>> {
-    let attr_consts = ctx.ac();
-    let str_radar =
-        calc.get_item_oattr_afb_oextra(ctx, projector_uid, attr_consts.scan_radar_strength_bonus, OF(0.0))?;
-    let str_magnet = calc.get_item_oattr_afb_oextra(
+    let str_radar = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,
-        attr_consts.scan_magnetometric_strength_bonus,
-        OF(0.0),
-    )?;
-    let str_grav =
-        calc.get_item_oattr_afb_oextra(ctx, projector_uid, attr_consts.scan_gravimetric_strength_bonus, OF(0.0))?;
-    let str_ladar =
-        calc.get_item_oattr_afb_oextra(ctx, projector_uid, attr_consts.scan_ladar_strength_bonus, OF(0.0))?;
+        ctx.ac().scan_radar_strength_bonus,
+        Value::ZERO,
+    )?);
+    let str_magnet = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        projector_uid,
+        ctx.ac().scan_magnetometric_strength_bonus,
+        Value::ZERO,
+    )?);
+    let str_grav = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        projector_uid,
+        ctx.ac().scan_gravimetric_strength_bonus,
+        Value::ZERO,
+    )?);
+    let str_ladar = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        projector_uid,
+        ctx.ac().scan_ladar_strength_bonus,
+        Value::ZERO,
+    )?);
     // Do not return ECM stats for non-ecm bombs
-    if str_radar <= OF(0.0) && str_magnet <= OF(0.0) && str_grav <= OF(0.0) && str_ladar <= OF(0.0) {
+    if str_radar <= PValue::ZERO && str_magnet <= PValue::ZERO && str_grav <= PValue::ZERO && str_ladar <= PValue::ZERO
+    {
         return None;
     }
     Some(Output::Simple(OutputSimple {
@@ -106,8 +118,8 @@ fn internal_get_ecm_base_opc(
             magnetometric: str_magnet,
             gravimetric: str_grav,
             ladar: str_ladar,
-            duration: OF(0.0),
+            duration: PValue::ZERO,
         },
-        delay: OF(0.0),
+        delay: PValue::ZERO,
     }))
 }

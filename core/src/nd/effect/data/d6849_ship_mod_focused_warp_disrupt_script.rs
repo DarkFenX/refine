@@ -1,9 +1,10 @@
 // See note in WDFG bubble effect d3380
 
 use crate::{
-    ac,
-    ad::{AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AModifierSrq, AOp},
-    ec,
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AItemId, AModifierSrq,
+        AOp,
+    },
     ed::EEffectId,
     nd::{
         NEffect,

@@ -190,7 +190,7 @@ impl UModule {
             }
         };
         let charge_volume = match charge_item.get_axt() {
-            Some(axt) if axt.volume != PValue::from_f64_unchecked(0.0) => axt.volume,
+            Some(axt) if axt.volume != PValue::ZERO => axt.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;

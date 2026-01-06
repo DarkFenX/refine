@@ -6,6 +6,7 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    api::AttrId,
     misc::{EffectSpec, Value},
     nd::NEffect,
     rd::RAttrConsts,
@@ -98,7 +99,7 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     if let Some(mult_attr_rid) = ctx.ac().charged_armor_dmg_mult {
         info.push(Affector {
             item_id: ctx.u_data.items.eid_by_iid(item_uid),
-            attr_id: Some(ctx.u_data.src.get_attr_by_rid(mult_attr_rid).aid.into()),
+            attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(mult_attr_rid).aid)),
         });
     }
     info

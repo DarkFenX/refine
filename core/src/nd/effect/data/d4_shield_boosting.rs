@@ -1,7 +1,5 @@
 use crate::{
-    ac,
-    ad::AEffectId,
-    ec,
+    ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{NEffect, NEffectLocalOpcSpec, effect::data::shared::base_opc::get_shield_rep_base_opc},
 };

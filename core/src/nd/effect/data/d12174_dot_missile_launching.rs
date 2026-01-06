@@ -1,15 +1,12 @@
 use crate::{
-    ac,
     ad::AEffectId,
-    def::{DefCount, OF, SERVER_TICK_S},
-    ec,
+    def::SERVER_TICK_S,
     ed::EEffectId,
-    misc::EffectSpec,
+    misc::{Count, EffectSpec, PValue, Value},
     nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_missile_range_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
     ud::{UItem, UItemId},
-    util::trunc_unerr,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOT_MISSILE_LAUNCHING;
@@ -36,10 +33,19 @@ fn get_dmg_opc(
     projector_effect: &REffect,
     projectee_uid: Option<UItemId>,
 ) -> Option<OutputDmgBreacher> {
-    let mut abs_max = calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_max_dmg_per_tick, OF(0.0))?;
-    let mut rel_max =
-        calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_max_hp_perc_per_tick, OF(0.0))? / OF(100.0);
-    let duration_s = calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_duration, OF(0.0))? / OF(1000.0);
+    let mut abs_max = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        projector_uid,
+        ctx.ac().dot_max_dmg_per_tick,
+        Value::ZERO,
+    )?);
+    let mut rel_max = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_max_hp_perc_per_tick, Value::ZERO)?
+            / Value::HUNDRED,
+    );
+    let duration_s = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_duration, Value::ZERO)? / Value::THOUSAND,
+    );
     if let Some(projectee_key) = projectee_uid {
         // Projection reduction
         let proj_data = ctx.eff_projs.get_or_make_proj_data(
@@ -54,6 +60,6 @@ fn get_dmg_opc(
     OutputDmgBreacher::new(
         abs_max,
         rel_max,
-        trunc_unerr(duration_s / SERVER_TICK_S).into_inner() as DefCount,
+        Count::from_f64_trunced(duration_s.into_f64() / SERVER_TICK_S),
     )
 }

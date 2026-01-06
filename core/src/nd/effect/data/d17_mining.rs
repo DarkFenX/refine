@@ -1,7 +1,5 @@
 use crate::{
-    ac,
     ad::AEffectId,
-    ec,
     ed::EEffectId,
     misc::MiningAmount,
     nd::{

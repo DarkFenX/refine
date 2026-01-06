@@ -1,7 +1,5 @@
 use crate::{
-    ac,
     ad::{AEffectBuff, AEffectId},
-    ec,
     ed::EEffectId,
     nd::{
         NEffect,
