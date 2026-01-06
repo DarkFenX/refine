@@ -8,8 +8,7 @@ use crate::{
     },
     ud::{
         ItemId, UAttrMutationRequest, UItemMutationRequest,
-        err::ItemMutatedError,
-        item::base::{UEffectUpdates, UItemBase},
+        item::base::{UEffectUpdates, UItemBase, mutable::err::ItemMutatedError},
     },
     util::{RMap, RSet},
 };
@@ -352,9 +351,7 @@ impl UItemBaseMutable {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
             None => {
-                return Err(ItemMutatedError {
-                    item_id: self.get_item_id(),
-                });
+                return Err(ItemMutatedError {});
             }
         };
         let mutation_cache = match &mut item_mutation.cache {
@@ -469,9 +466,7 @@ impl UItemBaseMutable {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
             None => {
-                return Err(ItemMutatedError {
-                    item_id: self.get_item_id(),
-                });
+                return Err(ItemMutatedError {});
             }
         };
         item_mutation.mutator_id = mutator_id;
@@ -482,9 +477,7 @@ impl UItemBaseMutable {
         let item_mutation = match &mut self.mutation {
             Some(item_mutation) => item_mutation,
             None => {
-                return Err(ItemMutatedError {
-                    item_id: self.get_item_id(),
-                });
+                return Err(ItemMutatedError {});
             }
         };
         match &item_mutation.cache {

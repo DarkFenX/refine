@@ -22,3 +22,18 @@ impl LibIncrement for FleetId {
         self.0 = (Wrapping(self.0) + Wrapping(1)).0;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Error
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(thiserror::Error, Debug)]
+#[error("fleet {fleet_id} not found")]
+pub struct FleetFoundError {
+    pub fleet_id: FleetId,
+}
+// Conversion needed for unified user entity container to work
+impl From<FleetId> for FleetFoundError {
+    fn from(fleet_id: FleetId) -> Self {
+        Self { fleet_id }
+    }
+}

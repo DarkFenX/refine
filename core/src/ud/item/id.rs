@@ -22,3 +22,18 @@ impl LibIncrement for ItemId {
         self.0 = (Wrapping(self.0) + Wrapping(1)).0;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Error
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(thiserror::Error, Debug)]
+#[error("item {item_id} not found")]
+pub struct ItemFoundError {
+    pub item_id: ItemId,
+}
+// Conversion needed for unified user entity container to work
+impl From<ItemId> for ItemFoundError {
+    fn from(item_id: ItemId) -> Self {
+        Self { item_id }
+    }
+}

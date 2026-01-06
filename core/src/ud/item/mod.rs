@@ -1,11 +1,12 @@
 //! Solar system item definitions.
 
 pub(crate) use base::{
-    ItemMutationData, UAttrMutationRequest, UEffectUpdates, UItemMutationRequest, get_combined_attr_values,
+    ItemMutatedError, ItemMutationData, UAttrMutationRequest, UEffectUpdates, UItemMutationRequest,
+    get_combined_attr_values,
 };
 use base::{UItemBase, UItemBaseMutable};
 pub(crate) use container::UItems;
-pub use id::ItemId;
+pub use id::{ItemFoundError, ItemId};
 pub(crate) use item::UItem;
 pub(crate) use item_autocharge::UAutocharge;
 pub(crate) use item_booster::UBooster;
