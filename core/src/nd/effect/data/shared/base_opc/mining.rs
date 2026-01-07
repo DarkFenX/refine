@@ -67,7 +67,7 @@ fn get_mining_values(
                 Value::ZERO,
             )?);
             let waste_chance = UnitInterval::from_value_clamped(waste_chance_perc / Value::HUNDRED);
-            yield_ * waste_mult * waste_chance
+            yield_ * waste_mult * waste_chance.into_pvalue()
         }
         false => PValue::ZERO,
     };

@@ -84,7 +84,7 @@ impl REffectBuffStrength {
     ) -> Option<Self> {
         match a_buff_strength {
             AEffectBuffStrength::Attr(attr_id) => Some(Self::Attr(*attr_aid_rid_map.get(attr_id)?)),
-            AEffectBuffStrength::Hardcoded(val) => Some(Self::Hardcoded(val.into())),
+            AEffectBuffStrength::Hardcoded(val) => Some(Self::Hardcoded(Value::from_a_value(*val))),
         }
     }
 }

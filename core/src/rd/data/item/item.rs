@@ -43,7 +43,7 @@ impl RItem {
             srqs: a_item
                 .srqs
                 .iter()
-                .map(|(&item_aid, &a_skill_level)| (item_aid, a_skill_level.into()))
+                .map(|(&item_aid, &a_skill_level)| (item_aid, SkillLevel::from_a_skill_level(a_skill_level)))
                 .collect(),
             max_state: RState::from_a_state(&a_item.max_state),
             val_fitted_group_id: a_item.val_fitted_group_id,
@@ -77,7 +77,7 @@ impl RItem {
         let a_item = a_items.get(&self.aid).unwrap();
         for (attr_aid, &a_value) in a_item.attrs.iter() {
             if let Some(&attr_rid) = attr_aid_rid_map.get(attr_aid) {
-                self.attrs.insert(attr_rid, a_value.into());
+                self.attrs.insert(attr_rid, Value::from_a_value(a_value));
             }
         }
         for (effect_aid, a_effect_data) in a_item.effect_datas.iter() {

@@ -8,8 +8,8 @@ pub(crate) struct RMutaAttrRange {
 impl RMutaAttrRange {
     pub(in crate::rd) fn from_a_attr_range(a_attr_range: &AMutaAttrRange) -> Self {
         Self {
-            min_mult: a_attr_range.min_mult.into(),
-            max_mult: a_attr_range.max_mult.into(),
+            min_mult: Value::from_a_value(a_attr_range.min_mult),
+            max_mult: Value::from_a_value(a_attr_range.max_mult),
         }
     }
 }

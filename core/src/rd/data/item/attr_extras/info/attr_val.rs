@@ -10,7 +10,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_volume(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.volume.and_then(|v| item_attrs.get(&v)) {
-        Some(&volume) => volume.into(),
+        Some(&volume) => PValue::from_val_clamped(volume),
         None => Default::default(),
     }
 }
@@ -19,7 +19,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_capacity(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.capacity.and_then(|v| item_attrs.get(&v)) {
-        Some(&capacity) => capacity.into(),
+        Some(&capacity) => PValue::from_val_clamped(capacity),
         None => Default::default(),
     }
 }
@@ -28,7 +28,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_radius(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.radius.and_then(|v| item_attrs.get(&v)) {
-        Some(&radius) => radius.into(),
+        Some(&radius) => PValue::from_val_clamped(radius),
         None => Default::default(),
     }
 }
@@ -82,7 +82,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_remote_resist_attr_id(
 ) -> Option<RAttrId> {
     let attr_rid = attr_consts.remote_resist_id?;
     let attr_value = *item_attrs.get(&attr_rid)?;
-    let eve_attr_aid = AEveAttrId::from_f64_rounded(attr_value.into());
+    let eve_attr_aid = AEveAttrId::from_f64_rounded(attr_value.into_f64());
     if eve_attr_aid == AEveAttrId::from_i32(0) {
         return None;
     }
@@ -95,7 +95,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_overload_td_lvl(
 ) -> Option<SkillLevel> {
     attr_consts
         .required_thermodynamics_skill
-        .and_then(|v| item_attrs.get(&v).map(|&v| SkillLevel::from_f64_rounded(v.into())))
+        .and_then(|v| item_attrs.get(&v).map(|&v| SkillLevel::from_f64_rounded(v.into_f64())))
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_charge_size(
@@ -120,7 +120,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
 ) -> FighterCount {
     match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
         // Ensure there can be at least 1 fighter in a squad
-        Some(&value) => FighterCount::from_f64_rounded(value.into()),
+        Some(&value) => FighterCount::from_f64_rounded(value.into_f64()),
         None => FighterCount::from_u32_clamped(1),
     }
 }

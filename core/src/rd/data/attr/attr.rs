@@ -26,7 +26,7 @@ impl RAttr {
             aid: a_attr.id,
             penalizable: a_attr.penalizable,
             hig: a_attr.hig,
-            def_val: a_attr.def_val.into(),
+            def_val: Value::from_a_value(a_attr.def_val),
             // Fields which depend on data not available during instantiation
             min_attr_rid: Default::default(),
             max_attr_rid: Default::default(),
