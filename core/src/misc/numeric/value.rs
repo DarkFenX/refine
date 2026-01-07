@@ -79,6 +79,9 @@ impl std::hash::Hash for Value {
 // Mathematics
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
+    pub(crate) fn is_sign_negative(self) -> bool {
+        self.0.is_sign_negative()
+    }
     pub(crate) fn abs(self) -> PValue {
         PValue::from_f64_unchecked(self.0.abs())
     }
@@ -126,6 +129,11 @@ impl std::ops::Add<Value> for Value {
 impl std::ops::AddAssign<Value> for Value {
     fn add_assign(&mut self, rhs: Value) {
         self.0 += rhs.0;
+    }
+}
+impl std::ops::AddAssign<PValue> for Value {
+    fn add_assign(&mut self, rhs: PValue) {
+        self.0 += rhs.into_f64();
     }
 }
 // Subtraction

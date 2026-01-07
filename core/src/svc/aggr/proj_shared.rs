@@ -2,12 +2,10 @@ use ordered_float::Float;
 
 use super::shared::process_mult;
 use crate::{
-    def::{AttrVal, DefCount, OF},
-    misc::{AttrSpec, EffectSpec},
+    misc::{AttrSpec, Count, EffectSpec, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, aggr::traits::LimitAmount, calc::Calc, funcs, output::Output},
     ud::UItemId,
-    util::{FLOAT_TOLERANCE, ceil_unerr},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,44 +16,44 @@ where
     T: Copy,
 {
     pub(super) output: Output<T>,
-    amount_limit: Option<AttrVal>,
-    mult_post: Option<AttrVal>,
+    amount_limit: Option<Value>,
+    mult_post: Option<Value>,
 }
 impl<T> AggrProjInvData<T>
 where
-    T: Copy + std::ops::MulAssign<AttrVal>,
+    T: Copy + std::ops::MulAssign<Value>,
 {
     pub(in crate::svc) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
-        projector_key: UItemId,
+        projector_uid: UItemId,
         effect: &REffect,
         ospec: &REffectProjOpcSpec<T>,
-        projectee_key: Option<UItemId>,
+        projectee_uid: Option<UItemId>,
     ) -> Option<Self> {
-        let mut output = (ospec.base)(ctx, calc, projector_key, effect)?;
+        let mut output = (ospec.base)(ctx, calc, projector_uid, effect)?;
         let mut amount_limit = None;
         let mut mult_post = None;
-        if let Some(projectee_key) = projectee_key {
+        if let Some(projectee_uid) = projectee_uid {
             let proj_data = ctx.eff_projs.get_or_make_proj_data(
                 ctx.u_data,
-                EffectSpec::new(projector_key, effect.rid),
-                projectee_key,
+                EffectSpec::new(projector_uid, effect.rid),
+                projectee_uid,
             );
-            let mut mult_pre = OF(1.0);
+            let mut mult_pre = Value::ONE;
             // Resists
             match ospec.resist {
                 Some(REffectResist::Standard)
                     if let Some(resist_mult) =
-                        funcs::get_effect_resist_mult(ctx, calc, projector_key, effect, projectee_key) =>
+                        funcs::get_effect_resist_mult(ctx, calc, projector_uid, effect, projectee_uid) =>
                 {
                     mult_pre *= resist_mult;
                 }
-                Some(REffectResist::Attr(resist_attr_key))
+                Some(REffectResist::Attr(resist_attr_rid))
                     if let Some(resist_mult) = funcs::get_resist_mult_by_projectee_aspec(
                         ctx,
                         calc,
-                        &AttrSpec::new(projectee_key, resist_attr_key),
+                        &AttrSpec::new(projectee_uid, resist_attr_rid),
                     ) =>
                 {
                     mult_pre *= resist_mult;
@@ -64,18 +62,18 @@ where
             }
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                mult_pre *= proj_mult_getter(ctx, calc, projector_key, effect, projectee_key, proj_data);
+                mult_pre *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
             }
             // Bake all pre-limit resists into output value
             if let Some(mult_pre) = process_mult(mult_pre) {
                 output *= mult_pre;
             }
             // Amount limit
-            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_key, ospec.limit_attr_rid);
+            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid);
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                let mult = proj_mult_getter(ctx, calc, projector_key, effect, projectee_key, proj_data);
-                mult_post = process_mult(mult);
+                let mult = proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                mult_post = process_mult(mult.into_value());
             }
         }
         Some(Self {
@@ -90,15 +88,15 @@ where
 // Spool-related invariant data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct AggrSpoolInvData {
-    step: AttrVal,
-    pub(super) max: AttrVal,
-    pub(super) cycles_to_max: DefCount,
+    step: Value,
+    pub(super) max: Value,
+    pub(super) cycles_to_max: Count,
 }
 impl AggrSpoolInvData {
     pub(super) fn try_make<T>(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
+        item_uid: UItemId,
         effect: &REffect,
         ospec: &REffectProjOpcSpec<T>,
     ) -> Option<Self>
@@ -108,13 +106,13 @@ impl AggrSpoolInvData {
         if !ospec.spoolable {
             return None;
         }
-        let spool_attr_keys = effect.spool_attr_rids?;
-        let step = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.step_attr_rid)?;
-        if step.abs() < FLOAT_TOLERANCE {
+        let spool_attr_rids = effect.spool_attr_rids?;
+        let step = calc.get_item_attr_oextra(ctx, item_uid, spool_attr_rids.step_attr_rid)?;
+        if step.abs() < PValue::FLOAT_TOLERANCE {
             return None;
         }
-        let max = calc.get_item_attr_oextra(ctx, item_key, spool_attr_keys.max_attr_rid)?;
-        if max.abs() < FLOAT_TOLERANCE {
+        let max = calc.get_item_attr_oextra(ctx, item_uid, spool_attr_rids.max_attr_rid)?;
+        if max.abs() < PValue::FLOAT_TOLERANCE {
             return None;
         }
         let cycles = max / step;
@@ -124,11 +122,11 @@ impl AggrSpoolInvData {
         Some(Self {
             step,
             max,
-            cycles_to_max: ceil_unerr(cycles).into_inner() as DefCount,
+            cycles_to_max: Count::from_value_ceiled(cycles),
         })
     }
-    pub(super) fn calc_cycle_spool(&self, uninterrupted_cycles: DefCount) -> AttrVal {
-        Float::min(self.max, self.step * uninterrupted_cycles as f64)
+    pub(super) fn calc_cycle_spool(&self, uninterrupted_cycles: Count) -> Value {
+        (self.step * uninterrupted_cycles.into_value()).min(self.max)
     }
 }
 
@@ -138,19 +136,19 @@ impl AggrSpoolInvData {
 pub(in crate::svc) fn get_proj_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
-    chargeness: Option<AttrVal>,
+    chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
+    T: Copy + std::ops::MulAssign<Value> + LimitAmount,
 {
     let mut output = inv_proj.output;
     // Chargedness
     if let Some(charge_mult_getter) = ospec.charge_mult
-        && let Some(chargedness) = chargeness
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_key, chargedness)
+        && let Some(chargedness) = chargedness
+        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
     {
         output *= charge_mult;
     }
@@ -167,11 +165,11 @@ where
 
 pub(super) fn get_proj_output_spool<T>(
     inv_proj: &AggrProjInvData<T>,
-    charge_mult: Option<AttrVal>,
-    spool_extra_mult: AttrVal,
+    charge_mult: Option<Value>,
+    spool_extra_mult: Value,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
+    T: Copy + std::ops::MulAssign<Value> + LimitAmount,
 {
     let mut output = inv_proj.output;
     // Chargedness
@@ -179,7 +177,7 @@ where
         output *= charge_mult;
     }
     // Spool
-    output *= OF(1.0) + spool_extra_mult;
+    output *= Value::ONE + spool_extra_mult;
     // Limit
     if let Some(limit) = inv_proj.amount_limit {
         output.limit_amount(limit);

@@ -56,15 +56,18 @@ pub(crate) fn ceil_tick(val: f64) -> f64 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Casts
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) fn trunc_f64_to_u32(value: f64) -> u32 {
-    trunc_unerr(value.clamp(u32::MIN as f64, u32::MAX as f64)) as u32
-}
-pub(crate) fn ceil_f64_to_usize(value: f64) -> usize {
-    trunc_unerr(value.clamp(usize::MIN as f64, usize::MAX as f64)) as usize
-}
 pub(crate) fn round_f64_to_u32(value: f64) -> u32 {
     value.clamp(u32::MIN as f64, u32::MAX as f64).round() as u32
 }
+pub(crate) fn trunc_f64_to_u32(value: f64) -> u32 {
+    trunc_unerr(value.clamp(u32::MIN as f64, u32::MAX as f64)) as u32
+}
+pub(crate) fn ceil_f64_to_u32(value: f64) -> u32 {
+    ceil_unerr(value.clamp(u32::MIN as f64, u32::MAX as f64)) as u32
+}
 pub(crate) fn round_f64_to_i32(value: f64) -> i32 {
     value.clamp(i32::MIN as f64, i32::MAX as f64).round() as i32
+}
+pub(crate) fn ceil_f64_to_usize(value: f64) -> usize {
+    trunc_unerr(value.clamp(usize::MIN as f64, usize::MAX as f64)) as usize
 }

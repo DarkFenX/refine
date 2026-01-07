@@ -19,11 +19,11 @@ use crate::{
 pub(in crate::svc) fn aggr_proj_clip_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -33,9 +33,9 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
-        Some(inv_spool) => aggr_spool(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, inv_spool),
-        None => aggr_regular(ctx, calc, projector_key, effect, cseq, ospec, projectee_key),
+    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
+        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, inv_spool),
+        None => aggr_regular(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid),
     }
 }
 
@@ -45,11 +45,11 @@ where
 fn aggr_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
     inv_spool: AggrSpoolInvData,
 ) -> Option<AggrAmount<T>>
 where
@@ -60,7 +60,7 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut uninterrupted_cycles = 0;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
@@ -78,7 +78,7 @@ where
             },
         };
         // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_part.data.chargedness);
+        let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_part.data.chargedness);
         for i in 0..part_cycle_count {
             // Case when the rest of cycle part is at full spool
             if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
@@ -122,11 +122,11 @@ where
 fn aggr_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
 where
     T: Default
@@ -136,13 +136,13 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let cycle_output = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, cycle_part.data.chargedness);
+        let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         // Update total values
         match cycle_part.data.interrupt {
             // Add first cycle after which there is a reload

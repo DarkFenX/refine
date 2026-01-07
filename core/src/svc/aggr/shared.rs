@@ -1,5 +1,5 @@
 use crate::{
-    def::{AttrVal, OF},
+    misc::{PValue, UnitInterval, Value},
     nd::NChargeMultGetter,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
@@ -8,35 +8,35 @@ use crate::{
 pub(super) fn calc_charge_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     charge_mult_getter: Option<NChargeMultGetter>,
-    cycle_chargedness: Option<AttrVal>,
-) -> Option<AttrVal> {
+    cycle_chargedness: Option<UnitInterval>,
+) -> Option<Value> {
     match charge_mult_getter {
         Some(charge_mult_getter) if let Some(chargedness) = cycle_chargedness => {
-            charge_mult_getter(ctx, calc, item_key, chargedness).and_then(|v| process_mult(v))
+            charge_mult_getter(ctx, calc, item_uid, chargedness).and_then(|v| process_mult(v))
         }
         _ => None,
     }
 }
 
-pub(super) fn process_mult(mult: AttrVal) -> Option<AttrVal> {
+pub(super) fn process_mult(mult: Value) -> Option<Value> {
     match mult {
-        OF(1.0) => None,
+        Value::ONE => None,
         v => Some(v),
     }
 }
 
 pub(in crate::svc) struct AggrAmount<T> {
     pub(in crate::svc) amount: T,
-    pub(in crate::svc) time: AttrVal,
+    pub(in crate::svc) time: PValue,
 }
 impl<T> AggrAmount<T>
 where
-    T: std::ops::Div<AttrVal, Output = T>,
+    T: std::ops::Div<PValue, Output = T>,
 {
     pub(super) fn get_ps(self) -> Option<T> {
-        if self.time == OF(0.0) {
+        if self.time == PValue::ZERO {
             return None;
         }
         Some(self.amount / self.time)
@@ -48,5 +48,5 @@ where
     T: Copy,
 {
     pub(in crate::svc) output: Output<T>,
-    pub(in crate::svc) time: AttrVal,
+    pub(in crate::svc) time: PValue,
 }

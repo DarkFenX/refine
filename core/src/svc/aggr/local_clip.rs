@@ -16,7 +16,7 @@ use crate::{
 pub(in crate::svc) fn aggr_local_clip_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
@@ -29,13 +29,13 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let cycle_output = get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle_part.data.chargedness);
+        let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_part.data.chargedness);
         match cycle_part.data.interrupt {
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {

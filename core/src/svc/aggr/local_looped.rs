@@ -14,7 +14,7 @@ use crate::{
 pub(in crate::svc) fn aggr_local_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
@@ -28,13 +28,13 @@ where
         + std::ops::Div<AttrVal, Output = T>
         + LimitAmount,
 {
-    aggr_local_looped_amount(ctx, calc, item_key, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
+    aggr_local_looped_amount(ctx, calc, item_uid, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
 pub(in crate::svc) fn aggr_local_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
@@ -48,11 +48,11 @@ where
         + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
-    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_key, effect, ospec)?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut total_amount = T::default();
     let mut total_time = OF(0.0);
     for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_output = get_local_output(ctx, calc, item_key, ospec, &inv_local, cycle_part.data.chargedness);
+        let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_part.data.chargedness);
         let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
         total_amount += cycle_output.get_amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;

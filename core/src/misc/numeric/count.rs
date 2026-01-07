@@ -1,7 +1,7 @@
 use crate::{
     ad::ACount,
     misc::{PValue, Value},
-    util::{round_f64_to_u32, trunc_f64_to_u32},
+    util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, derive_more::Display)]
@@ -38,6 +38,9 @@ impl Count {
     }
     pub(crate) fn from_value_rounded(value: Value) -> Self {
         Self(round_f64_to_u32(value.into_f64()))
+    }
+    pub(crate) fn from_value_ceiled(value: Value) -> Self {
+        Self(ceil_f64_to_u32(value.into_f64()))
     }
     pub(crate) fn from_pvalue_trunced(value: PValue) -> Self {
         Self(trunc_f64_to_u32(value.into_f64()))

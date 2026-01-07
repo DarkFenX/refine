@@ -43,6 +43,9 @@ impl PValue {
     pub(crate) fn from_val_unchecked(value: Value) -> Self {
         Self::from_f64_unchecked(value.into_f64())
     }
+    pub(crate) fn into_value(self) -> Value {
+        Value::from_f64(self.0)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

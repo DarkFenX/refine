@@ -84,10 +84,9 @@ impl Calc {
                 item_sim_data.taken_dmg.explosive +=
                     dps_profile.get_explosive() * ship_stats.resos.explosive * tick_data.time_passed;
                 if let Some(breacher) = dps_profile.get_breacher() {
-                    let breacher_dps = Float::min(
-                        breacher.get_absolute_max(),
-                        breacher.get_relative_max() * ship_stats.total_hp,
-                    );
+                    let breacher_dps = breacher
+                        .get_absolute_max()
+                        .min(breacher.get_relative_max().into_pvalue() * ship_stats.total_hp);
                     // Breacher counts as EM damage for some reason
                     item_sim_data.taken_dmg.em += breacher_dps * tick_data.time_passed;
                 }

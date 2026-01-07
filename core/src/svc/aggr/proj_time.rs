@@ -19,11 +19,11 @@ use crate::{
 pub(in crate::svc) fn aggr_proj_time_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
     time: AttrVal,
 ) -> Option<T>
 where
@@ -36,17 +36,17 @@ where
         + std::ops::Div<AttrVal, Output = T>
         + LimitAmount,
 {
-    aggr_proj_time_amount(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, time).map(|v| v / time)
+    aggr_proj_time_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, time).map(|v| v / time)
 }
 
 pub(in crate::svc) fn aggr_proj_time_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
     time: AttrVal,
 ) -> Option<T>
 where
@@ -58,19 +58,19 @@ where
         + std::ops::MulAssign<AttrVal>
         + LimitAmount,
 {
-    match AggrSpoolInvData::try_make(ctx, calc, projector_key, effect, ospec) {
+    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_total_spool(
             ctx,
             calc,
-            projector_key,
+            projector_uid,
             effect,
             cseq,
             ospec,
-            projectee_key,
+            projectee_uid,
             time,
             inv_spool,
         ),
-        None => aggr_total_regular(ctx, calc, projector_key, effect, cseq, ospec, projectee_key, time),
+        None => aggr_total_regular(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, time),
     }
 }
 
@@ -80,11 +80,11 @@ where
 fn aggr_total_regular<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
     time: AttrVal,
 ) -> Option<T>
 where
@@ -99,30 +99,30 @@ where
     if time < OF(0.0) {
         return None;
     }
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let precalc = match cseq {
         CycleSeq::Lim(inner) => {
-            let opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.data.chargedness);
+            let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
             inner.convert_extend(opc)
         }
         CycleSeq::Inf(inner) => {
-            let opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.data.chargedness);
+            let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
             inner.convert_extend(opc)
         }
         CycleSeq::LimInf(inner) => {
-            let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
-            let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+            let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
+            let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
             inner.convert_extend(p1_opc, p2_opc)
         }
         CycleSeq::LimSinInf(inner) => {
-            let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
-            let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
-            let p3_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p3_data.chargedness);
+            let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
+            let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
+            let p3_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p3_data.chargedness);
             inner.convert_extend(p1_opc, p2_opc, p3_opc)
         }
         CycleSeq::LoopLimSin(inner) => {
-            let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
-            let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+            let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
+            let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
             inner.convert_extend(p1_opc, p2_opc)
         }
     };
@@ -135,11 +135,11 @@ where
 fn aggr_total_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_key: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
     mut time: AttrVal,
     inv_spool: AggrSpoolInvData,
 ) -> Option<T>
@@ -155,13 +155,13 @@ where
     if time < OF(0.0) {
         return None;
     }
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_key, effect, ospec, projectee_key)?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     match cseq {
         CycleSeq::Lim(inner) => {
             match inner.data.interrupt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
-                    let opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.data.chargedness);
+                    let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
                     let precalc = inner.convert_extend(opc);
                     Some(aggr_precalc_by_time(precalc, time))
                 }
@@ -172,7 +172,7 @@ where
                     process_limited_spool(
                         ctx,
                         calc,
-                        projector_key,
+                        projector_uid,
                         ospec,
                         &inv_proj,
                         &inv_spool,
@@ -190,7 +190,7 @@ where
             match inner.data.interrupt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
-                    let opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.data.chargedness);
+                    let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
                     let precalc = inner.convert_extend(opc);
                     Some(aggr_precalc_by_time(precalc, time))
                 }
@@ -201,7 +201,7 @@ where
                     process_infinite_spool(
                         ctx,
                         calc,
-                        projector_key,
+                        projector_uid,
                         ospec,
                         &inv_proj,
                         &inv_spool,
@@ -217,8 +217,8 @@ where
         CycleSeq::LimInf(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
-                let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+                let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
+                let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
                 let precalc = inner.convert_extend(p1_opc, p2_opc);
                 Some(aggr_precalc_by_time(precalc, time))
             }
@@ -228,7 +228,7 @@ where
                 process_limited_spool(
                     ctx,
                     calc,
-                    projector_key,
+                    projector_uid,
                     ospec,
                     &inv_proj,
                     &inv_spool,
@@ -241,7 +241,7 @@ where
                 process_infinite_spool(
                     ctx,
                     calc,
-                    projector_key,
+                    projector_uid,
                     ospec,
                     &inv_proj,
                     &inv_spool,
@@ -259,9 +259,9 @@ where
         {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
-                let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
-                let p3_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p3_data.chargedness);
+                let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
+                let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
+                let p3_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p3_data.chargedness);
                 let precalc = inner.convert_extend(p1_opc, p2_opc, p3_opc);
                 Some(aggr_precalc_by_time(precalc, time))
             }
@@ -271,7 +271,7 @@ where
                 process_limited_spool(
                     ctx,
                     calc,
-                    projector_key,
+                    projector_uid,
                     ospec,
                     &inv_proj,
                     &inv_spool,
@@ -284,7 +284,7 @@ where
                 process_single_spool(
                     ctx,
                     calc,
-                    projector_key,
+                    projector_uid,
                     ospec,
                     &inv_proj,
                     &inv_spool,
@@ -296,7 +296,7 @@ where
                 process_infinite_spool(
                     ctx,
                     calc,
-                    projector_key,
+                    projector_uid,
                     ospec,
                     &inv_proj,
                     &inv_spool,
@@ -311,8 +311,8 @@ where
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let p1_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p1_data.chargedness);
-                let p2_opc = get_proj_output(ctx, calc, projector_key, ospec, &inv_proj, inner.p2_data.chargedness);
+                let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
+                let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
                 let precalc = inner.convert_extend(p1_opc, p2_opc);
                 Some(aggr_precalc_by_time(precalc, time))
             }
@@ -325,7 +325,7 @@ where
                     process_limited_spool(
                         ctx,
                         calc,
-                        projector_key,
+                        projector_uid,
                         ospec,
                         &inv_proj,
                         &inv_spool,
@@ -338,7 +338,7 @@ where
                     process_single_spool(
                         ctx,
                         calc,
-                        projector_key,
+                        projector_uid,
                         ospec,
                         &inv_proj,
                         &inv_spool,
@@ -372,7 +372,7 @@ where
 fn process_single_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
@@ -392,7 +392,7 @@ fn process_single_spool<T>(
         return;
     }
     let cycle_completion_time = cycle_data.time.max(inv_proj.output.get_completion_time());
-    let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_data.chargedness);
+    let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
     let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
     let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
     match *time >= cycle_completion_time {
@@ -409,7 +409,7 @@ fn process_single_spool<T>(
 fn process_limited_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
@@ -428,7 +428,7 @@ fn process_limited_spool<T>(
 {
     let cycle_tail_time = (inv_proj.output.get_completion_time() - cycle_data.time).max(OF(0.0));
     let cycle_completion_time = cycle_data.time + cycle_tail_time;
-    let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_data.chargedness);
+    let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
     while *time >= OF(0.0) && repeat_limit > 0 {
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == 0 {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
@@ -488,7 +488,7 @@ fn process_limited_spool<T>(
 fn process_infinite_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
-    projector_key: UItemId,
+    projector_uid: UItemId,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
@@ -509,7 +509,7 @@ fn process_infinite_spool<T>(
     }
     let cycle_tail_time = (inv_proj.output.get_completion_time() - cycle_data.time).max(OF(0.0));
     let cycle_completion_time = cycle_data.time + cycle_tail_time;
-    let charge_mult = calc_charge_mult(ctx, calc, projector_key, ospec.charge_mult, cycle_data.chargedness);
+    let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
     while *time >= OF(0.0) {
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == 0 {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
