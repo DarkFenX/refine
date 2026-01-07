@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     misc::{SkillLevel, Value},
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState},
@@ -162,11 +161,11 @@ fn has_effect(
 
 fn get_ship_kind(item_cat_aid: AItemCatId, item_srqs: &RMap<AItemId, SkillLevel>) -> Option<RShipKind> {
     match item_cat_aid {
-        ac::itemcats::SHIP => match item_srqs.contains_key(&AItemId::CAPITAL_SHIPS) {
+        AItemCatId::SHIP => match item_srqs.contains_key(&AItemId::CAPITAL_SHIPS) {
             true => Some(RShipKind::CapitalShip),
             false => Some(RShipKind::Ship),
         },
-        ac::itemcats::STRUCTURE => Some(RShipKind::Structure),
+        AItemCatId::STRUCTURE => Some(RShipKind::Structure),
         _ => None,
     }
 }

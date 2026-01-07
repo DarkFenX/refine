@@ -1,6 +1,5 @@
 use crate::{
-    ac,
-    ad::{AItem, AItemListId},
+    ad::{AItem, AItemCatId, AItemListId},
     nd::NItemList,
 };
 
@@ -16,5 +15,5 @@ pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
 }
 
 fn item_filter(a_item: &AItem) -> bool {
-    a_item.cat_id == ac::itemcats::SHIP
+    a_item.cat_id == AItemCatId::SHIP
 }

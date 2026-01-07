@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     ad::{AAttr, AAttrId},
     misc::Value,
     rd::RAttrId,
@@ -42,7 +41,7 @@ impl RAttr {
         let a_attr = a_attrs.get(&self.aid).unwrap();
         self.min_attr_rid = a_attr.min_attr_id.and_then(|aid| attr_aid_rid_map.get(&aid)).copied();
         self.max_attr_rid = a_attr.max_attr_id.and_then(|aid| attr_aid_rid_map.get(&aid)).copied();
-        for (buff_id_attr_aid, buff_val_attr_aid) in ac::extras::BUFF_MERGE_ATTRS {
+        for (buff_id_attr_aid, buff_val_attr_aid) in AAttrId::BUFF_MERGE_ATTRS {
             if a_attr.id == buff_id_attr_aid
                 && let Some(&buff_val_attr_rid) = attr_aid_rid_map.get(&buff_val_attr_aid)
             {

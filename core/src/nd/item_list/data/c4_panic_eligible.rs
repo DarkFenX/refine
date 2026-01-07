@@ -1,8 +1,7 @@
 // Items belonging to this list can receive PANIC buffs.
 
 use crate::{
-    ac,
-    ad::{AItem, AItemListId},
+    ad::{AItem, AItemGrpId, AItemId, AItemListId},
     nd::NItemList,
 };
 

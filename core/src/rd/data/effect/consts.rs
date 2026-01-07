@@ -1,4 +1,4 @@
-use crate::{ac, ad::AEffectId, rd::REffectId, util::RMap};
+use crate::{ad::AEffectId, rd::REffectId, util::RMap};
 
 #[derive(Clone)]
 pub(crate) struct REffectConsts {

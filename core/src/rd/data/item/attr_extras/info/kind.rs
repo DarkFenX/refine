@@ -1,7 +1,6 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ac,
     ad::{AItemCatId, AItemGrpId},
     misc::{ItemKind, Value},
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemEffectData},
@@ -19,7 +18,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
     let mut kinds: SmallVec<ItemKind, 1> = SmallVec::new();
     match item_cat_id {
         // Ship & structure modules
-        ac::itemcats::MODULE | ac::itemcats::STRUCTURE_MODULE => {
+        AItemCatId::MODULE | AItemCatId::STRUCTURE_MODULE => {
             if let Some(effect_rid) = effect_consts.hi_power
                 && item_effects.contains_key(&effect_rid)
             {
@@ -47,9 +46,9 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
             }
         }
         // Ships and structures
-        ac::itemcats::SHIP | ac::itemcats::STRUCTURE => kinds.push(ItemKind::Ship),
+        AItemCatId::SHIP | AItemCatId::STRUCTURE => kinds.push(ItemKind::Ship),
         // Implants and boosters
-        ac::itemcats::IMPLANT => {
+        AItemCatId::IMPLANT => {
             if let Some(attr_rid) = attr_consts.boosterness
                 && item_attrs.contains_key(&attr_rid)
             {
@@ -62,11 +61,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
             }
         }
         // Other items
-        ac::itemcats::CHARGE => kinds.push(ItemKind::Charge),
-        ac::itemcats::DRONE => kinds.push(ItemKind::Drone),
-        ac::itemcats::FIGHTER => kinds.push(ItemKind::Fighter),
-        ac::itemcats::SKILL => kinds.push(ItemKind::Skill),
-        ac::itemcats::SUBSYSTEM => kinds.push(ItemKind::Subsystem),
+        AItemCatId::CHARGE => kinds.push(ItemKind::Charge),
+        AItemCatId::DRONE => kinds.push(ItemKind::Drone),
+        AItemCatId::FIGHTER => kinds.push(ItemKind::Fighter),
+        AItemCatId::SKILL => kinds.push(ItemKind::Skill),
+        AItemCatId::SUBSYSTEM => kinds.push(ItemKind::Subsystem),
         _ => (),
     }
     match item_grp_id {
