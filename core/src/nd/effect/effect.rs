@@ -58,17 +58,17 @@ pub(crate) struct NEffect {
     pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     // Getters/specs - rep output
-    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
+    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     // Getters/specs - local reps
-    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
-    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
-    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
+    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
+    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
+    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     // Getters/specs - cap
-    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
-    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<Value>> = None,
-    pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<Value>> = None,
+    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     // Getters/specs - misc
     pub(crate) ecm_opc_spec: Option<NEffectProjOpcSpec<Ecm>> = None,
 }

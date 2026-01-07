@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    def::{FitId, ItemId},
     sol::SolarSystem,
-    ud::{UFitId, UItemId},
+    ud::{FitId, ItemId, UFitId, UItemId},
     util::RSet,
 };
 

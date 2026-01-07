@@ -12,7 +12,7 @@ pub(in crate::nd::effect::data) fn get_shield_rep_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().shield_bonus, true)
 }
 
@@ -21,7 +21,7 @@ pub(in crate::nd::effect::data) fn get_armor_rep_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().armor_dmg_amount, false)
 }
 
@@ -30,7 +30,7 @@ pub(in crate::nd::effect::data) fn get_hull_rep_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().struct_dmg_amount, false)
 }
 
@@ -39,7 +39,7 @@ pub(in crate::nd::effect::data) fn get_cap_trans_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
 }
 

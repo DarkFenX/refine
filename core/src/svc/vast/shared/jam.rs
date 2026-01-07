@@ -1,7 +1,7 @@
-use crate::def::AttrVal;
+use crate::misc::UnitInterval;
 
 #[derive(Copy, Clone)]
 pub struct StatJamApplied {
-    pub chance: AttrVal,
-    pub uptime: AttrVal,
+    pub chance: UnitInterval,
+    pub uptime: UnitInterval,
 }

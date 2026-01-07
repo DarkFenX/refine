@@ -39,11 +39,16 @@ fn internal_get_cap_inject(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     let item = ctx.u_data.items.get(item_uid);
     let charge_uid = item.get_charge_uid()?;
     let attr_consts = ctx.ac();
-    let amount = calc.get_item_oattr_afb_oextra(ctx, charge_uid, attr_consts.capacitor_bonus, Value::ZERO)?;
+    let amount = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        charge_uid,
+        attr_consts.capacitor_bonus,
+        Value::ZERO,
+    )?);
     Some(Output::Simple(OutputSimple {
         amount,
         delay: PValue::ZERO,

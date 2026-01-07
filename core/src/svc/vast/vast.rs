@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrVal, AItemGrpId, AItemId, ASkillLevel, ASlotIndex},
+    ad::{AItemGrpId, AItemId},
     def::{AttrVal, DefCount},
     misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::NBreacherDmgGetter,

@@ -8,13 +8,13 @@ use crate::{
 
 impl<'a> Ability<'a> {
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.fighter_key, &self.abil_id)
+        get_state(self.sol, self.fighter_uid, &self.abil_aid)
     }
 }
 
 impl<'a> AbilityMut<'a> {
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.fighter_key, &self.abil_id)
+        get_state(self.sol, self.fighter_uid, &self.abil_aid)
     }
 }
 

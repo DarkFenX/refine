@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::FitId,
     svc::vast::{
         ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
         ValChargeVolumeFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
@@ -10,6 +9,7 @@ use crate::{
         ValResFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
         ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
     },
+    ud::FitId,
 };
 
 /// Validation result for a solar system.

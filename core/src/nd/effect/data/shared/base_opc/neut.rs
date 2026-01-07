@@ -17,7 +17,7 @@ pub(in crate::nd::effect::data) fn get_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().energy_neut_amount, true)
 }
 
@@ -26,7 +26,7 @@ pub(in crate::nd::effect::data) fn get_nosf_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     // Not a blood raider ship - not considered as a neut
     if calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().nos_override)?.abs() < PValue::FLOAT_TOLERANCE {
         return None;
@@ -39,9 +39,14 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     let attr_consts = ctx.ac();
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_consts.energy_neut_amount, Value::ZERO)?;
+    let amount = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(
+        ctx,
+        item_uid,
+        attr_consts.energy_neut_amount,
+        Value::ZERO,
+    )?);
     let delay = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         item_uid,
@@ -54,7 +59,7 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AoE doomsday side-effect neuting
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<Value> {
+pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<PValue> {
     NEffectProjOpcSpec {
         base: get_aoe_dd_side_neut_base_opc,
         proj_mult_str: Some(get_aoe_dd_side_neut_proj_mult),
@@ -69,6 +74,6 @@ fn get_aoe_dd_side_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-) -> Option<Output<Value>> {
+) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true)
 }
