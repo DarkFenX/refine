@@ -30,7 +30,7 @@ impl<T> Output<T>
 where
     T: Copy + LimitAmount,
 {
-    pub(in crate::svc::aggr) fn limit_amount(&mut self, limit: PValue) {
+    pub(in crate::svc::aggr) fn limit_amount(&mut self, limit: Value) {
         match self {
             Self::Simple(inner) => inner.limit_amount(limit),
             Self::Complex(inner) => inner.limit_amount(limit),
@@ -61,7 +61,7 @@ impl<T> OutputSimple<T>
 where
     T: Copy + LimitAmount,
 {
-    fn limit_amount(&mut self, limit: PValue) {
+    fn limit_amount(&mut self, limit: Value) {
         self.amount.limit_amount(limit);
     }
 }
@@ -79,9 +79,10 @@ where
     T: Copy + Default + std::ops::Mul<PValue, Output = T>,
 {
     fn get_amount_sum_by_time(&self, time: PValue) -> T {
-        let after_delay = match time - self.delay {
-            ..Value::ZERO => return T::default(),
-            v => PValue::from_val_unchecked(v),
+        let after_delay = time - self.delay;
+        let after_delay = match after_delay >= Value::ZERO {
+            true => PValue::from_val_unchecked(after_delay),
+            false => return T::default(),
         };
         let count = after_delay / self.interval;
         if !count.is_finite() {
@@ -94,7 +95,7 @@ impl<T> OutputComplex<T>
 where
     T: Copy + LimitAmount,
 {
-    fn limit_amount(&mut self, limit: PValue) {
+    fn limit_amount(&mut self, limit: Value) {
         self.amount.limit_amount(limit);
     }
 }

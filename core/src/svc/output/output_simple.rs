@@ -48,24 +48,24 @@ where
         self
     }
 }
-impl<T> std::ops::Mul<Value> for OutputSimple<T>
+impl<T> std::ops::Mul<PValue> for OutputSimple<T>
 where
-    T: Copy + std::ops::Mul<Value, Output = T>,
+    T: Copy + std::ops::Mul<PValue, Output = T>,
 {
     type Output = Self;
 
-    fn mul(self, rhs: Value) -> Self::Output {
+    fn mul(self, rhs: PValue) -> Self::Output {
         Self {
             amount: self.amount * rhs,
             delay: self.delay,
         }
     }
 }
-impl<T> std::ops::MulAssign<Value> for OutputSimple<T>
+impl<T> std::ops::MulAssign<PValue> for OutputSimple<T>
 where
-    T: Copy + std::ops::MulAssign<Value>,
+    T: Copy + std::ops::MulAssign<PValue>,
 {
-    fn mul_assign(&mut self, rhs: Value) {
+    fn mul_assign(&mut self, rhs: PValue) {
         self.amount.mul_assign(rhs);
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     ad::AAttrId,
-    misc::{UnitInterval, Value},
+    misc::{PValue, UnitInterval},
     nd::{NEffectResist, NProjMultGetter},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -8,7 +8,7 @@ use crate::{
 };
 
 pub(crate) type NBaseOutputGetter<T> = fn(SvcCtx, &mut Calc, UItemId, &REffect) -> Option<Output<T>>;
-pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemId, UnitInterval) -> Option<Value>;
+pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemId, UnitInterval) -> Option<PValue>;
 
 pub(crate) struct NEffectLocalOpcSpec<T>
 where

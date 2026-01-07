@@ -24,7 +24,7 @@ where
         + Copy
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<Value>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;

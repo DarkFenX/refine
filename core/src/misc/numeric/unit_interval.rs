@@ -74,21 +74,3 @@ impl PartialOrd for UnitInterval {
         OrderedFloat(self.0).partial_cmp(&OrderedFloat(other.0))
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mathematics
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl std::ops::Mul<Value> for UnitInterval {
-    type Output = Value;
-
-    fn mul(self, rhs: Value) -> Self::Output {
-        Value::from_f64(self.0 * rhs.into_f64())
-    }
-}
-impl std::ops::Mul<UnitInterval> for Value {
-    type Output = Value;
-
-    fn mul(self, rhs: UnitInterval) -> Self::Output {
-        Value::from_f64(self.into_f64() * rhs.0)
-    }
-}

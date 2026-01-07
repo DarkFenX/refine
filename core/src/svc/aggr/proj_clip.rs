@@ -4,7 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, OF},
+    misc::{Count, InfCount, PValue},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -12,7 +12,6 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
-    util::InfCount,
 };
 
 // Projected effects, considers only infinite parts of cycles
@@ -29,8 +28,8 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
@@ -56,14 +55,14 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
-    let mut uninterrupted_cycles = 0;
+    let mut uninterrupted_cycles = Count::ZERO;
     let mut total_amount = T::default();
-    let mut total_time = OF(0.0);
+    let mut total_time = PValue::ZERO;
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     'part: for cycle_part in cycle_parts.iter() {
@@ -72,20 +71,20 @@ where
             InfCount::Infinite => match cycle_part.data.interrupt {
                 // Process 1 cycle if reload happens after every cycle in this part, even if cycles
                 // are infinite
-                Some(interrupt) if interrupt.reload => 1,
+                Some(interrupt) if interrupt.reload => Count::ONE,
                 // No reloads in infinite sequence - sequence is not a clip - no data to return
                 _ => return None,
             },
         };
         // Calculate chargedness mult once for every part, no need to do it for every cycle
         let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_part.data.chargedness);
-        for i in 0..part_cycle_count {
+        for i in Count::ZERO..part_cycle_count {
             // Case when the rest of cycle part is at full spool
             if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
                 let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, inv_spool.max);
                 let remaining_cycles = part_cycle_count - i;
                 uninterrupted_cycles += remaining_cycles;
-                let remaining_cycles = AttrVal::from(remaining_cycles);
+                let remaining_cycles = remaining_cycles.into_pvalue();
                 total_amount += cycle_output.get_amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // No interruptions in this branch, no need to do handle reload flag
@@ -94,8 +93,8 @@ where
             let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, spool);
             match cycle_part.data.interrupt {
-                Some(_) => uninterrupted_cycles = 0,
-                None => uninterrupted_cycles += 1,
+                Some(_) => uninterrupted_cycles = Count::ZERO,
+                None => uninterrupted_cycles += Count::ONE,
             }
             total_amount += cycle_output.get_amount_sum();
             total_time += cycle_part.data.time;
@@ -132,13 +131,13 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut total_amount = T::default();
-    let mut total_time = OF(0.0);
+    let mut total_time = PValue::ZERO;
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
@@ -154,7 +153,7 @@ where
             }
             _ => {
                 let part_cycle_count = match cycle_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => AttrVal::from(part_cycle_count),
+                    InfCount::Count(part_cycle_count) => part_cycle_count.into_pvalue(),
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,

@@ -11,7 +11,7 @@ pub(super) fn calc_charge_mult(
     item_uid: UItemId,
     charge_mult_getter: Option<NChargeMultGetter>,
     cycle_chargedness: Option<UnitInterval>,
-) -> Option<Value> {
+) -> Option<PValue> {
     match charge_mult_getter {
         Some(charge_mult_getter) if let Some(chargedness) = cycle_chargedness => {
             charge_mult_getter(ctx, calc, item_uid, chargedness).and_then(|v| process_mult(v))
@@ -20,9 +20,9 @@ pub(super) fn calc_charge_mult(
     }
 }
 
-pub(super) fn process_mult(mult: Value) -> Option<Value> {
+pub(super) fn process_mult(mult: PValue) -> Option<PValue> {
     match mult {
-        Value::ONE => None,
+        PValue::ONE => None,
         v => Some(v),
     }
 }

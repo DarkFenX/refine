@@ -1,16 +1,14 @@
 use crate::{
-    def::{AttrVal, DefCount, OF},
-    misc::Spool,
+    misc::{Count, PValue, Spool, StOption, Value},
     rd::{REffect, RSpoolAttrs},
     svc::{SvcCtx, calc::Calc, funcs},
     ud::UItemId,
-    util::{ceil_unerr, floor_unerr},
 };
 
 pub(super) struct ResolvedSpool {
-    pub(super) cycles: DefCount,
-    pub(super) cycles_max: DefCount,
-    pub(super) mult: AttrVal,
+    pub(super) cycles: Count,
+    pub(super) cycles_max: Count,
+    pub(super) mult: Value,
 }
 impl ResolvedSpool {
     pub(super) fn try_build(
@@ -18,7 +16,7 @@ impl ResolvedSpool {
         calc: &mut Calc,
         item_key: UItemId,
         effect: &REffect,
-        spool: Option<Spool>,
+        spool: StOption<Spool>,
         spool_attrs: RSpoolAttrs,
     ) -> Option<Self> {
         let duration_s = funcs::get_effect_duration_s(ctx, calc, item_key, effect)?;
@@ -29,12 +27,17 @@ impl ResolvedSpool {
     }
 }
 
-fn resolve_spool(spool: Spool, step: AttrVal, max: AttrVal, cycle_time: AttrVal) -> Option<ResolvedSpool> {
+fn resolve_spool(spool: Spool, step: Value, max: Value, cycle_time: PValue) -> Option<ResolvedSpool> {
     // Step is used as divisor when calculating all spool types
-    if step == OF(0.0) {
+    if step.abs() < PValue::FLOAT_TOLERANCE {
         return None;
     }
-    let cycles_max = ceil_unerr(max / step).into_inner() as DefCount;
+    let ratio = max / step;
+    let ratio = match ratio > Value::ZERO {
+        true => PValue::from_val_unchecked(ratio),
+        false => return None,
+    };
+    let cycles_max = Count::from_pvalue_ceiled(ratio);
     let cycles = match spool {
         Spool::Cycles(cycles_opt) => {
             // Limit requested count by max spool cycles
@@ -42,15 +45,15 @@ fn resolve_spool(spool: Spool, step: AttrVal, max: AttrVal, cycle_time: AttrVal)
         }
         Spool::Time(time) => {
             // Choose count of cycles finished by specified time, and limit by max spool cycles
-            let cycles_by_time = floor_unerr((time).max(OF(0.0)) / cycle_time).into_inner() as DefCount;
+            let cycles_by_time = Count::from_pvalue_trunced(time / cycle_time);
             cycles_max.min(cycles_by_time)
         }
-        Spool::SpoolScale(range_value) => ceil_unerr(range_value.get_inner() * max / step).into_inner() as DefCount,
+        Spool::SpoolScale(range_value) => Count::from_pvalue_ceiled(range_value.into_pvalue() * ratio),
         Spool::CycleScale(range_value) => {
-            ceil_unerr(range_value.get_inner() * cycles_max as f64).into_inner() as DefCount
+            Count::from_pvalue_ceiled(range_value.into_pvalue() * cycles_max.into_pvalue())
         }
     };
-    let mult = OF(1.0) + max.min(step * cycles as f64);
+    let mult = Value::ONE + max.min(step * cycles.into_value());
     Some(ResolvedSpool {
         cycles,
         cycles_max,

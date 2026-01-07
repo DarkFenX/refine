@@ -91,6 +91,9 @@ impl PValue {
     pub(crate) fn pow_pvalue(self, n: Self) -> Self {
         Self(self.0.powf(n.into_f64()))
     }
+    pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
+        Self(self.0.mul_add(a.0, b.0))
+    }
     pub(crate) fn is_nan(self) -> bool {
         self.0.is_nan()
     }

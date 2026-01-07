@@ -1,6 +1,6 @@
 use super::traits::LimitAmount;
 use crate::{
-    misc::{UnitInterval, Value},
+    misc::{PValue, UnitInterval, Value},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
@@ -53,7 +53,7 @@ pub(in crate::svc) fn get_local_output<T>(
     chargeness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<Value> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
 {
     let mut output = inv_local.output;
     // Chargedness

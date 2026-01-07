@@ -37,7 +37,7 @@ pub(in crate::nd::effect::data) fn get_crit_mining_base_opc(
             let crit_bonus =
                 calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.mining_crit_bonus_yield, Value::ZERO)?;
             let crit_chance = UnitInterval::from_value_clamped(crit_chance);
-            PValue::from_value_clamped(yield_ * (Value::ONE + crit_bonus * crit_chance))
+            PValue::from_value_clamped(yield_ * (Value::ONE + crit_bonus * crit_chance.into_value()))
         }
         false => yield_,
     };

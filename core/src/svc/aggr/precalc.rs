@@ -35,12 +35,12 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn aggr_precalc_by_time<T>(precalc: CycleSeq<AggrPartData<T>>, time: PValue) -> T
+pub(super) fn aggr_precalc_by_time<T>(precalc: CycleSeq<AggrPartData<T>>, ptime: PValue) -> T
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T>,
 {
     // Locally time can go negative
-    let mut time = Value::from_pvalue(time);
+    let mut time = ptime.into_value();
     let mut total_amount = T::default();
     match precalc {
         CycleSeq::Lim(inner) => {
@@ -114,9 +114,9 @@ fn process_single_regular<T>(total_amount: &mut T, time: &mut Value, data: &Aggr
 where
     T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T>,
 {
-    let ptime = match *time {
-        ..Value::ZERO => return,
-        v => PValue::from_val_unchecked(v),
+    let ptime = match *time < Value::ZERO {
+        true => return,
+        false => PValue::from_val_unchecked(*time),
     };
     match ptime >= data.time + data.tail_time {
         true => *total_amount += data.output.get_amount_sum(),
@@ -161,9 +161,10 @@ where
 }
 
 pub(super) fn get_full_repeats_count(time: Value, cycle_time: PValue, cycle_tail_time: PValue) -> Count {
-    let time_no_tail = match time - cycle_tail_time {
-        ..Value::ZERO => return Count::ZERO,
-        v => PValue::from_val_unchecked(v),
+    let time_no_tail = time - cycle_tail_time;
+    let time_no_tail = match time_no_tail < Value::ZERO {
+        true => return Count::ZERO,
+        false => PValue::from_val_unchecked(time_no_tail),
     };
     Count::from_pvalue_trunced(time_no_tail / cycle_time)
 }

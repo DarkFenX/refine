@@ -1,7 +1,7 @@
 use super::generic::get_generic_base_opc;
 use crate::{
     ad::AItemId,
-    misc::{UnitInterval, Value},
+    misc::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
@@ -51,12 +51,12 @@ pub(in crate::nd::effect::data) fn get_ancillary_armor_mult(
     calc: &mut Calc,
     item_uid: UItemId,
     chargedness: UnitInterval,
-) -> Option<Value> {
+) -> Option<PValue> {
     if let Some(charge_uid) = ctx.u_data.items.get(item_uid).get_charge_uid()
         && ctx.u_data.items.get(charge_uid).get_type_id() == AItemId::NANITE_REPAIR_PASTE
         && let Some(rep_mult) = calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().charged_armor_dmg_mult)
     {
-        return Some((rep_mult - Value::ONE) * chargedness + Value::ONE);
+        return Some(PValue::from_value_clamped(rep_mult - Value::ONE) * chargedness.into_pvalue() + PValue::ONE);
     }
     None
 }

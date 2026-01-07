@@ -1,10 +1,10 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::{AggrAmount, calc_charge_mult},
-    traits::{LimitAmount, Maximum},
+    traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, DefCount, OF},
+    misc::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -12,6 +12,7 @@ use crate::{
         cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
+    util::LibMax,
 };
 
 // Projected effects, considers only infinite parts of cycles
@@ -28,9 +29,9 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
-        + std::ops::Div<AttrVal, Output = T>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + std::ops::Div<PValue, Output = T>
         + LimitAmount,
 {
     aggr_proj_looped_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid)
@@ -50,10 +51,10 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
-        + LimitAmount
-        + Maximum,
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + LibMax
+        + LimitAmount,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_max_spool(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, inv_spool),
@@ -74,8 +75,8 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
@@ -100,17 +101,17 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut total_amount = T::default();
-    let mut total_time = OF(0.0);
+    let mut total_time = PValue::ZERO;
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
-        let part_cycle_count = AttrVal::from(cycle_part.repeat_count);
+        let part_cycle_count = cycle_part.repeat_count.into_pvalue();
         total_amount += cycle_output.get_amount_sum() * part_cycle_count;
         total_time += cycle_part.data.time * part_cycle_count;
     }
@@ -134,8 +135,8 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
@@ -143,15 +144,15 @@ where
     // Do a dry run to set amount of interrupted cycles before we begin
     let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     let mut total_amount = T::default();
-    let mut total_time = OF(0.0);
+    let mut total_time = PValue::ZERO;
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Calculate chargedness mult once for every part, no need to do it for every cycle
         let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_part.data.chargedness);
-        for i in 0..cycle_part.repeat_count {
+        for i in Count::ZERO..cycle_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
                 // Current cycle is at 0 spool, and we have an interrupt every cycle
-                Some(_) if uninterrupted_cycles == 0 => Some(OF(0.0)),
+                Some(_) if uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
                 // Current cycle is at max spool, and we have no interrupts in cycles of current
                 // part
                 None if uninterrupted_cycles >= inv_spool.cycles_to_max => {
@@ -164,7 +165,7 @@ where
             if let Some(stable_spool) = stable_spool {
                 let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
                 // Update total values
-                let remaining_cycles = AttrVal::from(cycle_part.repeat_count - i);
+                let remaining_cycles = (cycle_part.repeat_count - i).into_pvalue();
                 total_amount += cycle_output.get_amount_sum() * remaining_cycles;
                 total_time += cycle_part.data.time * remaining_cycles;
                 // We've processed all the remaining cycles of current part, go next
@@ -177,8 +178,8 @@ where
             total_time += cycle_part.data.time;
             // Update state
             match cycle_part.data.interrupt {
-                Some(_) => uninterrupted_cycles = 0,
-                None => uninterrupted_cycles += 1,
+                Some(_) => uninterrupted_cycles = Count::ZERO,
+                None => uninterrupted_cycles += Count::ONE,
             }
         }
     }
@@ -204,10 +205,10 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
-        + LimitAmount
-        + Maximum,
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + LibMax
+        + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -215,7 +216,7 @@ where
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         // Update result
-        max_amount = max_amount.maximum(cycle_output.get_max_amount());
+        max_amount = max_amount.lib_max(cycle_output.get_max_amount());
     }
     Some(max_amount)
 }
@@ -234,10 +235,10 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
-        + LimitAmount
-        + Maximum,
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + LibMax
+        + LimitAmount,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -247,11 +248,11 @@ where
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Calculate chargedness mult once for every part, no need to do it for every cycle
         let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_part.data.chargedness);
-        for i in 0..cycle_part.repeat_count {
+        for i in Count::ZERO..cycle_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
                 // Current cycle is at 0 spool, and we have an interrupt every cycle
-                Some(_) if uninterrupted_cycles == 0 => Some(OF(0.0)),
+                Some(_) if uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
                 // Current cycle is at max spool, and we have no interrupts in cycles of current
                 // part
                 None if uninterrupted_cycles >= inv_spool.cycles_to_max => {
@@ -263,18 +264,18 @@ where
             };
             if let Some(stable_spool) = stable_spool {
                 let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
-                max_amount = max_amount.maximum(cycle_output.get_max_amount());
+                max_amount = max_amount.lib_max(cycle_output.get_max_amount());
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
             let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update result
-            max_amount = max_amount.maximum(cycle_output.get_max_amount());
+            max_amount = max_amount.lib_max(cycle_output.get_max_amount());
             // Update state
             match cycle_part.data.interrupt {
-                Some(_) => uninterrupted_cycles = 0,
-                None => uninterrupted_cycles += 1,
+                Some(_) => uninterrupted_cycles = Count::ZERO,
+                None => uninterrupted_cycles += Count::ONE,
             }
         }
     }
@@ -284,13 +285,13 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> DefCount {
-    let mut uninterrupted_cycles = 0;
+fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> Count {
+    let mut uninterrupted_cycles = Count::ZERO;
     let mut interruptions = false;
     for cycle_part in cseq.iter_cseq_parts() {
         match cycle_part.data.interrupt {
             Some(_) => {
-                uninterrupted_cycles = 0;
+                uninterrupted_cycles = Count::ZERO;
                 interruptions = true;
             }
             None => {

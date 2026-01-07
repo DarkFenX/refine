@@ -48,6 +48,9 @@ impl Count {
     pub(crate) fn from_pvalue_rounded(value: PValue) -> Self {
         Self(round_f64_to_u32(value.into_f64()))
     }
+    pub(crate) fn from_pvalue_ceiled(value: PValue) -> Self {
+        Self(ceil_f64_to_u32(value.into_f64()))
+    }
     pub(crate) fn from_a_count(a_count: ACount) -> Self {
         Self(a_count.into_u32())
     }
@@ -56,6 +59,21 @@ impl Count {
     }
     pub(crate) fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0 as f64)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Iteration
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl std::iter::Step for Count {
+    fn steps_between(start: &Self, end: &Self) -> (usize, Option<usize>) {
+        u32::steps_between(&start.0, &end.0)
+    }
+    fn forward_checked(start: Self, count: usize) -> Option<Self> {
+        u32::forward_checked(start.0, count).map(Self)
+    }
+    fn backward_checked(start: Self, count: usize) -> Option<Self> {
+        u32::backward_checked(start.0, count).map(Self)
     }
 }
 

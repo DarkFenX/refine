@@ -4,8 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, OF},
-    misc::Spool,
+    misc::{PValue, Spool, StOption, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
     ud::UItemId,
@@ -20,13 +19,13 @@ pub(in crate::svc) fn aggr_proj_first_ps<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
+    spool: StOption<Spool>,
 ) -> Option<T>
 where
     T: Copy
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
-        + std::ops::Div<AttrVal, Output = T>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + std::ops::Div<PValue, Output = T>
         + LimitAmount,
 {
     aggr_proj_first_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool)
@@ -41,10 +40,10 @@ pub(in crate::svc) fn aggr_proj_first_max<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
+    spool: StOption<Spool>,
 ) -> Option<T>
 where
-    T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
 {
     aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool)
         .map(|output_data| output_data.output.get_max_amount())
@@ -58,10 +57,10 @@ pub(in crate::svc) fn aggr_proj_first_amount<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
+    spool: StOption<Spool>,
 ) -> Option<AggrAmount<T>>
 where
-    T: Copy + std::ops::Mul<AttrVal, Output = T> + std::ops::MulAssign<AttrVal> + LimitAmount,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
 {
     aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool).map(|output_data| {
         AggrAmount {
@@ -79,10 +78,10 @@ pub(in crate::svc) fn aggr_proj_first_output<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
+    spool: StOption<Spool>,
 ) -> Option<AggrOutput<T>>
 where
-    T: Copy + std::ops::MulAssign<AttrVal> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
 {
     let cycle = cseq.get_first_cycle();
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -91,7 +90,7 @@ where
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_uid, effect, spool, spool_attrs)
     {
         let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle.chargedness);
-        get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - OF(1.0))
+        get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - Value::ONE)
     } else {
         get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle.chargedness)
     };

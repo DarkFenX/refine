@@ -15,11 +15,11 @@ where
 {
     pub(super) output: Output<T>,
     amount_limit: Option<Value>,
-    mult_post: Option<Value>,
+    mult_post: Option<PValue>,
 }
 impl<T> AggrProjInvData<T>
 where
-    T: Copy + std::ops::MulAssign<Value>,
+    T: Copy + std::ops::MulAssign<PValue>,
 {
     pub(in crate::svc) fn try_make(
         ctx: SvcCtx,
@@ -38,7 +38,7 @@ where
                 EffectSpec::new(projector_uid, effect.rid),
                 projectee_uid,
             );
-            let mut mult_pre = Value::ONE;
+            let mut mult_pre = PValue::ONE;
             // Resists
             match ospec.resist {
                 Some(REffectResist::Standard)
@@ -71,7 +71,7 @@ where
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
                 let mult = proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
-                mult_post = process_mult(mult.into_value());
+                mult_post = process_mult(mult);
             }
         }
         Some(Self {
@@ -140,7 +140,7 @@ pub(in crate::svc) fn get_proj_output<T>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<Value> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
 {
     let mut output = inv_proj.output;
     // Chargedness
@@ -163,11 +163,11 @@ where
 
 pub(super) fn get_proj_output_spool<T>(
     inv_proj: &AggrProjInvData<T>,
-    charge_mult: Option<Value>,
+    charge_mult: Option<PValue>,
     spool_extra_mult: Value,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<Value> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
 {
     let mut output = inv_proj.output;
     // Chargedness
@@ -175,7 +175,7 @@ where
         output *= charge_mult;
     }
     // Spool
-    output *= Value::ONE + spool_extra_mult;
+    output *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
     // Limit
     if let Some(limit) = inv_proj.amount_limit {
         output.limit_amount(limit);
