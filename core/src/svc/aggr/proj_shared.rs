@@ -1,5 +1,3 @@
-use ordered_float::Float;
-
 use super::shared::process_mult;
 use crate::{
     misc::{AttrSpec, Count, EffectSpec, PValue, UnitInterval, Value},

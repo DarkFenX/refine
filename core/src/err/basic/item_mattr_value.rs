@@ -1,4 +1,4 @@
-use crate::{api::AttrId, def::ItemId};
+use crate::{api::AttrId, ud::ItemId};
 
 #[derive(thiserror::Error, Debug)]
 #[error("attribute {attr_id} has no base value on item {item_id}")]

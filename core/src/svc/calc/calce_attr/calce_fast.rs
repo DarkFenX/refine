@@ -278,7 +278,7 @@ impl Calc {
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
-            let mod_key = CalcModificationKey::from(cmod);
+            let mod_key = CalcModificationKey::from_cmod(cmod);
             let modification = CalcModification {
                 op: cmod.raw.op,
                 val,

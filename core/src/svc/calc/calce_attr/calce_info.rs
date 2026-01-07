@@ -39,7 +39,7 @@ impl Calc {
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = ctx.u_data.src.get_attr_by_rid(attr_rid).aid.into();
+                let attr_id = AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(attr_rid).aid);
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
         }
@@ -83,7 +83,7 @@ impl Calc {
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
-            let mod_key = CalcModificationKey::from(cmod);
+            let mod_key = CalcModificationKey::from_cmod(cmod);
             let modification = CalcModification {
                 op: cmod.raw.op,
                 val,
@@ -134,7 +134,7 @@ impl Calc {
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.eid_by_iid(item_uid),
-                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid.into()),
+                        attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
                     }],
                 })
             }
@@ -155,7 +155,7 @@ impl Calc {
                     applied_val: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.eid_by_iid(item_uid),
-                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid.into()),
+                        attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
                     }],
                 })
             }
@@ -206,7 +206,7 @@ impl Calc {
                     applied_val: security_full_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.eid_by_iid(item_uid),
-                        attr_id: Some(ctx.u_data.src.get_attr_by_rid(security_attr_rid).aid.into()),
+                        attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(security_attr_rid).aid)),
                     }],
                 });
                 return base_attr_info;

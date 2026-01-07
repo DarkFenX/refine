@@ -1,4 +1,4 @@
-use crate::def::{FitId, FleetId};
+use crate::ud::{FitId, FleetId};
 
 #[derive(thiserror::Error, Debug)]
 #[error("fit {fit_id} is already a member of fleet {fleet_id}")]

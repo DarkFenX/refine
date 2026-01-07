@@ -1,4 +1,7 @@
-use crate::def::{FitId, ItemId, ItemTypeId};
+use crate::{
+    api::ItemTypeId,
+    ud::{FitId, ItemId},
+};
 
 #[derive(thiserror::Error, Debug)]
 #[error("skill {type_id} already exists on fit {fit_id}, item {item_id} has the same type ID")]

@@ -1,4 +1,7 @@
-use crate::{def::ItemId, svc::err::UItemKindVsStatError, ud::UItems};
+use crate::{
+    svc::err::UItemKindVsStatError,
+    ud::{ItemId, UItems},
+};
 
 #[derive(thiserror::Error, Debug)]
 #[error("item {item_id} does not support requested stat")]

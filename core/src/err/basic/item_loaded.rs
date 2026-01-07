@@ -1,4 +1,7 @@
-use crate::{def::ItemId, svc::err::UItemLoadedError, ud::UItems};
+use crate::{
+    svc::err::UItemLoadedError,
+    ud::{ItemId, UItems},
+};
 
 #[derive(thiserror::Error, Debug)]
 #[error("item {item_id} is not loaded")]

@@ -1,4 +1,4 @@
-use crate::def::ItemId;
+use crate::ud::ItemId;
 
 #[derive(thiserror::Error, Debug)]
 #[error("item {item_id} was requested as {expected_kind}. but is {actual_kind}")]

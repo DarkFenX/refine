@@ -2,7 +2,6 @@ use std::collections::BTreeMap;
 
 use itertools::Itertools;
 use lender::Lender;
-use ordered_float::Float;
 
 use super::{
     rah_data_sim::RahDataSim, rah_history_entry::RahSimHistoryEntry, rah_info::RahInfo, shared::TickCount,
