@@ -2,6 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
+    def::SERVER_TICK_HZ,
     misc::Value,
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
 };
@@ -27,20 +28,22 @@ impl PValue {
 impl PValue {
     pub(crate) const ZERO: Self = Self::from_f64_clamped(0.0);
     pub(crate) const ONE: Self = Self::from_f64_clamped(1.0);
+    pub(crate) const TEN: Self = Self::from_f64_clamped(10.0);
     pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
+    pub(crate) const SERVER_TICK_HZ: Self = Self::from_f64_clamped(SERVER_TICK_HZ as f64);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
-    pub(crate) fn from_a_val_clamped(value: AValue) -> Self {
+    pub(crate) fn from_a_value_clamped(value: AValue) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
     pub(crate) fn from_value_clamped(value: Value) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
-    pub(crate) fn from_val_unchecked(value: Value) -> Self {
+    pub(crate) fn from_value_unchecked(value: Value) -> Self {
         Self::from_f64_unchecked(value.into_f64())
     }
     pub(crate) fn into_value(self) -> Value {
@@ -91,6 +94,9 @@ impl PValue {
     pub(crate) fn pow_pvalue(self, n: Self) -> Self {
         Self(self.0.powf(n.into_f64()))
     }
+    pub(crate) fn sqrt(self) -> Self {
+        Self(self.0.sqrt())
+    }
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self(self.0.mul_add(a.0, b.0))
     }
@@ -102,6 +108,9 @@ impl PValue {
     }
     pub(crate) fn sig_rounded(self, digits: u32) -> Self {
         Self(sig_round(self.0, digits))
+    }
+    pub(crate) fn fract(self) -> Self {
+        Self(self.0.fract())
     }
     pub(crate) fn floor_unerr(self) -> Self {
         Self(floor_unerr(self.0))

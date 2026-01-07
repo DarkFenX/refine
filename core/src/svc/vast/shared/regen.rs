@@ -1,15 +1,14 @@
-use ordered_float::Float;
+use crate::misc::{PValue, UnitInterval, Value};
 
-use crate::def::{AttrVal, OF};
-
-pub(in crate::svc::vast) fn calc_regen(c_max: AttrVal, c_rech: AttrVal, cap_perc: AttrVal) -> AttrVal {
-    let result = OF(10.0) * c_max / c_rech * (cap_perc.sqrt() - cap_perc);
+pub(in crate::svc::vast) fn calc_regen(c_max: PValue, c_rech: PValue, cap_perc: UnitInterval) -> PValue {
+    let cap_perc = cap_perc.into_pvalue();
+    let result = PValue::TEN * c_max / c_rech * PValue::from_value_unchecked(cap_perc.sqrt() - cap_perc);
     match result.is_finite() {
         true => result,
-        false => OF(0.0),
+        false => PValue::ZERO,
     }
 }
 
-pub(in crate::svc::vast) fn regenerate(c0: AttrVal, c_max: AttrVal, tau: AttrVal, t0: AttrVal, t1: AttrVal) -> AttrVal {
-    (OF(1.0) + ((c0 / c_max).sqrt() - OF(1.0)) * ((t0 - t1) / tau).exp()).powi(2) * c_max
+pub(in crate::svc::vast) fn regenerate(c0: PValue, c_max: PValue, tau: PValue, t0: PValue, t1: PValue) -> PValue {
+    (Value::ONE + ((c0 / c_max).sqrt() - PValue::ONE) * ((t0 - t1) / tau).exp()).pow2() * c_max
 }

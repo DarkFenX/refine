@@ -65,7 +65,7 @@ fn internal_get_neut_base_opc(
 ) -> Option<Output<PValue>> {
     let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
     let amount = match amount > Value::ZERO {
-        true => PValue::from_val_unchecked(amount),
+        true => PValue::from_value_unchecked(amount),
         // Do not return neut stats for non-neut bombs
         false => return None,
     };

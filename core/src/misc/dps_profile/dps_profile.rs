@@ -44,19 +44,19 @@ impl DpsProfile {
         breacher: Option<Breacher>,
     ) -> Result<Self, DpsProfileError> {
         let em = match em >= Value::ZERO {
-            true => PValue::from_val_unchecked(em),
+            true => PValue::from_value_unchecked(em),
             false => return Err(DmgError::Em(em).into()),
         };
         let thermal = match thermal >= Value::ZERO {
-            true => PValue::from_val_unchecked(thermal),
+            true => PValue::from_value_unchecked(thermal),
             false => return Err(DmgError::Thermal(thermal).into()),
         };
         let kinetic = match kinetic >= Value::ZERO {
-            true => PValue::from_val_unchecked(kinetic),
+            true => PValue::from_value_unchecked(kinetic),
             false => return Err(DmgError::Kinetic(kinetic).into()),
         };
         let explosive = match explosive >= Value::ZERO {
-            true => PValue::from_val_unchecked(explosive),
+            true => PValue::from_value_unchecked(explosive),
             false => return Err(DmgError::Explosive(explosive).into()),
         };
         Ok(Self::new(em, thermal, kinetic, explosive, breacher))

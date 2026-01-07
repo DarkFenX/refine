@@ -11,7 +11,7 @@ impl Xyz {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
     pub(crate) fn get_vector_magnitude(self) -> PValue {
-        PValue::from_val_unchecked((self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt())
+        PValue::from_value_unchecked((self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt())
     }
     pub(crate) fn get_vector_unit(self) -> Self {
         let magnitude = self.get_vector_magnitude();

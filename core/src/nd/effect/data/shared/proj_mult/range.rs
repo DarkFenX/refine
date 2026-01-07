@@ -1,5 +1,4 @@
 use crate::{
-    def::SERVER_TICK_HZ,
     misc::{PValue, Value},
     rd::{RAttrId, REffect},
     svc::{SvcCtx, calc::Calc},
@@ -133,7 +132,7 @@ pub(in crate::nd::effect::data) fn get_missile_range_mult(
                     let flight_range_higher = calc_flight_range(max_velocity, flight_time_higher, mass, agility);
                     match proj_range > flight_range_higher {
                         true => PValue::ZERO,
-                        false => PValue::from_f64_unchecked((flight_time.into_f64() * SERVER_TICK_HZ as f64).fract()),
+                        false => (flight_time * PValue::SERVER_TICK_HZ).fract(),
                     }
                 }
             }
@@ -189,22 +188,22 @@ pub(in crate::nd::effect::data) fn get_bomb_range_mult(
             let flight_time_higher = flight_time.ceil_tick();
             let flight_range_lower = calc_flight_range(max_velocity, flight_time_lower, mass, agility);
             let flight_range_higher = calc_flight_range(max_velocity, flight_time_higher, mass, agility);
-            let chance_higher = (flight_time.into_f64() * SERVER_TICK_HZ as f64).fract();
-            let chance_lower = 1.0 - chance_higher;
+            let chance_higher = (flight_time * PValue::SERVER_TICK_HZ).fract();
+            let chance_lower = PValue::from_value_unchecked(PValue::ONE - chance_higher);
             let lower_short_range =
                 PValue::from_value_clamped(flight_range_lower - aoe_range - proj_data.get_tgt_radius());
             let lower_long_range = flight_range_lower + aoe_range + proj_data.get_tgt_radius();
             let higher_short_range =
                 PValue::from_value_clamped(flight_range_higher - aoe_range - proj_data.get_tgt_radius());
             let higher_long_range = flight_range_higher + aoe_range + proj_data.get_tgt_radius();
-            let mut mult = 0.0;
+            let mut mult = PValue::ZERO;
             if proj_range >= lower_short_range && proj_range <= lower_long_range {
                 mult += chance_lower;
             };
             if proj_range >= higher_short_range && proj_range <= higher_long_range {
                 mult += chance_higher;
             };
-            PValue::from_f64_unchecked(mult)
+            mult
         }
     }
 }

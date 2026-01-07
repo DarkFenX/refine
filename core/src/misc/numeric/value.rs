@@ -94,6 +94,9 @@ impl Value {
     pub(crate) fn powi(self, n: i32) -> Self {
         Self(self.0.powi(n))
     }
+    pub(crate) fn pow2(self) -> PValue {
+        PValue::from_f64_unchecked(self.0.powi(2))
+    }
     pub(crate) fn sqrt(self) -> Self {
         Self(self.0.sqrt())
     }

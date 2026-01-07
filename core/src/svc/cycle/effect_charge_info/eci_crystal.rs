@@ -46,7 +46,7 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
     let dmg = match calc.get_item_oattr_oextra(ctx, charge_uid, attr_consts.crystal_volatility_dmg) {
         Some(dmg) => match dmg < Value::FLOAT_TOLERANCE {
             true => return InfCount::Infinite,
-            false => PValue::from_val_unchecked(dmg),
+            false => PValue::from_value_unchecked(dmg),
         },
         None => return InfCount::Infinite,
     };

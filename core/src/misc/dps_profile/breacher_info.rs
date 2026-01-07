@@ -17,7 +17,7 @@ impl Breacher {
     }
     pub fn try_new(absolute_max: Value, relative_max: Value) -> Result<Self, BreacherError> {
         let absolute_max = match absolute_max >= Value::ZERO {
-            true => PValue::from_val_unchecked(absolute_max),
+            true => PValue::from_value_unchecked(absolute_max),
             false => return Err(BreacherDmgError::Absolute(absolute_max).into()),
         };
         let relative_max = match UnitInterval::from_f64_checked(relative_max.into_f64()) {

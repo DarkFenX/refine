@@ -400,7 +400,7 @@ fn process_single_spool<T>(
     let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
     match *time >= cycle_completion_time {
         true => *total_amount += cycle_output.get_amount_sum(),
-        false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time)),
+        false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time)),
     }
     *time -= cycle_data.time;
     match cycle_data.interrupt {
@@ -447,7 +447,7 @@ fn process_limited_spool<T>(
             // Partial repeats
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 repeat_limit -= Count::ONE;
-                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time));
+                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
                 *time -= cycle_data.time;
             }
             return;
@@ -467,7 +467,7 @@ fn process_limited_spool<T>(
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 repeat_limit -= Count::ONE;
                 *uninterrupted_cycles += Count::ONE;
-                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time));
+                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
                 *time -= cycle_data.time;
             }
             return;
@@ -476,7 +476,7 @@ fn process_limited_spool<T>(
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
             match *time >= cycle_completion_time {
                 true => *total_amount += cycle_output.get_amount_sum(),
-                false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time)),
+                false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time)),
             }
             *time -= cycle_data.time;
             match cycle_data.interrupt {
@@ -523,7 +523,7 @@ fn process_infinite_spool<T>(
             *time -= cycle_data.time * full_repeats;
             // Partial repeats
             while *time >= Value::ZERO {
-                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time));
+                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
                 *time -= cycle_data.time;
             }
             return;
@@ -539,7 +539,7 @@ fn process_infinite_spool<T>(
             // Partial repeats
             while *time >= Value::ZERO {
                 *uninterrupted_cycles += Count::ONE;
-                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time));
+                *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
                 *time -= cycle_data.time;
             }
             return;
@@ -549,7 +549,7 @@ fn process_infinite_spool<T>(
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
             match *time >= cycle_completion_time {
                 true => *total_amount += cycle_output.get_amount_sum(),
-                false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_val_unchecked(*time)),
+                false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time)),
             }
             *time -= cycle_data.time;
             match cycle_data.interrupt {

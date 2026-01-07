@@ -1,9 +1,9 @@
-use crate::def::AttrVal;
+use crate::misc::PValue;
 
 #[derive(Copy, Clone)]
 pub struct StatSensors {
     pub kind: StatSensorsKind,
-    pub strength: AttrVal,
+    pub strength: PValue,
 }
 
 #[derive(Copy, Clone)]

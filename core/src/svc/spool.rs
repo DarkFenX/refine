@@ -34,7 +34,7 @@ fn resolve_spool(spool: Spool, step: Value, max: Value, cycle_time: PValue) -> O
     }
     let ratio = max / step;
     let ratio = match ratio > Value::ZERO {
-        true => PValue::from_val_unchecked(ratio),
+        true => PValue::from_value_unchecked(ratio),
         false => return None,
     };
     let cycles_max = Count::from_pvalue_ceiled(ratio);

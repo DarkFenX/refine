@@ -90,7 +90,7 @@ where
                         total_amount += inner
                             .p1_data
                             .output
-                            .get_amount_sum_by_time(PValue::from_val_unchecked(time));
+                            .get_amount_sum_by_time(PValue::from_value_unchecked(time));
                         time -= inner.p1_data.time;
                     }
                     // Process partial part 2
@@ -98,7 +98,7 @@ where
                         total_amount += inner
                             .p2_data
                             .output
-                            .get_amount_sum_by_time(PValue::from_val_unchecked(time));
+                            .get_amount_sum_by_time(PValue::from_value_unchecked(time));
                         time -= inner.p2_data.time;
                     }
                     // Outer while loop is for cases of really long tails, which never happen in EVE
@@ -116,7 +116,7 @@ where
 {
     let ptime = match *time < Value::ZERO {
         true => return,
-        false => PValue::from_val_unchecked(*time),
+        false => PValue::from_value_unchecked(*time),
     };
     match ptime >= data.time + data.tail_time {
         true => *total_amount += data.output.get_amount_sum(),
@@ -136,7 +136,7 @@ where
     *total_amount += data.output.get_amount_sum() * full_repeats.into_pvalue();
     let mut remaining_repeats = repeat_limit - full_repeats;
     while *time >= Value::ZERO && remaining_repeats > Count::ZERO {
-        let ptime = PValue::from_val_unchecked(*time);
+        let ptime = PValue::from_value_unchecked(*time);
         *total_amount += data.output.get_amount_sum_by_time(ptime);
         *time -= data.time;
         remaining_repeats -= Count::ONE;
@@ -154,7 +154,7 @@ where
     *total_amount += data.output.get_amount_sum() * full_repeats;
     *time -= data.time * full_repeats;
     while *time >= Value::ZERO {
-        let ptime = PValue::from_val_unchecked(*time);
+        let ptime = PValue::from_value_unchecked(*time);
         *total_amount += data.output.get_amount_sum_by_time(ptime);
         *time -= data.time;
     }
@@ -164,7 +164,7 @@ pub(super) fn get_full_repeats_count(time: Value, cycle_time: PValue, cycle_tail
     let time_no_tail = time - cycle_tail_time;
     let time_no_tail = match time_no_tail < Value::ZERO {
         true => return Count::ZERO,
-        false => PValue::from_val_unchecked(time_no_tail),
+        false => PValue::from_value_unchecked(time_no_tail),
     };
     Count::from_pvalue_trunced(time_no_tail / cycle_time)
 }

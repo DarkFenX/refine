@@ -81,7 +81,7 @@ where
     fn get_amount_sum_by_time(&self, time: PValue) -> T {
         let after_delay = time - self.delay;
         let after_delay = match after_delay >= Value::ZERO {
-            true => PValue::from_val_unchecked(after_delay),
+            true => PValue::from_value_unchecked(after_delay),
             false => return T::default(),
         };
         let count = after_delay / self.interval;

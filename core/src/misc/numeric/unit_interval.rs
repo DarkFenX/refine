@@ -74,3 +74,9 @@ impl PartialOrd for UnitInterval {
         OrderedFloat(self.0).partial_cmp(&OrderedFloat(other.0))
     }
 }
+
+impl std::hash::Hash for UnitInterval {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        OrderedFloat(self.0).hash(state);
+    }
+}

@@ -22,12 +22,12 @@ impl RItemEffectData {
             autocharge: a_effect_data.autocharge,
             cooldown_s: a_effect_data
                 .cooldown
-                .map(PValue::from_a_val_clamped)
+                .map(PValue::from_a_value_clamped)
                 .unwrap_or(PValue::ZERO),
             charge_count: a_effect_data.charge_count.map(Count::from_a_count),
             charge_reload_time_s: a_effect_data
                 .charge_reload_time
-                .map(PValue::from_a_val_clamped)
+                .map(PValue::from_a_value_clamped)
                 .unwrap_or(PValue::ZERO),
             projectee_filter: a_effect_data
                 .projectee_filter
