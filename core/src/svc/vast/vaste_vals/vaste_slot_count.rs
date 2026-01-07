@@ -1,20 +1,20 @@
 use crate::{
-    def::{DefCount, Idx, ItemId},
+    misc::Count,
     rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
         vast::{VastFitData, shared::get_attr_as_count},
     },
-    ud::{UFit, UItemId, UItemVec},
+    ud::{ItemId, UFit, UItemId, UItemVec},
     util::{RMap, RSet},
 };
 
 pub struct ValSlotCountFail {
     /// How many slots are taken by all the relevant items.
-    pub used: DefCount,
+    pub used: Count,
     /// How many slots available.
-    pub max: Option<DefCount>,
+    pub max: Option<Count>,
     /// IDs of items which break the validation limits. For unordered containers - all items, for
     /// ordered containers - only those which go past limit.
     pub users: Vec<ItemId>,
@@ -429,41 +429,41 @@ fn validate_fast_unordered_set(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> bool {
-    let used = users.len() as DefCount;
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
+    let used = Count::from_usize(users.len());
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
     used <= max || users.is_subset(kfs)
 }
 fn validate_fast_unordered_map<T>(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> bool {
-    let used = users.len() as DefCount;
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
+    let used = Count::from_usize(users.len());
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
     used <= max || users.is_subset(kfs)
 }
 fn validate_fast_ordered(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
 ) -> bool {
-    let used = users.len() as DefCount;
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
+    let used = Count::from_usize(users.len());
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
     match kfs.is_empty() {
         true => used <= max,
         false => match used <= max {
             true => true,
-            false => users.iter_uids_from(max as Idx).all(|v| kfs.contains(v)),
+            false => users.iter_uids_from(max.into_usize()).all(|v| kfs.contains(v)),
         },
     }
 }
@@ -472,18 +472,18 @@ fn validate_verbose_unordered_set(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> Option<ValSlotCountFail> {
-    let used = users.len() as DefCount;
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
-    if used <= max.unwrap_or(0) {
+    let used = Count::from_usize(users.len());
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
+    if used <= max.unwrap_or(Count::ZERO) {
         return None;
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
+        .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
         .collect();
     match users.is_empty() {
         true => None,
@@ -494,18 +494,18 @@ fn validate_verbose_unordered_map<T>(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> Option<ValSlotCountFail> {
-    let used = users.len() as DefCount;
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
-    if used <= max.unwrap_or(0) {
+    let used = Count::from_usize(users.len());
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
+    if used <= max.unwrap_or(Count::ZERO) {
         return None;
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|(item_key, _)| ctx.u_data.items.xid_by_iid(*item_key))
+        .map(|(item_uid, _)| ctx.u_data.items.xid_by_iid(*item_uid))
         .collect();
     match users.is_empty() {
         true => None,
@@ -516,20 +516,20 @@ fn validate_verbose_ordered(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
 ) -> Option<ValSlotCountFail> {
-    let used = users.len() as DefCount;
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
-    let effective_max = max.unwrap_or(0);
+    let used = Count::from_usize(users.len());
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
+    let effective_max = max.unwrap_or(Count::ZERO);
     if used <= effective_max {
         return None;
     }
     let users: Vec<_> = users
-        .iter_uids_from(effective_max as Idx)
-        .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
+        .iter_uids_from(effective_max.into_usize())
+        .filter(|item_uid| !kfs.contains(item_uid))
+        .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
         .collect();
     match users.is_empty() {
         true => None,

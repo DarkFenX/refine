@@ -27,6 +27,12 @@ impl Count {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Count {
+    pub const fn from_usize(value: usize) -> Self {
+        Self(value.clamp(u32::MIN as usize, u32::MAX as usize) as u32)
+    }
+    pub const fn into_usize(self) -> usize {
+        self.0 as usize
+    }
     pub(crate) fn from_f64_trunced(value: f64) -> Self {
         Self(trunc_f64_to_u32(value))
     }

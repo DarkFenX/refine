@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{DefCount, ItemId},
+    misc::FighterCount,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -15,9 +15,9 @@ pub struct ValFighterSquadSizeFail {
 #[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
     /// Current squad size.
-    pub size: DefCount,
+    pub size: FighterCount,
     /// Max allowed squad size.
-    pub max_size: DefCount,
+    pub max_size: FighterCount,
 }
 
 impl VastFitData {
@@ -37,8 +37,8 @@ impl VastFitData {
         let fighters: HashMap<_, _> = self
             .fighter_squad_size
             .iter()
-            .filter(|(fighter_key, _)| !kfs.contains(fighter_key))
-            .map(|(fighter_key, fighter_info)| (ctx.u_data.items.xid_by_iid(*fighter_key), *fighter_info))
+            .filter(|(fighter_uid, _)| !kfs.contains(fighter_uid))
+            .map(|(fighter_uid, fighter_info)| (ctx.u_data.items.xid_by_iid(*fighter_uid), *fighter_info))
             .collect();
         match fighters.is_empty() {
             true => None,

@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{AttrVal, ItemId},
+    misc::PValue,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -16,9 +16,9 @@ pub struct ValChargeVolumeChargeInfo {
     /// Parent module item ID.
     pub parent_item_id: ItemId,
     /// Volume of current charge.
-    pub charge_volume: AttrVal,
+    pub charge_volume: PValue,
     /// Maximum charge volume allowed by its parent module.
-    pub max_volume: AttrVal,
+    pub max_volume: PValue,
 }
 
 impl VastFitData {
@@ -36,13 +36,13 @@ impl VastFitData {
         ctx: SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = HashMap::new();
-        for (&charge_key, &cont_key) in self.charge_volume.difference(kfs) {
+        for (&charge_uid, &cont_uid) in self.charge_volume.difference(kfs) {
             charges.insert(
-                ctx.u_data.items.xid_by_iid(charge_key),
+                ctx.u_data.items.xid_by_iid(charge_uid),
                 ValChargeVolumeChargeInfo {
-                    parent_item_id: ctx.u_data.items.xid_by_iid(cont_key),
-                    charge_volume: ctx.u_data.items.get(charge_key).get_axt().unwrap().volume,
-                    max_volume: ctx.u_data.items.get(cont_key).get_axt().unwrap().capacity,
+                    parent_item_id: ctx.u_data.items.xid_by_iid(cont_uid),
+                    charge_volume: ctx.u_data.items.get(charge_uid).get_axt().unwrap().volume,
+                    max_volume: ctx.u_data.items.get(cont_uid).get_axt().unwrap().capacity,
                 },
             );
         }

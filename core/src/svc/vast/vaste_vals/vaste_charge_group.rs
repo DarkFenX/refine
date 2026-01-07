@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemGrpId, ItemId},
+    api::ItemGrpId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -36,23 +36,25 @@ impl VastFitData {
         ctx: SvcCtx,
     ) -> Option<ValChargeGroupFail> {
         let mut charges = HashMap::new();
-        for (&charge_key, &cont_key) in self.charge_group.difference(kfs) {
+        for (&charge_uid, &cont_uid) in self.charge_group.difference(kfs) {
             charges.insert(
-                ctx.u_data.items.xid_by_iid(charge_key),
+                ctx.u_data.items.xid_by_iid(charge_uid),
                 ValChargeGroupChargeInfo {
-                    parent_item_id: ctx.u_data.items.xid_by_iid(cont_key),
-                    charge_group_id: ctx.u_data.items.get(charge_key).get_group_id().unwrap(),
+                    parent_item_id: ctx.u_data.items.xid_by_iid(cont_uid),
+                    charge_group_id: ItemGrpId::from_aid(ctx.u_data.items.get(charge_uid).get_group_id().unwrap()),
                     allowed_group_ids: ctx
                         .u_data
                         .items
-                        .get(cont_key)
+                        .get(cont_uid)
                         .get_axt()
                         .unwrap()
                         .charge_limit
                         .as_ref()
                         .unwrap()
                         .group_ids
-                        .clone(),
+                        .iter()
+                        .map(|&grp_aid| ItemGrpId::from_aid(grp_aid))
+                        .collect(),
                 },
             );
         }

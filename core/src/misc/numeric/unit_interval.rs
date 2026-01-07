@@ -44,6 +44,9 @@ impl UnitInterval {
     pub(crate) fn from_value_clamped(value: Value) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
+    pub(crate) fn from_pvalue_clamped(value: PValue) -> Self {
+        Self::from_f64_clamped(value.into_f64())
+    }
     pub(crate) fn into_value(self) -> Value {
         Value::from_f64(self.0)
     }

@@ -1,19 +1,19 @@
 use std::collections::HashMap;
 
 use crate::{
-    ac,
-    def::{AttrVal, ItemId},
-    rd,
+    def::MAX_SUBCAP_MODULE_VOLUME,
+    misc::PValue,
+    rd::RShipKind,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UItemId, UShip},
+    ud::{ItemId, UItemId, UShip},
     util::RSet,
 };
 
 pub struct ValCapitalModFail {
     /// Modules up to and including this volume are not considered capital.
-    pub max_subcap_volume: AttrVal,
+    pub max_subcap_volume: PValue,
     /// List of modules breaking validation, and their volumes.
-    pub module_volumes: HashMap<ItemId, AttrVal>,
+    pub module_volumes: HashMap<ItemId, PValue>,
 }
 
 impl VastFitData {
@@ -40,13 +40,13 @@ impl VastFitData {
         let module_volumes: HashMap<_, _> = self
             .mods_capital
             .iter()
-            .filter(|(module_key, _)| !kfs.contains(module_key))
-            .map(|(module_key, module_volume)| (ctx.u_data.items.xid_by_iid(*module_key), *module_volume))
+            .filter(|(module_uid, _)| !kfs.contains(module_uid))
+            .map(|(module_uid, module_volume)| (ctx.u_data.items.xid_by_iid(*module_uid), *module_volume))
             .collect();
         match module_volumes.is_empty() {
             true => None,
             false => Some(ValCapitalModFail {
-                max_subcap_volume: ac::extras::MAX_SUBCAP_MODULE_VOLUME,
+                max_subcap_volume: PValue::from_f64_clamped(MAX_SUBCAP_MODULE_VOLUME),
                 module_volumes,
             }),
         }
@@ -58,5 +58,5 @@ fn is_ship_subcap(ship: Option<&UShip>) -> bool {
         Some(ship) => ship,
         None => return false,
     };
-    matches!(ship.get_r_kind(), Some(rd::RShipKind::Ship))
+    matches!(ship.get_r_kind(), Some(RShipKind::Ship))
 }

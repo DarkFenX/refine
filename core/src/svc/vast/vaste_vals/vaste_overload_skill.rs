@@ -1,11 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    ac,
-    def::ItemId,
+    ad::AItemId,
     misc::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemId},
+    ud::{ItemId, UFit, UItemId},
     util::RSet,
 };
 
@@ -29,7 +28,7 @@ impl VastFitData {
         };
         self.overload_td_lvl
             .iter()
-            .all(|(item_key, &req_lvl)| td_lvl >= req_lvl || kfs.contains(item_key))
+            .all(|(item_uid, &req_lvl)| td_lvl >= req_lvl || kfs.contains(item_uid))
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_overload_skill_verbose(
@@ -45,11 +44,11 @@ impl VastFitData {
         let module_reqs: HashMap<_, _> = self
             .overload_td_lvl
             .iter()
-            .filter(|(item_key, req_lvl)| match td_lvl {
+            .filter(|(item_uid, req_lvl)| match td_lvl {
                 Some(td_lvl) => **req_lvl > td_lvl,
                 None => true,
-            } && !kfs.contains(item_key))
-            .map(|(&item_key, &req_lvl)| (ctx.u_data.items.xid_by_iid(item_key), req_lvl.into()))
+            } && !kfs.contains(item_uid))
+            .map(|(&item_uid, &req_lvl)| (ctx.u_data.items.xid_by_iid(item_uid), req_lvl.into()))
             .collect();
         match module_reqs.is_empty() {
             true => None,

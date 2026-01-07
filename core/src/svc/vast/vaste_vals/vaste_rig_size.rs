@@ -1,18 +1,17 @@
 use std::collections::HashMap;
 
 use crate::{
-    ad::AAttrVal,
-    def::{AttrVal, ItemId},
+    misc::Value,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UItemId, UShip},
+    ud::{ItemId, UItemId, UShip},
     util::RSet,
 };
 
 pub struct ValRigSizeFail {
     /// Rig size compatible with the ship.
-    pub allowed_size: AttrVal,
+    pub allowed_size: Value,
     /// Sizes of incompatible rigs.
-    pub rig_sizes: HashMap<ItemId, Option<AttrVal>>,
+    pub rig_sizes: HashMap<ItemId, Option<Value>>,
 }
 
 impl VastFitData {
@@ -22,8 +21,8 @@ impl VastFitData {
             Some(allowed_size) => allowed_size,
             None => return true,
         };
-        for (rig_key, &rig_size) in self.rigs_rig_size.iter() {
-            if rig_size != Some(allowed_size) && !kfs.contains(rig_key) {
+        for (rig_uidd, &rig_size) in self.rigs_rig_size.iter() {
+            if rig_size != Some(allowed_size) && !kfs.contains(rig_uidd) {
                 return false;
             }
         }
@@ -38,9 +37,9 @@ impl VastFitData {
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
         let mut rig_sizes = HashMap::new();
-        for (rig_key, &rig_size) in self.rigs_rig_size.iter() {
-            if rig_size != Some(allowed_size) && !kfs.contains(rig_key) {
-                rig_sizes.insert(ctx.u_data.items.xid_by_iid(*rig_key), rig_size);
+        for (rig_uid, &rig_size) in self.rigs_rig_size.iter() {
+            if rig_size != Some(allowed_size) && !kfs.contains(rig_uid) {
+                rig_sizes.insert(ctx.u_data.items.xid_by_iid(*rig_uid), rig_size);
             }
         }
         match rig_sizes.is_empty() {
@@ -53,6 +52,6 @@ impl VastFitData {
     }
 }
 
-fn get_allowed_size(ship: Option<&UShip>) -> Option<AAttrVal> {
+fn get_allowed_size(ship: Option<&UShip>) -> Option<Value> {
     ship?.get_axt()?.rig_size
 }

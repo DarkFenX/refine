@@ -1,8 +1,7 @@
 use crate::{
-    ac,
-    def::ItemId,
+    ad::AItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemId, UShip},
+    ud::{ItemId, UFit, UItemId, UShip},
     util::RSet,
 };
 
@@ -20,15 +19,15 @@ impl VastFitData {
         fit: &UFit,
         ship: Option<&UShip>,
     ) -> bool {
-        let stance_key = match fit.stance {
-            Some(stance_key) => stance_key,
+        let stance_uid = match fit.stance {
+            Some(stance_uid) => stance_uid,
             None => return true,
         };
         let ship = match ship {
             Some(ship) => ship,
             None => return false,
         };
-        stanceable_matcher(ship) || kfs.contains(&stance_key)
+        stanceable_matcher(ship) || kfs.contains(&stance_uid)
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_ship_stance_verbose(
@@ -38,23 +37,23 @@ impl VastFitData {
         fit: &UFit,
         ship: Option<&UShip>,
     ) -> Option<ValShipStanceFail> {
-        let stance_key = fit.stance?;
+        let stance_uid = fit.stance?;
         let ship = match ship {
             Some(ship) => ship,
             None => {
                 return Some(ValShipStanceFail {
-                    stance_item_id: ctx.u_data.items.xid_by_iid(stance_key),
+                    stance_item_id: ctx.u_data.items.xid_by_iid(stance_uid),
                 });
             }
         };
         if stanceable_matcher(ship) {
             return None;
         }
-        if kfs.contains(&stance_key) {
+        if kfs.contains(&stance_uid) {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: ctx.u_data.items.xid_by_iid(stance_key),
+            stance_item_id: ctx.u_data.items.xid_by_iid(stance_uid),
         })
     }
 }

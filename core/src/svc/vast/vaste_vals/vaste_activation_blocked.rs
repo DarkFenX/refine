@@ -1,8 +1,7 @@
 use super::shared::is_attr_flag_set;
 use crate::{
-    def::ItemId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -19,13 +18,13 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        let attr_key = match ctx.ac().activation_blocked {
-            Some(attr_key) => attr_key,
+        let attr_rid = match ctx.ac().activation_blocked {
+            Some(attr_rid) => attr_rid,
             None => return true,
         };
         self.mods_active
             .difference(kfs)
-            .all(|item_key| !is_attr_flag_set(ctx, calc, *item_key, attr_key))
+            .all(|item_uid| !is_attr_flag_set(ctx, calc, *item_uid, attr_rid))
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
@@ -34,12 +33,12 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
-        let attr_key = ctx.ac().activation_blocked?;
+        let attr_rid = ctx.ac().activation_blocked?;
         let module_ids: Vec<_> = self
             .mods_active
             .difference(kfs)
-            .filter(|item_key| is_attr_flag_set(ctx, calc, **item_key, attr_key))
-            .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
+            .filter(|item_uid| is_attr_flag_set(ctx, calc, **item_uid, attr_rid))
+            .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
             .collect();
         match module_ids.is_empty() {
             true => None,

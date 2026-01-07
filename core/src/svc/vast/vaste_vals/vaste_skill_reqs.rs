@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::{ItemId, ItemTypeId},
+    api::ItemTypeId,
     misc::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -38,13 +38,13 @@ impl VastFitData {
         let items: HashMap<_, _> = self
             .srqs_missing
             .iter()
-            .filter(|(item_key, _)| !kfs.contains(item_key))
-            .map(|(item_key, missing_skills)| {
+            .filter(|(item_uid, _)| !kfs.contains(item_uid))
+            .map(|(item_uid, missing_skills)| {
                 (
-                    ctx.u_data.items.xid_by_iid(*item_key),
+                    ctx.u_data.items.xid_by_iid(*item_uid),
                     missing_skills
                         .iter()
-                        .map(|(skill_item_aid, skill_info)| (*skill_item_aid, *skill_info))
+                        .map(|(skill_item_aid, skill_info)| (ItemTypeId::from_aid(*skill_item_aid), *skill_info))
                         .collect(),
                 )
             })

@@ -2,10 +2,11 @@ use std::collections::HashMap;
 
 use crate::{
     ad::AItemGrpId,
-    def::{DefCount, ItemGrpId, ItemId},
+    api::ItemGrpId,
+    misc::Count,
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -16,9 +17,9 @@ pub struct ValMaxGroupFail {
 
 pub struct ValMaxGroupGroupInfo {
     /// How many items from that group are in an appropriate state.
-    pub group_item_count: DefCount,
+    pub group_item_count: Count,
     /// Map between offending item IDs and per-item group count limits.
-    pub items: HashMap<ItemId, DefCount>,
+    pub items: HashMap<ItemId, Count>,
 }
 
 impl VastFitData {
@@ -122,16 +123,16 @@ fn validate_fast(
     calc: &mut Calc,
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
-    attr_key: Option<RAttrId>,
+    attr_rid: Option<RAttrId>,
 ) -> bool {
-    let attr_key = match attr_key {
-        Some(attr_key) => attr_key,
+    let attr_rid = match attr_rid {
+        Some(attr_rid) => attr_rid,
         None => return true,
     };
-    for (&item_key, item_grp_aid) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(ctx, calc, item_key, attr_key);
+    for (&item_uid, item_grp_aid) in max_group_limited.iter() {
+        let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
         let actual = get_actual_item_count(max_group_all, item_grp_aid);
-        if actual > allowed && !kfs.contains(&item_key) {
+        if actual > allowed && !kfs.contains(&item_uid) {
             return false;
         }
     }
@@ -144,22 +145,22 @@ fn validate_verbose(
     calc: &mut Calc,
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
-    attr_key: Option<RAttrId>,
+    attr_rid: Option<RAttrId>,
 ) -> Option<ValMaxGroupFail> {
-    let attr_key = attr_key?;
+    let attr_rid = attr_rid?;
     let mut groups = HashMap::new();
-    for (&item_key, item_grp_aid) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(ctx, calc, item_key, attr_key);
+    for (&item_uid, item_grp_aid) in max_group_limited.iter() {
+        let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
         let actual = get_actual_item_count(max_group_all, item_grp_aid);
-        if actual > allowed && !kfs.contains(&item_key) {
+        if actual > allowed && !kfs.contains(&item_uid) {
             groups
-                .entry(*item_grp_aid)
+                .entry(ItemGrpId::from_aid(*item_grp_aid))
                 .or_insert_with(|| ValMaxGroupGroupInfo {
                     group_item_count: actual,
                     items: HashMap::new(),
                 })
                 .items
-                .insert(ctx.u_data.items.xid_by_iid(item_key), allowed);
+                .insert(ctx.u_data.items.xid_by_iid(item_uid), allowed);
         }
     }
     match groups.is_empty() {
@@ -168,9 +169,9 @@ fn validate_verbose(
     }
 }
 
-fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrId) -> DefCount {
-    calc.get_item_attr_oextra(ctx, item_key, attr_key).unwrap().round() as DefCount
+fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: RAttrId) -> Count {
+    Count::from_value_rounded(calc.get_item_attr_oextra(ctx, item_uid, attr_rid).unwrap())
 }
-fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, item_grp_aid: &AItemGrpId) -> DefCount {
-    max_group_all.get(item_grp_aid).len() as DefCount
+fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, item_grp_aid: &AItemGrpId) -> Count {
+    Count::from_usize(max_group_all.get(item_grp_aid).len())
 }

@@ -1,10 +1,9 @@
 use crate::{
-    def::ItemId,
     svc::{
         SvcCtx,
         vast::{Vast, VastFitData},
     },
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -49,8 +48,8 @@ fn validate_fast(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>) -> bool {
 fn validate_verbose(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>, ctx: SvcCtx) -> Option<ValNotLoadedItemFail> {
     let item_ids: Vec<_> = not_loaded
         .iter()
-        .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
+        .filter(|item_uid| !kfs.contains(item_uid))
+        .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
         .collect();
     match item_ids.is_empty() {
         true => None,

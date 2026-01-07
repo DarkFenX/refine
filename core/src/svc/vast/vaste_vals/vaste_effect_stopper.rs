@@ -2,10 +2,9 @@ use std::collections::HashMap;
 
 use crate::{
     api::EffectId,
-    def::{AttrVal, ItemId, OF},
-    misc::EffectSpec,
+    misc::{EffectSpec, PValue},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -50,8 +49,11 @@ impl VastFitData {
                 && !kfs.contains(&stopped_espec.item_uid)
             {
                 let item_id = ctx.u_data.items.xid_by_iid(stopped_espec.item_uid);
-                let effect_id = ctx.u_data.src.get_effect_by_rid(stopped_espec.effect_rid).aid;
-                items.entry(item_id).or_insert_with(Vec::new).push(effect_id.into());
+                let effect_aid = ctx.u_data.src.get_effect_by_rid(stopped_espec.effect_rid).aid;
+                items
+                    .entry(item_id)
+                    .or_insert_with(Vec::new)
+                    .push(EffectId::from_aid(effect_aid));
             }
         }
         match items.is_empty() {
@@ -66,11 +68,11 @@ fn is_any_in_effective_range(
     ctx: SvcCtx,
     calc: &mut Calc,
     stopper_especs: impl Iterator<Item = EffectSpec>,
-    stopped_item_key: UItemId,
+    stopped_item_uid: UItemId,
 ) -> bool {
     for stopper_espec in stopper_especs {
-        match get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_key) {
-            Some(OF(0.0)) => (),
+        match get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_uid) {
+            Some(PValue::ZERO) => (),
             _ => return true,
         }
     }
@@ -81,17 +83,17 @@ fn get_espec_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
-    projectee_key: UItemId,
-) -> Option<AttrVal> {
+    projectee_uid: UItemId,
+) -> Option<PValue> {
     let projector_effect = ctx.u_data.src.get_effect_by_rid(projector_espec.effect_rid);
     let proj_mult_getter = projector_effect.modifier_proj_mult_getter?;
-    let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_key)?;
+    let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_uid)?;
     Some(proj_mult_getter(
         ctx,
         calc,
         projector_espec.item_uid,
         projector_effect,
-        projectee_key,
+        projectee_uid,
         proj_data,
     ))
 }

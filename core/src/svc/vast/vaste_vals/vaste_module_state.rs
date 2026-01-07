@@ -2,9 +2,8 @@ use std::collections::HashMap;
 
 use crate::{
     api::ModuleState,
-    def::ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -37,8 +36,8 @@ impl VastFitData {
         let modules: HashMap<_, _> = self
             .mods_state
             .iter()
-            .filter(|(module_key, _)| !kfs.contains(module_key))
-            .map(|(module_key, module_info)| (ctx.u_data.items.xid_by_iid(*module_key), *module_info))
+            .filter(|(module_uid, _)| !kfs.contains(module_uid))
+            .map(|(module_uid, module_info)| (ctx.u_data.items.xid_by_iid(*module_uid), *module_info))
             .collect();
         match modules.is_empty() {
             true => None,

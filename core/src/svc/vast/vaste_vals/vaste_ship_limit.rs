@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     api::{ItemGrpId, ItemTypeId},
-    rd,
+    rd::RItemShipLimit,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UItemId, UShip},
     util::RSet,
@@ -24,7 +24,7 @@ pub struct ValShipLimitItemInfo {
     pub allowed_group_ids: Vec<ItemGrpId>,
 }
 impl ValShipLimitItemInfo {
-    fn from_r_item_ship_limit(item_ship_limit: &rd::RItemShipLimit) -> Self {
+    fn from_r_item_ship_limit(item_ship_limit: &RItemShipLimit) -> Self {
         Self {
             allowed_type_ids: item_ship_limit
                 .type_ids
@@ -54,7 +54,7 @@ impl VastFitData {
         };
         let ship_type_id = ship.get_type_id();
         let ship_group_id = ship.get_group_id();
-        for (limited_item_key, ship_limit) in self.ship_limited_items.iter() {
+        for (limited_item_uid, ship_limit) in self.ship_limited_items.iter() {
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
             }
@@ -63,7 +63,7 @@ impl VastFitData {
             {
                 continue;
             }
-            if kfs.contains(limited_item_key) {
+            if kfs.contains(limited_item_uid) {
                 continue;
             }
             return false;
@@ -80,32 +80,35 @@ impl VastFitData {
         if self.ship_limited_items.is_empty() {
             return None;
         }
-        let (ship_type_id, ship_group_id) = match ship {
+        let (ship_item_aid, ship_group_aid) = match ship {
             Some(ship) => (Some(ship.get_type_id()), ship.get_group_id()),
             None => (None, None),
         };
         let mut mismatches = HashMap::new();
-        for (limited_item_key, ship_limit) in self.ship_limited_items.iter() {
-            if let Some(ship_type_id) = ship_type_id
-                && ship_limit.type_ids.contains(&ship_type_id)
+        for (limited_item_uid, ship_limit) in self.ship_limited_items.iter() {
+            if let Some(ship_item_aid) = ship_item_aid
+                && ship_limit.type_ids.contains(&ship_item_aid)
             {
                 continue;
             }
-            if let Some(ship_group_id) = ship_group_id
-                && ship_limit.group_ids.contains(&ship_group_id)
+            if let Some(ship_group_aid) = ship_group_aid
+                && ship_limit.group_ids.contains(&ship_group_aid)
             {
                 continue;
             }
-            if kfs.contains(limited_item_key) {
+            if kfs.contains(limited_item_uid) {
                 continue;
             }
-            mismatches.insert(ctx.u_data.items.xid_by_iid(*limited_item_key), ship_limit.into());
+            mismatches.insert(
+                ctx.u_data.items.xid_by_iid(*limited_item_uid),
+                ValShipLimitItemInfo::from_r_item_ship_limit(ship_limit),
+            );
         }
         match mismatches.is_empty() {
             true => None,
             false => Some(ValShipLimitFail {
-                ship_type_id,
-                ship_group_id,
+                ship_type_id: ship_item_aid.map(ItemTypeId::from_aid),
+                ship_group_id: ship_group_aid.map(ItemGrpId::from_aid),
                 items: mismatches,
             }),
         }

@@ -1,31 +1,30 @@
 use ordered_float::Float;
 
 use crate::{
-    def::{AttrVal, OF},
+    misc::{PValue, Value},
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc},
     ud::UItemId,
-    util::FLOAT_TOLERANCE,
 };
 
 pub(super) fn get_max_resource(
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
-) -> Option<AttrVal> {
-    calc.get_item_oattr_afb_oextra(ctx, max_item_key?, max_attr_key, OF(0.0))
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
+) -> Option<Value> {
+    calc.get_item_oattr_afb_oextra(ctx, max_item_uid?, max_attr_rid, Value::ZERO)
 }
 
-pub(super) fn is_oattr_flag_set(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: Option<RAttrId>) -> bool {
-    match attr_key {
-        Some(attr_key) => is_attr_flag_set(ctx, calc, item_key, attr_key),
+pub(super) fn is_oattr_flag_set(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: Option<RAttrId>) -> bool {
+    match attr_rid {
+        Some(attr_rid) => is_attr_flag_set(ctx, calc, item_uid, attr_rid),
         None => false,
     }
 }
-pub(super) fn is_attr_flag_set(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrId) -> bool {
-    match calc.get_item_attr_oextra(ctx, item_key, attr_key) {
-        Some(val) => val.abs() > FLOAT_TOLERANCE,
+pub(super) fn is_attr_flag_set(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: RAttrId) -> bool {
+    match calc.get_item_attr_oextra(ctx, item_uid, attr_rid) {
+        Some(val) => val.abs() > PValue::FLOAT_TOLERANCE,
         None => false,
     }
 }

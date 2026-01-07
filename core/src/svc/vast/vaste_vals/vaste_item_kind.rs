@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    def::ItemId,
     misc::ItemKind,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::RSet,
 };
 
@@ -38,8 +37,8 @@ impl VastFitData {
         let item_kinds: HashMap<_, _> = self
             .item_kind
             .iter()
-            .filter(|(item_key, _)| !kfs.contains(item_key))
-            .map(|(item_key, item_info)| (ctx.u_data.items.xid_by_iid(*item_key), *item_info))
+            .filter(|(item_uid, _)| !kfs.contains(item_uid))
+            .map(|(item_uid, item_info)| (ctx.u_data.items.xid_by_iid(*item_uid), *item_info))
             .collect();
         match item_kinds.is_empty() {
             true => None,

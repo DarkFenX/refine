@@ -24,6 +24,7 @@ impl Value {
 impl Value {
     pub(crate) const ZERO: Self = Self::from_f64(0.0);
     pub(crate) const ONE: Self = Self::from_f64(1.0);
+    pub(crate) const TWO: Self = Self::from_f64(2.0);
     pub(crate) const HUNDRED: Self = Self::from_f64(100.0);
     pub(crate) const THOUSAND: Self = Self::from_f64(1000.0);
     pub(crate) const HUNDREDTH: Self = Self::from_f64(0.01);
@@ -102,6 +103,9 @@ impl Value {
     }
     pub(crate) fn sig_rounded(self, digits: u32) -> Self {
         Self(sig_round(self.0, digits))
+    }
+    pub(crate) fn rounded_to_digits(&mut self, digits: i32) -> Self {
+        Self(round(self.0, digits))
     }
     pub(crate) fn round_to_digits(&mut self, digits: i32) {
         self.0 = round(self.0, digits);

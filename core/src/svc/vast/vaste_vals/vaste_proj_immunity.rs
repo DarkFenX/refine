@@ -2,11 +2,10 @@ use std::collections::HashMap;
 
 use super::shared::is_attr_flag_set;
 use crate::{
-    def::{ItemId, OF},
-    misc::EffectSpec,
+    misc::{EffectSpec, PValue},
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc, funcs, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::{RMapRSet, RSet},
 };
 
@@ -46,7 +45,7 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0)) {
+            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO) {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
@@ -90,7 +89,7 @@ impl VastFitData {
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(OF(0.0))
+            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO)
                 && projector_especs.len() > 0
             {
                 let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_aspec.item_uid);
@@ -118,14 +117,14 @@ fn validate_fast(
     ctx: SvcCtx,
     calc: &mut Calc,
     blockable: &RMapRSet<UItemId, EffectSpec>,
-    attr_key: Option<RAttrId>,
+    attr_rid: Option<RAttrId>,
 ) -> bool {
-    let attr_key = match attr_key {
-        Some(attr_key) => attr_key,
+    let attr_rid = match attr_rid {
+        Some(attr_rid) => attr_rid,
         None => return true,
     };
-    for (&projectee_key, mut projector_especs) in blockable.iter() {
-        if is_attr_flag_set(ctx, calc, projectee_key, attr_key) {
+    for (&projectee_uid, mut projector_especs) in blockable.iter() {
+        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -144,13 +143,13 @@ fn validate_verbose(
     ctx: SvcCtx,
     calc: &mut Calc,
     blockable: &RMapRSet<UItemId, EffectSpec>,
-    attr_key: Option<RAttrId>,
+    attr_rid: Option<RAttrId>,
 ) -> Option<ValProjImmunityFail> {
-    let attr_key = attr_key?;
+    let attr_rid = attr_rid?;
     let mut items = HashMap::new();
-    for (&projectee_key, projector_especs) in blockable.iter() {
-        if is_attr_flag_set(ctx, calc, projectee_key, attr_key) && projector_especs.len() > 0 {
-            let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_key);
+    for (&projectee_uid, projector_especs) in blockable.iter() {
+        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid) && projector_especs.len() > 0 {
+            let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_uid);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_uid) {
                     continue;

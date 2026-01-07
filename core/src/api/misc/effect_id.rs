@@ -114,7 +114,7 @@ impl CustomEffectId {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl EffectId {
-    pub(in crate::api) fn from_aid(effect_aid: AEffectId) -> Self {
+    pub(crate) fn from_aid(effect_aid: AEffectId) -> Self {
         match effect_aid {
             AEffectId::Dogma(id) => Self::Dogma(DogmaEffectId(id.into_i32())),
             AEffectId::ScSystemWide(id) => Self::ScSystemWide(ItemTypeId::from_aid(id)),

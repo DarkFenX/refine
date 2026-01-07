@@ -2,11 +2,9 @@ use std::collections::HashMap;
 
 use super::shared::{is_attr_flag_set, is_oattr_flag_set};
 use crate::{
-    ad,
-    def::{ItemId, OF},
-    misc::{SecZone, SecZoneCorruption},
+    misc::{SecZone, SecZoneCorruption, Value},
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::{RMap, RSet},
 };
 
@@ -113,21 +111,21 @@ fn flags_check_fast(
 ) -> bool {
     match ctx.u_data.sec_zone {
         SecZone::HiSec(corruption) => {
-            for &item_key in items_main.iter() {
-                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space)
-                    || is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hisec)
+            for &item_uid in items_main.iter() {
+                if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_empire_space)
+                    || is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hisec)
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
                         SecZoneCorruption::None => {
-                            if !kfs.contains(&item_key) {
+                            if !kfs.contains(&item_uid) {
                                 return false;
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
                         SecZoneCorruption::C5 => {
-                            if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_hisec)
-                                && !kfs.contains(&item_key)
+                            if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_hisec)
+                                && !kfs.contains(&item_uid)
                             {
                                 return false;
                             }
@@ -138,20 +136,20 @@ fn flags_check_fast(
             true
         }
         SecZone::LowSec(corruption) => {
-            if let Some(disallow_in_empire_space_key) = ctx.ac().disallow_in_empire_space {
-                for &item_key in items_main.iter() {
-                    if is_attr_flag_set(ctx, calc, item_key, disallow_in_empire_space_key) {
+            if let Some(disallow_in_empire_space_rid) = ctx.ac().disallow_in_empire_space {
+                for &item_uid in items_main.iter() {
+                    if is_attr_flag_set(ctx, calc, item_uid, disallow_in_empire_space_rid) {
                         match corruption {
                             // No corruption in actual security zone - fail
                             SecZoneCorruption::None => {
-                                if !kfs.contains(&item_key) {
+                                if !kfs.contains(&item_uid) {
                                     return false;
                                 }
                             }
                             // If corrupted, check if module is allowed in corrupted lowsec
                             SecZoneCorruption::C5 => {
-                                if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_lowsec)
-                                    && !kfs.contains(&item_key)
+                                if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_lowsec)
+                                    && !kfs.contains(&item_uid)
                                 {
                                     return false;
                                 }
@@ -163,9 +161,9 @@ fn flags_check_fast(
             true
         }
         SecZone::Hazard => {
-            if let Some(disallow_in_hazard_key) = ctx.ac().disallow_in_hazard {
-                for &item_key in items_main.iter() {
-                    if is_attr_flag_set(ctx, calc, item_key, disallow_in_hazard_key) && !kfs.contains(&item_key) {
+            if let Some(disallow_in_hazard_rid) = ctx.ac().disallow_in_hazard {
+                for &item_uid in items_main.iter() {
+                    if is_attr_flag_set(ctx, calc, item_uid, disallow_in_hazard_rid) && !kfs.contains(&item_uid) {
                         return false;
                     }
                 }
@@ -188,26 +186,26 @@ fn flags_check_verbose(
     items_main: &RSet<UItemId>,
     items_wspace_banned: Option<&RSet<UItemId>>,
 ) -> Option<ValItemSecZoneFail> {
-    let mut failed_item_keys = Vec::new();
+    let mut failed_item_uids = Vec::new();
     match ctx.u_data.sec_zone {
         SecZone::HiSec(corruption) => {
-            for &item_key in items_main.iter() {
-                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space)
-                    || is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hisec)
+            for &item_uid in items_main.iter() {
+                if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_empire_space)
+                    || is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hisec)
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
                         SecZoneCorruption::None => {
-                            if !kfs.contains(&item_key) {
-                                failed_item_keys.push(item_key);
+                            if !kfs.contains(&item_uid) {
+                                failed_item_uids.push(item_uid);
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted hisec
                         SecZoneCorruption::C5 => {
-                            if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_hisec)
-                                && !kfs.contains(&item_key)
+                            if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_hisec)
+                                && !kfs.contains(&item_uid)
                             {
-                                failed_item_keys.push(item_key);
+                                failed_item_uids.push(item_uid);
                             }
                         }
                     }
@@ -215,21 +213,21 @@ fn flags_check_verbose(
             }
         }
         SecZone::LowSec(corruption) => {
-            for &item_key in items_main.iter() {
-                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space) {
+            for &item_uid in items_main.iter() {
+                if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_empire_space) {
                     match corruption {
                         // No corruption in actual security zone - fail
                         SecZoneCorruption::None => {
-                            if !kfs.contains(&item_key) {
-                                failed_item_keys.push(item_key);
+                            if !kfs.contains(&item_uid) {
+                                failed_item_uids.push(item_uid);
                             }
                         }
                         // If corrupted, check if module is allowed in corrupted lowsec
                         SecZoneCorruption::C5 => {
-                            if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_lowsec)
-                                && !kfs.contains(&item_key)
+                            if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_lowsec)
+                                && !kfs.contains(&item_uid)
                             {
-                                failed_item_keys.push(item_key);
+                                failed_item_uids.push(item_uid);
                             }
                         }
                     }
@@ -237,9 +235,9 @@ fn flags_check_verbose(
             }
         }
         SecZone::Hazard => {
-            for &item_key in items_main.iter() {
-                if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hazard) && !kfs.contains(&item_key) {
-                    failed_item_keys.push(item_key);
+            for &item_uid in items_main.iter() {
+                if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hazard) && !kfs.contains(&item_uid) {
+                    failed_item_uids.push(item_uid);
                 }
             }
         }
@@ -248,20 +246,20 @@ fn flags_check_verbose(
         // Supercap ban for w-space
         SecZone::WSpace => {
             if let Some(items_wspace_banned) = items_wspace_banned {
-                failed_item_keys.extend(items_wspace_banned.difference(kfs).copied());
+                failed_item_uids.extend(items_wspace_banned.difference(kfs).copied());
             }
         }
     };
-    match failed_item_keys.is_empty() {
+    match failed_item_uids.is_empty() {
         true => None,
         false => Some(ValItemSecZoneFail {
             zone: ctx.u_data.sec_zone,
-            items: failed_item_keys
+            items: failed_item_uids
                 .iter()
-                .map(|&item_key| {
+                .map(|&item_uid| {
                     (
-                        ctx.u_data.items.xid_by_iid(item_key),
-                        get_allowed_sec_zones(ctx, calc, item_key, items_wspace_banned),
+                        ctx.u_data.items.xid_by_iid(item_uid),
+                        get_allowed_sec_zones(ctx, calc, item_uid, items_wspace_banned),
                     )
                 })
                 .collect(),
@@ -271,15 +269,15 @@ fn flags_check_verbose(
 fn get_allowed_sec_zones(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     items_wspace_banned: Option<&RSet<UItemId>>,
 ) -> Vec<SecZone> {
     let mut allowed_zones = Vec::new();
-    let disallow_empire = is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_empire_space);
+    let disallow_empire = is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_empire_space);
     // Hisec
-    match disallow_empire || is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hisec) {
+    match disallow_empire || is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hisec) {
         true => {
-            if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_hisec) {
+            if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_hisec) {
                 allowed_zones.push(SecZone::HiSec(SecZoneCorruption::C5))
             }
         }
@@ -288,7 +286,7 @@ fn get_allowed_sec_zones(
     // Lowsec
     match disallow_empire {
         true => {
-            if is_oattr_flag_set(ctx, calc, item_key, ctx.ac().allow_in_fully_corrupted_lowsec) {
+            if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_lowsec) {
                 allowed_zones.push(SecZone::LowSec(SecZoneCorruption::C5))
             }
         }
@@ -298,26 +296,26 @@ fn get_allowed_sec_zones(
     allowed_zones.push(SecZone::NullSec);
     // W-space
     if match items_wspace_banned {
-        Some(items_wspace_banned) => !items_wspace_banned.contains(&item_key),
+        Some(items_wspace_banned) => !items_wspace_banned.contains(&item_uid),
         None => true,
     } {
         allowed_zones.push(SecZone::WSpace);
     }
     // Zarzakh
-    if !is_oattr_flag_set(ctx, calc, item_key, ctx.ac().disallow_in_hazard) {
+    if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hazard) {
         allowed_zones.push(SecZone::Hazard);
     }
     allowed_zones
 }
 
 // Security class validators
-fn class_check_fast(kfs: &RSet<UItemId>, ctx: SvcCtx, limitable_items: &RMap<UItemId, ad::AAttrVal>) -> bool {
+fn class_check_fast(kfs: &RSet<UItemId>, ctx: SvcCtx, limitable_items: &RMap<UItemId, Value>) -> bool {
     if limitable_items.is_empty() {
         return true;
     }
     let current_sec_class = zone_to_class(ctx.u_data.sec_zone);
-    for (item_key, &item_sec_class) in limitable_items.iter() {
-        if current_sec_class > item_sec_class && !kfs.contains(item_key) {
+    for (item_uid, &item_sec_class) in limitable_items.iter() {
+        if current_sec_class > item_sec_class && !kfs.contains(item_uid) {
             return false;
         }
     }
@@ -326,7 +324,7 @@ fn class_check_fast(kfs: &RSet<UItemId>, ctx: SvcCtx, limitable_items: &RMap<UIt
 fn class_check_verbose(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
-    limitable_items: &RMap<UItemId, ad::AAttrVal>,
+    limitable_items: &RMap<UItemId, Value>,
 ) -> Option<ValItemSecZoneFail> {
     if limitable_items.is_empty() {
         return None;
@@ -334,10 +332,10 @@ fn class_check_verbose(
     let current_class = zone_to_class(ctx.u_data.sec_zone);
     let items: HashMap<_, _> = limitable_items
         .iter()
-        .filter(|(item_key, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_key))
-        .map(|(&item_key, &item_sec_class)| {
+        .filter(|(item_uid, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_uid))
+        .map(|(&item_uid, &item_sec_class)| {
             (
-                ctx.u_data.items.xid_by_iid(item_key),
+                ctx.u_data.items.xid_by_iid(item_uid),
                 class_to_allowed_zones(item_sec_class),
             )
         })
@@ -350,15 +348,15 @@ fn class_check_verbose(
         }),
     }
 }
-fn zone_to_class(zone: SecZone) -> ad::AAttrVal {
+fn zone_to_class(zone: SecZone) -> Value {
     match zone {
-        SecZone::HiSec(_) => OF(2.0),
-        SecZone::LowSec(_) => OF(1.0),
-        _ => OF(0.0),
+        SecZone::HiSec(_) => Value::TWO,
+        SecZone::LowSec(_) => Value::ONE,
+        _ => Value::ZERO,
     }
 }
-fn class_to_allowed_zones(class: ad::AAttrVal) -> Vec<SecZone> {
-    if class >= OF(2.0) {
+fn class_to_allowed_zones(class: Value) -> Vec<SecZone> {
+    if class >= Value::TWO {
         return vec![
             SecZone::HiSec(SecZoneCorruption::None),
             SecZone::LowSec(SecZoneCorruption::None),
@@ -367,7 +365,7 @@ fn class_to_allowed_zones(class: ad::AAttrVal) -> Vec<SecZone> {
             SecZone::Hazard,
         ];
     }
-    if class >= OF(1.0) {
+    if class >= Value::ONE {
         return vec![
             SecZone::LowSec(SecZoneCorruption::None),
             SecZone::NullSec,
@@ -375,7 +373,7 @@ fn class_to_allowed_zones(class: ad::AAttrVal) -> Vec<SecZone> {
             SecZone::Hazard,
         ];
     }
-    if class >= OF(0.0) {
+    if class >= Value::ZERO {
         return vec![SecZone::NullSec, SecZone::WSpace, SecZone::Hazard];
     }
     Vec::new()

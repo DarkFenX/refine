@@ -2,11 +2,10 @@ use std::collections::HashMap;
 
 use crate::{
     api::EffectId,
-    def::ItemId,
     misc::{SecZone, SecZoneCorruption},
     rd::REffectId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UData, UItemId},
+    ud::{ItemId, UData, UItemId},
     util::RSet,
 };
 
@@ -32,10 +31,10 @@ impl VastFitData {
         }
         match ctx.u_data.sec_zone {
             SecZone::HiSec(_) => {
-                'items: for (item_key, item_data) in self.sec_zone_effect.iter() {
+                'items: for (item_uid, item_data) in self.sec_zone_effect.iter() {
                     for sec_zone_info in item_data.values() {
                         if sec_zone_info.banned_in_hisec {
-                            match kfs.contains(item_key) {
+                            match kfs.contains(item_uid) {
                                 true => continue 'items,
                                 false => return false,
                             }
@@ -45,10 +44,10 @@ impl VastFitData {
                 true
             }
             SecZone::LowSec(_) => {
-                'items: for (item_key, item_data) in self.sec_zone_effect.iter() {
+                'items: for (item_uid, item_data) in self.sec_zone_effect.iter() {
                     for sec_zone_info in item_data.values() {
                         if sec_zone_info.banned_in_lowsec {
-                            match kfs.contains(item_key) {
+                            match kfs.contains(item_uid) {
                                 true => continue 'items,
                                 false => return false,
                             }
@@ -72,24 +71,24 @@ impl VastFitData {
         let mut items: HashMap<_, HashMap<_, _>> = HashMap::new();
         match ctx.u_data.sec_zone {
             SecZone::HiSec(_) => {
-                'items: for (&item_key, item_data) in self.sec_zone_effect.iter() {
-                    for (&effect_key, sec_zone_info) in item_data.iter() {
+                'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
+                    for (&effect_rid, sec_zone_info) in item_data.iter() {
                         if sec_zone_info.banned_in_hisec {
-                            match kfs.contains(&item_key) {
+                            match kfs.contains(&item_uid) {
                                 true => continue 'items,
-                                false => add_fail_entry(ctx.u_data, &mut items, item_key, effect_key, sec_zone_info),
+                                false => add_fail_entry(ctx.u_data, &mut items, item_uid, effect_rid, sec_zone_info),
                             }
                         }
                     }
                 }
             }
             SecZone::LowSec(_) => {
-                'items: for (&item_key, item_data) in self.sec_zone_effect.iter() {
-                    for (&effect_key, sec_zone_info) in item_data.iter() {
+                'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
+                    for (&effect_rid, sec_zone_info) in item_data.iter() {
                         if sec_zone_info.banned_in_lowsec {
-                            match kfs.contains(&item_key) {
+                            match kfs.contains(&item_uid) {
                                 true => continue 'items,
-                                false => add_fail_entry(ctx.u_data, &mut items, item_key, effect_key, sec_zone_info),
+                                false => add_fail_entry(ctx.u_data, &mut items, item_uid, effect_rid, sec_zone_info),
                             }
                         }
                     }
@@ -110,12 +109,12 @@ impl VastFitData {
 fn add_fail_entry(
     u_data: &UData,
     items: &mut HashMap<ItemId, HashMap<EffectId, Vec<SecZone>>>,
-    item_key: UItemId,
-    effect_key: REffectId,
+    item_uid: UItemId,
+    effect_rid: REffectId,
     sec_zone_info: &EffectSecZoneInfo,
 ) {
-    let item_id = u_data.items.xid_by_iid(item_key);
-    let effect_id = u_data.src.get_effect_by_rid(effect_key).aid.into();
+    let item_id = u_data.items.xid_by_iid(item_uid);
+    let effect_id = EffectId::from_aid(u_data.src.get_effect_by_rid(effect_rid).aid);
     let mut allowed_zones = Vec::new();
     if !sec_zone_info.banned_in_hisec {
         allowed_zones.push(SecZone::HiSec(SecZoneCorruption::None));

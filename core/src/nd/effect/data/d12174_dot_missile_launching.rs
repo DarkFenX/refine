@@ -2,7 +2,7 @@ use crate::{
     ad::AEffectId,
     def::SERVER_TICK_S,
     ed::EEffectId,
-    misc::{Count, EffectSpec, PValue, Value},
+    misc::{Count, EffectSpec, PValue, UnitInterval, Value},
     nd::{NEffect, NEffectDmgKind, effect::data::shared::proj_mult::get_missile_range_mult},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::OutputDmgBreacher},
@@ -59,7 +59,7 @@ fn get_dmg_opc(
     }
     OutputDmgBreacher::new(
         abs_max,
-        rel_max,
+        UnitInterval::from_pvalue_clamped(rel_max),
         Count::from_pvalue_trunced(duration_s / PValue::from_f64_unchecked(SERVER_TICK_S)),
     )
 }

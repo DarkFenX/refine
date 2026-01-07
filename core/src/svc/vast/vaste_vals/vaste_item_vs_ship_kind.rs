@@ -48,12 +48,12 @@ impl VastFitData {
         let items: HashMap<_, _> = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_key, needed_kind)| (ctx.u_data.items.xid_by_iid(*item_key), *needed_kind))
+            .map(|(item_uid, needed_kind)| (ctx.u_data.items.xid_by_iid(*item_uid), *needed_kind))
             .collect();
         match items.is_empty() {
             true => None,
             false => Some(ValItemVsShipKindFail {
-                ship_kind: fit.ship_kind.into(),
+                ship_kind: ValShipKind::from_u_ship_kind(fit.ship_kind),
                 items,
             }),
         }

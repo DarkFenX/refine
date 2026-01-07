@@ -1,18 +1,18 @@
 use crate::{
-    def::{DefCount, ItemId},
+    misc::Count,
     rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
         vast::{VastFitData, shared::get_attr_as_count},
     },
-    ud::{UFit, UItemId},
+    ud::{ItemId, UFit, UItemId},
     util::RSet,
 };
 
 pub struct ValUnusableSlotFail {
     /// How many slots available (when this validation fails, it's either None or 0).
-    pub max: Option<DefCount>,
+    pub max: Option<Count>,
     /// IDs of items which would attempt to take those slots if you used them.
     pub users: Vec<ItemId>,
 }
@@ -226,15 +226,15 @@ fn validate_fast(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> bool {
     if users.is_empty() {
         return true;
     }
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key).unwrap_or(0);
-    if max > 0 {
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
+    if max > Count::ZERO {
         return true;
     }
     users.is_subset(kfs)
@@ -243,20 +243,20 @@ fn validate_verbose(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    max_item_key: Option<UItemId>,
-    max_attr_key: Option<RAttrId>,
+    max_item_uid: Option<UItemId>,
+    max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> Option<ValUnusableSlotFail> {
     if users.is_empty() {
         return None;
     }
-    let max = get_attr_as_count(ctx, calc, max_item_key, max_attr_key);
-    if max.unwrap_or(0) > 0 {
+    let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
+    if max.unwrap_or(Count::ZERO) > Count::ZERO {
         return None;
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
+        .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
         .collect();
     match users.is_empty() {
         true => None,

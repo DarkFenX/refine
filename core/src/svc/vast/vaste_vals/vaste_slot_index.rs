@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    ad,
-    def::{ItemId, SlotIndex},
+    misc::SlotIndex,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{ItemId, UItemId},
     util::{RMapRSet, RSet},
 };
 
@@ -50,19 +49,19 @@ impl VastFitData {
 
 fn validate_slot_index_fast(kfs: &RSet<UItemId>, data: &RMapRSet<SlotIndex, UItemId>) -> bool {
     data.values_inner()
-        .all(|item_keys| item_keys.len() < 2 || item_keys.is_subset(kfs))
+        .all(|item_uids| item_uids.len() < 2 || item_uids.is_subset(kfs))
 }
 fn validate_slot_index_verbose(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
-    data: &RMapRSet<ad::ASlotIndex, UItemId>,
+    data: &RMapRSet<SlotIndex, UItemId>,
 ) -> Option<ValSlotIndexFail> {
     let mut slot_users = HashMap::new();
     for (a_slot, users) in data.iter() {
         if users.len() >= 2 {
             let users: Vec<_> = users
-                .filter(|item_key| !kfs.contains(item_key))
-                .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
+                .filter(|item_uid| !kfs.contains(item_uid))
+                .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
                 .collect();
             if !users.is_empty() {
                 slot_users.insert(*a_slot, users);
