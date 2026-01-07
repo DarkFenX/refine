@@ -1,5 +1,4 @@
 use crate::{
-    ac,
     ad::AEffectId,
     misc::EffectMode,
     rd::{REffect, REffectId, RItem, RState, RcEffect, Src},
@@ -10,7 +9,7 @@ use crate::{
 const ONLINE_EFFECT_ID: AEffectId = AEffectId::ONLINE;
 
 pub(crate) struct UAutochargeActivation {
-    pub(crate) effect_key: REffectId,
+    pub(crate) effect_rid: REffectId,
     pub(crate) active: bool,
 }
 
@@ -56,14 +55,14 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
     // We don't want to waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
     reuse_eupdates.to_stop.reserve(reffs.len());
-    for effect_key in reffs.drain() {
-        let effect = src.get_effect_by_rid(effect_key).clone();
+    for effect_rid in reffs.drain() {
+        let effect = src.get_effect_by_rid(effect_rid).clone();
         if effect.activates_charge_for_item(item) {
             reuse_eupdates.charge = Some(false);
         }
         if effect.activates_autocharge() {
             reuse_eupdates.autocharges.push(UAutochargeActivation {
-                effect_key,
+                effect_rid,
                 active: false,
             });
         }
@@ -72,7 +71,7 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
     reuse_eupdates.to_stop.extend(
         reffs
             .drain()
-            .map(|effect_key| src.get_effect_by_rid(effect_key).clone()),
+            .map(|effect_rid| src.get_effect_by_rid(effect_rid).clone()),
     );
 }
 
@@ -87,7 +86,7 @@ fn update_running_effects(
     // Separate handling for the online effect
     let online_should_run = resolve_online_effect_status(item, item_effect_modes, item_state);
     let online_running = match src.get_effect_consts().online {
-        Some(online_effect_key) => reffs.contains(&online_effect_key),
+        Some(online_effect_rid) => reffs.contains(&online_effect_rid),
         None => false,
     };
     // Whenever online effect status changes, it should be guaranteed that online effect is
@@ -97,12 +96,12 @@ fn update_running_effects(
     } else if !online_running && online_should_run {
         reuse_eupdates.to_start.push(src.get_online_effect().unwrap().clone());
     }
-    for &effect_key in item.effect_datas.keys() {
+    for &effect_rid in item.effect_datas.keys() {
         // Online effect has already been handled
-        if Some(effect_key) == src.get_effect_consts().online {
+        if Some(effect_rid) == src.get_effect_consts().online {
             continue;
         }
-        let effect = src.get_effect_by_rid(effect_key);
+        let effect = src.get_effect_by_rid(effect_rid);
         let should_run = resolve_regular_effect_status(
             item_effect_modes,
             item.defeff_rid,
@@ -110,7 +109,7 @@ fn update_running_effects(
             online_should_run,
             effect,
         );
-        let running = reffs.contains(&effect_key);
+        let running = reffs.contains(&effect_rid);
         if running && !should_run {
             reuse_eupdates.to_stop.push(effect.clone());
             if effect.activates_charge_for_item(item) {
@@ -118,7 +117,7 @@ fn update_running_effects(
             }
             if effect.activates_autocharge() {
                 reuse_eupdates.autocharges.push(UAutochargeActivation {
-                    effect_key,
+                    effect_rid,
                     active: false,
                 });
             }
@@ -129,7 +128,7 @@ fn update_running_effects(
             }
             if effect.activates_autocharge() {
                 reuse_eupdates.autocharges.push(UAutochargeActivation {
-                    effect_key,
+                    effect_rid,
                     active: true,
                 });
             }
@@ -157,7 +156,7 @@ fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, 
 
 fn resolve_regular_effect_status(
     item_effect_modes: &UEffectModes,
-    item_defeff_key: Option<REffectId>,
+    item_defeff_rid: Option<REffectId>,
     item_state: RState,
     online_running: bool,
     effect: &REffect,
@@ -166,7 +165,7 @@ fn resolve_regular_effect_status(
     // wherever applicable
     match item_effect_modes.get_by_rid(&effect.rid) {
         EffectMode::FullCompliance => {
-            resolve_regular_effect_status_full(item_defeff_key, item_state, effect, online_running)
+            resolve_regular_effect_status_full(item_defeff_rid, item_state, effect, online_running)
         }
         EffectMode::StateCompliance => item_state >= effect.state,
         EffectMode::ForceRun => true,
@@ -175,7 +174,7 @@ fn resolve_regular_effect_status(
 }
 
 fn resolve_regular_effect_status_full(
-    item_defeff_key: Option<REffectId>,
+    item_defeff_rid: Option<REffectId>,
     item_state: RState,
     effect: &REffect,
     online_running: bool,
@@ -193,8 +192,8 @@ fn resolve_regular_effect_status_full(
             if effect.state > item_state {
                 return false;
             };
-            match item_defeff_key {
-                Some(defeff_key) => defeff_key == effect.rid,
+            match item_defeff_rid {
+                Some(defeff_rid) => defeff_rid == effect.rid,
                 _ => false,
             }
         }

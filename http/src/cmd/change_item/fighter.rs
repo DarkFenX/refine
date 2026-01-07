@@ -49,7 +49,7 @@ impl HChangeFighterCmd {
         }
         match self.count {
             TriStateField::Value(count) => {
-                let fighter_count_override = rc::FighterCount::new_checked(count)?;
+                let fighter_count_override = rc::FighterCount::from_u32_checked(count)?;
                 core_fighter.set_count_override(Some(fighter_count_override));
             }
             TriStateField::None => {

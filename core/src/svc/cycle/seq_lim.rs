@@ -1,7 +1,7 @@
 use crate::{
-    def::{AttrVal, DefCount},
+    misc::{Count, InfCount, PValue},
     svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped},
-    util::{InfCount, LibConvertExtend},
+    util::LibConvertExtend,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqLim<T = CycleDataFull> {
     pub(in crate::svc) data: T,
-    pub(in crate::svc) repeat_count: DefCount,
+    pub(in crate::svc) repeat_count: Count,
 }
 impl<T> CSeqLim<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
@@ -50,7 +50,7 @@ where
     }
 }
 impl CSeqLim {
-    pub(super) fn get_time(&self) -> AttrVal {
+    pub(super) fn get_time(&self) -> PValue {
         self.data.time
     }
 }
@@ -68,11 +68,14 @@ impl CSeqLim<CycleDataTime> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CSeqLimCycleIter<T> {
     cseq: CSeqLim<T>,
-    repeats_done: DefCount,
+    repeats_done: Count,
 }
 impl<T> CSeqLimCycleIter<T> {
     fn new(cseq: CSeqLim<T>) -> Self {
-        Self { cseq, repeats_done: 0 }
+        Self {
+            cseq,
+            repeats_done: Count::ZERO,
+        }
     }
 }
 impl<T> Iterator for CSeqLimCycleIter<T>
@@ -85,7 +88,7 @@ where
         if self.repeats_done >= self.cseq.repeat_count {
             return None;
         }
-        self.repeats_done += 1;
+        self.repeats_done += Count::ONE;
         Some(self.cseq.data)
     }
 }

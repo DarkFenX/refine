@@ -1,8 +1,7 @@
 use crate::{
-    AttrVal,
-    def::DefCount,
+    misc::{Count, InfCount, PValue},
     svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
-    util::{InfCount, LibConvertExtend},
+    util::LibConvertExtend,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +11,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqLimInf<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
-    pub(in crate::svc) p1_repeat_count: DefCount,
+    pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
 }
 impl<T> CSeqLimInf<T> {
@@ -66,7 +65,7 @@ where
     }
 }
 impl CSeqLimInf {
-    pub(super) fn get_average_time(&self) -> AttrVal {
+    pub(super) fn get_average_time(&self) -> PValue {
         self.p2_data.time
     }
 }
@@ -86,14 +85,14 @@ impl CSeqLimInf<CycleDataTime> {
 pub(in crate::svc) struct CSeqLimInfCycleIter<T> {
     cseq: CSeqLimInf<T>,
     index: u8,
-    p1_repeats_done: DefCount,
+    p1_repeats_done: Count,
 }
 impl<T> CSeqLimInfCycleIter<T> {
     fn new(cseq: CSeqLimInf<T>) -> Self {
         Self {
             cseq,
             index: 0,
-            p1_repeats_done: 0,
+            p1_repeats_done: Count::ZERO,
         }
     }
 }
@@ -110,7 +109,7 @@ where
                     self.index = 1;
                     return Some(self.cseq.p2_data);
                 }
-                self.p1_repeats_done += 1;
+                self.p1_repeats_done += Count::ONE;
                 Some(self.cseq.p1_data)
             }
             1 => Some(self.cseq.p2_data),

@@ -1,5 +1,5 @@
 pub use abil_id::AbilId;
-pub use adj_count::AdjustableCount;
+pub use adjustable::Adjustable;
 pub use attr_id::{AttrId, AttrIdParseError};
 pub use attr_vals::AttrVals;
 pub use effect_id::{CustomEffectId, DogmaEffectId, EffectId, EffectIdParseError};
@@ -13,7 +13,7 @@ pub use states::{MinionState, ModuleState, ServiceState};
 pub use type_id::ItemTypeId;
 
 mod abil_id;
-mod adj_count;
+mod adjustable;
 mod attr_id;
 mod attr_vals;
 mod effect_id;

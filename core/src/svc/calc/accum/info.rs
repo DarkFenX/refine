@@ -11,6 +11,7 @@ use super::shared::{
 };
 use crate::{
     ad::AItemCatId,
+    api::Op,
     misc::{PValue, Value},
     svc::calc::{Affector, AggrKey, AggrMode, CalcOp, Modification},
     util::RMap,
@@ -405,7 +406,7 @@ impl AttrAggr {
         };
         let diminished_val = diminish_func(normalized_val, proj_mult, res_mult);
         let info = Modification {
-            op: op.into(),
+            op: Op::from_calc_op(op),
             initial_val,
             range_mult: proj_mult,
             resist_mult: res_mult,
@@ -645,7 +646,7 @@ where
     };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
         match PENALTY_DENOMINATORS.get(i) {
-            Some(denominator) => {
+            Some(&denominator) => {
                 let penalty_multiplier = PValue::ONE / denominator;
                 let value_multiplier = Value::ONE + (other_attr_info.value - Value::ONE) * penalty_multiplier;
                 for info in other_attr_info.effective_infos.iter_mut() {

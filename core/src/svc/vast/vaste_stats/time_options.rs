@@ -1,4 +1,4 @@
-use crate::misc::{PValue, RearmMinions, ReloadOptionals, Spool};
+use crate::misc::{PValue, RearmMinions, ReloadOptionals, Spool, StOption};
 
 #[derive(Copy, Clone)]
 pub enum StatTimeOptions {
@@ -13,7 +13,7 @@ pub enum StatTimeOptions {
 pub struct StatTimeOptionsBurst {
     /// Set spool parameters override in the stats request. If not set, uses on-item value or
     /// default value set on solar system.
-    pub spool: Option<Spool> = None,
+    pub spool: StOption<Spool> = None,
 }
 
 #[derive(Copy, Clone)]
@@ -22,8 +22,8 @@ pub struct StatTimeOptionsSim {
     /// infinite period of time.
     pub time: Option<PValue> = None,
     /// Are modules which can run uncharged reloaded upon depleting their charges.
-    pub reload_optionals: Option<ReloadOptionals> = None,
+    pub reload_optionals: StOption<ReloadOptionals> = None,
     /// Are fighters sent into refueling/rearming once one of their charge-limited abilities runs
     /// out.
-    pub rearm_minions: Option<RearmMinions> = None,
+    pub rearm_minions: StOption<RearmMinions> = None,
 }

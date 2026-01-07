@@ -15,10 +15,12 @@ pub(crate) enum AffecteeFilter {
 impl AffecteeFilter {
     pub(super) fn from_effect_affectee_filter(affectee_filter: &AEffectAffecteeFilter, item: &UItem) -> Self {
         match affectee_filter {
-            AEffectAffecteeFilter::Direct(loc) => Self::Direct(loc.into()),
-            AEffectAffecteeFilter::Loc(loc) => Self::Loc(loc.into()),
-            AEffectAffecteeFilter::LocGrp(loc, grp_id) => Self::LocGrp(loc.into(), *grp_id),
-            AEffectAffecteeFilter::LocSrq(loc, mod_srq) => Self::LocSrq(loc.into(), get_srq_type_id(mod_srq, item)),
+            AEffectAffecteeFilter::Direct(loc) => Self::Direct(Location::from_a_effect_loc(*loc)),
+            AEffectAffecteeFilter::Loc(loc) => Self::Loc(Location::from_a_effect_loc(*loc)),
+            AEffectAffecteeFilter::LocGrp(loc, grp_id) => Self::LocGrp(Location::from_a_effect_loc(*loc), *grp_id),
+            AEffectAffecteeFilter::LocSrq(loc, mod_srq) => {
+                Self::LocSrq(Location::from_a_effect_loc(*loc), get_srq_type_id(mod_srq, item))
+            }
             AEffectAffecteeFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq_type_id(mod_srq, item)),
         }
     }

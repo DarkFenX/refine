@@ -21,7 +21,7 @@
 //!   items, and fetch data and stats
 
 pub use api::{
-    Ability, AbilityIter, AbilityMut, AddMode, AdjustableCount, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
+    Ability, AbilityIter, AbilityMut, AddMode, Adjustable, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
     BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, Direction, Drone, DroneMut, EffectId,
     EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr,
     FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, Implant, ImplantMut,

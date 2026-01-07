@@ -30,7 +30,7 @@ impl Src {
         ad_cacher: Option<&mut Box<dyn AdaptedDataCacher>>,
     ) -> Result<Self, SrcInitError> {
         let a_data = prepare_adapted_data(ed_handler, ad_cacher)?;
-        let r_data = RData::from(a_data);
+        let r_data = RData::from_a_data(a_data);
         let rah_duration_attr_rid = r_data
             .effect_consts
             .adaptive_armor_hardener

@@ -10,13 +10,13 @@ impl RevProjs {
     pub(in crate::sol) fn new() -> Self {
         Self { data: RMapRSet::new() }
     }
-    pub(crate) fn reg_projectee(&mut self, projector_key: UItemId, projectee_key: UItemId) {
-        self.data.add_entry(projectee_key, projector_key)
+    pub(crate) fn reg_projectee(&mut self, projector_uid: UItemId, projectee_uid: UItemId) {
+        self.data.add_entry(projectee_uid, projector_uid)
     }
-    pub(crate) fn unreg_projectee(&mut self, projector_key: &UItemId, projectee_key: UItemId) {
-        self.data.remove_entry(projectee_key, projector_key);
+    pub(crate) fn unreg_projectee(&mut self, projector_uid: &UItemId, projectee_uid: UItemId) {
+        self.data.remove_entry(projectee_uid, projector_uid);
     }
-    pub(crate) fn iter_projectors(&self, projectee_key: &UItemId) -> impl ExactSizeIterator<Item = UItemId> {
-        self.data.get(projectee_key).copied()
+    pub(crate) fn iter_projectors(&self, projectee_uid: &UItemId) -> impl ExactSizeIterator<Item = UItemId> {
+        self.data.get(projectee_uid).copied()
     }
 }

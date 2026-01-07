@@ -15,7 +15,7 @@ impl SolarSystem {
         let u_ship_physics = *u_ship.get_physics();
         // Handle outgoing projections
         let mut projections_to_update = Vec::new();
-        for module_key in u_data.fits.get(u_ship.get_fit_uid()).iter_module_keys() {
+        for module_key in u_data.fits.get(u_ship.get_fit_uid()).iter_module_uids() {
             let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
             for (projectee_key, u_proj_data) in u_module.get_projs_mut().iter_projectees_and_datas_mut() {
                 u_proj_data.update_src_physics(u_ship_physics);

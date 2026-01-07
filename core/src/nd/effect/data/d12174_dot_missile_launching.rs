@@ -60,6 +60,6 @@ fn get_dmg_opc(
     OutputDmgBreacher::new(
         abs_max,
         rel_max,
-        Count::from_f64_trunced(duration_s.into_f64() / SERVER_TICK_S),
+        Count::from_pvalue_trunced(duration_s / PValue::from_f64_unchecked(SERVER_TICK_S)),
     )
 }

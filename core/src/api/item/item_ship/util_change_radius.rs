@@ -13,7 +13,7 @@ impl SolarSystem {
         ship_radius: AttrVal,
     ) {
         let mut projections_to_update = Vec::new();
-        for module_key in u_data.fits.get(fit_key).iter_module_keys() {
+        for module_key in u_data.fits.get(fit_key).iter_module_uids() {
             let u_module = u_data.items.get_mut(module_key).dc_module_mut().unwrap();
             for (projectee_key, u_proj_data) in u_module.get_projs_mut().iter_projectees_and_datas_mut() {
                 if u_proj_data.update_src_radius(ship_radius) {

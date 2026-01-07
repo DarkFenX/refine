@@ -1,9 +1,9 @@
 use crate::{
-    def::{AttrVal, DefCount},
+    misc::{Count, InfCount, PValue},
     svc::cycle::{
         CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf,
     },
-    util::{InfCount, LibConvertExtend},
+    util::LibConvertExtend,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqLimSinInf<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
-    pub(in crate::svc) p1_repeat_count: DefCount,
+    pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
     pub(in crate::svc) p3_data: T,
 }
@@ -46,7 +46,7 @@ impl<T> CSeqLimSinInf<T> {
             // Merge part 2 into head
             (true, false) => CycleSeq::LimInf(CSeqLimInf {
                 p1_data,
-                p1_repeat_count: self.p1_repeat_count + 1,
+                p1_repeat_count: self.p1_repeat_count + Count::ONE,
                 p2_data: p3_data,
             }),
             // Whole sequence becomes a simple infinity
@@ -78,7 +78,7 @@ impl<T> CSeqLimSinInf<T> {
             // Merge part 2 into head
             (true, false) => CycleSeq::LimInf(CSeqLimInf {
                 p1_data,
-                p1_repeat_count: self.p1_repeat_count + 1,
+                p1_repeat_count: self.p1_repeat_count + Count::ONE,
                 p2_data: p3_data,
             }),
             // Whole sequence becomes a simple infinity
@@ -101,7 +101,7 @@ where
     }
 }
 impl CSeqLimSinInf {
-    pub(super) fn get_average_time(&self) -> AttrVal {
+    pub(super) fn get_average_time(&self) -> PValue {
         self.p3_data.time
     }
 }
@@ -122,14 +122,14 @@ impl CSeqLimSinInf<CycleDataTime> {
 pub(in crate::svc) struct CSeqLimSinInfCycleIter<T> {
     cseq: CSeqLimSinInf<T>,
     index: u8,
-    p1_repeats_done: DefCount,
+    p1_repeats_done: Count,
 }
 impl<T> CSeqLimSinInfCycleIter<T> {
     fn new(cseq: CSeqLimSinInf<T>) -> Self {
         Self {
             cseq,
             index: 0,
-            p1_repeats_done: 0,
+            p1_repeats_done: Count::ZERO,
         }
     }
 }
@@ -146,7 +146,7 @@ where
                     self.index = 1;
                     return Some(self.cseq.p2_data);
                 }
-                self.p1_repeats_done += 1;
+                self.p1_repeats_done += Count::ONE;
                 Some(self.cseq.p1_data)
             }
             1 => Some(self.cseq.p3_data),
@@ -186,7 +186,7 @@ where
                 self.index = 2;
                 Some(CSeqPart {
                     data: self.cseq.p2_data,
-                    repeat_count: InfCount::Count(1),
+                    repeat_count: InfCount::Count(Count::ONE),
                 })
             }
             2 => {

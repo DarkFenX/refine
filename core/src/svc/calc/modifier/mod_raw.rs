@@ -4,7 +4,6 @@ use smallvec::SmallVec;
 
 use super::AffectorValue;
 use crate::{
-    ac,
     ad::AEffectCatId,
     misc::{EffectSpec, Value},
     nd::NProjMultGetter,
@@ -78,7 +77,7 @@ impl RawModifier {
             kind,
             affector_espec: EffectSpec::new(affector_uid, effect.rid),
             affector_value: AffectorValue::Attr(effect_mod.affector_attr_rid),
-            op: (&effect_mod.op).into(),
+            op: CalcOp::from_a_op(effect_mod.op),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
             affectee_attr_rid: effect_mod.affectee_attr_rid,
@@ -151,7 +150,7 @@ impl RawModifier {
                 kind: ModifierKind::Local,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
                 affector_value: buff_str,
-                op: (&buff.op).into(),
+                op: CalcOp::from_a_op(buff.op),
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
@@ -167,7 +166,7 @@ impl RawModifier {
                 kind: ModifierKind::Buff,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
                 affector_value: buff_str,
-                op: (&buff.op).into(),
+                op: CalcOp::from_a_op(buff.op),
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
@@ -186,7 +185,7 @@ impl RawModifier {
                 kind: ModifierKind::FleetBuff,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
                 affector_value: buff_str,
-                op: (&buff.op).into(),
+                op: CalcOp::from_a_op(buff.op),
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
                     &buff_mod.affectee_filter,

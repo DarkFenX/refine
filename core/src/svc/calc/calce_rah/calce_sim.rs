@@ -156,11 +156,20 @@ impl Calc {
         let therm = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_therm_dmg_resonance)?;
         let kin = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_kin_dmg_resonance)?;
         let expl = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_expl_dmg_resonance)?;
-        let shield_hp =
-            PValue::from(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.shield_capacity, Value::ZERO)?);
-        let armor_hp =
-            PValue::from(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.armor_hp, Value::ZERO)?);
-        let hull_hp = PValue::from(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
+        let shield_hp = PValue::from_val_clamped(self.get_item_oattr_afb_odogma(
+            ctx,
+            ship_uid,
+            attr_consts.shield_capacity,
+            Value::ZERO,
+        )?);
+        let armor_hp = PValue::from_val_clamped(self.get_item_oattr_afb_odogma(
+            ctx,
+            ship_uid,
+            attr_consts.armor_hp,
+            Value::ZERO,
+        )?);
+        let hull_hp =
+            PValue::from_val_clamped(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
         Some(RahShipStats {
             resos: DmgKinds {
                 em,
@@ -211,7 +220,14 @@ impl Calc {
         }
         let rah_espec = EffectSpec::new(item_uid, ctx.ec().adaptive_armor_hardener?);
         let cycle_s = funcs::get_espec_duration_s(ctx, self, rah_espec)?;
-        let rah_info = RahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_s, shift_amount.into());
+        let rah_info = RahInfo::new(
+            res_em,
+            res_therm,
+            res_kin,
+            res_expl,
+            cycle_s,
+            PValue::from_val_clamped(shift_amount),
+        );
         Some(RahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
@@ -323,7 +339,7 @@ fn get_next_resonances(
     for index in sorted_indices[..donors].iter() {
         let current_value = resonances[*index];
         // Can't borrow more than it has
-        let to_donate = Value::from(shift_amount)
+        let to_donate = Value::from_pvalue(shift_amount)
             .min(Value::ONE - current_value.dogma)
             .sig_rounded(SIG_ROUND_DIGITS);
         total_transferred += to_donate;

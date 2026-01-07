@@ -4,8 +4,8 @@ pub(in crate::info) struct HAdjustableCount {
     max: rc::DefCount,
     overridden: bool,
 }
-impl From<rc::AdjustableCount> for HAdjustableCount {
-    fn from(core_adj_count: rc::AdjustableCount) -> Self {
+impl From<rc::Adjustable> for HAdjustableCount {
+    fn from(core_adj_count: rc::Adjustable) -> Self {
         Self {
             current: core_adj_count.current,
             max: core_adj_count.max,

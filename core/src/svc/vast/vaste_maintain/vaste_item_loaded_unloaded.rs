@@ -280,7 +280,7 @@ impl Vast {
                 // Ship/structure modules are not enforced when ship is not set. When we get one,
                 // fill the data container up
                 for item_key in chain!(
-                    fit.iter_module_keys(),
+                    fit.iter_module_uids(),
                     fit.rigs.iter().copied(),
                     fit.services.iter().copied(),
                 ) {

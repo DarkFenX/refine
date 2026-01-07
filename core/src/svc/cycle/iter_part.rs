@@ -1,5 +1,5 @@
 use crate::{
-    def::DefCount,
+    misc::{Count, InfCount},
     svc::cycle::{
         CycleSeq, CycleSeqLooped,
         seq_inf::{CSeqInfPartIter, CSeqLoopedInfPartIter},
@@ -8,7 +8,6 @@ use crate::{
         seq_lim_sin_inf::CSeqLimSinInfPartIter,
         seq_loop_lim_sin::{CSeqLoopLimSinPartIter, CSeqLoopedLoopLimSinPartIter},
     },
-    util::InfCount,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,5 +109,5 @@ where
 
 pub(crate) struct CSeqLoopedPart<T> {
     pub(crate) data: T,
-    pub(crate) repeat_count: DefCount,
+    pub(crate) repeat_count: Count,
 }

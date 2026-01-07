@@ -1,32 +1,46 @@
+use crate::misc::Value;
+
 const COUNT_MIN: u32 = 1;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct FighterCount(u32);
 impl FighterCount {
-    pub fn new_checked(count: u32) -> Result<Self, FighterCountError> {
+    pub fn from_u32_checked(count: u32) -> Result<Self, FighterCountError> {
         match (COUNT_MIN..).contains(&count) {
             true => Ok(Self(count)),
             false => Err(FighterCountError { count }),
         }
     }
-    pub const fn new_clamped(count: u32) -> Self {
+    pub const fn from_u32_clamped(count: u32) -> Self {
         Self(count.max(COUNT_MIN))
     }
-    pub(crate) fn from_f64_rounded(count: f64) -> Self {
-        Self(count.clamp(1.0, u32::MAX as f64).round() as u32)
-    }
-    pub fn into_inner(self) -> u32 {
+    pub const fn into_u32(self) -> u32 {
         self.0
     }
 }
-impl Default for FighterCount {
-    fn default() -> Self {
-        Self(COUNT_MIN)
-    }
-}
-
 #[derive(thiserror::Error, Debug)]
 #[error("fighter count should be 1+, received {count}")]
 pub struct FighterCountError {
     pub count: u32,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FighterCount {
+    pub(crate) fn from_f64_rounded(count: f64) -> Self {
+        Self(count.clamp(1.0, u32::MAX as f64).round() as u32)
+    }
+    pub(crate) fn into_value(self) -> Value {
+        Value::from_f64(self.0 as f64)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Default for FighterCount {
+    fn default() -> Self {
+        Self(COUNT_MIN)
+    }
 }

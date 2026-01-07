@@ -1,4 +1,4 @@
-use crate::{svc::cycle::effect_charge_info::EffectChargeInfo, util::InfCount};
+use crate::{misc::InfCount, svc::cycle::effect_charge_info::EffectChargeInfo};
 
 pub(in crate::svc::cycle) fn get_eci_undepletable() -> EffectChargeInfo {
     EffectChargeInfo {

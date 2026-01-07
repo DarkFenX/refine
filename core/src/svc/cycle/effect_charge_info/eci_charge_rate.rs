@@ -1,9 +1,9 @@
 use crate::{
-    def::OF,
+    UnitInterval,
+    misc::{Count, InfCount},
     nd::NEffectChargeDeplChargeRate,
     svc::{SvcCtx, cycle::effect_charge_info::EffectChargeInfo},
     ud::UModule,
-    util::InfCount,
 };
 
 pub(in crate::svc::cycle) fn get_eci_charge_rate(
@@ -15,21 +15,21 @@ pub(in crate::svc::cycle) fn get_eci_charge_rate(
         Some(charge_count) => charge_count,
         None => {
             return EffectChargeInfo {
-                fully_charged: InfCount::Count(0),
+                fully_charged: InfCount::Count(Count::ZERO),
                 part_charged: None,
                 can_run_uncharged: n_charge_rate.can_run_uncharged,
             };
         }
     };
-    if charge_count == 0 {
+    if charge_count == Count::ZERO {
         return EffectChargeInfo {
-            fully_charged: InfCount::Count(0),
+            fully_charged: InfCount::Count(Count::ZERO),
             part_charged: None,
             can_run_uncharged: n_charge_rate.can_run_uncharged,
         };
     }
     let charges_per_cycle = module.get_axt().unwrap().charge_rate;
-    if charges_per_cycle == 0 {
+    if charges_per_cycle == Count::ZERO {
         return EffectChargeInfo {
             fully_charged: InfCount::Infinite,
             part_charged: None,
@@ -41,8 +41,10 @@ pub(in crate::svc::cycle) fn get_eci_charge_rate(
     let part_charged = match n_charge_rate.can_run_uncharged {
         true => {
             let remaining = charge_count % charges_per_cycle;
-            match remaining > 0 {
-                true => Some(OF(remaining as f64 / charges_per_cycle as f64)),
+            match remaining > Count::ZERO {
+                true => Some(UnitInterval::from_value_clamped(
+                    remaining.into_value() / charges_per_cycle.into_value(),
+                )),
                 false => None,
             }
         }

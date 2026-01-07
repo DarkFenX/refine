@@ -3,7 +3,7 @@ use super::{
     seq_loop_lim_sin::CycleSeqLoopLimSin,
 };
 use crate::{
-    def::AttrVal,
+    misc::PValue,
     svc::cycle::{CycleDataFull, CycleDataTime, CycleDataTimeCharge},
 };
 
@@ -51,7 +51,7 @@ where
     }
 }
 impl CycleSeq {
-    pub(in crate::svc) fn get_average_time(&self) -> AttrVal {
+    pub(in crate::svc) fn get_average_time(&self) -> PValue {
         match self {
             Self::Lim(inner) => inner.get_time(),
             Self::Inf(inner) => inner.get_time(),

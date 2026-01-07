@@ -196,7 +196,7 @@ impl UModule {
                 return None;
             }
         };
-        let charge_count = Count::from_f64_trunced(module_capacity.into_f64() / charge_volume.into_f64());
+        let charge_count = Count::from_pvalue_trunced(module_capacity / charge_volume);
         Some(charge_count)
     }
     pub(crate) fn get_projs(&self) -> &UProjs {

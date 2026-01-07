@@ -379,13 +379,13 @@ fn combine_muls_pen(vals: &[Value], _high_is_good: bool, reuse_pen_chains: &mut 
     if reuse_pen_chains.is_empty() {
         return None;
     }
-    reuse_pen_chains.positive.sort_unstable_by_key(|v| -v);
+    reuse_pen_chains.positive.sort_unstable_by_key(|&v| -v);
     reuse_pen_chains.negative.sort_unstable();
     Some(get_chain_val(&reuse_pen_chains.positive) * get_chain_val(&reuse_pen_chains.negative))
 }
 fn get_chain_val(vals: &[Value]) -> Value {
     let mut val = Value::ONE;
-    for (mod_val, denominator) in std::iter::zip(vals.iter(), PENALTY_DENOMINATORS.iter()) {
+    for (&mod_val, &denominator) in std::iter::zip(vals.iter(), PENALTY_DENOMINATORS.iter()) {
         val *= Value::ONE + (mod_val - Value::ONE) / denominator;
     }
     val

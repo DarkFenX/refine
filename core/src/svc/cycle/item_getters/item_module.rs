@@ -1,9 +1,9 @@
 use either::Either;
-use ordered_float::Float;
 
 use super::shared::{CyclingOptions, SelfKillerInfo};
 use crate::{
-    def::{AttrVal, DefCount, OF, SERVER_TICK_S},
+    def::SERVER_TICK_S,
+    misc::{Count, InfCount, PValue, ReloadOptionals, UnitInterval, Value},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     rd::{REffectChargeLoc, REffectId},
     svc::{
@@ -23,13 +23,13 @@ use crate::{
         funcs,
     },
     ud::{UItem, UItemId, UModule},
-    util::{FLOAT_TOLERANCE, InfCount, RMap},
+    util::RMap,
 };
 
 pub(super) fn get_module_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     item: &UItem,
     module: &UModule,
     options: CyclingOptions,
@@ -40,31 +40,31 @@ pub(super) fn get_module_cseq_map(
     };
     let mut cseq_map = RMap::new();
     let mut self_killers = Vec::new();
-    let effect_keys = match ignore_state {
+    let effect_rids = match ignore_state {
         true => Either::Left(module.get_effect_datas().unwrap().keys().copied()),
         false => Either::Right(module.get_reffs().unwrap().iter().copied()),
     };
-    for effect_key in effect_keys {
+    for effect_rid in effect_rids {
         fill_module_effect_info(
             &mut cseq_map,
             &mut self_killers,
             ctx,
             calc,
-            item_key,
+            item_uid,
             item,
             module,
-            effect_key,
+            effect_rid,
             options,
         );
     }
     // If there are any self-killer effects, choose the fastest one, and discard all other effects
     if !self_killers.is_empty() {
-        let fastest_sk_effect_key = self_killers
+        let fastest_sk_effect_rid = self_killers
             .into_iter()
             .min_by_key(|sk_info| sk_info.duration)
             .unwrap()
-            .effect_key;
-        cseq_map.retain(|&k, _| k == fastest_sk_effect_key);
+            .effect_rid;
+        cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
     }
     Some(cseq_map)
 }
@@ -74,18 +74,18 @@ fn fill_module_effect_info(
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     item: &UItem,
     module: &UModule,
-    effect_key: REffectId,
+    effect_rid: REffectId,
     options: CyclingOptions,
 ) {
-    let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
+    let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
     if !effect.is_active_with_duration {
         return;
     }
     // No appropriate duration - no info
-    let duration = match funcs::get_effect_duration_s(ctx, calc, item_key, effect) {
+    let duration = match funcs::get_effect_duration_s(ctx, calc, item_uid, effect) {
         Some(duration) => duration,
         None => return,
     };
@@ -102,7 +102,7 @@ fn fill_module_effect_info(
             // - lasers: regular crystal cycle getter
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
-            REffectChargeLoc::TargetAttack => match module.get_axt().unwrap().capacity > OF(0.0) {
+            REffectChargeLoc::TargetAttack => match module.get_axt().unwrap().capacity > PValue::FLOAT_TOLERANCE {
                 true => get_eci_crystal(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
                 false => get_eci_undepletable(),
             },
@@ -115,43 +115,39 @@ fn fill_module_effect_info(
     }
     // Record info about self-killers and bail, those do not depend on cycling options
     if effect.kills_item {
-        self_killers.push(SelfKillerInfo {
-            effect_key,
-            duration: duration,
-        });
+        self_killers.push(SelfKillerInfo { effect_rid, duration });
         cseq_map.insert(
-            effect_key,
+            effect_rid,
             CycleSeq::Lim(CSeqLim {
                 data: CycleDataFull {
                     time: duration,
                     interrupt: None,
-                    chargedness: charge_info.get_first_cycle_chargeness(),
+                    chargedness: charge_info.get_first_cycle_chargedness(),
                 },
-                repeat_count: 1,
+                repeat_count: Count::ONE,
             }),
         );
         return;
     }
-    let cooldown = Float::max(
-        OF(0.0),
-        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mod_reactivation_delay, OF(0.0))
+    let cooldown = PValue::from_val_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
             .unwrap()
-            / 1000.0,
+            / Value::THOUSAND,
     );
     // Decide if interruptions happen every cycle based on reactivation delay value
-    let int_cd = cooldown > FLOAT_TOLERANCE;
+    let int_cd = cooldown > PValue::FLOAT_TOLERANCE;
     let sim_options = match options {
         CyclingOptions::Sim(sim_options) => sim_options,
         // If burst cycle mode was requested, just assume first cycle is the "most charged", and
         // infinitely repeat it
         CyclingOptions::Burst => {
             cseq_map.insert(
-                effect_key,
+                effect_rid,
                 CycleSeq::Inf(CSeqInf {
                     data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        chargedness: charge_info.get_first_cycle_chargeness(),
+                        chargedness: charge_info.get_first_cycle_chargedness(),
                     },
                 }),
             );
@@ -162,12 +158,12 @@ fn fill_module_effect_info(
         InfCount::Count(full_count) => full_count,
         InfCount::Infinite => {
             cseq_map.insert(
-                effect_key,
+                effect_rid,
                 CycleSeq::Inf(CSeqInf {
                     data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        chargedness: Some(OF(1.0)),
+                        chargedness: Some(UnitInterval::ONE),
                     },
                 }),
             );
@@ -175,7 +171,7 @@ fn fill_module_effect_info(
         }
     };
     let cseq = match (
-        full_count > 0,
+        full_count > Count::ZERO,
         charge_info.part_charged.is_some(),
         charge_info.can_run_uncharged,
     ) {
@@ -193,7 +189,7 @@ fn fill_module_effect_info(
         (false, true, false) => part_r(
             ctx,
             calc,
-            item_key,
+            item_uid,
             duration,
             cooldown,
             int_cd,
@@ -202,24 +198,24 @@ fn fill_module_effect_info(
         // Only partially charged cycle, but can cycle without charges
         (false, true, true) => match ctx
             .u_data
-            .get_item_reload_optionals(item_key, sim_options.reload_optionals)
+            .get_item_reload_optionals(item_uid, sim_options.reload_optionals)
         {
-            true => part_r(
+            ReloadOptionals::Enabled => part_r(
                 ctx,
                 calc,
-                item_key,
+                item_uid,
                 duration,
                 cooldown,
                 int_cd,
                 charge_info.part_charged,
             ),
-            false => CycleSeq::LimInf(CSeqLimInf {
+            ReloadOptionals::Disabled => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
                     chargedness: charge_info.part_charged,
                 },
-                p1_repeat_count: 1,
+                p1_repeat_count: Count::ONE,
                 p2_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -228,18 +224,18 @@ fn fill_module_effect_info(
             }),
         },
         // Only fully charged, has to reload after charges are out
-        (true, false, false) => full_r(ctx, calc, item_key, duration, cooldown, int_cd, full_count),
+        (true, false, false) => full_r(ctx, calc, item_uid, duration, cooldown, int_cd, full_count),
         // Only fully charged, but can cycle without charges
         (true, false, true) => match ctx
             .u_data
-            .get_item_reload_optionals(item_key, sim_options.reload_optionals)
+            .get_item_reload_optionals(item_uid, sim_options.reload_optionals)
         {
-            true => full_r(ctx, calc, item_key, duration, cooldown, int_cd, full_count),
-            false => CycleSeq::LimInf(CSeqLimInf {
+            ReloadOptionals::Enabled => full_r(ctx, calc, item_uid, duration, cooldown, int_cd, full_count),
+            ReloadOptionals::Disabled => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: CycleDataFull {
                     time: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
-                    chargedness: Some(OF(1.0)),
+                    chargedness: Some(UnitInterval::ONE),
                 },
                 p1_repeat_count: full_count,
                 p2_data: CycleDataFull {
@@ -253,7 +249,7 @@ fn fill_module_effect_info(
         (true, true, false) => both_r(
             ctx,
             calc,
-            item_key,
+            item_uid,
             duration,
             cooldown,
             int_cd,
@@ -264,23 +260,23 @@ fn fill_module_effect_info(
         (true, true, true) => {
             match ctx
                 .u_data
-                .get_item_reload_optionals(item_key, sim_options.reload_optionals)
+                .get_item_reload_optionals(item_uid, sim_options.reload_optionals)
             {
-                true => both_r(
+                ReloadOptionals::Enabled => both_r(
                     ctx,
                     calc,
-                    item_key,
+                    item_uid,
                     duration,
                     cooldown,
                     int_cd,
                     full_count,
                     charge_info.part_charged,
                 ),
-                false => CycleSeq::LimSinInf(CSeqLimSinInf {
+                ReloadOptionals::Disabled => CycleSeq::LimSinInf(CSeqLimSinInf {
                     p1_data: CycleDataFull {
                         time: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
-                        chargedness: Some(OF(1.0)),
+                        chargedness: Some(UnitInterval::ONE),
                     },
                     p1_repeat_count: full_count,
                     p2_data: CycleDataFull {
@@ -297,34 +293,33 @@ fn fill_module_effect_info(
             }
         }
     };
-    cseq_map.insert(effect_key, cseq);
+    cseq_map.insert(effect_rid, cseq);
 }
 
-fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
+fn get_reload_time(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     // All reloads can't take less than server tick realistically. E.g. lasers have almost 0 reload
     // time but take 1-2 seconds to reload
-    Float::max(
-        SERVER_TICK_S,
-        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().reload_time, OF(0.0))
+    PValue::from_f64_unchecked(SERVER_TICK_S).max_value(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().reload_time, Value::ZERO)
             .unwrap()
-            / 1000.0,
+            / Value::THOUSAND,
     )
 }
 
 fn part_r(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
-    duration: AttrVal,
-    cooldown: AttrVal,
+    item_uid: UItemId,
+    duration: PValue,
+    cooldown: PValue,
     int_cd: bool,
-    part_value: Option<AttrVal>,
+    chargedness: Option<UnitInterval>,
 ) -> CycleSeq {
     CycleSeq::Inf(CSeqInf {
         data: CycleDataFull {
-            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+            time: duration + get_reload_time(ctx, calc, item_uid).max(cooldown),
             interrupt: CycleInterrupt::try_new(int_cd, true),
-            chargedness: part_value,
+            chargedness,
         },
     })
 }
@@ -332,31 +327,31 @@ fn part_r(
 fn full_r(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
-    duration: AttrVal,
-    cooldown: AttrVal,
+    item_uid: UItemId,
+    duration: PValue,
+    cooldown: PValue,
     int_cd: bool,
-    full_count: DefCount,
+    full_count: Count,
 ) -> CycleSeq {
     match full_count {
-        1 => CycleSeq::Inf(CSeqInf {
+        Count::ONE => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
-                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+                time: duration + get_reload_time(ctx, calc, item_uid).max(cooldown),
                 interrupt: CycleInterrupt::try_new(int_cd, true),
-                chargedness: Some(OF(1.0)),
+                chargedness: Some(UnitInterval::ONE),
             },
         }),
         _ => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
             p1_data: CycleDataFull {
                 time: duration + cooldown,
                 interrupt: CycleInterrupt::try_new(int_cd, false),
-                chargedness: Some(OF(1.0)),
+                chargedness: Some(UnitInterval::ONE),
             },
             p1_repeat_count: full_count - 1,
             p2_data: CycleDataFull {
-                time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+                time: duration + get_reload_time(ctx, calc, item_uid).max(cooldown),
                 interrupt: CycleInterrupt::try_new(int_cd, true),
-                chargedness: Some(OF(1.0)),
+                chargedness: Some(UnitInterval::ONE),
             },
         }),
     }
@@ -365,24 +360,24 @@ fn full_r(
 fn both_r(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
-    duration: AttrVal,
-    cooldown: AttrVal,
+    item_uid: UItemId,
+    duration: PValue,
+    cooldown: PValue,
     int_cd: bool,
-    full_count: DefCount,
-    part_value: Option<AttrVal>,
+    full_count: Count,
+    chargedness: Option<UnitInterval>,
 ) -> CycleSeq {
     CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
         p1_data: CycleDataFull {
             time: duration + cooldown,
             interrupt: CycleInterrupt::try_new(int_cd, false),
-            chargedness: Some(OF(1.0)),
+            chargedness: Some(UnitInterval::ONE),
         },
         p1_repeat_count: full_count,
         p2_data: CycleDataFull {
-            time: duration + Float::max(get_reload_time(ctx, calc, item_key), cooldown),
+            time: duration + get_reload_time(ctx, calc, item_uid).max(cooldown),
             interrupt: CycleInterrupt::try_new(int_cd, true),
-            chargedness: part_value,
+            chargedness,
         },
     })
 }

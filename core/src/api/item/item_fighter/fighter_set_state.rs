@@ -26,7 +26,7 @@ impl SolarSystem {
             .filter_map(|ac_act| {
                 u_fighter
                     .get_autocharges()
-                    .get_ac_uid(&ac_act.effect_key)
+                    .get_ac_uid(&ac_act.effect_rid)
                     .map(|ac_key| (ac_key, ac_act.active))
             })
             .collect_vec();

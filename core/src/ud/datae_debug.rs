@@ -16,9 +16,9 @@ impl UData {
             fit.consistency_check(self, &mut seen_items)?;
         }
         // System-wide effects
-        for &sw_effect_key in self.sw_effects.iter() {
-            seen_items.push(sw_effect_key);
-            let item = match self.items.try_get(sw_effect_key) {
+        for &sw_effect_uid in self.sw_effects.iter() {
+            seen_items.push(sw_effect_uid);
+            let item = match self.items.try_get(sw_effect_uid) {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
@@ -28,9 +28,9 @@ impl UData {
             item.consistency_check(self)?;
         }
         // Projected effects
-        for &proj_effect_key in self.proj_effects.iter() {
-            seen_items.push(proj_effect_key);
-            let item = match self.items.try_get(proj_effect_key) {
+        for &proj_effect_uid in self.proj_effects.iter() {
+            seen_items.push(proj_effect_uid);
+            let item = match self.items.try_get(proj_effect_uid) {
                 Some(item) => item,
                 None => return Err(DebugError {}),
             };
@@ -44,7 +44,7 @@ impl UData {
             return Err(DebugError {});
         }
         // Check if we have any unreferenced items
-        if !self.items.keys().all(|item_key| seen_items.contains(&item_key)) {
+        if !self.items.keys().all(|item_uid| seen_items.contains(&item_uid)) {
             return Err(DebugError {});
         }
         // Checks for internal container consistency

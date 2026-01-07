@@ -1,6 +1,7 @@
 use smallvec::{SmallVec, smallvec};
 
 use crate::{
+    api::AttrId,
     misc::{EffectSpec, Value},
     rd::RAttrId,
     svc::{
@@ -32,7 +33,7 @@ impl AffectorValue {
         match self {
             Self::Attr(attr_rid) => smallvec![Affector {
                 item_id: ctx.u_data.items.eid_by_iid(item_uid),
-                attr_id: Some(ctx.u_data.src.get_attr_by_rid(*attr_rid).aid.into()),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(*attr_rid).aid)),
             }],
             Self::Hardcoded(_) => smallvec![Affector {
                 item_id: ctx.u_data.items.eid_by_iid(item_uid),

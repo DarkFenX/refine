@@ -76,8 +76,8 @@ impl USkill {
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
         self.base.stop_all_reffs(reuse_eupdates, src)
     }
-    pub(in crate::ud::item) fn get_effect_mode(&self, effect_uid: &REffectId) -> EffectMode {
-        self.base.get_effect_mode(effect_uid)
+    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode(effect_rid)
     }
     pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
         self.base.set_effect_mode(effect_aid, effect_mode, src)

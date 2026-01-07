@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
 pub(crate) struct UItemId(usize);
 // Conversions needed for unified user entity container to work
 impl From<usize> for UItemId {

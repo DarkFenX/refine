@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::{AdjustableCount, MinionState},
+    api::{Adjustable, MinionState},
     misc::{EffectMode, FighterCount, PValue, RearmMinions, SkillLevel, StOption, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
@@ -122,15 +122,15 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_count(&self) -> Option<AdjustableCount<FighterCount>> {
+    pub(crate) fn get_count(&self) -> Option<Adjustable<FighterCount>> {
         match self.get_axt() {
             Some(axt) => match self.count_override {
-                Some(count_override) => Some(AdjustableCount {
+                Some(count_override) => Some(Adjustable {
                     current: count_override,
                     max: axt.max_fighter_count,
                     overridden: true,
                 }),
-                None => Some(AdjustableCount {
+                None => Some(Adjustable {
                     current: axt.max_fighter_count,
                     max: axt.max_fighter_count,
                     overridden: false,

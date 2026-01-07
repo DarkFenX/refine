@@ -1,6 +1,9 @@
 use ordered_float::OrderedFloat;
 
-use crate::{misc::Value, util::FLOAT_TOLERANCE};
+use crate::{
+    misc::{PValue, Value},
+    util::FLOAT_TOLERANCE,
+};
 
 #[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct UnitInterval(f64);
@@ -40,6 +43,12 @@ impl UnitInterval {
 impl UnitInterval {
     pub(crate) fn from_value_clamped(value: Value) -> Self {
         Self::from_f64_clamped(value.into_f64())
+    }
+    pub(crate) fn into_value(self) -> Value {
+        Value::from_f64(self.0)
+    }
+    pub(crate) fn into_pvalue(self) -> PValue {
+        PValue::from_f64_unchecked(self.0)
     }
 }
 

@@ -105,7 +105,7 @@ fn get_aoe_dd_dmg_base_opc(
         && interval_ms > Value::FLOAT_TOLERANCE
         && let Some(duration_ms) = calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().doomsday_dmg_duration)
     {
-        let repeats = Count::from_f64_trunced(duration_ms.into_f64() / interval_ms.into_f64());
+        let repeats = Count::from_value_trunced(duration_ms / interval_ms);
         if repeats > Count::ONE {
             return Some(Output::Complex(OutputComplex {
                 amount: DmgKinds {

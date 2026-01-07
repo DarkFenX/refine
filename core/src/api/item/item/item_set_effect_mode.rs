@@ -44,7 +44,7 @@ impl SolarSystem {
                 .iter()
                 .filter_map(|ac_act| {
                     autocharges
-                        .get_ac_key(&ac_act.effect_key)
+                        .get_ac_key(&ac_act.effect_rid)
                         .map(|ac_key| (ac_key, ac_act.active))
                 })
                 .collect_vec();

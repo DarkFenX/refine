@@ -58,7 +58,7 @@ impl Op {
             AOp::PostAssign => Self::PostAssign,
         }
     }
-    pub(in crate::api) fn from_calc_op(calc_op: CalcOp) -> Self {
+    pub(crate) fn from_calc_op(calc_op: CalcOp) -> Self {
         match calc_op {
             CalcOp::PreAssign => Self::PreAssign,
             CalcOp::PreMul => Self::PreMul,

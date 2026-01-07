@@ -61,12 +61,13 @@ impl Lender for RahSimTickIter {
         self.cycled.clear();
         self.cycling_times.clear();
         // Pick time remaining until some RAH finishes its cycle
-        let time_passed = self
-            .rah_iter_data
-            .values()
-            .map(|v| v.cycle_time - v.cycling_time)
-            .min()
-            .unwrap();
+        let time_passed = PValue::from_val_clamped(
+            self.rah_iter_data
+                .values()
+                .map(|v| v.cycle_time - v.cycling_time)
+                .min()
+                .unwrap(),
+        );
         // Compose list of RAHs which finish their cycle this tick
         for (item_uid, item_iter_data) in self.rah_iter_data.iter() {
             // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH

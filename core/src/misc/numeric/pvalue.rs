@@ -2,8 +2,8 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
-    misc::{UnitInterval, Value},
-    util::{FLOAT_TOLERANCE, ceil_tick, floor_tick, sig_round},
+    misc::Value,
+    util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, sig_round},
 };
 
 /// Positive float value.
@@ -82,6 +82,12 @@ impl PValue {
     pub(crate) fn min(self, other: Self) -> Self {
         Self(self.0.min(other.0))
     }
+    pub(crate) fn max(self, other: Self) -> Self {
+        Self(self.0.max(other.0))
+    }
+    pub(crate) fn max_value(self, other: Value) -> Self {
+        Self(self.0.max(other.into_f64()))
+    }
     pub(crate) fn clamp(self, min: Self, max: Self) -> Self {
         Self(self.0.clamp(min.0, max.0))
     }
@@ -96,6 +102,9 @@ impl PValue {
     }
     pub(crate) fn sig_rounded(self, digits: u32) -> Self {
         Self(sig_round(self.0, digits))
+    }
+    pub(crate) fn ceil_unerr(self) -> Self {
+        Self(ceil_unerr(self.0))
     }
     // Tick-specific math
     pub(crate) fn floor_tick(self) -> PValue {
@@ -141,12 +150,6 @@ impl std::ops::Mul<Value> for PValue {
     type Output = Value;
     fn mul(self, rhs: Self) -> Self::Output {
         Value::from_f64(self.0 * rhs.0)
-    }
-}
-impl std::ops::Mul<UnitInterval> for PValue {
-    type Output = PValue;
-    fn mul(self, rhs: UnitInterval) -> Self::Output {
-        PValue(self.0 * rhs.into_f64())
     }
 }
 impl std::ops::MulAssign<PValue> for PValue {

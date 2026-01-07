@@ -63,7 +63,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_type_fitted_count(
     attr_consts
         .max_type_fitted
         .and_then(|v| item_attrs.get(&v))
-        .map(|&v| Count::from_f64_rounded(v.into()))
+        .map(|&v| Count::from_value_rounded(v))
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_online_max_sec_class(
@@ -109,7 +109,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
     attr_consts: &RAttrConsts,
 ) -> Count {
     match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
-        Some(&val) => Count::from_f64_rounded(val.into()),
+        Some(&val) => Count::from_value_rounded(val),
         None => Count::from_u32(1),
     }
 }
@@ -121,7 +121,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
     match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
         // Ensure there can be at least 1 fighter in a squad
         Some(&value) => FighterCount::from_f64_rounded(value.into()),
-        None => FighterCount::new_clamped(1),
+        None => FighterCount::from_u32_clamped(1),
     }
 }
 
@@ -130,7 +130,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_fighter_refuel_time(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.ftr_refueling_time.and_then(|v| item_attrs.get(&v)) {
-        Some(value) => PValue::from(value / 1000.0),
+        Some(&value) => PValue::from_val_clamped(value / Value::THOUSAND),
         None => PValue::default(),
     }
 }

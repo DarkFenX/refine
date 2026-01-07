@@ -18,11 +18,11 @@ impl UFleet {
     pub(crate) fn contains_fit(&self, fit: &UFitId) -> bool {
         self.fits.contains(fit)
     }
-    pub(crate) fn add_fit(&mut self, fit_key: UFitId) {
-        self.fits.insert(fit_key);
+    pub(crate) fn add_fit(&mut self, fit_uid: UFitId) {
+        self.fits.insert(fit_uid);
     }
-    pub(crate) fn remove_fit(&mut self, fit_key: &UFitId) {
-        self.fits.remove(fit_key);
+    pub(crate) fn remove_fit(&mut self, fit_uid: &UFitId) {
+        self.fits.remove(fit_uid);
     }
 }
 impl LibNamed for UFleet {

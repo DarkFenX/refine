@@ -1,7 +1,7 @@
 use crate::{
-    def::AttrVal,
+    misc::{Count, InfCount, PValue},
     svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped},
-    util::{InfCount, LibConvertExtend},
+    util::LibConvertExtend,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ where
     }
 }
 impl CSeqInf {
-    pub(super) fn get_time(&self) -> AttrVal {
+    pub(super) fn get_time(&self) -> PValue {
         self.data.time
     }
 }
@@ -134,7 +134,7 @@ where
         self.yielded = true;
         Some(CSeqLoopedPart {
             data: self.cseq.data,
-            repeat_count: 1,
+            repeat_count: Count::ONE,
         })
     }
 }

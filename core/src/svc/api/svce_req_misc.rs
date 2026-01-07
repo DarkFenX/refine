@@ -1,5 +1,5 @@
 use crate::{
-    api::AdjustableCount,
+    api::Adjustable,
     svc::{
         Svc, SvcCtx,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
@@ -53,11 +53,7 @@ impl Svc {
         }
         Some(InfCount::Count(charged_cycles))
     }
-    pub(crate) fn get_effect_spool_cycle_count(
-        &mut self,
-        u_data: &UData,
-        item_key: UItemId,
-    ) -> Option<AdjustableCount> {
+    pub(crate) fn get_effect_spool_cycle_count(&mut self, u_data: &UData, item_key: UItemId) -> Option<Adjustable> {
         let u_item = u_data.items.get(item_key);
         let defeff_key = u_item.get_defeff_rid()??;
         let defeff = u_data.src.get_effect_by_rid(defeff_key);
@@ -66,7 +62,7 @@ impl Svc {
         let ctx = SvcCtx::new(u_data, &self.eff_projs);
         let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_key, defeff, None, spool_attrs)?;
         let overridden = u_item.get_spool().is_some();
-        Some(AdjustableCount {
+        Some(Adjustable {
             current: resolved_spool.cycles,
             max: resolved_spool.cycles_max,
             overridden,

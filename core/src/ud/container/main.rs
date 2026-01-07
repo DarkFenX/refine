@@ -7,7 +7,7 @@ use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, RMap};
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
     pub(super) data: Slab<T>,
-    pub(super) eid_to_key: RMap<ExtId, usize>,
+    pub(super) eid_to_slab_key: RMap<ExtId, usize>,
     phantom_iid: PhantomData<IntId>,
     phantom_error: PhantomData<Err>,
 }
@@ -22,14 +22,14 @@ where
         Self {
             counter: ExtId::lib_default(),
             data: Slab::with_capacity(capacity),
-            eid_to_key: RMap::with_capacity(capacity),
+            eid_to_slab_key: RMap::with_capacity(capacity),
             phantom_iid: PhantomData,
             phantom_error: PhantomData,
         }
     }
     pub(crate) fn alloc_id(&mut self) -> ExtId {
         let start = self.counter;
-        while self.eid_to_key.contains_key(&self.counter) {
+        while self.eid_to_slab_key.contains_key(&self.counter) {
             self.counter.lib_increment();
             if start == self.counter {
                 panic!("ran out of {} ID space", T::lib_get_name());
@@ -41,16 +41,16 @@ where
     }
     pub(crate) fn add(&mut self, entity: T) -> IntId {
         let eid = entity.lib_get_id();
-        let key = self.data.insert(entity);
-        self.eid_to_key.insert(eid, key);
-        key.into()
+        let slab_key = self.data.insert(entity);
+        self.eid_to_slab_key.insert(eid, slab_key);
+        slab_key.into()
     }
     pub(crate) fn iid_by_eid(&self, eid: &ExtId) -> Option<IntId> {
-        self.eid_to_key.get(eid).map(|&key| key.into())
+        self.eid_to_slab_key.get(eid).map(|&key| key.into())
     }
     pub(crate) fn iid_by_eid_err(&self, eid: &ExtId) -> Result<IntId, Err> {
-        match self.eid_to_key.get(eid) {
-            Some(&key) => Ok(key.into()),
+        match self.eid_to_slab_key.get(eid) {
+            Some(&slab_key) => Ok(slab_key.into()),
             None => Err(Err::from(*eid)),
         }
     }
@@ -71,22 +71,22 @@ where
     pub(crate) fn remove(&mut self, iid: IntId) -> T {
         // Keys are supposed to be valid throughout whole lib, so use non-try removal
         let entity = self.data.remove(iid.into());
-        self.eid_to_key.remove(&entity.lib_get_id());
+        self.eid_to_slab_key.remove(&entity.lib_get_id());
         entity
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (IntId, &T)> {
-        self.eid_to_key
+        self.eid_to_slab_key
             .values()
-            .map(|&key| (key.into(), self.data.get(key).unwrap()))
+            .map(|&slab_key| (slab_key.into(), self.data.get(slab_key).unwrap()))
     }
     pub(crate) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (IntId, &mut T)> {
-        self.data.iter_mut().map(|(key, entity)| (key.into(), entity))
+        self.data.iter_mut().map(|(slab_key, entity)| (slab_key.into(), entity))
     }
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
-        self.eid_to_key.values().map(|&key| key.into())
+        self.eid_to_slab_key.values().map(|&key| key.into())
     }
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
-        self.eid_to_key.values().map(|&key| self.data.get(key).unwrap())
+        self.eid_to_slab_key.values().map(|&key| self.data.get(key).unwrap())
     }
     pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
@@ -104,7 +104,7 @@ where
         Self {
             counter: self.counter,
             data: self.data.clone(),
-            eid_to_key: self.eid_to_key.clone(),
+            eid_to_slab_key: self.eid_to_slab_key.clone(),
             phantom_iid: PhantomData,
             phantom_error: PhantomData,
         }

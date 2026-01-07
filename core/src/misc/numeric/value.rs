@@ -51,6 +51,7 @@ impl Value {
 // use constants in pattern matching arms.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Eq for Value {}
+impl std::marker::StructuralPartialEq for Value {}
 impl PartialEq for Value {
     fn eq(&self, other: &Self) -> bool {
         OrderedFloat(self.0).eq(&OrderedFloat(other.0))

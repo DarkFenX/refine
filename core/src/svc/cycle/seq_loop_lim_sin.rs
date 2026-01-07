@@ -1,7 +1,7 @@
 use crate::{
-    def::{AttrVal, DefCount},
+    misc::{Count, InfCount, PValue},
     svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
-    util::{InfCount, LibConvertExtend},
+    util::LibConvertExtend,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleSeqLoopLimSin<T = CycleDataFull> {
     pub(in crate::svc) p1_data: T,
-    pub(in crate::svc) p1_repeat_count: DefCount,
+    pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
 }
 impl<T> CycleSeqLoopLimSin<T> {
@@ -69,10 +69,10 @@ where
     }
 }
 impl CycleSeqLoopLimSin {
-    pub(super) fn get_average_time(&self) -> AttrVal {
-        let p1_total_time = self.p1_data.time * self.p1_repeat_count as f64;
+    pub(super) fn get_average_time(&self) -> PValue {
+        let p1_total_time = self.p1_data.time * self.p1_repeat_count.into_pvalue();
         let p2_total_time = self.p2_data.time;
-        (p1_total_time + p2_total_time) / (self.p1_repeat_count + 1) as f64
+        (p1_total_time + p2_total_time) / (self.p1_repeat_count + Count::ONE).into_pvalue()
     }
 }
 impl CycleSeqLoopLimSin<CycleDataTime> {
@@ -90,13 +90,13 @@ impl CycleSeqLoopLimSin<CycleDataTime> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CSeqLoopLimSinCycleIter<T> {
     cseq: CycleSeqLoopLimSin<T>,
-    p1_repeats_done: DefCount,
+    p1_repeats_done: Count,
 }
 impl<T> CSeqLoopLimSinCycleIter<T> {
     fn new(cseq: CycleSeqLoopLimSin<T>) -> Self {
         Self {
             cseq,
-            p1_repeats_done: 0,
+            p1_repeats_done: Count::ZERO,
         }
     }
 }
@@ -108,10 +108,10 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.p1_repeats_done >= self.cseq.p1_repeat_count {
-            self.p1_repeats_done = 0;
+            self.p1_repeats_done = Count::ZERO;
             return Some(self.cseq.p2_data);
         }
-        self.p1_repeats_done += 1;
+        self.p1_repeats_done += Count::ONE;
         Some(self.cseq.p1_data)
     }
 }
@@ -147,7 +147,7 @@ where
                 self.index = 2;
                 Some(CSeqPart {
                     data: self.cseq.p2_data,
-                    repeat_count: InfCount::Count(1),
+                    repeat_count: InfCount::Count(Count::ONE),
                 })
             }
             2 => None,
@@ -184,7 +184,7 @@ where
                 self.index = 2;
                 Some(CSeqLoopedPart {
                     data: self.cseq.p2_data,
-                    repeat_count: 1,
+                    repeat_count: Count::ONE,
                 })
             }
             2 => None,

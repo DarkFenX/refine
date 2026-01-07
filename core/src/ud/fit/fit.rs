@@ -60,7 +60,7 @@ impl UFit {
             ship_kind: UShipKind::Unknown,
         }
     }
-    pub(crate) fn iter_module_keys(&self) -> impl Iterator<Item = UItemId> {
+    pub(crate) fn iter_module_uids(&self) -> impl Iterator<Item = UItemId> {
         chain!(
             self.mods_high.iter_uids().copied(),
             self.mods_mid.iter_uids().copied(),

@@ -1,6 +1,6 @@
 use super::shared::CyclingOptions;
 use crate::{
-    def::AttrVal,
+    misc::PValue,
     rd::REffectId,
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::{UFighter, UItemId},
@@ -14,15 +14,15 @@ struct FtrEffectInfo {
 
 #[derive(Copy, Clone)]
 struct FtrEffectRearmInfo {
-    time_until_rearm: AttrVal,
-    full_rearm_time: AttrVal,
-    charge_rearm_time: AttrVal,
+    time_until_rearm: PValue,
+    full_rearm_time: PValue,
+    charge_rearm_time: PValue,
 }
 
 pub(super) fn get_fighter_cseq_map(
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_key: UItemId,
+    item_uid: UItemId,
     fighter: &UFighter,
     options: CyclingOptions,
     ignore_state: bool,

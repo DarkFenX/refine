@@ -616,9 +616,9 @@ impl UItem {
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_key: RAttrId) -> Option<Value> {
+    pub(crate) fn get_attr(&self, attr_rid: RAttrId) -> Option<Value> {
         match self.get_attrs() {
-            Some(attrs) => attrs.get(&attr_key).copied(),
+            Some(attrs) => attrs.get(&attr_rid).copied(),
             None => None,
         }
     }
@@ -666,10 +666,10 @@ impl UItem {
         }
     }
     pub(crate) fn iter_charges(&self) -> impl Iterator<Item = UItemId> {
-        let charge_key = self.get_charge_uid();
+        let charge_uid = self.get_charge_uid();
         match self.get_autocharges() {
-            Some(autocharges) => Either::Left(charge_key.into_iter().chain(autocharges.values())),
-            None => Either::Right(charge_key.into_iter()),
+            Some(autocharges) => Either::Left(charge_uid.into_iter().chain(autocharges.values())),
+            None => Either::Right(charge_uid.into_iter()),
         }
         .into_iter()
     }
