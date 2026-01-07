@@ -43,7 +43,7 @@ impl VastFitData {
             Some(ship) => ship,
             None => {
                 return Some(ValShipStanceFail {
-                    stance_item_id: ctx.u_data.items.eid_by_iid(stance_key),
+                    stance_item_id: ctx.u_data.items.xid_by_iid(stance_key),
                 });
             }
         };
@@ -54,7 +54,7 @@ impl VastFitData {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: ctx.u_data.items.eid_by_iid(stance_key),
+            stance_item_id: ctx.u_data.items.xid_by_iid(stance_key),
         })
     }
 }

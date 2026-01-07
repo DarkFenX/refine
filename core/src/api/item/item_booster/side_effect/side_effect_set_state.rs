@@ -36,14 +36,14 @@ impl<'a> StubSideEffectMut<'a> {
     }
 }
 
-fn set_state(sol: &mut SolarSystem, booster_key: UItemId, a_effect_id: AEffectId, state: bool) {
+fn set_state(sol: &mut SolarSystem, booster_key: UItemId, effect_aid: AEffectId, state: bool) {
     let u_booster = sol.u_data.items.get_mut(booster_key).dc_booster_mut().unwrap();
     let effect_mode = match state {
         true => EffectMode::StateCompliance,
         false => EffectMode::FullCompliance,
     };
     let mut reuse_eupdates = UEffectUpdates::new();
-    u_booster.set_effect_mode(a_effect_id, effect_mode, &sol.u_data.src);
+    u_booster.set_effect_mode(effect_aid, effect_mode, &sol.u_data.src);
     u_booster.update_reffs(&mut reuse_eupdates, &sol.u_data.src);
     SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, booster_key, &reuse_eupdates);
 }

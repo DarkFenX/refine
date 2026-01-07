@@ -98,7 +98,7 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(mult_attr_rid) = ctx.ac().charged_armor_dmg_mult {
         info.push(Affector {
-            item_id: ctx.u_data.items.eid_by_iid(item_uid),
+            item_id: ctx.u_data.items.xid_by_iid(item_uid),
             attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(mult_attr_rid).aid)),
         });
     }

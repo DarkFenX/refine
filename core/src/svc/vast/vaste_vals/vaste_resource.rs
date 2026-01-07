@@ -258,7 +258,7 @@ fn validate_verbose_fitting<'a>(
             .unwrap();
         total_use += item_use;
         if item_use > FLOAT_TOLERANCE && !kfs.contains(&item_key) {
-            users.insert(ctx.u_data.items.eid_by_iid(item_key), item_use);
+            users.insert(ctx.u_data.items.xid_by_iid(item_key), item_use);
         }
     }
     if users.is_empty() {
@@ -288,7 +288,7 @@ fn validate_verbose_other<'a>(
     for (item_key, &item_use) in items {
         total_use += item_use;
         if item_use > FLOAT_TOLERANCE && !kfs.contains(item_key) {
-            users.insert(ctx.u_data.items.eid_by_iid(*item_key), item_use);
+            users.insert(ctx.u_data.items.xid_by_iid(*item_key), item_use);
         }
     }
     if users.is_empty() {

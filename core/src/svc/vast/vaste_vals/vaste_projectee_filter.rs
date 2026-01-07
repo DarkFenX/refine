@@ -36,9 +36,9 @@ impl VastFitData {
         for (projector_espec, projectee_data) in self.projectee_filter.iter() {
             for (&projectee_key, &allowed_type_list_id) in projectee_data.iter() {
                 if !validate_projection(kfs, ctx, projector_espec, allowed_type_list_id, projectee_key) {
-                    let projector_item_id = ctx.u_data.items.eid_by_iid(projector_espec.item_uid);
+                    let projector_item_id = ctx.u_data.items.xid_by_iid(projector_espec.item_uid);
                     let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
-                    let projectee_item_id = ctx.u_data.items.eid_by_iid(projectee_key);
+                    let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_key);
                     if !projectee_item_ids.contains(&projectee_item_id) {
                         projectee_item_ids.push(projectee_item_id)
                     }

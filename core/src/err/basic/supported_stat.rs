@@ -11,7 +11,7 @@ pub struct SupportedStatError {
 impl SupportedStatError {
     pub(crate) fn from_svc_err(u_items: &UItems, svc_err: UItemKindVsStatError) -> Self {
         Self {
-            item_id: u_items.eid_by_iid(svc_err.item_uid),
+            item_id: u_items.xid_by_iid(svc_err.item_uid),
         }
     }
 }

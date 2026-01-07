@@ -70,7 +70,7 @@ impl SolarSystem {
 
 impl<'a> FighterMut<'a> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, AddProjError> {
-        let projectee_key = self.sol.u_data.items.iid_by_eid_err(projectee_item_id)?;
+        let projectee_key = self.sol.u_data.items.iid_by_xid_err(projectee_item_id)?;
         self.sol.internal_add_fighter_proj(self.key, projectee_key)?;
         Ok(ProjMut::new(self.sol, self.key, projectee_key))
     }

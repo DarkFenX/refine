@@ -6,12 +6,12 @@ use crate::{
 
 impl<'a> FleetMut<'a> {
     pub fn add_fit(&mut self, fit_id: &FitId) -> Result<(), FleetAddFitError> {
-        let fit_key = self.sol.u_data.fits.iid_by_eid_err(fit_id)?;
+        let fit_key = self.sol.u_data.fits.iid_by_xid_err(fit_id)?;
         let u_fit = self.sol.u_data.fits.get(fit_key);
         if u_fit.fleet == Some(self.key) {
             return Err(FitNotInThisFleetError {
                 fit_id: *fit_id,
-                fleet_id: self.sol.u_data.fleets.eid_by_iid(self.key),
+                fleet_id: self.sol.u_data.fleets.xid_by_iid(self.key),
             }
             .into());
         }

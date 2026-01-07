@@ -4,10 +4,10 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn fit_added(&mut self, fit_key: UFitId) {
-        self.fit_datas.insert(fit_key, VastFitData::new());
+    pub(in crate::svc) fn fit_added(&mut self, fit_uid: UFitId) {
+        self.fit_datas.insert(fit_uid, VastFitData::new());
     }
-    pub(in crate::svc) fn fit_removed(&mut self, fit_key: &UFitId) {
-        self.fit_datas.remove(fit_key);
+    pub(in crate::svc) fn fit_removed(&mut self, fit_uid: &UFitId) {
+        self.fit_datas.remove(fit_uid);
     }
 }

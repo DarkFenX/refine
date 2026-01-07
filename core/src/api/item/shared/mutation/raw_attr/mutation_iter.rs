@@ -79,16 +79,16 @@ impl<'a> IncompleteMutationMut<'a> {
 pub struct RawMAttrIter<'iter> {
     sol: &'iter mut SolarSystem,
     item_key: UItemId,
-    a_attr_ids: Vec<AAttrId>,
+    attr_aids: Vec<AAttrId>,
     index: usize,
 }
 impl<'iter> RawMAttrIter<'iter> {
     pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_key: UItemId) -> Self {
-        let a_attr_ids = raw_mutated_attr_id_iter(sol, item_key).collect();
+        let attr_aids = raw_mutated_attr_id_iter(sol, item_key).collect();
         Self {
             sol,
             item_key,
-            a_attr_ids,
+            attr_aids,
             index: 0,
         }
     }
@@ -98,9 +98,9 @@ impl<'iter, 'lend> Lending<'lend> for RawMAttrIter<'iter> {
 }
 impl<'iter> Lender for RawMAttrIter<'iter> {
     fn next(&mut self) -> Option<RawMAttrMut<'_>> {
-        let a_attr_id = *self.a_attr_ids.get(self.index)?;
+        let attr_aid = *self.attr_aids.get(self.index)?;
         self.index += 1;
-        Some(RawMAttrMut::new(self.sol, self.item_key, a_attr_id))
+        Some(RawMAttrMut::new(self.sol, self.item_key, attr_aid))
     }
 }
 

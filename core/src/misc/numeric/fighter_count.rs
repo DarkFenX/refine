@@ -1,4 +1,4 @@
-use crate::misc::Value;
+use crate::misc::{PValue, Value};
 
 const COUNT_MIN: u32 = 1;
 
@@ -33,6 +33,9 @@ impl FighterCount {
     }
     pub(crate) fn into_value(self) -> Value {
         Value::from_f64(self.0 as f64)
+    }
+    pub(crate) fn into_pvalue(self) -> PValue {
+        PValue::from_f64_unchecked(self.0 as f64)
     }
 }
 

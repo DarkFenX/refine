@@ -9,7 +9,7 @@ use crate::{
     nd::{NEffect, effect::data::shared::sov_stability_generators::assign_effect},
 };
 
-const A_ITEM_ID: AItemId = AItemId::EXOTIC_STABILITY_GENERATOR;
+const ITEM_AID: AItemId = AItemId::EXOTIC_STABILITY_GENERATOR;
 const EFFECT_AID: AEffectId = AEffectId::STABILITY_GENERATOR_EXOTIC;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
@@ -17,7 +17,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: None,
         aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
-        adg_assign_effect_fn: Some(|a_items| assign_effect(a_items, A_ITEM_ID, EFFECT_AID)),
+        adg_assign_effect_fn: Some(|a_items| assign_effect(a_items, ITEM_AID, EFFECT_AID)),
         ..
     }
 }

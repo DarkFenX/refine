@@ -110,13 +110,13 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     {
         info.extend([
             Affector {
-                item_id: ctx.u_data.items.eid_by_iid(item_uid),
+                item_id: ctx.u_data.items.xid_by_iid(item_uid),
                 attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(max_velocity_rid).aid)),
             },
             // There is no dependency on modified ship radius, but we add it for informational
             // purposes nevertheless
             Affector {
-                item_id: ctx.u_data.items.eid_by_iid(ship_uid),
+                item_id: ctx.u_data.items.xid_by_iid(ship_uid),
                 attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(radius_rid).aid)),
             },
         ]);

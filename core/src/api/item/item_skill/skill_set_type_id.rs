@@ -27,7 +27,7 @@ impl SolarSystem {
             return Err(SkillEveTypeError {
                 type_id,
                 fit_id: u_fit.lib_get_id(),
-                item_id: self.u_data.items.eid_by_iid(fit_skill.skill_uid),
+                item_id: self.u_data.items.xid_by_iid(fit_skill.skill_uid),
             });
         }
         // Unload skill

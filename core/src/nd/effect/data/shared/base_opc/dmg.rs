@@ -15,13 +15,33 @@ pub(in crate::nd::effect::data) fn get_instant_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<DmgKinds<Value>>> {
+) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
-            em: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?,
-            thermal: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, Value::ZERO)?,
-            kinetic: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?,
-            explosive: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?,
+            em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().em_dmg,
+                Value::ZERO,
+            )?),
+            thermal: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().therm_dmg,
+                Value::ZERO,
+            )?),
+            kinetic: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().kin_dmg,
+                Value::ZERO,
+            )?),
+            explosive: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().expl_dmg,
+                Value::ZERO,
+            )?),
         },
         delay: PValue::ZERO,
     }))
@@ -32,13 +52,18 @@ pub(in crate::nd::effect::data) fn get_instant_charge_mult_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<DmgKinds<Value>>> {
+) -> Option<Output<DmgKinds<PValue>>> {
     let charge_uid = ctx.u_data.items.get(item_uid).get_charge_uid()?;
-    let dmg_mult = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_mult, Value::ONE)?;
-    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().em_dmg, Value::ZERO)?;
-    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().therm_dmg, Value::ZERO)?;
-    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().kin_dmg, Value::ZERO)?;
-    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().expl_dmg, Value::ZERO)?;
+    let dmg_mult =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_mult, Value::ONE)?);
+    let dmg_em =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().em_dmg, Value::ZERO)?);
+    let dmg_therm =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().therm_dmg, Value::ZERO)?);
+    let dmg_kin =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().kin_dmg, Value::ZERO)?);
+    let dmg_expl =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().expl_dmg, Value::ZERO)?);
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
             em: dmg_em * dmg_mult,
@@ -53,7 +78,7 @@ pub(in crate::nd::effect::data) fn get_instant_charge_mult_dmg_base_opc(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Doomsdays
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::data) fn get_direct_dd_dmg_opc_spec() -> NEffectProjOpcSpec<DmgKinds<Value>> {
+pub(in crate::nd::effect::data) fn get_direct_dd_dmg_opc_spec() -> NEffectProjOpcSpec<DmgKinds<PValue>> {
     // Direct DDs have no range limitations
     NEffectProjOpcSpec {
         base: get_direct_dd_dmg_base_opc,
@@ -65,13 +90,33 @@ fn get_direct_dd_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<DmgKinds<Value>>> {
+) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
-            em: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?,
-            thermal: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, Value::ZERO)?,
-            kinetic: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?,
-            explosive: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?,
+            em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().em_dmg,
+                Value::ZERO,
+            )?),
+            thermal: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().therm_dmg,
+                Value::ZERO,
+            )?),
+            kinetic: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().kin_dmg,
+                Value::ZERO,
+            )?),
+            explosive: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().expl_dmg,
+                Value::ZERO,
+            )?),
         },
         delay: PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_delay_duration, Value::ZERO)? / Value::THOUSAND,
@@ -79,7 +124,7 @@ fn get_direct_dd_dmg_base_opc(
     }))
 }
 
-pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc_spec() -> NEffectProjOpcSpec<DmgKinds<Value>> {
+pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc_spec() -> NEffectProjOpcSpec<DmgKinds<PValue>> {
     // Direct DDs have no range limitations
     NEffectProjOpcSpec {
         base: get_aoe_dd_dmg_base_opc,
@@ -92,11 +137,15 @@ fn get_aoe_dd_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<DmgKinds<Value>>> {
-    let dmg_em = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?;
-    let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, Value::ZERO)?;
-    let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?;
-    let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?;
+) -> Option<Output<DmgKinds<PValue>>> {
+    let dmg_em =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?);
+    let dmg_therm =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, Value::ZERO)?);
+    let dmg_kin =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?);
+    let dmg_expl =
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?);
     let delay_s = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
             / Value::THOUSAND,

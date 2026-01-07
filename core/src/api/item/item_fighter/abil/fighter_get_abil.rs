@@ -32,7 +32,7 @@ fn check_ability(sol: &SolarSystem, fighter_key: UItemId, ability_id: &AbilId) -
         return Ok(());
     }
     Err(AbilityFoundError {
-        item_id: sol.u_data.items.eid_by_iid(fighter_key),
+        item_id: sol.u_data.items.xid_by_iid(fighter_key),
         ability_id: *ability_id,
     })
 }

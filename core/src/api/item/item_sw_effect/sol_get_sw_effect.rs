@@ -7,12 +7,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_sw_effect(&self, item_id: &ItemId) -> Result<SwEffect<'_>, GetSwEffectError> {
-        let sw_effect_key = self.u_data.items.iid_by_eid_err(item_id)?;
+        let sw_effect_key = self.u_data.items.iid_by_xid_err(item_id)?;
         self.u_data.items.get(sw_effect_key).dc_sw_effect()?;
         Ok(SwEffect::new(self, sw_effect_key))
     }
     pub fn get_sw_effect_mut(&mut self, item_id: &ItemId) -> Result<SwEffectMut<'_>, GetSwEffectError> {
-        let sw_effect_key = self.u_data.items.iid_by_eid_err(item_id)?;
+        let sw_effect_key = self.u_data.items.iid_by_xid_err(item_id)?;
         self.u_data.items.get(sw_effect_key).dc_sw_effect()?;
         Ok(SwEffectMut::new(self, sw_effect_key))
     }

@@ -7,25 +7,25 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_added(&mut self, item_key: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_added(&mut self, item_uid: UItemId, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_uid() {
-                Some(fit_key) => {
-                    let fit_data = self.get_fit_data_mut(&fit_key);
-                    fit_data.not_loaded.insert(item_key);
+                Some(fit_uid) => {
+                    let fit_data = self.get_fit_data_mut(&fit_uid);
+                    fit_data.not_loaded.insert(item_uid);
                 }
                 None => {
-                    self.not_loaded.insert(item_key);
+                    self.not_loaded.insert(item_uid);
                 }
             }
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
-            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
+            for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
                 // If a skill is being added, then all items are in skill-to-item map should have a
                 // missing entry
-                if let Entry::Occupied(mut missing_skills_entry) = fit_data.srqs_missing.entry(other_item_key) {
+                if let Entry::Occupied(mut missing_skills_entry) = fit_data.srqs_missing.entry(other_item_uid) {
                     if let Entry::Occupied(mut missing_skill_entry) =
                         missing_skills_entry.get_mut().entry(skill.get_type_id())
                     {
@@ -45,23 +45,23 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn item_removed(&mut self, u_data: &UData, item_key: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_removed(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_uid() {
-                Some(fit_key) => {
-                    let fit_data = self.get_fit_data_mut(&fit_key);
-                    fit_data.not_loaded.remove(&item_key);
+                Some(fit_uid) => {
+                    let fit_data = self.get_fit_data_mut(&fit_uid);
+                    fit_data.not_loaded.remove(&item_uid);
                 }
                 None => {
-                    self.not_loaded.remove(&item_key);
+                    self.not_loaded.remove(&item_uid);
                 }
             }
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
             let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
-            for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
-                match fit_data.srqs_missing.entry(other_item_key) {
+            for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
+                match fit_data.srqs_missing.entry(other_item_uid) {
                     Entry::Occupied(mut missing_skills_entry) => {
                         match missing_skills_entry.get_mut().entry(skill.get_type_id()) {
                             // If skill being removed already was of insufficient level, just update
@@ -71,15 +71,15 @@ impl Vast {
                             }
                             // If skill info was missing, add it
                             Entry::Vacant(missing_skill_entry) => {
-                                let other_item = u_data.items.get(other_item_key);
-                                let required_a_lvl = *other_item
+                                let other_item = u_data.items.get(other_item_uid);
+                                let required_lvl = *other_item
                                     .get_effective_skill_reqs()
                                     .unwrap()
                                     .get(&skill.get_type_id())
                                     .unwrap();
                                 missing_skill_entry.insert(ValSrqSkillInfo {
                                     current_lvl: None,
-                                    required_lvl: required_a_lvl.into(),
+                                    required_lvl: required_lvl.into(),
                                 });
                             }
                         }
@@ -87,8 +87,8 @@ impl Vast {
                     // No missing skills entry for current "other" item - skill being removed will
                     // always lead to appearance of one
                     Entry::Vacant(missing_skills_entry) => {
-                        let other_item = u_data.items.get(other_item_key);
-                        let required_a_lvl = *other_item
+                        let other_item = u_data.items.get(other_item_uid);
+                        let required_lvl = *other_item
                             .get_effective_skill_reqs()
                             .unwrap()
                             .get(&skill.get_type_id())
@@ -98,7 +98,7 @@ impl Vast {
                             skill.get_type_id(),
                             ValSrqSkillInfo {
                                 current_lvl: None,
-                                required_lvl: required_a_lvl.into(),
+                                required_lvl: required_lvl.into(),
                             },
                         );
                         missing_skills_entry.insert(missing_skills);

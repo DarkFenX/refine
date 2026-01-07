@@ -38,9 +38,9 @@ impl VastFitData {
         let mut charges = HashMap::new();
         for (&charge_key, &cont_key) in self.charge_size.difference(kfs) {
             charges.insert(
-                ctx.u_data.items.eid_by_iid(charge_key),
+                ctx.u_data.items.xid_by_iid(charge_key),
                 ValChargeSizeChargeInfo {
-                    parent_item_id: ctx.u_data.items.eid_by_iid(cont_key),
+                    parent_item_id: ctx.u_data.items.xid_by_iid(cont_key),
                     charge_size: ctx.u_data.items.get(charge_key).get_axt().unwrap().charge_size,
                     allowed_size: ctx.u_data.items.get(cont_key).get_axt().unwrap().charge_size.unwrap(),
                 },

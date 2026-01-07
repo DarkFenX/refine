@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
-    misc::{DmgKinds, Ecm, MiningAmount, Value},
+    misc::{DmgKinds, Ecm, MiningAmount, PValue, Value},
     nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NProjMultGetter},
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
@@ -45,20 +45,20 @@ pub(crate) struct REffect {
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
     // Output getters/specs
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
-    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<Value>>>,
+    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<PValue>>>,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
     pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
-    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<Value>>,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<Value>>,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<Value>>,
-    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<Value>>,
-    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<Value>>,
-    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<Value>>,
-    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<Value>>,
-    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<Value>>,
-    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<Value>>,
+    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
+    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
+    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
+    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
+    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<PValue>>,
+    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<PValue>>,
+    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
 }
 impl REffect {

@@ -43,7 +43,7 @@ impl<'a> IncompleteMutationMut<'a> {
 fn mutate_raw(
     sol: &mut SolarSystem,
     item_key: UItemId,
-    a_attr_id: AAttrId,
+    attr_aid: AAttrId,
     roll: UnitInterval,
 ) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
     match sol
@@ -53,15 +53,15 @@ fn mutate_raw(
         .get_mutation_data()
         .unwrap()
         .get_attr_rolls()
-        .get(&a_attr_id)
+        .get(&attr_aid)
     {
         Some(_) => Err(ItemMAttrNotFoundError {
-            item_id: sol.u_data.items.eid_by_iid(item_key),
-            attr_id: a_attr_id.into(),
+            item_id: sol.u_data.items.xid_by_iid(item_key),
+            attr_id: attr_aid.into(),
         }
         .into()),
         None => {
-            let mut raw_mattr = RawMAttrMut::new(sol, item_key, a_attr_id);
+            let mut raw_mattr = RawMAttrMut::new(sol, item_key, attr_aid);
             raw_mattr.set_roll(roll);
             Ok(raw_mattr)
         }

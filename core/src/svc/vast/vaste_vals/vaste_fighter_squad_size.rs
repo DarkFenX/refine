@@ -38,7 +38,7 @@ impl VastFitData {
             .fighter_squad_size
             .iter()
             .filter(|(fighter_key, _)| !kfs.contains(fighter_key))
-            .map(|(fighter_key, fighter_info)| (ctx.u_data.items.eid_by_iid(*fighter_key), *fighter_info))
+            .map(|(fighter_key, fighter_info)| (ctx.u_data.items.xid_by_iid(*fighter_key), *fighter_info))
             .collect();
         match fighters.is_empty() {
             true => None,

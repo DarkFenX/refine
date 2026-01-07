@@ -167,15 +167,15 @@ impl<'a> FitMut<'a> {
 }
 
 fn get_chargeable_modules(u_data: &UData, fit_key: UFitId) -> Vec<UItemId> {
-    let mut seen_a_item_ids = Vec::new();
+    let mut seen_item_aids = Vec::new();
     let mut module_keys = Vec::new();
     for module_key in u_data.fits.get(fit_key).iter_module_uids() {
         let u_item = u_data.items.get(module_key);
-        let a_item_id = u_item.get_type_id();
-        if seen_a_item_ids.contains(&a_item_id) {
+        let item_aid = u_item.get_type_id();
+        if seen_item_aids.contains(&item_aid) {
             continue;
         }
-        seen_a_item_ids.push(a_item_id);
+        seen_item_aids.push(item_aid);
         let item_axt = match u_item.get_axt() {
             Some(item_axt) => item_axt,
             None => continue,

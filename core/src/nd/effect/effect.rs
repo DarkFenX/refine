@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, PValue, Value},
+    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, PValue},
     nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolAttrs},
     rd::{RAttrConsts, REffect},
     svc::{
@@ -51,7 +51,7 @@ pub(crate) struct NEffect {
     pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter> = None,
     // Getters/specs - damage output
     pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
-    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<Value>>> = None,
+    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<PValue>>> = None,
     pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
     // Getters/specs - mining
     pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,

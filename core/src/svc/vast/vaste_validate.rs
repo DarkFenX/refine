@@ -14,8 +14,8 @@ impl Vast {
         calc: &mut Calc,
         options: &ValOptionsSolInt,
     ) -> bool {
-        for &fit_key in options.fit_keys.iter() {
-            if !self.validate_fit_fast(ctx, calc, fit_key, &options.options) {
+        for &fit_uid in options.fit_uids.iter() {
+            if !self.validate_fit_fast(ctx, calc, fit_uid, &options.options) {
                 return false;
             }
         }
@@ -33,10 +33,10 @@ impl Vast {
         options: &ValOptionsSolInt,
     ) -> ValResultSol {
         let mut sol_result = ValResultSol::new();
-        for &fit_key in options.fit_keys.iter() {
-            let fit_result = self.validate_fit_verbose(ctx, calc, fit_key, &options.options);
+        for &fit_uid in options.fit_uids.iter() {
+            let fit_result = self.validate_fit_verbose(ctx, calc, fit_uid, &options.options);
             if !fit_result.all_passed() {
-                let fit_id = ctx.u_data.fits.eid_by_iid(fit_key);
+                let fit_id = ctx.u_data.fits.xid_by_iid(fit_uid);
                 sol_result.fits.insert(fit_id, fit_result);
             }
         }
@@ -50,11 +50,11 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitId,
+        fit_uid: UFitId,
         options: &ValOptionsInt,
     ) -> bool {
-        let fit = ctx.u_data.fits.get(fit_key);
-        let fit_data = self.get_fit_data_mut(&fit_key);
+        let fit = ctx.u_data.fits.get(fit_uid);
+        let fit_data = self.get_fit_data_mut(&fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be. This order was chosen to optimize for market
@@ -492,11 +492,11 @@ impl Vast {
         &mut self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_key: UFitId,
+        fit_uid: UFitId,
         options: &ValOptionsInt,
     ) -> ValResultFit {
-        let fit = ctx.u_data.fits.get(fit_key);
-        let fit_data = self.get_fit_data_mut(&fit_key);
+        let fit = ctx.u_data.fits.get(fit_uid);
+        let fit_data = self.get_fit_data_mut(&fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit::new();
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

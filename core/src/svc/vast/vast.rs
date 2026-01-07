@@ -1,7 +1,6 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
-    def::{AttrVal, DefCount},
-    misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
+    misc::{AttrSpec, Count, DmgKinds, Ecm, EffectSpec, MiningAmount, PValue, SkillLevel, SlotIndex, Value},
     nd::NBreacherDmgGetter,
     rd::{RAttrId, REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
@@ -18,16 +17,15 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     pub(in crate::svc::vast) irr_shield_limitable:
-        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_armor_limitable:
-        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     // Cap
-    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     // Ewar
     pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<Ecm>>,
 }
@@ -46,11 +44,11 @@ impl Vast {
             in_ecm: RMapRMapRMap::new(),
         }
     }
-    pub(in crate::svc) fn get_fit_data(&self, fit_key: &UFitId) -> &VastFitData {
-        self.fit_datas.get(fit_key).unwrap()
+    pub(in crate::svc) fn get_fit_data(&self, fit_uid: &UFitId) -> &VastFitData {
+        self.fit_datas.get(fit_uid).unwrap()
     }
-    pub(in crate::svc::vast) fn get_fit_data_mut(&mut self, fit_key: &UFitId) -> &mut VastFitData {
-        self.fit_datas.get_mut(fit_key).unwrap()
+    pub(in crate::svc::vast) fn get_fit_data_mut(&mut self, fit_uid: &UFitId) -> &mut VastFitData {
+        self.fit_datas.get_mut(fit_uid).unwrap()
     }
 }
 
@@ -60,11 +58,11 @@ impl Vast {
 pub(in crate::svc) struct VastFitData {
     // Validation-related
     pub(in crate::svc::vast) mods_svcs_online: RSet<UItemId>,
-    pub(in crate::svc::vast) rigs_offline_calibration: RMap<UItemId, AAttrVal>,
-    pub(in crate::svc::vast) drones_volume: RMap<UItemId, AAttrVal>,
-    pub(in crate::svc::vast) drones_bandwidth: RMap<UItemId, AAttrVal>,
-    pub(in crate::svc::vast) drones_online_bandwidth: RMap<UItemId, AAttrVal>,
-    pub(in crate::svc::vast) fighters_volume: RMap<UItemId, AAttrVal>,
+    pub(in crate::svc::vast) rigs_offline_calibration: RMap<UItemId, Value>,
+    pub(in crate::svc::vast) drones_volume: RMap<UItemId, PValue>,
+    pub(in crate::svc::vast) drones_bandwidth: RMap<UItemId, Value>,
+    pub(in crate::svc::vast) drones_online_bandwidth: RMap<UItemId, Value>,
+    pub(in crate::svc::vast) fighters_volume: RMap<UItemId, PValue>,
     pub(in crate::svc::vast) fighters_online: RSet<UItemId>,
     pub(in crate::svc::vast) light_fighters: RSet<UItemId>,
     pub(in crate::svc::vast) light_fighters_online: RSet<UItemId>,
@@ -80,9 +78,9 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) st_support_fighters_online: RSet<UItemId>,
     pub(in crate::svc::vast) mods_turret: RSet<UItemId>,
     pub(in crate::svc::vast) mods_launcher: RSet<UItemId>,
-    pub(in crate::svc::vast) slotted_implants: RMapRSet<ASlotIndex, UItemId>,
-    pub(in crate::svc::vast) slotted_boosters: RMapRSet<ASlotIndex, UItemId>,
-    pub(in crate::svc::vast) slotted_subsystems: RMapRSet<ASlotIndex, UItemId>,
+    pub(in crate::svc::vast) slotted_implants: RMapRSet<SlotIndex, UItemId>,
+    pub(in crate::svc::vast) slotted_boosters: RMapRSet<SlotIndex, UItemId>,
+    pub(in crate::svc::vast) slotted_subsystems: RMapRSet<SlotIndex, UItemId>,
     pub(in crate::svc::vast) ship_limited_items: RMap<UItemId, RItemShipLimit>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<AItemGrpId, UItemId>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemId, AItemGrpId>,
@@ -90,27 +88,27 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mods_svcs_max_group_online_limited: RMap<UItemId, AItemGrpId>,
     pub(in crate::svc::vast) mods_max_group_active_all: RMapRSet<AItemGrpId, UItemId>,
     pub(in crate::svc::vast) mods_max_group_active_limited: RMap<UItemId, AItemGrpId>,
-    pub(in crate::svc::vast) rigs_rig_size: RMap<UItemId, Option<AAttrVal>>,
+    pub(in crate::svc::vast) rigs_rig_size: RMap<UItemId, Option<Value>>,
     pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<AItemId, UItemId>,
     pub(in crate::svc::vast) srqs_missing: RMap<UItemId, RMap<AItemId, ValSrqSkillInfo>>,
     pub(in crate::svc::vast) charge_group: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_cont_group: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_size: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_volume: RMap<UItemId, UItemId>,
-    pub(in crate::svc::vast) mods_capital: RMap<UItemId, AAttrVal>,
+    pub(in crate::svc::vast) mods_capital: RMap<UItemId, PValue>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     pub(in crate::svc::vast) mods_state: RMap<UItemId, ValModuleStateModuleInfo>,
     pub(in crate::svc::vast) item_kind: RMap<UItemId, ValItemKindItemInfo>,
     pub(in crate::svc::vast) drone_group_limit: Vec<AItemGrpId>,
     pub(in crate::svc::vast) drone_groups: RMap<UItemId, AItemGrpId>,
     pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeFighterInfo>,
-    pub(in crate::svc::vast) overload_td_lvl: RMap<UItemId, ASkillLevel>,
-    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, DefCount>,
+    pub(in crate::svc::vast) overload_td_lvl: RMap<UItemId, SkillLevel>,
+    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Count>,
     pub(in crate::svc::vast) sec_zone_fitted: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_fitted_wspace_banned: RSet<UItemId>,
-    pub(in crate::svc::vast) sec_zone_online_class: RMap<UItemId, AAttrVal>,
+    pub(in crate::svc::vast) sec_zone_online_class: RMap<UItemId, Value>,
     pub(in crate::svc::vast) sec_zone_active: RSet<UItemId>,
-    pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemId, AAttrVal>,
+    pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemId, Value>,
     pub(in crate::svc::vast) sec_zone_unactivable: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_effect: RMapRMap<UItemId, REffectId, EffectSecZoneInfo>,
     pub(in crate::svc::vast) mods_active: RSet<UItemId>,
@@ -122,28 +120,28 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemId, RItemListId>,
     pub(in crate::svc::vast) cap_consumers_all: RMap<UItemId, Vec<RAttrId>>,
     // Stats-related - damage output
-    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<DmgKinds<AttrVal>>>,
+    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<DmgKinds<PValue>>>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, NBreacherDmgGetter>,
     // Stats-related - mining output
     pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
     pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
     pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
     // Stats-related - RR output
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     // Stats-related - misc output
-    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) out_cap: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     // Stats-related - local active tank
-    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
-    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     // Stats-related - cap
     pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemId, REffectId, RAttrId>,
-    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<AttrVal>>,
+    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     // Stats-related - misc
     pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
 }

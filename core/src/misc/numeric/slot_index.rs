@@ -1,6 +1,6 @@
 use crate::util::round_f64_to_i32;
 
-#[derive(Copy, Clone, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
 pub struct SlotIndex(i32);
 impl SlotIndex {
     pub const fn from_i32(value: i32) -> Self {

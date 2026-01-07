@@ -48,15 +48,35 @@ fn internal_get_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
-) -> Option<Output<DmgKinds<Value>>> {
+) -> Option<Output<DmgKinds<PValue>>> {
     // Unlike other AoE doomsdays, reapers hit every ship only once, despite having damage ticks
     // spread over time. We also assume target is hit by first damage tick.
     Some(Output::Simple(OutputSimple {
         amount: DmgKinds {
-            em: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?,
-            thermal: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, Value::ZERO)?,
-            kinetic: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?,
-            explosive: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?,
+            em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().em_dmg,
+                Value::ZERO,
+            )?),
+            thermal: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().therm_dmg,
+                Value::ZERO,
+            )?),
+            kinetic: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().kin_dmg,
+                Value::ZERO,
+            )?),
+            explosive: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+                ctx,
+                item_uid,
+                ctx.ac().expl_dmg,
+                Value::ZERO,
+            )?),
         },
         delay: PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?

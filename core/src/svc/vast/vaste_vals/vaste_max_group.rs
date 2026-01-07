@@ -128,9 +128,9 @@ fn validate_fast(
         Some(attr_key) => attr_key,
         None => return true,
     };
-    for (&item_key, a_item_grp_id) in max_group_limited.iter() {
+    for (&item_key, item_grp_aid) in max_group_limited.iter() {
         let allowed = get_max_allowed_item_count(ctx, calc, item_key, attr_key);
-        let actual = get_actual_item_count(max_group_all, a_item_grp_id);
+        let actual = get_actual_item_count(max_group_all, item_grp_aid);
         if actual > allowed && !kfs.contains(&item_key) {
             return false;
         }
@@ -148,18 +148,18 @@ fn validate_verbose(
 ) -> Option<ValMaxGroupFail> {
     let attr_key = attr_key?;
     let mut groups = HashMap::new();
-    for (&item_key, a_item_grp_id) in max_group_limited.iter() {
+    for (&item_key, item_grp_aid) in max_group_limited.iter() {
         let allowed = get_max_allowed_item_count(ctx, calc, item_key, attr_key);
-        let actual = get_actual_item_count(max_group_all, a_item_grp_id);
+        let actual = get_actual_item_count(max_group_all, item_grp_aid);
         if actual > allowed && !kfs.contains(&item_key) {
             groups
-                .entry(*a_item_grp_id)
+                .entry(*item_grp_aid)
                 .or_insert_with(|| ValMaxGroupGroupInfo {
                     group_item_count: actual,
                     items: HashMap::new(),
                 })
                 .items
-                .insert(ctx.u_data.items.eid_by_iid(item_key), allowed);
+                .insert(ctx.u_data.items.xid_by_iid(item_key), allowed);
         }
     }
     match groups.is_empty() {
@@ -171,6 +171,6 @@ fn validate_verbose(
 fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId, attr_key: RAttrId) -> DefCount {
     calc.get_item_attr_oextra(ctx, item_key, attr_key).unwrap().round() as DefCount
 }
-fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, a_item_grp_id: &AItemGrpId) -> DefCount {
-    max_group_all.get(a_item_grp_id).len() as DefCount
+fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, item_grp_aid: &AItemGrpId) -> DefCount {
+    max_group_all.get(item_grp_aid).len() as DefCount
 }

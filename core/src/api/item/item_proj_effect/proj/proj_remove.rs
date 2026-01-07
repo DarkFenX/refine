@@ -11,7 +11,7 @@ impl SolarSystem {
         if !u_proj_effect.get_projs().contains(&projectee_key) {
             return Err(ProjFoundError {
                 projector_item_id: u_proj_effect.get_item_id(),
-                projectee_item_id: self.u_data.items.eid_by_iid(projectee_key),
+                projectee_item_id: self.u_data.items.xid_by_iid(projectee_key),
             });
         };
         // Update services

@@ -40,7 +40,7 @@ impl VastFitData {
         let mut rig_sizes = HashMap::new();
         for (rig_key, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) && !kfs.contains(rig_key) {
-                rig_sizes.insert(ctx.u_data.items.eid_by_iid(*rig_key), rig_size);
+                rig_sizes.insert(ctx.u_data.items.xid_by_iid(*rig_key), rig_size);
             }
         }
         match rig_sizes.is_empty() {

@@ -13,7 +13,7 @@ impl<'a> FullMAttr<'a> {
     /// in which case roll is based off base attribute value. None is returned only when user roll
     /// is not set, and there is an error with EVE data (e.g. min mult = max mult for the mutation).
     pub fn get_roll(&self) -> Option<UnitInterval> {
-        get_roll(self.sol, self.item_key, &self.a_attr_id)
+        get_roll(self.sol, self.item_key, &self.attr_aid)
     }
 }
 
@@ -24,17 +24,17 @@ impl<'a> FullMAttrMut<'a> {
     /// in which case roll is based off base attribute value. None is returned only when user roll
     /// is not set, and there is an error with EVE data (e.g. min mult = max mult for the mutation).
     pub fn get_roll(&self) -> Option<UnitInterval> {
-        get_roll(self.sol, self.item_key, &self.a_attr_id)
+        get_roll(self.sol, self.item_key, &self.attr_aid)
     }
 }
 
-fn get_roll(sol: &SolarSystem, item_key: UItemId, a_attr_id: &AAttrId) -> Option<UnitInterval> {
+fn get_roll(sol: &SolarSystem, item_key: UItemId, attr_aid: &AAttrId) -> Option<UnitInterval> {
     let u_item = sol.u_data.items.get(item_key);
-    if let Some(&roll) = u_item.get_mutation_data().unwrap().get_attr_rolls().get(a_attr_id) {
+    if let Some(&roll) = u_item.get_mutation_data().unwrap().get_attr_rolls().get(attr_aid) {
         return Some(roll);
     }
     // If roll data was not available, calculate it using unmutated attribute value
-    let attr_key = sol.u_data.src.get_attr_rid_by_aid(a_attr_id).unwrap();
+    let attr_key = sol.u_data.src.get_attr_rid_by_aid(attr_aid).unwrap();
     let a_mutation_range = u_item
         .get_mutation_data()
         .unwrap()

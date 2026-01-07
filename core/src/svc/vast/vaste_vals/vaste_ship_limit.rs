@@ -99,7 +99,7 @@ impl VastFitData {
             if kfs.contains(limited_item_key) {
                 continue;
             }
-            mismatches.insert(ctx.u_data.items.eid_by_iid(*limited_item_key), ship_limit.into());
+            mismatches.insert(ctx.u_data.items.xid_by_iid(*limited_item_key), ship_limit.into());
         }
         match mismatches.is_empty() {
             true => None,

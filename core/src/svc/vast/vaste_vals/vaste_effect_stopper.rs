@@ -49,7 +49,7 @@ impl VastFitData {
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_uid)
                 && !kfs.contains(&stopped_espec.item_uid)
             {
-                let item_id = ctx.u_data.items.eid_by_iid(stopped_espec.item_uid);
+                let item_id = ctx.u_data.items.xid_by_iid(stopped_espec.item_uid);
                 let effect_id = ctx.u_data.src.get_effect_by_rid(stopped_espec.effect_rid).aid;
                 items.entry(item_id).or_insert_with(Vec::new).push(effect_id.into());
             }

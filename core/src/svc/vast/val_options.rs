@@ -316,19 +316,19 @@ impl ValOption {
     }
 }
 
-// Internal variant of validation options, with fit/item keys instead of IDs.
+// Internal variant of validation options, with fit/item UIDs instead of external IDs.
 pub(crate) struct ValOptionsSolInt {
     pub(crate) options: ValOptionsInt,
-    pub(crate) fit_keys: Vec<UFitId>,
+    pub(crate) fit_uids: Vec<UFitId>,
 }
 impl ValOptionsSolInt {
     pub(crate) fn from_pub(sol: &SolarSystem, pub_sol_opts: &ValOptionsSol) -> Self {
         Self {
             options: ValOptionsInt::from_pub(sol, &pub_sol_opts.options),
-            fit_keys: pub_sol_opts
+            fit_uids: pub_sol_opts
                 .fit_ids
                 .iter()
-                .filter_map(|fit_id| sol.u_data.fits.iid_by_eid(fit_id))
+                .filter_map(|fit_id| sol.u_data.fits.iid_by_xid(fit_id))
                 .unique()
                 .collect(),
         }
@@ -515,7 +515,7 @@ impl ValOptionInt {
             kfs: pub_opt
                 .kfs
                 .iter()
-                .filter_map(|item_id| sol.u_data.items.iid_by_eid(item_id))
+                .filter_map(|item_id| sol.u_data.items.iid_by_xid(item_id))
                 .unique()
                 .collect(),
         }

@@ -24,8 +24,8 @@ pub(super) const PENALTY_DENOMINATORS: [PValue; 8] = [
     PValue::from_f64_clamped(f64::from_bits(0x408e320fff24307e)),
 ];
 
-pub(in crate::svc::calc) fn is_penal(attr_penalizable: bool, affector_a_item_cat_id: &AItemCatId) -> bool {
-    attr_penalizable && !PENALTY_IMMUNE_ITEM_CATS.contains(affector_a_item_cat_id)
+pub(in crate::svc::calc) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatId) -> bool {
+    attr_penalizable && !PENALTY_IMMUNE_ITEM_CATS.contains(affector_item_cat_aid)
 }
 
 // Normalization functions

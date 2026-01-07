@@ -1,69 +1,64 @@
 use crate::{
-    ad,
     api::ModuleState,
+    rd::RState,
     svc::vast::{ValModuleStateModuleInfo, Vast},
     ud::{UItem, UItemId},
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_state_activated_loaded(
-        &mut self,
-        item_key: UItemId,
-        item: &UItem,
-        a_state: &ad::AState,
-    ) {
-        match a_state {
-            ad::AState::Offline => {
+    pub(in crate::svc) fn item_state_activated_loaded(&mut self, item_uid: UItemId, item: &UItem, state: RState) {
+        match state {
+            RState::Offline => {
                 if let UItem::Rig(rig) = item
                     && let Some(val) = rig.get_axt().unwrap().calibration_use
                 {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_uid());
-                    fit_data.rigs_offline_calibration.insert(item_key, val);
+                    fit_data.rigs_offline_calibration.insert(item_uid, val);
                 }
             }
-            ad::AState::Online => match item {
+            RState::Online => match item {
                 UItem::Fighter(fighter) => {
                     let item_axt = fighter.get_axt().unwrap();
                     let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
                     if item_axt.is_light_fighter {
-                        fit_data.light_fighters_online.insert(item_key);
+                        fit_data.light_fighters_online.insert(item_uid);
                     }
                     if item_axt.is_heavy_fighter {
-                        fit_data.heavy_fighters_online.insert(item_key);
+                        fit_data.heavy_fighters_online.insert(item_uid);
                     }
                     if item_axt.is_support_fighter {
-                        fit_data.support_fighters_online.insert(item_key);
+                        fit_data.support_fighters_online.insert(item_uid);
                     }
                     if item_axt.is_st_light_fighter {
-                        fit_data.st_light_fighters_online.insert(item_key);
+                        fit_data.st_light_fighters_online.insert(item_uid);
                     }
                     if item_axt.is_st_heavy_fighter {
-                        fit_data.st_heavy_fighters_online.insert(item_key);
+                        fit_data.st_heavy_fighters_online.insert(item_uid);
                     }
                     if item_axt.is_st_support_fighter {
-                        fit_data.st_support_fighters_online.insert(item_key);
+                        fit_data.st_support_fighters_online.insert(item_uid);
                     }
                 }
                 UItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
-                    fit_data.mods_svcs_online.insert(item_key);
-                    if let Some(a_item_grp_id) = module.get_val_online_group_id() {
+                    fit_data.mods_svcs_online.insert(item_uid);
+                    if let Some(item_grp_aid) = module.get_val_online_group_id() {
                         fit_data
                             .mods_svcs_max_group_online_all
-                            .add_entry(a_item_grp_id, item_key);
+                            .add_entry(item_grp_aid, item_uid);
                         if item_axt.max_group_online_limited {
                             fit_data
                                 .mods_svcs_max_group_online_limited
-                                .insert(item_key, a_item_grp_id);
+                                .insert(item_uid, item_grp_aid);
                         }
                     }
                     if let Some(sec_class) = item_axt.online_max_sec_class {
-                        fit_data.sec_zone_online_class.insert(item_key, sec_class);
+                        fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
-                    if let ad::AState::Offline = module.get_max_state().unwrap() {
+                    if let RState::Offline = module.get_max_state().unwrap() {
                         fit_data.mods_state.insert(
-                            item_key,
+                            item_uid,
                             ValModuleStateModuleInfo {
                                 state: ModuleState::Online,
                                 max_state: ModuleState::Offline,
@@ -74,47 +69,47 @@ impl Vast {
                 UItem::Service(service) => {
                     let fit_data = self.get_fit_data_mut(&service.get_fit_uid());
                     let item_axt = service.get_axt().unwrap();
-                    fit_data.mods_svcs_online.insert(item_key);
-                    if let Some(a_item_grp_id) = service.get_val_online_group_id() {
+                    fit_data.mods_svcs_online.insert(item_uid);
+                    if let Some(item_grp_aid) = service.get_val_online_group_id() {
                         fit_data
                             .mods_svcs_max_group_online_all
-                            .add_entry(a_item_grp_id, item_key);
+                            .add_entry(item_grp_aid, item_uid);
                         if item_axt.max_group_online_limited {
                             fit_data
                                 .mods_svcs_max_group_online_limited
-                                .insert(item_key, a_item_grp_id);
+                                .insert(item_uid, item_grp_aid);
                         }
                     }
                     if let Some(sec_class) = item_axt.online_max_sec_class {
-                        fit_data.sec_zone_online_class.insert(item_key, sec_class);
+                        fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
                 }
                 _ => (),
             },
-            ad::AState::Active => match item {
+            RState::Active => match item {
                 UItem::Charge(charge) => {
                     let item_axt = charge.get_axt().unwrap();
                     if item_axt.sec_zone_limitable {
                         let fit_data = self.get_fit_data_mut(&charge.get_fit_uid());
-                        fit_data.sec_zone_active.insert(item_key);
+                        fit_data.sec_zone_active.insert(item_uid);
                     }
                 }
                 UItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
-                    if let Some(a_item_grp_id) = module.get_val_active_group_id() {
-                        fit_data.mods_max_group_active_all.add_entry(a_item_grp_id, item_key);
+                    if let Some(item_grp_aid) = module.get_val_active_group_id() {
+                        fit_data.mods_max_group_active_all.add_entry(item_grp_aid, item_uid);
                         if item_axt.max_group_active_limited {
-                            fit_data.mods_max_group_active_limited.insert(item_key, a_item_grp_id);
+                            fit_data.mods_max_group_active_limited.insert(item_uid, item_grp_aid);
                         }
                     }
                     match module.get_max_state().unwrap() {
-                        ad::AState::Offline => {
-                            fit_data.mods_state.get_mut(&item_key).unwrap().state = ModuleState::Active;
+                        RState::Offline => {
+                            fit_data.mods_state.get_mut(&item_uid).unwrap().state = ModuleState::Active;
                         }
-                        ad::AState::Online => {
+                        RState::Online => {
                             fit_data.mods_state.insert(
-                                item_key,
+                                item_uid,
                                 ValModuleStateModuleInfo {
                                     state: ModuleState::Active,
                                     max_state: ModuleState::Online,
@@ -124,23 +119,23 @@ impl Vast {
                         _ => (),
                     }
                     if item_axt.sec_zone_limitable {
-                        fit_data.sec_zone_active.insert(item_key);
+                        fit_data.sec_zone_active.insert(item_uid);
                     }
-                    fit_data.mods_active.insert(item_key);
+                    fit_data.mods_active.insert(item_uid);
                 }
                 _ => (),
             },
-            ad::AState::Overload => {
+            RState::Overload => {
                 if let UItem::Module(module) = item {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     match module.get_max_state().unwrap() {
-                        ad::AState::Offline | ad::AState::Online => {
-                            fit_data.mods_state.get_mut(&item_key).unwrap().state = ModuleState::Overload;
+                        RState::Offline | RState::Online => {
+                            fit_data.mods_state.get_mut(&item_uid).unwrap().state = ModuleState::Overload;
                         }
-                        ad::AState::Active => {
+                        RState::Active => {
                             fit_data.mods_state.insert(
-                                item_key,
+                                item_uid,
                                 ValModuleStateModuleInfo {
                                     state: ModuleState::Overload,
                                     max_state: ModuleState::Active,
@@ -150,127 +145,122 @@ impl Vast {
                         _ => (),
                     }
                     if let Some(td_lvl) = item_axt.overload_td_lvl {
-                        fit_data.overload_td_lvl.insert(item_key, td_lvl);
+                        fit_data.overload_td_lvl.insert(item_uid, td_lvl);
                     }
                 }
             }
             _ => (),
         }
     }
-    pub(in crate::svc) fn item_state_deactivated_loaded(
-        &mut self,
-        item_key: &UItemId,
-        item: &UItem,
-        a_state: &ad::AState,
-    ) {
+    pub(in crate::svc) fn item_state_deactivated_loaded(&mut self, item_uid: &UItemId, item: &UItem, a_state: &RState) {
         match a_state {
-            ad::AState::Offline => {
+            RState::Offline => {
                 if let UItem::Rig(rig) = item {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_uid());
-                    fit_data.rigs_offline_calibration.remove(item_key);
+                    fit_data.rigs_offline_calibration.remove(item_uid);
                 }
             }
-            ad::AState::Online => match item {
+            RState::Online => match item {
                 UItem::Fighter(fighter) => {
                     let item_axt = fighter.get_axt().unwrap();
                     let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
                     if item_axt.is_light_fighter {
-                        fit_data.light_fighters_online.remove(item_key);
+                        fit_data.light_fighters_online.remove(item_uid);
                     }
                     if item_axt.is_heavy_fighter {
-                        fit_data.heavy_fighters_online.remove(item_key);
+                        fit_data.heavy_fighters_online.remove(item_uid);
                     }
                     if item_axt.is_support_fighter {
-                        fit_data.support_fighters_online.remove(item_key);
+                        fit_data.support_fighters_online.remove(item_uid);
                     }
                     if item_axt.is_st_light_fighter {
-                        fit_data.st_light_fighters_online.remove(item_key);
+                        fit_data.st_light_fighters_online.remove(item_uid);
                     }
                     if item_axt.is_st_heavy_fighter {
-                        fit_data.st_heavy_fighters_online.remove(item_key);
+                        fit_data.st_heavy_fighters_online.remove(item_uid);
                     }
                     if item_axt.is_st_support_fighter {
-                        fit_data.st_support_fighters_online.remove(item_key);
+                        fit_data.st_support_fighters_online.remove(item_uid);
                     }
                 }
                 UItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
-                    fit_data.mods_svcs_online.remove(item_key);
-                    if let Some(a_item_grp_id) = module.get_val_online_group_id() {
+                    fit_data.mods_svcs_online.remove(item_uid);
+                    if let Some(item_grp_aid) = module.get_val_online_group_id() {
                         fit_data
                             .mods_svcs_max_group_online_all
-                            .remove_entry(a_item_grp_id, item_key);
-                        fit_data.mods_svcs_max_group_online_limited.remove(item_key);
+                            .remove_entry(item_grp_aid, item_uid);
+                        fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
                     }
                     if item_axt.online_max_sec_class.is_some() {
-                        fit_data.sec_zone_online_class.remove(item_key);
+                        fit_data.sec_zone_online_class.remove(item_uid);
                     }
-                    if let ad::AState::Offline = module.get_max_state().unwrap() {
-                        fit_data.mods_state.remove(item_key);
+                    if let RState::Offline = module.get_max_state().unwrap() {
+                        fit_data.mods_state.remove(item_uid);
                     }
                 }
                 UItem::Service(service) => {
                     let fit_data = self.get_fit_data_mut(&service.get_fit_uid());
                     let item_axt = service.get_axt().unwrap();
-                    fit_data.mods_svcs_online.remove(item_key);
-                    if let Some(a_item_grp_id) = service.get_val_online_group_id() {
+                    fit_data.mods_svcs_online.remove(item_uid);
+                    if let Some(item_grp_aid) = service.get_val_online_group_id() {
                         fit_data
                             .mods_svcs_max_group_online_all
-                            .remove_entry(a_item_grp_id, item_key);
-                        fit_data.mods_svcs_max_group_online_limited.remove(item_key);
+                            .remove_entry(item_grp_aid, item_uid);
+                        fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
                     }
                     if item_axt.online_max_sec_class.is_some() {
-                        fit_data.sec_zone_online_class.remove(item_key);
+                        fit_data.sec_zone_online_class.remove(item_uid);
                     }
                 }
                 _ => (),
             },
-            ad::AState::Active => match item {
+            RState::Active => match item {
                 UItem::Charge(charge) => {
                     let fit_data = self.get_fit_data_mut(&charge.get_fit_uid());
-                    fit_data.sec_zone_active.remove(item_key);
+                    fit_data.sec_zone_active.remove(item_uid);
                 }
                 UItem::Module(module) => {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
-                    if let Some(a_item_grp_id) = module.get_val_active_group_id() {
-                        fit_data.mods_max_group_active_all.remove_entry(a_item_grp_id, item_key);
+                    if let Some(item_grp_aid) = module.get_val_active_group_id() {
+                        fit_data.mods_max_group_active_all.remove_entry(item_grp_aid, item_uid);
                         if item_axt.max_group_active_limited {
-                            fit_data.mods_max_group_active_limited.remove(item_key);
+                            fit_data.mods_max_group_active_limited.remove(item_uid);
                         }
                     }
                     match module.get_max_state().unwrap() {
-                        ad::AState::Offline => {
-                            fit_data.mods_state.get_mut(item_key).unwrap().state = ModuleState::Online;
+                        RState::Offline => {
+                            fit_data.mods_state.get_mut(item_uid).unwrap().state = ModuleState::Online;
                         }
-                        ad::AState::Online => {
-                            fit_data.mods_state.remove(item_key);
+                        RState::Online => {
+                            fit_data.mods_state.remove(item_uid);
                         }
                         _ => (),
                     }
                     if item_axt.sec_zone_limitable {
-                        fit_data.sec_zone_active.remove(item_key);
+                        fit_data.sec_zone_active.remove(item_uid);
                     }
-                    fit_data.mods_active.remove(item_key);
+                    fit_data.mods_active.remove(item_uid);
                 }
                 _ => (),
             },
-            ad::AState::Overload => {
+            RState::Overload => {
                 if let UItem::Module(module) = item {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     match module.get_max_state().unwrap() {
-                        ad::AState::Offline | ad::AState::Online => {
-                            fit_data.mods_state.get_mut(item_key).unwrap().state = ModuleState::Active;
+                        RState::Offline | RState::Online => {
+                            fit_data.mods_state.get_mut(item_uid).unwrap().state = ModuleState::Active;
                         }
-                        ad::AState::Active => {
-                            fit_data.mods_state.remove(item_key);
+                        RState::Active => {
+                            fit_data.mods_state.remove(item_uid);
                         }
                         _ => (),
                     }
                     if item_axt.overload_td_lvl.is_some() {
-                        fit_data.overload_td_lvl.remove(item_key);
+                        fit_data.overload_td_lvl.remove(item_uid);
                     }
                 }
             }

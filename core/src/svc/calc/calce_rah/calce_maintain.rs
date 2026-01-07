@@ -1,7 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    misc::{AAttrId, AttrSpec, DmgKinds},
+    ad::AAttrId,
+    misc::{AttrSpec, DmgKinds},
     rd::RcEffect,
     svc::{
         SvcCtx,

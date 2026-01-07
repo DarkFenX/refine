@@ -7,12 +7,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_rig(&self, item_id: &ItemId) -> Result<Rig<'_>, GetRigError> {
-        let rig_key = self.u_data.items.iid_by_eid_err(item_id)?;
+        let rig_key = self.u_data.items.iid_by_xid_err(item_id)?;
         self.u_data.items.get(rig_key).dc_rig()?;
         Ok(Rig::new(self, rig_key))
     }
     pub fn get_rig_mut(&mut self, item_id: &ItemId) -> Result<RigMut<'_>, GetRigError> {
-        let rig_key = self.u_data.items.iid_by_eid_err(item_id)?;
+        let rig_key = self.u_data.items.iid_by_xid_err(item_id)?;
         self.u_data.items.get(rig_key).dc_rig()?;
         Ok(RigMut::new(self, rig_key))
     }

@@ -1,7 +1,6 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    def::AttrVal,
     svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
     ud::{UData, UFighter, UItemId, USkill},
     util::RMap,
@@ -10,8 +9,8 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn skill_level_changed(&mut self, u_data: &UData, skill: &USkill) {
         let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
-        for &other_item_key in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
-            match fit_data.srqs_missing.entry(other_item_key) {
+        for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
+            match fit_data.srqs_missing.entry(other_item_uid) {
                 Entry::Occupied(mut missing_skills_entry) => {
                     match missing_skills_entry.get_mut().entry(skill.get_type_id()) {
                         // Entry for the item and entry for the skill - update / remove data as
@@ -30,7 +29,7 @@ impl Vast {
                         // Entry for the item and no entry for the skill - create skill entry if new
                         // level fails requirement
                         Entry::Vacant(missing_skill_entry) => {
-                            let other_item = u_data.items.get(other_item_key);
+                            let other_item = u_data.items.get(other_item_uid);
                             let required_a_lvl = *other_item
                                 .get_effective_skill_reqs()
                                 .unwrap()
@@ -47,7 +46,7 @@ impl Vast {
                 }
                 // No entry for item - create one if skill level change fails requirement
                 Entry::Vacant(missing_skills_entry) => {
-                    let other_item = u_data.items.get(other_item_key);
+                    let other_item = u_data.items.get(other_item_uid);
                     let required_a_lvl = *other_item
                         .get_effective_skill_reqs()
                         .unwrap()
@@ -68,22 +67,22 @@ impl Vast {
             }
         }
     }
-    pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_key: UItemId, fighter: &UFighter) {
+    pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_uid: UItemId, fighter: &UFighter) {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
         let fighter_axt = fighter.get_axt().unwrap();
         let count = fighter.get_count().unwrap();
         fit_data
             .fighters_volume
-            .insert(fighter_key, fighter_axt.volume * AttrVal::from(count.current));
+            .insert(fighter_uid, fighter_axt.volume * AttrVal::from(count.current));
         match count.current > count.max {
             true => fit_data.fighter_squad_size.insert(
-                fighter_key,
+                fighter_uid,
                 ValFighterSquadSizeFighterInfo {
                     size: count.current,
                     max_size: count.max,
                 },
             ),
-            false => fit_data.fighter_squad_size.remove(&fighter_key),
+            false => fit_data.fighter_squad_size.remove(&fighter_uid),
         };
     }
 }

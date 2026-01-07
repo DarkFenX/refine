@@ -26,20 +26,20 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_buff_item_lists(a_data:
         }
     }
     // Put data about buff-involved item lists onto items which belong to those lists
-    for a_item_list_id in proj_item_list_aids {
-        if let Some(a_item_list) = a_data.item_lists.get(&a_item_list_id) {
-            for a_item_id in a_item_list.item_ids.iter() {
-                if let Some(a_item) = a_data.items.get_mut(a_item_id) {
-                    a_item.proj_buff_item_list_ids.push(a_item_list_id);
+    for item_list_aid in proj_item_list_aids {
+        if let Some(a_item_list) = a_data.item_lists.get(&item_list_aid) {
+            for item_aid in a_item_list.item_ids.iter() {
+                if let Some(a_item) = a_data.items.get_mut(item_aid) {
+                    a_item.proj_buff_item_list_ids.push(item_list_aid);
                 }
             }
         }
     }
-    for a_item_list_id in fleet_item_list_aids {
-        if let Some(a_item_list) = a_data.item_lists.get(&a_item_list_id) {
-            for a_item_id in a_item_list.item_ids.iter() {
-                if let Some(a_item) = a_data.items.get_mut(a_item_id) {
-                    a_item.fleet_buff_item_list_ids.push(a_item_list_id);
+    for item_list_aid in fleet_item_list_aids {
+        if let Some(a_item_list) = a_data.item_lists.get(&item_list_aid) {
+            for item_aid in a_item_list.item_ids.iter() {
+                if let Some(a_item) = a_data.items.get_mut(item_aid) {
+                    a_item.fleet_buff_item_list_ids.push(item_list_aid);
                 }
             }
         }

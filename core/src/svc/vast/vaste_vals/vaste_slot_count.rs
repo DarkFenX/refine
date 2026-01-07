@@ -483,7 +483,7 @@ fn validate_verbose_unordered_set(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
+        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,
@@ -505,7 +505,7 @@ fn validate_verbose_unordered_map<T>(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|(item_key, _)| ctx.u_data.items.eid_by_iid(*item_key))
+        .map(|(item_key, _)| ctx.u_data.items.xid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,
@@ -529,7 +529,7 @@ fn validate_verbose_ordered(
     let users: Vec<_> = users
         .iter_uids_from(effective_max as Idx)
         .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
+        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
         .collect();
     match users.is_empty() {
         true => None,

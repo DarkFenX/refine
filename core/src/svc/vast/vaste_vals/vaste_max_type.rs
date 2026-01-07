@@ -38,18 +38,18 @@ impl VastFitData {
         ctx: SvcCtx,
     ) -> Option<ValMaxTypeFail> {
         let mut item_types = HashMap::new();
-        for (a_item_id, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
+        for (item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = item_type_data.len() as DefCount;
             for (item_key, &allowed) in item_type_data.iter() {
                 if fitted > allowed && !kfs.contains(item_key) {
                     item_types
-                        .entry(*a_item_id)
+                        .entry(*item_aid)
                         .or_insert_with(|| ValMaxTypeTypeInfo {
                             item_type_count: fitted,
                             items: HashMap::new(),
                         })
                         .items
-                        .insert(ctx.u_data.items.eid_by_iid(*item_key), allowed);
+                        .insert(ctx.u_data.items.xid_by_iid(*item_key), allowed);
                 }
             }
         }

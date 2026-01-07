@@ -5,7 +5,7 @@ use crate::{
 
 impl UFleet {
     pub(in crate::ud) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let fleet_uid = match u_data.fleets.iid_by_eid(&self.id) {
+        let fleet_uid = match u_data.fleets.iid_by_xid(&self.id) {
             Some(fleet_uid) => fleet_uid,
             None => return Err(DebugError {}),
         };

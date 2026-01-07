@@ -36,7 +36,7 @@ impl StatCapSimStaggerInt {
             exception_item_keys: pub_opts
                 .exception_item_ids
                 .iter()
-                .filter_map(|fit_id| sol.u_data.items.iid_by_eid(fit_id))
+                .filter_map(|fit_id| sol.u_data.items.iid_by_xid(fit_id))
                 .unique()
                 .collect(),
         }

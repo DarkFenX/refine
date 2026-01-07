@@ -38,7 +38,7 @@ impl<'a> FullMAttrMut<'a> {
                     &self.sol.u_data.src,
                     &base_type_id,
                     &mutator_id,
-                    &[(self.a_attr_id, absolute_value)],
+                    &[(self.attr_aid, absolute_value)],
                 )
             }
             None => Vec::new(),

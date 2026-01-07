@@ -50,7 +50,7 @@ fn validate_verbose(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>, ctx: SvcCtx
     let item_ids: Vec<_> = not_loaded
         .iter()
         .filter(|item_key| !kfs.contains(item_key))
-        .map(|item_key| ctx.u_data.items.eid_by_iid(*item_key))
+        .map(|item_key| ctx.u_data.items.xid_by_iid(*item_key))
         .collect();
     match item_ids.is_empty() {
         true => None,

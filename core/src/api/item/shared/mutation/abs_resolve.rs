@@ -54,8 +54,8 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
     values: &[(AAttrId, AttrVal)],
 ) -> Vec<UAttrMutationRequest> {
     let mut result = Vec::with_capacity(values.len());
-    for (a_attr_id, absolute_value) in values {
-        let attr_key = match src.get_attr_rid_by_aid(a_attr_id) {
+    for (attr_aid, absolute_value) in values {
+        let attr_key = match src.get_attr_rid_by_aid(attr_aid) {
             Some(attr_key) => attr_key,
             None => continue,
         };
@@ -69,7 +69,7 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
         };
         if let Some(roll) = resolve_absolute_into_roll(*absolute_value, *unmutated_a_value, a_mutation_range) {
             result.push(UAttrMutationRequest {
-                attr_id: *a_attr_id,
+                attr_id: *attr_aid,
                 value: Some(roll),
             })
         }

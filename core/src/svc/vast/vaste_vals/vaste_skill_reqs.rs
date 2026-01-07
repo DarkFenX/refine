@@ -41,10 +41,10 @@ impl VastFitData {
             .filter(|(item_key, _)| !kfs.contains(item_key))
             .map(|(item_key, missing_skills)| {
                 (
-                    ctx.u_data.items.eid_by_iid(*item_key),
+                    ctx.u_data.items.xid_by_iid(*item_key),
                     missing_skills
                         .iter()
-                        .map(|(skill_a_item_id, skill_info)| (*skill_a_item_id, *skill_info))
+                        .map(|(skill_item_aid, skill_info)| (*skill_item_aid, *skill_info))
                         .collect(),
                 )
             })

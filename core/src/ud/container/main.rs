@@ -7,7 +7,7 @@ use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, RMap};
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
     pub(super) data: Slab<T>,
-    pub(super) eid_to_slab_key: RMap<ExtId, usize>,
+    pub(super) xid_to_slab_key: RMap<ExtId, usize>,
     phantom_iid: PhantomData<IntId>,
     phantom_error: PhantomData<Err>,
 }
@@ -22,39 +22,39 @@ where
         Self {
             counter: ExtId::lib_default(),
             data: Slab::with_capacity(capacity),
-            eid_to_slab_key: RMap::with_capacity(capacity),
+            xid_to_slab_key: RMap::with_capacity(capacity),
             phantom_iid: PhantomData,
             phantom_error: PhantomData,
         }
     }
     pub(crate) fn alloc_id(&mut self) -> ExtId {
         let start = self.counter;
-        while self.eid_to_slab_key.contains_key(&self.counter) {
+        while self.xid_to_slab_key.contains_key(&self.counter) {
             self.counter.lib_increment();
             if start == self.counter {
                 panic!("ran out of {} ID space", T::lib_get_name());
             }
         }
-        let eid = self.counter;
+        let xid = self.counter;
         self.counter.lib_increment();
-        eid
+        xid
     }
     pub(crate) fn add(&mut self, entity: T) -> IntId {
-        let eid = entity.lib_get_id();
+        let xid = entity.lib_get_id();
         let slab_key = self.data.insert(entity);
-        self.eid_to_slab_key.insert(eid, slab_key);
+        self.xid_to_slab_key.insert(xid, slab_key);
         slab_key.into()
     }
-    pub(crate) fn iid_by_eid(&self, eid: &ExtId) -> Option<IntId> {
-        self.eid_to_slab_key.get(eid).map(|&key| key.into())
+    pub(crate) fn iid_by_xid(&self, xid: &ExtId) -> Option<IntId> {
+        self.xid_to_slab_key.get(xid).map(|&key| key.into())
     }
-    pub(crate) fn iid_by_eid_err(&self, eid: &ExtId) -> Result<IntId, Err> {
-        match self.eid_to_slab_key.get(eid) {
+    pub(crate) fn iid_by_xid_err(&self, xid: &ExtId) -> Result<IntId, Err> {
+        match self.xid_to_slab_key.get(xid) {
             Some(&slab_key) => Ok(slab_key.into()),
-            None => Err(Err::from(*eid)),
+            None => Err(Err::from(*xid)),
         }
     }
-    pub(crate) fn eid_by_iid(&self, iid: IntId) -> ExtId {
+    pub(crate) fn xid_by_iid(&self, iid: IntId) -> ExtId {
         self.get(iid).lib_get_id()
     }
     pub(crate) fn try_get(&self, iid: IntId) -> Option<&T> {
@@ -71,11 +71,11 @@ where
     pub(crate) fn remove(&mut self, iid: IntId) -> T {
         // Keys are supposed to be valid throughout whole lib, so use non-try removal
         let entity = self.data.remove(iid.into());
-        self.eid_to_slab_key.remove(&entity.lib_get_id());
+        self.xid_to_slab_key.remove(&entity.lib_get_id());
         entity
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (IntId, &T)> {
-        self.eid_to_slab_key
+        self.xid_to_slab_key
             .values()
             .map(|&slab_key| (slab_key.into(), self.data.get(slab_key).unwrap()))
     }
@@ -83,10 +83,10 @@ where
         self.data.iter_mut().map(|(slab_key, entity)| (slab_key.into(), entity))
     }
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
-        self.eid_to_slab_key.values().map(|&key| key.into())
+        self.xid_to_slab_key.values().map(|&key| key.into())
     }
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
-        self.eid_to_slab_key.values().map(|&key| self.data.get(key).unwrap())
+        self.xid_to_slab_key.values().map(|&key| self.data.get(key).unwrap())
     }
     pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
@@ -104,7 +104,7 @@ where
         Self {
             counter: self.counter,
             data: self.data.clone(),
-            eid_to_slab_key: self.eid_to_slab_key.clone(),
+            xid_to_slab_key: self.xid_to_slab_key.clone(),
             phantom_iid: PhantomData,
             phantom_error: PhantomData,
         }
