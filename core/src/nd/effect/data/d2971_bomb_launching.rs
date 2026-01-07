@@ -83,25 +83,25 @@ fn internal_get_ecm_base_opc(
     projector_uid: UItemId,
     _projector_effect: &REffect,
 ) -> Option<Output<Ecm>> {
-    let str_radar = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+    let str_radar = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,
         ctx.ac().scan_radar_strength_bonus,
         Value::ZERO,
     )?);
-    let str_magnet = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+    let str_magnet = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,
         ctx.ac().scan_magnetometric_strength_bonus,
         Value::ZERO,
     )?);
-    let str_grav = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+    let str_grav = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,
         ctx.ac().scan_gravimetric_strength_bonus,
         Value::ZERO,
     )?);
-    let str_ladar = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+    let str_ladar = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,
         ctx.ac().scan_ladar_strength_bonus,

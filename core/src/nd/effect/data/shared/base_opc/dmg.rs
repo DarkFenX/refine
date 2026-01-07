@@ -73,7 +73,7 @@ fn get_direct_dd_dmg_base_opc(
             kinetic: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?,
             explosive: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?,
         },
-        delay: PValue::from_val_clamped(
+        delay: PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_delay_duration, Value::ZERO)? / Value::THOUSAND,
         ),
     }))
@@ -97,7 +97,7 @@ fn get_aoe_dd_dmg_base_opc(
     let dmg_therm = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().therm_dmg, Value::ZERO)?;
     let dmg_kin = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?;
     let dmg_expl = calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?;
-    let delay_s = PValue::from_val_clamped(
+    let delay_s = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
             / Value::THOUSAND,
     );
@@ -116,7 +116,7 @@ fn get_aoe_dd_dmg_base_opc(
                 },
                 delay: delay_s,
                 repeats,
-                interval: PValue::from_val_clamped(interval_ms / Value::THOUSAND),
+                interval: PValue::from_value_clamped(interval_ms / Value::THOUSAND),
             }));
         }
     }

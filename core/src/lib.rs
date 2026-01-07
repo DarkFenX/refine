@@ -1,6 +1,8 @@
 #![feature(default_field_values)]
 #![feature(if_let_guard)]
 #![feature(structural_match)]
+#![feature(const_trait_impl)]
+#![feature(const_cmp)]
 
 //! # refine
 //! Refine is a library built to simulate EVE Online ship and citadel fits.

@@ -42,7 +42,7 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
 ) -> Option<Output<Value>> {
     let attr_consts = ctx.ac();
     let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_consts.energy_neut_amount, Value::ZERO)?;
-    let delay = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+    let delay = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         item_uid,
         attr_consts.doomsday_warning_duration,

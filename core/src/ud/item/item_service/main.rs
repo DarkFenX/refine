@@ -24,7 +24,7 @@ impl UService {
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBase::new(item_id, type_id, service_state.into(), src),
+            base: UItemBase::new(item_id, type_id, service_state.into_r_state(), src),
             fit_uid,
         }
     }
@@ -101,10 +101,10 @@ impl UService {
     }
     // Item-specific methods
     pub(crate) fn get_service_state(&self) -> ServiceState {
-        self.base.get_state().into()
+        ServiceState::from_r_state(self.base.get_state())
     }
     pub(crate) fn set_service_state(&mut self, state: ServiceState) {
-        self.base.set_state(state.into())
+        self.base.set_state(state.into_r_state())
     }
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid

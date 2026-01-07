@@ -1,9 +1,12 @@
-use crate::svc::cycle::{CycleOptionsSim, CyclingOptions};
+use crate::{
+    misc::{RearmMinions, StOption},
+    svc::cycle::{CycleOptionsSim, CyclingOptions},
+};
 
 pub(super) fn get_dps_cycling_options(reload: bool) -> CyclingOptions {
     match reload {
         true => CyclingOptions::Sim(CycleOptionsSim {
-            rearm_minions: Some(true),
+            rearm_minions: StOption::Set(RearmMinions::Enabled),
             ..
         }),
         false => CyclingOptions::Burst,

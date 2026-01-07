@@ -1,13 +1,13 @@
-use crate::def::AttrVal;
+use crate::misc::Value;
 
 #[derive(thiserror::Error, Debug)]
 pub enum DmgError {
     #[error("EM damage {0} is negative")]
-    Em(AttrVal),
+    Em(Value),
     #[error("thermal damage {0} is negative")]
-    Thermal(AttrVal),
+    Thermal(Value),
     #[error("kinetic damage {0} is negative")]
-    Kinetic(AttrVal),
+    Kinetic(Value),
     #[error("explosive damage {0} is negative")]
-    Explosive(AttrVal),
+    Explosive(Value),
 }

@@ -46,7 +46,7 @@ fn internal_get_fof_missile_range_mult(
 ) -> PValue {
     // FoF missiles are limited by c2s range
     if let Some(range_limit) = calc.get_item_oattr_oextra(ctx, projector_uid, ctx.ac().max_fof_tgt_range)
-        && proj_data.get_range_c2s() > PValue::from_val_clamped(range_limit)
+        && proj_data.get_range_c2s() > PValue::from_value_clamped(range_limit)
     {
         return PValue::ZERO;
     }

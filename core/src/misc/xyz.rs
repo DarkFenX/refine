@@ -1,6 +1,6 @@
 use crate::misc::{PValue, Value};
 
-#[derive(Copy, Clone, Eq, PartialEq, Default)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default)]
 pub(crate) struct Xyz {
     pub(crate) x: Value,
     pub(crate) y: Value,

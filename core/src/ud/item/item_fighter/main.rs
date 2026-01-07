@@ -31,7 +31,7 @@ impl UFighter {
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBase::new(item_id, type_id, fighter_state.into(), src),
+            base: UItemBase::new(item_id, type_id, fighter_state.into_r_state(), src),
             fit_uid,
             count_override: None,
             autocharges: UAutocharges::new(),
@@ -114,10 +114,10 @@ impl UFighter {
     }
     // Item-specific methods
     pub(crate) fn get_fighter_state(&self) -> MinionState {
-        self.base.get_state().into()
+        MinionState::from_r_state(self.base.get_state())
     }
     pub(crate) fn set_fighter_state(&mut self, state: MinionState) {
-        self.base.set_state(state.into())
+        self.base.set_state(state.into_r_state())
     }
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid

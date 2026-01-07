@@ -16,15 +16,19 @@ pub(in crate::nd::effect::data) fn get_missile_application_mult(
     projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
-    let src_er = PValue::from_val_clamped(calc.get_item_oattr_ffb_extra(
+    let src_er = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().aoe_cloud_size,
         Value::ZERO,
     ));
-    let src_ev =
-        PValue::from_val_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().aoe_velocity, Value::ZERO));
-    let src_drf = PValue::from_val_clamped(calc.get_item_oattr_ffb_extra(
+    let src_ev = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        ctx.ac().aoe_velocity,
+        Value::ZERO,
+    ));
+    let src_drf = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().aoe_dmg_reduction_factor,
@@ -68,14 +72,18 @@ pub(super) fn get_turret_application_mult(
     proj_data: UProjData,
 ) -> PValue {
     let angular_speed = calc_angular(ctx, calc, projector_uid, projectee_uid, proj_data);
-    let turret_sig_radius = PValue::from_val_clamped(calc.get_item_oattr_ffb_extra(
+    let turret_sig_radius = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().optimal_sig_radius,
         Value::ZERO,
     ));
-    let turret_tracking_speed =
-        PValue::from_val_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, effect.track_attr_rid, Value::ZERO));
+    let turret_tracking_speed = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        effect.track_attr_rid,
+        Value::ZERO,
+    ));
     let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let result = PValue::from_f64_unchecked(0.5)
         .pow_pvalue((angular_speed * turret_sig_radius / turret_tracking_speed / tgt_sig_radius).powi(2));
@@ -93,7 +101,7 @@ pub(super) fn get_radius_ratio_mult(
     effect_radius_rid: Option<RAttrId>,
 ) -> PValue {
     let src_effect_radius =
-        PValue::from_val_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, effect_radius_rid, Value::ZERO));
+        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, effect_radius_rid, Value::ZERO));
     let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let radius_ratio = tgt_sig_radius / src_effect_radius;
     if radius_ratio.is_nan() {

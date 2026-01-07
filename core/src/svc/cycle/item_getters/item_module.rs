@@ -129,7 +129,7 @@ fn fill_module_effect_info(
         );
         return;
     }
-    let cooldown = PValue::from_val_clamped(
+    let cooldown = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
             .unwrap()
             / Value::THOUSAND,

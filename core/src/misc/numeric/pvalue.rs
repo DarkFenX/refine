@@ -37,7 +37,7 @@ impl PValue {
     pub(crate) fn from_a_val_clamped(value: AValue) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
-    pub(crate) fn from_val_clamped(value: Value) -> Self {
+    pub(crate) fn from_value_clamped(value: Value) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
     pub(crate) fn from_val_unchecked(value: Value) -> Self {

@@ -58,7 +58,7 @@ fn internal_get_dmg_base_opc(
             kinetic: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().kin_dmg, Value::ZERO)?,
             explosive: calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().expl_dmg, Value::ZERO)?,
         },
-        delay: PValue::from_val_clamped(
+        delay: PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
                 / Value::THOUSAND,
         ),

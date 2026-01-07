@@ -156,20 +156,20 @@ impl Calc {
         let therm = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_therm_dmg_resonance)?;
         let kin = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_kin_dmg_resonance)?;
         let expl = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_expl_dmg_resonance)?;
-        let shield_hp = PValue::from_val_clamped(self.get_item_oattr_afb_odogma(
+        let shield_hp = PValue::from_value_clamped(self.get_item_oattr_afb_odogma(
             ctx,
             ship_uid,
             attr_consts.shield_capacity,
             Value::ZERO,
         )?);
-        let armor_hp = PValue::from_val_clamped(self.get_item_oattr_afb_odogma(
+        let armor_hp = PValue::from_value_clamped(self.get_item_oattr_afb_odogma(
             ctx,
             ship_uid,
             attr_consts.armor_hp,
             Value::ZERO,
         )?);
         let hull_hp =
-            PValue::from_val_clamped(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
+            PValue::from_value_clamped(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
         Some(RahShipStats {
             resos: DmgKinds {
                 em,
@@ -226,7 +226,7 @@ impl Calc {
             res_kin,
             res_expl,
             cycle_s,
-            PValue::from_val_clamped(shift_amount),
+            PValue::from_value_clamped(shift_amount),
         );
         Some(RahDataSim::new(rah_info))
     }

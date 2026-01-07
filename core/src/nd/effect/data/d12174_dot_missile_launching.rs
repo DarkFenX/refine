@@ -33,17 +33,17 @@ fn get_dmg_opc(
     projector_effect: &REffect,
     projectee_uid: Option<UItemId>,
 ) -> Option<OutputDmgBreacher> {
-    let mut abs_max = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+    let mut abs_max = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,
         ctx.ac().dot_max_dmg_per_tick,
         Value::ZERO,
     )?);
-    let mut rel_max = PValue::from_val_clamped(
+    let mut rel_max = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_max_hp_perc_per_tick, Value::ZERO)?
             / Value::HUNDRED,
     );
-    let duration_s = PValue::from_val_clamped(
+    let duration_s = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, projector_uid, ctx.ac().dot_duration, Value::ZERO)? / Value::THOUSAND,
     );
     if let Some(projectee_key) = projectee_uid {

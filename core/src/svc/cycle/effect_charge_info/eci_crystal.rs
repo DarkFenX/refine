@@ -61,7 +61,7 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
         None => return InfCount::Infinite,
     };
     let hp = match charge_attrs.get_opt(attr_consts.hp) {
-        Some(&hp) => PValue::from_val_clamped(hp),
+        Some(&hp) => PValue::from_value_clamped(hp),
         None => PValue::ZERO,
     };
     let procs_until_killed = (hp / dmg).ceil_unerr();

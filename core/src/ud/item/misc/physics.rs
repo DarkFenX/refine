@@ -1,6 +1,6 @@
 use crate::misc::{PValue, Xyz};
 
-#[derive(Copy, Clone, PartialEq, Eq, Default)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default)]
 pub(crate) struct UPhysics {
     pub(crate) coordinates: Xyz,
     // Direction as a unit vector relatively object coordinates

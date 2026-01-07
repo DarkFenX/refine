@@ -1,4 +1,4 @@
-#[derive(PartialEq, PartialOrd)]
+#[derive(Copy, Clone, PartialEq, PartialOrd)]
 pub enum AState {
     Disabled,
     Offline,

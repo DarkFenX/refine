@@ -1,5 +1,3 @@
-use ordered_float::Float;
-
 use super::shared::OutputIterItem;
 use crate::misc::{PValue, Value};
 

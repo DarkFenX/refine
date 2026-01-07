@@ -31,7 +31,7 @@ impl UDrone {
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBaseMutable::new(item_id, type_id, drone_state.into(), mutation, src),
+            base: UItemBaseMutable::new(item_id, type_id, drone_state.into_r_state(), mutation, src),
             fit_uid,
             physics,
             npc_prop: StOption::Inherit,
@@ -128,10 +128,10 @@ impl UDrone {
     }
     // Item-specific methods
     pub(crate) fn get_drone_state(&self) -> MinionState {
-        self.base.get_state().into()
+        MinionState::from_r_state(self.base.get_state())
     }
     pub(crate) fn set_drone_state(&mut self, state: MinionState) {
-        self.base.set_state(state.into())
+        self.base.set_state(state.into_r_state())
     }
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid

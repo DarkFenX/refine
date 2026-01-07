@@ -37,7 +37,7 @@ pub(in crate::nd::effect::data) fn get_crit_mining_base_opc(
             let crit_bonus =
                 calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.mining_crit_bonus_yield, Value::ZERO)?;
             let crit_chance = UnitInterval::from_value_clamped(crit_chance);
-            PValue::from_val_clamped(yield_ * (Value::ONE + crit_bonus * crit_chance))
+            PValue::from_value_clamped(yield_ * (Value::ONE + crit_bonus * crit_chance))
         }
         false => yield_,
     };
@@ -54,13 +54,17 @@ fn get_mining_values(
     effect: &REffect,
 ) -> Option<(PValue, PValue, PValue)> {
     let delay = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
-    let yield_ =
-        PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mining_amount, Value::ZERO)?);
+    let yield_ = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        item_uid,
+        ctx.ac().mining_amount,
+        Value::ZERO,
+    )?);
     let waste_chance_perc =
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mining_waste_probability, Value::ZERO)?;
     let waste = match waste_chance_perc > Value::FLOAT_TOLERANCE {
         true => {
-            let waste_mult = PValue::from_val_clamped(calc.get_item_oattr_afb_oextra(
+            let waste_mult = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
                 ctx,
                 item_uid,
                 ctx.ac().mining_wasted_volume_mult,

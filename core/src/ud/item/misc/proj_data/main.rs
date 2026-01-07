@@ -2,10 +2,9 @@ use crate::{
     misc::{PValue, Xyz},
     rd::RItemAXt,
     ud::UPhysics,
-    util::LibDefault,
 };
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub(crate) struct UProjData {
     pub(super) src_physics: UPhysics,
     pub(super) tgt_physics: UPhysics,

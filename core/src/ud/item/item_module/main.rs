@@ -37,7 +37,7 @@ impl UModule {
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBaseMutable::new(item_id, type_id, module_state.into(), mutation, src),
+            base: UItemBaseMutable::new(item_id, type_id, module_state.into_r_state(), mutation, src),
             fit_uid,
             rack,
             pos,
@@ -155,10 +155,10 @@ impl UModule {
     }
     // Item-specific methods
     pub(crate) fn get_module_state(&self) -> ModuleState {
-        self.base.get_state().into()
+        ModuleState::from_r_state(self.base.get_state())
     }
     pub(crate) fn set_module_state(&mut self, state: ModuleState) {
-        self.base.set_state(state.into())
+        self.base.set_state(state.into_r_state())
     }
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
