@@ -1,19 +1,19 @@
 use super::limit_amount::LimitAmount;
-use crate::{def::AttrVal, misc::Ecm};
+use crate::misc::{Ecm, PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl LimitAmount for Ecm {
     // No-op, since there is no logic to limit ECM depending on target attrs
-    fn limit_amount(&mut self, _limit: AttrVal) {}
+    fn limit_amount(&mut self, _limit: PValue) {}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Arithmetic operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl std::ops::MulAssign<AttrVal> for Ecm {
-    fn mul_assign(&mut self, rhs: AttrVal) {
+impl std::ops::MulAssign<PValue> for Ecm {
+    fn mul_assign(&mut self, rhs: PValue) {
         self.radar *= rhs;
         self.magnetometric *= rhs;
         self.gravimetric *= rhs;

@@ -81,6 +81,17 @@ impl std::ops::Sub<u32> for Count {
         Count::from_u32(self.0 - rhs)
     }
 }
+impl std::ops::Sub<Count> for Count {
+    type Output = Count;
+    fn sub(self, rhs: Count) -> Self::Output {
+        Count::from_u32(self.0 - rhs.0)
+    }
+}
+impl std::ops::SubAssign<Count> for Count {
+    fn sub_assign(&mut self, rhs: Count) {
+        self.0 -= rhs.0;
+    }
+}
 // Multiplication
 impl std::ops::Mul<Count> for Count {
     type Output = Count;

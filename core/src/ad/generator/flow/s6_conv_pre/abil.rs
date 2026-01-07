@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAbil, AAbilId, ADogmaEffectId, AEffectId, generator::get_abil_effect},
+    ad::{AAbil, AAbilId, AEffectId, generator::get_abil_effect},
     ed::EData,
     util::RMap,
 };

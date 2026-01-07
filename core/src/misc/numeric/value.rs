@@ -85,9 +85,6 @@ impl Value {
     pub(crate) fn abs(self) -> PValue {
         PValue::from_f64_unchecked(self.0.abs())
     }
-    pub(crate) fn min(self, rhs: Self) -> Self {
-        Self(self.0.min(rhs.0))
-    }
     pub(crate) fn ceil(self) -> Self {
         Self(self.0.ceil())
     }
@@ -152,6 +149,11 @@ impl std::ops::Sub<PValue> for Value {
 impl std::ops::SubAssign<Value> for Value {
     fn sub_assign(&mut self, rhs: Value) {
         self.0 -= rhs.0;
+    }
+}
+impl std::ops::SubAssign<PValue> for Value {
+    fn sub_assign(&mut self, rhs: PValue) {
+        self.0 -= rhs.into_f64();
     }
 }
 // Multiplication

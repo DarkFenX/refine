@@ -4,12 +4,10 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    AttrVal,
-    def::OF,
+    misc::{InfCount, PValue, Value},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::UItemId,
-    util::InfCount,
 };
 
 // Local effects, considers only part of sequence until charges are out
@@ -25,13 +23,13 @@ where
     T: Default
         + Copy
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<Value>
         + LimitAmount,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut total_amount = T::default();
-    let mut total_time = OF(0.0);
+    let mut total_time = PValue::ZERO;
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
@@ -46,7 +44,7 @@ where
             }
             _ => {
                 let part_cycle_count = match cycle_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => AttrVal::from(part_cycle_count),
+                    InfCount::Count(part_cycle_count) => part_cycle_count.into_pvalue(),
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
                     InfCount::Infinite => return None,

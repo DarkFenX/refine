@@ -1,18 +1,21 @@
-use super::{limit_amount::LimitAmount, maximum::Maximum};
-use crate::{def::AttrVal, misc::DmgKinds};
+use super::limit_amount::LimitAmount;
+use crate::{
+    misc::{DmgKinds, PValue},
+    util::LibMax,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl LimitAmount for DmgKinds<AttrVal> {
+impl LimitAmount for DmgKinds<PValue> {
     // No-op, since there is no logic to limit damage depending on target attrs
-    fn limit_amount(&mut self, _limit: AttrVal) {}
+    fn limit_amount(&mut self, _limit: PValue) {}
 }
-impl Maximum for DmgKinds<AttrVal> {
-    fn maximum(self, other: Self) -> Self {
-        match self.get_total() >= other.get_total() {
+impl LibMax for DmgKinds<PValue> {
+    fn lib_max(self, rhs: Self) -> Self {
+        match self.get_total() >= rhs.get_total() {
             true => self,
-            false => other,
+            false => rhs,
         }
     }
 }
@@ -31,12 +34,12 @@ where
         self.explosive += rhs.explosive;
     }
 }
-impl<T> std::ops::Mul<AttrVal> for DmgKinds<T>
+impl<T> std::ops::Mul<PValue> for DmgKinds<T>
 where
-    T: std::ops::Mul<AttrVal, Output = T>,
+    T: std::ops::Mul<PValue, Output = T>,
 {
     type Output = DmgKinds<T>;
-    fn mul(self, rhs: AttrVal) -> Self::Output {
+    fn mul(self, rhs: PValue) -> Self::Output {
         Self {
             em: self.em * rhs,
             thermal: self.thermal * rhs,
@@ -45,23 +48,23 @@ where
         }
     }
 }
-impl<T> std::ops::MulAssign<AttrVal> for DmgKinds<T>
+impl<T> std::ops::MulAssign<PValue> for DmgKinds<T>
 where
-    T: std::ops::MulAssign<AttrVal>,
+    T: std::ops::MulAssign<PValue>,
 {
-    fn mul_assign(&mut self, rhs: AttrVal) {
+    fn mul_assign(&mut self, rhs: PValue) {
         self.em *= rhs;
         self.thermal *= rhs;
         self.kinetic *= rhs;
         self.explosive *= rhs;
     }
 }
-impl<T> std::ops::Div<AttrVal> for DmgKinds<T>
+impl<T> std::ops::Div<PValue> for DmgKinds<T>
 where
-    T: std::ops::Div<AttrVal, Output = T>,
+    T: std::ops::Div<PValue, Output = T>,
 {
     type Output = DmgKinds<T>;
-    fn div(self, rhs: AttrVal) -> Self::Output {
+    fn div(self, rhs: PValue) -> Self::Output {
         Self {
             em: self.em / rhs,
             thermal: self.thermal / rhs,

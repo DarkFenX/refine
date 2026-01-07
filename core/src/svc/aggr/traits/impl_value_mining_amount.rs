@@ -1,12 +1,12 @@
 use super::limit_amount::LimitAmount;
-use crate::{def::AttrVal, misc::MiningAmount};
+use crate::misc::{MiningAmount, PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl LimitAmount for MiningAmount {
     // No-op, since there is no logic to limit mining amount depending on target attrs
-    fn limit_amount(&mut self, _limit: AttrVal) {}
+    fn limit_amount(&mut self, _limit: PValue) {}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,24 +37,24 @@ impl std::ops::AddAssign<MiningAmount> for MiningAmount {
         self.drain += rhs.drain;
     }
 }
-impl std::ops::Mul<AttrVal> for MiningAmount {
+impl std::ops::Mul<PValue> for MiningAmount {
     type Output = MiningAmount;
-    fn mul(self, rhs: AttrVal) -> Self::Output {
+    fn mul(self, rhs: PValue) -> Self::Output {
         Self {
             yield_: self.yield_ * rhs,
             drain: self.drain * rhs,
         }
     }
 }
-impl std::ops::MulAssign<AttrVal> for MiningAmount {
-    fn mul_assign(&mut self, rhs: AttrVal) {
+impl std::ops::MulAssign<PValue> for MiningAmount {
+    fn mul_assign(&mut self, rhs: PValue) {
         self.yield_ *= rhs;
         self.drain *= rhs;
     }
 }
-impl std::ops::Div<AttrVal> for MiningAmount {
+impl std::ops::Div<PValue> for MiningAmount {
     type Output = MiningAmount;
-    fn div(self, rhs: AttrVal) -> Self::Output {
+    fn div(self, rhs: PValue) -> Self::Output {
         Self {
             yield_: self.yield_ / rhs,
             drain: self.drain / rhs,

@@ -1,10 +1,10 @@
 use crate::{
-    def::{AttrVal, DefCount, OF},
+    misc::{Count, PValue, Value},
     svc::{
         cycle::{CycleDataFull, CycleSeq},
         output::Output,
     },
-    util::{LibConvertExtend, trunc_unerr},
+    util::LibConvertExtend,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -13,9 +13,9 @@ where
     T: Copy,
 {
     // Time it takes per cycle in this part
-    pub(super) time: AttrVal,
+    pub(super) time: PValue,
     // After "time" part is complete, it takes this time to finish with output
-    pub(super) tail_time: AttrVal,
+    pub(super) tail_time: PValue,
     pub(super) output: Output<T>,
 }
 
@@ -26,7 +26,7 @@ where
     fn lib_convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
         AggrPartData {
             time: self.time,
-            tail_time: (xt.get_completion_time() - self.time).max(OF(0.0)),
+            tail_time: PValue::from_value_clamped(xt.get_completion_time() - self.time),
             output: xt,
         }
     }
@@ -35,10 +35,12 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn aggr_precalc_by_time<T>(precalc: CycleSeq<AggrPartData<T>>, mut time: AttrVal) -> T
+pub(super) fn aggr_precalc_by_time<T>(precalc: CycleSeq<AggrPartData<T>>, time: PValue) -> T
 where
-    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T>,
 {
+    // Locally time can go negative
+    let mut time = Value::from_pvalue(time);
     let mut total_amount = T::default();
     match precalc {
         CycleSeq::Lim(inner) => {
@@ -57,22 +59,22 @@ where
             process_infinite_regular(&mut total_amount, &mut time, &inner.p3_data);
         }
         CycleSeq::LoopLimSin(inner) => {
-            if time >= OF(0.0) {
+            if time >= Value::ZERO {
                 // Calculate total "tail time" for whole looped sequence. Data format implies that
                 // output can be different, so theoretically tail from first part can be longer than
                 // second part with its tail
                 let full_tail_time = inner
                     .p2_data
                     .tail_time
-                    .max(inner.p1_data.tail_time - inner.p2_data.time);
-                let full_time = inner.p1_data.time * inner.p1_repeat_count as f64 + inner.p2_data.time;
+                    .max_value(inner.p1_data.tail_time - inner.p2_data.time);
+                let full_time = inner.p1_data.time * inner.p1_repeat_count.into_pvalue() + inner.p2_data.time;
                 // Process full loop repeats
-                let full_repeats = AttrVal::from(get_full_repeats_count(time, full_time, full_tail_time));
+                let full_repeats = get_full_repeats_count(time, full_time, full_tail_time).into_pvalue();
                 total_amount +=
-                    inner.p1_data.output.get_amount_sum() * AttrVal::from(inner.p1_repeat_count) * full_repeats;
+                    inner.p1_data.output.get_amount_sum() * inner.p1_repeat_count.into_pvalue() * full_repeats;
                 total_amount += inner.p2_data.output.get_amount_sum() * full_repeats;
                 time -= full_time * full_repeats;
-                while time >= OF(0.0) {
+                while time >= Value::ZERO {
                     let mut p1_remaining_repeats = inner.p1_repeat_count;
                     // Process as many full part 1 repeats as time can fit
                     let p1_repeats = inner.p1_repeat_count.min(get_full_repeats_count(
@@ -80,17 +82,23 @@ where
                         inner.p1_data.time,
                         inner.p1_data.tail_time,
                     ));
-                    total_amount += inner.p1_data.output.get_amount_sum() * AttrVal::from(p1_repeats);
-                    time -= inner.p1_data.time * AttrVal::from(p1_repeats);
+                    total_amount += inner.p1_data.output.get_amount_sum() * p1_repeats.into_pvalue();
+                    time -= inner.p1_data.time * p1_repeats.into_pvalue();
                     p1_remaining_repeats -= p1_repeats;
                     // Process partial part 1 repeats
-                    while time >= OF(0.0) && p1_remaining_repeats > 0 {
-                        total_amount += inner.p1_data.output.get_amount_sum_by_time(time);
+                    while time >= Value::ZERO && p1_remaining_repeats > Count::ZERO {
+                        total_amount += inner
+                            .p1_data
+                            .output
+                            .get_amount_sum_by_time(PValue::from_val_unchecked(time));
                         time -= inner.p1_data.time;
                     }
                     // Process partial part 2
-                    if time >= OF(0.0) {
-                        total_amount += inner.p2_data.output.get_amount_sum_by_time(time);
+                    if time >= Value::ZERO {
+                        total_amount += inner
+                            .p2_data
+                            .output
+                            .get_amount_sum_by_time(PValue::from_val_unchecked(time));
                         time -= inner.p2_data.time;
                     }
                     // Outer while loop is for cases of really long tails, which never happen in EVE
@@ -102,57 +110,60 @@ where
     total_amount
 }
 
-fn process_single_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+fn process_single_regular<T>(total_amount: &mut T, time: &mut Value, data: &AggrPartData<T>)
 where
-    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T>,
 {
-    if *time < OF(0.0) {
-        return;
-    }
-    match *time >= data.time + data.tail_time {
+    let ptime = match *time {
+        ..Value::ZERO => return,
+        v => PValue::from_val_unchecked(v),
+    };
+    match ptime >= data.time + data.tail_time {
         true => *total_amount += data.output.get_amount_sum(),
-        false => *total_amount += data.output.get_amount_sum_by_time(*time),
+        false => *total_amount += data.output.get_amount_sum_by_time(ptime),
     }
     *time -= data.time;
 }
 
-fn process_limited_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>, repeat_limit: DefCount)
+fn process_limited_regular<T>(total_amount: &mut T, time: &mut Value, data: &AggrPartData<T>, repeat_limit: Count)
 where
-    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T>,
 {
-    if *time < OF(0.0) {
+    if *time < Value::ZERO {
         return;
     }
     let full_repeats = repeat_limit.min(get_full_repeats_count(*time, data.time, data.tail_time));
-    *total_amount += data.output.get_amount_sum() * AttrVal::from(full_repeats);
+    *total_amount += data.output.get_amount_sum() * full_repeats.into_pvalue();
     let mut remaining_repeats = repeat_limit - full_repeats;
-    while *time >= OF(0.0) && remaining_repeats > 0 {
-        *total_amount += data.output.get_amount_sum_by_time(*time);
+    while *time >= Value::ZERO && remaining_repeats > Count::ZERO {
+        let ptime = PValue::from_val_unchecked(*time);
+        *total_amount += data.output.get_amount_sum_by_time(ptime);
         *time -= data.time;
-        remaining_repeats -= 1;
+        remaining_repeats -= Count::ONE;
     }
 }
 
-fn process_infinite_regular<T>(total_amount: &mut T, time: &mut AttrVal, data: &AggrPartData<T>)
+fn process_infinite_regular<T>(total_amount: &mut T, time: &mut Value, data: &AggrPartData<T>)
 where
-    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<AttrVal, Output = T>,
+    T: Default + Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T>,
 {
-    if *time < OF(0.0) {
+    if *time < Value::ZERO {
         return;
     }
-    let full_repeats = AttrVal::from(get_full_repeats_count(*time, data.time, data.tail_time));
+    let full_repeats = get_full_repeats_count(*time, data.time, data.tail_time).into_pvalue();
     *total_amount += data.output.get_amount_sum() * full_repeats;
     *time -= data.time * full_repeats;
-    while *time >= OF(0.0) {
-        *total_amount += data.output.get_amount_sum_by_time(*time);
+    while *time >= Value::ZERO {
+        let ptime = PValue::from_val_unchecked(*time);
+        *total_amount += data.output.get_amount_sum_by_time(ptime);
         *time -= data.time;
     }
 }
 
-pub(super) fn get_full_repeats_count(time: AttrVal, cycle_time: AttrVal, cycle_tail_time: AttrVal) -> DefCount {
-    let time_no_tail = time - cycle_tail_time;
-    if time_no_tail < cycle_time {
-        return 0;
-    }
-    trunc_unerr(time_no_tail / cycle_time).into_inner() as DefCount
+pub(super) fn get_full_repeats_count(time: Value, cycle_time: PValue, cycle_tail_time: PValue) -> Count {
+    let time_no_tail = match time - cycle_tail_time {
+        ..Value::ZERO => return Count::ZERO,
+        v => PValue::from_val_unchecked(v),
+    };
+    Count::from_pvalue_trunced(time_no_tail / cycle_time)
 }

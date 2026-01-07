@@ -1,11 +1,11 @@
 use super::limit_amount::LimitAmount;
-use crate::AttrVal;
+use crate::misc::PValue;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl LimitAmount for AttrVal {
-    fn limit_amount(&mut self, limit: AttrVal) {
-        *self = AttrVal::min(*self, limit);
+impl LimitAmount for PValue {
+    fn limit_amount(&mut self, limit: PValue) {
+        *self = PValue::min(*self, limit);
     }
 }

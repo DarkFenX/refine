@@ -1,5 +1,5 @@
-use crate::def::AttrVal;
+use crate::misc::PValue;
 
 pub(crate) trait LimitAmount {
-    fn limit_amount(&mut self, limit: AttrVal);
+    fn limit_amount(&mut self, limit: PValue);
 }

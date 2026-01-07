@@ -4,7 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    def::{AttrVal, OF},
+    misc::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::UItemId,
@@ -18,16 +18,16 @@ pub(in crate::svc) fn aggr_local_time_ps<T>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-    time: AttrVal,
+    time: PValue,
 ) -> Option<T>
 where
     T: Default
         + Copy
         + Eq
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
-        + std::ops::Div<AttrVal, Output = T>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + std::ops::Div<PValue, Output = T>
         + LimitAmount,
 {
     aggr_local_time_amount(ctx, calc, item_uid, effect, cseq, ospec, time).map(|v| v / time)
@@ -40,20 +40,17 @@ pub(in crate::svc) fn aggr_local_time_amount<T>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-    time: AttrVal,
+    time: PValue,
 ) -> Option<T>
 where
     T: Default
         + Copy
         + Eq
         + std::ops::AddAssign<T>
-        + std::ops::Mul<AttrVal, Output = T>
-        + std::ops::MulAssign<AttrVal>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
-    if time < OF(0.0) {
-        return None;
-    }
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let precalc = match cseq {
         CycleSeq::Lim(inner) => {
