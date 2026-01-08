@@ -26,10 +26,6 @@ fn float_unerr(val: f64) -> f64 {
     round(val, 10)
 }
 
-pub(crate) fn round_unerr(val: f64) -> f64 {
-    float_unerr(val).round()
-}
-
 pub(crate) fn floor_unerr(val: f64) -> f64 {
     float_unerr(val).floor()
 }

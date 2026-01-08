@@ -11,7 +11,7 @@ use crate::{
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{
-        calc::{CalcAttrVals, Modification},
+        calc::Modification,
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
             StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensors,
@@ -34,6 +34,7 @@ mod private {
     }
 }
 
+#[allow(private_bounds)]
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
         self.get_sol().u_data.items.xid_by_iid(self.get_uid())
@@ -65,6 +66,7 @@ pub trait ItemCommon: ItemSealed {
     }
 }
 
+#[allow(private_bounds)]
 pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_attr(&mut self, attr_id: &AttrId) -> Result<AttrVals, GetItemAttrError> {
         let item_uid = self.get_uid();

@@ -34,7 +34,6 @@ pub struct UnitIntervalError {
 impl UnitInterval {
     pub(crate) const ZERO: Self = Self::from_f64_clamped(0.0);
     pub(crate) const ONE: Self = Self::from_f64_clamped(1.0);
-    pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

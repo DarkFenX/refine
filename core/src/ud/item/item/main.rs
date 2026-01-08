@@ -578,10 +578,10 @@ impl UItem {
             _ => StOption::Inherit,
         }
     }
-    pub(crate) fn get_npc_prop(&self) -> StOption<NpcProp> {
+    pub(crate) fn get_npc_prop(&self) -> Option<StOption<NpcProp>> {
         match self {
-            Self::Drone(drone) => drone.get_npc_prop(),
-            _ => StOption::Inherit,
+            Self::Drone(drone) => Some(drone.get_npc_prop()),
+            _ => None,
         }
     }
     pub(crate) fn get_reload_optionals(&self) -> StOption<ReloadOptionals> {
