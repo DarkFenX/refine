@@ -93,7 +93,7 @@ fn make_td_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AE
     AEffectModifier {
         affector_attr_id: affector_attr_aid,
         op: AOp::PostPerc,
-        affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Target, AModifierSrq::TypeId(AItemId::GUNNERY)),
+        affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Target, AModifierSrq::ItemId(AItemId::GUNNERY)),
         affectee_attr_id: affectee_attr_aid,
     }
 }
@@ -104,7 +104,7 @@ fn make_gd_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AE
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             AEffectLocation::Target,
-            AModifierSrq::TypeId(AItemId::MISSILE_LAUNCHER_OPERATION),
+            AModifierSrq::ItemId(AItemId::MISSILE_LAUNCHER_OPERATION),
         ),
         affectee_attr_id: affectee_attr_aid,
     }

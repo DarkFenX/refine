@@ -12,7 +12,6 @@ pub(in crate::cmd) enum HMutationOnAdd {
     Full(HItemMutationFull),
 }
 
-#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnChange {

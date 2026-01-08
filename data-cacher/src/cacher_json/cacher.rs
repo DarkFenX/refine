@@ -38,7 +38,7 @@ impl JsonZfileAdc {
             }
         }
     }
-    fn write_data(&self, c_data: &CData) {
+    fn write_data(&self, c_data: CData) {
         let cache_path = self.get_cache_path();
         let file = match OpenOptions::new()
             .create(true)
@@ -52,7 +52,7 @@ impl JsonZfileAdc {
                 return;
             }
         };
-        let json = serde_json::json!(&c_data).to_string();
+        let json = serde_json::json!(c_data).to_string();
         match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
             Ok(_) => (),
             Err(e) => {
@@ -103,7 +103,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         let mut raw = Vec::new();
         zstd::stream::copy_decode(file, &mut raw).map_err(|e| Error::RamJsonDecompFailed(e.to_string()))?;
         let c_data = serde_json::from_slice::<CData>(&raw).map_err(|e| Error::RamJsonParseFailed(e.to_string()))?;
-        Ok((&c_data).into())
+        Ok(c_data.into_adapted())
     }
     #[tracing::instrument(name = "adc-json-zfile-update", level = "trace", skip_all)]
     fn write_cache(&mut self, a_data: &rc::ad::AData, fingerprint: &str) {
@@ -111,7 +111,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
             tracing::error!("unable to create cache folder: {err_str}");
             return;
         }
-        self.write_data(&a_data.into());
+        self.write_data(CData::from_adapted(a_data));
         self.write_fingerprint(fingerprint);
     }
     fn get_cacher_version(&self) -> String {

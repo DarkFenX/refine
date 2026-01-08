@@ -1,6 +1,6 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::cacher_json) enum CEffectLocation {
+pub(super) enum CEffectLocation {
     Ship,
     Structure,
     Char,
@@ -8,8 +8,8 @@ pub(in crate::cacher_json) enum CEffectLocation {
     Other,
     Target,
 }
-impl From<&rc::ad::AEffectLocation> for CEffectLocation {
-    fn from(a_effect_location: &rc::ad::AEffectLocation) -> Self {
+impl CEffectLocation {
+    pub(super) fn from_adapted(a_effect_location: &rc::ad::AEffectLocation) -> Self {
         match a_effect_location {
             rc::ad::AEffectLocation::Ship => Self::Ship,
             rc::ad::AEffectLocation::Structure => Self::Structure,
@@ -19,16 +19,14 @@ impl From<&rc::ad::AEffectLocation> for CEffectLocation {
             rc::ad::AEffectLocation::Target => Self::Target,
         }
     }
-}
-impl From<&CEffectLocation> for rc::ad::AEffectLocation {
-    fn from(c_effect_location: &CEffectLocation) -> Self {
-        match c_effect_location {
-            CEffectLocation::Ship => Self::Ship,
-            CEffectLocation::Structure => Self::Structure,
-            CEffectLocation::Char => Self::Char,
-            CEffectLocation::Item => Self::Item,
-            CEffectLocation::Other => Self::Other,
-            CEffectLocation::Target => Self::Target,
+    pub(super) fn into_adapted(self) -> rc::ad::AEffectLocation {
+        match self {
+            Self::Ship => rc::ad::AEffectLocation::Ship,
+            Self::Structure => rc::ad::AEffectLocation::Structure,
+            Self::Char => rc::ad::AEffectLocation::Char,
+            Self::Item => rc::ad::AEffectLocation::Item,
+            Self::Other => rc::ad::AEffectLocation::Other,
+            Self::Target => rc::ad::AEffectLocation::Target,
         }
     }
 }

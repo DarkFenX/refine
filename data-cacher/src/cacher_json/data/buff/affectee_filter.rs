@@ -1,30 +1,28 @@
-use crate::cacher_json::data::{CItemGrpId, CModifierSrq};
+use super::super::shared::CModifierSrq;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::cacher_json) enum CBuffAffecteeFilter {
+pub(super) enum CBuffAffecteeFilter {
     Direct,
     Loc,
-    LocGrp(CItemGrpId),
+    LocGrp(i32),
     LocSrq(CModifierSrq),
 }
-impl From<&rc::ad::ABuffAffecteeFilter> for CBuffAffecteeFilter {
-    fn from(a_buff_affectee_filter: &rc::ad::ABuffAffecteeFilter) -> Self {
+impl CBuffAffecteeFilter {
+    pub(super) fn from_adapted(a_buff_affectee_filter: &rc::ad::ABuffAffecteeFilter) -> Self {
         match a_buff_affectee_filter {
             rc::ad::ABuffAffecteeFilter::Direct => Self::Direct,
             rc::ad::ABuffAffecteeFilter::Loc => Self::Loc,
-            rc::ad::ABuffAffecteeFilter::LocGrp(grp) => Self::LocGrp(*grp),
-            rc::ad::ABuffAffecteeFilter::LocSrq(srq) => Self::LocSrq(srq.into()),
+            rc::ad::ABuffAffecteeFilter::LocGrp(grp) => Self::LocGrp(grp.into_i32()),
+            rc::ad::ABuffAffecteeFilter::LocSrq(srq) => Self::LocSrq(CModifierSrq::from_adapted(srq)),
         }
     }
-}
-impl From<&CBuffAffecteeFilter> for rc::ad::ABuffAffecteeFilter {
-    fn from(c_buff_affectee_filter: &CBuffAffecteeFilter) -> Self {
-        match c_buff_affectee_filter {
-            CBuffAffecteeFilter::Direct => Self::Direct,
-            CBuffAffecteeFilter::Loc => Self::Loc,
-            CBuffAffecteeFilter::LocGrp(grp) => Self::LocGrp(*grp),
-            CBuffAffecteeFilter::LocSrq(srq) => Self::LocSrq(srq.into()),
+    pub(super) fn into_adapted(self) -> rc::ad::ABuffAffecteeFilter {
+        match self {
+            Self::Direct => rc::ad::ABuffAffecteeFilter::Direct,
+            Self::Loc => rc::ad::ABuffAffecteeFilter::Loc,
+            Self::LocGrp(grp) => rc::ad::ABuffAffecteeFilter::LocGrp(rc::ad::AItemGrpId::from_i32(grp)),
+            Self::LocSrq(srq) => rc::ad::ABuffAffecteeFilter::LocSrq(srq.into_adapted()),
         }
     }
 }

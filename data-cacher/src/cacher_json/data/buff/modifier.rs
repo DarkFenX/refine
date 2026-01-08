@@ -1,23 +1,23 @@
-use crate::cacher_json::data::{CAttrId, CBuffAffecteeFilter};
+use super::affectee_filter::CBuffAffecteeFilter;
 
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CBuffModifier {
+pub(super) struct CBuffModifier {
     affectee_filter: CBuffAffecteeFilter,
-    affectee_attr_id: CAttrId,
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    affectee_attr_id: rc::ad::AAttrId,
 }
-impl From<&rc::ad::ABuffModifier> for CBuffModifier {
-    fn from(a_modifier: &rc::ad::ABuffModifier) -> Self {
+impl CBuffModifier {
+    pub(super) fn from_adapted(a_modifier: &rc::ad::ABuffModifier) -> Self {
         Self {
-            affectee_filter: (&a_modifier.affectee_filter).into(),
-            affectee_attr_id: (&a_modifier.affectee_attr_id).into(),
+            affectee_filter: CBuffAffecteeFilter::from_adapted(&a_modifier.affectee_filter),
+            affectee_attr_id: a_modifier.affectee_attr_id,
         }
     }
-}
-impl From<&CBuffModifier> for rc::ad::ABuffModifier {
-    fn from(c_modifier: &CBuffModifier) -> Self {
-        Self {
-            affectee_filter: (&c_modifier.affectee_filter).into(),
-            affectee_attr_id: (&c_modifier.affectee_attr_id).into(),
+    pub(super) fn into_adapted(self) -> rc::ad::ABuffModifier {
+        rc::ad::ABuffModifier {
+            affectee_filter: self.affectee_filter.into_adapted(),
+            affectee_attr_id: self.affectee_attr_id,
         }
     }
 }

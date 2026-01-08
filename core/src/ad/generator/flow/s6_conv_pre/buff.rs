@@ -47,7 +47,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_buffs(e_data: &EData) ->
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
             a_mods.push(ABuffModifier {
-                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::TypeId(AItemId::from_eid(
+                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::ItemId(AItemId::from_eid(
                     e_locsrq_mod.skill_id,
                 ))),
                 affectee_attr_id: AAttrId::from_eid(e_locsrq_mod.attr_id),

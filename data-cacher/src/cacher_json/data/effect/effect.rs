@@ -1,68 +1,76 @@
-use crate::cacher_json::data::{CAttrId, CEffectBuffInfo, CEffectCatId, CEffectId, CEffectModifier, CState};
+use super::{super::shared::CState, buff::CEffectBuffInfo, modifier::CEffectModifier};
 
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CEffect {
-    id: CEffectId,
-    category: CEffectCatId,
+pub(in crate::cacher_json::data) struct CEffect {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    id: rc::ad::AEffectId,
+    category: i32,
     state: CState,
     modifiers: Vec<CEffectModifier>,
-    stopped_effect_ids: Vec<CEffectId>,
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    stopped_effect_ids: Vec<rc::ad::AEffectId>,
     buff: Option<CEffectBuffInfo>,
     is_assist: bool,
     is_offense: bool,
     banned_in_hisec: bool,
     banned_in_lowsec: bool,
-    discharge_attr_id: Option<CAttrId>,
-    duration_attr_id: Option<CAttrId>,
-    range_attr_id: Option<CAttrId>,
-    falloff_attr_id: Option<CAttrId>,
-    track_attr_id: Option<CAttrId>,
-    chance_attr_id: Option<CAttrId>,
-    resist_attr_id: Option<CAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    discharge_attr_id: Option<rc::ad::AAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    duration_attr_id: Option<rc::ad::AAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    range_attr_id: Option<rc::ad::AAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    falloff_attr_id: Option<rc::ad::AAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    track_attr_id: Option<rc::ad::AAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    chance_attr_id: Option<rc::ad::AAttrId>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    resist_attr_id: Option<rc::ad::AAttrId>,
 }
-impl From<&rc::ad::AEffect> for CEffect {
-    fn from(a_effect: &rc::ad::AEffect) -> Self {
+impl CEffect {
+    pub(in crate::cacher_json::data) fn from_adapted(a_effect: &rc::ad::AEffect) -> Self {
         Self {
-            id: (&a_effect.id).into(),
-            category: a_effect.category,
-            state: (&a_effect.state).into(),
-            modifiers: a_effect.modifiers.iter().map(Into::into).collect(),
-            stopped_effect_ids: a_effect.stopped_effect_ids.iter().map(Into::into).collect(),
-            buff: a_effect.buff.as_ref().map(Into::into),
+            id: a_effect.id,
+            category: a_effect.category.into_i32(),
+            state: CState::from_adapted(&a_effect.state),
+            modifiers: a_effect.modifiers.iter().map(CEffectModifier::from_adapted).collect(),
+            stopped_effect_ids: a_effect.stopped_effect_ids.clone(),
+            buff: a_effect.buff.as_ref().map(CEffectBuffInfo::from_adapted),
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
             banned_in_hisec: a_effect.banned_in_hisec,
             banned_in_lowsec: a_effect.banned_in_lowsec,
-            discharge_attr_id: a_effect.discharge_attr_id.as_ref().map(Into::into),
-            duration_attr_id: a_effect.duration_attr_id.as_ref().map(Into::into),
-            range_attr_id: a_effect.range_attr_id.as_ref().map(Into::into),
-            falloff_attr_id: a_effect.falloff_attr_id.as_ref().map(Into::into),
-            track_attr_id: a_effect.track_attr_id.as_ref().map(Into::into),
-            chance_attr_id: a_effect.chance_attr_id.as_ref().map(Into::into),
-            resist_attr_id: a_effect.resist_attr_id.as_ref().map(Into::into),
+            discharge_attr_id: a_effect.discharge_attr_id,
+            duration_attr_id: a_effect.duration_attr_id,
+            range_attr_id: a_effect.range_attr_id,
+            falloff_attr_id: a_effect.falloff_attr_id,
+            track_attr_id: a_effect.track_attr_id,
+            chance_attr_id: a_effect.chance_attr_id,
+            resist_attr_id: a_effect.resist_attr_id,
         }
     }
-}
-impl From<&CEffect> for rc::ad::AEffect {
-    fn from(c_effect: &CEffect) -> Self {
-        Self {
-            id: (&c_effect.id).into(),
-            category: c_effect.category,
-            state: (&c_effect.state).into(),
-            modifiers: c_effect.modifiers.iter().map(Into::into).collect(),
-            stopped_effect_ids: c_effect.stopped_effect_ids.iter().map(Into::into).collect(),
-            buff: c_effect.buff.as_ref().map(Into::into),
-            is_assist: c_effect.is_assist,
-            is_offense: c_effect.is_offense,
-            banned_in_hisec: c_effect.banned_in_hisec,
-            banned_in_lowsec: c_effect.banned_in_lowsec,
-            discharge_attr_id: c_effect.discharge_attr_id.as_ref().map(Into::into),
-            duration_attr_id: c_effect.duration_attr_id.as_ref().map(Into::into),
-            range_attr_id: c_effect.range_attr_id.as_ref().map(Into::into),
-            falloff_attr_id: c_effect.falloff_attr_id.as_ref().map(Into::into),
-            track_attr_id: c_effect.track_attr_id.as_ref().map(Into::into),
-            chance_attr_id: c_effect.chance_attr_id.as_ref().map(Into::into),
-            resist_attr_id: c_effect.resist_attr_id.as_ref().map(Into::into),
+    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AEffect {
+        rc::ad::AEffect {
+            id: self.id,
+            category: rc::ad::AEffectCatId::from_i32(self.category),
+            state: self.state.into_adapted(),
+            modifiers: self.modifiers.into_iter().map(|c_mod| c_mod.into_adapted()).collect(),
+            stopped_effect_ids: self.stopped_effect_ids,
+            buff: self.buff.map(|c_buff| c_buff.into_adapted()),
+            is_assist: self.is_assist,
+            is_offense: self.is_offense,
+            banned_in_hisec: self.banned_in_hisec,
+            banned_in_lowsec: self.banned_in_lowsec,
+            discharge_attr_id: self.discharge_attr_id,
+            duration_attr_id: self.duration_attr_id,
+            range_attr_id: self.range_attr_id,
+            falloff_attr_id: self.falloff_attr_id,
+            track_attr_id: self.track_attr_id,
+            chance_attr_id: self.chance_attr_id,
+            resist_attr_id: self.resist_attr_id,
         }
     }
 }

@@ -1,23 +1,19 @@
-use crate::cacher_json::data::CAttrVal;
-
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CMutaAttrRange {
-    min_mult: CAttrVal,
-    max_mult: CAttrVal,
+pub(super) struct CMutaAttrRange {
+    min_mult: f64,
+    max_mult: f64,
 }
-impl From<&rc::ad::AMutaAttrRange> for CMutaAttrRange {
-    fn from(a_muta_range: &rc::ad::AMutaAttrRange) -> Self {
+impl CMutaAttrRange {
+    pub(super) fn from_adapted(a_muta_range: &rc::ad::AMutaAttrRange) -> Self {
         Self {
-            min_mult: a_muta_range.min_mult,
-            max_mult: a_muta_range.max_mult,
+            min_mult: a_muta_range.min_mult.into_f64(),
+            max_mult: a_muta_range.max_mult.into_f64(),
         }
     }
-}
-impl From<&CMutaAttrRange> for rc::ad::AMutaAttrRange {
-    fn from(c_muta_range: &CMutaAttrRange) -> Self {
-        Self {
-            min_mult: c_muta_range.min_mult,
-            max_mult: c_muta_range.max_mult,
+    pub(super) fn into_adapted(self) -> rc::ad::AMutaAttrRange {
+        rc::ad::AMutaAttrRange {
+            min_mult: rc::ad::AValue::from_f64(self.min_mult),
+            max_mult: rc::ad::AValue::from_f64(self.max_mult),
         }
     }
 }

@@ -17,6 +17,7 @@ serde = { version = ">=1.0.228", features = ["derive"], optional = true }
 serde_repr = { version = ">=0.1.20", optional = true }
 serde_tuple = { version = ">=1.1.3", optional = true }
 serde_json = { version = ">=1.0.148", optional = true }
+serde_with = ">=3.16.1"
 thiserror = ">=2.0.17"
 tracing = { version = ">=0.1.44", optional = true }
 zstd = { version = ">=0.13.3", optional = true }

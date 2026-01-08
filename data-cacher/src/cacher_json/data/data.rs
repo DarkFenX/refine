@@ -1,84 +1,84 @@
-use crate::cacher_json::data::{CAbil, CAttr, CBuff, CEffect, CItem, CItemList, CMuta};
+use crate::cacher_json::data::{
+    abil::CAbil, attr::CAttr, buff::CBuff, effect::CEffect, item::CItem, item_list::CItemList, muta::CMuta,
+};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(in crate::cacher_json) struct CData {
-    pub(in crate::cacher_json) items: Vec<CItem>,
-    pub(in crate::cacher_json) attrs: Vec<CAttr>,
-    pub(in crate::cacher_json) mutas: Vec<CMuta>,
-    pub(in crate::cacher_json) effects: Vec<CEffect>,
-    pub(in crate::cacher_json) buffs: Vec<CBuff>,
-    pub(in crate::cacher_json) abils: Vec<CAbil>,
-    pub(in crate::cacher_json) item_lists: Vec<CItemList>,
+    items: Vec<CItem>,
+    attrs: Vec<CAttr>,
+    mutas: Vec<CMuta>,
+    effects: Vec<CEffect>,
+    buffs: Vec<CBuff>,
+    abils: Vec<CAbil>,
+    item_lists: Vec<CItemList>,
 }
-impl From<&rc::ad::AData> for CData {
-    fn from(a_data: &rc::ad::AData) -> Self {
+impl CData {
+    pub(in crate::cacher_json) fn from_adapted(a_data: &rc::ad::AData) -> Self {
         Self {
-            items: a_data.items.values().map(Into::into).collect(),
-            attrs: a_data.attrs.values().map(Into::into).collect(),
-            mutas: a_data.mutas.values().map(Into::into).collect(),
-            effects: a_data.effects.values().map(Into::into).collect(),
-            buffs: a_data.buffs.values().map(Into::into).collect(),
-            abils: a_data.abils.values().map(Into::into).collect(),
-            item_lists: a_data.item_lists.values().map(Into::into).collect(),
+            items: a_data.items.values().map(CItem::from_adapted).collect(),
+            attrs: a_data.attrs.values().map(CAttr::from_adapted).collect(),
+            mutas: a_data.mutas.values().map(CMuta::from_adapted).collect(),
+            effects: a_data.effects.values().map(CEffect::from_adapted).collect(),
+            buffs: a_data.buffs.values().map(CBuff::from_adapted).collect(),
+            abils: a_data.abils.values().map(CAbil::from_adapted).collect(),
+            item_lists: a_data.item_lists.values().map(CItemList::from_adapted).collect(),
         }
     }
-}
-impl From<&CData> for rc::ad::AData {
-    fn from(c_data: &CData) -> Self {
-        Self {
-            items: c_data
+    pub(in crate::cacher_json) fn into_adapted(self) -> rc::ad::AData {
+        rc::ad::AData {
+            items: self
                 .items
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_item = rc::ad::AItem::from(v);
+                    let a_item = v.into_adapted();
                     (a_item.id, a_item)
                 })
                 .collect(),
-            attrs: c_data
+            attrs: self
                 .attrs
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_attr = rc::ad::AAttr::from(v);
+                    let a_attr = v.into_adapted();
                     (a_attr.id, a_attr)
                 })
                 .collect(),
-            mutas: c_data
+            mutas: self
                 .mutas
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_muta = rc::ad::AMuta::from(v);
+                    let a_muta = v.into_adapted();
                     (a_muta.id, a_muta)
                 })
                 .collect(),
-            effects: c_data
+            effects: self
                 .effects
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_effect = rc::ad::AEffect::from(v);
+                    let a_effect = v.into_adapted();
                     (a_effect.id, a_effect)
                 })
                 .collect(),
-            buffs: c_data
+            buffs: self
                 .buffs
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_buff = rc::ad::ABuff::from(v);
-                    (a_buff.id, a_buff)
+                    let a_buffs = v.into_adapted();
+                    (a_buffs.id, a_buffs)
                 })
                 .collect(),
-            abils: c_data
+            abils: self
                 .abils
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_abil = rc::ad::AAbil::from(v);
+                    let a_abil = v.into_adapted();
                     (a_abil.id, a_abil)
                 })
                 .collect(),
-            item_lists: c_data
+            item_lists: self
                 .item_lists
-                .iter()
+                .into_iter()
                 .map(|v| {
-                    let a_item_list = rc::ad::AItemList::from(v);
+                    let a_item_list = v.into_adapted();
                     (a_item_list.id, a_item_list)
                 })
                 .collect(),

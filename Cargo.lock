@@ -1555,6 +1555,7 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "serde_tuple",
+ "serde_with",
  "thiserror 2.0.17",
  "tracing",
  "zstd",

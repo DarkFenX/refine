@@ -1,6 +1,6 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::cacher_json) enum COp {
+pub(in crate::cacher_json::data) enum COp {
     PreAssign,
     PreMul,
     PreDiv,
@@ -13,8 +13,8 @@ pub(in crate::cacher_json) enum COp {
     PostPercImmune,
     PostAssign,
 }
-impl From<&rc::ad::AOp> for COp {
-    fn from(a_op: &rc::ad::AOp) -> Self {
+impl COp {
+    pub(in crate::cacher_json::data) fn from_adapted(a_op: &rc::ad::AOp) -> Self {
         match a_op {
             rc::ad::AOp::PreAssign => Self::PreAssign,
             rc::ad::AOp::PreMul => Self::PreMul,
@@ -29,21 +29,19 @@ impl From<&rc::ad::AOp> for COp {
             rc::ad::AOp::PostAssign => Self::PostAssign,
         }
     }
-}
-impl From<&COp> for rc::ad::AOp {
-    fn from(c_op: &COp) -> Self {
-        match c_op {
-            COp::PreAssign => Self::PreAssign,
-            COp::PreMul => Self::PreMul,
-            COp::PreDiv => Self::PreDiv,
-            COp::Add => Self::Add,
-            COp::Sub => Self::Sub,
-            COp::PostMul => Self::PostMul,
-            COp::PostMulImmune => Self::PostMulImmune,
-            COp::PostDiv => Self::PostDiv,
-            COp::PostPerc => Self::PostPerc,
-            COp::PostPercImmune => Self::PostPercImmune,
-            COp::PostAssign => Self::PostAssign,
+    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AOp {
+        match self {
+            Self::PreAssign => rc::ad::AOp::PreAssign,
+            Self::PreMul => rc::ad::AOp::PreMul,
+            Self::PreDiv => rc::ad::AOp::PreDiv,
+            Self::Add => rc::ad::AOp::Add,
+            Self::Sub => rc::ad::AOp::Sub,
+            Self::PostMul => rc::ad::AOp::PostMul,
+            Self::PostMulImmune => rc::ad::AOp::PostMulImmune,
+            Self::PostDiv => rc::ad::AOp::PostDiv,
+            Self::PostPerc => rc::ad::AOp::PostPerc,
+            Self::PostPercImmune => rc::ad::AOp::PostPercImmune,
+            Self::PostAssign => rc::ad::AOp::PostAssign,
         }
     }
 }

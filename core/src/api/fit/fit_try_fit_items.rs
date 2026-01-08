@@ -154,7 +154,7 @@ impl SolarSystem {
 
 impl<'a> FitMut<'a> {
     pub fn try_fit_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
-        let item_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
+        let item_aids = type_ids.into_iter().map(|v| v.into_aid()).collect_vec();
         let int_val_options = ValOptionsInt::from_pub(self.sol, val_options);
         let mut reuse_eupdates = UEffectUpdates::new();
         let item_aids = self

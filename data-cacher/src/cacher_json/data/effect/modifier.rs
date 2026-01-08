@@ -1,29 +1,30 @@
-use crate::cacher_json::data::{CAttrId, CEffectAffecteeFilter, COp};
+use super::{super::shared::COp, affectee_filter::CEffectAffecteeFilter};
 
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CEffectModifier {
-    affector_attr_id: CAttrId,
+pub(super) struct CEffectModifier {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    affector_attr_id: rc::ad::AAttrId,
     op: COp,
     affectee_filter: CEffectAffecteeFilter,
-    affectee_attr_id: CAttrId,
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    affectee_attr_id: rc::ad::AAttrId,
 }
-impl From<&rc::ad::AEffectModifier> for CEffectModifier {
-    fn from(a_modifier: &rc::ad::AEffectModifier) -> Self {
+impl CEffectModifier {
+    pub(super) fn from_adapted(a_modifier: &rc::ad::AEffectModifier) -> Self {
         Self {
-            affector_attr_id: (&a_modifier.affector_attr_id).into(),
-            op: (&a_modifier.op).into(),
-            affectee_filter: (&a_modifier.affectee_filter).into(),
-            affectee_attr_id: (&a_modifier.affectee_attr_id).into(),
+            affector_attr_id: a_modifier.affector_attr_id,
+            op: COp::from_adapted(&a_modifier.op),
+            affectee_filter: CEffectAffecteeFilter::from_adapted(&a_modifier.affectee_filter),
+            affectee_attr_id: a_modifier.affectee_attr_id,
         }
     }
-}
-impl From<&CEffectModifier> for rc::ad::AEffectModifier {
-    fn from(c_modifier: &CEffectModifier) -> Self {
-        Self {
-            affector_attr_id: (&c_modifier.affector_attr_id).into(),
-            op: (&c_modifier.op).into(),
-            affectee_filter: (&c_modifier.affectee_filter).into(),
-            affectee_attr_id: (&c_modifier.affectee_attr_id).into(),
+    pub(super) fn into_adapted(self) -> rc::ad::AEffectModifier {
+        rc::ad::AEffectModifier {
+            affector_attr_id: self.affector_attr_id,
+            op: self.op.into_adapted(),
+            affectee_filter: self.affectee_filter.into_adapted(),
+            affectee_attr_id: self.affectee_attr_id,
         }
     }
 }

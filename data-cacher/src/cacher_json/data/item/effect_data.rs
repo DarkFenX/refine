@@ -1,32 +1,30 @@
-use crate::cacher_json::data::{CAttrVal, CCount, CItemId, CItemListId};
-
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CItemEffectData {
-    autocharge: Option<CItemId>,
-    cooldown: Option<CAttrVal>,
-    charge_count: Option<CCount>,
-    charge_reload_time: Option<CAttrVal>,
-    projectee_filter: Option<CItemListId>,
+pub(super) struct CItemEffectData {
+    autocharge: Option<i32>,
+    cooldown: Option<f64>,
+    charge_count: Option<u32>,
+    charge_reload_time: Option<f64>,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
+    projectee_filter: Option<rc::ad::AItemListId>,
 }
-impl From<&rc::ad::AItemEffectData> for CItemEffectData {
-    fn from(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {
+impl CItemEffectData {
+    pub(super) fn from_adapted(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {
         Self {
-            autocharge: a_item_effect_data.autocharge,
-            cooldown: a_item_effect_data.cooldown,
-            charge_count: a_item_effect_data.charge_count,
-            charge_reload_time: a_item_effect_data.charge_reload_time,
-            projectee_filter: a_item_effect_data.projectee_filter.as_ref().map(Into::into),
+            autocharge: a_item_effect_data.autocharge.map(|v| v.into_i32()),
+            cooldown: a_item_effect_data.cooldown.map(|v| v.into_f64()),
+            charge_count: a_item_effect_data.charge_count.map(|v| v.into_u32()),
+            charge_reload_time: a_item_effect_data.charge_reload_time.map(|v| v.into_f64()),
+            projectee_filter: a_item_effect_data.projectee_filter,
         }
     }
-}
-impl From<&CItemEffectData> for rc::ad::AItemEffectData {
-    fn from(c_item_effect_data: &CItemEffectData) -> Self {
-        Self {
-            autocharge: c_item_effect_data.autocharge,
-            cooldown: c_item_effect_data.cooldown,
-            charge_count: c_item_effect_data.charge_count,
-            charge_reload_time: c_item_effect_data.charge_reload_time,
-            projectee_filter: c_item_effect_data.projectee_filter.as_ref().map(Into::into),
+    pub(super) fn into_adapted(self) -> rc::ad::AItemEffectData {
+        rc::ad::AItemEffectData {
+            autocharge: self.autocharge.map(|v| rc::ad::AItemId::from_i32(v)),
+            cooldown: self.cooldown.map(|v| rc::ad::AValue::from_f64(v)),
+            charge_count: self.charge_count.map(|v| rc::ad::ACount::from_u32(v)),
+            charge_reload_time: self.charge_reload_time.map(|v| rc::ad::AValue::from_f64(v)),
+            projectee_filter: self.projectee_filter,
         }
     }
 }

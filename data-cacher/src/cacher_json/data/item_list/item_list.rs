@@ -1,23 +1,25 @@
-use crate::cacher_json::data::{CItemId, CItemListId};
-
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::cacher_json) struct CItemList {
-    id: CItemListId,
-    item_ids: Vec<CItemId>,
+pub(in crate::cacher_json::data) struct CItemList {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    id: rc::ad::AItemListId,
+    item_ids: Vec<i32>,
 }
-impl From<&rc::ad::AItemList> for CItemList {
-    fn from(a_item_list: &rc::ad::AItemList) -> Self {
-        CItemList {
-            id: (&a_item_list.id).into(),
-            item_ids: a_item_list.item_ids.iter().copied().collect(),
+impl CItemList {
+    pub(in crate::cacher_json::data) fn from_adapted(a_item_list: &rc::ad::AItemList) -> Self {
+        Self {
+            id: a_item_list.id,
+            item_ids: a_item_list.item_ids.iter().map(|v| v.into_i32()).collect(),
         }
     }
-}
-impl From<&CItemList> for rc::ad::AItemList {
-    fn from(c_item_list: &CItemList) -> Self {
-        Self {
-            id: (&c_item_list.id).into(),
-            item_ids: c_item_list.item_ids.iter().copied().collect(),
+    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AItemList {
+        rc::ad::AItemList {
+            id: self.id,
+            item_ids: self
+                .item_ids
+                .into_iter()
+                .map(|v| rc::ad::AItemId::from_i32(v))
+                .collect(),
         }
     }
 }
