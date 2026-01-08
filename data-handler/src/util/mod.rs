@@ -1,5 +1,5 @@
 pub use err::Error;
-pub(crate) use func::{into_opt, into_vec};
+pub(crate) use func::into_vec;
 
 mod err;
 mod func;

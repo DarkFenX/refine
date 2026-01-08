@@ -1582,7 +1582,6 @@ dependencies = [
 name = "refine-edh"
 version = "0.1.0"
 dependencies = [
- "itertools",
  "refine-core",
  "reqwest",
  "serde",
