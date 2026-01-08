@@ -1,24 +1,24 @@
-use crate::{ad, api::AttrId, sol::SolarSystem, ud::UItemId};
+use crate::{ad::AAttrId, api::AttrId, sol::SolarSystem, ud::UItemId};
 
 /// Full mutated attribute.
 ///
 /// Attributes represented by this struct have their value impacted by mutation.
 pub struct FullMAttr<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) item_key: UItemId,
-    pub(in crate::api) attr_aid: ad::AAttrId,
+    pub(in crate::api) item_uid: UItemId,
+    pub(in crate::api) attr_aid: AAttrId,
 }
 impl<'a> FullMAttr<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, item_key: UItemId, attr_aid: ad::AAttrId) -> Self {
+    pub(in crate::api) fn new(sol: &'a SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
             sol,
-            item_key,
+            item_uid,
             attr_aid,
         }
     }
     /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
-        self.attr_aid.into()
+        AttrId::from_aid(self.attr_aid)
     }
 }
 
@@ -27,19 +27,19 @@ impl<'a> FullMAttr<'a> {
 /// Attributes represented by this struct have their value impacted by mutation.
 pub struct FullMAttrMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) item_key: UItemId,
-    pub(in crate::api) attr_aid: ad::AAttrId,
+    pub(in crate::api) item_uid: UItemId,
+    pub(in crate::api) attr_aid: AAttrId,
 }
 impl<'a> FullMAttrMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, item_key: UItemId, attr_aid: ad::AAttrId) -> Self {
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
             sol,
-            item_key,
+            item_uid,
             attr_aid,
         }
     }
     /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
-        self.attr_aid.into()
+        AttrId::from_aid(self.attr_aid)
     }
 }

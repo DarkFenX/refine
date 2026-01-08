@@ -1,4 +1,4 @@
-use crate::{api::FullMAttrMut, ud::UAttrMutationRequest, util::UnitInterval};
+use crate::{api::FullMAttrMut, misc::UnitInterval, ud::UAttrMutationRequest};
 
 impl<'a> FullMAttrMut<'a> {
     /// Set roll for the attribute.
@@ -6,11 +6,11 @@ impl<'a> FullMAttrMut<'a> {
     /// None as value removes user-defined mutation.
     pub fn set_roll(&mut self, roll: Option<UnitInterval>) {
         let attr_mutation_request = vec![UAttrMutationRequest {
-            attr_id: self.attr_aid,
-            value: roll,
+            attr_aid: self.attr_aid,
+            roll: roll,
         }];
         self.sol
-            .internal_change_item_mutation_attrs(self.item_key, attr_mutation_request)
+            .internal_change_item_mutation_attrs(self.item_uid, attr_mutation_request)
             .unwrap();
     }
 }

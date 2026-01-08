@@ -45,7 +45,7 @@ impl UItemBaseMutable {
                 };
             }
         };
-        let mutator_id = mutation_request.mutator_id;
+        let mutator_id = mutation_request.mutator_item_aid;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
         let mutator = match src.get_mutator_by_aid(&mutator_id) {
             Some(mutator) => mutator,
@@ -308,7 +308,7 @@ impl UItemBaseMutable {
         };
         // Since item is not mutated, base aitem ID is always on non-mutated item base
         let base_type_id = self.base.get_type_id();
-        let mutator_id = mutation_request.mutator_id;
+        let mutator_id = mutation_request.mutator_item_aid;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
         let mutator = match src.get_mutator_by_aid(&mutator_id) {
             Some(mutator) => mutator,
@@ -360,12 +360,14 @@ impl UItemBaseMutable {
             // and return empty list, since effectively none of item attributes can change
             None => {
                 for attr_mutation_request in attr_mutation_requests {
-                    match attr_mutation_request.value {
+                    match attr_mutation_request.roll {
                         Some(roll_val) => {
-                            item_mutation.attr_rolls.insert(attr_mutation_request.attr_id, roll_val);
+                            item_mutation
+                                .attr_rolls
+                                .insert(attr_mutation_request.attr_aid, roll_val);
                         }
                         None => {
-                            item_mutation.attr_rolls.remove(&attr_mutation_request.attr_id);
+                            item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
                         }
                     }
                 }
@@ -385,20 +387,20 @@ impl UItemBaseMutable {
         let mut base_r_item_cache = None;
         let mut changed_attr_rids = Vec::new();
         for attr_mutation_request in attr_mutation_requests {
-            let new_rid_value = match attr_mutation_request.value {
+            let new_rid_value = match attr_mutation_request.roll {
                 // Mutation change request
                 Some(attr_roll) => {
                     // Update user-defined data
                     item_mutation
                         .attr_rolls
-                        .insert(attr_mutation_request.attr_id, attr_roll);
+                        .insert(attr_mutation_request.attr_aid, attr_roll);
                     // Process source-dependent data and return new value
                     let unmutated_value = match get_combined_attr_value(
                         src,
                         &mutation_cache.base_type_id,
                         &mut base_r_item_cache,
                         mutated_r_item,
-                        &attr_mutation_request.attr_id,
+                        &attr_mutation_request.attr_aid,
                     ) {
                         Some(unmutated_value) => unmutated_value,
                         // No unmutated value now means there couldn't be any mutated value with any
@@ -422,14 +424,14 @@ impl UItemBaseMutable {
                 // Mutation removal request
                 None => {
                     // Update user-defined data
-                    item_mutation.attr_rolls.remove(&attr_mutation_request.attr_id);
+                    item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
                     // Update source-dependent data
                     let unmutated_value = match get_combined_attr_value(
                         src,
                         &mutation_cache.base_type_id,
                         &mut base_r_item_cache,
                         mutated_r_item,
-                        &attr_mutation_request.attr_id,
+                        &attr_mutation_request.attr_aid,
                     ) {
                         Some(unmutated_value) => unmutated_value,
                         // No unmutated value - can't do any comparisons
@@ -547,11 +549,11 @@ impl ItemMutationDataCache {
 
 fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutationData {
     ItemMutationData::new_with_attrs(
-        mutation_request.mutator_id,
+        mutation_request.mutator_item_aid,
         mutation_request
             .attrs
             .into_iter()
-            .filter_map(|attr_mutation| attr_mutation.value.map(|roll| (attr_mutation.attr_id, roll)))
+            .filter_map(|attr_mutation| attr_mutation.roll.map(|roll| (attr_mutation.attr_aid, roll)))
             .collect(),
     )
 }

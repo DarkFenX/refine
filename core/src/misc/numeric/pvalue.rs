@@ -26,9 +26,9 @@ impl PValue {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
-    pub(crate) const ZERO: Self = Self::from_f64_clamped(0.0);
-    pub(crate) const ONE: Self = Self::from_f64_clamped(1.0);
-    pub(crate) const TEN: Self = Self::from_f64_clamped(10.0);
+    pub(crate) const ZERO: Self = Self(0.0);
+    pub(crate) const ONE: Self = Self(1.0);
+    pub(crate) const TEN: Self = Self(10.0);
     pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
     pub(crate) const SERVER_TICK_HZ: Self = Self::from_f64_clamped(SERVER_TICK_HZ as f64);
 }

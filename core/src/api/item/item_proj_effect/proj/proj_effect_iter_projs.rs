@@ -1,7 +1,7 @@
 use lender::{Lender, Lending};
 
 use crate::{
-    api::{Proj, ProjEffect, ProjEffectMut, ProjMut, iter_projectee_keys},
+    api::{Proj, ProjEffect, ProjEffectMut, ProjMut, iter_projectee_uids},
     sol::SolarSystem,
     ud::UItemId,
 };
@@ -9,16 +9,16 @@ use crate::{
 // Lending iterator for non-ranged projections
 pub struct ProjIter<'iter> {
     sol: &'iter mut SolarSystem,
-    key: UItemId,
-    projectee_keys: Vec<UItemId>,
+    item_uid: UItemId,
+    projectee_uids: Vec<UItemId>,
     index: usize,
 }
 impl<'iter> ProjIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, key: UItemId, projectee_keys: Vec<UItemId>) -> Self {
+    fn new(sol: &'iter mut SolarSystem, item_uid: UItemId, projectee_uids: Vec<UItemId>) -> Self {
         Self {
             sol,
-            key,
-            projectee_keys,
+            item_uid,
+            projectee_uids,
             index: 0,
         }
     }
@@ -28,31 +28,31 @@ impl<'iter, 'lend> Lending<'lend> for ProjIter<'iter> {
 }
 impl<'iter> Lender for ProjIter<'iter> {
     fn next(&mut self) -> Option<ProjMut<'_>> {
-        let projectee_key = *self.projectee_keys.get(self.index)?;
+        let projectee_uid = *self.projectee_uids.get(self.index)?;
         self.index += 1;
-        Some(ProjMut::new(self.sol, self.key, projectee_key))
+        Some(ProjMut::new(self.sol, self.item_uid, projectee_uid))
     }
 }
 
 impl<'a> ProjEffect<'a> {
     /// Iterates over projected effect's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj<'_>> {
-        iter_projs(self.sol, self.key)
+        iter_projs(self.sol, self.uid)
     }
 }
 
 impl<'a> ProjEffectMut<'a> {
     /// Iterates over projected effect's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj<'_>> {
-        iter_projs(self.sol, self.key)
+        iter_projs(self.sol, self.uid)
     }
     /// Iterates over projected effect's projections.
     pub fn iter_projs_mut(&mut self) -> ProjIter<'_> {
-        let projectee_keys = iter_projectee_keys(self.sol, self.key).collect();
-        ProjIter::new(self.sol, self.key, projectee_keys)
+        let projectee_uids = iter_projectee_uids(self.sol, self.uid).collect();
+        ProjIter::new(self.sol, self.uid, projectee_uids)
     }
 }
 
-fn iter_projs(sol: &SolarSystem, proj_effect_key: UItemId) -> impl ExactSizeIterator<Item = Proj<'_>> {
-    iter_projectee_keys(sol, proj_effect_key).map(move |projectee_key| Proj::new(sol, projectee_key))
+fn iter_projs(sol: &SolarSystem, proj_effect_uid: UItemId) -> impl ExactSizeIterator<Item = Proj<'_>> {
+    iter_projectee_uids(sol, proj_effect_uid).map(move |projectee_uid| Proj::new(sol, projectee_uid))
 }

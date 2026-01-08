@@ -7,31 +7,31 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_item(
         &mut self,
-        item_key: UItemId,
+        item_uid: UItemId,
         pos_mode: RmMode,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), RemoveItemError> {
-        let u_item = self.u_data.items.get(item_key);
+        let u_item = self.u_data.items.get(item_uid);
         match u_item {
             UItem::Autocharge(_) => {
                 return Err(RemoveItemError::UnremovableAutocharge);
             }
-            UItem::Booster(_) => self.internal_remove_booster(item_key, reuse_eupdates),
-            UItem::Character(_) => self.internal_remove_character(item_key, reuse_eupdates),
-            UItem::Charge(_) => self.internal_remove_charge(item_key, reuse_eupdates),
-            UItem::Drone(_) => self.internal_remove_drone(item_key, reuse_eupdates),
-            UItem::Fighter(_) => self.internal_remove_fighter(item_key, reuse_eupdates),
-            UItem::FwEffect(_) => self.internal_remove_fw_effect(item_key, reuse_eupdates),
-            UItem::Implant(_) => self.internal_remove_implant(item_key, reuse_eupdates),
-            UItem::Module(_) => self.internal_remove_module(item_key, pos_mode, reuse_eupdates),
-            UItem::ProjEffect(_) => self.internal_remove_proj_effect(item_key, reuse_eupdates),
-            UItem::Rig(_) => self.internal_remove_rig(item_key, reuse_eupdates),
-            UItem::Service(_) => self.internal_remove_service(item_key, reuse_eupdates),
-            UItem::Ship(_) => self.internal_remove_ship(item_key, reuse_eupdates),
-            UItem::Skill(_) => self.internal_remove_skill(item_key, reuse_eupdates),
-            UItem::Stance(_) => self.internal_remove_stance(item_key, reuse_eupdates),
-            UItem::Subsystem(_) => self.internal_remove_subsystem(item_key, reuse_eupdates),
-            UItem::SwEffect(_) => self.internal_remove_sw_effect(item_key, reuse_eupdates),
+            UItem::Booster(_) => self.internal_remove_booster(item_uid, reuse_eupdates),
+            UItem::Character(_) => self.internal_remove_character(item_uid, reuse_eupdates),
+            UItem::Charge(_) => self.internal_remove_charge(item_uid, reuse_eupdates),
+            UItem::Drone(_) => self.internal_remove_drone(item_uid, reuse_eupdates),
+            UItem::Fighter(_) => self.internal_remove_fighter(item_uid, reuse_eupdates),
+            UItem::FwEffect(_) => self.internal_remove_fw_effect(item_uid, reuse_eupdates),
+            UItem::Implant(_) => self.internal_remove_implant(item_uid, reuse_eupdates),
+            UItem::Module(_) => self.internal_remove_module(item_uid, pos_mode, reuse_eupdates),
+            UItem::ProjEffect(_) => self.internal_remove_proj_effect(item_uid, reuse_eupdates),
+            UItem::Rig(_) => self.internal_remove_rig(item_uid, reuse_eupdates),
+            UItem::Service(_) => self.internal_remove_service(item_uid, reuse_eupdates),
+            UItem::Ship(_) => self.internal_remove_ship(item_uid, reuse_eupdates),
+            UItem::Skill(_) => self.internal_remove_skill(item_uid, reuse_eupdates),
+            UItem::Stance(_) => self.internal_remove_stance(item_uid, reuse_eupdates),
+            UItem::Subsystem(_) => self.internal_remove_subsystem(item_uid, reuse_eupdates),
+            UItem::SwEffect(_) => self.internal_remove_sw_effect(item_uid, reuse_eupdates),
         }
         Ok(())
     }

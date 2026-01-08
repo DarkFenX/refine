@@ -1,3 +1,5 @@
+use crate::misc::Index;
+
 /// Defines how a module is added.
 pub enum AddMode {
     /// Add to the end of a rack.
@@ -5,9 +7,9 @@ pub enum AddMode {
     /// Add to first free position of a rack.
     Equip,
     /// Add to specific position, shifting modules on this position and after it to the right.
-    Insert(Idx),
+    Insert(Index),
     /// Add to specific position, replacing item if position is taken.
-    Replace(Idx),
+    Replace(Index),
 }
 
 /// Defines how a module is removed from a rack.

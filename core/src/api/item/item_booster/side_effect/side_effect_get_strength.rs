@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad::AEffectId,
     api::{AttrId, FullSideEffect, FullSideEffectMut, Op},
-    def::AttrVal,
+    misc::Value,
     rd::{RAttrId, Src},
 };
 
@@ -11,7 +11,7 @@ pub struct SideEffectPartialStr {
     op: Op,
     attr_id: AttrId,
     // Used only to generate full side effect strength with modification value
-    attr_key: RAttrId,
+    attr_rid: RAttrId,
 }
 impl SideEffectPartialStr {
     pub fn get_op(&self) -> Op {
@@ -25,7 +25,7 @@ impl SideEffectPartialStr {
 pub struct SideEffectStr {
     op: Op,
     attr_id: AttrId,
-    value: AttrVal,
+    value: Value,
 }
 impl SideEffectStr {
     pub fn get_op(&self) -> Op {
@@ -34,7 +34,7 @@ impl SideEffectStr {
     pub fn get_attr_id(&self) -> AttrId {
         self.attr_id
     }
-    pub fn get_value(&self) -> AttrVal {
+    pub fn get_value(&self) -> Value {
         self.value
     }
 }
@@ -45,7 +45,7 @@ impl<'a> FullSideEffect<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.u_data.src, &self.effect_id)
+        get_strength_partial(&self.sol.u_data.src, &self.effect_aid)
     }
 }
 
@@ -55,7 +55,7 @@ impl<'a> FullSideEffectMut<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.u_data.src, &self.effect_id)
+        get_strength_partial(&self.sol.u_data.src, &self.effect_aid)
     }
     /// Get side effect strength as an operator and modification value.
     ///
@@ -63,7 +63,7 @@ impl<'a> FullSideEffectMut<'a> {
     /// ID to apply modification.
     pub fn get_strength(&mut self) -> Option<SideEffectStr> {
         match self.get_strength_partial() {
-            Some(partial) => match self.sol.internal_get_item_attr(self.key, partial.attr_key) {
+            Some(partial) => match self.sol.internal_get_item_attr(self.item_uid, partial.attr_rid) {
                 Ok(calc_val) => Some(SideEffectStr {
                     op: partial.op,
                     attr_id: partial.attr_id,
@@ -77,9 +77,9 @@ impl<'a> FullSideEffectMut<'a> {
 }
 
 fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPartialStr> {
-    let effect_key = src.get_effect_rid_by_aid(effect_id).unwrap();
+    let effect_rid = src.get_effect_rid_by_aid(effect_id).unwrap();
     let mut se_strs = src
-        .get_effect_by_rid(effect_key)
+        .get_effect_by_rid(effect_rid)
         .modifiers
         .iter()
         .map(|modifier| (modifier.op, modifier.affector_attr_rid))
@@ -88,22 +88,22 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
         0 => None,
         1 => se_strs
             .into_iter()
-            .map(|(a_op, attr_key)| SideEffectPartialStr {
-                op: a_op.into(),
-                attr_id: src.get_attr_by_rid(attr_key).aid.into(),
-                attr_key,
+            .map(|(a_op, attr_rid)| SideEffectPartialStr {
+                op: Op::from_a_op(a_op),
+                attr_id: AttrId::from_aid(src.get_attr_by_rid(attr_rid).aid),
+                attr_rid,
             })
             .next(),
         _ => {
-            let (base_op, base_attr_key) = se_strs.pop().unwrap();
+            let (base_op, base_attr_rid) = se_strs.pop().unwrap();
             match se_strs
                 .into_iter()
-                .all(|(op, attr_key)| op == base_op && attr_key == base_attr_key)
+                .all(|(op, attr_rid)| op == base_op && attr_rid == base_attr_rid)
             {
                 true => Some(SideEffectPartialStr {
-                    op: base_op.into(),
-                    attr_id: src.get_attr_by_rid(base_attr_key).aid.into(),
-                    attr_key: base_attr_key,
+                    op: Op::from_a_op(base_op),
+                    attr_id: AttrId::from_aid(src.get_attr_by_rid(base_attr_rid).aid),
+                    attr_rid: base_attr_rid,
                 }),
                 false => None,
             }

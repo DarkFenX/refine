@@ -8,9 +8,9 @@ impl SolarSystem {
         // Update user data
         self.u_data.default_incoming_dps = dps_profile;
         // Update services
-        for (fit_key, fit) in self.u_data.fits.iter() {
+        for (fit_uid, fit) in self.u_data.fits.iter() {
             if fit.rah_incoming_dps.is_none() {
-                self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, fit_key);
+                self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, fit_uid);
             }
         }
     }

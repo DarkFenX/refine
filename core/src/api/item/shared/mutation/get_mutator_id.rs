@@ -1,18 +1,22 @@
 use crate::{
-    api::{EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut},
-    def::ItemTypeId,
+    api::{
+        EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, ItemTypeId, Mutation,
+        MutationMut,
+    },
     sol::SolarSystem,
     ud::UItemId,
 };
 
 impl SolarSystem {
-    fn api_get_mutator_id(&self, item_key: UItemId) -> ItemTypeId {
-        self.u_data
-            .items
-            .get(item_key)
-            .get_mutation_data()
-            .unwrap()
-            .get_mutator_id()
+    fn api_get_mutator_id(&self, item_uid: UItemId) -> ItemTypeId {
+        ItemTypeId::from_aid(
+            self.u_data
+                .items
+                .get(item_uid)
+                .get_mutation_data()
+                .unwrap()
+                .get_mutator_id(),
+        )
     }
 }
 
@@ -36,22 +40,22 @@ impl<'a> MutationMut<'a> {
 
 impl<'a> EffectiveMutation<'a> {
     pub fn get_mutator_id(&self) -> ItemTypeId {
-        self.sol.api_get_mutator_id(self.item_key)
+        self.sol.api_get_mutator_id(self.item_uid)
     }
 }
 impl<'a> EffectiveMutationMut<'a> {
     pub fn get_mutator_id(&self) -> ItemTypeId {
-        self.sol.api_get_mutator_id(self.item_key)
+        self.sol.api_get_mutator_id(self.item_uid)
     }
 }
 
 impl<'a> IncompleteMutation<'a> {
     pub fn get_mutator_id(&self) -> ItemTypeId {
-        self.sol.api_get_mutator_id(self.item_key)
+        self.sol.api_get_mutator_id(self.item_uid)
     }
 }
 impl<'a> IncompleteMutationMut<'a> {
     pub fn get_mutator_id(&self) -> ItemTypeId {
-        self.sol.api_get_mutator_id(self.item_key)
+        self.sol.api_get_mutator_id(self.item_uid)
     }
 }

@@ -8,21 +8,21 @@ impl SolarSystem {
     pub(in crate::api) fn util_add_booster(
         u_data: &mut UData,
         svc: &mut Svc,
-        booster_key: UItemId,
+        booster_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = u_data.items.get_mut(booster_key);
+        let u_item = u_data.items.get_mut(booster_uid);
         u_item.update_reffs(reuse_eupdates, &u_data.src);
-        SolarSystem::util_add_item(u_data, svc, booster_key, reuse_eupdates);
+        SolarSystem::util_add_item(u_data, svc, booster_uid, reuse_eupdates);
     }
     pub(in crate::api) fn util_remove_booster(
         u_data: &mut UData,
         svc: &mut Svc,
-        booster_key: UItemId,
+        booster_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = u_data.items.get_mut(booster_key);
+        let u_item = u_data.items.get_mut(booster_uid);
         u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
-        SolarSystem::util_remove_item(u_data, svc, booster_key, reuse_eupdates);
+        SolarSystem::util_remove_item(u_data, svc, booster_uid, reuse_eupdates);
     }
 }

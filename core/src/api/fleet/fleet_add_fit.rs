@@ -1,21 +1,21 @@
 use crate::{
     api::FleetMut,
-    def::FitId,
     err::basic::{FitFoundError, FitNotInThisFleetError},
+    ud::FitId,
 };
 
 impl<'a> FleetMut<'a> {
     pub fn add_fit(&mut self, fit_id: &FitId) -> Result<(), FleetAddFitError> {
-        let fit_key = self.sol.u_data.fits.iid_by_xid_err(fit_id)?;
-        let u_fit = self.sol.u_data.fits.get(fit_key);
-        if u_fit.fleet == Some(self.key) {
+        let fit_uid = self.sol.u_data.fits.iid_by_xid_err(fit_id)?;
+        let u_fit = self.sol.u_data.fits.get(fit_uid);
+        if u_fit.fleet == Some(self.uid) {
             return Err(FitNotInThisFleetError {
                 fit_id: *fit_id,
-                fleet_id: self.sol.u_data.fleets.xid_by_iid(self.key),
+                fleet_id: self.sol.u_data.fleets.xid_by_iid(self.uid),
             }
             .into());
         }
-        self.sol.internal_set_fit_fleet(fit_key, self.key);
+        self.sol.internal_set_fit_fleet(fit_uid, self.uid);
         Ok(())
     }
 }

@@ -6,54 +6,54 @@ use crate::{
 
 pub struct FwEffect<'a> {
     pub(in crate::api) sol: &'a SolarSystem,
-    pub(in crate::api) key: UItemId,
+    pub(in crate::api) uid: UItemId,
 }
 impl<'a> FwEffect<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, key: UItemId) -> Self {
-        Self { sol, key }
+    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.key)
+        get_fit(self.sol, self.uid)
     }
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key)
+        get_state(self.sol, self.uid)
     }
 }
 impl<'a> ItemSealed for FwEffect<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemId {
-        self.key
+    fn get_uid(&self) -> UItemId {
+        self.uid
     }
 }
 impl<'a> ItemCommon for FwEffect<'a> {}
 
 pub struct FwEffectMut<'a> {
     pub(in crate::api) sol: &'a mut SolarSystem,
-    pub(in crate::api) key: UItemId,
+    pub(in crate::api) uid: UItemId,
 }
 impl<'a> FwEffectMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, key: UItemId) -> Self {
-        Self { sol, key }
+    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.key)
+        get_fit(self.sol, self.uid)
     }
     pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_key = get_u_fw_effect(self.sol, self.key).get_fit_uid();
-        FitMut::new(self.sol, fit_key)
+        let fit_uid = get_u_fw_effect(self.sol, self.uid).get_fit_uid();
+        FitMut::new(self.sol, fit_uid)
     }
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key)
+        get_state(self.sol, self.uid)
     }
 }
 impl<'a> ItemSealed for FwEffectMut<'a> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
-    fn get_key(&self) -> UItemId {
-        self.key
+    fn get_uid(&self) -> UItemId {
+        self.uid
     }
 }
 impl<'a> ItemMutSealed for FwEffectMut<'a> {
@@ -64,13 +64,13 @@ impl<'a> ItemMutSealed for FwEffectMut<'a> {
 impl<'a> ItemCommon for FwEffectMut<'a> {}
 impl<'a> ItemMutCommon for FwEffectMut<'a> {}
 
-fn get_fit(sol: &SolarSystem, fw_effect_key: UItemId) -> Fit<'_> {
-    let fit_key = get_u_fw_effect(sol, fw_effect_key).get_fit_uid();
-    Fit::new(sol, fit_key)
+fn get_fit(sol: &SolarSystem, fw_effect_uid: UItemId) -> Fit<'_> {
+    let fit_uid = get_u_fw_effect(sol, fw_effect_uid).get_fit_uid();
+    Fit::new(sol, fit_uid)
 }
-fn get_state(sol: &SolarSystem, fw_effect_key: UItemId) -> bool {
-    get_u_fw_effect(sol, fw_effect_key).get_fw_effect_state()
+fn get_state(sol: &SolarSystem, fw_effect_uid: UItemId) -> bool {
+    get_u_fw_effect(sol, fw_effect_uid).get_fw_effect_state()
 }
-fn get_u_fw_effect(sol: &SolarSystem, fw_effect_key: UItemId) -> &UFwEffect {
-    sol.u_data.items.get(fw_effect_key).dc_fw_effect().unwrap()
+fn get_u_fw_effect(sol: &SolarSystem, fw_effect_uid: UItemId) -> &UFwEffect {
+    sol.u_data.items.get(fw_effect_uid).dc_fw_effect().unwrap()
 }

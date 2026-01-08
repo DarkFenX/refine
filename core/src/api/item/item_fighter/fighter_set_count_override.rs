@@ -3,25 +3,25 @@ use crate::{api::FighterMut, misc::FighterCount, sol::SolarSystem, ud::UItemId};
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_count_override(
         &mut self,
-        fighter_key: UItemId,
+        fighter_uid: UItemId,
         count_override: Option<FighterCount>,
     ) {
         // Update user data
-        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         let old_count = u_fighter.get_count().map(|v| v.current);
         u_fighter.set_count_override(count_override);
         let new_count = u_fighter.get_count().map(|v| v.current);
         // Update services
         if old_count != new_count {
-            let u_fighter = self.u_data.items.get(fighter_key).dc_fighter().unwrap();
+            let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
             self.svc
-                .notify_fighter_count_changed(&self.u_data, fighter_key, u_fighter);
+                .notify_fighter_count_changed(&self.u_data, fighter_uid, u_fighter);
         }
     }
 }
 
 impl<'a> FighterMut<'a> {
     pub fn set_count_override(&mut self, count_override: Option<FighterCount>) {
-        self.sol.internal_set_fighter_count_override(self.key, count_override);
+        self.sol.internal_set_fighter_count_override(self.uid, count_override);
     }
 }

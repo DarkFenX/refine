@@ -1,7 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::ChargeMut,
-    def::ItemTypeId,
+    api::{ChargeMut, ItemTypeId},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
 };
@@ -9,18 +8,18 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_charge_type_id(
         &mut self,
-        charge_key: UItemId,
-        type_id: AItemId,
+        charge_uid: UItemId,
+        item_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(charge_key);
-        if u_item.get_type_id() == type_id {
+        let u_item = self.u_data.items.get(charge_uid);
+        if u_item.get_type_id() == item_aid {
             return;
         }
-        SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_key, reuse_eupdates);
-        let u_charge = self.u_data.items.get_mut(charge_key).dc_charge_mut().unwrap();
-        u_charge.set_type_id(type_id, &self.u_data.src);
-        SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_key, reuse_eupdates);
+        SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, reuse_eupdates);
+        let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
+        u_charge.set_type_id(item_aid, &self.u_data.src);
+        SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, reuse_eupdates);
     }
 }
 
@@ -29,6 +28,6 @@ impl<'a> ChargeMut<'a> {
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_charge_type_id(self.key, type_id, &mut reuse_eupdates)
+            .internal_set_charge_type_id(self.uid, type_id.into_aid(), &mut reuse_eupdates)
     }
 }

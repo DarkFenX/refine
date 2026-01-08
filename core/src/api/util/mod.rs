@@ -1,4 +1,4 @@
-use misc::is_a_effect_projectable;
+use misc::is_effect_projectable;
 pub use mut_iter::MutIter;
 
 mod misc;

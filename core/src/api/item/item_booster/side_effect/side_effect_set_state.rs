@@ -23,7 +23,7 @@ impl<'a> FullSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn set_state(&mut self, state: bool) {
-        set_state(self.sol, self.key, self.effect_id, state)
+        set_state(self.sol, self.item_uid, self.effect_aid, state)
     }
 }
 
@@ -32,12 +32,12 @@ impl<'a> StubSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn set_state(&mut self, state: bool) {
-        set_state(self.sol, self.key, self.effect_id, state)
+        set_state(self.sol, self.item_uid, self.effect_aid, state)
     }
 }
 
-fn set_state(sol: &mut SolarSystem, booster_key: UItemId, effect_aid: AEffectId, state: bool) {
-    let u_booster = sol.u_data.items.get_mut(booster_key).dc_booster_mut().unwrap();
+fn set_state(sol: &mut SolarSystem, booster_uid: UItemId, effect_aid: AEffectId, state: bool) {
+    let u_booster = sol.u_data.items.get_mut(booster_uid).dc_booster_mut().unwrap();
     let effect_mode = match state {
         true => EffectMode::StateCompliance,
         false => EffectMode::FullCompliance,
@@ -45,5 +45,5 @@ fn set_state(sol: &mut SolarSystem, booster_key: UItemId, effect_aid: AEffectId,
     let mut reuse_eupdates = UEffectUpdates::new();
     u_booster.set_effect_mode(effect_aid, effect_mode, &sol.u_data.src);
     u_booster.update_reffs(&mut reuse_eupdates, &sol.u_data.src);
-    SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, booster_key, &reuse_eupdates);
+    SolarSystem::util_process_effect_updates(&sol.u_data, &mut sol.svc, booster_uid, &reuse_eupdates);
 }

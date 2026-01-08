@@ -9,12 +9,12 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_state(
         &mut self,
-        fighter_key: UItemId,
+        fighter_uid: UItemId,
         state: MinionState,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Update user data for fighter
-        let u_fighter = self.u_data.items.get_mut(fighter_key).dc_fighter_mut().unwrap();
+        let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
@@ -27,14 +27,14 @@ impl SolarSystem {
                 u_fighter
                     .get_autocharges()
                     .get_ac_uid(&ac_act.effect_rid)
-                    .map(|ac_key| (ac_key, ac_act.active))
+                    .map(|ac_uid| (ac_uid, ac_act.active))
             })
             .collect_vec();
         // Update services for fighter
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            fighter_key,
+            fighter_uid,
             old_state,
             new_state,
             reuse_eupdates,
@@ -52,6 +52,6 @@ impl<'a> FighterMut<'a> {
     pub fn set_state(&mut self, state: MinionState) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_fighter_state(self.key, state, &mut reuse_eupdates)
+            .internal_set_fighter_state(self.uid, state, &mut reuse_eupdates)
     }
 }

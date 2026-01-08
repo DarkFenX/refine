@@ -7,13 +7,13 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_state(
         &mut self,
-        module_key: UItemId,
+        module_uid: UItemId,
         state: ModuleState,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // Update user data for module
-        let u_module = self.u_data.items.get_mut(module_key).dc_module_mut().unwrap();
-        let charge_key = u_module.get_charge_uid();
+        let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        let charge_uid = u_module.get_charge_uid();
         let old_a_state = u_module.get_state();
         u_module.set_module_state(state);
         let new_a_state = u_module.get_state();
@@ -22,18 +22,18 @@ impl SolarSystem {
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            module_key,
+            module_uid,
             old_a_state,
             new_a_state,
             reuse_eupdates,
         );
         if let Some(charge_activated) = reuse_eupdates.charge
-            && let Some(charge_key) = charge_key
+            && let Some(charge_uid) = charge_uid
         {
             SolarSystem::util_process_charge_activation(
                 &mut self.u_data,
                 &mut self.svc,
-                charge_key,
+                charge_uid,
                 charge_activated,
                 reuse_eupdates,
             );
@@ -44,6 +44,6 @@ impl SolarSystem {
 impl<'a> ModuleMut<'a> {
     pub fn set_state(&mut self, state: ModuleState) {
         let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol.internal_set_module_state(self.key, state, &mut reuse_eupdates)
+        self.sol.internal_set_module_state(self.uid, state, &mut reuse_eupdates)
     }
 }

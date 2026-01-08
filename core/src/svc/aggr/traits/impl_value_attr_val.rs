@@ -1,11 +1,11 @@
 use super::limit_amount::LimitAmount;
-use crate::misc::PValue;
+use crate::misc::{PValue, Value};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl LimitAmount for PValue {
-    fn limit_amount(&mut self, limit: PValue) {
-        *self = PValue::min(*self, limit);
+    fn limit_amount(&mut self, limit: Value) {
+        *self = PValue::min(*self, PValue::from_value_clamped(limit));
     }
 }

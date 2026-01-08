@@ -8,21 +8,21 @@ impl SolarSystem {
     pub(in crate::api) fn util_add_fw_effect(
         u_data: &mut UData,
         svc: &mut Svc,
-        fw_effect_key: UItemId,
+        fw_effect_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = u_data.items.get_mut(fw_effect_key);
+        let u_item = u_data.items.get_mut(fw_effect_uid);
         u_item.update_reffs(reuse_eupdates, &u_data.src);
-        SolarSystem::util_add_item(u_data, svc, fw_effect_key, reuse_eupdates);
+        SolarSystem::util_add_item(u_data, svc, fw_effect_uid, reuse_eupdates);
     }
     pub(in crate::api) fn util_remove_fw_effect(
         u_data: &mut UData,
         svc: &mut Svc,
-        fw_effect_key: UItemId,
+        fw_effect_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = u_data.items.get_mut(fw_effect_key);
+        let u_item = u_data.items.get_mut(fw_effect_uid);
         u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
-        SolarSystem::util_remove_item(u_data, svc, fw_effect_key, reuse_eupdates);
+        SolarSystem::util_remove_item(u_data, svc, fw_effect_uid, reuse_eupdates);
     }
 }

@@ -1,7 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::DroneMut,
-    def::ItemTypeId,
+    api::{DroneMut, ItemTypeId},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
 };
@@ -9,23 +8,23 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_type_id(
         &mut self,
-        drone_key: UItemId,
+        drone_uid: UItemId,
         type_id: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_item = self.u_data.items.get(drone_key);
+        let u_item = self.u_data.items.get(drone_uid);
         if u_item.get_type_id() == type_id {
             return;
         }
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
         self.u_data
             .items
-            .get_mut(drone_key)
+            .get_mut(drone_uid)
             .dc_drone_mut()
             .unwrap()
             .set_type_id(type_id, &self.u_data.src);
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_key);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_key, reuse_eupdates);
+        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
     }
 }
 
@@ -35,6 +34,6 @@ impl<'a> DroneMut<'a> {
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_drone_type_id(self.key, type_id, &mut reuse_eupdates)
+            .internal_set_drone_type_id(self.uid, type_id.into_aid(), &mut reuse_eupdates)
     }
 }

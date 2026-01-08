@@ -7,11 +7,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_state(
         &mut self,
-        skill_key: UItemId,
+        skill_uid: UItemId,
         state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let u_skill = self.u_data.items.get_mut(skill_key).dc_skill_mut().unwrap();
+        let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         let old_a_state = u_skill.get_state();
         u_skill.set_skill_state(state);
         let new_a_state = u_skill.get_state();
@@ -19,7 +19,7 @@ impl SolarSystem {
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
-            skill_key,
+            skill_uid,
             old_a_state,
             new_a_state,
             reuse_eupdates,
@@ -30,6 +30,6 @@ impl SolarSystem {
 impl<'a> SkillMut<'a> {
     pub fn set_state(&mut self, state: bool) {
         let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol.internal_set_skill_state(self.key, state, &mut reuse_eupdates)
+        self.sol.internal_set_skill_state(self.uid, state, &mut reuse_eupdates)
     }
 }

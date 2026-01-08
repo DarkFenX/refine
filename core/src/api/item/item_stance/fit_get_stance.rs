@@ -6,28 +6,28 @@ use crate::{
 
 impl<'a> Fit<'a> {
     pub fn get_stance(&self) -> Option<Stance<'_>> {
-        get_stance(self.sol, self.key)
+        get_stance(self.sol, self.uid)
     }
 }
 
 impl<'a> FitMut<'a> {
     pub fn get_stance(&self) -> Option<Stance<'_>> {
-        get_stance(self.sol, self.key)
+        get_stance(self.sol, self.uid)
     }
     pub fn get_stance_mut(&mut self) -> Option<StanceMut<'_>> {
         self.sol
             .u_data
             .fits
-            .get(self.key)
+            .get(self.uid)
             .stance
-            .map(|stance_key| StanceMut::new(self.sol, stance_key))
+            .map(|stance_uid| StanceMut::new(self.sol, stance_uid))
     }
 }
 
-fn get_stance(sol: &SolarSystem, fit_key: UFitId) -> Option<Stance<'_>> {
+fn get_stance(sol: &SolarSystem, fit_uid: UFitId) -> Option<Stance<'_>> {
     sol.u_data
         .fits
-        .get(fit_key)
+        .get(fit_uid)
         .stance
-        .map(|stance_key| Stance::new(sol, stance_key))
+        .map(|stance_uid| Stance::new(sol, stance_uid))
 }

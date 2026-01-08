@@ -45,7 +45,7 @@ impl Aggregator {
                     l.opc.add_amount(r.opc.get_amount());
                     l
                 })
-                .map(Into::into),
+                .map(AggrEventInfo::into_cap_sim_event),
         );
     }
 }
@@ -79,7 +79,7 @@ impl AggrKey {
         Self {
             start_delay: start_delay.sig_rounded(SIG_ROUND_DIGITS),
             cseq: cseq.convert().copy_rounded(),
-            opc: opc.into(),
+            opc: AggrKeyOutput::from_output(opc),
         }
     }
 }
@@ -92,8 +92,8 @@ enum AggrKeyOutput {
 impl AggrKeyOutput {
     fn from_output(output: &Output<Value>) -> Self {
         match output {
-            Output::Simple(inner) => AggrKeyOutput::Simple(inner.into()),
-            Output::Complex(inner) => AggrKeyOutput::Complex(inner.into()),
+            Output::Simple(inner) => AggrKeyOutput::Simple(AggrKeyOutputSimple::from_output_simple(inner)),
+            Output::Complex(inner) => AggrKeyOutput::Complex(AggrKeyOutputComplex::from_output_complex(inner)),
         }
     }
 }

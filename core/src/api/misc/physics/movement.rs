@@ -25,7 +25,7 @@ pub struct Direction {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Movement {
-    pub(in crate::api) fn from_u_physics(u_physics: UPhysics) -> Self {
+    pub(in crate::api) fn from_u_physics(u_physics: &UPhysics) -> Self {
         Self {
             direction: Direction::from_xyz(u_physics.direction),
             speed: u_physics.speed,

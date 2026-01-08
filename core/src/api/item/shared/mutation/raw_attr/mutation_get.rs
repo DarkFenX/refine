@@ -39,53 +39,53 @@ impl<'a> MutationMut<'a> {
 impl<'a> EffectiveMutation<'a> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
-        get_raw_mattr(self.sol, self.item_key, attr_id.into())
+        get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
 impl<'a> EffectiveMutationMut<'a> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
-        get_raw_mattr(self.sol, self.item_key, attr_id.into())
+        get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr_mut(&mut self, attr_id: AttrId) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
-        get_raw_mattr_mut(self.sol, self.item_key, attr_id.into())
+        get_raw_mattr_mut(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
 impl<'a> IncompleteMutation<'a> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
-        get_raw_mattr(self.sol, self.item_key, attr_id.into())
+        get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
 impl<'a> IncompleteMutationMut<'a> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
-        get_raw_mattr(self.sol, self.item_key, attr_id.into())
+        get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr_mut(&mut self, attr_id: AttrId) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
-        get_raw_mattr_mut(self.sol, self.item_key, attr_id.into())
+        get_raw_mattr_mut(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
-fn get_raw_mattr(sol: &SolarSystem, item_key: UItemId, attr_aid: AAttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
+fn get_raw_mattr(sol: &SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
     match sol
         .u_data
         .items
-        .get(item_key)
+        .get(item_uid)
         .get_mutation_data()
         .unwrap()
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(_) => Ok(RawMAttr::new(sol, item_key, attr_aid)),
+        Some(_) => Ok(RawMAttr::new(sol, item_uid, attr_aid)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.xid_by_iid(item_key),
-            attr_id: attr_aid.into(),
+            item_id: sol.u_data.items.xid_by_iid(item_uid),
+            attr_id: AttrId::from_aid(attr_aid),
         }
         .into()),
     }
@@ -93,22 +93,22 @@ fn get_raw_mattr(sol: &SolarSystem, item_key: UItemId, attr_aid: AAttrId) -> Res
 
 fn get_raw_mattr_mut(
     sol: &mut SolarSystem,
-    item_key: UItemId,
+    item_uid: UItemId,
     attr_aid: AAttrId,
 ) -> Result<RawMAttrMut<'_>, GetRawMAttrError> {
     match sol
         .u_data
         .items
-        .get(item_key)
+        .get(item_uid)
         .get_mutation_data()
         .unwrap()
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(_) => Ok(RawMAttrMut::new(sol, item_key, attr_aid)),
+        Some(_) => Ok(RawMAttrMut::new(sol, item_uid, attr_aid)),
         None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.xid_by_iid(item_key),
-            attr_id: attr_aid.into(),
+            item_id: sol.u_data.items.xid_by_iid(item_uid),
+            attr_id: AttrId::from_aid(attr_aid),
         }
         .into()),
     }

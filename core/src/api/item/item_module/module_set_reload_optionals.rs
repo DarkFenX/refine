@@ -1,8 +1,11 @@
-use crate::api::ModuleMut;
+use crate::{
+    api::ModuleMut,
+    misc::{ReloadOptionals, StOption},
+};
 
 impl<'a> ModuleMut<'a> {
-    pub fn set_reload_optionals(&mut self, reload_optionals: Option<bool>) {
-        let u_module = self.sol.u_data.items.get_mut(self.key).dc_module_mut().unwrap();
+    pub fn set_reload_optionals(&mut self, reload_optionals: StOption<ReloadOptionals>) {
+        let u_module = self.sol.u_data.items.get_mut(self.uid).dc_module_mut().unwrap();
         u_module.set_reload_optionals(reload_optionals);
     }
 }

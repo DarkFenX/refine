@@ -152,7 +152,7 @@ impl Vast {
             _ => (),
         }
     }
-    pub(in crate::svc) fn item_state_deactivated_loaded(&mut self, item_uid: &UItemId, item: &UItem, a_state: &RState) {
+    pub(in crate::svc) fn item_state_deactivated_loaded(&mut self, item_uid: &UItemId, item: &UItem, a_state: RState) {
         match a_state {
             RState::Offline => {
                 if let UItem::Rig(rig) = item {

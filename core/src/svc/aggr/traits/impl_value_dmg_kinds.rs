@@ -1,6 +1,6 @@
 use super::limit_amount::LimitAmount;
 use crate::{
-    misc::{DmgKinds, PValue},
+    misc::{DmgKinds, PValue, Value},
     util::LibMax,
 };
 
@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl LimitAmount for DmgKinds<PValue> {
     // No-op, since there is no logic to limit damage depending on target attrs
-    fn limit_amount(&mut self, _limit: PValue) {}
+    fn limit_amount(&mut self, _limit: Value) {}
 }
 impl LibMax for DmgKinds<PValue> {
     fn lib_max(self, rhs: Self) -> Self {

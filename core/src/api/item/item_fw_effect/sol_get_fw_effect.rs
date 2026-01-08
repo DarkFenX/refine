@@ -1,20 +1,20 @@
 use crate::{
     api::{FwEffect, FwEffectMut},
-    def::ItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
+    ud::ItemId,
 };
 
 impl SolarSystem {
     pub fn get_fw_effect(&self, item_id: &ItemId) -> Result<FwEffect<'_>, GetFwEffectError> {
-        let fw_effect_key = self.u_data.items.iid_by_xid_err(item_id)?;
-        self.u_data.items.get(fw_effect_key).dc_fw_effect()?;
-        Ok(FwEffect::new(self, fw_effect_key))
+        let fw_effect_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        self.u_data.items.get(fw_effect_uid).dc_fw_effect()?;
+        Ok(FwEffect::new(self, fw_effect_uid))
     }
     pub fn get_fw_effect_mut(&mut self, item_id: &ItemId) -> Result<FwEffectMut<'_>, GetFwEffectError> {
-        let fw_effect_key = self.u_data.items.iid_by_xid_err(item_id)?;
-        self.u_data.items.get(fw_effect_key).dc_fw_effect()?;
-        Ok(FwEffectMut::new(self, fw_effect_key))
+        let fw_effect_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        self.u_data.items.get(fw_effect_uid).dc_fw_effect()?;
+        Ok(FwEffectMut::new(self, fw_effect_uid))
     }
 }
 

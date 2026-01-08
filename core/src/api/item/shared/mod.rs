@@ -1,4 +1,4 @@
-pub(in crate::api) use iter_proj::iter_projectee_keys;
+pub(in crate::api) use iter_proj::iter_projectee_uids;
 pub use mutation::{
     AddMutationError, AttrMutateRawError, EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrIter,
     FullMAttrMut, GetRawMAttrError, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut, RawMAttr,

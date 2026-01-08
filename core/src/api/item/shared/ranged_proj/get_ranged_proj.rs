@@ -1,45 +1,44 @@
 use crate::{
     api::{RangedProj, RangedProjMut},
-    def::ItemId,
     err::basic::{ItemFoundError, ProjFoundError},
     sol::SolarSystem,
-    ud::UItemId,
+    ud::{ItemId, UItemId},
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_get_ranged_proj(
         &self,
-        projector_key: UItemId,
+        projector_uid: UItemId,
         projectee_item_id: &ItemId,
     ) -> Result<RangedProj<'_>, GetRangedProjError> {
-        let projectee_key = self.internal_get_ranged_projectee_key(projector_key, projectee_item_id)?;
-        Ok(RangedProj::new(self, projector_key, projectee_key))
+        let projectee_uid = self.internal_get_ranged_projectee_uid(projector_uid, projectee_item_id)?;
+        Ok(RangedProj::new(self, projector_uid, projectee_uid))
     }
     pub(in crate::api) fn internal_get_ranged_proj_mut(
         &mut self,
-        projector_key: UItemId,
+        projector_uid: UItemId,
         projectee_item_id: &ItemId,
     ) -> Result<RangedProjMut<'_>, GetRangedProjError> {
-        let projectee_key = self.internal_get_ranged_projectee_key(projector_key, projectee_item_id)?;
-        Ok(RangedProjMut::new(self, projector_key, projectee_key))
+        let projectee_uid = self.internal_get_ranged_projectee_uid(projector_uid, projectee_item_id)?;
+        Ok(RangedProjMut::new(self, projector_uid, projectee_uid))
     }
-    fn internal_get_ranged_projectee_key(
+    fn internal_get_ranged_projectee_uid(
         &self,
-        projector_key: UItemId,
+        projector_uid: UItemId,
         projectee_item_id: &ItemId,
     ) -> Result<UItemId, GetRangedProjError> {
-        let projectee_key = self.u_data.items.iid_by_xid_err(projectee_item_id)?;
+        let projectee_uid = self.u_data.items.iid_by_xid_err(projectee_item_id)?;
         match self
             .u_data
             .items
-            .get(projector_key)
+            .get(projector_uid)
             .get_projs()
             .unwrap()
-            .contains(&projectee_key)
+            .contains(&projectee_uid)
         {
-            true => Ok(projectee_key),
+            true => Ok(projectee_uid),
             false => Err(ProjFoundError {
-                projector_item_id: self.u_data.items.xid_by_iid(projector_key),
+                projector_item_id: self.u_data.items.xid_by_iid(projector_uid),
                 projectee_item_id: *projectee_item_id,
             }
             .into()),

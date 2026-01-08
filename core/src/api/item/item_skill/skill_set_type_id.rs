@@ -1,7 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::SkillMut,
-    def::ItemTypeId,
+    api::{ItemTypeId, SkillMut},
     err::basic::SkillEveTypeError,
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
@@ -11,36 +10,36 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_type_id(
         &mut self,
-        skill_key: UItemId,
-        type_id: AItemId,
+        skill_uid: UItemId,
+        item_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), SkillEveTypeError> {
-        let u_item = self.u_data.items.get(skill_key);
+        let u_item = self.u_data.items.get(skill_uid);
         let old_type_id = u_item.get_type_id();
-        if old_type_id == type_id {
+        if old_type_id == item_aid {
             return Ok(());
         }
-        let fit_key = u_item.dc_skill().unwrap().get_fit_uid();
+        let fit_uid = u_item.dc_skill().unwrap().get_fit_uid();
         // Check for collisions before doing anything
-        let u_fit = self.u_data.fits.get(fit_key);
-        if let Some(fit_skill) = u_fit.skills.get(&type_id) {
+        let u_fit = self.u_data.fits.get(fit_uid);
+        if let Some(fit_skill) = u_fit.skills.get(&item_aid) {
             return Err(SkillEveTypeError {
-                type_id,
+                type_id: ItemTypeId::from_aid(item_aid),
                 fit_id: u_fit.lib_get_id(),
                 item_id: self.u_data.items.xid_by_iid(fit_skill.skill_uid),
             });
         }
         // Unload skill
-        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
+        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
         // Update type ID and reload adapted data
-        let u_skill = self.u_data.items.get_mut(skill_key).dc_skill_mut().unwrap();
-        u_skill.set_type_id(type_id, &self.u_data.src);
+        let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
+        u_skill.set_type_id(item_aid, &self.u_data.src);
         // Update fit skill map
-        let u_fit = self.u_data.fits.get_mut(fit_key);
+        let u_fit = self.u_data.fits.get_mut(fit_uid);
         let fit_skill = u_fit.skills.remove(&old_type_id).unwrap();
-        u_fit.skills.insert(type_id, fit_skill);
+        u_fit.skills.insert(item_aid, fit_skill);
         // Load skill
-        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_key, reuse_eupdates);
+        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
         Ok(())
     }
 }
@@ -50,7 +49,7 @@ impl<'a> SkillMut<'a> {
     pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SetSkillTypeIdError> {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_skill_type_id(self.key, type_id, &mut reuse_eupdates)?;
+            .internal_set_skill_type_id(self.uid, type_id.into_aid(), &mut reuse_eupdates)?;
         Ok(())
     }
 }

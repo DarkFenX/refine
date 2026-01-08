@@ -28,7 +28,7 @@ impl RState {
             AState::Overload => Self::Overload,
         }
     }
-    pub(crate) fn iter() -> std::slice::Iter<'static, Self> {
-        STATES.iter()
+    pub(crate) fn iter() -> std::array::IntoIter<Self, 6> {
+        STATES.into_iter()
     }
 }

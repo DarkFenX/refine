@@ -35,7 +35,7 @@ impl<'a> FullSideEffect<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.effect_id)
+        get_state(self.sol, self.item_uid, &self.effect_aid)
     }
 }
 
@@ -44,7 +44,7 @@ impl<'a> FullSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.effect_id)
+        get_state(self.sol, self.item_uid, &self.effect_aid)
     }
 }
 
@@ -53,7 +53,7 @@ impl<'a> StubSideEffect<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.effect_id)
+        get_state(self.sol, self.item_uid, &self.effect_aid)
     }
 }
 
@@ -62,12 +62,12 @@ impl<'a> StubSideEffectMut<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.key, &self.effect_id)
+        get_state(self.sol, self.item_uid, &self.effect_aid)
     }
 }
 
-fn get_state(sol: &SolarSystem, booster_key: UItemId, effect_id: &AEffectId) -> bool {
-    let u_booster = sol.u_data.items.get(booster_key).dc_booster().unwrap();
+fn get_state(sol: &SolarSystem, booster_uid: UItemId, effect_id: &AEffectId) -> bool {
+    let u_booster = sol.u_data.items.get(booster_uid).dc_booster().unwrap();
     match u_booster.get_effect_id_mode(effect_id) {
         EffectMode::FullCompliance => false,
         EffectMode::StateCompliance => true,

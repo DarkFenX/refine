@@ -4,11 +4,11 @@ use crate::{
 };
 
 pub(crate) struct UItemMutationRequest {
-    pub(crate) mutator_id: AItemId,
+    pub(crate) mutator_item_aid: AItemId,
     pub(crate) attrs: Vec<UAttrMutationRequest>,
 }
 
 pub(crate) struct UAttrMutationRequest {
-    pub(crate) attr_id: AAttrId,
-    pub(crate) value: Option<UnitInterval>,
+    pub(crate) attr_aid: AAttrId,
+    pub(crate) roll: Option<UnitInterval>,
 }

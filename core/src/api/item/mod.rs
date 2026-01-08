@@ -24,7 +24,7 @@ pub use shared::{
     FullMAttrIter, FullMAttrMut, GetRangedProjError, GetRawMAttrError, IncompleteMutation, IncompleteMutationMut,
     Mutation, MutationMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut,
 };
-pub(in crate::api) use shared::{get_ship_axt, iter_projectee_keys, iter_ranged_projs};
+pub(in crate::api) use shared::{get_ship_axt, iter_projectee_uids, iter_ranged_projs};
 pub use traits::{
     GetItemAttrError, ItemCommon, ItemMutCommon, ItemStatAppliedError, ItemStatError, IterItemAttrsError,
     IterItemEffectsError, IterItemModifiersError,

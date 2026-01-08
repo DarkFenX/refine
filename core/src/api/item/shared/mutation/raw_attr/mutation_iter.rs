@@ -13,22 +13,22 @@ use crate::{
 impl<'a> Mutation<'a> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
-        let (sol, item_key) = match self {
-            Self::Effective(effective_mutation) => (effective_mutation.sol, effective_mutation.item_key),
-            Self::Incomplete(incomplete_mutation) => (incomplete_mutation.sol, incomplete_mutation.item_key),
+        let (sol, item_uid) = match self {
+            Self::Effective(effective_mutation) => (effective_mutation.sol, effective_mutation.item_uid),
+            Self::Incomplete(incomplete_mutation) => (incomplete_mutation.sol, incomplete_mutation.item_uid),
         };
-        iter_raw_mattrs(sol, item_key)
+        iter_raw_mattrs(sol, item_uid)
     }
 }
 
 impl<'a> MutationMut<'a> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
-        let (sol, item_key) = match self {
-            Self::Effective(effective_mutation) => (&*effective_mutation.sol, effective_mutation.item_key),
-            Self::Incomplete(incomplete_mutation) => (&*incomplete_mutation.sol, incomplete_mutation.item_key),
+        let (sol, item_uid) = match self {
+            Self::Effective(effective_mutation) => (&*effective_mutation.sol, effective_mutation.item_uid),
+            Self::Incomplete(incomplete_mutation) => (&*incomplete_mutation.sol, incomplete_mutation.item_uid),
         };
-        iter_raw_mattrs(sol, item_key)
+        iter_raw_mattrs(sol, item_uid)
     }
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs_mut(&mut self) -> RawMAttrIter<'_> {
@@ -42,52 +42,52 @@ impl<'a> MutationMut<'a> {
 impl<'a> EffectiveMutation<'a> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
-        iter_raw_mattrs(self.sol, self.item_key)
+        iter_raw_mattrs(self.sol, self.item_uid)
     }
 }
 
 impl<'a> EffectiveMutationMut<'a> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
-        iter_raw_mattrs(self.sol, self.item_key)
+        iter_raw_mattrs(self.sol, self.item_uid)
     }
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs_mut(&mut self) -> RawMAttrIter<'_> {
-        RawMAttrIter::new(self.sol, self.item_key)
+        RawMAttrIter::new(self.sol, self.item_uid)
     }
 }
 
 impl<'a> IncompleteMutation<'a> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
-        iter_raw_mattrs(self.sol, self.item_key)
+        iter_raw_mattrs(self.sol, self.item_uid)
     }
 }
 
 impl<'a> IncompleteMutationMut<'a> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
-        iter_raw_mattrs(self.sol, self.item_key)
+        iter_raw_mattrs(self.sol, self.item_uid)
     }
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs_mut(&mut self) -> RawMAttrIter<'_> {
-        RawMAttrIter::new(self.sol, self.item_key)
+        RawMAttrIter::new(self.sol, self.item_uid)
     }
 }
 
 // Lending iterator for attribute rolls
 pub struct RawMAttrIter<'iter> {
     sol: &'iter mut SolarSystem,
-    item_key: UItemId,
+    item_uid: UItemId,
     attr_aids: Vec<AAttrId>,
     index: usize,
 }
 impl<'iter> RawMAttrIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_key: UItemId) -> Self {
-        let attr_aids = raw_mutated_attr_id_iter(sol, item_key).collect();
+    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
+        let attr_aids = raw_mutated_attr_id_iter(sol, item_uid).collect();
         Self {
             sol,
-            item_key,
+            item_uid,
             attr_aids,
             index: 0,
         }
@@ -100,14 +100,14 @@ impl<'iter> Lender for RawMAttrIter<'iter> {
     fn next(&mut self) -> Option<RawMAttrMut<'_>> {
         let attr_aid = *self.attr_aids.get(self.index)?;
         self.index += 1;
-        Some(RawMAttrMut::new(self.sol, self.item_key, attr_aid))
+        Some(RawMAttrMut::new(self.sol, self.item_uid, attr_aid))
     }
 }
 
-fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_key: UItemId) -> impl ExactSizeIterator<Item = AAttrId> {
+fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_uid: UItemId) -> impl ExactSizeIterator<Item = AAttrId> {
     sol.u_data
         .items
-        .get(item_key)
+        .get(item_uid)
         .get_mutation_data()
         .unwrap()
         .get_attr_rolls()
@@ -115,6 +115,6 @@ fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_key: UItemId) -> impl ExactS
         .copied()
 }
 
-fn iter_raw_mattrs(sol: &SolarSystem, item_key: UItemId) -> impl ExactSizeIterator<Item = RawMAttr<'_>> + use<'_> {
-    raw_mutated_attr_id_iter(sol, item_key).map(move |attr_id| RawMAttr::new(sol, item_key, attr_id))
+fn iter_raw_mattrs(sol: &SolarSystem, item_uid: UItemId) -> impl ExactSizeIterator<Item = RawMAttr<'_>> + use<'_> {
+    raw_mutated_attr_id_iter(sol, item_uid).map(move |attr_id| RawMAttr::new(sol, item_uid, attr_id))
 }

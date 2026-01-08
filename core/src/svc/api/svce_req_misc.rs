@@ -64,7 +64,8 @@ impl Svc {
         let spool_attrs = defeff.spool_attr_rids?;
         // TODO: limit by non-interrupted spool cycle count
         let ctx = SvcCtx::new(u_data, &self.eff_projs);
-        let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, None, spool_attrs)?;
+        let resolved_spool =
+            ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, StOption::Inherit, spool_attrs)?;
         let overridden = u_item.get_spool().is_set();
         Some(Adjustable {
             current: resolved_spool.cycles,

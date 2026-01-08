@@ -23,14 +23,14 @@ impl Value {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
-    pub(crate) const ZERO: Self = Self::from_f64(0.0);
-    pub(crate) const ONE: Self = Self::from_f64(1.0);
-    pub(crate) const TWO: Self = Self::from_f64(2.0);
-    pub(crate) const HUNDRED: Self = Self::from_f64(100.0);
-    pub(crate) const THOUSAND: Self = Self::from_f64(1000.0);
-    pub(crate) const HUNDREDTH: Self = Self::from_f64(0.01);
-    pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64(FLOAT_TOLERANCE);
-    pub(crate) const AU: Self = Self::from_f64(AU);
+    pub(crate) const ZERO: Self = Self(0.0);
+    pub(crate) const ONE: Self = Self(1.0);
+    pub(crate) const TWO: Self = Self(2.0);
+    pub(crate) const HUNDRED: Self = Self(100.0);
+    pub(crate) const THOUSAND: Self = Self(1000.0);
+    pub(crate) const HUNDREDTH: Self = Self(0.01);
+    pub(crate) const FLOAT_TOLERANCE: Self = Self(FLOAT_TOLERANCE);
+    pub(crate) const AU: Self = Self(AU);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

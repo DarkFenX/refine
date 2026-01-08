@@ -1,17 +1,15 @@
 use crate::{
     api::{FitMut, ItemMutCommon},
-    def::AttrVal,
     err::FitShipStatError,
-    misc::{DmgKinds, DpsProfile},
+    misc::{DmgKinds, DpsProfile, UnitInterval},
     svc::vast::{
         StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatTank,
         StatTankRegen, StatTimeOptions,
     },
-    util::UnitInterval,
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<AttrVal>>, FitShipStatError> {
+    pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<UnitInterval>>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }
     pub fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, FitShipStatError> {

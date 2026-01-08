@@ -1,20 +1,20 @@
 use crate::{
     api::{Fighter, FighterMut},
-    def::ItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
+    ud::ItemId,
 };
 
 impl SolarSystem {
     pub fn get_fighter(&self, item_id: &ItemId) -> Result<Fighter<'_>, GetFighterError> {
-        let fighter_key = self.u_data.items.iid_by_xid_err(item_id)?;
-        self.u_data.items.get(fighter_key).dc_fighter()?;
-        Ok(Fighter::new(self, fighter_key))
+        let fighter_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        self.u_data.items.get(fighter_uid).dc_fighter()?;
+        Ok(Fighter::new(self, fighter_uid))
     }
     pub fn get_fighter_mut(&mut self, item_id: &ItemId) -> Result<FighterMut<'_>, GetFighterError> {
-        let fighter_key = self.u_data.items.iid_by_xid_err(item_id)?;
-        self.u_data.items.get(fighter_key).dc_fighter()?;
-        Ok(FighterMut::new(self, fighter_key))
+        let fighter_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        self.u_data.items.get(fighter_uid).dc_fighter()?;
+        Ok(FighterMut::new(self, fighter_uid))
     }
 }
 

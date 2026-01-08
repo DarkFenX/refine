@@ -1,6 +1,6 @@
 use crate::{
     api::{FullMAttrMut, item::shared::mutation::resolve_absolutes_into_rolls_with_ids},
-    def::AttrVal,
+    misc::Value,
     ud::UItem,
 };
 
@@ -9,11 +9,11 @@ impl<'a> FullMAttrMut<'a> {
     ///
     /// If value is out of bounds allowed by mutator, it will be clamped. None as value removes
     /// user-defined mutation.
-    pub fn set_value(&mut self, absolute_value: Option<AttrVal>) {
-        let u_item = self.sol.u_data.items.get(self.item_key);
+    pub fn set_value(&mut self, absolute_value: Option<Value>) {
+        let u_item = self.sol.u_data.items.get(self.item_uid);
         let attr_mutation_request = match absolute_value {
             Some(absolute_value) => {
-                let (base_type_id, mutator_id) = match u_item {
+                let (base_item_aid, mutator_item_aid) = match u_item {
                     UItem::Drone(drone) => (
                         drone
                             .get_mutation_data()
@@ -36,8 +36,8 @@ impl<'a> FullMAttrMut<'a> {
                 };
                 resolve_absolutes_into_rolls_with_ids(
                     &self.sol.u_data.src,
-                    &base_type_id,
-                    &mutator_id,
+                    &base_item_aid,
+                    &mutator_item_aid,
                     &[(self.attr_aid, absolute_value)],
                 )
             }
@@ -47,7 +47,7 @@ impl<'a> FullMAttrMut<'a> {
             return;
         }
         self.sol
-            .internal_change_item_mutation_attrs(self.item_key, attr_mutation_request)
+            .internal_change_item_mutation_attrs(self.item_uid, attr_mutation_request)
             .unwrap();
     }
 }
