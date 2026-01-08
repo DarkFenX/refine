@@ -1,11 +1,8 @@
 use std::collections::HashMap;
 
-use crate::{
-    phb::{
-        fsd::{FsdId, FsdMerge},
-        serde_custom::bool_from_int,
-    },
-    util::into_vec,
+use crate::phb::{
+    fsd::{FsdId, FsdMerge},
+    serde_custom::bool_from_int,
 };
 
 #[derive(serde::Deserialize)]
@@ -30,7 +27,7 @@ pub(in crate::phb) struct PEffect {
     pub(in crate::phb) usage_chance_attr_id: Option<i32>,
     #[serde(rename = "resistanceAttributeID")]
     pub(in crate::phb) resist_attr_id: Option<i32>,
-    #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
+    #[serde(rename = "modifierInfo", default, deserialize_with = "effect_mod::deserialize")]
     pub(in crate::phb) mods: Vec<PEffectMod>,
 }
 impl FsdMerge<rc::ed::EEffect> for PEffect {
@@ -47,7 +44,11 @@ impl FsdMerge<rc::ed::EEffect> for PEffect {
             tracking_attr_id: self.tracking_attr_id.map(rc::ed::EAttrId::from_i32),
             usage_chance_attr_id: self.usage_chance_attr_id.map(rc::ed::EAttrId::from_i32),
             resist_attr_id: self.resist_attr_id.map(rc::ed::EAttrId::from_i32),
-            mods: into_vec(self.mods),
+            mods: self
+                .mods
+                .into_iter()
+                .map(|p_effect_mod| p_effect_mod.into_e_effect_mod())
+                .collect(),
         }]
     }
 }
@@ -56,16 +57,16 @@ pub(in crate::phb) struct PEffectMod {
     pub(in crate::phb) func: String,
     pub(in crate::phb) args: HashMap<String, rc::ed::EPrimitive>,
 }
-impl From<PEffectMod> for rc::ed::EEffectMod {
-    fn from(p_effect_mod: PEffectMod) -> Self {
-        Self {
-            func: p_effect_mod.func,
-            args: (&p_effect_mod.args).into(),
+impl PEffectMod {
+    fn into_e_effect_mod(self) -> rc::ed::EEffectMod {
+        rc::ed::EEffectMod {
+            func: self.func,
+            args: self.args.into(),
         }
     }
 }
 
-mod dgmmod {
+mod effect_mod {
     use std::collections::HashMap;
 
     use serde::{Deserialize, de::Error};

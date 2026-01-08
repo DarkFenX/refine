@@ -140,31 +140,34 @@ where
     K: Eq + Hash,
     H: BuildHasher + Default,
 {
-    fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
+    fn from_iter<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = (K, V)>,
+    {
         Self {
             data: HashMap::from_iter(iter),
         }
     }
 }
-impl<K, V, H> From<&HashMap<K, V>> for Map<K, V, H>
+impl<K, V, H> From<HashMap<K, V>> for Map<K, V, H>
 where
     K: Eq + Hash + Clone,
     V: Clone,
     H: BuildHasher + Default,
 {
-    fn from(h_map: &HashMap<K, V>) -> Self {
+    fn from(h_map: HashMap<K, V>) -> Self {
         Self {
             data: HashMap::from_iter(h_map.iter().map(|(k, v)| (k.clone(), v.clone()))),
         }
     }
 }
-impl<K, V, H> From<&Map<K, V, H>> for HashMap<K, V>
+impl<K, V, H> From<Map<K, V, H>> for HashMap<K, V>
 where
     K: Eq + Hash + Clone,
     V: Clone,
     H: BuildHasher + Default,
 {
-    fn from(st_map: &Map<K, V, H>) -> HashMap<K, V> {
+    fn from(st_map: Map<K, V, H>) -> HashMap<K, V> {
         Self::from_iter(st_map.iter().map(|(k, v)| (k.clone(), v.clone())))
     }
 }
