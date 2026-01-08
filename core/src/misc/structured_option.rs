@@ -11,3 +11,8 @@ pub enum StOption<T> {
     Set(T),
     Inherit,
 }
+impl<T> StOption<T> {
+    pub(crate) fn is_set(&self) -> bool {
+        matches!(self, StOption::Set(_))
+    }
+}

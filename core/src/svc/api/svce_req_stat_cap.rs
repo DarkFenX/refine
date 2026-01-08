@@ -1,33 +1,32 @@
 use crate::{
-    def::AttrVal,
+    misc::{PValue, ReloadOptionals, StOption, UnitInterval, Value},
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
         vast::{StatCapSim, StatCapSimStaggerInt, StatCapSrcKinds, StatTimeOptions, Vast},
     },
     ud::{UData, UItemId},
-    util::UnitInterval,
 };
 
 impl Svc {
     pub(crate) fn get_stat_item_cap_amount(
         &mut self,
         u_data: &UData,
-        item_key: UItemId,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_cap_amount(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+        item_uid: UItemId,
+    ) -> Result<PValue, StatItemCheckError> {
+        Vast::get_stat_item_cap_amount(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_cap_balance(
         &mut self,
         u_data: &UData,
-        item_key: UItemId,
+        item_uid: UItemId,
         src_kinds: StatCapSrcKinds,
         time_options: StatTimeOptions,
-    ) -> Result<AttrVal, StatItemCheckError> {
+    ) -> Result<Value, StatItemCheckError> {
         self.vast.get_stat_item_cap_balance(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
-            item_key,
+            item_uid,
             src_kinds,
             time_options,
         )
@@ -35,15 +34,15 @@ impl Svc {
     pub(crate) fn get_stat_item_cap_sim(
         &mut self,
         u_data: &UData,
-        item_key: UItemId,
+        item_uid: UItemId,
         cap_perc: UnitInterval,
-        reload_optionals: Option<bool>,
+        reload_optionals: StOption<ReloadOptionals>,
         stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast.get_stat_item_cap_sim(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
-            item_key,
+            item_uid,
             cap_perc,
             reload_optionals,
             stagger,
@@ -52,8 +51,8 @@ impl Svc {
     pub(crate) fn get_stat_item_neut_resist(
         &mut self,
         u_data: &UData,
-        item_key: UItemId,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        Vast::get_stat_item_neut_resist(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_key)
+        item_uid: UItemId,
+    ) -> Result<UnitInterval, StatItemCheckError> {
+        Vast::get_stat_item_neut_resist(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
 }

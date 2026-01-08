@@ -11,14 +11,14 @@ impl Svc {
     pub(crate) fn get_stat_fits_mps(
         &mut self,
         u_data: &UData,
-        fit_keys: impl ExactSizeIterator<Item = UFitId>,
+        fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
     ) -> StatMining {
         self.vast.get_stat_fits_mps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
-            fit_keys,
+            fit_uids,
             item_kinds,
             time_options,
         )
@@ -26,14 +26,14 @@ impl Svc {
     pub(crate) fn get_stat_fit_mps(
         &mut self,
         u_data: &UData,
-        fit_key: UFitId,
+        fit_uid: UFitId,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
     ) -> StatMining {
         self.vast.get_stat_fit_mps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
-            fit_key,
+            fit_uid,
             item_kinds,
             time_options,
         )
@@ -41,14 +41,14 @@ impl Svc {
     pub(crate) fn get_stat_item_mps(
         &mut self,
         u_data: &UData,
-        item_key: UItemId,
+        item_uid: UItemId,
         time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         Vast::get_stat_item_mps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
-            item_key,
+            item_uid,
             time_options,
             ignore_state,
         )

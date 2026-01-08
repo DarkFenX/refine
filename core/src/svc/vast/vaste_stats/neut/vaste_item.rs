@@ -68,11 +68,11 @@ impl Vast {
             }
         }
         if include_charges {
-            for charge_key in ctx.u_data.items.get(item_uid).iter_charges() {
+            for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 if let Ok(charge_nps) = Vast::get_stat_item_outgoing_nps(
                     ctx,
                     calc,
-                    charge_key,
+                    charge_uid,
                     time_options,
                     false,
                     ignore_state,
