@@ -1,62 +1,61 @@
 use std::collections::BinaryHeap;
 
-use ordered_float::Float;
-
 use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
-    def::{AttrVal, OF},
+    misc::{PValue, UnitInterval, Value},
     svc::{output::OutputIterItem, vast::shared::regenerate},
-    util::UnitInterval,
 };
 
-const TIME_LIMIT: AttrVal = OF(4.0 * 60.0 * 60.0);
+const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);
 
 pub enum StatCapSim {
     // Average stability value
     Stable(UnitInterval),
     // Time in seconds it takes to drain cap to 0
-    Time(AttrVal),
+    Time(PValue),
 }
 
 pub(super) struct CapSim {
-    max_cap: AttrVal,
-    tau: AttrVal,
+    max_cap: Value,
+    max_pcap: PValue,
+    tau: PValue,
     events: BinaryHeap<CapSimEvent>,
     // Injectors available for immediate use
     injectors: Vec<CapSimEventInjector>,
     // Current sim state
-    time: AttrVal,
-    cap: AttrVal,
+    time: PValue,
+    cap: Value,
     only_gains: bool,
-    wm_high_time: AttrVal,
-    wm_high_cap: AttrVal,
-    wm_low_time: AttrVal,
-    wm_low_cap: AttrVal,
-    wm_aux_high: AttrVal,
-    wm_aux_low: AttrVal,
+    wm_high_time: PValue,
+    wm_high_cap: Value,
+    wm_low_time: PValue,
+    wm_low_cap: Value,
+    wm_aux_high: Value,
+    wm_aux_low: Value,
 }
 impl CapSim {
     pub(super) fn new(
-        start_cap: AttrVal,
-        max_cap: AttrVal,
-        recharge_time: AttrVal,
+        start_cap: PValue,
+        max_cap: PValue,
+        recharge_time: PValue,
         events: BinaryHeap<CapSimEvent>,
     ) -> Self {
         Self {
-            max_cap,
-            tau: recharge_time / OF(5.0),
+            max_cap: max_cap.into_value(),
+            max_pcap: max_cap,
+            tau: recharge_time / PValue::from_f64_unchecked(5.0),
             events,
             injectors: Vec::new(),
-            time: OF(0.0),
-            cap: start_cap,
+            time: PValue::ZERO,
+            cap: start_cap.into_value(),
             only_gains: true,
             // Watermark data
-            wm_high_time: OF(0.0),
-            wm_high_cap: start_cap,
-            wm_low_time: OF(0.0),
-            wm_low_cap: start_cap,
-            wm_aux_high: start_cap,
-            wm_aux_low: start_cap,
+            wm_high_time: PValue::ZERO,
+            wm_high_cap: start_cap.into_value(),
+            wm_low_time: PValue::ZERO,
+            wm_low_cap: start_cap.into_value(),
+            wm_aux_high: start_cap.into_value(),
+            wm_aux_low: start_cap.into_value(),
         }
     }
     pub(super) fn run(&mut self) -> StatCapSim {
@@ -84,7 +83,7 @@ impl CapSim {
                     }
                     self.advance_time(event.time);
                     // Use injector right away if it does not overshoot cap, or postpone if it does
-                    match self.cap + event.immediate_amount.unwrap_or(OF(0.0)) > self.max_cap {
+                    match self.cap + event.immediate_amount.unwrap_or(Value::ZERO) > self.max_cap {
                         true => self.injectors.push(event),
                         false => self.use_injector(event),
                     }
@@ -97,7 +96,7 @@ impl CapSim {
                     }
                     self.advance_time(event.time);
                     // Process cap change from event
-                    match event.amount >= OF(0.0) {
+                    match event.amount >= Value::ZERO {
                         // Cap amount is increased
                         true => self.increase_cap(event.amount),
                         // Cap amount is decreased
@@ -106,7 +105,7 @@ impl CapSim {
                                 self.inject_emergency(-event.amount);
                             }
                             self.decrease_cap(event.amount);
-                            if self.cap < OF(0.0) {
+                            if self.cap < Value::ZERO {
                                 return StatCapSim::Time(self.time);
                             }
                             // After some cap was removed, check if we can top up using injector
@@ -118,7 +117,7 @@ impl CapSim {
         }
         // No drains - cap regens up to 100% even if no other gains are registered
         if self.only_gains {
-            return StatCapSim::Stable(UnitInterval::new_clamped_of64(OF(1.0)));
+            return StatCapSim::Stable(UnitInterval::ONE);
         }
         // Instead of trying to detect event loops and averaging over looped period (which is
         // expensive), cap sim tracks global and auxiliary high and low watermarks. After new value
@@ -126,28 +125,35 @@ impl CapSim {
         // stability value is average between last global watermark, and its opposite auxiliary
         // watermark
         let stability = match self.wm_high_time > self.wm_low_time {
-            true => (self.wm_high_cap + self.wm_aux_low) / (OF(2.0) * self.max_cap),
-            false => (self.wm_low_cap + self.wm_aux_high) / (OF(2.0) * self.max_cap),
+            true => (self.wm_high_cap + self.wm_aux_low) / (Value::TWO * self.max_cap),
+            false => (self.wm_low_cap + self.wm_aux_high) / (Value::TWO * self.max_cap),
         };
         // Extra checks for case when max cap is 0
-        StatCapSim::Stable(UnitInterval::new_clamped_of64(match stability.is_finite() {
+        StatCapSim::Stable(UnitInterval::from_value_clamped(match stability.is_finite() {
             true => stability,
-            false => OF(1.0),
+            false => Value::ONE,
         }))
     }
-    fn advance_time(&mut self, new_time: AttrVal) {
+    fn advance_time(&mut self, new_time: PValue) {
         if new_time > self.time {
-            self.cap = regenerate(self.cap, self.max_cap, self.tau, self.time, new_time);
+            self.cap = regenerate(
+                PValue::from_value_unchecked(self.cap),
+                self.max_pcap,
+                self.tau,
+                self.time,
+                new_time,
+            )
+            .into_value();
             self.time = new_time;
             self.process_high_watermark();
         }
     }
-    fn increase_cap(&mut self, amount: AttrVal) {
+    fn increase_cap(&mut self, amount: Value) {
         self.cap += amount;
-        self.cap = Float::min(self.cap, self.max_cap);
+        self.cap = Value::min(self.cap, self.max_cap);
         self.process_high_watermark();
     }
-    fn decrease_cap(&mut self, amount: AttrVal) {
+    fn decrease_cap(&mut self, amount: Value) {
         self.cap += amount;
         self.only_gains = false;
         self.process_low_watermark();
@@ -174,12 +180,8 @@ impl CapSim {
             self.wm_aux_low = self.cap;
         }
     }
-    fn schedule_cycle_output(
-        &mut self,
-        base_time: AttrVal,
-        output_iter: impl Iterator<Item = OutputIterItem<AttrVal>>,
-    ) {
-        let mut extra_delay = OF(0.0);
+    fn schedule_cycle_output(&mut self, base_time: PValue, output_iter: impl Iterator<Item = OutputIterItem<Value>>) {
+        let mut extra_delay = PValue::ZERO;
         for output_event in output_iter {
             extra_delay += output_event.time;
             let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
@@ -206,16 +208,16 @@ impl CapSim {
             self.events.push(CapSimEvent::InjectorReady(injector_event));
         }
     }
-    fn inject_emergency(&mut self, needed_cap_total: AttrVal) {
+    fn inject_emergency(&mut self, needed_cap_total: Value) {
         while !self.injectors.is_empty() && needed_cap_total > self.cap && self.max_cap > self.cap {
-            let needed_cap_extra = Float::min(needed_cap_total - self.cap, self.max_cap - self.cap);
+            let needed_cap_extra = Value::min(needed_cap_total - self.cap, self.max_cap - self.cap);
             // Take injector which either provides just enough or more cap than needed
             let idx = match self
                 .injectors
                 .iter()
                 .enumerate()
-                .filter(|(_, v)| v.immediate_amount.unwrap_or(OF(0.0)) >= needed_cap_extra)
-                .min_by_key(|(_, v)| v.immediate_amount.unwrap_or(OF(0.0)))
+                .filter(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO) >= needed_cap_extra)
+                .min_by_key(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO))
                 .map(|(i, _)| i)
             {
                 Some(idx) => idx,
@@ -224,7 +226,7 @@ impl CapSim {
                     .injectors
                     .iter()
                     .enumerate()
-                    .max_by_key(|(_, v)| v.immediate_amount.unwrap_or(OF(0.0)))
+                    .max_by_key(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO))
                     .map(|(i, _)| i)
                     .unwrap(),
             };
@@ -240,8 +242,8 @@ impl CapSim {
                 .injectors
                 .iter()
                 .enumerate()
-                .filter(|(_, v)| v.immediate_amount.unwrap_or(OF(0.0)) <= max_injection)
-                .max_by_key(|(_, v)| v.immediate_amount.unwrap_or(OF(0.0)))
+                .filter(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO) <= max_injection)
+                .max_by_key(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO))
                 .map(|(i, _)| i)
             {
                 Some(idx) => idx,

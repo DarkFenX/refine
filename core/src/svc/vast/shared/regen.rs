@@ -1,8 +1,8 @@
 use crate::misc::{PValue, UnitInterval, Value};
 
-pub(in crate::svc::vast) fn calc_regen(c_max: PValue, c_rech: PValue, cap_perc: UnitInterval) -> PValue {
+pub(in crate::svc::vast) fn calc_regen(max: PValue, rech_time: PValue, cap_perc: UnitInterval) -> PValue {
     let cap_perc = cap_perc.into_pvalue();
-    let result = PValue::TEN * c_max / c_rech * PValue::from_value_unchecked(cap_perc.sqrt() - cap_perc);
+    let result = PValue::TEN * max / rech_time * PValue::from_value_unchecked(cap_perc.sqrt() - cap_perc);
     match result.is_finite() {
         true => result,
         false => PValue::ZERO,

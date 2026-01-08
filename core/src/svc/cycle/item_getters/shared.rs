@@ -28,7 +28,7 @@ pub(super) struct SelfKillerInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CyclingOptions {
-    pub(in crate::svc::cycle) fn from_time_options(time_options: StatTimeOptions) -> Self {
+    pub(in crate::svc) fn from_time_options(time_options: StatTimeOptions) -> Self {
         match time_options {
             StatTimeOptions::Burst(_) => Self::Burst,
             StatTimeOptions::Sim(inner) => Self::Sim(CycleOptionsSim::from_time_options_sim(inner)),

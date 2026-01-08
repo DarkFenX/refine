@@ -2,17 +2,47 @@ use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::
 use crate::misc::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(crate) enum Output<T>
-where
-    T: Copy,
-{
+pub(crate) enum Output<T: Copy> {
     Simple(OutputSimple<T>),
     Complex(OutputComplex<T>),
 }
-impl<T> Output<T>
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T: Copy> Output<T> {
+    pub(in crate::svc) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+        match self {
+            Self::Simple(inner) => OutputIter::Simple(inner.iter_amounts()),
+            Self::Complex(inner) => OutputIter::Complex(inner.iter_amounts()),
+        }
+    }
+}
+
+pub(in crate::svc) enum OutputIter<S, C> {
+    Simple(S),
+    Complex(C),
+}
+impl<S, C, T> Iterator for OutputIter<S, C>
 where
+    S: Iterator<Item = OutputIterItem<T>>,
+    C: Iterator<Item = OutputIterItem<T>>,
     T: Copy,
 {
+    type Item = OutputIterItem<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            Self::Simple(inner) => inner.next(),
+            Self::Complex(inner) => inner.next(),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General operations
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T: Copy> Output<T> {
     pub(in crate::svc) fn get_amount(&self) -> T {
         match self {
             Output::Simple(inner) => inner.get_amount(),
@@ -31,24 +61,12 @@ where
             Output::Complex(inner) => inner.get_completion_time(),
         }
     }
-    pub(in crate::svc) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
-        match self {
-            Self::Simple(inner) => OutputIter::Simple(inner.iter_amounts()),
-            Self::Complex(inner) => OutputIter::Complex(inner.iter_amounts()),
-        }
-    }
 }
 impl Output<Value> {
-    pub(in crate::svc) fn has_impact(&self) -> bool {
+    pub(in crate::svc) fn get_absolute_impact(&self) -> PValue {
         match self {
-            Output::Simple(inner) => inner.has_impact(),
-            Output::Complex(inner) => inner.has_impact(),
-        }
-    }
-    pub(in crate::svc) fn absolute_impact(&self) -> PValue {
-        match self {
-            Output::Simple(inner) => inner.absolute_impact(),
-            Output::Complex(inner) => inner.absolute_impact(),
+            Output::Simple(inner) => inner.get_absolute_impact(),
+            Output::Complex(inner) => inner.get_absolute_impact(),
         }
     }
     pub(in crate::svc) fn add_amount(&mut self, amount: Value) {
@@ -58,16 +76,11 @@ impl Output<Value> {
         }
     }
 }
-impl<T> std::ops::Neg for Output<T>
-where
-    T: Copy + std::ops::Neg<Output = T>,
-{
-    type Output = Self;
-
-    fn neg(self) -> Self::Output {
+impl Output<PValue> {
+    pub(in crate::svc) fn has_impact(&self) -> bool {
         match self {
-            Self::Simple(inner) => Self::Simple(-inner),
-            Self::Complex(inner) => Self::Complex(-inner),
+            Output::Simple(inner) => inner.has_impact(),
+            Output::Complex(inner) => inner.has_impact(),
         }
     }
 }
@@ -96,22 +109,28 @@ where
     }
 }
 
-pub(in crate::svc) enum OutputIter<S, C> {
-    Simple(S),
-    Complex(C),
-}
-impl<S, C, T> Iterator for OutputIter<S, C>
-where
-    S: Iterator<Item = OutputIterItem<T>>,
-    C: Iterator<Item = OutputIterItem<T>>,
-    T: Copy,
-{
-    type Item = OutputIterItem<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions of inner type
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Output<PValue> {
+    pub(in crate::svc) fn into_value(self) -> Output<Value> {
         match self {
-            Self::Simple(inner) => inner.next(),
-            Self::Complex(inner) => inner.next(),
+            Self::Simple(inner) => Output::Simple(inner.into_value()),
+            Self::Complex(inner) => Output::Complex(inner.into_value()),
+        }
+    }
+}
+impl<T, U> std::ops::Neg for Output<T>
+where
+    T: Copy + std::ops::Neg<Output = U>,
+    U: Copy,
+{
+    type Output = Output<U>;
+
+    fn neg(self) -> Output<U> {
+        match self {
+            Self::Simple(inner) => Output::Simple(-inner),
+            Self::Complex(inner) => Output::Complex(-inner),
         }
     }
 }

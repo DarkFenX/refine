@@ -2,97 +2,99 @@ use super::item_checks::{
     check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct, check_ship_no_struct,
 };
 use crate::{
-    def::{AttrVal, OF},
+    misc::{PValue, Value},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, funcs, vast::Vast},
     ud::UItemId,
-    util::{FLOAT_TOLERANCE, ceil_tick},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
-pub(super) const AGILITY_CONST: AttrVal = OF(f64::from_bits(0x3eb74216c502a54f));
+pub(super) const AGILITY_CONST: PValue = PValue::from_f64_clamped(f64::from_bits(0x3eb74216c502a54f));
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_speed(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
-        let speed = funcs::get_speed(ctx, calc, item_key);
-        Ok(speed)
+        item_uid: UItemId,
+    ) -> Result<PValue, StatItemCheckError> {
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
+        Ok(funcs::get_speed(ctx, calc, item_uid))
     }
     pub(in crate::svc) fn get_stat_item_agility(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key))
+        item_uid: UItemId,
+    ) -> Result<Option<PValue>, StatItemCheckError> {
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
+        Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid))
     }
-    fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> Option<AttrVal> {
+    fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
         let attr_consts = ctx.ac();
         let agility = calc
-            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.agility, OF(0.0))
+            .get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.agility, Value::ZERO)
             .unwrap();
-        if agility <= OF(0.0) {
-            return None;
-        }
+        let agility = match agility > Value::ZERO {
+            true => PValue::from_value_unchecked(agility),
+            false => return None,
+        };
         let mass = calc
-            .get_item_oattr_afb_oextra(ctx, item_key, attr_consts.mass, OF(0.0))
+            .get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.mass, Value::ZERO)
             .unwrap();
-        if mass <= OF(0.0) {
-            return None;
-        }
+        let mass = match mass > Value::ZERO {
+            true => PValue::from_value_unchecked(mass),
+            false => return None,
+        };
         Some(AGILITY_CONST * agility * mass)
     }
     pub(in crate::svc) fn get_stat_item_align_time(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_drone_fighter_ship_no_struct(ctx.u_data, item_key)?;
-        let agility = Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_key);
-        let align_time = agility.map(ceil_tick);
+        item_uid: UItemId,
+    ) -> Result<Option<PValue>, StatItemCheckError> {
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
+        let agility = Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid);
+        let align_time = agility.map(PValue::ceil_tick);
         Ok(align_time)
     }
     pub(in crate::svc) fn get_stat_item_sig_radius(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_key))
+        item_uid: UItemId,
+    ) -> Result<PValue, StatItemCheckError> {
+        check_drone_fighter_ship(ctx.u_data, item_uid)?;
+        Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid))
     }
     pub(super) fn internal_get_stat_item_sig_radius_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> AttrVal {
-        funcs::get_sig_radius(ctx, calc, item_key)
+        item_uid: UItemId,
+    ) -> PValue {
+        funcs::get_sig_radius(ctx, calc, item_uid)
     }
     pub(in crate::svc) fn get_stat_item_mass(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<AttrVal, StatItemCheckError> {
-        check_drone_fighter_ship(ctx.u_data, item_key)?;
-        Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key))
+        item_uid: UItemId,
+    ) -> Result<PValue, StatItemCheckError> {
+        check_drone_fighter_ship(ctx.u_data, item_uid)?;
+        Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid))
     }
-    fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_key: UItemId) -> AttrVal {
-        calc.get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().mass, OF(0.0))
-            .unwrap()
+    fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
+        let mass = calc
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mass, Value::ZERO)
+            .unwrap();
+        PValue::from_value_clamped(mass)
     }
     pub(in crate::svc) fn get_stat_item_warp_speed(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_fighter_ship_no_struct(ctx.u_data, item_key)?;
+        item_uid: UItemId,
+    ) -> Result<Option<PValue>, StatItemCheckError> {
+        check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         let warp_speed = calc
-            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_speed_mult, OF(0.0))
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_speed_mult, Value::ZERO)
             .unwrap();
-        let warp_speed = match warp_speed > FLOAT_TOLERANCE {
-            true => Some(warp_speed),
+        let warp_speed = match warp_speed > Value::FLOAT_TOLERANCE {
+            true => Some(PValue::from_value_unchecked(warp_speed)),
             false => None,
         };
         Ok(warp_speed)
@@ -100,16 +102,17 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_max_warp_range(
         ctx: SvcCtx,
         calc: &mut Calc,
-        item_key: UItemId,
-    ) -> Result<Option<AttrVal>, StatItemCheckError> {
-        check_ship_no_struct(ctx.u_data, item_key)?;
-        let cap = Vast::internal_get_stat_item_cap_unchecked(ctx, calc, item_key);
-        let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_key);
-        let cap_need = calc
-            .get_item_oattr_afb_oextra(ctx, item_key, ctx.ac().warp_capacitor_need, OF(0.0))
-            .unwrap();
+        item_uid: UItemId,
+    ) -> Result<Option<PValue>, StatItemCheckError> {
+        check_ship_no_struct(ctx.u_data, item_uid)?;
+        let cap = Vast::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
+        let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);
+        let cap_need = PValue::from_value_clamped(
+            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_capacitor_need, Value::ZERO)
+                .unwrap(),
+        );
         let warp_range = cap / mass / cap_need;
-        let warp_range = match warp_range.is_finite() && warp_range > FLOAT_TOLERANCE {
+        let warp_range = match warp_range.is_finite() && warp_range > PValue::FLOAT_TOLERANCE {
             true => Some(warp_range),
             false => None,
         };

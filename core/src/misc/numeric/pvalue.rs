@@ -37,6 +37,9 @@ impl PValue {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
+    pub(crate) fn from_usize(v: usize) -> PValue {
+        Self(v as f64)
+    }
     pub(crate) fn from_a_value_clamped(value: AValue) -> Self {
         Self::from_f64_clamped(value.into_f64())
     }
@@ -180,5 +183,11 @@ impl std::ops::Div<Value> for PValue {
     type Output = Value;
     fn div(self, rhs: Value) -> Self::Output {
         Value::from_f64(self.0 / rhs.into_f64())
+    }
+}
+// Sum
+impl std::iter::Sum<PValue> for PValue {
+    fn sum<I: Iterator<Item = PValue>>(iter: I) -> Self {
+        PValue(iter.map(|v| v.0).sum())
     }
 }

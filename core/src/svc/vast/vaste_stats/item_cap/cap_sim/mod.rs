@@ -5,6 +5,7 @@ pub(crate) use stagger::StatCapSimStaggerInt;
 mod aggregate;
 mod event;
 mod prepare;
+mod shared;
 mod sim;
 mod stagger;
 mod vaste_cap_sim;

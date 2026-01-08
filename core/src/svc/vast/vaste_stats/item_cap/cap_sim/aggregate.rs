@@ -1,13 +1,16 @@
 use std::collections::BinaryHeap;
 
-use super::event::{CapSimEvent, CapSimEventCycleCheck};
+use super::{
+    event::{CapSimEvent, CapSimEventCycleCheck},
+    shared::SIG_ROUND_DIGITS,
+};
 use crate::{
-    def::{AttrVal, DefCount, OF},
+    misc::{Count, PValue, Value},
     svc::{
         cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
     },
-    util::{RMapVec, sig_round},
+    util::RMapVec,
 };
 
 pub(super) struct Aggregator {
@@ -17,12 +20,7 @@ impl Aggregator {
     pub(super) fn new() -> Self {
         Self { data: RMapVec::new() }
     }
-    pub(super) fn add_entry(
-        &mut self,
-        start_delay: AttrVal,
-        cseq: CycleSeq<CycleDataTimeCharge>,
-        opc: Output<AttrVal>,
-    ) {
+    pub(super) fn add_entry(&mut self, start_delay: PValue, cseq: CycleSeq<CycleDataTimeCharge>, opc: Output<Value>) {
         self.data.add_entry(
             AggrKey::new(start_delay, &cseq, &opc),
             AggrEventInfo { start_delay, cseq, opc },
@@ -37,12 +35,12 @@ impl Aggregator {
     fn process_aggr_group(
         aggr_group: &mut Vec<AggrEventInfo>,
         events: &mut BinaryHeap<CapSimEvent>,
-        filter_fn: fn(AttrVal, AttrVal) -> bool,
+        filter_fn: fn(Value, Value) -> bool,
     ) {
         // TODO: check if get_amount() is the right method to use here
         events.extend(
             aggr_group
-                .extract_if(.., |v| filter_fn(v.opc.get_amount(), OF(0.0)))
+                .extract_if(.., |v| filter_fn(v.opc.get_amount(), Value::ZERO))
                 .reduce(|mut l, r| {
                     l.opc.add_amount(r.opc.get_amount());
                     l
@@ -55,9 +53,9 @@ impl Aggregator {
 // Intermediate representation of event exists only to be able to aggregate data before it gets
 // converted into cap sim events, where some data needed for aggregation will be lost
 struct AggrEventInfo {
-    start_delay: AttrVal,
+    start_delay: PValue,
     cseq: CycleSeq<CycleDataTimeCharge>,
-    opc: Output<AttrVal>,
+    opc: Output<Value>,
 }
 impl AggrEventInfo {
     fn into_cap_sim_event(self) -> CapSimEvent {
@@ -72,14 +70,14 @@ impl AggrEventInfo {
 // Aggregation key with rounded floats
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKey {
-    start_delay: AttrVal,
+    start_delay: PValue,
     cseq: CycleSeq<CycleDataTime>,
     opc: AggrKeyOutput,
 }
 impl AggrKey {
-    fn new(start_delay: AttrVal, cseq: &CycleSeq<CycleDataTimeCharge>, opc: &Output<AttrVal>) -> Self {
+    fn new(start_delay: PValue, cseq: &CycleSeq<CycleDataTimeCharge>, opc: &Output<Value>) -> Self {
         Self {
-            start_delay: sig_round(start_delay, 10),
+            start_delay: start_delay.sig_rounded(SIG_ROUND_DIGITS),
             cseq: cseq.convert().copy_rounded(),
             opc: opc.into(),
         }
@@ -92,7 +90,7 @@ enum AggrKeyOutput {
     Complex(AggrKeyOutputComplex),
 }
 impl AggrKeyOutput {
-    fn from_output(output: &Output<AttrVal>) -> Self {
+    fn from_output(output: &Output<Value>) -> Self {
         match output {
             Output::Simple(inner) => AggrKeyOutput::Simple(inner.into()),
             Output::Complex(inner) => AggrKeyOutput::Complex(inner.into()),
@@ -102,28 +100,28 @@ impl AggrKeyOutput {
 
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKeyOutputSimple {
-    delay: AttrVal,
+    delay: PValue,
 }
 impl AggrKeyOutputSimple {
-    fn from_output_simple(output_simple: &OutputSimple<AttrVal>) -> Self {
+    fn from_output_simple(output_simple: &OutputSimple<Value>) -> Self {
         Self {
-            delay: sig_round(output_simple.delay, 10),
+            delay: output_simple.delay.sig_rounded(SIG_ROUND_DIGITS),
         }
     }
 }
 
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKeyOutputComplex {
-    delay: AttrVal,
-    repeats: DefCount,
-    interval: AttrVal,
+    delay: PValue,
+    repeats: Count,
+    interval: PValue,
 }
 impl AggrKeyOutputComplex {
-    fn from_output_complex(output_complex: &OutputComplex<AttrVal>) -> Self {
+    fn from_output_complex(output_complex: &OutputComplex<Value>) -> Self {
         Self {
-            delay: sig_round(output_complex.delay, 10),
+            delay: output_complex.delay.sig_rounded(SIG_ROUND_DIGITS),
             repeats: output_complex.repeats,
-            interval: sig_round(output_complex.interval, 10),
+            interval: output_complex.interval.sig_rounded(SIG_ROUND_DIGITS),
         }
     }
 }

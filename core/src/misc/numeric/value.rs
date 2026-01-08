@@ -2,6 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
+    def::AU,
     misc::{Count, PValue},
     util::{FLOAT_TOLERANCE, LibMax, round, sig_round},
 };
@@ -29,6 +30,7 @@ impl Value {
     pub(crate) const THOUSAND: Self = Self::from_f64(1000.0);
     pub(crate) const HUNDREDTH: Self = Self::from_f64(0.01);
     pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64(FLOAT_TOLERANCE);
+    pub(crate) const AU: Self = Self::from_f64(AU);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +106,7 @@ impl Value {
     pub(crate) fn sig_rounded(self, digits: u32) -> Self {
         Self(sig_round(self.0, digits))
     }
-    pub(crate) fn rounded_to_digits(&mut self, digits: i32) -> Self {
+    pub(crate) fn rounded_to_digits(self, digits: i32) -> Self {
         Self(round(self.0, digits))
     }
     pub(crate) fn round_to_digits(&mut self, digits: i32) {

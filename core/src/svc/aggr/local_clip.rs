@@ -4,7 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    misc::{InfCount, PValue, Value},
+    misc::{InfCount, PValue},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
     ud::UItemId,

@@ -1,6 +1,6 @@
 use super::item_checks::check_drone_fighter_ship;
 use crate::{
-    def::OF,
+    misc::{PValue, StOption, UnitInterval, Value},
     svc::{
         SvcCtx,
         aggr::aggr_proj_first_output,
@@ -19,41 +19,41 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
-        projectee_item_key: UItemId,
+        projectee_item_uid: UItemId,
     ) -> Result<StatJamApplied, StatItemCheckError> {
-        check_drone_fighter_ship(ctx.u_data, projectee_item_key)?;
-        let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_key) {
+        check_drone_fighter_ship(ctx.u_data, projectee_item_uid)?;
+        let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_uid) {
             Some(incoming_ecms) => incoming_ecms,
             None => {
                 return Ok(StatJamApplied {
-                    chance: OF(0.0),
-                    uptime: OF(0.0),
+                    chance: UnitInterval::ZERO,
+                    uptime: UnitInterval::ZERO,
                 });
             }
         };
-        let sensors = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_key);
-        let mut projectee_unjam_chance = OF(1.0);
-        let mut projectee_unjam_uptime = OF(1.0);
-        for (&projector_item_key, projector_data) in incoming_ecms.iter() {
-            let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_key, JAM_OPTIONS, false) {
+        let sensors = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_uid);
+        let mut projectee_unjam_chance = Value::ONE;
+        let mut projectee_unjam_uptime = Value::ONE;
+        for (&projector_item_uid, projector_data) in incoming_ecms.iter() {
+            let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_uid, JAM_OPTIONS, false) {
                 Some(cseq_map) => cseq_map,
                 None => continue,
             };
-            for (&effect_key, ospec) in projector_data.iter() {
-                let cseq = match cseq_map.get(&effect_key) {
+            for (&effect_rid, ospec) in projector_data.iter() {
+                let cseq = match cseq_map.get(&effect_rid) {
                     Some(cseq) => cseq,
                     None => continue,
                 };
-                let effect = ctx.u_data.src.get_effect_by_rid(effect_key);
+                let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
                 let projector_ecm_output = match aggr_proj_first_output(
                     ctx,
                     calc,
-                    projector_item_key,
+                    projector_item_uid,
                     effect,
                     cseq,
                     ospec,
-                    Some(projectee_item_key),
-                    None,
+                    Some(projectee_item_uid),
+                    StOption::Inherit,
                 ) {
                     Some(projector_ecm) => projector_ecm,
                     None => continue,
@@ -65,12 +65,12 @@ impl Vast {
                     StatSensorsKind::Gravimetric => projector_ecm.gravimetric,
                     StatSensorsKind::Ladar => projector_ecm.ladar,
                 };
-                if projector_ecm_str <= OF(0.0) {
+                if projector_ecm_str <= PValue::ZERO {
                     continue;
                 }
                 // Jam chance
-                let jam_chance = (projector_ecm_str / sensors.strength).clamp(OF(0.0), OF(1.0));
-                projectee_unjam_chance *= OF(1.0) - jam_chance;
+                let jam_chance = UnitInterval::from_pvalue_clamped(projector_ecm_str / sensors.strength);
+                projectee_unjam_chance *= Value::ONE - jam_chance.into_value();
                 // Jam uptime
                 // Theoretically, it is possible to have overlapping cycles with some items (e.g. if
                 // ECM burst projectors had super short cycle). This stat deliberately gives up on
@@ -79,13 +79,14 @@ impl Vast {
                 // - handling it properly would be much more complex;
                 // - uptime is an approximate stat by its nature (since value depends on how item cycles would be
                 //   distributed, and the lib does not expose controls to that).
-                let cycle_uptime = (projector_ecm.duration / projector_ecm_output.time).clamp(OF(0.0), OF(1.0));
-                projectee_unjam_uptime *= OF(1.0) - jam_chance * cycle_uptime;
+                let cycle_uptime =
+                    UnitInterval::from_pvalue_clamped(projector_ecm.duration / projector_ecm_output.time);
+                projectee_unjam_uptime *= Value::ONE - jam_chance.into_value() * cycle_uptime.into_value();
             }
         }
         let jam = StatJamApplied {
-            chance: OF(1.0) - projectee_unjam_chance,
-            uptime: OF(1.0) - projectee_unjam_uptime,
+            chance: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_chance),
+            uptime: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_uptime),
         };
         Ok(jam)
     }

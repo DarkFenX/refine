@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use crate::{
-    def::AttrVal,
+    misc::{PValue, Value},
     svc::{
         cycle::{CycleDataTimeCharge, CycleIter},
         output::Output,
@@ -14,7 +14,7 @@ pub(super) enum CapSimEvent {
     CapGain(CapSimEventCapGain),
 }
 impl CapSimEvent {
-    pub(super) fn get_time(&self) -> AttrVal {
+    pub(super) fn get_time(&self) -> PValue {
         match self {
             Self::CycleCheck(event) => event.time,
             Self::InjectorReady(event) => event.time,
@@ -61,19 +61,19 @@ impl PartialEq<Self> for CapSimEvent {
 impl Eq for CapSimEvent {}
 
 pub(super) struct CapSimEventCycleCheck {
-    pub(super) time: AttrVal,
+    pub(super) time: PValue,
     pub(super) cycle_iter: CycleIter<CycleDataTimeCharge>,
-    pub(super) opc: Output<AttrVal>,
+    pub(super) opc: Output<Value>,
 }
 
 pub(super) struct CapSimEventCapGain {
-    pub(super) time: AttrVal,
-    pub(super) amount: AttrVal,
+    pub(super) time: PValue,
+    pub(super) amount: Value,
 }
 
 pub(super) struct CapSimEventInjector {
-    pub(super) time: AttrVal,
+    pub(super) time: PValue,
     pub(super) cycle_iter: CycleIter<CycleDataTimeCharge>,
-    pub(super) opc: Output<AttrVal>,
-    pub(super) immediate_amount: Option<AttrVal>,
+    pub(super) opc: Output<Value>,
+    pub(super) immediate_amount: Option<Value>,
 }
