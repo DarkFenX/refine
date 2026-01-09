@@ -211,13 +211,16 @@ pub(in crate::nd::effect::data) fn get_bomb_range_mult(
 fn calc_flight_range(max_velocity: PValue, flight_time: PValue, mass: PValue, agility: PValue) -> PValue {
     // Missiles use the regular object acceleration formula:
     // https://wiki.eveuniversity.org/Acceleration#Mathematics_and_formulae
-    // Here, integral of this formula is calculated
+    // Here, a definite integral of this formula is calculated
+    if flight_time == PValue::ZERO {
+        return PValue::ZERO;
+    }
     let inertia_factor = 1000000.0 / (mass.into_f64() * agility.into_f64());
+    if !inertia_factor.is_finite() {
+        return max_velocity * flight_time;
+    }
     let flight_time = flight_time.into_f64();
-    // With all the non-negative inputs, non-negative result is guaranteed - third part of formula
-    // should always be equal to or smaller than (flight time - 1) even with the float inaccuracy
-    // involved
-    let range_units = flight_time - 1.0 + f64::exp(-inertia_factor * flight_time) / inertia_factor;
+    let range_units = flight_time + (f64::exp(-inertia_factor * flight_time) - 1.0) / inertia_factor;
     PValue::from_f64_unchecked(max_velocity.into_f64() * range_units)
 }
 

@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use serde_with::{Map, serde_as, DisplayFromStr};
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 #[serde_as]
 #[derive(Deserialize)]
