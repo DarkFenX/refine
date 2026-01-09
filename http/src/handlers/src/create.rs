@@ -4,10 +4,11 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use serde::Deserialize;
 
 use crate::{bridge::HBrError, handlers::HSingleErr, state::HAppState};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HCreateSrcReq {
     data_version: String,
     data_base_url: String,

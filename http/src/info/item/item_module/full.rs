@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HModuleInfoPartial;
 use crate::info::{HItemInfoMode, item::extended::HItemExtendedInfo};
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HModuleInfoFull {
     #[serde(flatten)]
     partial_info: HModuleInfoPartial,

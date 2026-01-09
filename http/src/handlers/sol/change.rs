@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use serde::{Deserialize, Serialize};
 
 use crate::{
     cmd::{HChangeSolCommand, HCmdResp},
@@ -12,12 +13,12 @@ use crate::{
     state::HAppState,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HSolChangeReq {
     commands: Vec<HChangeSolCommand>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 struct HSolChangeResp {
     solar_system: HSolInfo,
     cmd_results: Vec<HCmdResp>,

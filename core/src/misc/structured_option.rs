@@ -16,3 +16,15 @@ impl<T> StOption<T> {
         matches!(self, StOption::Set(_))
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> From<Option<T>> for StOption<T> {
+    fn from(option: Option<T>) -> Self {
+        match option {
+            Some(value) => StOption::Set(value),
+            None => StOption::Inherit,
+        }
+    }
+}

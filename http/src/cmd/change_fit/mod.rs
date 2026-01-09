@@ -21,6 +21,7 @@ pub(in crate::cmd) use item_stance::{
     HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HRemoveStanceCmd, HSetStanceCmd,
 };
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
+use serde::Deserialize;
 
 use crate::{cmd::HCmdResp, util::HExecError};
 
@@ -41,7 +42,7 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeFitCommand {
     // Fit

@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HCharacterInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HCharacterInfoFull {
     #[serde(flatten)]
     partial_info: HCharacterInfoPartial,

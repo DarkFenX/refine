@@ -1,4 +1,7 @@
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+
+#[derive(Serialize)]
 pub(crate) struct HStatMining {
     #[serde(skip_serializing_if = "HStatMiningAmount::is_null")]
     ore: HStatMiningAmount,
@@ -17,21 +20,21 @@ impl From<rc::stats::StatMining> for HStatMining {
     }
 }
 
-#[derive(serde_tuple::Serialize_tuple)]
+#[derive(Serialize_tuple)]
 struct HStatMiningAmount {
-    yield_: rc::AttrVal,
-    drain: rc::AttrVal,
+    yield_: f64,
+    drain: f64,
 }
 impl HStatMiningAmount {
     fn is_null(&self) -> bool {
-        self.yield_.into_inner() == 0.0 && self.drain.into_inner() == 0.0
+        self.yield_ == 0.0 && self.drain == 0.0
     }
 }
 impl From<rc::MiningAmount> for HStatMiningAmount {
     fn from(core_stat: rc::MiningAmount) -> Self {
         Self {
-            yield_: core_stat.yield_,
-            drain: core_stat.drain,
+            yield_: core_stat.yield_.into_f64(),
+            drain: core_stat.drain.into_f64(),
         }
     }
 }

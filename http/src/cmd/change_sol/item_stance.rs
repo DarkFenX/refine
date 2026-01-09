@@ -1,12 +1,15 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_fit},
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HSetStanceCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HSetStanceCmd,
@@ -17,7 +20,7 @@ impl HSetStanceCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HChangeStanceCmd {
     ViaItemId(HChangeStanceViaItemIdCmd),
@@ -32,7 +35,7 @@ impl HChangeStanceCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeStanceViaItemIdCmd {
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeStanceViaItemIdCmd,
@@ -43,10 +46,10 @@ impl HChangeStanceViaItemIdCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeStanceViaFitIdCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeStanceViaFitIdCmd,
@@ -57,10 +60,10 @@ impl HChangeStanceViaFitIdCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HRemoveStanceCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HRemoveStanceCmd,

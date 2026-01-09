@@ -1,11 +1,13 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::info::{HItemInfoMode, item::item_charge::HChargeInfo};
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HModuleInfoId {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<HChargeInfo>,

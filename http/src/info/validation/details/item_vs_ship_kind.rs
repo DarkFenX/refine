@@ -1,10 +1,14 @@
 use std::collections::HashMap;
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::validation) struct HValItemVsShipKindFail {
     ship_kind: HShipKind,
-    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
+    #[serde_as(as = "&HashMap<DisplayFromStr, _>")]
     items: HashMap<rc::ItemId, HShipKind>,
 }
 impl From<&rc::val::ValItemVsShipKindFail> for HValItemVsShipKindFail {
@@ -20,7 +24,7 @@ impl From<&rc::val::ValItemVsShipKindFail> for HValItemVsShipKindFail {
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 enum HShipKind {
     Ship,

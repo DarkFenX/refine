@@ -1,11 +1,12 @@
 use detailed::{HFitValResultDetailed, HSolValResultDetailed};
+use serde::Serialize;
 use simple::HValResultSimple;
 
 mod detailed;
 mod details;
 mod simple;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HSolValResult {
     Simple(HValResultSimple),
@@ -22,7 +23,7 @@ impl From<&rc::val::ValResultSol> for HSolValResult {
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HFitValResult {
     Simple(HValResultSimple),

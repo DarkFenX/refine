@@ -1,6 +1,7 @@
 use full::HStanceInfoFull;
 use id::HStanceInfoId;
 use partial::HStanceInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HStanceInfo {
     Id(HStanceInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HStanceInfo {
     Full(HStanceInfoFull),
 }
 impl HStanceInfo {
-    pub(crate) fn mk_info(stance_implant: &mut rc::StanceMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(stance_implant: &mut rc::StanceMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(stance_implant.into()),
             HItemInfoMode::Partial => Self::Partial(stance_implant.into()),

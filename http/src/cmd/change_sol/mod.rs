@@ -18,6 +18,7 @@ pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HRemoveStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
+use serde::Deserialize;
 pub(in crate::cmd) use sol::HChangeSolCmd;
 
 use crate::{
@@ -47,7 +48,7 @@ mod item_subsystem;
 mod item_sw_effect;
 mod sol;
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeSolCommand {
     // Solar system

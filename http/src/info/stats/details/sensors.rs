@@ -1,18 +1,21 @@
-#[derive(serde_tuple::Serialize_tuple)]
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+
+#[derive(Serialize_tuple)]
 pub(crate) struct HStatSensors {
     kind: HStatSensorKind,
-    strength: rc::AttrVal,
+    strength: f64,
 }
 impl From<rc::stats::StatSensors> for HStatSensors {
     fn from(core_stat: rc::stats::StatSensors) -> Self {
         Self {
             kind: core_stat.kind.into(),
-            strength: core_stat.strength,
+            strength: core_stat.strength.into_f64(),
         }
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 enum HStatSensorKind {
     Radar,

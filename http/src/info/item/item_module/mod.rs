@@ -1,6 +1,7 @@
 use full::HModuleInfoFull;
 use id::HModuleInfoId;
 use partial::HModuleInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HModuleInfo {
     Id(HModuleInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HModuleInfo {
     Full(HModuleInfoFull),
 }
 impl HModuleInfo {
-    pub(crate) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(HModuleInfoId::mk_info(core_module, item_mode)),
             HItemInfoMode::Partial => Self::Partial(HModuleInfoPartial::mk_info(core_module, item_mode)),

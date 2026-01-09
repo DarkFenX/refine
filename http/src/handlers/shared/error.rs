@@ -1,6 +1,8 @@
+use serde::Serialize;
+
 use crate::bridge::HBrError;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(in crate::handlers) struct HSingleErr {
     code: String,
     message: String,

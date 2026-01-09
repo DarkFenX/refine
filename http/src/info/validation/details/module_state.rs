@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::shared::HModuleState;
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValModuleStateFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     modules: HashMap<rc::ItemId, HValModuleStateModuleInfo>,
 }
 impl From<&rc::val::ValModuleStateFail> for HValModuleStateFail {
@@ -21,8 +25,8 @@ impl From<&rc::val::ValModuleStateFail> for HValModuleStateFail {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 struct HValModuleStateModuleInfo {
     state: HModuleState,
     max_state: HModuleState,
@@ -30,8 +34,8 @@ struct HValModuleStateModuleInfo {
 impl From<&rc::val::ValModuleStateModuleInfo> for HValModuleStateModuleInfo {
     fn from(core_val_module_info: &rc::val::ValModuleStateModuleInfo) -> Self {
         Self {
-            state: (&core_val_module_info.state).into(),
-            max_state: (&core_val_module_info.max_state).into(),
+            state: HModuleState::from_core(core_val_module_info.state),
+            max_state: HModuleState::from_core(core_val_module_info.max_state),
         }
     }
 }

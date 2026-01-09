@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use serde::{Deserialize, Serialize};
 
 use crate::{
     bridge::HBrError,
@@ -14,12 +15,12 @@ use crate::{
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HFitChangeReq {
     commands: Vec<HChangeFitCommand>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 struct HFitChangeResp {
     fit: HFitInfo,
     cmd_results: Vec<HCmdResp>,

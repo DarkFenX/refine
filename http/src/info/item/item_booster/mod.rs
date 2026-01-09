@@ -1,6 +1,7 @@
 use full::HBoosterInfoFull;
 use id::HBoosterInfoId;
 use partial::HBoosterInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -9,7 +10,7 @@ mod id;
 mod partial;
 mod side_effect;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HBoosterInfo {
     Id(HBoosterInfoId),
@@ -17,7 +18,7 @@ pub(crate) enum HBoosterInfo {
     Full(HBoosterInfoFull),
 }
 impl HBoosterInfo {
-    pub(crate) fn mk_info(core_booster: &mut rc::BoosterMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_booster: &mut rc::BoosterMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_booster.into()),
             HItemInfoMode::Partial => Self::Partial(core_booster.into()),

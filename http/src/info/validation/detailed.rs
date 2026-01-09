@@ -1,5 +1,8 @@
 use std::collections::HashMap;
 
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::info::validation::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
     HValChargeVolumeFail, HValDroneGroupFail, HValEffectSecZoneFail, HValEffectStopperFail, HValFighterSquadSizeFail,
@@ -10,7 +13,7 @@ use crate::info::validation::details::{
 };
 
 // Sol-specific
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HSolValResultDetailed {
     passed: bool,
     #[serde(skip_serializing_if = "HSolValDetails::is_empty")]
@@ -25,11 +28,11 @@ impl From<&rc::val::ValResultSol> for HSolValResultDetailed {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HSolValDetails {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     fits: HashMap<rc::FitId, HValFitInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     not_loaded_item: Option<HValNotLoadedItemFail>,
@@ -53,7 +56,7 @@ impl From<&rc::val::ValResultSol> for HSolValDetails {
 }
 
 // Fit-specific
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HFitValResultDetailed {
     passed: bool,
     #[serde(skip_serializing_if = "HValFitInfo::is_empty")]
@@ -69,8 +72,8 @@ impl From<&rc::val::ValResultFit> for HFitValResultDetailed {
 }
 
 // Shared
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 struct HValFitInfo {
     // Generic
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -1,4 +1,6 @@
-#[derive(serde::Serialize, serde::Deserialize)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Copy, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HModuleState {
     Disabled,
@@ -7,8 +9,8 @@ pub(crate) enum HModuleState {
     Active,
     Overload,
 }
-impl From<&rc::ModuleState> for HModuleState {
-    fn from(core_module_state: &rc::ModuleState) -> Self {
+impl HModuleState {
+    pub(crate) fn from_core(core_module_state: rc::ModuleState) -> Self {
         match core_module_state {
             rc::ModuleState::Disabled => Self::Disabled,
             rc::ModuleState::Offline => Self::Offline,
@@ -17,15 +19,13 @@ impl From<&rc::ModuleState> for HModuleState {
             rc::ModuleState::Overload => Self::Overload,
         }
     }
-}
-impl From<&HModuleState> for rc::ModuleState {
-    fn from(h_module_state: &HModuleState) -> Self {
-        match h_module_state {
-            HModuleState::Disabled => Self::Disabled,
-            HModuleState::Offline => Self::Offline,
-            HModuleState::Online => Self::Online,
-            HModuleState::Active => Self::Active,
-            HModuleState::Overload => Self::Overload,
+    pub(crate) fn into_core(self) -> rc::ModuleState {
+        match self {
+            Self::Disabled => rc::ModuleState::Disabled,
+            Self::Offline => rc::ModuleState::Offline,
+            Self::Online => rc::ModuleState::Online,
+            Self::Active => rc::ModuleState::Active,
+            Self::Overload => rc::ModuleState::Overload,
         }
     }
 }

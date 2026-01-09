@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-
 use rc::{ItemCommon, Lender};
+use serde::Serialize;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::{
     info::{
@@ -10,25 +10,27 @@ use crate::{
             proj::HRangedProjInfo,
         },
     },
-    shared::{HCoordinates, HEffectId, HMinionState, HMovement},
+    shared::{HCoordinates, HMinionState, HMovement},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HFighterInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    type_id: i32,
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
     count: Option<HAdjustableCount>,
-    #[serde(skip_serializing_if = "HashMap::is_empty")]
-    abilities: HashMap<rc::AbilId, HAbilityInfo>,
-    #[serde(skip_serializing_if = "HashMap::is_empty")]
-    autocharges: HashMap<HEffectId, HAutochargeInfo>,
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    abilities: Vec<(i32, HAbilityInfo)>,
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    autocharges: Vec<(rc::EffectId, HAutochargeInfo)>,
     coordinates: HCoordinates,
     movement: HMovement,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -39,11 +41,14 @@ impl HFighterInfoPartial {
         Self {
             id: core_fighter.get_item_id(),
             kind: "fighter",
-            type_id: core_fighter.get_type_id(),
+            type_id: core_fighter.get_type_id().into_i32(),
             fit_id: core_fighter.get_fit().get_fit_id(),
-            state: (&core_fighter.get_state()).into(),
-            count: core_fighter.get_count().map(Into::into),
-            abilities: core_fighter.iter_abilities().map(|v| (v.get_id(), v.into())).collect(),
+            state: HMinionState::from_core(core_fighter.get_state()),
+            count: core_fighter.get_count().map(HAdjustableCount::from_core_fighter_count),
+            abilities: core_fighter
+                .iter_abilities()
+                .map(|v| (v.get_id().into_i32(), HAbilityInfo::from_core(v)))
+                .collect(),
             autocharges: core_fighter
                 .iter_autocharges_mut()
                 .map_into_iter(|mut autocharge| {
@@ -53,9 +58,9 @@ impl HFighterInfoPartial {
                     )
                 })
                 .collect(),
-            coordinates: core_fighter.get_coordinates().into(),
-            movement: core_fighter.get_movement().into(),
-            projs: core_fighter.iter_projs().map(Into::into).collect(),
+            coordinates: HCoordinates::from_core(core_fighter.get_coordinates()),
+            movement: HMovement::from_core(core_fighter.get_movement()),
+            projs: core_fighter.iter_projs().map(HRangedProjInfo::from_core).collect(),
         }
     }
 }

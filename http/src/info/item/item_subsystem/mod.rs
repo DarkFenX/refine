@@ -1,6 +1,7 @@
 use full::HSubsystemInfoFull;
 use id::HSubsystemInfoId;
 use partial::HSubsystemInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HSubsystemInfo {
     Id(HSubsystemInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HSubsystemInfo {
     Full(HSubsystemInfoFull),
 }
 impl HSubsystemInfo {
-    pub(crate) fn mk_info(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_subsystem.into()),
             HItemInfoMode::Partial => Self::Partial(core_subsystem.into()),

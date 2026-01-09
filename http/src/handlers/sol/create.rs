@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use serde::Deserialize;
 
 use crate::{
     bridge::HBrError,
@@ -12,7 +13,7 @@ use crate::{
     state::HAppState,
 };
 
-#[derive(Default, serde::Deserialize)]
+#[derive(Default, Deserialize)]
 pub(crate) struct HCreateSolReq {
     src_alias: Option<String>,
     #[serde(flatten)]

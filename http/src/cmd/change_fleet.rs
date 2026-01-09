@@ -1,15 +1,18 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HFleetIdResp, shared::get_primary_fleet},
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeFleetCmd {
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_fits: Vec<rc::FitId>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     remove_fits: Vec<rc::FitId>,
 }

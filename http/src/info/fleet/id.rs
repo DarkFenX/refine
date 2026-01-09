@@ -1,7 +1,10 @@
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HFleetInfoId {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::FleetId,
 }
 impl From<&mut rc::FleetMut<'_>> for HFleetInfoId {

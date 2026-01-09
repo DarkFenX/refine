@@ -1,6 +1,7 @@
 use full::HChargeInfoFull;
 use id::HChargeInfoId;
 use partial::HChargeInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HChargeInfo {
     Id(HChargeInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HChargeInfo {
     Full(HChargeInfoFull),
 }
 impl HChargeInfo {
-    pub(crate) fn mk_info(core_charge: &mut rc::ChargeMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_charge: &mut rc::ChargeMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_charge.into()),
             HItemInfoMode::Partial => Self::Partial(core_charge.into()),

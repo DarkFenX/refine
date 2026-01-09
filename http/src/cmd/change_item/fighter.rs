@@ -1,3 +1,6 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{
         HItemIdsResp,
@@ -7,21 +10,21 @@ use crate::{
     util::{HExecError, TriStateField},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
-    type_id: Option<rc::ItemTypeId>,
+    type_id: Option<i32>,
     #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
-    count: TriStateField<rc::DefCount>,
+    count: TriStateField<u32>,
     #[serde(default)]
     abilities: Option<HAbilityMap>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
     #[serde(default)]
@@ -42,10 +45,10 @@ impl HChangeFighterCmd {
             rc::err::GetFighterError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
         })?;
         if let Some(type_id) = self.type_id {
-            core_fighter.set_type_id(type_id);
+            core_fighter.set_type_id(rc::ItemTypeId::from_i32(type_id));
         }
         if let Some(state) = &self.state {
-            core_fighter.set_state(state.into());
+            core_fighter.set_state(state.into_core());
         }
         match self.count {
             TriStateField::Value(count) => {
@@ -67,18 +70,18 @@ impl HChangeFighterCmd {
                 })?
                 .remove();
         }
-        if let Some(coordinates) = self.coordinates {
-            core_fighter.set_coordinates(coordinates.into());
-        }
-        if let Some(movement) = self.movement {
-            core_fighter.set_movement(movement.into());
-        }
         for projectee_item_id in self.add_projs.iter() {
             core_fighter.add_proj(projectee_item_id).map_err(|error| match error {
                 rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                 rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
                 rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
             })?;
+        }
+        if let Some(coordinates) = self.coordinates {
+            core_fighter.set_coordinates(coordinates.into_core());
+        }
+        if let Some(movement) = self.movement {
+            core_fighter.set_movement(movement.into_core());
         }
         apply_effect_modes(&mut core_fighter, &self.effect_modes);
         Ok(core_fighter.into())

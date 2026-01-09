@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfoMode};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HSolInfoParams {
     pub(in crate::handlers::sol) sol: Option<HSolInfoMode>,
     pub(in crate::handlers::sol) fleet: Option<HFleetInfoMode>,

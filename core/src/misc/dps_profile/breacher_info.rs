@@ -9,11 +9,17 @@ pub struct Breacher {
     relative_max: UnitInterval,
 }
 impl Breacher {
-    pub fn new_clamped(absolute_max: Value, relative_max: Value) -> Self {
+    pub fn new(absolute_max: PValue, relative_max: UnitInterval) -> Self {
         Self {
-            absolute_max: PValue::from_value_clamped(absolute_max),
-            relative_max: UnitInterval::from_value_clamped(relative_max),
+            absolute_max,
+            relative_max,
         }
+    }
+    pub fn new_clamped(absolute_max: Value, relative_max: Value) -> Self {
+        Self::new(
+            PValue::from_value_clamped(absolute_max),
+            UnitInterval::from_value_clamped(relative_max),
+        )
     }
     pub fn try_new(absolute_max: Value, relative_max: Value) -> Result<Self, BreacherError> {
         let absolute_max = match absolute_max >= Value::ZERO {
@@ -24,10 +30,7 @@ impl Breacher {
             Ok(relative_max) => relative_max,
             Err(_) => return Err(BreacherDmgError::Relative(relative_max).into()),
         };
-        Ok(Self {
-            absolute_max,
-            relative_max,
-        })
+        Ok(Self::new(absolute_max, relative_max))
     }
     pub fn get_absolute_max(&self) -> PValue {
         self.absolute_max

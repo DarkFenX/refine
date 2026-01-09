@@ -1,13 +1,15 @@
 use rc::ItemCommon;
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HSetCharacterCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: Option<bool>,
 }
 impl HSetCharacterCmd {
@@ -17,7 +19,7 @@ impl HSetCharacterCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_character = core_fit.set_character(self.type_id);
+        let mut core_character = core_fit.set_character(rc::ItemTypeId::from_i32(self.type_id));
         if let Some(state) = self.state {
             core_character.set_state(state);
         }
@@ -25,7 +27,7 @@ impl HSetCharacterCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HChangeCharacterCmd {
     ViaItemId(HChangeCharacterViaItemIdCmd),
@@ -44,10 +46,10 @@ impl HChangeCharacterCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeCharacterViaItemIdCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeCharacterCmd,
@@ -58,7 +60,7 @@ impl HChangeCharacterViaItemIdCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeCharacterViaFitIdCmd {
     #[serde(flatten)]
     item_cmd: change_item::HChangeCharacterCmd,
@@ -78,7 +80,7 @@ impl HChangeCharacterViaFitIdCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HRemoveCharacterCmd {}
 impl HRemoveCharacterCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {

@@ -1,16 +1,18 @@
 use rc::Lender;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
-    shared::{HDpsProfile, HFitSecStatus},
+    shared::HDpsProfile,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HFitInfoFull {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::FitId,
-    #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     fleet: Option<rc::FleetId>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,7 +41,7 @@ pub(crate) struct HFitInfoFull {
     fighters: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     fw_effects: Vec<HItemInfo>,
-    sec_status: HFitSecStatus,
+    sec_status: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
     rah_incoming_dps: Option<HDpsProfile>,
 }
@@ -113,13 +115,13 @@ impl HFitInfoFull {
                 .iter_fw_effects_mut()
                 .map_into_iter(|mut core_fw_effect| HItemInfo::mk_info(&mut core_fw_effect, item_mode))
                 .collect(),
-            sec_status: core_fit.get_sec_status().get_inner().into_inner(),
+            sec_status: core_fit.get_sec_status().into_f64(),
             rah_incoming_dps: core_fit.get_rah_incoming_dps().map(Into::into),
         }
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 struct HModuleRacks {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     high: Vec<Option<HItemInfo>>,

@@ -1,6 +1,4 @@
-pub(crate) use op::HSideEffectOp;
-pub(crate) use side_effect::HSideEffectInfo;
-pub(crate) use strength::HSideEffectStr;
+pub(in crate::info::item::item_booster) use side_effect::HSideEffectInfo;
 
 mod op;
 mod side_effect;

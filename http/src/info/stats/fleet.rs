@@ -1,6 +1,8 @@
+use serde::Serialize;
+
 use crate::info::stats::details::{HStatDmg, HStatMining, HStatTank};
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HFleetStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) dps: Option<Vec<Option<HStatDmg>>>,
@@ -9,11 +11,11 @@ pub(crate) struct HFleetStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) mps: Option<Vec<HStatMining>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_nps: Option<Vec<Option<rc::AttrVal>>>,
+    pub(crate) outgoing_nps: Option<Vec<Option<f64>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_rps: Option<Vec<Option<HStatTank<rc::AttrVal>>>>,
+    pub(crate) outgoing_rps: Option<Vec<Option<HStatTank<f64>>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_cps: Option<Vec<Option<rc::AttrVal>>>,
+    pub(crate) outgoing_cps: Option<Vec<Option<f64>>>,
 }
 impl HFleetStats {
     pub(crate) fn new() -> Self {

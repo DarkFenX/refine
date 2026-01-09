@@ -1,24 +1,24 @@
-#[derive(Copy, Clone, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+use serde_tuple::{Deserialize_tuple, Serialize_tuple};
+
+#[derive(Copy, Clone, Serialize_tuple, Deserialize_tuple)]
 pub(crate) struct HCoordinates {
-    x: rc::AttrVal,
-    y: rc::AttrVal,
-    z: rc::AttrVal,
+    x: f64,
+    y: f64,
+    z: f64,
 }
-impl From<rc::Coordinates> for HCoordinates {
-    fn from(core_coordinates: rc::Coordinates) -> Self {
+impl HCoordinates {
+    pub(crate) fn from_core(core_coordinates: rc::Coordinates) -> Self {
         Self {
-            x: core_coordinates.x,
-            y: core_coordinates.y,
-            z: core_coordinates.z,
+            x: core_coordinates.x.into_f64(),
+            y: core_coordinates.y.into_f64(),
+            z: core_coordinates.z.into_f64(),
         }
     }
-}
-impl From<HCoordinates> for rc::Coordinates {
-    fn from(h_coordinates: HCoordinates) -> Self {
-        Self {
-            x: h_coordinates.x,
-            y: h_coordinates.y,
-            z: h_coordinates.z,
+    pub(crate) fn into_core(self) -> rc::Coordinates {
+        rc::Coordinates {
+            x: rc::Value::from_f64(self.x),
+            y: rc::Value::from_f64(self.y),
+            z: rc::Value::from_f64(self.z),
         }
     }
 }

@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HImplantInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HImplantInfoFull {
     #[serde(flatten)]
     partial_info: HImplantInfoPartial,

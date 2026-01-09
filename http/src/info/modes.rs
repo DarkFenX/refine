@@ -1,4 +1,6 @@
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+use serde::Deserialize;
+
+#[derive(Copy, Clone, Default, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HSolInfoMode {
     Id,
@@ -6,7 +8,7 @@ pub(crate) enum HSolInfoMode {
     Full,
 }
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, Default, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HFitInfoMode {
     Id,
@@ -14,7 +16,7 @@ pub(crate) enum HFitInfoMode {
     Full,
 }
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, Default, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HItemInfoMode {
     Id,
@@ -23,7 +25,7 @@ pub(crate) enum HItemInfoMode {
     Full,
 }
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, Default, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HFleetInfoMode {
     #[default]
@@ -31,7 +33,7 @@ pub(crate) enum HFleetInfoMode {
     Full,
 }
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, Default, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HValidInfoMode {
     Simple,

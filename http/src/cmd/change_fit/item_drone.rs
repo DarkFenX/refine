@@ -1,3 +1,6 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
@@ -7,9 +10,9 @@ use crate::{
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HAddDroneCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: HMinionState,
     mutation: Option<HMutationOnAdd>,
     coordinates: Option<HCoordinates>,
@@ -24,19 +27,20 @@ impl HAddDroneCmd {
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_drone = core_fit.add_drone(
-            self.type_id,
-            (&self.state).into(),
-            self.coordinates.map(Into::into),
-            self.movement.map(Into::into),
-            self.prop_mode.unwrap_or(HNpcProp::Chase).into(),
+            rc::ItemTypeId::from_i32(self.type_id),
+            self.state.into_core(),
+            self.coordinates.map(|v| v.into_core()),
+            self.movement.map(|v| v.into_core()),
         );
         if let Some(h_mutation) = self.mutation.as_ref() {
             match h_mutation {
                 HMutationOnAdd::Short(mutator_id) => {
-                    core_drone.mutate(*mutator_id).unwrap();
+                    let core_mutator_id = rc::ItemTypeId::from_i32(*mutator_id);
+                    core_drone.mutate(core_mutator_id).unwrap();
                 }
                 HMutationOnAdd::Full(h_full_mutation) => {
-                    let core_mutation = core_drone.mutate(h_full_mutation.mutator_id).unwrap();
+                    let core_mutator_id = rc::ItemTypeId::from_i32(h_full_mutation.mutator_id);
+                    let core_mutation = core_drone.mutate(core_mutator_id).unwrap();
                     apply_mattrs_on_add(core_mutation, h_full_mutation);
                 }
             }
@@ -45,10 +49,10 @@ impl HAddDroneCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
-pub(crate) struct HChangeDroneCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+#[serde_as]
+#[derive(Deserialize)]
+pub(in crate::cmd) struct HChangeDroneCmd {
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeDroneCmd,

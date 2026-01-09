@@ -19,3 +19,8 @@ impl SlotIndex {
         Self(round_f64_to_i32(value))
     }
 }
+impl From<SlotIndex> for i32 {
+    fn from(v: SlotIndex) -> Self {
+        v.0
+    }
+}

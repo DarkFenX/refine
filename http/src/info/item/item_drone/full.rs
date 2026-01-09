@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HDroneInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HDroneInfoFull {
     #[serde(flatten)]
     partial_info: HDroneInfoPartial,

@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HRigInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HRigInfoFull {
     #[serde(flatten)]
     partial_info: HRigInfoPartial,

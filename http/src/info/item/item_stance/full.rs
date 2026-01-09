@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HStanceInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HStanceInfoFull {
     #[serde(flatten)]
     partial_info: HStanceInfoPartial,

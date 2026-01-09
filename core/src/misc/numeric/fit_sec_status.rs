@@ -35,6 +35,11 @@ impl FitSecStatus {
         Value::from_f64(self.0)
     }
 }
+impl From<FitSecStatus> for f64 {
+    fn from(v: FitSecStatus) -> Self {
+        v.0
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ordering/equality - those are implemented manually using conversion of values into ordered

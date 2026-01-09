@@ -1,13 +1,15 @@
-#[derive(serde_tuple::Serialize_tuple)]
+use serde_tuple::Serialize_tuple;
+
+#[derive(Serialize_tuple)]
 pub(in crate::info::item::extended) struct HAttrVals {
-    base: rc::AttrVal,
-    modified: rc::AttrVal,
+    base: f64,
+    modified: f64,
 }
-impl From<&rc::AttrVals> for HAttrVals {
-    fn from(core_attr_vals: &rc::AttrVals) -> Self {
+impl HAttrVals {
+    pub(in crate::info::item::extended) fn from_core(core_attr_vals: rc::AttrVals) -> Self {
         Self {
-            base: core_attr_vals.base,
-            modified: core_attr_vals.modified,
+            base: core_attr_vals.base.into_f64(),
+            modified: core_attr_vals.modified.into_f64(),
         }
     }
 }

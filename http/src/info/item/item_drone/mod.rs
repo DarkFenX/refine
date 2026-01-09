@@ -1,6 +1,8 @@
 use full::HDroneInfoFull;
 use id::HDroneInfoId;
 use partial::HDroneInfoPartial;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +10,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HDroneInfo {
     Id(HDroneInfoId),
@@ -16,7 +18,7 @@ pub(crate) enum HDroneInfo {
     Full(HDroneInfoFull),
 }
 impl HDroneInfo {
-    pub(crate) fn mk_info(core_drone: &mut rc::DroneMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_drone: &mut rc::DroneMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_drone.into()),
             HItemInfoMode::Partial => Self::Partial(core_drone.into()),

@@ -1,12 +1,13 @@
 use full::HSolInfoFull;
 use id::HSolInfoId;
+use serde::Serialize;
 
 use crate::info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfoMode};
 
 mod full;
 mod id;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HSolInfo {
     Id(HSolInfoId),

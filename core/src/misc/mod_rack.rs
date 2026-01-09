@@ -1,15 +1,8 @@
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display, derive_more::FromStr)]
+#[display(rename_all = "snake_case")]
+#[from_str(rename_all = "snake_case")]
 pub enum ModRack {
     High,
     Mid,
     Low,
-}
-impl std::fmt::Display for ModRack {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::High => write!(f, "high"),
-            Self::Mid => write!(f, "mid"),
-            Self::Low => write!(f, "low"),
-        }
-    }
 }

@@ -1,14 +1,16 @@
-#[derive(serde::Serialize)]
+use serde::Serialize;
+
+#[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HStatCapSim {
-    Stable(rc::AttrVal),
-    Time(rc::AttrVal),
+    Stable(f64),
+    Time(f64),
 }
-impl From<rc::stats::StatCapSim> for HStatCapSim {
-    fn from(core_stat: rc::stats::StatCapSim) -> Self {
+impl HStatCapSim {
+    pub(crate) fn from_core(core_stat: rc::stats::StatCapSim) -> Self {
         match core_stat {
-            rc::stats::StatCapSim::Stable(stability) => Self::Stable(stability.get_inner()),
-            rc::stats::StatCapSim::Time(time) => Self::Time(time),
+            rc::stats::StatCapSim::Stable(stability) => Self::Stable(stability.into_f64()),
+            rc::stats::StatCapSim::Time(time) => Self::Time(time.into()),
         }
     }
 }

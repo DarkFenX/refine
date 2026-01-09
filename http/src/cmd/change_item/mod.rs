@@ -9,6 +9,7 @@ pub(in crate::cmd) use implant::HChangeImplantCmd;
 pub(in crate::cmd) use module::HChangeModuleCmd;
 pub(in crate::cmd) use proj_effect::HChangeProjEffectCmd;
 pub(in crate::cmd) use rig::HChangeRigCmd;
+use serde::Deserialize;
 pub(in crate::cmd) use service::HChangeServiceCmd;
 pub(in crate::cmd) use ship::HChangeShipCmd;
 pub(in crate::cmd) use skill::HChangeSkillCmd;
@@ -36,7 +37,7 @@ mod stance;
 mod subsystem;
 mod sw_effect;
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeItemCommand {
     Autocharge(HChangeAutochargeCmd),

@@ -1,3 +1,5 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::{
         HItemIdsResp,
@@ -6,11 +8,10 @@ use crate::{
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeSwEffectCmd {
     #[serde(default)]
-    type_id: Option<rc::ItemTypeId>,
+    type_id: Option<i32>,
     #[serde(default)]
     state: Option<bool>,
     #[serde(default)]
@@ -27,7 +28,8 @@ impl HChangeSwEffectCmd {
             rc::err::GetSwEffectError::ItemIsNotSwEffect(e) => HExecError::ItemKindMismatch(e),
         })?;
         if let Some(type_id) = self.type_id {
-            core_sw_effect.set_type_id(type_id);
+            let core_type_id = rc::ItemTypeId::from_i32(type_id);
+            core_sw_effect.set_type_id(core_type_id);
         }
         if let Some(state) = self.state {
             core_sw_effect.set_state(state);

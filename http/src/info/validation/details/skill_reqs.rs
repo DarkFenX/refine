@@ -1,13 +1,15 @@
 use std::collections::HashMap;
 
-use crate::shared::HSkillLevel;
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValSrqFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::ItemId, HashMap<rc::ItemTypeId, HValSrqSkillInfo>>,
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
+    items: HashMap<rc::ItemId, HashMap<i32, HValSrqSkillInfo>>,
 }
 impl From<&rc::val::ValSrqFail> for HValSrqFail {
     fn from(core_val_fail: &rc::val::ValSrqFail) -> Self {
@@ -20,7 +22,7 @@ impl From<&rc::val::ValSrqFail> for HValSrqFail {
                         *item_id,
                         item_info
                             .iter()
-                            .map(|(skill_type_id, skill_info)| (*skill_type_id, skill_info.into()))
+                            .map(|(skill_type_id, skill_info)| (skill_type_id.into_i32(), skill_info.into()))
                             .collect(),
                     )
                 })
@@ -29,18 +31,18 @@ impl From<&rc::val::ValSrqFail> for HValSrqFail {
     }
 }
 
-#[derive(serde_tuple::Serialize_tuple)]
+#[derive(Serialize_tuple)]
 struct HValSrqSkillInfo {
-    current_lvl: Option<HSkillLevel>,
-    required_lvl: HSkillLevel,
+    current_lvl: Option<u8>,
+    required_lvl: u8,
 }
 impl From<&rc::val::ValSrqSkillInfo> for HValSrqSkillInfo {
     fn from(core_val_skill: &rc::val::ValSrqSkillInfo) -> Self {
         Self {
             current_lvl: core_val_skill
                 .current_lvl
-                .map(|core_skill_level| core_skill_level.get_inner()),
-            required_lvl: core_val_skill.required_lvl.get_inner(),
+                .map(|core_skill_level| core_skill_level.into_u8()),
+            required_lvl: core_val_skill.required_lvl.into_u8(),
         }
     }
 }

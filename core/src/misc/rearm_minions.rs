@@ -6,3 +6,15 @@ pub enum RearmMinions {
     /// Item stays out even after charges are out on some of its effects.
     Disabled,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl From<bool> for RearmMinions {
+    fn from(value: bool) -> Self {
+        match value {
+            true => RearmMinions::Enabled,
+            false => RearmMinions::Disabled,
+        }
+    }
+}

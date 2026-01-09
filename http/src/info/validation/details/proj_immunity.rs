@@ -1,10 +1,13 @@
 use std::collections::HashMap;
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValProjImmunityFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, Vec<serde_with::DisplayFromStr>>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, Vec<DisplayFromStr>>")]
     items: HashMap<rc::ItemId, Vec<rc::ItemId>>,
 }
 impl From<&rc::val::ValProjImmunityFail> for HValProjImmunityFail {

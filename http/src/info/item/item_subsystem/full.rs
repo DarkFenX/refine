@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HSubsystemInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HSubsystemInfoFull {
     #[serde(flatten)]
     partial_info: HSubsystemInfoPartial,

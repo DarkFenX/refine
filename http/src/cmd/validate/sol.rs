@@ -1,13 +1,16 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::shared::HValOptions,
     info::{HSolValResult, HValidInfoMode},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize, Default)]
+#[serde_as]
+#[derive(Deserialize, Default)]
 pub(crate) struct HValidateSolCmd {
     #[serde(default)]
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     fit_ids: Vec<rc::FitId>,
     options: HValOptions,
 }

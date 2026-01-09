@@ -1,9 +1,11 @@
-use super::HSideEffectOp;
+use serde_tuple::Serialize_tuple;
 
-#[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HSideEffectStr {
+use super::op::HSideEffectOp;
+
+#[derive(Serialize_tuple)]
+pub(in crate::info::item::item_booster::side_effect) struct HSideEffectStr {
     op: HSideEffectOp,
-    val: rc::AttrVal,
+    val: f64,
 }
 impl TryFrom<rc::SideEffectStr> for HSideEffectStr {
     type Error = HSideEffectStrConvError;
@@ -12,26 +14,26 @@ impl TryFrom<rc::SideEffectStr> for HSideEffectStr {
         match core_side_effect_strength.get_op() {
             rc::Op::Add => Ok(HSideEffectStr {
                 op: HSideEffectOp::Add,
-                val: raw_val,
+                val: raw_val.into_f64(),
             }),
             rc::Op::Sub => Ok(HSideEffectStr {
                 op: HSideEffectOp::Add,
-                val: -raw_val,
+                val: -raw_val.into_f64(),
             }),
             rc::Op::PreMul | rc::Op::PostMul | rc::Op::ExtraMul => Ok(HSideEffectStr {
                 op: HSideEffectOp::Perc,
-                val: (raw_val - rc::AttrVal::from(1.0)) * rc::AttrVal::from(100.0),
+                val: (raw_val.into_f64() - 1.0) * 100.0,
             }),
-            rc::Op::PreDiv | rc::Op::PostDiv => match raw_val.into_inner() {
+            rc::Op::PreDiv | rc::Op::PostDiv => match raw_val.into_f64() {
                 0.0 => Err(HSideEffectStrConvError {}),
-                _ => Ok(HSideEffectStr {
+                v => Ok(HSideEffectStr {
                     op: HSideEffectOp::Perc,
-                    val: (rc::AttrVal::from(1.0) / raw_val - rc::AttrVal::from(1.0)) * rc::AttrVal::from(100.0),
+                    val: (1.0 / v - 1.0) * 100.0,
                 }),
             },
             rc::Op::PostPerc => Ok(HSideEffectStr {
                 op: HSideEffectOp::Perc,
-                val: raw_val,
+                val: raw_val.into_f64(),
             }),
             _ => Err(HSideEffectStrConvError {}),
         }

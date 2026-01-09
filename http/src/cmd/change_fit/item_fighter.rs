@@ -1,3 +1,6 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
@@ -7,11 +10,11 @@ use crate::{
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HAddFighterCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: HMinionState,
-    count: Option<rc::DefCount>,
+    count: Option<u32>,
     abilities: Option<HAbilityMap>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
@@ -24,10 +27,10 @@ impl HAddFighterCmd {
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_fighter = core_fit.add_fighter(
-            self.type_id,
-            (&self.state).into(),
-            self.coordinates.map(Into::into),
-            self.movement.map(Into::into),
+            rc::ItemTypeId::from_i32(self.type_id),
+            self.state.into_core(),
+            self.coordinates.map(|v| v.into_core()),
+            self.movement.map(|v| v.into_core()),
         );
         if let Some(count) = self.count {
             let fighter_count_override = rc::FighterCount::from_u32_checked(count)?;
@@ -38,10 +41,10 @@ impl HAddFighterCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeFighterCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeFighterCmd,

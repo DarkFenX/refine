@@ -1,4 +1,6 @@
-#[derive(serde::Deserialize)]
+use serde::Deserialize;
+
+#[derive(Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::cmd) enum HRmMode {
     Remove,

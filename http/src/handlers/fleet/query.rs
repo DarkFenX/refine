@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::info::HFleetInfoMode;
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HFleetInfoParams {
     pub(in crate::handlers::fleet) fleet: Option<HFleetInfoMode>,
 }

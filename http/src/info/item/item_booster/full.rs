@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HBoosterInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HBoosterInfoFull {
     #[serde(flatten)]
     partial_info: HBoosterInfoPartial,

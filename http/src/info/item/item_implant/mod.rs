@@ -1,6 +1,7 @@
 use full::HImplantInfoFull;
 use id::HImplantInfoId;
 use partial::HImplantInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HImplantInfo {
     Id(HImplantInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HImplantInfo {
     Full(HImplantInfoFull),
 }
 impl HImplantInfo {
-    pub(crate) fn mk_info(core_implant: &mut rc::ImplantMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_implant: &mut rc::ImplantMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_implant.into()),
             HItemInfoMode::Partial => Self::Partial(core_implant.into()),

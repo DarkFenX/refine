@@ -1,13 +1,15 @@
-#[derive(serde_tuple::Serialize_tuple)]
+use serde_tuple::Serialize_tuple;
+
+#[derive(Serialize_tuple)]
 pub(crate) struct HStatSlot {
-    used: rc::DefCount,
-    total: Option<rc::DefCount>,
+    used: u32,
+    total: Option<u32>,
 }
 impl From<rc::stats::StatSlot> for HStatSlot {
     fn from(core_stat: rc::stats::StatSlot) -> Self {
         Self {
-            used: core_stat.used,
-            total: core_stat.total,
+            used: core_stat.used.into_u32(),
+            total: core_stat.total.map(|v| v.into_u32()),
         }
     }
 }

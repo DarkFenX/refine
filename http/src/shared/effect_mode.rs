@@ -1,4 +1,6 @@
-#[derive(serde::Serialize, serde::Deserialize)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Copy, Clone, Serialize, Deserialize)]
 pub(crate) enum HEffectMode {
     #[serde(rename = "full")]
     FullCompliance,
@@ -9,8 +11,8 @@ pub(crate) enum HEffectMode {
     #[serde(rename = "stop")]
     ForceStop,
 }
-impl From<&rc::EffectMode> for HEffectMode {
-    fn from(core_effect_mode: &rc::EffectMode) -> Self {
+impl HEffectMode {
+    pub(crate) fn from_core(core_effect_mode: rc::EffectMode) -> Self {
         match core_effect_mode {
             rc::EffectMode::FullCompliance => Self::FullCompliance,
             rc::EffectMode::StateCompliance => Self::StateCompliance,
@@ -18,14 +20,12 @@ impl From<&rc::EffectMode> for HEffectMode {
             rc::EffectMode::ForceStop => Self::ForceStop,
         }
     }
-}
-impl From<&HEffectMode> for rc::EffectMode {
-    fn from(h_effect_mode: &HEffectMode) -> Self {
-        match h_effect_mode {
-            HEffectMode::FullCompliance => Self::FullCompliance,
-            HEffectMode::StateCompliance => Self::StateCompliance,
-            HEffectMode::ForceRun => Self::ForceRun,
-            HEffectMode::ForceStop => Self::ForceStop,
+    pub(crate) fn into_core(self) -> rc::EffectMode {
+        match self {
+            Self::FullCompliance => rc::EffectMode::FullCompliance,
+            Self::StateCompliance => rc::EffectMode::StateCompliance,
+            Self::ForceRun => rc::EffectMode::ForceRun,
+            Self::ForceStop => rc::EffectMode::ForceStop,
         }
     }
 }

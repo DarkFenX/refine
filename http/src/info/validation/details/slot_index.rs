@@ -1,16 +1,21 @@
-use std::collections::HashMap;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValSlotIndexFail {
-    #[serde_as(as = "HashMap<_, Vec<serde_with::DisplayFromStr>>")]
-    slot_users: HashMap<rc::SlotIndex, Vec<rc::ItemId>>,
+    #[serde_as(as = "Map<_, Vec<DisplayFromStr>>")]
+    slot_users: Vec<(i32, Vec<rc::ItemId>)>,
 }
 impl From<&rc::val::ValSlotIndexFail> for HValSlotIndexFail {
     fn from(core_val_fail: &rc::val::ValSlotIndexFail) -> Self {
         Self {
-            slot_users: core_val_fail.slot_users.clone(),
+            slot_users: core_val_fail
+                .slot_users
+                .iter()
+                .map(|(k, v)| (k.into_i32(), v.clone()))
+                .collect(),
         }
     }
 }

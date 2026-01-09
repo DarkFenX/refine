@@ -1,17 +1,18 @@
-use std::collections::HashMap;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::validation) struct HValUnusableCapFail {
-    max_cap: rc::AttrVal,
-    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::ItemId, rc::AttrVal>,
+    max_cap: f64,
+    #[serde_as(as = "&Map<DisplayFromStr, _>")]
+    items: Vec<(rc::ItemId, f64)>,
 }
 impl From<&rc::val::ValUnusableCapFail> for HValUnusableCapFail {
     fn from(core_val_fail: &rc::val::ValUnusableCapFail) -> Self {
         Self {
-            max_cap: core_val_fail.max_cap,
-            items: core_val_fail.items.clone(),
+            max_cap: core_val_fail.max_cap.into_f64(),
+            items: core_val_fail.items.iter().map(|(k, v)| (*k, v.into_f64())).collect(),
         }
     }
 }

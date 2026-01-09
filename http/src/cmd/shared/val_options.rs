@@ -1,6 +1,9 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::util::default_true;
 
-#[derive(educe::Educe, serde::Deserialize)]
+#[derive(educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HValOptions {
     #[serde(default = "default_true")]
@@ -292,15 +295,12 @@ impl From<&HValOptions> for rc::val::ValOptions {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 #[serde(untagged)]
 enum HValOption {
     Simple(bool),
-    Extended(
-        bool,
-        #[serde_as(as = "Vec<serde_with::DisplayFromStr>")] Vec<rc::ItemId>,
-    ),
+    Extended(bool, #[serde_as(as = "Vec<DisplayFromStr>")] Vec<rc::ItemId>),
 }
 impl HValOption {
     fn is_enabled(&self) -> bool {

@@ -1,18 +1,20 @@
-#[derive(serde::Deserialize)]
+use serde::Deserialize;
+
+#[derive(Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::cmd) enum HAddMode {
     Append,
     Equip,
-    Insert(rc::Idx),
-    Replace(rc::Idx),
+    Insert(usize),
+    Replace(usize),
 }
-impl From<&HAddMode> for rc::AddMode {
-    fn from(h_add_mode: &HAddMode) -> Self {
-        match h_add_mode {
-            HAddMode::Append => Self::Append,
-            HAddMode::Equip => Self::Equip,
-            HAddMode::Insert(i) => Self::Insert(*i),
-            HAddMode::Replace(i) => Self::Replace(*i),
+impl HAddMode {
+    pub(in crate::cmd) fn into_core(self) -> rc::AddMode {
+        match self {
+            Self::Append => rc::AddMode::Append,
+            Self::Equip => rc::AddMode::Equip,
+            Self::Insert(i) => rc::AddMode::Insert(rc::Index::from_usize(i)),
+            Self::Replace(i) => rc::AddMode::Replace(rc::Index::from_usize(i)),
         }
     }
 }

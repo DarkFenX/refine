@@ -1,22 +1,30 @@
 use std::collections::HashMap;
 
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, Map, serde_as};
+
 use crate::shared::HSecZone;
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::validation) struct HValItemSecZoneFail {
     zone: HSecZone,
-    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::ItemId, Vec<HSecZone>>,
+    #[serde_as(as = "&Map<DisplayFromStr, _>")]
+    items: Vec<(rc::ItemId, Vec<HSecZone>)>,
 }
 impl From<&rc::val::ValItemSecZoneFail> for HValItemSecZoneFail {
     fn from(core_val_fail: &rc::val::ValItemSecZoneFail) -> Self {
         Self {
-            zone: (&core_val_fail.zone).into(),
+            zone: HSecZone::from_core(core_val_fail.zone),
             items: core_val_fail
                 .items
                 .iter()
-                .map(|(item_id, allowed_sec_zones)| (*item_id, allowed_sec_zones.iter().map(Into::into).collect()))
+                .map(|(item_id, allowed_sec_zones)| {
+                    (
+                        *item_id,
+                        allowed_sec_zones.iter().map(|v| HSecZone::from_core(*v)).collect(),
+                    )
+                })
                 .collect(),
         }
     }

@@ -1,3 +1,5 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::{HItemIdsResp, change_sol},
     util::HExecError,
@@ -5,7 +7,7 @@ use crate::{
 
 // Endpoint to add items provides no context just like solar system endpoint, so largely reuse
 // commands from there
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HAddItemCommand {
     Booster(change_sol::HAddBoosterCmd),

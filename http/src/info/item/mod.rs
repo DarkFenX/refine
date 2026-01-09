@@ -15,6 +15,7 @@ use item_skill::HSkillInfo;
 use item_stance::HStanceInfo;
 use item_subsystem::HSubsystemInfo;
 use item_sw_effect::HSwEffectInfo;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -44,7 +45,7 @@ pub(crate) trait MkItemInfo<T> {
     fn mk_info(source: T, item_mode: HItemInfoMode) -> HItemInfo;
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HItemInfo {
     Autocharge(HAutochargeInfo),

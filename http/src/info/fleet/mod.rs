@@ -1,12 +1,13 @@
 use full::HFleetInfoFull;
 use id::HFleetInfoId;
+use serde::Serialize;
 
 use crate::info::HFleetInfoMode;
 
 mod full;
 mod id;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HFleetInfo {
     Id(HFleetInfoId),

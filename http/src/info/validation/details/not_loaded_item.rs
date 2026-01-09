@@ -1,8 +1,11 @@
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValNotLoadedItemFail {
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     item_ids: Vec<rc::ItemId>,
 }
 impl From<&rc::val::ValNotLoadedItemFail> for HValNotLoadedItemFail {

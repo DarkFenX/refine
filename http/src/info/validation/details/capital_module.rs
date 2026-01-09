@@ -1,17 +1,22 @@
-use std::collections::HashMap;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::validation) struct HValCapitalModFail {
-    max_subcap_volume: rc::AttrVal,
-    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    module_volumes: HashMap<rc::ItemId, rc::AttrVal>,
+    max_subcap_volume: f64,
+    #[serde_as(as = "&Map<DisplayFromStr, _>")]
+    module_volumes: Vec<(rc::ItemId, f64)>,
 }
 impl From<&rc::val::ValCapitalModFail> for HValCapitalModFail {
     fn from(core_val_fail: &rc::val::ValCapitalModFail) -> Self {
         Self {
-            max_subcap_volume: core_val_fail.max_subcap_volume,
-            module_volumes: core_val_fail.module_volumes.clone(),
+            max_subcap_volume: core_val_fail.max_subcap_volume.into_f64(),
+            module_volumes: core_val_fail
+                .module_volumes
+                .iter()
+                .map(|(k, v)| (*k, v.into_f64()))
+                .collect(),
         }
     }
 }

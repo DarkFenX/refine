@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::{cmd::shared::HRmMode, util::HExecError};
 
-#[derive(Default, serde::Deserialize)]
+#[derive(Default, Deserialize)]
 pub(crate) struct HRemoveItemCmd {
     rm_mode: Option<HRmMode>,
 }

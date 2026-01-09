@@ -1,13 +1,15 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HSubsystemInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
     type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(skip_serializing_if = "Option::is_none")]
     slot: Option<rc::SlotIndex>,

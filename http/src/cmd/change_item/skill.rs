@@ -1,19 +1,19 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::{
         HItemIdsResp,
         shared::{HEffectModeMap, apply_effect_modes},
     },
-    shared::HSkillLevel,
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeSkillCmd {
     #[serde(default)]
-    type_id: Option<rc::ItemTypeId>,
+    type_id: Option<i32>,
     #[serde(default)]
-    level: Option<HSkillLevel>,
+    level: Option<i32>,
     #[serde(default)]
     state: Option<bool>,
     #[serde(default)]
@@ -30,12 +30,13 @@ impl HChangeSkillCmd {
             rc::err::GetSkillError::ItemIsNotSkill(e) => HExecError::ItemKindMismatch(e),
         })?;
         if let Some(type_id) = self.type_id {
-            core_skill.set_type_id(type_id).map_err(|error| match error {
+            let core_type_id = rc::ItemTypeId::from_i32(type_id);
+            core_skill.set_type_id(core_type_id).map_err(|error| match error {
                 rc::err::SetSkillTypeIdError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
             })?;
         }
-        if let Some(h_level) = self.level {
-            let core_level = rc::SkillLevel::from_i32_clamped(h_level);
+        if let Some(level) = self.level {
+            let core_level = rc::SkillLevel::from_i32_clamped(level);
             core_skill.set_level(core_level);
         }
         if let Some(state) = self.state {

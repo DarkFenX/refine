@@ -1,11 +1,10 @@
-use crate::{
-    cmd::HFitIdResp,
-    shared::{HDpsProfile, HFitSecStatus},
-};
+use serde::Deserialize;
 
-#[derive(Default, serde::Deserialize)]
+use crate::{cmd::HFitIdResp, shared::HDpsProfile};
+
+#[derive(Default, Deserialize)]
 pub(crate) struct HAddFitCmd {
-    sec_status: Option<HFitSecStatus>,
+    sec_status: Option<f64>,
     rah_incoming_dps: Option<HDpsProfile>,
 }
 impl HAddFitCmd {

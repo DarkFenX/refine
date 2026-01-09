@@ -1,3 +1,5 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::{
         shared::get_primary_fit,
@@ -17,7 +19,7 @@ use crate::{
     util::{HExecError, default_true},
 };
 
-#[derive(educe::Educe, serde::Deserialize)]
+#[derive(educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(crate) struct HGetFitStatsCmd {
     #[serde(default = "default_true")]
@@ -318,7 +320,7 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        let core_spool = option.spool.map(Into::into);
+        let core_spool = option.spool.map(|v| v.into_core()).into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, projectee_item_id) {
@@ -338,7 +340,7 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
-        let core_spool = option.spool.map(Into::into);
+        let core_spool = option.spool.map(|v| v.into_core()).into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_volley_applied(core_item_kinds, core_spool, projectee_item_id) {
@@ -364,7 +366,7 @@ fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitMining>) 
     }
     results
 }
-fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutNps>) -> Vec<Option<rc::AttrVal>> {
+fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutNps>) -> Vec<Option<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
@@ -372,13 +374,13 @@ fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_outgoing_nps_applied(core_item_kinds, core_time_options, projectee_item_id) {
-                    Ok(result) => results.push(Some(result)),
+                    Ok(result) => results.push(Some(result.into_f64())),
                     Err(_) => results.push(None),
                 }
             }
             None => {
                 let result = core_fit.get_stat_outgoing_nps(core_item_kinds, core_time_options);
-                results.push(Some(result));
+                results.push(Some(result.into_f64()));
             }
         }
     }
@@ -387,7 +389,7 @@ fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
 fn get_outgoing_rps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<HStatOptionFitOutRps>,
-) -> Vec<Option<HStatTank<rc::AttrVal>>> {
+) -> Vec<Option<HStatTank<f64>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
@@ -407,20 +409,20 @@ fn get_outgoing_rps_stats(
     }
     results
 }
-fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutCps>) -> Vec<Option<rc::AttrVal>> {
+fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutCps>) -> Vec<Option<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_outgoing_cps_applied(core_time_options, projectee_item_id) {
-                    Ok(result) => results.push(Some(result)),
+                    Ok(result) => results.push(Some(result.into_f64())),
                     Err(_) => results.push(None),
                 }
             }
             None => {
                 let result = core_fit.get_stat_outgoing_cps(core_time_options);
-                results.push(Some(result));
+                results.push(Some(result.into_f64()));
             }
         }
     }
@@ -479,13 +481,13 @@ fn get_erps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<rc::AttrVal>> {
+fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = (&option.src_kinds).into();
         let core_time_options = option.time_options.into();
         match core_fit.get_stat_cap_balance(core_src_kinds, core_time_options) {
-            Ok(result) => results.push(result),
+            Ok(result) => results.push(result.into_f64()),
             Err(_) => return None,
         }
     }
@@ -495,9 +497,10 @@ fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapSim>)
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let cap_perc = rc::UnitInterval::from_f64_clamped(option.cap_perc);
+        let core_reload_optionals = option.reload_optionals.map(|v| rc::ReloadOptionals::from(v)).into();
         let stagger = (&option.stagger).into();
-        match core_fit.get_stat_cap_sim(cap_perc, option.reload_optionals, stagger) {
-            Ok(result) => results.push(result.into()),
+        match core_fit.get_stat_cap_sim(cap_perc, core_reload_optionals, stagger) {
+            Ok(result) => results.push(HStatCapSim::from_core(result)),
             Err(_) => return None,
         }
     }

@@ -6,7 +6,9 @@ use crate::info::{HFitInfoMode, HItemInfoMode};
 mod full;
 mod id;
 
-#[derive(serde::Serialize)]
+use serde::Serialize;
+
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HFitInfo {
     Id(HFitInfoId),

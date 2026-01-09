@@ -1,25 +1,31 @@
+use serde_tuple::Serialize_tuple;
+
 use super::{affector::HAffector, op::HModOp};
 
-#[derive(serde_tuple::Serialize_tuple)]
+#[derive(Serialize_tuple)]
 pub(in crate::info::item::extended) struct HModification {
     op: HModOp,
-    initial_val: rc::AttrVal,
-    range_mult: Option<rc::AttrVal>,
-    resist_mult: Option<rc::AttrVal>,
-    stacking_mult: Option<rc::AttrVal>,
-    applied_val: rc::AttrVal,
+    initial_val: f64,
+    range_mult: Option<f64>,
+    resist_mult: Option<f64>,
+    stacking_mult: Option<f64>,
+    applied_val: f64,
     src: Vec<HAffector>,
 }
-impl From<&rc::Modification> for HModification {
-    fn from(core_modification: &rc::Modification) -> Self {
+impl HModification {
+    pub(in crate::info::item::extended) fn from_core(core_modification: rc::Modification) -> Self {
         Self {
-            op: (&core_modification.op).into(),
-            initial_val: core_modification.initial_val,
-            range_mult: core_modification.range_mult,
-            resist_mult: core_modification.resist_mult,
-            stacking_mult: core_modification.stacking_mult,
-            applied_val: core_modification.applied_val,
-            src: core_modification.affectors.iter().map(Into::into).collect(),
+            op: HModOp::from_core(core_modification.op),
+            initial_val: core_modification.initial_val.into_f64(),
+            range_mult: core_modification.range_mult.map(|v| v.into_f64()),
+            resist_mult: core_modification.resist_mult.map(|v| v.into_f64()),
+            stacking_mult: core_modification.stacking_mult.map(|v| v.into_f64()),
+            applied_val: core_modification.applied_val.into_f64(),
+            src: core_modification
+                .affectors
+                .into_iter()
+                .map(HAffector::from_core)
+                .collect(),
         }
     }
 }

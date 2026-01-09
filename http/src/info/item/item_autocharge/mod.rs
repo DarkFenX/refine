@@ -1,6 +1,7 @@
 use full::HAutochargeInfoFull;
 use id::HAutochargeInfoId;
 use partial::HAutochargeInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HAutochargeInfo {
     Id(HAutochargeInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HAutochargeInfo {
     Full(HAutochargeInfoFull),
 }
 impl HAutochargeInfo {
-    pub(crate) fn mk_info(core_autocharge: &mut rc::AutochargeMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_autocharge: &mut rc::AutochargeMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_autocharge.into()),
             HItemInfoMode::Partial => Self::Partial(core_autocharge.into()),

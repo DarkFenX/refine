@@ -12,6 +12,7 @@ axum = { version = ">=0.8.8", features = ["query"] }
 chrono = ">=0.4.42"
 config = { version = ">=0.15.19", features = ["toml"] }
 educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
+itertools = ">=0.14.0"
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }
 serde = { version = ">=1.0.228", features = ["derive"] }
 serde_tuple = ">=1.1.3"

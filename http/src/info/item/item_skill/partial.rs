@@ -1,17 +1,17 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
-use crate::shared::HSkillLevel;
-
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HSkillInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    type_id: i32,
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
-    level: HSkillLevel,
+    level: u8,
     enabled: bool,
 }
 impl From<&mut rc::SkillMut<'_>> for HSkillInfoPartial {
@@ -19,9 +19,9 @@ impl From<&mut rc::SkillMut<'_>> for HSkillInfoPartial {
         Self {
             id: core_skill.get_item_id(),
             kind: "skill",
-            type_id: core_skill.get_type_id(),
+            type_id: core_skill.get_type_id().into_i32(),
             fit_id: core_skill.get_fit().get_fit_id(),
-            level: core_skill.get_level().get_inner(),
+            level: core_skill.get_level().into_u8(),
             enabled: core_skill.get_state(),
         }
     }

@@ -53,6 +53,11 @@ impl PValue {
         Value::from_f64(self.0)
     }
 }
+impl From<PValue> for f64 {
+    fn from(v: PValue) -> Self {
+        v.0
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ordering/equality - those are implemented manually using conversion of values into ordered

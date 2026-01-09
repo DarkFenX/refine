@@ -1,10 +1,12 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::shared::{HValOptions, get_primary_fit},
     info::{HFitValResult, HValidInfoMode},
     util::HExecError,
 };
 
-#[derive(serde::Deserialize, Default)]
+#[derive(Deserialize, Default)]
 #[serde(transparent)]
 pub(crate) struct HValidateFitCmd {
     validation_options: HValOptions,

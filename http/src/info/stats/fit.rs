@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 use crate::{
     info::stats::details::{
         HStatCapSim, HStatDmg, HStatJamApplied, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp,
@@ -7,7 +9,7 @@ use crate::{
     util::TriStateField,
 };
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HFitStats {
     // Fit output stats
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,11 +19,11 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) mps: Option<Vec<HStatMining>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_nps: Option<Vec<Option<rc::AttrVal>>>,
+    pub(crate) outgoing_nps: Option<Vec<Option<f64>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_rps: Option<Vec<Option<HStatTank<rc::AttrVal>>>>,
+    pub(crate) outgoing_rps: Option<Vec<Option<HStatTank<f64>>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) outgoing_cps: Option<Vec<Option<rc::AttrVal>>>,
+    pub(crate) outgoing_cps: Option<Vec<Option<f64>>>,
     // Fit resources
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) cpu: Option<HStatRes>,
@@ -83,46 +85,46 @@ pub(crate) struct HFitStats {
     pub(crate) erps: TriStateField<Vec<HStatTankRegen<Option<HStatLayerErps>, Option<HStatLayerErpsRegen>>>>,
     // Ship cap
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap_amount: TriStateField<rc::AttrVal>,
+    pub(crate) cap_amount: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap_balance: TriStateField<Vec<rc::AttrVal>>,
+    pub(crate) cap_balance: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_sim: TriStateField<Vec<HStatCapSim>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) neut_resist: TriStateField<rc::AttrVal>,
+    pub(crate) neut_resist: TriStateField<f64>,
     // Ship sensors
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) locks: TriStateField<rc::DefCount>,
+    pub(crate) locks: TriStateField<u32>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) lock_range: TriStateField<rc::AttrVal>,
+    pub(crate) lock_range: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) scan_res: TriStateField<rc::AttrVal>,
+    pub(crate) scan_res: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) sensors: TriStateField<HStatSensors>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) dscan_range: TriStateField<rc::AttrVal>,
+    pub(crate) dscan_range: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) probing_size: TriStateField<rc::AttrVal>,
+    pub(crate) probing_size: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) incoming_jam: TriStateField<HStatJamApplied>,
     // Ship mobility
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) speed: TriStateField<rc::AttrVal>,
+    pub(crate) speed: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) agility: TriStateField<rc::AttrVal>,
+    pub(crate) agility: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) align_time: TriStateField<rc::AttrVal>,
+    pub(crate) align_time: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) sig_radius: TriStateField<rc::AttrVal>,
+    pub(crate) sig_radius: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) mass: TriStateField<rc::AttrVal>,
+    pub(crate) mass: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) warp_speed: TriStateField<rc::AttrVal>,
+    pub(crate) warp_speed: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) max_warp_range: TriStateField<rc::AttrVal>,
+    pub(crate) max_warp_range: TriStateField<f64>,
     // Ship misc stats
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) drone_control_range: TriStateField<rc::AttrVal>,
+    pub(crate) drone_control_range: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_warp: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

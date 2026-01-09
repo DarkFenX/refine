@@ -1,15 +1,15 @@
 use full::HFighterInfoFull;
 use id::HFighterInfoId;
 use partial::HFighterInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
-
 mod ability;
 mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HFighterInfo {
     Id(HFighterInfoId),
@@ -17,7 +17,7 @@ pub(crate) enum HFighterInfo {
     Full(HFighterInfoFull),
 }
 impl HFighterInfo {
-    pub(crate) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(HFighterInfoId::mk_info(core_fighter, item_mode)),
             HItemInfoMode::Partial => Self::Partial(HFighterInfoPartial::mk_info(core_fighter, item_mode)),

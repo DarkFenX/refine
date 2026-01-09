@@ -1,4 +1,6 @@
 use rc::ItemCommon;
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
@@ -6,9 +8,9 @@ use crate::{
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HSetShipCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: Option<bool>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
@@ -20,10 +22,11 @@ impl HSetShipCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let mut core_ship = core_fit.set_ship(
-            self.type_id,
-            self.coordinates.map(Into::into),
-            self.movement.map(Into::into),
+            core_type_id,
+            self.coordinates.map(|v| v.into_core()),
+            self.movement.map(|v| v.into_core()),
         );
         if let Some(state) = self.state {
             core_ship.set_state(state);
@@ -32,7 +35,7 @@ impl HSetShipCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HChangeShipCmd {
     ViaItemId(HChangeShipViaItemIdCmd),
@@ -51,10 +54,10 @@ impl HChangeShipCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeShipViaItemIdCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeShipCmd,
@@ -65,7 +68,7 @@ impl HChangeShipViaItemIdCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeShipViaFitIdCmd {
     #[serde(flatten)]
     item_cmd: change_item::HChangeShipCmd,
@@ -85,7 +88,7 @@ impl HChangeShipViaFitIdCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HRemoveShipCmd {}
 impl HRemoveShipCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {

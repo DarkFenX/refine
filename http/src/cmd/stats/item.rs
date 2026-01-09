@@ -1,4 +1,5 @@
 use rc::ItemMutCommon;
+use serde::Deserialize;
 
 use crate::{
     cmd::{
@@ -19,7 +20,7 @@ use crate::{
     util::{HExecError, default_true},
 };
 
-#[derive(educe::Educe, serde::Deserialize)]
+#[derive(educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(crate) struct HGetItemStatsCmd {
     #[serde(default = "default_true")]
@@ -227,7 +228,7 @@ impl HGetItemStatsCmd {
 fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_spool = option.spool.map(Into::into);
+        let core_spool = option.spool.map(|v| v.into_core()).into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_dps_applied(
@@ -260,7 +261,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
 fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVolley>) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_spool = option.spool.map(Into::into);
+        let core_spool = option.spool.map(|v| v.into_core()).into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_volley_applied(
@@ -303,7 +304,7 @@ fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining
 fn get_outgoing_rps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemOutRps>,
-) -> Option<Vec<Option<HStatTank<rc::AttrVal>>>> {
+) -> Option<Vec<Option<HStatTank<f64>>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
@@ -332,7 +333,7 @@ fn get_outgoing_rps_stats(
 fn get_outgoing_nps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemOutNps>,
-) -> Option<Vec<Option<rc::AttrVal>>> {
+) -> Option<Vec<Option<f64>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
@@ -344,7 +345,7 @@ fn get_outgoing_nps_stats(
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(result) => results.push(Some(result)),
+                    Ok(result) => results.push(Some(result.into_f64())),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -353,7 +354,7 @@ fn get_outgoing_nps_stats(
             }
             None => {
                 match core_item.get_stat_outgoing_nps(core_time_options, option.include_charges, option.ignore_state) {
-                    Ok(result) => results.push(Some(result)),
+                    Ok(result) => results.push(Some(result.into_f64())),
                     Err(_) => return None,
                 }
             }
@@ -364,7 +365,7 @@ fn get_outgoing_nps_stats(
 fn get_outgoing_cps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemOutCps>,
-) -> Option<Vec<Option<rc::AttrVal>>> {
+) -> Option<Vec<Option<f64>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
@@ -372,7 +373,7 @@ fn get_outgoing_cps_stats(
             Some(projectee_item_id) => {
                 match core_item.get_stat_outgoing_cps_applied(core_time_options, option.ignore_state, projectee_item_id)
                 {
-                    Ok(result) => results.push(Some(result)),
+                    Ok(result) => results.push(Some(result.into_f64())),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -380,7 +381,7 @@ fn get_outgoing_cps_stats(
                 }
             }
             None => match core_item.get_stat_outgoing_cps(core_time_options, option.ignore_state) {
-                Ok(result) => results.push(Some(result)),
+                Ok(result) => results.push(Some(result.into_f64())),
                 Err(_) => return None,
             },
         }
@@ -440,13 +441,13 @@ fn get_erps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<rc::AttrVal>> {
+fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = (&option.src_kinds).into();
         let core_time_options = option.time_options.into();
         match core_item.get_stat_cap_balance(core_src_kinds, core_time_options) {
-            Ok(result) => results.push(result),
+            Ok(result) => results.push(result.into_f64()),
             Err(_) => return None,
         }
     }
@@ -455,10 +456,11 @@ fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCa
 fn get_cap_sim_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapSim>) -> Option<Vec<HStatCapSim>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let cap_perc = rc::UnitInterval::from_f64_clamped(option.cap_perc);
+        let core_cap_perc = rc::UnitInterval::from_f64_clamped(option.cap_perc);
+        let core_reload_optionals = option.reload_optionals.map(rc::ReloadOptionals::from).into();
         let stagger = (&option.stagger).into();
-        match core_item.get_stat_cap_sim(cap_perc, option.reload_optionals, stagger) {
-            Ok(result) => results.push(result.into()),
+        match core_item.get_stat_cap_sim(core_cap_perc, core_reload_optionals, stagger) {
+            Ok(result) => results.push(HStatCapSim::from_core(result)),
             Err(_) => return None,
         }
     }

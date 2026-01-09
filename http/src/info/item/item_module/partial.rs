@@ -1,4 +1,6 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     info::{
@@ -11,26 +13,26 @@ use crate::{
     util::TriStateField,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HModuleInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    type_id: i32,
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     state: HModuleState,
     rack: HModRack,
-    pos: rc::Idx,
+    pos: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
     mutation: Option<HItemMutationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<HChargeInfo>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    charge_count: TriStateField<rc::DefCount>,
+    charge_count: TriStateField<u32>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    cycles_until_empty: TriStateField<rc::DefCount>,
+    cycles_until_empty: TriStateField<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     spool_cycles: Option<HAdjustableCount>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -58,17 +60,17 @@ impl HModuleInfoPartial {
         Self {
             id: core_module.get_item_id(),
             kind: "module",
-            type_id: core_module.get_type_id(),
+            type_id: core_module.get_type_id().into_i32(),
             fit_id: core_module.get_fit().get_fit_id(),
             state: (&core_module.get_state()).into(),
             rack: (&core_module.get_rack()).into(),
-            pos: core_module.get_pos(),
+            pos: core_module.get_pos().into_usize(),
             mutation: match core_module.get_mutation() {
                 Some(rc::Mutation::Effective(effective_mutation)) => Some(effective_mutation.into()),
                 _ => None,
             },
             charge: charge_info,
-            charge_count,
+            charge_count: charge_count,
             cycles_until_empty,
             spool_cycles: core_module.get_spool_cycle_count().map(Into::into),
             projs: core_module.iter_projs().map(Into::into).collect(),

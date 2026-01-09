@@ -27,10 +27,10 @@ impl Count {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Count {
-    pub const fn from_usize(value: usize) -> Self {
+    pub(crate) fn from_usize(value: usize) -> Self {
         Self(value.clamp(u32::MIN as usize, u32::MAX as usize) as u32)
     }
-    pub const fn into_usize(self) -> usize {
+    pub(crate) fn into_usize(self) -> usize {
         self.0 as usize
     }
     pub(crate) fn from_f64_trunced(value: f64) -> Self {
@@ -65,6 +65,11 @@ impl Count {
     }
     pub(crate) fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0 as f64)
+    }
+}
+impl From<Count> for u32 {
+    fn from(v: Count) -> Self {
+        v.0
     }
 }
 

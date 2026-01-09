@@ -1,13 +1,15 @@
-#[derive(serde_tuple::Serialize_tuple)]
-pub(crate) struct HAbilityInfo {
+use serde_tuple::Serialize_tuple;
+
+#[derive(Serialize_tuple)]
+pub(in crate::info::item::item_fighter) struct HAbilityInfo {
     state: bool,
-    charge_count: Option<rc::DefCount>,
+    charge_count: Option<u32>,
 }
-impl From<rc::Ability<'_>> for HAbilityInfo {
-    fn from(core_ability: rc::Ability) -> Self {
+impl HAbilityInfo {
+    pub(in crate::info::item::item_fighter) fn from_core(core_ability: rc::Ability) -> Self {
         Self {
             state: core_ability.get_state(),
-            charge_count: core_ability.get_charge_count(),
+            charge_count: core_ability.get_charge_count().map(|v| v.into_u32()),
         }
     }
 }

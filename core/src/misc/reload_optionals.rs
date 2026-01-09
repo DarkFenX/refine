@@ -6,3 +6,15 @@ pub enum ReloadOptionals {
     /// Keep cycling after running out of charges.
     Disabled,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl From<bool> for ReloadOptionals {
+    fn from(value: bool) -> Self {
+        match value {
+            true => ReloadOptionals::Enabled,
+            false => ReloadOptionals::Disabled,
+        }
+    }
+}

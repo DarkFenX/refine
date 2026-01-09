@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HShipInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HShipInfoFull {
     #[serde(flatten)]
     partial_info: HShipInfoPartial,

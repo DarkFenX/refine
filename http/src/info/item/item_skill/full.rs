@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HSkillInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HSkillInfoFull {
     #[serde(flatten)]
     partial_info: HSkillInfoPartial,

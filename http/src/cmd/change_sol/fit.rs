@@ -1,12 +1,15 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HFitIdResp, change_fit, shared::get_primary_fit},
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeFitCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeFitCmd,
@@ -17,10 +20,10 @@ impl HChangeFitCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HDeleteFitCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
 }
 impl HDeleteFitCmd {

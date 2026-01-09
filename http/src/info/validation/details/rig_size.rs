@@ -1,17 +1,22 @@
-use std::collections::HashMap;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::validation) struct HValRigSizeFail {
-    allowed_size: rc::AttrVal,
-    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    rig_sizes: HashMap<rc::ItemId, Option<rc::AttrVal>>,
+    allowed_size: f64,
+    #[serde_as(as = "&Map<DisplayFromStr, _>")]
+    rig_sizes: Vec<(rc::ItemId, Option<f64>)>,
 }
 impl From<&rc::val::ValRigSizeFail> for HValRigSizeFail {
     fn from(core_val_fail: &rc::val::ValRigSizeFail) -> Self {
         Self {
-            allowed_size: core_val_fail.allowed_size,
-            rig_sizes: core_val_fail.rig_sizes.clone(),
+            allowed_size: core_val_fail.allowed_size.into_f64(),
+            rig_sizes: core_val_fail
+                .rig_sizes
+                .iter()
+                .map(|(k, v)| (*k, v.map(|v| v.into_f64())))
+                .collect(),
         }
     }
 }

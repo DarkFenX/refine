@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HServiceInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HServiceInfoFull {
     #[serde(flatten)]
     partial_info: HServiceInfoPartial,

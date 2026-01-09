@@ -36,3 +36,13 @@ impl SkillLevel {
         Value::from_f64(self.0 as f64)
     }
 }
+impl From<SkillLevel> for u8 {
+    fn from(v: SkillLevel) -> Self {
+        v.0
+    }
+}
+impl From<SkillLevel> for i32 {
+    fn from(v: SkillLevel) -> Self {
+        v.0 as i32
+    }
+}

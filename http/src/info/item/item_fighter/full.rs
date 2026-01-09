@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HFighterInfoPartial;
 use crate::info::{HItemInfoMode, item::extended::HItemExtendedInfo};
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HFighterInfoFull {
     #[serde(flatten)]
     partial_info: HFighterInfoPartial,

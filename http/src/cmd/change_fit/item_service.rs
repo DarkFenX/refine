@@ -1,12 +1,15 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     shared::HServiceState,
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HAddServiceCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: HServiceState,
 }
 impl HAddServiceCmd {
@@ -16,15 +19,16 @@ impl HAddServiceCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let core_service = core_fit.add_service(self.type_id, (&self.state).into());
+        let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
+        let core_service = core_fit.add_service(core_type_id, (&self.state).into());
         Ok(core_service.into())
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeServiceCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeServiceCmd,

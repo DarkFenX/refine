@@ -1,15 +1,17 @@
-#[derive(serde_tuple::Serialize_tuple)]
+use serde_tuple::Serialize_tuple;
+
+#[derive(Serialize_tuple)]
 pub(in crate::info) struct HAdjustableCount {
-    current: rc::DefCount,
-    max: rc::DefCount,
+    current: u32,
+    max: u32,
     overridden: bool,
 }
-impl From<rc::Adjustable> for HAdjustableCount {
-    fn from(core_adj_count: rc::Adjustable) -> Self {
+impl HAdjustableCount {
+    pub(in crate::info) fn from_core_fighter_count(core_fighter_count: rc::Adjustable<rc::FighterCount>) -> Self {
         Self {
-            current: core_adj_count.current,
-            max: core_adj_count.max,
-            overridden: core_adj_count.overridden,
+            current: core_fighter_count.current.into_u32(),
+            max: core_fighter_count.max.into_u32(),
+            overridden: core_fighter_count.overridden,
         }
     }
 }

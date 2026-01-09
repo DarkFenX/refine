@@ -1,12 +1,15 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_item},
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
-pub(crate) struct HChangeAutochargeCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+#[serde_as]
+#[derive(Deserialize)]
+pub(in crate::cmd) struct HChangeAutochargeCmd {
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeAutochargeCmd,

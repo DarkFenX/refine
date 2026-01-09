@@ -1,11 +1,14 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HAddSubsystemCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: Option<bool>,
 }
 impl HAddSubsystemCmd {
@@ -15,7 +18,8 @@ impl HAddSubsystemCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_subsystem = core_fit.add_subsystem(self.type_id);
+        let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
+        let mut core_subsystem = core_fit.add_subsystem(core_type_id);
         if let Some(state) = self.state {
             core_subsystem.set_state(state);
         }
@@ -23,10 +27,10 @@ impl HAddSubsystemCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeSubsystemCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeSubsystemCmd,

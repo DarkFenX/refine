@@ -1,11 +1,13 @@
-use std::collections::HashMap;
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValFighterSquadSizeFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    fighters: HashMap<rc::ItemId, HValFighterSquadSizeFighterInfo>,
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    fighters: Vec<(rc::ItemId, HValFighterSquadSizeFighterInfo)>,
 }
 impl From<&rc::val::ValFighterSquadSizeFail> for HValFighterSquadSizeFail {
     fn from(core_val_fail: &rc::val::ValFighterSquadSizeFail) -> Self {
@@ -19,17 +21,17 @@ impl From<&rc::val::ValFighterSquadSizeFail> for HValFighterSquadSizeFail {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 struct HValFighterSquadSizeFighterInfo {
-    size: rc::DefCount,
-    max_size: rc::DefCount,
+    size: u32,
+    max_size: u32,
 }
 impl From<&rc::val::ValFighterSquadSizeFighterInfo> for HValFighterSquadSizeFighterInfo {
     fn from(core_val_fighter_info: &rc::val::ValFighterSquadSizeFighterInfo) -> Self {
         Self {
-            size: core_val_fighter_info.size,
-            max_size: core_val_fighter_info.max_size,
+            size: core_val_fighter_info.size.into_u32(),
+            max_size: core_val_fighter_info.max_size.into_u32(),
         }
     }
 }

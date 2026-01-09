@@ -1,6 +1,8 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HCmdResp {
     NoData,
@@ -29,10 +31,10 @@ impl From<HItemIdsResp> for HCmdResp {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HFleetIdResp {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     pub(crate) id: rc::FleetId,
 }
 impl From<rc::FleetMut<'_>> for HFleetIdResp {
@@ -43,10 +45,10 @@ impl From<rc::FleetMut<'_>> for HFleetIdResp {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HFitIdResp {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     pub(crate) id: rc::FitId,
 }
 impl From<rc::FitMut<'_>> for HFitIdResp {
@@ -57,12 +59,12 @@ impl From<rc::FitMut<'_>> for HFitIdResp {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HItemIdsResp {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     pub(crate) id: rc::ItemId,
-    #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge: Option<rc::ItemId>,
 }

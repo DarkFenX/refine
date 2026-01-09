@@ -1,18 +1,19 @@
-use std::collections::HashMap;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
-use crate::shared::{HAttrId, HMutaRoll};
-
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::item) struct HItemMutationInfo {
-    base_type_id: rc::ItemTypeId,
-    mutator_id: rc::ItemTypeId,
-    attrs: HashMap<HAttrId, HAttrMutationInfo>,
+    base_type_id: i32,
+    mutator_id: i32,
+    #[serde_as(as = "&Map<DisplayFromStr, _>")]
+    attrs: Vec<(rc::AttrId, HAttrMutationInfo)>,
 }
 impl From<rc::EffectiveMutation<'_>> for HItemMutationInfo {
     fn from(core_effective_mutation: rc::EffectiveMutation) -> Self {
         Self {
-            base_type_id: core_effective_mutation.get_base_type_id(),
-            mutator_id: core_effective_mutation.get_mutator_id(),
+            base_type_id: core_effective_mutation.get_base_type_id().into_i32(),
+            mutator_id: core_effective_mutation.get_mutator_id().into_i32(),
             attrs: core_effective_mutation
                 .iter_full_mattrs()
                 .map(|v| (v.get_attr_id().into(), v.into()))
@@ -21,16 +22,16 @@ impl From<rc::EffectiveMutation<'_>> for HItemMutationInfo {
     }
 }
 
-#[derive(serde_tuple::Serialize_tuple)]
+#[derive(Serialize_tuple)]
 struct HAttrMutationInfo {
-    roll: Option<HMutaRoll>,
-    value: rc::AttrVal,
+    roll: Option<f64>,
+    value: f64,
 }
 impl From<rc::FullMAttr<'_>> for HAttrMutationInfo {
     fn from(core_full_mutated_attr: rc::FullMAttr) -> Self {
         Self {
-            roll: core_full_mutated_attr.get_roll().map(|v| v.get_inner().into_inner()),
-            value: core_full_mutated_attr.get_value(),
+            roll: core_full_mutated_attr.get_roll().map(|v| v.into_f64()),
+            value: core_full_mutated_attr.get_value().into_f64(),
         }
     }
 }

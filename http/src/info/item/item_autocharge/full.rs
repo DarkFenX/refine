@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HAutochargeInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HAutochargeInfoFull {
     #[serde(flatten)]
     partial_info: HAutochargeInfoPartial,

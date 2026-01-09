@@ -1,10 +1,14 @@
 use std::collections::HashMap;
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValChargeSizeFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     charges: HashMap<rc::ItemId, HValChargeSizeItemInfo>,
 }
 impl From<&rc::val::ValChargeSizeFail> for HValChargeSizeFail {
@@ -19,20 +23,20 @@ impl From<&rc::val::ValChargeSizeFail> for HValChargeSizeFail {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 struct HValChargeSizeItemInfo {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     parent_item_id: rc::ItemId,
-    charge_size: Option<rc::AttrVal>,
-    allowed_size: rc::AttrVal,
+    charge_size: Option<f64>,
+    allowed_size: f64,
 }
 impl From<&rc::val::ValChargeSizeChargeInfo> for HValChargeSizeItemInfo {
     fn from(core_val_charge_info: &rc::val::ValChargeSizeChargeInfo) -> Self {
         Self {
             parent_item_id: core_val_charge_info.parent_item_id,
-            charge_size: core_val_charge_info.charge_size,
-            allowed_size: core_val_charge_info.allowed_size,
+            charge_size: core_val_charge_info.charge_size.map(|v| v.into_f64()),
+            allowed_size: core_val_charge_info.allowed_size.into_f64(),
         }
     }
 }

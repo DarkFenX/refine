@@ -1,4 +1,6 @@
-#[derive(serde::Serialize)]
+use serde::Serialize;
+
+#[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::info::item::extended::modification) enum HModOp {
     BaseAssign,
@@ -16,8 +18,8 @@ pub(in crate::info::item::extended::modification) enum HModOp {
     ExtraAdd,
     ExtraMul,
 }
-impl From<&rc::Op> for HModOp {
-    fn from(core_op: &rc::Op) -> Self {
+impl HModOp {
+    pub(in crate::info::item::extended::modification) fn from_core(core_op: rc::Op) -> Self {
         match core_op {
             rc::Op::BaseAssign => Self::BaseAssign,
             rc::Op::PreAssign => Self::PreAssign,

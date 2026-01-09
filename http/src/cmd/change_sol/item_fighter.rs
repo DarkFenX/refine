@@ -1,12 +1,15 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_fit},
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HAddFighterCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HAddFighterCmd,
@@ -17,7 +20,7 @@ impl HAddFighterCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeFighterCmd {
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeFighterCmd,

@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HFwEffectInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HFwEffectInfoFull {
     #[serde(flatten)]
     partial_info: HFwEffectInfoPartial,

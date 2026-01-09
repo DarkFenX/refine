@@ -1,19 +1,20 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
-use crate::shared::HEffectId;
-
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HAutochargeInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    type_id: i32,
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     cont_item_id: rc::ItemId,
-    cont_effect_id: HEffectId,
+    #[serde_as(as = "DisplayFromStr")]
+    cont_effect_id: rc::EffectId,
     enabled: bool,
 }
 impl From<&mut rc::AutochargeMut<'_>> for HAutochargeInfoPartial {
@@ -21,7 +22,7 @@ impl From<&mut rc::AutochargeMut<'_>> for HAutochargeInfoPartial {
         Self {
             id: core_autocharge.get_item_id(),
             kind: "autocharge",
-            type_id: core_autocharge.get_type_id(),
+            type_id: core_autocharge.get_type_id().into_i32(),
             fit_id: core_autocharge.get_fit().get_fit_id(),
             cont_item_id: core_autocharge.get_cont_item().get_item_id(),
             cont_effect_id: core_autocharge.get_cont_effect_id().into(),

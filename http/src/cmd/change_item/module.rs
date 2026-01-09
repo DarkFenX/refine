@@ -1,3 +1,6 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{
         HItemIdsResp,
@@ -7,23 +10,23 @@ use crate::{
     util::{HExecError, TriStateField},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeModuleCmd {
     #[serde(default)]
-    type_id: Option<rc::ItemTypeId>,
+    type_id: Option<i32>,
     #[serde(default)]
     state: Option<HModuleState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
     #[serde(default)]
-    charge_type_id: TriStateField<rc::ItemTypeId>,
+    charge_type_id: TriStateField<i32>,
     #[serde(default)]
     spool: TriStateField<HSpool>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
     #[serde(default)]
@@ -40,18 +43,20 @@ impl HChangeModuleCmd {
             rc::err::GetModuleError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
         })?;
         if let Some(type_id) = self.type_id {
-            core_module.set_type_id(type_id);
+            let core_type_id = rc::ItemTypeId::from_i32(type_id);
+            core_module.set_type_id(core_type_id);
         }
         if let Some(state) = &self.state {
-            core_module.set_state(state.into());
+            core_module.set_state(state.into_core());
         }
         match &self.mutation {
             TriStateField::Value(mutation) => match mutation {
                 // Mutates item or updates existing mutation
                 HMutationOnChange::Mutator(mutator_id) => {
+                    let core_mutator_id = rc::ItemTypeId::from_i32(*mutator_id);
                     match core_module.get_mutation_mut() {
-                        Some(mutation) => mutation.set_mutator_id(*mutator_id),
-                        None => core_module.mutate(*mutator_id).unwrap(),
+                        Some(mutation) => mutation.set_mutator_id(core_mutator_id),
+                        None => core_module.mutate(core_mutator_id).unwrap(),
                     };
                 }
                 // Updates existing mutation
@@ -67,7 +72,8 @@ impl HChangeModuleCmd {
                     if let Some(core_mutation) = core_module.get_mutation_mut() {
                         core_mutation.remove();
                     }
-                    let core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
+                    let core_mutator_id = rc::ItemTypeId::from_i32(mutation.mutator_id);
+                    let core_mutation = core_module.mutate(core_mutator_id).unwrap();
                     apply_mattrs_on_add(core_mutation, mutation);
                 }
             },
@@ -81,7 +87,8 @@ impl HChangeModuleCmd {
         }
         match &self.charge_type_id {
             TriStateField::Value(charge_type_id) => {
-                core_module.set_charge_type_id(*charge_type_id);
+                let core_charge_type_id = rc::ItemTypeId::from_i32(*charge_type_id);
+                core_module.set_charge_type_id(core_charge_type_id);
             }
             TriStateField::None => match core_module.get_charge_mut() {
                 Some(core_charge) => core_charge.remove(),
@@ -90,8 +97,8 @@ impl HChangeModuleCmd {
             TriStateField::Absent => (),
         }
         match self.spool {
-            TriStateField::Value(h_spool) => core_module.set_spool(Some(h_spool.into())),
-            TriStateField::None => core_module.set_spool(None),
+            TriStateField::Value(h_spool) => core_module.set_spool(rc::StOption::Set(h_spool.into_core())),
+            TriStateField::None => core_module.set_spool(rc::StOption::Inherit),
             TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {

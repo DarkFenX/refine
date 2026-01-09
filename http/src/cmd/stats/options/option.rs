@@ -1,4 +1,6 @@
-#[derive(serde::Deserialize)]
+use serde::Deserialize;
+
+#[derive(Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd::stats) enum HStatOption<T>
 where

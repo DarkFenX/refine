@@ -1,3 +1,6 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{
         HItemIdsResp,
@@ -7,19 +10,19 @@ use crate::{
     util::{HExecError, TriStateField},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeDroneCmd {
     #[serde(default)]
-    type_id: Option<rc::ItemTypeId>,
+    type_id: Option<i32>,
     #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
     #[serde(default)]
@@ -27,7 +30,7 @@ pub(crate) struct HChangeDroneCmd {
     #[serde(default)]
     movement: Option<HMovement>,
     #[serde(default)]
-    prop_mode: Option<HNpcProp>,
+    prop_mode: TriStateField<HNpcProp>,
     #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
@@ -42,18 +45,20 @@ impl HChangeDroneCmd {
             rc::err::GetDroneError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
         })?;
         if let Some(type_id) = self.type_id {
-            core_drone.set_type_id(type_id);
+            let core_type_id = rc::ItemTypeId::from_i32(type_id);
+            core_drone.set_type_id(core_type_id);
         }
         if let Some(state) = &self.state {
-            core_drone.set_state(state.into());
+            core_drone.set_state(state.into_core());
         }
         match &self.mutation {
             TriStateField::Value(mutation) => match mutation {
                 // Mutates item or updates existing mutation
                 HMutationOnChange::Mutator(mutator_id) => {
+                    let core_mutator_id = rc::ItemTypeId::from_i32(*mutator_id);
                     match core_drone.get_mutation_mut() {
-                        Some(mutation) => mutation.set_mutator_id(*mutator_id),
-                        None => core_drone.mutate(*mutator_id).unwrap(),
+                        Some(mutation) => mutation.set_mutator_id(core_mutator_id),
+                        None => core_drone.mutate(core_mutator_id).unwrap(),
                     };
                 }
                 // Updates existing mutation
@@ -69,7 +74,8 @@ impl HChangeDroneCmd {
                     if let Some(core_mutation) = core_drone.get_mutation_mut() {
                         core_mutation.remove();
                     }
-                    let core_mutation = core_drone.mutate(mutation.mutator_id).unwrap();
+                    let core_mutator_id = rc::ItemTypeId::from_i32(mutation.mutator_id);
+                    let core_mutation = core_drone.mutate(core_mutator_id).unwrap();
                     apply_mattrs_on_add(core_mutation, mutation);
                 }
             },
@@ -91,13 +97,15 @@ impl HChangeDroneCmd {
                 .remove();
         }
         if let Some(coordinates) = self.coordinates {
-            core_drone.set_coordinates(coordinates.into());
+            core_drone.set_coordinates(coordinates.into_core());
         }
         if let Some(movement) = self.movement {
-            core_drone.set_movement(movement.into());
+            core_drone.set_movement(movement.into_core());
         }
-        if let Some(prop_mode) = self.prop_mode {
-            core_drone.set_prop_mode(prop_mode.into());
+        match self.prop_mode {
+            TriStateField::Value(h_npc_prop) => core_drone.set_prop_mode(rc::StOption::Set(h_npc_prop.into())),
+            TriStateField::None => core_drone.set_prop_mode(rc::StOption::Inherit),
+            TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {
             core_drone.add_proj(projectee_item_id).map_err(|error| match error {

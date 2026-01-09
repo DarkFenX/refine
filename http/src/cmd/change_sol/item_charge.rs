@@ -1,9 +1,11 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::{HItemIdsResp, change_fit},
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeChargeCmd {
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeChargeCmd,

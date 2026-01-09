@@ -1,7 +1,9 @@
+use serde::Deserialize;
+
 use super::shared::HStatTimeOptions;
 use crate::util::default_true;
 
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Deserialize)]
 pub(in crate::cmd) struct HStatOptionCapBalance {
     #[serde(default)]
     pub(in crate::cmd) src_kinds: HStatCapSrcKinds,
@@ -22,7 +24,7 @@ fn default_time_options() -> HStatTimeOptions {
     HStatTimeOptions::Sim(Default::default())
 }
 
-#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[derive(Copy, Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatCapSrcKinds {
     #[serde(default = "default_true")]
@@ -43,8 +45,7 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
         };
         if let Some(regen) = h_src_kinds.regen {
             core_src_kinds.regen.enabled = regen.is_enabled();
-            core_src_kinds.regen.cap_perc =
-                rc::UnitInterval::from_f64_clamped(regen.get_cap_perc().unwrap_or(rc::AttrVal::from(0.25)));
+            core_src_kinds.regen.cap_perc = rc::UnitInterval::from_f64_clamped(regen.get_cap_perc().unwrap_or(0.25));
         }
         if let Some(cap_injectors) = h_src_kinds.cap_injectors {
             core_src_kinds.cap_injectors = cap_injectors;
@@ -65,7 +66,7 @@ impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
     }
 }
 
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Deserialize)]
 #[serde(untagged)]
 enum HStatCapRegenOptions {
     Simple(bool),
@@ -78,14 +79,14 @@ impl HStatCapRegenOptions {
             Self::Extended(enabled, _) => *enabled,
         }
     }
-    fn get_cap_perc(&self) -> Option<rc::AttrVal> {
+    fn get_cap_perc(&self) -> Option<f64> {
         match self {
             Self::Simple(_) => None,
             Self::Extended(_, options) => options.cap_perc,
         }
     }
 }
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(Copy, Clone, Deserialize)]
 struct HStatCapRegenOptionsFull {
-    cap_perc: Option<rc::AttrVal>,
+    cap_perc: Option<f64>,
 }

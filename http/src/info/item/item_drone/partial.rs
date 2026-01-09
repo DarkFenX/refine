@@ -1,18 +1,20 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     info::item::{mutation::HItemMutationInfo, proj::HRangedProjInfo},
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HDroneInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    type_id: i32,
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28,15 +30,15 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
         Self {
             id: core_drone.get_item_id(),
             kind: "drone",
-            type_id: core_drone.get_type_id(),
+            type_id: core_drone.get_type_id().into_i32(),
             fit_id: core_drone.get_fit().get_fit_id(),
-            state: (&core_drone.get_state()).into(),
+            state: HMinionState::from_core(core_drone.get_state()),
             mutation: match core_drone.get_mutation() {
                 Some(rc::Mutation::Effective(effective_mutation)) => Some(effective_mutation.into()),
                 _ => None,
             },
-            coordinates: core_drone.get_coordinates().into(),
-            movement: core_drone.get_movement().into(),
+            coordinates: HCoordinates::from_core(core_drone.get_coordinates()),
+            movement: HMovement::from_core(core_drone.get_movement()),
             prop_mode: core_drone.get_npc_prop().into(),
             projs: core_drone.iter_projs().map(Into::into).collect(),
         }

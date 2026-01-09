@@ -1,13 +1,14 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
-    shared::HSkillLevel,
     util::HExecError,
 };
-
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HAddSkillCmd {
-    type_id: rc::ItemTypeId,
-    level: HSkillLevel,
+    type_id: i32,
+    level: i32,
     state: Option<bool>,
 }
 impl HAddSkillCmd {
@@ -17,9 +18,10 @@ impl HAddSkillCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
+        let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_level = rc::SkillLevel::from_i32_clamped(self.level);
         let mut core_skill = core_fit
-            .add_skill(self.type_id, core_level)
+            .add_skill(core_type_id, core_level)
             .map_err(|error| match error {
                 rc::err::AddSkillError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
             })?;
@@ -30,10 +32,10 @@ impl HAddSkillCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeSkillCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeSkillCmd,

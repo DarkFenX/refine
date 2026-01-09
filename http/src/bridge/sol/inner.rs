@@ -448,7 +448,7 @@ impl HSolarSystemInner {
         tpool: &HThreadPool,
         fit_id: &str,
         command: HTryFitItemsCmd,
-    ) -> Result<Vec<rc::ItemTypeId>, HBrError> {
+    ) -> Result<Vec<i32>, HBrError> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_sol = self.take_sol()?;
         let core_sol_bak = core_sol.clone();
@@ -457,8 +457,10 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = command.execute(&mut core_sol, &fit_id);
-                result.map_err(HBrError::from)
+                match command.execute(&mut core_sol, &fit_id) {
+                    Ok(core_result) => Ok(core_result.into_iter().map(|v| v.into_i32()).collect()),
+                    Err(exec_error) => Err(exec_error.into()),
+                }
             })
             .await;
         self.put_sol_back(core_sol_bak);

@@ -1,3 +1,5 @@
+use serde::Deserialize;
+
 use crate::{
     cmd::{
         HItemIdsResp,
@@ -6,8 +8,7 @@ use crate::{
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeAutochargeCmd {
     state: Option<bool>,
     effect_modes: Option<HEffectModeMap>,

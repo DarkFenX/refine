@@ -1,10 +1,14 @@
 use std::collections::HashMap;
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValItemKindFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     item_kinds: HashMap<rc::ItemId, HValItemKindItemInfo>,
 }
 impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
@@ -19,8 +23,8 @@ impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 struct HValItemKindItemInfo {
     kind: Option<HValItemKind>,
     expected_kind: HValItemKind,
@@ -34,7 +38,7 @@ impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 enum HValItemKind {
     Booster,

@@ -1,12 +1,15 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HItemIdsResp, change_fit},
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HSetShipCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HSetShipCmd,
@@ -17,7 +20,7 @@ impl HSetShipCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HChangeShipCmd {
     ViaItemId(HChangeShipViaItemIdCmd),
@@ -32,7 +35,7 @@ impl HChangeShipCmd {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HChangeShipViaItemIdCmd {
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeShipViaItemIdCmd,
@@ -43,10 +46,10 @@ impl HChangeShipViaItemIdCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeShipViaFitIdCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HChangeShipViaFitIdCmd,
@@ -57,10 +60,10 @@ impl HChangeShipViaFitIdCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HRemoveShipCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
     fit_cmd: change_fit::HRemoveShipCmd,

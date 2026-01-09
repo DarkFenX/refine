@@ -1,7 +1,9 @@
+use serde::Serialize;
+
 use super::HSwEffectInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 pub(crate) struct HSwEffectInfoFull {
     #[serde(flatten)]
     partial_info: HSwEffectInfoPartial,

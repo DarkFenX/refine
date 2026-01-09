@@ -1,6 +1,7 @@
 use full::HFwEffectInfoFull;
 use id::HFwEffectInfoId;
 use partial::HFwEffectInfoPartial;
+use serde::Serialize;
 
 use crate::info::HItemInfoMode;
 
@@ -8,7 +9,7 @@ mod full;
 mod id;
 mod partial;
 
-#[derive(serde::Serialize)]
+#[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HFwEffectInfo {
     Id(HFwEffectInfoId),
@@ -16,7 +17,7 @@ pub(crate) enum HFwEffectInfo {
     Full(HFwEffectInfoFull),
 }
 impl HFwEffectInfo {
-    pub(crate) fn mk_info(core_fw_effect: &mut rc::FwEffectMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn mk_info(core_fw_effect: &mut rc::FwEffectMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_fw_effect.into()),
             HItemInfoMode::Partial => Self::Partial(core_fw_effect.into()),

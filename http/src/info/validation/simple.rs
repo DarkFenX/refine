@@ -1,4 +1,6 @@
-#[derive(serde::Serialize)]
+use serde::Serialize;
+
+#[derive(Serialize)]
 pub(crate) struct HValResultSimple {
     passed: bool,
 }

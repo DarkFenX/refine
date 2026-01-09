@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::util::default_true;
 
-#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[derive(Copy, Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatDmgItemKinds {
     #[serde(default = "default_true")]

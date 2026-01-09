@@ -1,7 +1,9 @@
+use serde::Deserialize;
+
 use super::shared::HStatTimeOptions;
 use crate::util::default_true;
 
-#[derive(Copy, Clone, Default, serde::Deserialize)]
+#[derive(Copy, Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatOptionFitMining {
     #[serde(default)]
     pub(in crate::cmd) item_kinds: HStatMiningItemKinds,
@@ -9,7 +11,7 @@ pub(in crate::cmd) struct HStatOptionFitMining {
     pub(in crate::cmd) time_options: HStatTimeOptions,
 }
 
-#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[derive(Copy, Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionItemMining {
     #[serde(default)]
@@ -19,7 +21,7 @@ pub(in crate::cmd) struct HStatOptionItemMining {
     pub(in crate::cmd) ignore_state: bool,
 }
 
-#[derive(Copy, Clone, educe::Educe, serde::Deserialize)]
+#[derive(Copy, Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatMiningItemKinds {
     #[serde(default = "default_true")]

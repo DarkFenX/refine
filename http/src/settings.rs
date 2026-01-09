@@ -1,4 +1,6 @@
-#[derive(Debug, serde::Deserialize)]
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
 pub(crate) struct HSetServer {
     pub(crate) port: u16,
     pub(crate) solsys_lifetime: u64,
@@ -7,19 +9,19 @@ pub(crate) struct HSetServer {
     pub(crate) heavy_threads: usize,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, Deserialize)]
 pub(crate) struct HSetCache {
     pub(crate) folder: Option<String>,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, Deserialize)]
 pub(crate) struct HSetLog {
     pub(crate) folder: Option<String>,
     pub(crate) level: String,
     pub(crate) rotate: bool,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, Deserialize)]
 pub(crate) struct HSettings {
     pub(crate) server: HSetServer,
     pub(crate) cache: HSetCache,

@@ -38,6 +38,11 @@ impl FighterCount {
         PValue::from_f64_unchecked(self.0 as f64)
     }
 }
+impl From<FighterCount> for u32 {
+    fn from(v: FighterCount) -> Self {
+        v.0
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc

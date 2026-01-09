@@ -1,13 +1,15 @@
 use rc::ItemCommon;
+use serde::Serialize;
+use serde_with::{DisplayFromStr, serde_as};
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[serde_as]
+#[derive(Serialize)]
 pub(crate) struct HRigInfoPartial {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    type_id: i32,
+    #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     enabled: bool,
 }
@@ -16,7 +18,7 @@ impl From<&mut rc::RigMut<'_>> for HRigInfoPartial {
         Self {
             id: core_rig.get_item_id(),
             kind: "rig",
-            type_id: core_rig.get_type_id(),
+            type_id: core_rig.get_type_id().into_i32(),
             fit_id: core_rig.get_fit().get_fit_id(),
             enabled: core_rig.get_state(),
         }

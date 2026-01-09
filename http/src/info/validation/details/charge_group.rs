@@ -1,10 +1,14 @@
 use std::collections::HashMap;
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize)]
+use serde::Serialize;
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValChargeGroupFail {
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     charges: HashMap<rc::ItemId, HValChargeGroupItemInfo>,
 }
 impl From<&rc::val::ValChargeGroupFail> for HValChargeGroupFail {
@@ -19,20 +23,24 @@ impl From<&rc::val::ValChargeGroupFail> for HValChargeGroupFail {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+#[serde_as]
+#[derive(Serialize_tuple)]
 struct HValChargeGroupItemInfo {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     parent_item_id: rc::ItemId,
-    charge_group_id: rc::ItemGrpId,
-    allowed_group_ids: Vec<rc::ItemGrpId>,
+    charge_group_id: i32,
+    allowed_group_ids: Vec<i32>,
 }
 impl From<&rc::val::ValChargeGroupChargeInfo> for HValChargeGroupItemInfo {
     fn from(core_val_charge_info: &rc::val::ValChargeGroupChargeInfo) -> Self {
         Self {
             parent_item_id: core_val_charge_info.parent_item_id,
-            charge_group_id: core_val_charge_info.charge_group_id,
-            allowed_group_ids: core_val_charge_info.allowed_group_ids.clone(),
+            charge_group_id: core_val_charge_info.charge_group_id.into_i32(),
+            allowed_group_ids: core_val_charge_info
+                .allowed_group_ids
+                .iter()
+                .map(|v| v.into_i32())
+                .collect(),
         }
     }
 }

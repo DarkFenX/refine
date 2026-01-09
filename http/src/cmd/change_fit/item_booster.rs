@@ -1,3 +1,6 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
@@ -6,10 +9,9 @@ use crate::{
     util::HExecError,
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct HAddBoosterCmd {
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     state: Option<bool>,
     side_effects: Option<HSideEffectMap>,
 }
@@ -20,7 +22,7 @@ impl HAddBoosterCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_booster = core_fit.add_booster(self.type_id);
+        let mut core_booster = core_fit.add_booster(rc::ItemTypeId::from_i32(self.type_id));
         if let Some(state) = self.state {
             core_booster.set_state(state);
         }
@@ -29,10 +31,10 @@ impl HAddBoosterCmd {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeBoosterCmd {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeBoosterCmd,

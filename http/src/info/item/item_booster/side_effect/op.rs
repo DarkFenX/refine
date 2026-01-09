@@ -1,6 +1,8 @@
-#[derive(serde::Serialize)]
+use serde::Serialize;
+
+#[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum HSideEffectOp {
+pub(in crate::info::item::item_booster::side_effect) enum HSideEffectOp {
     Add,
     Perc,
 }

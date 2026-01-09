@@ -1,7 +1,10 @@
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
+use serde_tuple::Serialize_tuple;
+use serde_with::{DisplayFromStr, serde_as};
+
+#[serde_as]
+#[derive(Serialize_tuple)]
 pub(in crate::info::validation) struct HValShipStanceFail {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
+    #[serde_as(as = "DisplayFromStr")]
     stance_item_id: rc::ItemId,
 }
 impl From<&rc::val::ValShipStanceFail> for HValShipStanceFail {

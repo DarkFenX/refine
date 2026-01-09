@@ -1,16 +1,19 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
 use crate::{
     cmd::{HFitIdResp, shared::get_primary_fit},
-    shared::{HDpsProfile, HFitSecStatus},
+    shared::HDpsProfile,
     util::{HExecError, TriStateField},
 };
 
-#[serde_with::serde_as]
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(crate) struct HChangeFitCmd {
-    #[serde_as(as = "TriStateField<serde_with::DisplayFromStr>")]
+    #[serde_as(as = "TriStateField<DisplayFromStr>")]
     #[serde(default)]
     fleet_id: TriStateField<rc::FleetId>,
-    sec_status: Option<HFitSecStatus>,
+    sec_status: Option<f64>,
     #[serde(default)]
     rah_incoming_dps: TriStateField<HDpsProfile>,
 }
