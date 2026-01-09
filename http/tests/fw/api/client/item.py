@@ -227,7 +227,7 @@ class ApiClientItem(ApiClientBase):
             rm_projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
-            prop_mode: str | type[Absent],
+            prop_mode: str | type[Absent] | None,
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:

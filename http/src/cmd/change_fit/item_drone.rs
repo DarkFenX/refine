@@ -45,6 +45,9 @@ impl HAddDroneCmd {
                 }
             }
         }
+        if let Some(prop_mode) = self.prop_mode {
+            core_drone.set_prop_mode(Some(prop_mode.into()))
+        }
         Ok(core_drone.into())
     }
 }

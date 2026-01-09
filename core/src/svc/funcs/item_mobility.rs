@@ -15,7 +15,7 @@ pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PVal
 pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     let mut sig_radius =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().sig_radius, Value::ZERO));
-    if let Some(NpcProp::Cruise) = ctx.u_data.get_item_npc_prop(item_uid) {
+    if let Some(NpcProp::Chase) = ctx.u_data.get_item_npc_prop(item_uid) {
         sig_radius *= PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
