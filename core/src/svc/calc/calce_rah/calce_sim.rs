@@ -428,7 +428,8 @@ fn estimate_initial_adaptation_ticks(
         .into_iter()
         .min()
         .unwrap();
-        let item_exhaustion_cycles = Count::from_value_ceiled((Value::ONE - min_reso) / item_sim_data.info.shift_amount);
+        let item_exhaustion_cycles =
+            Count::from_value_ceiled((Value::ONE - min_reso) / item_sim_data.info.shift_amount);
         exhaustion_cycles.insert(item_uid, item_exhaustion_cycles);
     }
     // Slowest RAH is the one which takes the most time to exhaust its highest resistance when it's

@@ -14,6 +14,6 @@ class StatTimeBurst:
 class StatTimeSim:
 
     mode: str = 'sim'
-    time: float | type[Absent] = Absent
-    reload_optionals: bool | type[Absent] = Absent
-    rearm_minions: bool | type[Absent] = Absent
+    time: float | type[Absent] | None = Absent
+    reload_optionals: bool | type[Absent] | None = Absent
+    rearm_minions: bool | type[Absent] | None = Absent
