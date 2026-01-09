@@ -1,4 +1,4 @@
-from fw import Effect, approx, check_no_field
+from fw import approx, check_no_field
 
 
 def test_not_loaded_item(client, consts):
@@ -25,7 +25,6 @@ def test_not_loaded_item(client, consts):
     eve_other_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_other_id, eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -36,7 +35,7 @@ def test_not_loaded_item(client, consts):
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action
-    api_booster.change_booster(side_effects={api_effect_id: True})
+    api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_booster.update()
@@ -46,7 +45,7 @@ def test_not_loaded_item(client, consts):
     api_sol.change_src(data=eve_d2)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
-    api_side = api_booster.update().side_effects[api_effect_id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
@@ -59,7 +58,7 @@ def test_not_loaded_item(client, consts):
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action
-    api_booster.change_booster(side_effects={api_effect_id: False})
+    api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     api_booster.update()
@@ -69,7 +68,7 @@ def test_not_loaded_item(client, consts):
     api_sol.change_src(data=eve_d2)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
-    api_side = api_booster.update().side_effects[api_effect_id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
@@ -92,7 +91,6 @@ def test_no_chance_attr(client, consts):
     eve_booster_id = client.mk_eve_item(attrs={eve_affector_attr_id: 25}, eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
@@ -103,14 +101,14 @@ def test_no_chance_attr(client, consts):
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action
-    api_booster.change_booster(side_effects={api_effect_id: False})
+    api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # noqa: B018
     # Action
-    api_booster.change_booster(side_effects={api_effect_id: True})
+    api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(250)
     api_booster.update()
@@ -133,26 +131,25 @@ def test_no_str_attr(client, consts):
     eve_effect_id = client.mk_eve_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod])
     eve_booster_id = client.mk_eve_item(attrs={eve_chance_attr_id: 0.4}, eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    api_side = api_booster.update().side_effects[api_effect_id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str is None
     # Action
-    api_booster.change_booster(side_effects={api_effect_id: True})
+    api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
-    api_side = api_booster.update().side_effects[api_effect_id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str is None
     # Action
-    api_booster.change_booster(side_effects={api_effect_id: False})
+    api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
-    api_side = api_booster.update().side_effects[api_effect_id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str is None

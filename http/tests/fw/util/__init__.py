@@ -1,5 +1,5 @@
 from .attr_dict import AttrDict, AttrHookDef
-from .cast import cast_to_int
+from .cast import cast_prefixed_to_int, cast_to_int, cast_to_prefixed_str
 from .dc_conv import dc_to_dict
 from .insert import conditional_insert
 from .ntt_list import NttList

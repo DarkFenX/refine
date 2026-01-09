@@ -1,4 +1,3 @@
-from fw import Effect
 
 
 def test_switch_state_invalid_reference(client, consts):
@@ -16,7 +15,6 @@ def test_switch_state_invalid_reference(client, consts):
         defeff_id=eve_effect_id,
         abils=[client.mk_eve_item_abil(id_=eve_abil_id)])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
@@ -24,8 +22,8 @@ def test_switch_state_invalid_reference(client, consts):
     api_fighter.change_fighter(state=consts.ApiMinionState.engaging)
     api_fighter.change_fighter(abilities={eve_abil_id: False})
     api_fighter.change_fighter(abilities={eve_abil_id: True})
-    api_fighter.change_fighter(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    api_fighter.change_fighter(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
+    api_fighter.change_fighter(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_fighter.change_fighter(effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
 
 
 def test_switch_state_no_reference(client, consts):
@@ -40,7 +38,6 @@ def test_switch_state_no_reference(client, consts):
         defeff_id=eve_effect_id,
         abils=[client.mk_eve_item_abil(id_=eve_abil_id)])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
@@ -48,5 +45,5 @@ def test_switch_state_no_reference(client, consts):
     api_fighter.change_fighter(state=consts.ApiMinionState.engaging)
     api_fighter.change_fighter(abilities={eve_abil_id: False})
     api_fighter.change_fighter(abilities={eve_abil_id: True})
-    api_fighter.change_fighter(effect_modes={api_effect_id: consts.ApiEffMode.force_stop})
-    api_fighter.change_fighter(effect_modes={api_effect_id: consts.ApiEffMode.full_compliance})
+    api_fighter.change_fighter(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_fighter.change_fighter(effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})

@@ -1,4 +1,4 @@
-from fw import Effect, approx, check_no_field
+from fw import approx, check_no_field
 
 
 def test_src_switch(client, consts):
@@ -24,7 +24,6 @@ def test_src_switch(client, consts):
         attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_normal = api_fit.add_rig(type_id=eve_item_id)
@@ -41,8 +40,8 @@ def test_src_switch(client, consts):
     with check_no_field():
         api_mutable.effects  # noqa: B018
     # Action
-    api_normal.change_rig(effect_modes={api_effect_id: consts.ApiEffMode.force_run})
-    api_mutable.change_module(effect_modes={api_effect_id: consts.ApiEffMode.force_run})
+    api_normal.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
+    api_mutable.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_normal.update()
     with check_no_field():
@@ -59,9 +58,9 @@ def test_src_switch(client, consts):
     # Verification
     api_normal.update()
     assert api_normal.attrs[eve_affectee_attr_id].modified == approx(120)
-    assert api_normal.effects[api_effect_id].running is True
-    assert api_normal.effects[api_effect_id].mode == consts.ApiEffMode.force_run
+    assert api_normal.effects[eve_effect_id].running is True
+    assert api_normal.effects[eve_effect_id].mode == consts.ApiEffMode.force_run
     api_mutable.update()
     assert api_mutable.attrs[eve_affectee_attr_id].modified == approx(120)
-    assert api_mutable.effects[api_effect_id].running is True
-    assert api_mutable.effects[api_effect_id].mode == consts.ApiEffMode.force_run
+    assert api_mutable.effects[eve_effect_id].running is True
+    assert api_mutable.effects[eve_effect_id].mode == consts.ApiEffMode.force_run

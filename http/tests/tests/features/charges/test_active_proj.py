@@ -3,7 +3,7 @@ Some charges have active projectable effects (e.g. wubbles, HIC rays), here we c
 effects are applied/removed in different circumstances.
 """
 
-from fw import Effect, approx
+from fw import approx
 
 
 def test_bundled_proj_unproj(client, consts):
@@ -150,8 +150,6 @@ def setup_state_test(*, client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
     api_sol = client.create_sol()
-    api_module_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_module_effect_id)
-    api_charge_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_charge_effect_id)
     api_affectee_fit = api_sol.create_fit()
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
@@ -160,98 +158,98 @@ def setup_state_test(*, client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_module.change_module(add_projs=[api_ship.id])
-    return api_ship, api_module, api_module.charge, api_module_effect_id, api_charge_effect_id, eve_affectee_attr_id
+    return api_ship, api_module, api_module.charge, eve_module_effect_id, eve_charge_effect_id, eve_affectee_attr_id
 
 
 def test_states_module(client, consts):
-    api_ship, api_module, api_charge, api_module_effect_id, api_charge_effect_id, eve_attr_id = setup_state_test(
+    api_ship, api_module, api_charge, eve_module_effect_id, eve_charge_effect_id, eve_attr_id = setup_state_test(
         client=client, consts=consts)
     # Charge state on, charge effect default
-    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(state=True, effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_stop})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     api_module.change_module(
-        state=consts.ApiModuleState.online, effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+        state=consts.ApiModuleState.online, effect_modes={eve_module_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     # Charge state on, charge effect off
-    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.force_stop})
+    api_charge.change_charge(state=True, effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_stop})
     api_module.change_module(state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     api_module.change_module(
-        state=consts.ApiModuleState.online, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+        state=consts.ApiModuleState.online, effect_modes={eve_module_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     # Charge state off, charge effect default
-    api_charge.change_charge(state=False, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(state=False, effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
     api_module.change_module(
-        state=consts.ApiModuleState.active, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+        state=consts.ApiModuleState.active, effect_modes={eve_module_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     api_module.change_module(state=consts.ApiModuleState.online)
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     # Charge state off, charge effect on
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
     api_module.change_module(
-        state=consts.ApiModuleState.active, effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+        state=consts.ApiModuleState.active, effect_modes={eve_module_effect_id: consts.ApiEffMode.force_stop})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
     api_module.change_module(
-        state=consts.ApiModuleState.disabled, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
+        state=consts.ApiModuleState.disabled, effect_modes={eve_module_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_stop})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
 
 
 def test_states_charge(client, consts):
-    api_ship, api_module, api_charge, api_module_effect_id, api_charge_effect_id, eve_attr_id = setup_state_test(
+    api_ship, api_module, api_charge, eve_module_effect_id, eve_charge_effect_id, eve_attr_id = setup_state_test(
         client=client, consts=consts)
     # Module state on, module effect default
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
     api_charge.change_charge(state=False)
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(state=True, effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_stop})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_stop})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     # Module state on, module effect off
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_stop})
-    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_stop})
+    api_charge.change_charge(state=True, effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
     api_charge.change_charge(state=False)
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     # Module state off, module effect default
     api_module.change_module(
-        state=consts.ApiModuleState.online, effect_modes={api_module_effect_id: consts.ApiEffMode.full_compliance})
-    api_charge.change_charge(state=True, effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+        state=consts.ApiModuleState.online, effect_modes={eve_module_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(state=True, effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
     api_charge.change_charge(state=False)
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.full_compliance})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.full_compliance})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     # Module state off, module effect on
-    api_module.change_module(effect_modes={api_module_effect_id: consts.ApiEffMode.force_run})
+    api_module.change_module(effect_modes={eve_module_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
     api_charge.change_charge(state=True)
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
-    api_charge.change_charge(effect_modes={api_charge_effect_id: consts.ApiEffMode.force_stop})
+    api_charge.change_charge(effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_stop})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1000)
-    api_charge.change_charge(state=False, effect_modes={api_charge_effect_id: consts.ApiEffMode.force_run})
+    api_charge.change_charge(state=False, effect_modes={eve_charge_effect_id: consts.ApiEffMode.force_run})
     assert api_ship.update().attrs[eve_attr_id].modified == approx(1200)
 
 
@@ -437,7 +435,6 @@ def test_non_default_effect(client, consts):
     eve_module2_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()
-    api_act_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_act_effect_id)
     api_sol = client.create_sol()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
@@ -447,7 +444,7 @@ def test_non_default_effect(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_affector_module.change_module(
-        effect_modes={api_act_effect_id: consts.ApiEffMode.force_run},
+        effect_modes={eve_act_effect_id: consts.ApiEffMode.force_run},
         add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)

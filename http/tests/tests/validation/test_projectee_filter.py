@@ -1,4 +1,4 @@
-from fw import Effect, Muta, approx, check_no_field
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -152,8 +152,6 @@ def test_multiple_src_effects(client, consts):
         eff_ids=[eve_direct_effect_id, eve_vorton_effect_id],
         defeff_id=eve_direct_effect_id)
     client.create_sources()
-    api_direct_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_direct_effect_id)
-    api_vorton_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_vorton_effect_id)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
@@ -165,19 +163,19 @@ def test_multiple_src_effects(client, consts):
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
-    api_src_module.change_module(effect_modes={api_vorton_effect_id: consts.ApiEffMode.force_run})
+    api_src_module.change_module(effect_modes={eve_vorton_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
-    api_src_module.change_module(effect_modes={api_direct_effect_id: consts.ApiEffMode.force_stop})
+    api_src_module.change_module(effect_modes={eve_direct_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
-    api_src_module.change_module(effect_modes={api_vorton_effect_id: consts.ApiEffMode.force_stop})
+    api_src_module.change_module(effect_modes={eve_vorton_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True

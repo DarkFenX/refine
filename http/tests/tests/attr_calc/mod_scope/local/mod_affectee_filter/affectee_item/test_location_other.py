@@ -1,4 +1,4 @@
-from fw import Effect, approx, check_no_field
+from fw import approx, check_no_field
 
 
 def test_affected_charge_bundled(client, consts):
@@ -109,13 +109,12 @@ def test_unaffected_fighter_to_autocharge(client, consts):
         attrs={eve_autocharge_attr_id: eve_autocharge_id, eve_affector_attr_id: 20},
         eff_ids=[eve_other_effect_id, eve_autocharge_effect_id])
     client.create_sources()
-    api_autocharge_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_autocharge_effect_id)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_autocharge_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_autocharge_effect_id]
     assert api_autocharge.attrs[eve_affectee_attr_id].modified == approx(100)
 
 

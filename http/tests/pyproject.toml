@@ -56,10 +56,11 @@ select = [
     "FURB",  # refurb
     "RUF",  # Ruff-specific rules
 ]
-ignore = ["F401", "ANN003", "ANN401", "PLR2004", "PLW1641"]
+ignore = ["ANN003", "ANN401", "PLR2004", "PLW1641"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/test_*.py" = ["ANN"]
+"**/__init__.py" = ["F401"]
 
 [tool.ruff.lint.isort]
 no-lines-before = ["local-folder"]

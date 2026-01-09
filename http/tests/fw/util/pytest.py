@@ -1,11 +1,7 @@
 import contextlib
 import math
-import typing
 
 import pytest
-
-if typing.TYPE_CHECKING:
-    from collections.abc import Generator
 
 
 # Wrapper around pytest approx function, to override default parameters

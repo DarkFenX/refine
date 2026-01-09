@@ -1,14 +1,14 @@
 from collections import UserDict, UserList
 from dataclasses import dataclass
 
-from fw.util import cast_to_int
+from fw.util import cast_prefixed_to_int
 
 
 class AttrModInfoMap(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({
-            int(k): ModInfoList(
+            cast_prefixed_to_int(val=k, prefix='e'): ModInfoList(
                 ModInfo(
                     op=m[0],
                     initial_val=m[1],
@@ -98,4 +98,4 @@ class ModAffectorInfo:
 
     def __init__(self, *, data: tuple) -> None:
         self.item_id, attr_id = data
-        self.attr_id = cast_to_int(val=attr_id)
+        self.attr_id = cast_prefixed_to_int(val=attr_id, prefix='e')

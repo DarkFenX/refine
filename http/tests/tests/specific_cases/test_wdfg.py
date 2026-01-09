@@ -1,4 +1,4 @@
-from fw import Effect, approx, check_no_field
+from fw import approx, check_no_field
 from fw.api import FitStatsOptions, ValOptions
 
 
@@ -557,16 +557,14 @@ def test_block_fighter_mwd_mjd_dscript(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
-    api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
-    api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.change_fighter(effect_modes={
-        api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
-        api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
+        eve_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
+        eve_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
     api_wdfg.change_module(add_projs=[api_fighter.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
@@ -578,7 +576,7 @@ def test_block_fighter_mwd_mjd_dscript(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
 
 
 def test_block_fighter_mwd_mjd_sscript(client, consts):
@@ -596,16 +594,14 @@ def test_block_fighter_mwd_mjd_sscript(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
-    api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
-    api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.change_fighter(effect_modes={
-        api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
-        api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
+        eve_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
+        eve_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
     api_wdfg.change_module(add_projs=[api_fighter.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
@@ -617,7 +613,7 @@ def test_block_fighter_mwd_mjd_sscript(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
 
 
 def test_range_bubble(client, consts):

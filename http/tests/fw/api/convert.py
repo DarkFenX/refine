@@ -31,10 +31,6 @@ class Spool:
 class Effect:
 
     @staticmethod
-    def dogma_to_api(*, dogma_effect_id: int) -> str:
-        return f'd{dogma_effect_id}'
-
-    @staticmethod
     def custom_to_api(*, custom_effect_id: int) -> str:
         return f'c{custom_effect_id}'
 

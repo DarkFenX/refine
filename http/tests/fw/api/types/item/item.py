@@ -1,8 +1,9 @@
 import typing
 
+from fw.api.types.helpers import process_effect_map_request
 from fw.api.types.stats import ItemStats
 from fw.consts import ApiItemInfoMode
-from fw.util import Absent, AttrDict, AttrHookDef
+from fw.util import Absent, AttrDict, AttrHookDef, cast_prefixed_to_int
 from .ability_info import AbilityInfo
 from .adj_count import AdjustableCount
 from .attr_vals import AttrVals
@@ -28,17 +29,20 @@ class Item(AttrDict):
             'mutation': AttrHookDef(func=lambda m: ItemMutation(data=m)),
             'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
             'autocharges': AttrHookDef(func=lambda acs: {
-                k: Item(client=client, data=v, sol_id=sol_id)
+                cast_prefixed_to_int(val=k, prefix='d'): Item(client=client, data=v, sol_id=sol_id)
                 for k, v in acs.items()}),
             'spool_cycles': AttrHookDef(func=lambda sc: AdjustableCount(data=sc)),
             'count': AttrHookDef(func=lambda c: AdjustableCount(data=c)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
-            'side_effects': AttrHookDef(func=lambda ses: {k: SideEffectInfo(data=v) for k, v in ses.items()}),
+            'side_effects': AttrHookDef(func=lambda ses: {
+                cast_prefixed_to_int(val=k, prefix='d'): SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'coordinates': AttrHookDef(func=lambda c: Coordinates(data=c)),
             'movement': AttrHookDef(func=lambda m: Movement(data=m)),
-            'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(data=v) for k, v in attrs.items()}),
-            'effects': AttrHookDef(func=lambda effects: {k: EffectInfo(data=v) for k, v in effects.items()}),
+            'attrs': AttrHookDef(func=lambda attrs: {
+                cast_prefixed_to_int(val=k, prefix='e'): AttrVals(data=v) for k, v in attrs.items()}),
+            'effects': AttrHookDef(func=lambda effects: {
+                cast_prefixed_to_int(val=k, prefix='d'): EffectInfo(data=v) for k, v in effects.items()}),
             'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
         self._client = client
         self._sol_id = sol_id
@@ -82,7 +86,7 @@ class Item(AttrDict):
     def change_autocharge(
             self, *,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -90,7 +94,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -103,7 +107,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            side_effects: dict[str, bool] | type[Absent] = Absent,
+            side_effects: dict[int | str, bool] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
@@ -113,7 +117,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            side_effects=side_effects,
+            side_effects=process_effect_map_request(effect_map=side_effects),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
@@ -126,7 +130,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -135,7 +139,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -148,7 +152,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -157,7 +161,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -176,7 +180,7 @@ class Item(AttrDict):
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
             prop_mode: str | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -191,7 +195,7 @@ class Item(AttrDict):
             coordinates=coordinates,
             movement=movement,
             prop_mode=prop_mode,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -210,7 +214,7 @@ class Item(AttrDict):
             rm_projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -225,7 +229,7 @@ class Item(AttrDict):
             rm_projs=rm_projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -238,7 +242,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -247,7 +251,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -260,7 +264,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -269,7 +273,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -287,7 +291,7 @@ class Item(AttrDict):
             spool: str | type[Absent] | None = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
@@ -302,7 +306,7 @@ class Item(AttrDict):
             spool=spool,
             add_projs=add_projs,
             rm_projs=rm_projs,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
@@ -339,7 +343,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -348,7 +352,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -361,7 +365,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: ApiServiceState | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -370,7 +374,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -385,7 +389,7 @@ class Item(AttrDict):
             state: bool | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -396,7 +400,7 @@ class Item(AttrDict):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -410,7 +414,7 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             level: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -420,7 +424,7 @@ class Item(AttrDict):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -433,7 +437,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -442,7 +446,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -455,7 +459,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -464,7 +468,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -477,7 +481,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
-            effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
@@ -486,7 +490,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

@@ -1,4 +1,4 @@
-from fw import Effect, approx, check_no_field
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -154,30 +154,28 @@ def test_fighter_mwd_mjd_block(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
-    api_ftr_mwd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mwd_effect_id)
-    api_ftr_mjd_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_ftr_mjd_effect_id)
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_point = api_affector_fit.add_module(type_id=eve_point_id, state=consts.ApiModuleState.active)
     api_fighter = api_affectee_fit.add_fighter(type_id=eve_fighter_id)
     api_fighter.change_fighter(effect_modes={
-        api_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
-        api_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
+        eve_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
+        eve_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
     api_point.change_module(add_projs=[api_fighter.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([api_ftr_mwd_effect_id, api_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}

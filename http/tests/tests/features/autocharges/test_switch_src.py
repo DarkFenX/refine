@@ -1,4 +1,4 @@
-from fw import Effect, approx, check_no_field
+from fw import approx, check_no_field
 
 
 def test_specified_same(client, consts):
@@ -24,14 +24,13 @@ def test_specified_same(client, consts):
         attrs={eve_autocharge_attr_id: eve_autocharge_id},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_autocharge_id
     assert api_autocharge.attrs[eve_d1_attr_id].modified == approx(50)
     # Action
@@ -39,7 +38,7 @@ def test_specified_same(client, consts):
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_autocharge_id
     assert api_autocharge.attrs[eve_d2_attr_id].modified == approx(70)
 
@@ -75,14 +74,13 @@ def test_specified_different(client, consts):
         attrs={eve_autocharge_attr_id: eve_d2_autocharge_id},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_d1_autocharge_id
     assert api_autocharge.attrs[eve_d1_attr_id].modified == approx(50)
     # Action
@@ -90,7 +88,7 @@ def test_specified_different(client, consts):
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_d2_autocharge_id
     assert api_autocharge.attrs[eve_d2_attr_id].modified == approx(70)
 
@@ -126,14 +124,13 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
         attrs={eve_autocharge_attr_id: eve_d2_autocharge_id},
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_d1d2_autocharge_id
     assert api_autocharge.attrs[eve_d1_attr_id].modified == approx(50)
     # Action
@@ -147,7 +144,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_d1d2_autocharge_id
     assert api_autocharge.attrs[eve_d1_attr_id].modified == approx(50)
 
@@ -177,14 +174,13 @@ def test_valid_to_no_reference_to_valid(client, consts):
         id_=eve_fighter_id,
         eff_ids=[eve_effect_id])
     client.create_sources()
-    api_effect_id = Effect.dogma_to_api(dogma_effect_id=eve_effect_id)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_d1_autocharge_id
     assert api_autocharge.attrs[eve_d1_attr_id].modified == approx(50)
     # Action
@@ -198,6 +194,6 @@ def test_valid_to_no_reference_to_valid(client, consts):
     # Verification
     api_fighter.update()
     assert len(api_fighter.autocharges) == 1
-    api_autocharge = api_fighter.autocharges[api_effect_id]
+    api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.type_id == eve_d1_autocharge_id
     assert api_autocharge.attrs[eve_d1_attr_id].modified == approx(50)

@@ -1,4 +1,4 @@
-from fw import Effect, Muta, approx, check_no_field
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -147,8 +147,6 @@ def test_multiple_src_effects(client, consts):
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect1_id, eve_src_effect2_id], defeff_id=eve_src_effect1_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_resist_attr_id: 0})
     client.create_sources()
-    api_src_effect1_id = Effect.dogma_to_api(dogma_effect_id=eve_src_effect1_id)
-    api_src_effect2_id = Effect.dogma_to_api(dogma_effect_id=eve_src_effect2_id)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
@@ -166,19 +164,19 @@ def test_multiple_src_effects(client, consts):
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_src_item.change_module(effect_modes={api_src_effect2_id: consts.ApiEffMode.state_compliance})
+    api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_src_item.change_module(effect_modes={api_src_effect1_id: consts.ApiEffMode.force_stop})
+    api_src_item.change_module(effect_modes={eve_src_effect1_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
-    api_src_item.change_module(effect_modes={api_src_effect2_id: consts.ApiEffMode.force_stop})
+    api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
