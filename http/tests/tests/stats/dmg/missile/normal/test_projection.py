@@ -31,7 +31,7 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 66980, 0), movement=(0, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 66970, 0), movement=(0, 0, 0))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(

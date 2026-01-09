@@ -34,7 +34,7 @@ def test_hp(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 14985, 0), movement=(0, 0, 1))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 14975, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - target is close enough for breacher to reach in 100% of cases, and has high
     # enough HP for absolute limit to work
@@ -104,7 +104,7 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14985, 0), movement=(0, 0, 1))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14975, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - in full dps range
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -128,7 +128,7 @@ def test_range(client, consts):
     assert api_charge_nonproj_stats.dps.one().breacher == approx(500)
     assert api_charge_nonproj_stats.volley.one().breacher == approx(500)
     # Action
-    api_tgt_ship.change_ship(coordinates=(0, 14990, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 14980, 0))
     # Verification - slightly out of full dps range
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
@@ -151,7 +151,7 @@ def test_range(client, consts):
     assert api_charge_nonproj_stats.dps.one().breacher == approx(41)
     assert api_charge_nonproj_stats.volley.one().breacher == approx(41)
     # Action
-    api_tgt_ship.change_ship(coordinates=(0, 17990, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 17980, 0))
     # Verification - range is out of reach altogether
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
