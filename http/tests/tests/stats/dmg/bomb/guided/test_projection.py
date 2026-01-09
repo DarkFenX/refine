@@ -74,7 +74,7 @@ def test_range(client, consts):
     assert api_charge_nonproj_stats.volley.one() == [
         approx(2640), approx(2640), approx(2640), approx(2640)]
     # Action
-    api_tgt_ship.change_ship(coordinates=(0, 1598900, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 1596100, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
@@ -105,7 +105,7 @@ def test_range(client, consts):
     assert api_charge_nonproj_stats.volley.one() == [
         approx(2640), approx(2640), approx(2640), approx(2640)]
     # Action
-    api_tgt_ship.change_ship(coordinates=(0, 1599000, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 1596200, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
@@ -136,7 +136,7 @@ def test_range(client, consts):
     assert api_charge_nonproj_stats.volley.one() == [
         approx(1001.37931), approx(1001.37931), approx(1001.37931), approx(1001.37931)]
     # Action
-    api_tgt_ship.change_ship(coordinates=(0, 1602625, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 1599825, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
