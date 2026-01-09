@@ -1,6 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.types.helpers import effect_http_to_fw
+
 if typing.TYPE_CHECKING:
     from fw.consts import ApiSecZone
 
@@ -13,7 +15,9 @@ class ValEffectSecZoneFail:
 
     def __init__(self, *, data: list | tuple) -> None:
         self.zone, items = data
-        self.items = {k1: {k2: sorted(v2) for k2, v2 in v1.items()} for k1, v1 in items.items()}
+        self.items = {
+            k1: {effect_http_to_fw(effect_id=k2): sorted(v2) for k2, v2 in v1.items()}
+            for k1, v1 in items.items()}
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]

@@ -1,11 +1,11 @@
 use serde::Deserialize;
-use serde_with::{Map, serde_as};
+use serde_with::{Map, serde_as, DisplayFromStr};
 
 #[serde_as]
 #[derive(Deserialize)]
 #[serde(transparent)]
 pub(in crate::cmd) struct HAbilityMap {
-    #[serde_as(as = "Map<_, _>")]
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     states: Vec<(i32, bool)>,
 }
 

@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.types.helpers import process_effect_map_request
+from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.consts import (
     ApiFitInfoMode,
     ApiItemInfoMode,
@@ -272,7 +272,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            mutation=mutation,
+            mutation=process_muta_add_request(mutation=mutation),
             coordinates=coordinates,
             movement=movement,
             prop_mode=prop_mode,
@@ -367,7 +367,7 @@ class Fit(AttrDict):
             rack=rack,
             type_id=type_id,
             state=state,
-            mutation=mutation,
+            mutation=process_muta_add_request(mutation=mutation),
             charge_type_id=charge_type_id,
             spool=spool,
             mode=mode,

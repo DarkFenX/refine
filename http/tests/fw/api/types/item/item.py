@@ -1,9 +1,14 @@
 import typing
 
-from fw.api.types.helpers import process_effect_map_request
+from fw.api.types.helpers import (
+    attr_http_to_fw,
+    effect_http_to_fw,
+    process_effect_map_request,
+    process_muta_change_request,
+)
 from fw.api.types.stats import ItemStats
 from fw.consts import ApiItemInfoMode
-from fw.util import Absent, AttrDict, AttrHookDef, cast_prefixed_to_int
+from fw.util import Absent, AttrDict, AttrHookDef
 from .ability_info import AbilityInfo
 from .adj_count import AdjustableCount
 from .attr_vals import AttrVals
@@ -29,20 +34,20 @@ class Item(AttrDict):
             'mutation': AttrHookDef(func=lambda m: ItemMutation(data=m)),
             'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
             'autocharges': AttrHookDef(func=lambda acs: {
-                cast_prefixed_to_int(val=k, prefix='d'): Item(client=client, data=v, sol_id=sol_id)
+                effect_http_to_fw(effect_id=k): Item(client=client, data=v, sol_id=sol_id)
                 for k, v in acs.items()}),
             'spool_cycles': AttrHookDef(func=lambda sc: AdjustableCount(data=sc)),
             'count': AttrHookDef(func=lambda c: AdjustableCount(data=c)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
-                cast_prefixed_to_int(val=k, prefix='d'): SideEffectInfo(data=v) for k, v in ses.items()}),
+                effect_http_to_fw(effect_id=k): SideEffectInfo(data=v) for k, v in ses.items()}),
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'coordinates': AttrHookDef(func=lambda c: Coordinates(data=c)),
             'movement': AttrHookDef(func=lambda m: Movement(data=m)),
             'attrs': AttrHookDef(func=lambda attrs: {
-                cast_prefixed_to_int(val=k, prefix='e'): AttrVals(data=v) for k, v in attrs.items()}),
+                attr_http_to_fw(attr_id=k): AttrVals(data=v) for k, v in attrs.items()}),
             'effects': AttrHookDef(func=lambda effects: {
-                cast_prefixed_to_int(val=k, prefix='d'): EffectInfo(data=v) for k, v in effects.items()}),
+                effect_http_to_fw(effect_id=k): EffectInfo(data=v) for k, v in effects.items()}),
             'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
         self._client = client
         self._sol_id = sol_id
@@ -189,7 +194,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            mutation=mutation,
+            mutation=process_muta_change_request(mutation=mutation),
             add_projs=add_projs,
             rm_projs=rm_projs,
             coordinates=coordinates,
@@ -301,7 +306,7 @@ class Item(AttrDict):
             item_id=self.id,
             type_id=type_id,
             state=state,
-            mutation=mutation,
+            mutation=process_muta_change_request(mutation=mutation),
             charge_type_id=charge_type_id,
             spool=spool,
             add_projs=add_projs,

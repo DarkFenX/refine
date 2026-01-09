@@ -139,9 +139,9 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_fighter3 = api_fit.add_fighter(type_id=eve_fighter3_id)
-    # Verification
+    # Verification - negative volume is considered as 0
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
-    assert api_stats.fighter_bay_volume == (approx(18100), approx(8000))
+    assert api_stats.fighter_bay_volume == (approx(18600), approx(8000))
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -463,12 +463,12 @@ def test_non_positive(client, consts):
     api_fit.add_fighter(type_id=eve_fighter1_id)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
     api_fit.add_fighter(type_id=eve_fighter3_id)
-    # Verification - items with negative and 0 use are not exposed
+    # Verification - items with negative volume are considered as 0, 0 volume users are not exposed
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
-    assert api_stats.fighter_bay_volume == (approx(140), approx(125))
+    assert api_stats.fighter_bay_volume == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
-    assert api_val.details.fighter_bay_volume.used == approx(140)
+    assert api_val.details.fighter_bay_volume.used == approx(150)
     assert api_val.details.fighter_bay_volume.max == approx(125)
     assert api_val.details.fighter_bay_volume.users == {api_fighter2.id: approx(150)}
 

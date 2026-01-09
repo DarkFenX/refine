@@ -1,14 +1,14 @@
 from collections import UserDict, UserList
 from dataclasses import dataclass
 
-from fw.util import cast_prefixed_to_int
+from fw.api.types.helpers import attr_http_to_fw
 
 
 class AttrModInfoMap(UserDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({
-            cast_prefixed_to_int(val=k, prefix='e'): ModInfoList(
+            attr_http_to_fw(attr_id=k): ModInfoList(
                 ModInfo(
                     op=m[0],
                     initial_val=m[1],
@@ -98,4 +98,4 @@ class ModAffectorInfo:
 
     def __init__(self, *, data: tuple) -> None:
         self.item_id, attr_id = data
-        self.attr_id = cast_prefixed_to_int(val=attr_id, prefix='e')
+        self.attr_id = attr_http_to_fw(attr_id=attr_id)

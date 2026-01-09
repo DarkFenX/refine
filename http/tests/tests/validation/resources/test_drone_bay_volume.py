@@ -134,9 +134,9 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id)
-    # Verification
+    # Verification - negative volume is clamped to 0
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bay_volume=True))
-    assert api_stats.drone_bay_volume == (approx(240), approx(125))
+    assert api_stats.drone_bay_volume == (approx(250), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -426,12 +426,12 @@ def test_non_positive(client, consts):
     api_fit.add_drone(type_id=eve_drone1_id)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id)
     api_fit.add_drone(type_id=eve_drone3_id)
-    # Verification - items with negative and 0 use are not exposed
+    # Verification - items with negative volume are considered as 0, 0 volume users are not exposed
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bay_volume=True))
-    assert api_stats.drone_bay_volume == (approx(140), approx(125))
+    assert api_stats.drone_bay_volume == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
-    assert api_val.details.drone_bay_volume.used == approx(140)
+    assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone2.id: 150}
 

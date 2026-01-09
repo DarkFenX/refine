@@ -48,7 +48,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_st_support_fighter_flag(
 
 fn get_fighter_flag(item_attrs: &RMap<RAttrId, Value>, attr_rid: Option<RAttrId>) -> bool {
     match attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)) {
-        Some(&value) => value.abs() < PValue::FLOAT_TOLERANCE,
+        Some(&value) => value.abs() > PValue::FLOAT_TOLERANCE,
         None => false,
     }
 }

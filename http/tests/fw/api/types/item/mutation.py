@@ -1,6 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.types.helpers import attr_http_to_fw
+
 
 @dataclasses.dataclass
 class ItemMutation:
@@ -11,7 +13,7 @@ class ItemMutation:
 
     def __init__(self, *, data: list | tuple) -> None:
         self.base_type_id, self.mutator_id, attrs = data
-        self.attrs = {int(k): AttrMutation(data=v) for k, v in attrs.items()}
+        self.attrs = {attr_http_to_fw(attr_id=k): AttrMutation(data=v) for k, v in attrs.items()}
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
