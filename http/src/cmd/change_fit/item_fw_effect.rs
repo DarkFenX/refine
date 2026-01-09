@@ -29,7 +29,7 @@ impl HAddFwEffectCmd {
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::cmd) struct HChangeFwEffectCmd {
+pub(crate) struct HChangeFwEffectCmd {
     #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]

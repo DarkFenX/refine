@@ -8,7 +8,7 @@ use crate::{
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::cmd) struct HChangeAutochargeCmd {
+pub(crate) struct HChangeAutochargeCmd {
     #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]

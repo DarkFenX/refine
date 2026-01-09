@@ -54,7 +54,7 @@ impl HAddDroneCmd {
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::cmd) struct HChangeDroneCmd {
+pub(crate) struct HChangeDroneCmd {
     #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
