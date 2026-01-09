@@ -8,6 +8,7 @@ use super::{
     ship_stats::RahShipStats, tick_iter::RahSimTickIter,
 };
 use crate::{
+    Count,
     misc::{DmgKinds, EffectSpec, PValue, Value},
     svc::{
         SvcCtx,
@@ -427,21 +428,22 @@ fn estimate_initial_adaptation_ticks(
         .into_iter()
         .min()
         .unwrap();
-        let item_exhaustion_cycles = ((Value::ONE - min_reso) / item_sim_data.info.shift_amount).ceil();
+        let item_exhaustion_cycles = Count::from_value_ceiled((Value::ONE - min_reso) / item_sim_data.info.shift_amount);
         exhaustion_cycles.insert(item_uid, item_exhaustion_cycles);
     }
     // Slowest RAH is the one which takes the most time to exhaust its highest resistance when it's
     // used strictly as donor
     let slowest_item_uid = sim_datas
         .iter()
-        .max_by_key(|(k, v)| *exhaustion_cycles.get(k).unwrap() * v.info.cycle_time)
+        .max_by_key(|(k, v)| {
+            v.info.cycle_time * PValue::from_f64_unchecked(exhaustion_cycles.get(k).unwrap().into_u32() as f64)
+        })
         .map(|v| *v.0)
         .unwrap();
-    // Multiply count of resistance exhaustion cycles by 1.5, to give RAH more time for 'finer'
+    // Multiply count of resistance exhaustion cycles by 2, to give RAH more time for 'finer'
     // adjustments
-    let slowest_cycles =
-        ceil_f64_to_usize((*exhaustion_cycles.get(&slowest_item_uid).unwrap() * Value::from_f64(1.5)).into_f64());
-    if slowest_cycles == 0 {
+    let slowest_cycles = *exhaustion_cycles.get(&slowest_item_uid).unwrap() * Count::TWO;
+    if slowest_cycles == Count::ZERO {
         return 0;
     }
     // We rely on cycling time attribute to be zero in order to determine that cycle for the slowest
@@ -449,13 +451,13 @@ fn estimate_initial_adaptation_ticks(
     // but take it into initial tick count
     let ignored_tick_count = 1;
     let mut tick_count = ignored_tick_count;
-    let mut cycle_count = 0;
+    let mut cycle_count = Count::ZERO;
     for sim_history_entry in sim_history[ignored_tick_count..].iter() {
         // Once slowest RAH finished last cycle, do not count this tick and break the loop
         for item_history_entry in sim_history_entry.iter() {
             if item_history_entry.item_uid == slowest_item_uid {
                 if item_history_entry.cycling_time_rounded == PValue::ZERO {
-                    cycle_count += 1;
+                    cycle_count += Count::ONE;
                 }
                 break;
             }

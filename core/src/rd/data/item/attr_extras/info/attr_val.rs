@@ -110,7 +110,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
 ) -> Count {
     match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
         Some(&val) => Count::from_value_rounded(val),
-        None => Count::from_u32(1),
+        None => Count::ONE,
     }
 }
 
@@ -121,7 +121,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
     match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
         // Ensure there can be at least 1 fighter in a squad
         Some(&value) => FighterCount::from_f64_rounded(value.into_f64()),
-        None => FighterCount::from_u32_clamped(1),
+        None => FighterCount::ONE,
     }
 }
 

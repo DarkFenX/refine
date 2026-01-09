@@ -21,6 +21,7 @@ impl Count {
 impl Count {
     pub(crate) const ZERO: Self = Self(0);
     pub(crate) const ONE: Self = Self(1);
+    pub(crate) const TWO: Self = Self(2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
