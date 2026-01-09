@@ -1,6 +1,6 @@
 use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options};
 use crate::{
-    misc::{DmgKinds, PValue, Spool, StOption},
+    misc::{DmgKinds, PValue, Spool},
     svc::{
         SvcCtx,
         aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
@@ -22,7 +22,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fits_dps(ctx, calc, fit_uids, item_kinds, reload, spool, None);
@@ -35,7 +35,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let (dps_normal, breacher_accum) =
@@ -54,7 +54,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
     ) -> (DmgKinds<PValue>, BreacherAccum) {
         let cycling_options = get_dps_cycling_options(reload);
@@ -81,7 +81,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fit_dps(ctx, calc, fit_uid, item_kinds, reload, spool, None);
@@ -94,7 +94,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let (dps_normal, breacher_accum) =
@@ -113,7 +113,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
     ) -> (DmgKinds<PValue>, BreacherAccum) {
         let mut dps_normal = DmgKinds::default();
@@ -137,7 +137,7 @@ impl Vast {
         calc: &mut Calc,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fits_volley(ctx, calc, fit_uids, item_kinds, spool, None);
@@ -149,7 +149,7 @@ impl Vast {
         calc: &mut Calc,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let (volley_normal, volley_breacher) =
@@ -167,7 +167,7 @@ impl Vast {
         calc: &mut Calc,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
     ) -> (DmgKinds<PValue>, StatDmgBreacher) {
         let mut volley_normal = DmgKinds::default();
@@ -191,7 +191,7 @@ impl Vast {
         calc: &mut Calc,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fit_volley(ctx, calc, fit_uid, item_kinds, spool, None);
@@ -203,7 +203,7 @@ impl Vast {
         calc: &mut Calc,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let (volley_normal, volley_breacher) =
@@ -221,7 +221,7 @@ impl Vast {
         calc: &mut Calc,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
     ) -> (DmgKinds<PValue>, StatDmgBreacher) {
         let mut volley_normal = DmgKinds::default();
@@ -248,7 +248,7 @@ impl VastFitData {
         breacher_accum: &mut BreacherAccum,
         item_kinds: StatDmgItemKinds,
         cycling_options: CyclingOptions,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
     ) {
         for (&item_uid, item_data) in self.dmg_normal.iter() {
@@ -314,7 +314,7 @@ impl VastFitData {
         volley_normal: &mut DmgKinds<PValue>,
         volley_breacher: &mut StatDmgBreacher,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
     ) {
         for (&item_uid, item_data) in self.dmg_normal.iter() {

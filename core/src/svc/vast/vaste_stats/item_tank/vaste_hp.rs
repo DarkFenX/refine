@@ -1,5 +1,5 @@
 use crate::{
-    misc::{PValue, ReloadOptionals, StOption, Value},
+    misc::{PValue, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -84,7 +84,7 @@ impl Vast {
 }
 
 const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
-    reload_optionals: StOption::Set(ReloadOptionals::Enabled),
+    reload_optionals: Some(true),
     ..
 });
 

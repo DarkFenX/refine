@@ -52,7 +52,7 @@ impl HAddModuleCmd {
             core_module.set_charge_type_id(core_charge_type_id);
         }
         if let Some(h_spool) = self.spool {
-            core_module.set_spool(rc::StOption::Set(h_spool.into_core()));
+            core_module.set_spool(Some(h_spool.into_core()));
         }
         Ok(core_module.into())
     }

@@ -1,6 +1,6 @@
 use super::item_checks::check_drone_fighter_ship;
 use crate::{
-    misc::{PValue, StOption, UnitInterval, Value},
+    misc::{PValue, UnitInterval, Value},
     svc::{
         SvcCtx,
         aggr::aggr_proj_first_output,
@@ -53,7 +53,7 @@ impl Vast {
                     cseq,
                     ospec,
                     Some(projectee_item_uid),
-                    StOption::Inherit,
+                    None,
                 ) {
                     Some(projector_ecm) => projector_ecm,
                     None => continue,

@@ -45,8 +45,8 @@ impl From<HStatTimeOptionsSim> for rc::stats::StatTimeOptionsSim {
     fn from(h_time_options: HStatTimeOptionsSim) -> Self {
         Self {
             time: h_time_options.time.map(rc::PValue::from_f64_clamped),
-            reload_optionals: h_time_options.reload_optionals.map(rc::ReloadOptionals::from).into(),
-            rearm_minions: h_time_options.rearm_minions.map(rc::RearmMinions::from).into(),
+            reload_optionals: h_time_options.reload_optionals,
+            rearm_minions: h_time_options.rearm_minions,
         }
     }
 }

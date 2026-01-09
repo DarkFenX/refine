@@ -1,7 +1,7 @@
-use crate::{misc::ReloadOptionals, sol::SolarSystem};
+use crate::sol::SolarSystem;
 
 impl SolarSystem {
-    pub fn get_default_reload_optionals(&self) -> ReloadOptionals {
+    pub fn get_default_reload_optionals(&self) -> bool {
         self.u_data.default_reload_optionals
     }
 }

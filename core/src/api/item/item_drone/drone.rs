@@ -1,6 +1,6 @@
 use crate::{
     api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState, Movement},
-    misc::{NpcProp, StOption},
+    misc::NpcProp,
     sol::SolarSystem,
     ud::{UDrone, UItemId},
 };
@@ -25,7 +25,7 @@ impl<'a> Drone<'a> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
     }
-    pub fn get_npc_prop(&self) -> StOption<NpcProp> {
+    pub fn get_npc_prop(&self) -> Option<NpcProp> {
         get_npc_prop(self.sol, self.uid)
     }
 }
@@ -63,7 +63,7 @@ impl<'a> DroneMut<'a> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
     }
-    pub fn get_npc_prop(&self) -> StOption<NpcProp> {
+    pub fn get_npc_prop(&self) -> Option<NpcProp> {
         get_npc_prop(self.sol, self.uid)
     }
 }
@@ -96,7 +96,7 @@ fn get_coordinates(sol: &SolarSystem, drone_uid: UItemId) -> Coordinates {
 fn get_movement(sol: &SolarSystem, drone_uid: UItemId) -> Movement {
     Movement::from_u_physics(get_u_drone(sol, drone_uid).get_physics())
 }
-fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> StOption<NpcProp> {
+fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> Option<NpcProp> {
     get_u_drone(sol, drone_uid).get_npc_prop()
 }
 fn get_u_drone(sol: &SolarSystem, drone_uid: UItemId) -> &UDrone {

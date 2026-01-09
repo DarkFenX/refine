@@ -39,8 +39,7 @@ pub use def::VERSION;
 pub use lender::Lender;
 pub use misc::{
     Breacher, Count, DpsProfile, Ecm, EffectMode, FighterCount, FitSecStatus, Index, MiningAmount, ModRack, NpcProp,
-    PValue, RearmMinions, ReloadOptionals, SecZone, SecZoneCorruption, SkillLevel, SlotIndex, Spool, StOption,
-    UnitInterval, Value,
+    PValue, SecZone, SecZoneCorruption, SkillLevel, SlotIndex, Spool, UnitInterval, Value,
 };
 pub use rd::Src;
 pub use sol::SolarSystem;

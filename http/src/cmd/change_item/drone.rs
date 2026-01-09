@@ -103,8 +103,8 @@ impl HChangeDroneCmd {
             core_drone.set_movement(movement.into_core());
         }
         match self.prop_mode {
-            TriStateField::Value(h_npc_prop) => core_drone.set_prop_mode(rc::StOption::Set(h_npc_prop.into())),
-            TriStateField::None => core_drone.set_prop_mode(rc::StOption::Inherit),
+            TriStateField::Value(h_npc_prop) => core_drone.set_prop_mode(Some(h_npc_prop.into())),
+            TriStateField::None => core_drone.set_prop_mode(None),
             TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {

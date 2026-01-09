@@ -2,7 +2,7 @@ use crate::{
     api::{
         Adjustable, Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ModuleState,
     },
-    misc::{Count, Index, InfCount, ModRack, ReloadOptionals, StOption},
+    misc::{Count, Index, InfCount, ModRack},
     sol::SolarSystem,
     ud::{UItemId, UModule},
 };
@@ -33,7 +33,7 @@ impl<'a> Module<'a> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.uid)
     }
-    pub fn get_reload_optionals(&self) -> StOption<ReloadOptionals> {
+    pub fn get_reload_optionals(&self) -> Option<bool> {
         get_reload_optionals(self.sol, self.uid)
     }
 }
@@ -82,7 +82,7 @@ impl<'a> ModuleMut<'a> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.uid)
     }
-    pub fn get_reload_optionals(&self) -> StOption<ReloadOptionals> {
+    pub fn get_reload_optionals(&self) -> Option<bool> {
         get_reload_optionals(self.sol, self.uid)
     }
     pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
@@ -132,7 +132,7 @@ fn get_charge(sol: &SolarSystem, module_uid: UItemId) -> Option<Charge<'_>> {
 fn get_charge_count(sol: &SolarSystem, module_uid: UItemId) -> Option<Count> {
     get_u_module(sol, module_uid).get_charge_count(&sol.u_data)
 }
-fn get_reload_optionals(sol: &SolarSystem, module_uid: UItemId) -> StOption<ReloadOptionals> {
+fn get_reload_optionals(sol: &SolarSystem, module_uid: UItemId) -> Option<bool> {
     get_u_module(sol, module_uid).get_reload_optionals()
 }
 fn get_u_module(sol: &SolarSystem, module_uid: UItemId) -> &UModule {

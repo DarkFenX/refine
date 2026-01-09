@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, NpcProp, PValue, RearmMinions, ReloadOptionals, SkillLevel, Spool, StOption, Value},
+    misc::{EffectMode, NpcProp, PValue, SkillLevel, Spool, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant,
@@ -572,28 +572,28 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_spool(&self) -> StOption<Spool> {
+    pub(crate) fn get_spool(&self) -> Option<Spool> {
         match self {
             Self::Module(module) => module.get_spool(),
-            _ => StOption::Inherit,
+            _ => None,
         }
     }
-    pub(crate) fn get_npc_prop(&self) -> Option<StOption<NpcProp>> {
+    pub(crate) fn get_npc_prop(&self) -> Option<Option<NpcProp>> {
         match self {
             Self::Drone(drone) => Some(drone.get_npc_prop()),
             _ => None,
         }
     }
-    pub(crate) fn get_reload_optionals(&self) -> StOption<ReloadOptionals> {
+    pub(crate) fn get_reload_optionals(&self) -> Option<bool> {
         match self {
             Self::Module(module) => module.get_reload_optionals(),
-            _ => StOption::Inherit,
+            _ => None,
         }
     }
-    pub(crate) fn get_rearm_minions(&self) -> StOption<RearmMinions> {
+    pub(crate) fn get_rearm_minions(&self) -> Option<bool> {
         match self {
             Self::Fighter(fighter) => fighter.get_rearm_minions(),
-            _ => StOption::Inherit,
+            _ => None,
         }
     }
     pub(crate) fn get_autocharges(&self) -> Option<&UAutocharges> {

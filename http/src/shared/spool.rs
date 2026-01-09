@@ -14,6 +14,10 @@ pub(crate) enum HSpool {
     SpoolScale(f64),
     CycleScale(f64),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversion
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSpool {
     pub(crate) fn from_core(core_spool: rc::Spool) -> Self {
         match core_spool {
@@ -30,6 +34,24 @@ impl HSpool {
             Self::SpoolScale(value) => rc::Spool::SpoolScale(rc::UnitInterval::from_f64_clamped(value)),
             Self::CycleScale(value) => rc::Spool::CycleScale(rc::UnitInterval::from_f64_clamped(value)),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Serialization support
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl serde::Serialize for HSpool {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        let string = match self {
+            Self::Cycles(count) => format!("{CYCLES_PREFIX}{count}"),
+            Self::Time(time) => format!("{TIME_PREFIX}{time}"),
+            Self::SpoolScale(value) => format!("{SPOOL_SCALE_PREFIX}{value}"),
+            Self::CycleScale(value) => format!("{CYCLE_SCALE_PREFIX}{value}"),
+        };
+        serializer.serialize_str(&string)
     }
 }
 impl<'de> Deserialize<'de> for HSpool {

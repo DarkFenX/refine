@@ -1,5 +1,5 @@
 use crate::{
-    misc::{DpsProfile, NpcProp, PValue, RearmMinions, ReloadOptionals, Spool, StOption},
+    misc::{DpsProfile, NpcProp, PValue, Spool},
     ud::{UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
 
@@ -14,14 +14,14 @@ impl UData {
             None => self.default_incoming_dps,
         }
     }
-    pub(crate) fn get_item_spool(&self, item_uid: UItemId, spool: StOption<Spool>) -> Spool {
+    pub(crate) fn get_item_spool(&self, item_uid: UItemId, spool: Option<Spool>) -> Spool {
         match spool {
-            StOption::Set(spool) => spool,
-            StOption::Inherit => {
+            Some(spool) => spool,
+            None => {
                 let u_item = self.items.get(item_uid);
                 match u_item.get_spool() {
-                    StOption::Set(spool) => spool,
-                    StOption::Inherit => self.default_spool,
+                    Some(spool) => spool,
+                    None => self.default_spool,
                 }
             }
         }
@@ -29,38 +29,30 @@ impl UData {
     pub(crate) fn get_item_npc_prop(&self, item_uid: UItemId) -> Option<NpcProp> {
         let u_item = self.items.get(item_uid);
         u_item.get_npc_prop().map(|npc_prop| match npc_prop {
-            StOption::Set(npc_prop) => npc_prop,
-            StOption::Inherit => self.default_npc_prop,
+            Some(npc_prop) => npc_prop,
+            None => self.default_npc_prop,
         })
     }
-    pub(crate) fn get_item_reload_optionals(
-        &self,
-        item_uid: UItemId,
-        reload_optionals: StOption<ReloadOptionals>,
-    ) -> ReloadOptionals {
+    pub(crate) fn get_item_reload_optionals(&self, item_uid: UItemId, reload_optionals: Option<bool>) -> bool {
         match reload_optionals {
-            StOption::Set(reload_optionals) => reload_optionals,
-            StOption::Inherit => {
+            Some(reload_optionals) => reload_optionals,
+            None => {
                 let u_item = self.items.get(item_uid);
                 match u_item.get_reload_optionals() {
-                    StOption::Set(reload_optionals) => reload_optionals,
-                    StOption::Inherit => self.default_reload_optionals,
+                    Some(reload_optionals) => reload_optionals,
+                    None => self.default_reload_optionals,
                 }
             }
         }
     }
-    pub(crate) fn get_item_rearm_minions(
-        &self,
-        item_uid: UItemId,
-        rearm_minions: StOption<RearmMinions>,
-    ) -> RearmMinions {
+    pub(crate) fn get_item_rearm_minions(&self, item_uid: UItemId, rearm_minions: Option<bool>) -> bool {
         match rearm_minions {
-            StOption::Set(rearm_minions) => rearm_minions,
-            StOption::Inherit => {
+            Some(rearm_minions) => rearm_minions,
+            None => {
                 let u_item = self.items.get(item_uid);
                 match u_item.get_rearm_minions() {
-                    StOption::Set(rearm_minions) => rearm_minions,
-                    StOption::Inherit => self.default_rearm_minions,
+                    Some(rearm_minions) => rearm_minions,
+                    None => self.default_rearm_minions,
                 }
             }
         }

@@ -1,5 +1,5 @@
 use crate::{
-    misc::{Spool, StOption},
+    misc::Spool,
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
@@ -15,7 +15,7 @@ impl Svc {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         self.vast.get_stat_fits_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -32,7 +32,7 @@ impl Svc {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fits_dps_applied(
@@ -51,7 +51,7 @@ impl Svc {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         self.vast.get_stat_fit_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -68,7 +68,7 @@ impl Svc {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fit_dps_applied(
@@ -86,7 +86,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
@@ -105,7 +105,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: UItemId,
@@ -126,7 +126,7 @@ impl Svc {
         u_data: &UData,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         self.vast.get_stat_fits_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -141,7 +141,7 @@ impl Svc {
         u_data: &UData,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fits_volley_applied(
@@ -158,7 +158,7 @@ impl Svc {
         u_data: &UData,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
     ) -> StatDmg {
         self.vast.get_stat_fit_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
@@ -173,7 +173,7 @@ impl Svc {
         u_data: &UData,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fit_volley_applied(
@@ -189,7 +189,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
@@ -206,7 +206,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: UItemId,

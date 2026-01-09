@@ -4,7 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    misc::{PValue, Spool, StOption, Value},
+    misc::{PValue, Spool, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
     ud::UItemId,
@@ -19,7 +19,7 @@ pub(in crate::svc) fn aggr_proj_first_ps<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: StOption<Spool>,
+    spool: Option<Spool>,
 ) -> Option<T>
 where
     T: Copy
@@ -40,7 +40,7 @@ pub(in crate::svc) fn aggr_proj_first_max<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: StOption<Spool>,
+    spool: Option<Spool>,
 ) -> Option<T>
 where
     T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
@@ -57,7 +57,7 @@ pub(in crate::svc) fn aggr_proj_first_amount<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: StOption<Spool>,
+    spool: Option<Spool>,
 ) -> Option<AggrAmount<T>>
 where
     T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
@@ -78,7 +78,7 @@ pub(in crate::svc) fn aggr_proj_first_output<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    spool: StOption<Spool>,
+    spool: Option<Spool>,
 ) -> Option<AggrOutput<T>>
 where
     T: Copy + std::ops::MulAssign<PValue> + LimitAmount,

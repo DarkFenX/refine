@@ -45,14 +45,14 @@ impl HModuleInfoPartial {
             .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode));
         let charge_count = match charge_info.is_some() {
             true => match core_module.get_charge_count() {
-                Some(charge_count) => TriStateField::Value(charge_count),
+                Some(charge_count) => TriStateField::Value(charge_count.into_u32()),
                 None => TriStateField::None,
             },
             false => TriStateField::Absent,
         };
         let cycles_until_empty = match charge_info.is_some() {
             true => match core_module.get_cycle_count_until_reload() {
-                Some(cycles_until_empty) => TriStateField::Value(cycles_until_empty),
+                Some(cycles_until_empty) => TriStateField::Value(cycles_until_empty.into_u32()),
                 None => TriStateField::None,
             },
             false => TriStateField::Absent,
@@ -70,10 +70,10 @@ impl HModuleInfoPartial {
                 _ => None,
             },
             charge: charge_info,
-            charge_count: charge_count,
+            charge_count,
             cycles_until_empty,
             spool_cycles: core_module.get_spool_cycle_count().map(Into::into),
-            projs: core_module.iter_projs().map(Into::into).collect(),
+            projs: core_module.iter_projs().map(HRangedProjInfo::from_core).collect(),
         }
     }
 }

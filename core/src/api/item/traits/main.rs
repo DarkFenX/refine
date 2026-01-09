@@ -7,7 +7,7 @@ use super::err::{
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{Count, DmgKinds, DpsProfile, EffectMode, PValue, ReloadOptionals, Spool, StOption, UnitInterval, Value},
+    misc::{Count, DmgKinds, DpsProfile, EffectMode, PValue, Spool, UnitInterval, Value},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{
@@ -138,7 +138,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_dps(
         &mut self,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, ItemStatError> {
@@ -151,7 +151,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_dps_applied(
         &mut self,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
@@ -173,7 +173,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn get_stat_volley(
         &mut self,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, ItemStatError> {
@@ -185,7 +185,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn get_stat_volley_applied(
         &mut self,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
@@ -373,7 +373,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_cap_sim(
         &mut self,
         cap_perc: UnitInterval,
-        reload_optionals: StOption<ReloadOptionals>,
+        reload_optionals: Option<bool>,
         stagger: StatCapSimStagger,
     ) -> Result<StatCapSim, ItemStatError> {
         let item_uid = self.get_uid();

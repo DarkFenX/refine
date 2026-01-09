@@ -1,12 +1,12 @@
 use crate::{
     api::{FleetMut, FleetStatAppliedError},
-    misc::{Spool, StOption},
+    misc::Spool,
     svc::vast::{StatDmg, StatDmgApplied, StatDmgItemKinds},
     ud::ItemId,
 };
 
 impl<'a> FleetMut<'a> {
-    pub fn get_stat_dps(&mut self, item_kinds: StatDmgItemKinds, reload: bool, spool: StOption<Spool>) -> StatDmg {
+    pub fn get_stat_dps(&mut self, item_kinds: StatDmgItemKinds, reload: bool, spool: Option<Spool>) -> StatDmg {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol
             .svc
@@ -16,7 +16,7 @@ impl<'a> FleetMut<'a> {
         &mut self,
         item_kinds: StatDmgItemKinds,
         reload: bool,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, FleetStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
@@ -30,7 +30,7 @@ impl<'a> FleetMut<'a> {
             projectee_uid,
         ))
     }
-    pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: StOption<Spool>) -> StatDmg {
+    pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: Option<Spool>) -> StatDmg {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol
             .svc
@@ -39,7 +39,7 @@ impl<'a> FleetMut<'a> {
     pub fn get_stat_volley_applied(
         &mut self,
         item_kinds: StatDmgItemKinds,
-        spool: StOption<Spool>,
+        spool: Option<Spool>,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, FleetStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;

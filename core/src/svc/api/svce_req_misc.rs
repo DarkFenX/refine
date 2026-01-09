@@ -1,6 +1,6 @@
 use crate::{
     api::Adjustable,
-    misc::{Count, InfCount, ReloadOptionals, StOption},
+    misc::{Count, InfCount},
     svc::{
         Svc, SvcCtx,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
@@ -10,7 +10,7 @@ use crate::{
 };
 
 const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
-    reload_optionals: StOption::Set(ReloadOptionals::Enabled),
+    reload_optionals: Some(true),
     ..
 });
 
@@ -64,9 +64,8 @@ impl Svc {
         let spool_attrs = defeff.spool_attr_rids?;
         // TODO: limit by non-interrupted spool cycle count
         let ctx = SvcCtx::new(u_data, &self.eff_projs);
-        let resolved_spool =
-            ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, StOption::Inherit, spool_attrs)?;
-        let overridden = u_item.get_spool().is_set();
+        let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, None, spool_attrs)?;
+        let overridden = u_item.get_spool().is_some();
         Some(Adjustable {
             current: resolved_spool.cycles,
             max: resolved_spool.cycles_max,

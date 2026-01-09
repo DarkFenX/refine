@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::{Adjustable, MinionState},
-    misc::{EffectMode, FighterCount, PValue, RearmMinions, SkillLevel, StOption, Value},
+    misc::{EffectMode, FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
         ItemId, UEffectUpdates, UFitId, UPhysics, UProjs,
@@ -19,7 +19,7 @@ pub(crate) struct UFighter {
     physics: UPhysics,
     projs: UProjs,
     // Optional settings related to cycling
-    rearm_minions: StOption<RearmMinions>,
+    rearm_minions: Option<bool>,
 }
 impl UFighter {
     pub(crate) fn new(
@@ -37,7 +37,7 @@ impl UFighter {
             autocharges: UAutocharges::new(),
             physics,
             projs: UProjs::new(),
-            rearm_minions: StOption::Inherit,
+            rearm_minions: None,
         }
     }
     // Item base methods
@@ -166,10 +166,10 @@ impl UFighter {
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
-    pub(crate) fn get_rearm_minions(&self) -> StOption<RearmMinions> {
+    pub(crate) fn get_rearm_minions(&self) -> Option<bool> {
         self.rearm_minions
     }
-    pub(crate) fn set_rearm_minions(&mut self, rearm_minions: StOption<RearmMinions>) {
+    pub(crate) fn set_rearm_minions(&mut self, rearm_minions: Option<bool>) {
         self.rearm_minions = rearm_minions
     }
 }

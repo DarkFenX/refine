@@ -1,5 +1,5 @@
 use crate::{
-    misc::{PValue, RearmMinions, ReloadOptionals, StOption},
+    misc::PValue,
     rd::REffectId,
     svc::vast::{StatTimeOptions, StatTimeOptionsSim},
 };
@@ -14,9 +14,9 @@ pub(in crate::svc) enum CyclingOptions {
 pub(in crate::svc) struct CycleOptionsSim {
     // Controls if effects which can run with/without charges (e.g. ancillary reps) are forced to
     // reload once they run out of charges
-    pub(in crate::svc) reload_optionals: StOption<ReloadOptionals> = StOption::Inherit,
+    pub(in crate::svc) reload_optionals: Option<bool> = None,
     // Controls if depleted fighter abilities force fighter recall, refuel and rearm
-    pub(in crate::svc) rearm_minions: StOption<RearmMinions> = StOption::Inherit,
+    pub(in crate::svc) rearm_minions: Option<bool> = None,
 }
 
 pub(super) struct SelfKillerInfo {

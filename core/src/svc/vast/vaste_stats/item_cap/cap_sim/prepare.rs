@@ -6,7 +6,7 @@ use super::{
     stagger::{StaggerKey, StatCapSimStaggerInt, process_staggers},
 };
 use crate::{
-    misc::{PValue, ReloadOptionals, StOption},
+    misc::PValue,
     svc::{
         SvcCtx,
         aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
@@ -23,7 +23,7 @@ pub(super) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
-    reload_optionals: StOption<ReloadOptionals>,
+    reload_optionals: Option<bool>,
     stagger: StatCapSimStaggerInt,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
@@ -54,7 +54,7 @@ pub(super) fn prepare_events(
     events
 }
 
-fn get_cycling_options(reload_optionals: StOption<ReloadOptionals>) -> CyclingOptions {
+fn get_cycling_options(reload_optionals: Option<bool>) -> CyclingOptions {
     CyclingOptions::Sim(CycleOptionsSim { reload_optionals, .. })
 }
 
@@ -62,7 +62,7 @@ fn fill_consumers(
     ctx: SvcCtx,
     calc: &mut Calc,
     aggregator: &mut Aggregator,
-    reload_optionals: StOption<ReloadOptionals>,
+    reload_optionals: Option<bool>,
     stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
 ) {
@@ -103,7 +103,7 @@ fn fill_neuts(
     ctx: SvcCtx,
     calc: &mut Calc,
     aggregator: &mut Aggregator,
-    reload_optionals: StOption<ReloadOptionals>,
+    reload_optionals: Option<bool>,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_uid: UItemId,
@@ -150,7 +150,7 @@ fn fill_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
     aggregator: &mut Aggregator,
-    reload_optionals: StOption<ReloadOptionals>,
+    reload_optionals: Option<bool>,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_uid: UItemId,
@@ -195,7 +195,7 @@ fn fill_injectors(
     ctx: SvcCtx,
     calc: &mut Calc,
     events: &mut BinaryHeap<CapSimEvent>,
-    reload_optionals: StOption<ReloadOptionals>,
+    reload_optionals: Option<bool>,
     fit_data: &VastFitData,
 ) {
     let cycling_options = get_cycling_options(reload_optionals);

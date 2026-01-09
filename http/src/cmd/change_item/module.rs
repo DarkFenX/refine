@@ -97,8 +97,8 @@ impl HChangeModuleCmd {
             TriStateField::Absent => (),
         }
         match self.spool {
-            TriStateField::Value(h_spool) => core_module.set_spool(rc::StOption::Set(h_spool.into_core())),
-            TriStateField::None => core_module.set_spool(rc::StOption::Inherit),
+            TriStateField::Value(h_spool) => core_module.set_spool(Some(h_spool.into_core())),
+            TriStateField::None => core_module.set_spool(None),
             TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {
