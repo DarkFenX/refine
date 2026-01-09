@@ -1,4 +1,3 @@
-use rc::Lender;
 use serde_tuple::Serialize_tuple;
 use serde_with::{DisplayFromStr, Map, serde_as};
 
@@ -16,7 +15,7 @@ impl From<&rc::val::ValDroneGroupFail> for HValDroneGroupFail {
             drone_groups: core_val_fail
                 .drone_groups
                 .iter()
-                .map((|(k, v)| (*k, v.into_i32())))
+                .map(|(k, v)| (*k, v.into_i32()))
                 .collect(),
         }
     }

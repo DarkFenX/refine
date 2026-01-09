@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Copy, Clone, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::cmd) enum HAddMode {
     Append,

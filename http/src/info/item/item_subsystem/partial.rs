@@ -8,11 +8,11 @@ pub(crate) struct HSubsystemInfoPartial {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
     kind: &'static str,
-    type_id: rc::ItemTypeId,
+    type_id: i32,
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(skip_serializing_if = "Option::is_none")]
-    slot: Option<rc::SlotIndex>,
+    slot: Option<i32>,
     enabled: bool,
 }
 impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoPartial {
@@ -20,9 +20,9 @@ impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoPartial {
         Self {
             id: core_subsystem.get_item_id(),
             kind: "subsystem",
-            type_id: core_subsystem.get_type_id(),
+            type_id: core_subsystem.get_type_id().into_i32(),
             fit_id: core_subsystem.get_fit().get_fit_id(),
-            slot: core_subsystem.get_slot(),
+            slot: core_subsystem.get_slot().map(|v| v.into_i32()),
             enabled: core_subsystem.get_state(),
         }
     }

@@ -2,7 +2,6 @@ use full::HCharacterInfoFull;
 use id::HCharacterInfoId;
 use partial::HCharacterInfoPartial;
 use serde::Serialize;
-use serde_with::{DisplayFromStr, serde_as};
 
 use crate::info::HItemInfoMode;
 

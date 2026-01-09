@@ -2,7 +2,6 @@ use full::HDroneInfoFull;
 use id::HDroneInfoId;
 use partial::HDroneInfoPartial;
 use serde::Serialize;
-use serde_with::{DisplayFromStr, serde_as};
 
 use crate::info::HItemInfoMode;
 

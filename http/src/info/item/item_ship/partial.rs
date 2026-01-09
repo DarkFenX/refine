@@ -25,8 +25,8 @@ impl From<&mut rc::ShipMut<'_>> for HShipInfoPartial {
             type_id: core_ship.get_type_id().into_i32(),
             fit_id: core_ship.get_fit().get_fit_id(),
             enabled: core_ship.get_state(),
-            coordinates: core_ship.get_coordinates().into(),
-            movement: core_ship.get_movement().into(),
+            coordinates: HCoordinates::from_core(core_ship.get_coordinates()),
+            movement: HMovement::from_core(core_ship.get_movement()),
         }
     }
 }

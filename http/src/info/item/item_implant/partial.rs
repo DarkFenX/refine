@@ -12,7 +12,7 @@ pub(crate) struct HImplantInfoPartial {
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(skip_serializing_if = "Option::is_none")]
-    slot: Option<rc::SlotIndex>,
+    slot: Option<i32>,
     enabled: bool,
 }
 impl From<&mut rc::ImplantMut<'_>> for HImplantInfoPartial {
@@ -22,7 +22,7 @@ impl From<&mut rc::ImplantMut<'_>> for HImplantInfoPartial {
             kind: "implant",
             type_id: core_implant.get_type_id().into_i32(),
             fit_id: core_implant.get_fit().get_fit_id(),
-            slot: core_implant.get_slot(),
+            slot: core_implant.get_slot().map(|v| v.into_i32()),
             enabled: core_implant.get_state(),
         }
     }

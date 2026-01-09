@@ -21,7 +21,7 @@ pub(crate) struct HDroneInfoPartial {
     mutation: Option<HItemMutationInfo>,
     coordinates: HCoordinates,
     movement: HMovement,
-    prop_mode: HNpcProp,
+    prop_mode: Option<HNpcProp>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -39,7 +39,7 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
             },
             coordinates: HCoordinates::from_core(core_drone.get_coordinates()),
             movement: HMovement::from_core(core_drone.get_movement()),
-            prop_mode: core_drone.get_npc_prop(),
+            prop_mode: core_drone.get_npc_prop().map(Into::into),
             projs: core_drone.iter_projs().map(HRangedProjInfo::from_core).collect(),
         }
     }
