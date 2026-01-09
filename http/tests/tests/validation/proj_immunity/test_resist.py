@@ -207,10 +207,10 @@ def test_resist_values(client, consts):
     api_tgt_item5 = api_tgt_fit.add_drone(type_id=eve_tgt_item5_id)
     api_src_item.change_module(
         add_projs=[api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id, api_tgt_item4.id, api_tgt_item5.id])
-    # Verification - no attr or value 0 doesn't fail validation
+    # Verification - any value below threshold fails validation
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item2.id, api_tgt_item3.id]}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id]}
 
 
 def test_tgt_modified(client, consts):
