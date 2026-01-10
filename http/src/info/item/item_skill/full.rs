@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::HSkillInfoPartial;
+use super::partial::HSkillInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(Serialize)]

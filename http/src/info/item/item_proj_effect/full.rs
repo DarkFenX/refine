@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::HProjEffectInfoPartial;
+use super::partial::HProjEffectInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(Serialize)]

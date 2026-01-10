@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::HFighterInfoPartial;
+use super::partial::HFighterInfoPartial;
 use crate::info::{HItemInfoMode, item::extended::HItemExtendedInfo};
 
 #[derive(Serialize)]

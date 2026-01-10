@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::HImplantInfoPartial;
+use super::partial::HImplantInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(Serialize)]

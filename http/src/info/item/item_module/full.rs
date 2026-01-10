@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::HModuleInfoPartial;
+use super::partial::HModuleInfoPartial;
 use crate::info::{HItemInfoMode, item::extended::HItemExtendedInfo};
 
 #[derive(Serialize)]

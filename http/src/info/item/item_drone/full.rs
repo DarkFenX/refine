@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::HDroneInfoPartial;
+use super::partial::HDroneInfoPartial;
 use crate::info::item::extended::HItemExtendedInfo;
 
 #[derive(Serialize)]
