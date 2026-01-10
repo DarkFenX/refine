@@ -2,7 +2,7 @@ pub use abil::{EAbil, EAbilId};
 pub use attr::{EAttr, EAttrId, EAttrUnitId};
 pub use buff::{EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM};
 pub use data::{EData, EDataCont};
-pub use effect::{EEffect, EEffectCatId, EEffectId, EEffectMod, EPrimitive};
+pub use effect::{EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EPrimitive};
 pub use item::{
     EItem, EItemAbil, EItemAttr, EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemSkillReq,
     EItemSpaceComp, EItemSpaceCompBuffData, EItemSpaceCompBuffEntry,

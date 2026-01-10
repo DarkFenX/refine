@@ -67,8 +67,8 @@ impl EEffect {
     fn get_fks_from_mod_args(&self, field: &'static str) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         for e_modifier in self.mods.iter() {
-            for (k, v) in e_modifier.args.iter() {
-                if let (true, &EPrimitive::Int(fk)) = (k == field, v) {
+            for e_mod_arg in e_modifier.args.iter() {
+                if let (true, &EPrimitive::Int(fk)) = (e_mod_arg.name == field, &e_mod_arg.value) {
                     fks.push(KeyPart::from_i32(fk));
                 }
             }

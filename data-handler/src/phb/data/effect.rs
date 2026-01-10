@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::phb::{
     fsd::{FsdId, FsdMerge},
     serde_custom::bool_from_int,
@@ -55,20 +53,22 @@ impl FsdMerge<rc::ed::EEffect> for PEffect {
 
 pub(in crate::phb) struct PEffectMod {
     pub(in crate::phb) func: String,
-    pub(in crate::phb) args: HashMap<String, rc::ed::EPrimitive>,
+    pub(in crate::phb) args: Vec<(String, rc::ed::EPrimitive)>,
 }
 impl PEffectMod {
     fn into_e_effect_mod(self) -> rc::ed::EEffectMod {
         rc::ed::EEffectMod {
             func: self.func,
-            args: self.args.into(),
+            args: self
+                .args
+                .into_iter()
+                .map(|(name, value)| rc::ed::EEffectModArg { name, value })
+                .collect(),
         }
     }
 }
 
 mod effect_mod {
-    use std::collections::HashMap;
-
     use serde::{Deserialize, de::Error};
     use serde_json::{Map, Value};
 
@@ -83,13 +83,13 @@ mod effect_mod {
         for json_mod in <Vec<Value>>::deserialize(json_mods)?.into_iter() {
             let mut json_mod_map = <Map<String, Value>>::deserialize(json_mod).map_err(Error::custom)?;
             let func = extract_string(&mut json_mod_map, func_field)?;
-            let mut argmap = HashMap::new();
+            let mut args = Vec::new();
             for (argname, v) in json_mod_map.into_iter() {
                 let argval = primitivize::<D::Error>(v)
                     .map_err(|e| Error::custom(format!("failed to parse argument \"{argname}\" value: {e}")))?;
-                argmap.insert(argname, argval);
+                args.push((argname, argval));
             }
-            mods.push(PEffectMod { func, args: argmap })
+            mods.push(PEffectMod { func, args })
         }
         Ok(mods)
     }
