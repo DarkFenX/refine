@@ -6,6 +6,8 @@ from fw.api import (
     StatNeutItemKinds,
     StatsOptionFitOutNps,
     StatsOptionItemOutNps,
+    StatTimeBurst,
+    StatTimeSim,
 )
 
 
@@ -53,6 +55,50 @@ def test_state(client, consts):
     assert api_fit_stats.outgoing_nps.one() == approx(1.666667)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_drone_stats.outgoing_nps.one() == approx(1.666667)
+
+
+def test_time(client, consts):
+    eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.entity_energy_neut_falloff,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_drone_id = client.mk_eve_drone(
+        attrs={eve_neut_amount_attr_id: 10, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+        StatsOptionFitOutNps(time_options=StatTimeBurst()),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=1)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=5)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=7))])))
+    assert api_fleet_stats.outgoing_nps == [
+        approx(1.666667), approx(1.666667), approx(10), approx(2), approx(2.8571429)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+        StatsOptionFitOutNps(time_options=StatTimeBurst()),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=1)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=5)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=7))])))
+    assert api_fit_stats.outgoing_nps == [
+        approx(1.666667), approx(1.666667), approx(10), approx(2), approx(2.8571429)]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(time_options=StatTimeBurst()),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=1)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=5)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=7))])))
+    assert api_drone_stats.outgoing_nps == [
+        approx(1.666667), approx(1.666667), approx(10), approx(2), approx(2.8571429)]
 
 
 def test_range(client, consts):

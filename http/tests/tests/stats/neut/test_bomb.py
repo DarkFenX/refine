@@ -6,6 +6,8 @@ from fw.api import (
     StatNeutItemKinds,
     StatsOptionFitOutNps,
     StatsOptionItemOutNps,
+    StatTimeBurst,
+    StatTimeSim,
 )
 
 
@@ -64,6 +66,58 @@ def test_state(client, consts):
     assert api_fit_stats.outgoing_nps.one() == approx(23.225806)
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_charge_stats.outgoing_nps.one() == approx(23.225806)
+
+
+def test_time(client, consts):
+    eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
+    eve_launcher_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.use_missiles,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        eff_ids=[eve_launcher_effect_id],
+        defeff_id=eve_launcher_effect_id)
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_neut_amount_attr_id: 1800, eve_volume_attr_id: 75},
+        eff_ids=[eve_bomb_effect_id],
+        defeff_id=eve_bomb_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+        StatsOptionFitOutNps(time_options=StatTimeBurst()),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=1)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=75)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=80))])))
+    assert api_fleet_stats.outgoing_nps == [approx(23.225806), approx(23.225806), approx(1800), approx(24), approx(45)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+        StatsOptionFitOutNps(time_options=StatTimeBurst()),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=1)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=75)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=80))])))
+    assert api_fit_stats.outgoing_nps == [approx(23.225806), approx(23.225806), approx(1800), approx(24), approx(45)]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(time_options=StatTimeBurst()),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=1)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=75)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=80))])))
+    assert api_charge_stats.outgoing_nps == [approx(23.225806), approx(23.225806), approx(1800), approx(24), approx(45)]
 
 
 def test_range_and_cap_limit(client, consts):
