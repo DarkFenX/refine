@@ -6,6 +6,8 @@ from fw.api import (
     StatNeutItemKinds,
     StatsOptionFitOutNps,
     StatsOptionItemOutNps,
+    StatTimeBurst,
+    StatTimeSim,
 )
 
 
@@ -53,6 +55,51 @@ def test_state(client, consts):
     assert api_fit_stats.outgoing_nps.one() == approx(63.492063)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_module_stats.outgoing_nps.one() == approx(63.492063)
+
+
+def test_time(client, consts):
+    eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.doomsday_aoe_neut,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_neut_amount_attr_id: 4000, eve_cycle_time_attr_id: 63000, eve_delay_attr_id: 10000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+        StatsOptionFitOutNps(time_options=StatTimeBurst()),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=9)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=11)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=60))])))
+    assert api_fleet_stats.outgoing_nps == [
+        approx(63.492063), approx(63.492063), 0, approx(363.6363636), approx(66.6666667)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+        StatsOptionFitOutNps(time_options=StatTimeBurst()),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=9)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=11)),
+        StatsOptionFitOutNps(time_options=StatTimeSim(time=60))])))
+    assert api_fit_stats.outgoing_nps == [
+        approx(63.492063), approx(63.492063), 0, approx(363.6363636), approx(66.6666667)]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(time_options=StatTimeBurst()),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=None)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=9)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=11)),
+        StatsOptionItemOutNps(time_options=StatTimeSim(time=60))])))
+    assert api_module_stats.outgoing_nps == [
+        approx(63.492063), approx(63.492063), 0, approx(363.6363636), approx(66.6666667)]
 
 
 def test_range(client, consts):

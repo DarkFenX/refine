@@ -47,12 +47,10 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
         attr_consts.energy_neut_amount,
         Value::ZERO,
     )?);
-    let delay = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        item_uid,
-        attr_consts.doomsday_warning_duration,
-        Value::ZERO,
-    )?);
+    let delay = PValue::from_value_clamped(
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.doomsday_warning_duration, Value::ZERO)?
+            / Value::THOUSAND,
+    );
     Some(Output::Simple(OutputSimple { amount, delay }))
 }
 
