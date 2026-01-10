@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     ad::AItemId,
-    misc::SkillLevel,
+    num::SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UFit, UItemId},
     util::RSet,

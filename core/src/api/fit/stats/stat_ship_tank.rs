@@ -1,7 +1,8 @@
 use crate::{
     api::{FitMut, ItemMutCommon},
     err::FitShipStatError,
-    misc::{DmgKinds, DpsProfile, UnitInterval},
+    misc::{DmgKinds, DpsProfile},
+    num::UnitInterval,
     svc::vast::{
         StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatTank,
         StatTankRegen, StatTimeOptions,

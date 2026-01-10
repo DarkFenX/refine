@@ -5,7 +5,7 @@ use tracing::Level;
 use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
 use tracing_subscriber::{
     filter::Targets,
-    fmt::{self, time::UtcTime},
+    fmt::{layer, time::UtcTime},
     prelude::*,
 };
 
@@ -15,7 +15,7 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
         r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
     );
     // We always log warnings and higher to stdout
-    let stdout_log = fmt::layer()
+    let stdout_log = layer()
         .with_writer(std::io::stdout.with_max_level(Level::WARN))
         .with_ansi(true)
         .with_timer(UtcTime::new(time_format_full))
@@ -34,7 +34,7 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
             };
             let appender = RollingFileAppender::new(rotation, folder_path, "refine-http.log");
             let (file_writer, file_guard) = tracing_appender::non_blocking(appender);
-            let file_log = fmt::layer()
+            let file_log = layer()
                 .with_writer(file_writer.with_max_level(max_level))
                 .with_ansi(false)
                 .with_timer(UtcTime::new(time_format))

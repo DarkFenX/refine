@@ -1,5 +1,5 @@
 use super::rah_info::RahInfo;
-use crate::misc::{DmgKinds, Value};
+use crate::{misc::DmgKinds, num::Value};
 
 pub(super) struct RahDataSim {
     pub(super) info: RahInfo,

@@ -1,7 +1,8 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
-    misc::{AttrSpec, Count, DmgKinds, Ecm, EffectSpec, MiningAmount, PValue, SkillLevel, SlotIndex, Value},
+    misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::NBreacherDmgGetter,
+    num::{Count, PValue, SkillLevel, SlotIndex, Value},
     rd::{RAttrId, REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,

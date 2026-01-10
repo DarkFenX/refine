@@ -1,5 +1,5 @@
 use super::shared::OutputIterItem;
-use crate::misc::{Count, PValue, Value};
+use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputComplex<T: Copy> {

@@ -1,4 +1,4 @@
-use crate::{misc::SkillLevel, ud::UItemId};
+use crate::{num::SkillLevel, ud::UItemId};
 
 #[derive(Copy, Clone)]
 pub(crate) struct UFitSkill {

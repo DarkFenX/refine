@@ -1,6 +1,7 @@
 use super::shared::process_mult;
 use crate::{
-    misc::{AttrSpec, Count, EffectSpec, PValue, UnitInterval, Value},
+    misc::{AttrSpec, EffectSpec},
+    num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, aggr::traits::LimitAmount, calc::Calc, funcs, output::Output},
     ud::UItemId,

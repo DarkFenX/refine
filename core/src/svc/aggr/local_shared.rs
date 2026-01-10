@@ -1,6 +1,6 @@
 use super::traits::LimitAmount;
 use crate::{
-    misc::{PValue, UnitInterval, Value},
+    num::{PValue, UnitInterval, Value},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,

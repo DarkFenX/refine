@@ -1,5 +1,6 @@
 use crate::{
-    misc::{PValue, Value, Xyz},
+    misc::Xyz,
+    num::{PValue, Value},
     rd::{RAttrId, REffect},
     svc::{SvcCtx, calc::Calc, funcs},
     ud::{UItemId, UProjData},

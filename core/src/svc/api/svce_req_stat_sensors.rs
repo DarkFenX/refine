@@ -1,5 +1,5 @@
 use crate::{
-    misc::{Count, PValue},
+    num::{Count, PValue},
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,

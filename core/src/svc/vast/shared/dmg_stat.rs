@@ -1,7 +1,4 @@
-use crate::{
-    misc::{DmgKinds, PValue},
-    svc::output::OutputDmgBreacher,
-};
+use crate::{misc::DmgKinds, num::PValue, svc::output::OutputDmgBreacher};
 
 pub struct StatDmg {
     pub em: PValue,

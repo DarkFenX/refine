@@ -1,6 +1,7 @@
 use crate::{
     api::{FitMut, FitStatAppliedError},
-    misc::{PValue, Spool},
+    misc::Spool,
+    num::PValue,
     svc::vast::{
         StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
         StatOutRepItemKinds, StatTank, StatTimeOptions,

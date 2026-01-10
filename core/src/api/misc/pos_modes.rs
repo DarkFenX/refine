@@ -1,4 +1,4 @@
-use crate::misc::Index;
+use crate::num::Index;
 
 /// Defines how a module is added.
 pub enum AddMode {

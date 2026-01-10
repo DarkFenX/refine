@@ -2,7 +2,7 @@ use crate::{
     ad::AAttrId,
     api::{AttrId, EffectiveMutationMut, IncompleteMutationMut, MutationMut, RawMAttrMut},
     err::basic::ItemMAttrNotFoundError,
-    misc::UnitInterval,
+    num::UnitInterval,
     sol::SolarSystem,
     ud::UItemId,
 };

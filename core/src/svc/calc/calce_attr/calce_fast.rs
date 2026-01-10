@@ -2,7 +2,8 @@ use std::collections::hash_map::Entry;
 
 use super::calce_shared::get_base_attr_value;
 use crate::{
-    misc::{SecZone, Value},
+    misc::SecZone,
+    num::Value,
     rd::{RAttr, RAttrId},
     svc::{
         SvcCtx,

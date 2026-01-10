@@ -1,6 +1,6 @@
 use super::item_checks::{check_character, check_fighter_ship_no_struct, check_ship_no_struct};
 use crate::{
-    misc::{Count, PValue, Value},
+    num::{Count, PValue, Value},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
     ud::{UFitId, UItemId},
 };

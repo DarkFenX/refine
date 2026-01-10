@@ -1,4 +1,4 @@
-use crate::{api::RawMAttrMut, misc::UnitInterval, ud::UAttrMutationRequest};
+use crate::{api::RawMAttrMut, num::UnitInterval, ud::UAttrMutationRequest};
 
 impl<'a> RawMAttrMut<'a> {
     /// Set roll for the attribute.

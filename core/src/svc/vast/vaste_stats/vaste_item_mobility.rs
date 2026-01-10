@@ -2,7 +2,7 @@ use super::item_checks::{
     check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct, check_ship_no_struct,
 };
 use crate::{
-    misc::{PValue, Value},
+    num::{PValue, Value},
     svc::{SvcCtx, calc::Calc, err::StatItemCheckError, funcs, vast::Vast},
     ud::UItemId,
 };

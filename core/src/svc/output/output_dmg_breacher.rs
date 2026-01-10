@@ -1,4 +1,4 @@
-use crate::misc::{Count, PValue, UnitInterval};
+use crate::num::{Count, PValue, UnitInterval};
 
 #[derive(Copy, Clone)]
 pub(crate) struct OutputDmgBreacher {

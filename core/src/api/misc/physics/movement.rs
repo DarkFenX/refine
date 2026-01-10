@@ -1,7 +1,8 @@
 use angle_sc::{Angle, Degrees, trig};
 
 use crate::{
-    misc::{PValue, Value, Xyz},
+    misc::Xyz,
+    num::{PValue, Value},
     ud::UPhysics,
 };
 

@@ -1,5 +1,5 @@
 use crate::{
-    misc::{PValue, UnitInterval, Value},
+    num::{PValue, UnitInterval, Value},
     svc::{
         SvcCtx,
         calc::Calc,

@@ -1,4 +1,4 @@
-use crate::misc::{PValue, Spool};
+use crate::{misc::Spool, num::PValue};
 
 #[derive(Copy, Clone)]
 pub enum StatTimeOptions {

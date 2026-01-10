@@ -1,6 +1,6 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
-    misc::{PValue, UnitInterval, Value},
+    num::{PValue, UnitInterval, Value},
     svc::vast::{StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatTimeOptions},
 };
 

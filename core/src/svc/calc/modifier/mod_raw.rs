@@ -5,8 +5,9 @@ use smallvec::SmallVec;
 use super::AffectorValue;
 use crate::{
     ad::AEffectCatId,
-    misc::{EffectSpec, Value},
+    misc::EffectSpec,
     nd::NProjMultGetter,
+    num::Value,
     rd::{RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModifier},
     svc::{
         SvcCtx,

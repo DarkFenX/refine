@@ -1,7 +1,7 @@
 use crate::{
     ad::AAttrId,
     api::{RawMAttr, RawMAttrMut},
-    misc::UnitInterval,
+    num::UnitInterval,
     sol::SolarSystem,
     ud::UItemId,
 };

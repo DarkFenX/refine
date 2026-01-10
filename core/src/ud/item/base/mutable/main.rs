@@ -1,7 +1,8 @@
 use crate::{
     ad::{AAttrId, AEffectId, AEveItemListId, AItemCatId, AItemGrpId, AItemId, AItemListId},
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, SkillLevel, UnitInterval, Value},
+    misc::EffectMode,
+    num::{SkillLevel, UnitInterval, Value},
     rd::{
         RAttrId, REffectId, RItem, RItemAXt, RItemEffectData, RItemListId, RMuta, RMutaAttrRange, RState, RcItem,
         RcMuta, Src,

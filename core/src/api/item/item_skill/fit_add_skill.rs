@@ -4,7 +4,7 @@ use crate::{
     ad::AItemId,
     api::{FitMut, ItemTypeId, SkillMut},
     err::basic::SkillEveTypeError,
-    misc::SkillLevel,
+    num::SkillLevel,
     sol::SolarSystem,
     ud::{UEffectUpdates, UFitId, UFitSkill, UItem, UItemId, USkill},
 };

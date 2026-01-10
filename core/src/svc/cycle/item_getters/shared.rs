@@ -1,5 +1,5 @@
 use crate::{
-    misc::PValue,
+    num::PValue,
     rd::REffectId,
     svc::vast::{StatTimeOptions, StatTimeOptionsSim},
 };

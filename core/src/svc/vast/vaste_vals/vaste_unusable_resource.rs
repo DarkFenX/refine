@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use super::shared::get_max_resource;
 use crate::{
-    misc::Value,
+    num::Value,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{ItemId, UFit, UItemId},
     util::RSet,

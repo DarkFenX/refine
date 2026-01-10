@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AEveAttrId},
-    misc::{Count, FighterCount, PValue, SkillLevel, Value},
+    num::{Count, FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };

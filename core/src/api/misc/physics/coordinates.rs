@@ -1,4 +1,4 @@
-use crate::misc::{Value, Xyz};
+use crate::{misc::Xyz, num::Value};
 
 #[derive(Copy, Clone)]
 pub struct Coordinates {

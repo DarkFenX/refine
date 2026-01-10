@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use super::shared::is_attr_flag_set;
 use crate::{
-    misc::{EffectSpec, PValue},
+    misc::EffectSpec,
+    num::PValue,
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc, funcs, vast::VastFitData},
     ud::{ItemId, UItemId},

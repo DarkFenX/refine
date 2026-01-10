@@ -2,7 +2,8 @@ use either::Either;
 
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, NpcProp, PValue, SkillLevel, Spool, Value},
+    misc::{EffectMode, NpcProp, Spool},
+    num::{PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant,

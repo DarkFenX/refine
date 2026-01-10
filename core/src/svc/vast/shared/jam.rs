@@ -1,4 +1,4 @@
-use crate::misc::UnitInterval;
+use crate::num::UnitInterval;
 
 #[derive(Copy, Clone)]
 pub struct StatJamApplied {

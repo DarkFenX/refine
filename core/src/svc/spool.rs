@@ -1,5 +1,6 @@
 use crate::{
-    misc::{Count, PValue, Spool, Value},
+    misc::Spool,
+    num::{Count, PValue, Value},
     rd::{REffect, RSpoolAttrs},
     svc::{SvcCtx, calc::Calc, funcs},
     ud::UItemId,

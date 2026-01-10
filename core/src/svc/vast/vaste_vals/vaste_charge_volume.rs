@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    misc::PValue,
+    num::PValue,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UItemId},
     util::RSet,

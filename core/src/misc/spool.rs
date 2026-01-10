@@ -1,4 +1,4 @@
-use crate::misc::{Count, PValue, UnitInterval};
+use crate::num::{Count, PValue, UnitInterval};
 
 /// Controls on which spool cycle spoolable modules will be set.
 #[derive(Copy, Clone)]

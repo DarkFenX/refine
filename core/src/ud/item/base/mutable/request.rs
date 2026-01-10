@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AItemId},
-    misc::UnitInterval,
+    num::UnitInterval,
 };
 
 pub(crate) struct UItemMutationRequest {

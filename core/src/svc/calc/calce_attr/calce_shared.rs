@@ -1,5 +1,6 @@
 use crate::{
-    misc::{AttrSpec, PValue, Value},
+    misc::AttrSpec,
+    num::{PValue, Value},
     rd::RAttr,
     svc::{
         SvcCtx,

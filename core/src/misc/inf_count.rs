@@ -1,4 +1,4 @@
-use crate::misc::Count;
+use crate::num::Count;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum InfCount {

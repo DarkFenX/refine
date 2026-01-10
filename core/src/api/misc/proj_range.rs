@@ -1,4 +1,4 @@
-use crate::{misc::PValue, ud::UProjData};
+use crate::{num::PValue, ud::UProjData};
 
 /// Range between projector and projectee.
 pub struct ProjRange {

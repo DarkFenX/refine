@@ -1,6 +1,6 @@
 use crate::{
     ad::{AItemEffectData, AItemId, AItemListId},
-    misc::{Count, PValue},
+    num::{Count, PValue},
     rd::RItemListId,
     util::RMap,
 };

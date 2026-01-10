@@ -1,6 +1,6 @@
 use super::limit_amount::LimitAmount;
 use crate::{
-    misc::{PValue, Value},
+    num::{PValue, Value},
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 

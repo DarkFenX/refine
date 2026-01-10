@@ -1,6 +1,6 @@
 use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    misc::SlotIndex,
+    num::SlotIndex,
     sol::SolarSystem,
     ud::{UBooster, UItemId},
 };

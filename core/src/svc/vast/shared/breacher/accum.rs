@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use super::{conv::cseq_to_ticks, ticks::AggrBreacherTicksLooped};
 use crate::{
     def::SERVER_TICK_HZ,
-    misc::{Count, PValue, UnitInterval},
+    num::{Count, PValue, UnitInterval},
     svc::{
         cycle::{CycleDataTime, CycleSeq},
         output::OutputDmgBreacher,

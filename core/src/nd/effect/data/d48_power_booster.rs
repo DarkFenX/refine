@@ -1,10 +1,10 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    misc::{PValue, Value},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
     },
+    num::{PValue, Value},
     rd::REffect,
     svc::{
         SvcCtx,

@@ -1,5 +1,6 @@
 use crate::{
-    misc::{DmgKinds, UnitInterval, Value},
+    misc::DmgKinds,
+    num::{UnitInterval, Value},
     rd::RAttrId,
     svc::{
         SvcCtx,

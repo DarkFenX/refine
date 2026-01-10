@@ -1,5 +1,6 @@
 use crate::{
-    misc::{DpsProfile, NpcProp, PValue, SecZone, Spool, UnitInterval},
+    misc::{DpsProfile, NpcProp, SecZone, Spool},
+    num::{PValue, UnitInterval},
     rd::Src,
     ud::{UFits, UFleets, UItemId, UItems},
     util::RSet,

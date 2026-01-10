@@ -1,4 +1,4 @@
-use crate::misc::{PValue, Xyz};
+use crate::{misc::Xyz, num::PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default)]
 pub(crate) struct UPhysics {

@@ -1,5 +1,5 @@
 use crate::{
-    misc::PValue,
+    num::PValue,
     sol::SolarSystem,
     svc::Svc,
     ud::{UData, UFitId},

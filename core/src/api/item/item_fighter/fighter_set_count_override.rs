@@ -1,4 +1,4 @@
-use crate::{api::FighterMut, misc::FighterCount, sol::SolarSystem, ud::UItemId};
+use crate::{api::FighterMut, num::FighterCount, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_count_override(

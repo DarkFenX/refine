@@ -3,7 +3,7 @@ use crate::{
         AAttrId, ABuffId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
         AItemListId,
     },
-    misc::Value,
+    num::Value,
     rd::{RAttrId, RBuffId, RItemListId},
     util::RMap,
 };

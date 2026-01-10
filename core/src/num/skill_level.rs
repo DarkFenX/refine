@@ -1,4 +1,4 @@
-use crate::{ad::ASkillLevel, misc::Value};
+use crate::{ad::ASkillLevel, num::Value};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd, derive_more::Display)]
 pub struct SkillLevel(u8);

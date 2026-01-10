@@ -1,6 +1,7 @@
 use crate::{
     ad::{AAttrId, AItemCatId, AItemGrpId, AItemId},
-    misc::{Count, FighterCount, ItemKind, PValue, SkillLevel, SlotIndex, Value},
+    misc::ItemKind,
+    num::{Count, FighterCount, PValue, SkillLevel, SlotIndex, Value},
     rd::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemChargeLimit, RItemContLimit, RItemEffectData,
         RItemShipLimit, RShipDroneLimit, RShipKind,

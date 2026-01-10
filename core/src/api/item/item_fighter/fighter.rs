@@ -3,7 +3,7 @@ use crate::{
         Adjustable, Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState,
         Movement,
     },
-    misc::FighterCount,
+    num::FighterCount,
     sol::SolarSystem,
     ud::{UFighter, UItemId},
 };

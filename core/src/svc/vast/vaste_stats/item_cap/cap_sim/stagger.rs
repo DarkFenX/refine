@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use super::{aggregate::Aggregator, shared::SIG_ROUND_DIGITS};
 use crate::{
-    misc::{PValue, Value},
+    num::{PValue, Value},
     sol::SolarSystem,
     svc::{
         cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},

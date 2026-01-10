@@ -1,4 +1,4 @@
-use crate::misc::{PValue, Value};
+use crate::num::{PValue, Value};
 
 const COUNT_MIN: u32 = 1;
 

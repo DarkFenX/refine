@@ -1,6 +1,6 @@
 use crate::{
     err::basic::BreacherDmgError,
-    misc::{PValue, UnitInterval, Value},
+    num::{PValue, UnitInterval, Value},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]

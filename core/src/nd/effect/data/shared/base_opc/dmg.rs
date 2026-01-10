@@ -1,6 +1,7 @@
 use crate::{
-    misc::{Count, DmgKinds, PValue, Value},
+    misc::DmgKinds,
     nd::{NEffectProjOpcSpec, effect::data::shared::proj_mult::get_aoe_dd_dmg_proj_mult},
+    num::{Count, PValue, Value},
     rd::REffect,
     svc::{
         SvcCtx,

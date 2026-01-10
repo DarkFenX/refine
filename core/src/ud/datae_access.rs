@@ -1,5 +1,6 @@
 use crate::{
-    misc::{DpsProfile, NpcProp, PValue, Spool},
+    misc::{DpsProfile, NpcProp, Spool},
+    num::PValue,
     ud::{UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
 

@@ -1,5 +1,6 @@
 use crate::{
-    misc::{DmgKinds, DpsProfile, UnitInterval},
+    misc::{DmgKinds, DpsProfile},
+    num::UnitInterval,
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,

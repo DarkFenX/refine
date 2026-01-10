@@ -1,5 +1,5 @@
 use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::OutputIterItem};
-use crate::misc::{PValue, Value};
+use crate::num::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) enum Output<T: Copy> {

@@ -3,8 +3,9 @@ use either::Either;
 use super::shared::{CyclingOptions, SelfKillerInfo};
 use crate::{
     def::SERVER_TICK_S,
-    misc::{Count, InfCount, PValue, UnitInterval, Value},
+    misc::InfCount,
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
+    num::{Count, PValue, UnitInterval, Value},
     rd::{REffectChargeLoc, REffectId},
     svc::{
         SvcCtx,

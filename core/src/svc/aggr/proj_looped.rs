@@ -4,7 +4,7 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    misc::{Count, PValue, Value},
+    num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,

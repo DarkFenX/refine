@@ -1,5 +1,6 @@
 use crate::{
-    misc::{MiningAmount, PValue},
+    misc::MiningAmount,
+    num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,

@@ -2,7 +2,8 @@ use crate::{
     api::{
         Adjustable, Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ModuleState,
     },
-    misc::{Count, Index, InfCount, ModRack},
+    misc::{InfCount, ModRack},
+    num::{Count, Index},
     sol::SolarSystem,
     ud::{UItemId, UModule},
 };

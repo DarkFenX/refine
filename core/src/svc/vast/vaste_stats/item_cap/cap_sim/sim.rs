@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
-    misc::{PValue, UnitInterval, Value},
+    num::{PValue, UnitInterval, Value},
     svc::{output::OutputIterItem, vast::shared::regenerate},
 };
 

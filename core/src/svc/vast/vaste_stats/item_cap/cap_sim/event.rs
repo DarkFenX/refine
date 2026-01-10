@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use crate::{
-    misc::{PValue, Value},
+    num::{PValue, Value},
     svc::{
         cycle::{CycleDataTimeCharge, CycleIter},
         output::Output,

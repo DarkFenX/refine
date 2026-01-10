@@ -9,7 +9,8 @@ use super::{
 };
 use crate::{
     Count,
-    misc::{DmgKinds, EffectSpec, PValue, Value},
+    misc::{DmgKinds, EffectSpec},
+    num::{PValue, Value},
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVals, calce_rah::shared::SIG_ROUND_DIGITS},

@@ -1,6 +1,7 @@
 use super::shared::SIG_ROUND_DIGITS;
 use crate::{
-    misc::{DmgKinds, PValue, Value},
+    misc::DmgKinds,
+    num::{PValue, Value},
     svc::calc::CalcAttrVals,
     ud::UItemId,
 };

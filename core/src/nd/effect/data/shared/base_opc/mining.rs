@@ -1,5 +1,6 @@
 use crate::{
-    misc::{MiningAmount, PValue, UnitInterval, Value},
+    misc::MiningAmount,
+    num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
         SvcCtx,

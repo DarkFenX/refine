@@ -1,7 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     api::{ModuleMut, RmMode},
-    misc::Index,
+    num::Index,
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
 };

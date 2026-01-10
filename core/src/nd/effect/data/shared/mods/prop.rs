@@ -3,8 +3,9 @@ use smallvec::SmallVec;
 use crate::{
     ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModifier, AOp},
     api::AttrId,
-    misc::{AttrSpec, EffectSpec, Value},
+    misc::{AttrSpec, EffectSpec},
     nd::effect::data::shared::util::get_item_fit_ship_uid,
+    num::Value,
     rd::RAttrConsts,
     svc::{
         SvcCtx,

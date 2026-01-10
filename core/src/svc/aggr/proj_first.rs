@@ -4,7 +4,8 @@ use super::{
     traits::LimitAmount,
 };
 use crate::{
-    misc::{PValue, Spool, Value},
+    misc::Spool,
+    num::{PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
     ud::UItemId,

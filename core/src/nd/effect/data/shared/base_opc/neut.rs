@@ -1,8 +1,8 @@
 use super::generic::get_generic_base_opc;
 use crate::{
     ad::AAttrId,
-    misc::{PValue, Value},
     nd::{NEffectProjOpcSpec, NEffectResist, effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult},
+    num::{PValue, Value},
     rd::REffect,
     svc::{
         SvcCtx,

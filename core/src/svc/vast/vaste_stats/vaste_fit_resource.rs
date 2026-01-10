@@ -1,5 +1,5 @@
 use crate::{
-    misc::Value,
+    num::Value,
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemId},

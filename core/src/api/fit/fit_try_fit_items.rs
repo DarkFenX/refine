@@ -3,7 +3,8 @@ use itertools::Itertools;
 use crate::{
     ad::AItemId,
     api::{AddMode, FitMut, ItemTypeId, MinionState, ModuleState, RmMode, ServiceState},
-    misc::{ItemKind, ModRack, PValue},
+    misc::{ItemKind, ModRack},
+    num::PValue,
     rd::RState,
     sol::SolarSystem,
     svc::vast::{ValOptions, ValOptionsInt},

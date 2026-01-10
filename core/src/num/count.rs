@@ -1,6 +1,6 @@
 use crate::{
     ad::ACount,
-    misc::{PValue, Value},
+    num::{PValue, Value},
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 

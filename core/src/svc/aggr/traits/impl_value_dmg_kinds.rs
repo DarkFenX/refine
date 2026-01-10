@@ -1,6 +1,7 @@
 use super::limit_amount::LimitAmount;
 use crate::{
-    misc::{DmgKinds, PValue, Value},
+    misc::DmgKinds,
+    num::{PValue, Value},
     util::LibMax,
 };
 

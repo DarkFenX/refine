@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttr, AAttrId},
-    misc::Value,
+    num::Value,
     rd::RAttrId,
     util::RMap,
 };

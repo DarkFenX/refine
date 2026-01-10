@@ -1,4 +1,7 @@
-use crate::misc::{DmgKinds, DpsProfile, PValue, UnitInterval};
+use crate::{
+    misc::{DmgKinds, DpsProfile},
+    num::{PValue, UnitInterval},
+};
 
 pub(super) fn get_tanking_efficiency(resists: &DmgKinds<UnitInterval>, incoming_dps: DpsProfile) -> Option<PValue> {
     let dealt = incoming_dps.get_sum_regular();

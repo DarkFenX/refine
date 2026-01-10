@@ -1,4 +1,4 @@
-use crate::misc::{PValue, UnitInterval, Value};
+use crate::num::{PValue, UnitInterval, Value};
 
 pub(in crate::svc::vast) fn calc_regen(max: PValue, rech_time: PValue, cap_perc: UnitInterval) -> PValue {
     let cap_perc = cap_perc.into_pvalue();

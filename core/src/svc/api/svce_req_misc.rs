@@ -1,6 +1,7 @@
 use crate::{
     api::Adjustable,
-    misc::{Count, InfCount},
+    misc::InfCount,
+    num::Count,
     svc::{
         Svc, SvcCtx,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},

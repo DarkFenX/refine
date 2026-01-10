@@ -1,5 +1,5 @@
 use crate::{
-    misc::UnitInterval,
+    num::UnitInterval,
     svc::{
         SvcCtx,
         calc::Calc,

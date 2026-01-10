@@ -1,5 +1,5 @@
 use crate::{
-    misc::Count,
+    num::Count,
     svc::{
         SvcCtx,
         calc::Calc,

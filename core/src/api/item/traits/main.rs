@@ -7,7 +7,8 @@ use super::err::{
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{Count, DmgKinds, DpsProfile, EffectMode, PValue, Spool, UnitInterval, Value},
+    misc::{DmgKinds, DpsProfile, EffectMode, Spool},
+    num::{Count, PValue, UnitInterval, Value},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{

@@ -1,6 +1,6 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
-    misc::{Count, PValue},
+    num::{Count, PValue},
     svc::vast::{StatJamApplied, StatSensors},
 };
 

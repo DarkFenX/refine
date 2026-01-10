@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    misc::SlotIndex,
+    num::SlotIndex,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UItemId},
     util::{RMapRSet, RSet},

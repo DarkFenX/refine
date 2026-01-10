@@ -1,6 +1,6 @@
 use crate::{
-    misc::{PValue, UnitInterval, Value},
     nd::NChargeMultGetter,
+    num::{PValue, UnitInterval, Value},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
 };

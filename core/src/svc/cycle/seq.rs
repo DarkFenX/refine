@@ -3,7 +3,7 @@ use super::{
     seq_loop_lim_sin::CycleSeqLoopLimSin,
 };
 use crate::{
-    misc::PValue,
+    num::PValue,
     svc::cycle::{CycleDataFull, CycleDataTime, CycleDataTimeCharge},
 };
 

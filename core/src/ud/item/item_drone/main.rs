@@ -2,7 +2,8 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::MinionState,
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, NpcProp, PValue, SkillLevel, Value},
+    misc::{EffectMode, NpcProp},
+    num::{PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
         ItemId, UAttrMutationRequest, UFitId, UItemMutationRequest,

@@ -1,6 +1,7 @@
 use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options};
 use crate::{
-    misc::{DmgKinds, PValue, Spool},
+    misc::{DmgKinds, Spool},
+    num::PValue,
     svc::{
         SvcCtx,
         aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},

@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
-    misc::{SkillLevel, Value},
+    num::{SkillLevel, Value},
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState},
     util::{LibGetId, RMap},
 };

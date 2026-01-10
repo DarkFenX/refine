@@ -1,5 +1,5 @@
 use super::limit_amount::LimitAmount;
-use crate::misc::{PValue, Value};
+use crate::num::{PValue, Value};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations

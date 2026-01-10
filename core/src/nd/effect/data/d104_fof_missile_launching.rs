@@ -1,7 +1,6 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    misc::PValue,
     nd::{
         NEffect, NEffectDmgKind, NEffectProjOpcSpec,
         effect::data::shared::{
@@ -9,6 +8,7 @@ use crate::{
             proj_mult::{get_missile_application_mult, get_missile_range_mult},
         },
     },
+    num::PValue,
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
     ud::{UItem, UItemId, UProjData},

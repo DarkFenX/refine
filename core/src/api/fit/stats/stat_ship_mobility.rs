@@ -1,6 +1,6 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
-    misc::PValue,
+    num::PValue,
 };
 
 impl<'a> FitMut<'a> {

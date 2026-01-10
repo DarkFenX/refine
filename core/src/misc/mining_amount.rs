@@ -1,4 +1,4 @@
-use crate::misc::PValue;
+use crate::num::PValue;
 
 #[derive(Copy, Clone)]
 pub struct MiningAmount {

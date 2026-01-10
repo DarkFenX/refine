@@ -2,7 +2,8 @@ use smallvec::{SmallVec, smallvec};
 
 use crate::{
     api::AttrId,
-    misc::{EffectSpec, Value},
+    misc::EffectSpec,
+    num::Value,
     rd::RAttrId,
     svc::{
         SvcCtx,

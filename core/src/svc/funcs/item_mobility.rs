@@ -1,5 +1,6 @@
 use crate::{
-    misc::{NpcProp, PValue, Value},
+    misc::NpcProp,
+    num::{PValue, Value},
     svc::{SvcCtx, calc::Calc},
     ud::UItemId,
 };

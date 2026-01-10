@@ -1,6 +1,7 @@
 use super::shared::get_tanking_efficiency;
 use crate::{
-    misc::{DpsProfile, PValue, UnitInterval},
+    misc::DpsProfile,
+    num::{PValue, UnitInterval},
     svc::{
         SvcCtx,
         calc::Calc,

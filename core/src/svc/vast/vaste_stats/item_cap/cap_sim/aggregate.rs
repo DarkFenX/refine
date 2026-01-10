@@ -5,7 +5,7 @@ use super::{
     shared::SIG_ROUND_DIGITS,
 };
 use crate::{
-    misc::{Count, PValue, Value},
+    num::{Count, PValue, Value},
     svc::{
         cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},

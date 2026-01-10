@@ -1,5 +1,5 @@
 use crate::{
-    misc::{SlotIndex, Value},
+    num::{SlotIndex, Value},
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };

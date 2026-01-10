@@ -1,8 +1,4 @@
-use crate::{
-    misc::{PValue, Xyz},
-    rd::RItemAXt,
-    ud::UPhysics,
-};
+use crate::{misc::Xyz, num::PValue, rd::RItemAXt, ud::UPhysics};
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub(crate) struct UProjData {

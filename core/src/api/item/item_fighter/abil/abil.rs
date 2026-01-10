@@ -1,4 +1,4 @@
-use crate::{ad::AAbilId, api::AbilId, misc::Count, sol::SolarSystem, ud::UItemId};
+use crate::{ad::AAbilId, api::AbilId, num::Count, sol::SolarSystem, ud::UItemId};
 
 /// Fighter ability.
 pub struct Ability<'a> {

@@ -1,6 +1,6 @@
 use crate::{
     api::{Fit, FitMut},
-    misc::FitSecStatus,
+    num::FitSecStatus,
     sol::SolarSystem,
     ud::UFitId,
 };

@@ -1,6 +1,6 @@
 use crate::{
     api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
-    misc::SkillLevel,
+    num::SkillLevel,
     sol::SolarSystem,
     ud::{UItemId, USkill},
 };

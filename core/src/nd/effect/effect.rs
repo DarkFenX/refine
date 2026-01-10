@@ -1,8 +1,9 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount, PValue},
+    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolAttrs},
+    num::PValue,
     rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,

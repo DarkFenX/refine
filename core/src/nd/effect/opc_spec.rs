@@ -1,7 +1,7 @@
 use crate::{
     ad::AAttrId,
-    misc::{PValue, UnitInterval},
     nd::{NEffectResist, NProjMultGetter},
+    num::{PValue, UnitInterval},
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,

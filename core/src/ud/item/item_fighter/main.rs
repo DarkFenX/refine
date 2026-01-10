@@ -1,7 +1,8 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::{Adjustable, MinionState},
-    misc::{EffectMode, FighterCount, PValue, SkillLevel, Value},
+    misc::EffectMode,
+    num::{FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
         ItemId, UEffectUpdates, UFitId, UPhysics, UProjs,

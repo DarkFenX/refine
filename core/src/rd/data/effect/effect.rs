@@ -1,7 +1,8 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
-    misc::{DmgKinds, Ecm, MiningAmount, PValue, Value},
+    misc::{DmgKinds, Ecm, MiningAmount},
     nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NProjMultGetter},
+    num::{PValue, Value},
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
         REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListId, RSpoolAttrs, RState,

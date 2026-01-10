@@ -1,4 +1,4 @@
-use crate::misc::Value;
+use crate::num::Value;
 
 #[derive(thiserror::Error, Debug)]
 pub enum DmgError {

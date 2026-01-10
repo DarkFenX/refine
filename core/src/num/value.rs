@@ -3,7 +3,7 @@ use ordered_float::OrderedFloat;
 use crate::{
     ad::AValue,
     def::AU,
-    misc::{Count, PValue},
+    num::{Count, PValue},
     util::{FLOAT_TOLERANCE, LibMax, round, sig_round},
 };
 

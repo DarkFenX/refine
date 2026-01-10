@@ -1,6 +1,6 @@
 use ordered_float::OrderedFloat;
 
-use crate::misc::{PValue, Value};
+use crate::num::{PValue, Value};
 
 #[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct UnitInterval(f64);

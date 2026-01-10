@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemCatId,
-    misc::{PValue, Value},
+    num::{PValue, Value},
 };
 
 const PENALTY_IMMUNE_ITEM_CATS: [AItemCatId; 5] = [

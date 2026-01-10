@@ -2,7 +2,8 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::ModuleState,
     err::basic::ItemNotMutatedError,
-    misc::{Count, EffectMode, Index, ModRack, PValue, SkillLevel, Spool, Value},
+    misc::{EffectMode, ModRack, Spool},
+    num::{Count, Index, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,

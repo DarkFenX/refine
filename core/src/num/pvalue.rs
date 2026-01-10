@@ -3,7 +3,7 @@ use ordered_float::OrderedFloat;
 use crate::{
     ad::AValue,
     def::SERVER_TICK_HZ,
-    misc::Value,
+    num::Value,
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
 };
 

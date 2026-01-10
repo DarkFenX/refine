@@ -1,5 +1,6 @@
 use crate::{
-    misc::{Count, InfCount, PValue},
+    misc::InfCount,
+    num::{Count, PValue},
     svc::cycle::{
         CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf,
     },

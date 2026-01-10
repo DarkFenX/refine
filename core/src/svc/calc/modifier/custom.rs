@@ -3,7 +3,8 @@ use std::hash::{Hash, Hasher};
 use smallvec::SmallVec;
 
 use crate::{
-    misc::{EffectSpec, Value},
+    misc::EffectSpec,
+    num::Value,
     rd::RAttrId,
     svc::{
         SvcCtx,

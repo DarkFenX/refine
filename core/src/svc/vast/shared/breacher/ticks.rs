@@ -1,4 +1,4 @@
-use crate::misc::Count;
+use crate::num::Count;
 
 // In designations, first letter:
 // - L - limited

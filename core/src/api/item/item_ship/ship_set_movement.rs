@@ -1,6 +1,7 @@
 use crate::{
     api::{Movement, ShipMut},
-    misc::{PValue, Xyz},
+    misc::Xyz,
+    num::PValue,
     sol::SolarSystem,
     ud::UItemId,
 };

@@ -1,11 +1,12 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    misc::{DmgKinds, PValue, Value},
+    misc::DmgKinds,
     nd::{
         NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectProjOpcSpec,
         effect::data::shared::proj_mult::get_turret_proj_mult,
     },
+    num::{PValue, Value},
     rd::REffect,
     svc::{
         SvcCtx,

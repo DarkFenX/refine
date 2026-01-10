@@ -2,7 +2,8 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::{AItemCatId, AItemGrpId},
-    misc::{ItemKind, Value},
+    misc::ItemKind,
+    num::Value,
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemEffectData},
     util::RMap,
 };

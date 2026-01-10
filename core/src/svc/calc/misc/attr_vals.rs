@@ -1,4 +1,4 @@
-use crate::misc::Value;
+use crate::num::Value;
 
 #[derive(Copy, Clone)]
 pub(crate) struct CalcAttrVals {

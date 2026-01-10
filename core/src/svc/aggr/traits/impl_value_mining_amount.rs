@@ -1,5 +1,8 @@
 use super::limit_amount::LimitAmount;
-use crate::misc::{MiningAmount, PValue, Value};
+use crate::{
+    misc::MiningAmount,
+    num::{PValue, Value},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations

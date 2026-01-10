@@ -1,4 +1,4 @@
-use crate::{misc::Value, svc::calc::CalcAttrVals};
+use crate::{num::Value, svc::calc::CalcAttrVals};
 
 #[derive(Copy, Clone)]
 pub struct AttrVals {

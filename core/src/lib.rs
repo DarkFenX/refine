@@ -38,9 +38,9 @@ pub use api::{
 pub use def::VERSION;
 pub use lender::Lender;
 pub use misc::{
-    Breacher, Count, DpsProfile, Ecm, EffectMode, FighterCount, FitSecStatus, Index, MiningAmount, ModRack, NpcProp,
-    PValue, SecZone, SecZoneCorruption, SkillLevel, SlotIndex, Spool, UnitInterval, Value,
+    Breacher, DpsProfile, Ecm, EffectMode, MiningAmount, ModRack, NpcProp, SecZone, SecZoneCorruption, Spool,
 };
+pub use num::{Count, FighterCount, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use rd::Src;
 pub use sol::SolarSystem;
 pub use svc::calc::{Affector, Modification};
@@ -54,6 +54,7 @@ pub mod ed;
 pub mod err;
 mod misc;
 mod nd;
+mod num;
 mod rd;
 mod sol;
 pub mod stats;

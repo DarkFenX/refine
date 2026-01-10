@@ -1,6 +1,6 @@
 use super::ticks::{AbtIc, AbtIs, AbtLc, AbtLcIc, AbtLcLcIc, AbtLoopLcLc, AbtLs, AggrBreacherTicks};
 use crate::{
-    misc::{Count, PValue},
+    num::{Count, PValue},
     svc::cycle::{CycleDataTime, CycleSeq},
 };
 
