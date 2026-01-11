@@ -5,7 +5,7 @@
 //! THEM TO BOTH.
 
 use super::shared::{
-    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
+    PENALTY_MULTS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
     normalize_sub, preprocess_assign_diminish_mult,
 };
 use crate::{
@@ -385,8 +385,8 @@ fn combine_muls_pen(vals: &[Value], _high_is_good: bool, reuse_pen_chains: &mut 
 }
 fn get_chain_val(vals: &[Value]) -> Value {
     let mut val = Value::ONE;
-    for (&mod_val, &denominator) in std::iter::zip(vals.iter(), PENALTY_DENOMINATORS.iter()) {
-        val *= Value::ONE + (mod_val - Value::ONE) / denominator;
+    for (&mod_val, &mult) in std::iter::zip(vals.iter(), PENALTY_MULTS.iter()) {
+        val *= (mod_val - Value::ONE).mul_add(mult.into_value(), Value::ONE);
     }
     val
 }

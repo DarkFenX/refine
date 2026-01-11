@@ -178,7 +178,7 @@ impl std::ops::MulAssign<PValue> for PValue {
     }
 }
 // Division
-impl std::ops::Div<PValue> for PValue {
+impl const std::ops::Div<PValue> for PValue {
     type Output = PValue;
     fn div(self, rhs: Self) -> Self::Output {
         Self(self.0 / rhs.0)

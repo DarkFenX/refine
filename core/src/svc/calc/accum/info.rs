@@ -6,7 +6,7 @@
 use smallvec::SmallVec;
 
 use super::shared::{
-    PENALTY_DENOMINATORS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
+    PENALTY_MULTS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
     normalize_sub, preprocess_assign_diminish_mult,
 };
 use crate::{
@@ -645,10 +645,10 @@ where
         None => false,
     };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
-        match PENALTY_DENOMINATORS.get(i) {
-            Some(&denominator) => {
-                let penalty_multiplier = PValue::ONE / denominator;
-                let value_multiplier = Value::ONE + (other_attr_info.value - Value::ONE) * penalty_multiplier;
+        match PENALTY_MULTS.get(i) {
+            Some(&penalty_multiplier) => {
+                let value_multiplier =
+                    (other_attr_info.value - Value::ONE).mul_add(penalty_multiplier.into_value(), Value::ONE);
                 for info in other_attr_info.effective_infos.iter_mut() {
                     info.stacking_mult = Some(penalty_multiplier);
                     info.applied_val = revert_func(value_multiplier);
