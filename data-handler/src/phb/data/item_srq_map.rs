@@ -1,11 +1,19 @@
-use std::collections::HashMap;
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-pub(in crate::phb) type PItemSkillMap = HashMap<i32, i32>;
+#[serde_as]
+#[derive(Deserialize)]
+#[serde(transparent)]
+pub(in crate::phb) struct PItemSkillMap {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    data: Vec<(i32, i32)>,
+}
 impl FsdMerge<rc::ed::EItemSkillReq> for PItemSkillMap {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemSkillReq> {
-        self.into_iter()
+        self.data
+            .into_iter()
             .map(|(sid, lvl)| rc::ed::EItemSkillReq {
                 item_id: rc::ed::EItemId::from_i32(id),
                 skill_id: rc::ed::EItemId::from_i32(sid),

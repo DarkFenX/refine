@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemAttrs {
     #[serde(rename = "dogmaAttributes", default)]
     pub(in crate::phb) attrs: Vec<PItemAttrData>,
@@ -18,7 +20,7 @@ impl FsdMerge<rc::ed::EItemAttr> for PItemAttrs {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemAttrData {
     #[serde(rename = "attributeID")]
     pub(in crate::phb) attr_id: i32,

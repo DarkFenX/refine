@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PBuff {
     #[serde(rename = "aggregateMode")]
     pub(in crate::phb) aggregate_mode: String,
@@ -45,7 +47,7 @@ impl FsdMerge<rc::ed::EBuff> for PBuff {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PBuffIM {
     #[serde(rename = "dogmaAttributeID")]
     pub(in crate::phb) attr_id: i32,
@@ -58,7 +60,7 @@ impl PBuffIM {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PBuffLM {
     #[serde(rename = "dogmaAttributeID")]
     pub(in crate::phb) attr_id: i32,
@@ -71,7 +73,7 @@ impl PBuffLM {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PBuffLGM {
     #[serde(rename = "dogmaAttributeID")]
     pub(in crate::phb) attr_id: i32,
@@ -87,7 +89,7 @@ impl PBuffLGM {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PBuffLRSM {
     #[serde(rename = "dogmaAttributeID")]
     pub(in crate::phb) attr_id: i32,

@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PMutaItemConvs {
     #[serde(rename = "inputOutputMapping")]
     pub(in crate::phb) item_maps: Vec<PMutaItemMap>,
@@ -20,7 +22,7 @@ impl FsdMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
         vec
     }
 }
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PMutaItemMap {
     #[serde(rename = "applicableTypes")]
     pub(in crate::phb) applicable_item_ids: Vec<i32>,

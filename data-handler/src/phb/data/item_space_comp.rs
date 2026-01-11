@@ -1,8 +1,9 @@
-use std::collections::HashMap;
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceComp {
     #[serde(rename = "systemWideEffects", default)]
     pub(in crate::phb) system_wide_effects: Option<PItemSpaceCompSw>,
@@ -82,43 +83,54 @@ impl FsdMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSw {
     #[serde(rename = "globalDebuffs", default)]
     pub(in crate::phb) global_debuffs: Option<PItemSpaceCompSwGlobal>,
 }
-#[derive(serde::Deserialize)]
+
+#[serde_as]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSwGlobal {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(rename = "dbuffs", default)]
-    pub(in crate::phb) buffs: HashMap<i32, f64>,
+    pub(in crate::phb) buffs: Vec<(i32, f64)>,
     #[serde(rename = "eligibleTypeListID", default)]
     pub(in crate::phb) item_list_filter: Option<i32>,
 }
 
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSe {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(rename = "dbuffCollections", default)]
-    pub(in crate::phb) buffs: HashMap<i32, f64>,
+    pub(in crate::phb) buffs: Vec<(i32, f64)>,
 }
 
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompPe {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(rename = "effects", default)]
-    pub(in crate::phb) buffs: HashMap<i32, f64>,
+    pub(in crate::phb) buffs: Vec<(i32, f64)>,
 }
 
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompPt {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(rename = "dbuffs", default)]
-    pub(in crate::phb) buffs: HashMap<i32, f64>,
+    pub(in crate::phb) buffs: Vec<(i32, f64)>,
     #[serde(rename = "triggerFilterTypeListID", default)]
     pub(in crate::phb) item_list_filter: Option<i32>,
 }
 
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSl {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(rename = "dbuffs", default)]
-    pub(in crate::phb) buffs: HashMap<i32, f64>,
+    pub(in crate::phb) buffs: Vec<(i32, f64)>,
     #[serde(rename = "linkableShipTypeListID", default)]
     pub(in crate::phb) item_list_filter: Option<i32>,
 }

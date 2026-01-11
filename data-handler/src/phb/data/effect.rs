@@ -1,9 +1,11 @@
+use serde::Deserialize;
+
 use crate::phb::{
     fsd::{FsdId, FsdMerge},
     serde_custom::bool_from_int,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
     pub(in crate::phb) category_id: i32,

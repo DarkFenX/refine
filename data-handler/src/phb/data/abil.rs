@@ -1,6 +1,8 @@
+use serde::Deserialize;
+
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PFighterAbil {
     #[serde(rename = "disallowInHighSec")]
     pub(in crate::phb) disallow_hisec: bool,

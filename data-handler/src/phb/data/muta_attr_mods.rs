@@ -1,11 +1,14 @@
-use std::collections::HashMap;
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(serde::Deserialize)]
+#[serde_as]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PMutaAttrMods {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(rename = "attributeIDs")]
-    pub(in crate::phb) attrs: HashMap<i32, PMutaAttrModRange>,
+    pub(in crate::phb) attrs: Vec<(i32, PMutaAttrModRange)>,
 }
 impl FsdMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EMutaAttrMod> {
@@ -21,7 +24,7 @@ impl FsdMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PMutaAttrModRange {
     pub(in crate::phb) min: f64,
     pub(in crate::phb) max: f64,

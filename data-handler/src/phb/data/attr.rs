@@ -1,9 +1,11 @@
+use serde::Deserialize;
+
 use crate::phb::{
     fsd::{FsdId, FsdMerge},
     serde_custom::bool_from_int,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(in crate::phb) struct PAttr {
     #[serde(deserialize_with = "bool_from_int")]
     pub(in crate::phb) stackable: bool,
