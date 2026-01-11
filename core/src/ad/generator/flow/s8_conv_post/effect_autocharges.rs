@@ -4,16 +4,16 @@ use crate::{
 };
 
 pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
-    for a_item in a_data.items.values_mut() {
-        for (effect_aid, a_effect_data) in a_item.effect_datas.iter_mut() {
-            if let Some(n_effect) = N_EFFECT_MAP.get(effect_aid)
+    for a_item in a_data.items.data.values_mut() {
+        for a_item_effect in a_item.effect_datas.iter_mut() {
+            if let Some(n_effect) = N_EFFECT_MAP.get(&a_item_effect.id)
                 && let Some(n_charge) = &n_effect.charge
                 && let Some(ac_attr_aid) = n_charge.location.get_autocharge_attr_aid()
-                && let Some(&attr_val) = a_item.attrs.get(&ac_attr_aid)
+                && let Some(ac_a_item_attr) = a_item.attrs.get(&ac_attr_aid)
             {
-                let ac_item_aid = AItemId::from_f64_rounded(attr_val.into_f64());
+                let ac_item_aid = AItemId::from_f64_rounded(ac_a_item_attr.value.into_f64());
                 if ac_item_aid != AItemId::from_i32(0) {
-                    a_effect_data.autocharge = Some(ac_item_aid)
+                    a_item_effect.data.autocharge = Some(ac_item_aid)
                 }
             }
         }

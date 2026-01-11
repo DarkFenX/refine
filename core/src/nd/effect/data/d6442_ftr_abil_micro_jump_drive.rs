@@ -21,7 +21,7 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: fighter MJD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
-    a_effect.modifiers.push(AEffectModifier {
+    a_effect.modifiers.insert(AEffectModifier {
         affector_attr_id: AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),

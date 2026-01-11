@@ -4,7 +4,7 @@
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItem,
-        AItemEffectData, AItemId, AOp, AState,
+        AItemEffect, AItemId, AOp, AState,
     },
     nd::NEffect,
     util::RMap,
@@ -27,12 +27,14 @@ fn make_effect() -> AEffect {
         id: EFFECT_AID,
         category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
-        modifiers: vec![AEffectModifier {
+        modifiers: [AEffectModifier {
             affector_attr_id: AAttrId::POWER_TRANSFER_AMOUNT,
             op: AOp::Sub,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
             affectee_attr_id: AAttrId::CAPACITOR_NEED,
-        }],
+        }]
+        .into_iter()
+        .collect(),
         ..
     }
 }
@@ -41,9 +43,9 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items
         .values_mut()
-        .filter(|v| v.effect_datas.contains_key(&AEffectId::ENERGY_NOSF_FALLOFF))
+        .filter(|v| v.effect_datas.contains_id(&AEffectId::ENERGY_NOSF_FALLOFF))
     {
-        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

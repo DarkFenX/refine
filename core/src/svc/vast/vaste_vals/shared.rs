@@ -1,5 +1,3 @@
-use ordered_float::Float;
-
 use crate::{
     num::{PValue, Value},
     rd::RAttrId,

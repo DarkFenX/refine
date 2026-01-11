@@ -21,5 +21,5 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: MJFG effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
-    a_effect.modifiers.push(mk_mjd_sig_mod());
+    a_effect.modifiers.insert(mk_mjd_sig_mod());
 }

@@ -16,5 +16,5 @@ pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
 
 fn item_filter(a_item: &AItem) -> bool {
     [AItemGrpId::FREIGHTER, AItemGrpId::JUMP_FREIGHTER].contains(&a_item.grp_id)
-        || a_item.srqs.contains_key(&AItemId::CAPITAL_SHIPS)
+        || a_item.srqs.contains_id(&AItemId::CAPITAL_SHIPS)
 }

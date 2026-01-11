@@ -10,7 +10,7 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_buff_item_lists(a_data:
     // Collect item lists which are used in buffs
     let mut proj_item_list_aids = RSet::new();
     let mut fleet_item_list_aids = RSet::new();
-    for a_effect in a_data.effects.values() {
+    for a_effect in a_data.effects.data.values() {
         if let Some(a_effect_buff) = &a_effect.buff {
             for a_buff_scope in a_effect_buff.iter_a_scopes() {
                 match a_buff_scope {
@@ -27,19 +27,19 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_buff_item_lists(a_data:
     }
     // Put data about buff-involved item lists onto items which belong to those lists
     for item_list_aid in proj_item_list_aids {
-        if let Some(a_item_list) = a_data.item_lists.get(&item_list_aid) {
+        if let Some(a_item_list) = a_data.item_lists.data.get(&item_list_aid) {
             for item_aid in a_item_list.item_ids.iter() {
-                if let Some(a_item) = a_data.items.get_mut(item_aid) {
-                    a_item.proj_buff_item_list_ids.push(item_list_aid);
+                if let Some(a_item) = a_data.items.data.get_mut(item_aid) {
+                    a_item.proj_buff_item_list_ids.insert(item_list_aid);
                 }
             }
         }
     }
     for item_list_aid in fleet_item_list_aids {
-        if let Some(a_item_list) = a_data.item_lists.get(&item_list_aid) {
+        if let Some(a_item_list) = a_data.item_lists.data.get(&item_list_aid) {
             for item_aid in a_item_list.item_ids.iter() {
-                if let Some(a_item) = a_data.items.get_mut(item_aid) {
-                    a_item.fleet_buff_item_list_ids.push(item_list_aid);
+                if let Some(a_item) = a_data.items.data.get_mut(item_aid) {
+                    a_item.fleet_buff_item_list_ids.insert(item_list_aid);
                 }
             }
         }

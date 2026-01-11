@@ -6,7 +6,7 @@
 
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectModifier, AItem, AItemEffectData,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectModifier, AItem, AItemEffect,
         AItemGrpId, AItemId, AModifierSrq, AOp, AState,
     },
     nd::NEffect,
@@ -30,12 +30,14 @@ fn make_effect() -> AEffect {
         id: EFFECT_AID,
         category: AEffectCatId::PASSIVE,
         state: AState::Offline,
-        modifiers: vec![
+        modifiers: [
             mk_modifier(AAttrId::EM_DMG),
             mk_modifier(AAttrId::THERM_DMG),
             mk_modifier(AAttrId::KIN_DMG),
             mk_modifier(AAttrId::EXPL_DMG),
-        ],
+        ]
+        .into_iter()
+        .collect(),
         ..
     }
 }
@@ -46,7 +48,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
         .values_mut()
         .filter(|a_item| a_item.grp_id == AItemGrpId::CHARACTER)
     {
-        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

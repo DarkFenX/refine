@@ -1,9 +1,8 @@
-use crate::ad::{ABuffAggrMode, ABuffId, ABuffModifier, AOp};
+use crate::ad::{ABuffAggrMode, ABuffId, ABuffModifiers, AOp};
 
-#[derive(Clone)]
 pub struct ABuff {
     pub id: ABuffId,
     pub aggr_mode: ABuffAggrMode,
     pub op: AOp,
-    pub mods: Vec<ABuffModifier>,
+    pub mods: ABuffModifiers,
 }

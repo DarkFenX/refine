@@ -1,11 +1,10 @@
 use crate::{
-    ad::{AAttr, AAttrId, AValue},
+    ad::{AAttr, AAttrId, AAttrs, AValue},
     ed::EData,
-    util::RMap,
 };
 
-pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_attrs(e_data: &EData) -> RMap<AAttrId, AAttr> {
-    e_data
+pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_attrs(e_data: &EData) -> AAttrs {
+    let a_attrs = e_data
         .attrs
         .data
         .iter()
@@ -20,5 +19,6 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_attrs(e_data: &EData) ->
             };
             (a_attr.id, a_attr)
         })
-        .collect()
+        .collect();
+    AAttrs { data: a_attrs }
 }

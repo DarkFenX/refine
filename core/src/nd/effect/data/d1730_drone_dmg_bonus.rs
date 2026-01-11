@@ -27,5 +27,5 @@ fn update_effect(a_effect: &mut AEffect) {
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::SelfRef),
         affectee_attr_id: AAttrId::DMG_MULT,
     };
-    a_effect.modifiers.push(modifier);
+    a_effect.modifiers.insert(modifier);
 }

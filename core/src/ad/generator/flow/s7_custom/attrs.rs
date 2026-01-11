@@ -6,7 +6,7 @@ pub(in crate::ad::generator::flow::s7_custom) fn customize_attrs(a_data: &mut AD
     for n_attr in N_ATTR_MAP.values() {
         if let Some(attr_maker) = n_attr.adg_make_attr_fn {
             let a_attr = attr_maker();
-            match a_data.attrs.entry(a_attr.id) {
+            match a_data.attrs.data.entry(a_attr.id) {
                 Entry::Occupied(_) => {
                     tracing::info!("attr {}: already exists, not replacing", a_attr.id);
                 }

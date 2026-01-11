@@ -1,10 +1,10 @@
 use crate::{
-    ad::{AItemId, AItemList, AItemListId},
+    ad::{AItemId, AItemList, AItemListId, AItemLists},
     ed::EData,
     util::{RMap, RMapRSet, RSet},
 };
 
-pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_item_lists(e_data: &EData) -> RMap<AItemListId, AItemList> {
+pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_item_lists(e_data: &EData) -> AItemLists {
     // Prepare helper data containers
     let mut types_by_grp = RMapRSet::new();
     for item in e_data.items.data.iter() {
@@ -15,7 +15,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_item_lists(e_data: &EDat
         types_by_cat.extend_entries(group.category_id, types_by_grp.get(&group.id).copied());
     }
     // Convert item lists
-    let mut result = RMap::with_capacity(e_data.item_lists.data.len());
+    let mut a_item_lists = RMap::with_capacity(e_data.item_lists.data.len());
     for e_item_list in &e_data.item_lists.data {
         let mut includes = RSet::new();
         includes.extend(e_item_list.included_item_ids.iter().copied());
@@ -33,11 +33,11 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_item_lists(e_data: &EDat
         for excluded_cat_id in e_item_list.excluded_cat_ids.iter() {
             excludes.extend(types_by_cat.get(excluded_cat_id).copied());
         }
-        let item_list = AItemList {
+        let a_item_list = AItemList {
             id: AItemListId::from_eid(e_item_list.id),
             item_ids: includes.difference(&excludes).copied().map(AItemId::from_eid).collect(),
         };
-        result.insert(item_list.id, item_list);
+        a_item_lists.insert(a_item_list.id, a_item_list);
     }
-    result
+    AItemLists { data: a_item_lists }
 }

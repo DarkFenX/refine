@@ -1,10 +1,6 @@
-use crate::{
-    ad::{AItemId, AItemListId},
-    util::RSet,
-};
+use crate::ad::{AItemListId, AItemListItemIds};
 
-#[derive(Clone)]
 pub struct AItemList {
     pub id: AItemListId,
-    pub item_ids: RSet<AItemId>,
+    pub item_ids: AItemListItemIds,
 }

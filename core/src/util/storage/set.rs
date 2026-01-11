@@ -3,12 +3,10 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-use rustc_hash::FxBuildHasher;
-
-pub type RSet<V> = Set<V, FxBuildHasher>;
+pub(crate) type RSet<V> = Set<V, rustc_hash::FxBuildHasher>;
 
 #[derive(Clone)]
-pub struct Set<V, H> {
+pub(crate) struct Set<V, H> {
     data: HashSet<V, H>,
 }
 impl<V, H> Set<V, H>
@@ -16,35 +14,35 @@ where
     V: Eq + Hash,
     H: BuildHasher + Default,
 {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
             data: HashSet::default(),
         }
     }
-    pub fn with_capacity(capacity: usize) -> Self {
+    pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
             data: HashSet::with_capacity_and_hasher(capacity, Default::default()),
         }
     }
-    pub fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
         self.data.iter()
     }
-    pub fn contains(&self, val: &V) -> bool {
+    pub(crate) fn contains(&self, val: &V) -> bool {
         self.data.contains(val)
     }
-    pub fn is_empty(&self) -> bool {
+    pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
-    pub fn len(&self) -> usize {
+    pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
-    pub fn difference<'a, H2>(&'a self, other: &'a Set<V, H2>) -> impl Iterator<Item = &'a V>
+    pub(crate) fn difference<'a, H2>(&'a self, other: &'a Set<V, H2>) -> impl Iterator<Item = &'a V>
     where
         H2: BuildHasher + Default,
     {
         self.iter().filter(|v| !other.contains(v))
     }
-    pub fn is_subset<H2>(&self, other: &Set<V, H2>) -> bool
+    pub(crate) fn is_subset<H2>(&self, other: &Set<V, H2>) -> bool
     where
         H2: BuildHasher + Default,
     {
@@ -55,19 +53,19 @@ where
         }
     }
     // Modification methods
-    pub fn insert(&mut self, val: V) -> bool {
+    pub(crate) fn insert(&mut self, val: V) -> bool {
         self.data.insert(val)
     }
-    pub fn extend<I>(&mut self, iter: I)
+    pub(crate) fn extend<I>(&mut self, iter: I)
     where
         I: IntoIterator<Item = V>,
     {
         self.data.extend(iter)
     }
-    pub fn remove(&mut self, val: &V) -> bool {
+    pub(crate) fn remove(&mut self, val: &V) -> bool {
         self.data.remove(val)
     }
-    pub fn drain(&mut self) -> impl ExactSizeIterator<Item = V> {
+    pub(crate) fn drain(&mut self) -> impl ExactSizeIterator<Item = V> {
         self.data.drain()
     }
     pub(crate) fn extract_if<F>(&mut self, filter: F) -> impl Iterator<Item = V>
@@ -76,7 +74,7 @@ where
     {
         self.data.extract_if(filter)
     }
-    pub fn clear(&mut self) {
+    pub(crate) fn clear(&mut self) {
         self.data.clear()
     }
 }

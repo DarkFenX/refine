@@ -34,58 +34,61 @@ impl RData {
     pub(in crate::rd) fn from_a_data(a_data: AData) -> Self {
         let mut items: RMap<_, _> = a_data
             .items
+            .data
             .values()
             .map(|a_item| (a_item.id, Arc::new(RItem::from_a_item(a_item))))
             .collect();
         let mut mutas: RMap<_, _> = a_data
             .mutas
+            .data
             .values()
             .map(|a_muta| (a_muta.id, Arc::new(RMuta::from_a_muta(a_muta))))
             .collect();
         let mut abils: RMap<_, _> = a_data
             .abils
+            .data
             .values()
             .map(|a_abil| (a_abil.id, RAbil::from_a_abil(a_abil)))
             .collect();
         // Slab item lists
-        let mut item_list_aid_rid_map = RMap::with_capacity(a_data.item_lists.len());
-        let mut item_lists = Slab::with_capacity(a_data.item_lists.len());
-        for (&item_list_aid, a_item_list) in a_data.item_lists.iter() {
+        let mut item_list_aid_rid_map = RMap::with_capacity(a_data.item_lists.data.len());
+        let mut item_lists = Slab::with_capacity(a_data.item_lists.data.len());
+        for a_item_list in a_data.item_lists.iter() {
             let entry = item_lists.vacant_entry();
             let item_list_rid = RItemListId::from_usize(entry.key());
             let r_item_list = RItemList::from_a_item_list(item_list_rid, a_item_list);
             entry.insert(r_item_list);
-            item_list_aid_rid_map.insert(item_list_aid, item_list_rid);
+            item_list_aid_rid_map.insert(a_item_list.id, item_list_rid);
         }
         // Slab attributes
-        let mut attr_aid_rid_map = RMap::with_capacity(a_data.attrs.len());
-        let mut attrs = Slab::with_capacity(a_data.attrs.len());
-        for (&attr_aid, a_attr) in a_data.attrs.iter() {
+        let mut attr_aid_rid_map = RMap::with_capacity(a_data.attrs.data.len());
+        let mut attrs = Slab::with_capacity(a_data.attrs.data.len());
+        for a_attr in a_data.attrs.iter() {
             let entry = attrs.vacant_entry();
             let attr_rid = RAttrId::from_usize(entry.key());
             let r_attr = RAttr::from_a_attr(attr_rid, a_attr);
             entry.insert(r_attr);
-            attr_aid_rid_map.insert(attr_aid, attr_rid);
+            attr_aid_rid_map.insert(a_attr.id, attr_rid);
         }
         // Slab effects
-        let mut effect_aid_rid_map = RMap::with_capacity(a_data.effects.len());
-        let mut effects = Slab::with_capacity(a_data.effects.len());
-        for (&effect_aid, a_effect) in a_data.effects.iter() {
+        let mut effect_aid_rid_map = RMap::with_capacity(a_data.effects.data.len());
+        let mut effects = Slab::with_capacity(a_data.effects.data.len());
+        for a_effect in a_data.effects.iter() {
             let entry = effects.vacant_entry();
             let effect_rid = REffectId::from_usize(entry.key());
             let r_effect = REffect::from_a_effect(effect_rid, a_effect);
             entry.insert(Arc::new(r_effect));
-            effect_aid_rid_map.insert(effect_aid, effect_rid);
+            effect_aid_rid_map.insert(a_effect.id, effect_rid);
         }
         // Slab buffs
-        let mut buff_aid_rid_map = RMap::with_capacity(a_data.buffs.len());
-        let mut buffs = Slab::with_capacity(a_data.buffs.len());
-        for (&buff_aid, a_buff) in a_data.buffs.iter() {
+        let mut buff_aid_rid_map = RMap::with_capacity(a_data.buffs.data.len());
+        let mut buffs = Slab::with_capacity(a_data.buffs.data.len());
+        for a_buff in a_data.buffs.iter() {
             let entry = buffs.vacant_entry();
             let buff_rid = RBuffId::from_usize(entry.key());
             let r_buff = RBuff::from_a_buff(a_buff);
             entry.insert(r_buff);
-            buff_aid_rid_map.insert(buff_aid, buff_rid);
+            buff_aid_rid_map.insert(a_buff.id, buff_rid);
         }
         // Create runtime "constants"
         let attr_consts = RAttrConsts::new(&attr_aid_rid_map);
@@ -93,7 +96,7 @@ impl RData {
         // Fill in data which wasn't filled during instantiation (e.g. depends on slab keys)
         for r_item in items.values_mut() {
             Arc::get_mut(r_item).unwrap().fill_runtime(
-                &a_data.items,
+                &a_data.items.data,
                 &item_list_aid_rid_map,
                 &attr_aid_rid_map,
                 &effect_aid_rid_map,
@@ -102,11 +105,11 @@ impl RData {
             );
         }
         for (_, r_attr) in attrs.iter_mut() {
-            r_attr.fill_runtime(&a_data.attrs, &attr_aid_rid_map);
+            r_attr.fill_runtime(&a_data.attrs.data, &attr_aid_rid_map);
         }
         for (_, r_effect) in effects.iter_mut() {
             Arc::get_mut(r_effect).unwrap().fill_runtime(
-                &a_data.effects,
+                &a_data.effects.data,
                 &item_list_aid_rid_map,
                 &attr_aid_rid_map,
                 &effect_aid_rid_map,
@@ -114,12 +117,12 @@ impl RData {
             );
         }
         for (_, r_buff) in buffs.iter_mut() {
-            r_buff.fill_runtime(&a_data.buffs, &attr_aid_rid_map);
+            r_buff.fill_runtime(&a_data.buffs.data, &attr_aid_rid_map);
         }
         for r_muta in mutas.values_mut() {
             Arc::get_mut(r_muta)
                 .unwrap()
-                .fill_runtime(&a_data.mutas, &attr_aid_rid_map);
+                .fill_runtime(&a_data.mutas.data, &attr_aid_rid_map);
         }
         for r_abil in abils.values_mut() {
             r_abil.fill_runtime(&effect_aid_rid_map);

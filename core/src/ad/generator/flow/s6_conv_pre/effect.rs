@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItemGrpId,
-        AItemId, AModifierSrq, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier,
+        AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId, AItemId, AModifierSrq, AOp, AState,
         generator::{GSupport, get_abil_effect},
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
@@ -17,10 +17,7 @@ impl EAbil {
     }
 }
 
-pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
-    e_data: &EData,
-    g_supp: &GSupport,
-) -> RMap<AEffectId, AEffect> {
+pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> AEffects {
     let mut a_effects = RMap::new();
     for e_effect in e_data.effects.data.iter() {
         let state = match e_effect.category_id {
@@ -40,9 +37,13 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             id: AEffectId::from_eid(e_effect.id),
             category: AEffectCatId::from_eid(e_effect.category_id),
             state,
+            modifiers: AEffectModifiers::new(),
+            stopped_effect_ids: AEffectStopIds::new(),
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
+            banned_in_hisec: false,
+            banned_in_lowsec: false,
             discharge_attr_id: e_effect.discharge_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
             duration_attr_id: e_effect.duration_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
             range_attr_id: e_effect.range_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
@@ -52,7 +53,6 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
                 .usage_chance_attr_id
                 .map(|attr_eid| AAttrId::from_eid(attr_eid)),
             resist_attr_id: e_effect.resist_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            ..
         };
         for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
@@ -60,7 +60,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
                 Ok(Some(effect_id)) => {
                     let effect_aid = AEffectId::from_eid(effect_id);
                     if !a_effect.stopped_effect_ids.contains(&effect_aid) {
-                        a_effect.stopped_effect_ids.push(effect_aid)
+                        a_effect.stopped_effect_ids.insert(effect_aid)
                     };
                     continue;
                 }
@@ -83,7 +83,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
                 }),
             };
             match a_mod_res {
-                Ok(a_mod) => a_effect.modifiers.push(a_mod),
+                Ok(a_mod) => a_effect.modifiers.insert(a_mod),
                 Err(e) => {
                     let msg = format!("failed to build modifier for {a_effect}: {e}");
                     tracing::warn!("{msg}");
@@ -132,7 +132,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(
             },
         }
     }
-    a_effects
+    AEffects { data: a_effects }
 }
 
 fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgError> {

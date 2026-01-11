@@ -5,7 +5,7 @@
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AItemListId, AState,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffect, AItemId, AItemListId, AState,
     },
     nd::{
         NEffect,
@@ -51,7 +51,7 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     match a_items.get_mut(&AItemId::STASIS_WEBIFICATION_PROBE) {
         Some(a_item) => {
-            a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+            a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
             a_item.defeff_id = Some(EFFECT_AID);
             true
         }

@@ -39,11 +39,11 @@ impl RItem {
             aid: a_item.id,
             grp_id: a_item.grp_id,
             cat_id: a_item.cat_id,
-            abil_ids: a_item.abil_ids.clone(),
+            abil_ids: a_item.abil_ids.iter().copied().collect(),
             srqs: a_item
                 .srqs
                 .iter()
-                .map(|(&item_aid, &a_skill_level)| (item_aid, SkillLevel::from_a_skill_level(a_skill_level)))
+                .map(|a_skill_req| (a_skill_req.id, SkillLevel::from_a_skill_level(a_skill_req.level)))
                 .collect(),
             max_state: RState::from_a_state(&a_item.max_state),
             val_fitted_group_id: a_item.val_fitted_group_id,
@@ -75,14 +75,14 @@ impl RItem {
         effect_consts: &REffectConsts,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
-        for (attr_aid, &a_value) in a_item.attrs.iter() {
-            if let Some(&attr_rid) = attr_aid_rid_map.get(attr_aid) {
-                self.attrs.insert(attr_rid, Value::from_a_value(a_value));
+        for a_item_attr in a_item.attrs.iter() {
+            if let Some(&attr_rid) = attr_aid_rid_map.get(&a_item_attr.id) {
+                self.attrs.insert(attr_rid, Value::from_a_value(a_item_attr.value));
             }
         }
-        for (effect_aid, a_effect_data) in a_item.effect_datas.iter() {
-            if let Some(&effect_rid) = effect_aid_rid_map.get(effect_aid) {
-                let r_effect_data = RItemEffectData::from_a_effect_data(a_effect_data, item_list_aid_rid_map);
+        for a_item_effect in a_item.effect_datas.iter() {
+            if let Some(&effect_rid) = effect_aid_rid_map.get(&a_item_effect.id) {
+                let r_effect_data = RItemEffectData::from_a_effect_data(&a_item_effect.data, item_list_aid_rid_map);
                 self.effect_datas.insert(effect_rid, r_effect_data);
             }
         }

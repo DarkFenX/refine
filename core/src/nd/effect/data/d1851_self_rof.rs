@@ -27,5 +27,5 @@ fn update_effect(a_effect: &mut AEffect) {
         affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Ship, AModifierSrq::SelfRef),
         affectee_attr_id: AAttrId::SPEED,
     };
-    a_effect.modifiers.push(modifier);
+    a_effect.modifiers.insert(modifier);
 }

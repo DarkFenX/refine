@@ -1,30 +1,24 @@
-use crate::{
-    ad::{
-        AAbil, AAbilId, AAttr, AAttrId, ABuff, ABuffId, AEffect, AEffectId, AItem, AItemId, AItemList, AItemListId,
-        AMuta,
-    },
-    util::RMap,
-};
+use crate::ad::{AAbils, AAttrs, ABuffs, AEffects, AItemLists, AItems, AMutas};
 
 pub struct AData {
-    pub items: RMap<AItemId, AItem>,
-    pub attrs: RMap<AAttrId, AAttr>,
-    pub mutas: RMap<AItemId, AMuta>,
-    pub effects: RMap<AEffectId, AEffect>,
-    pub buffs: RMap<ABuffId, ABuff>,
-    pub abils: RMap<AAbilId, AAbil>,
-    pub item_lists: RMap<AItemListId, AItemList>,
+    pub items: AItems,
+    pub attrs: AAttrs,
+    pub mutas: AMutas,
+    pub effects: AEffects,
+    pub buffs: ABuffs,
+    pub abils: AAbils,
+    pub item_lists: AItemLists,
 }
 impl AData {
     pub(crate) fn new() -> Self {
         Self {
-            items: RMap::new(),
-            attrs: RMap::new(),
-            mutas: RMap::new(),
-            effects: RMap::new(),
-            buffs: RMap::new(),
-            abils: RMap::new(),
-            item_lists: RMap::new(),
+            items: AItems::new(),
+            attrs: AAttrs::new(),
+            mutas: AMutas::new(),
+            effects: AEffects::new(),
+            buffs: ABuffs::new(),
+            abils: AAbils::new(),
+            item_lists: AItemLists::new(),
         }
     }
 }

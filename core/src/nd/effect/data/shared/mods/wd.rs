@@ -1,5 +1,6 @@
 use crate::ad::{
-    AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AItemId, AModifierSrq, AOp,
+    AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AEffectModifiers, AItemId,
+    AModifierSrq, AOp,
 };
 
 pub(in crate::nd::effect::data) fn add_td_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
@@ -27,7 +28,7 @@ pub(in crate::nd::effect::data) fn add_wd_mods(effect_aid: AEffectId, a_effect: 
     add_gd_modifiers(&mut a_effect.modifiers);
 }
 
-fn add_td_modifiers(mods: &mut Vec<AEffectModifier>) {
+fn add_td_modifiers(mods: &mut AEffectModifiers) {
     mods.extend([
         // Modules
         make_td_loc_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::MAX_RANGE),
@@ -51,7 +52,7 @@ fn add_td_modifiers(mods: &mut Vec<AEffectModifier>) {
     ]);
 }
 
-fn add_gd_modifiers(mods: &mut Vec<AEffectModifier>) {
+fn add_gd_modifiers(mods: &mut AEffectModifiers) {
     mods.extend([
         // Modules
         make_gd_loc_mod(AAttrId::MISSILE_VELOCITY_BONUS, AAttrId::MAX_VELOCITY),

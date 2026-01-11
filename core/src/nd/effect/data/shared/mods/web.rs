@@ -5,7 +5,7 @@ pub(in crate::nd::effect::data) fn add_web_mods(effect_aid: AEffectId, a_effect:
         tracing::info!("effect {effect_aid}: web effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
-    a_effect.modifiers.push(AEffectModifier {
+    a_effect.modifiers.insert(AEffectModifier {
         affector_attr_id: AAttrId::SPEED_FACTOR,
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),

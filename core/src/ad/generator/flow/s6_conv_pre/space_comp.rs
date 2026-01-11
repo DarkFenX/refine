@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad::{
         ABuffId, AData, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItemEffectData, AItemId, AItemListId, AState, AValue,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItemEffect, AItemId, AItemListId, AState, AValue,
     },
     ed::{EData, EItemSpaceCompBuffData},
 };
@@ -11,7 +11,7 @@ use crate::{
 pub(in crate::ad::generator::flow::s6_conv_pre) fn apply_space_comps(e_data: &EData, a_data: &mut AData) {
     for e_space_comp in e_data.space_comps.data.iter() {
         let item_aid = AItemId::from_eid(e_space_comp.item_id);
-        if !a_data.items.contains_key(&item_aid) {
+        if !a_data.items.data.contains_key(&item_aid) {
             continue;
         }
         process_buffs(
@@ -60,7 +60,7 @@ fn process_buffs(
     let valid_buffs = e_sc_buff_data
         .buffs
         .iter()
-        .filter(|e_entry| a_data.buffs.contains_key(&ABuffId::from_eid(e_entry.id)))
+        .filter(|e_entry| a_data.buffs.data.contains_key(&ABuffId::from_eid(e_entry.id)))
         .collect_vec();
     if valid_buffs.is_empty() {
         return;
@@ -88,11 +88,12 @@ fn process_buffs(
         buff: Some(buff),
         ..
     };
-    a_data.effects.insert(effect_aid, effect);
+    a_data.effects.data.insert(effect_aid, effect);
     a_data
         .items
+        .data
         .get_mut(&item_aid)
         .unwrap()
         .effect_datas
-        .insert(effect_aid, AItemEffectData::default());
+        .insert(AItemEffect { id: effect_aid, .. });
 }

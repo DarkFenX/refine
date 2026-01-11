@@ -19,9 +19,11 @@ fn make_buff() -> ABuff {
         id: A_BUFF_ID,
         aggr_mode: ABuffAggrMode::Max,
         op: AOp::Add,
-        mods: vec![ABuffModifier {
+        mods: [ABuffModifier {
             affectee_filter: ABuffAffecteeFilter::Direct,
             affectee_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
-        }],
+        }]
+        .into_iter()
+        .collect(),
     }
 }

@@ -8,13 +8,16 @@ const SHIP_GROUP: AItemGrpId = AItemGrpId::STRATEGIC_CRUISER;
 
 pub(in crate::ad::generator::flow::s7_custom) fn fix_subsysem_slot_count(a_data: &mut AData) {
     let mut applied = false;
-    for item in a_data.items.values_mut() {
+    for item in a_data.items.data.values_mut() {
         if item.grp_id != SHIP_GROUP {
             continue;
         }
-        if let std::collections::hash_map::Entry::Occupied(mut entry) = item.attrs.entry(SLOT_ATTR)
-            && entry.insert(AValue::from_f64(4.0)) != AValue::from_f64(4.0)
-        {
+        let mut entry = match item.attrs.entry(SLOT_ATTR) {
+            std::collections::hash_map::Entry::Occupied(entry) => entry,
+            _ => continue,
+        };
+        if entry.get().value != AValue::from_f64(4.0) {
+            entry.get_mut().value = AValue::from_f64(4.0);
             applied = true;
         }
     }

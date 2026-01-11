@@ -16,7 +16,11 @@ impl RMuta {
     pub(in crate::rd) fn from_a_muta(a_muta: &AMuta) -> Self {
         Self {
             id: a_muta.id,
-            item_map: a_muta.item_map.clone(),
+            item_map: a_muta
+                .item_map
+                .iter()
+                .map(|v| (v.base_item_id, v.mutated_item_id))
+                .collect(),
             // Fields which depend on data not available during instantiation
             attr_mods: RMap::new(),
         }
@@ -27,12 +31,11 @@ impl RMuta {
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) {
         let a_muta = a_mutas.get(&self.id).unwrap();
-        self.attr_mods
-            .extend(a_muta.attr_mods.iter().filter_map(|(attr_aid, a_attr_range)| {
-                attr_aid_rid_map
-                    .get(attr_aid)
-                    .map(|attr_rid| (*attr_rid, RMutaAttrRange::from_a_attr_range(a_attr_range)))
-            }))
+        self.attr_mods.extend(a_muta.attr_mods.iter().filter_map(|a_muta_attr| {
+            attr_aid_rid_map
+                .get(&a_muta_attr.attr_id)
+                .map(|attr_rid| (*attr_rid, RMutaAttrRange::from_a_attr_range(&a_muta_attr.range)))
+        }))
     }
 }
 impl LibGetId<AItemId> for RMuta {

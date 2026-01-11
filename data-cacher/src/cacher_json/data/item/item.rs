@@ -34,29 +34,33 @@ impl CItem {
             attrs: a_item
                 .attrs
                 .iter()
-                .map(|(k, v)| CItemAttr {
-                    id: *k,
-                    val: v.into_f64(),
+                .map(|v| CItemAttr {
+                    id: v.id,
+                    val: v.value.into_f64(),
                 })
                 .collect(),
             effect_datas: a_item
                 .effect_datas
                 .iter()
-                .map(|(effect_aid, a_effect_data)| CItemEffect {
-                    id: *effect_aid,
-                    data: CItemEffectData::from_adapted(a_effect_data),
+                .map(|v| CItemEffect {
+                    id: v.id,
+                    data: CItemEffectData::from_adapted(&v.data),
                 })
                 .collect(),
             defeff_id: a_item.defeff_id,
             abil_ids: a_item.abil_ids.iter().map(|v| v.into_i32()).collect(),
-            srqs: a_item.srqs.iter().map(|(k, v)| (k.into_i32(), v.into_u8())).collect(),
+            srqs: a_item
+                .srqs
+                .iter()
+                .map(|v| (v.id.into_i32(), v.level.into_u8()))
+                .collect(),
             max_state: CState::from_adapted(&a_item.max_state),
-            proj_buff_item_list_ids: a_item.proj_buff_item_list_ids.clone(),
-            fleet_buff_item_list_ids: a_item.fleet_buff_item_list_ids.clone(),
+            proj_buff_item_list_ids: a_item.proj_buff_item_list_ids.iter().copied().collect(),
+            fleet_buff_item_list_ids: a_item.fleet_buff_item_list_ids.iter().copied().collect(),
             val_fitted_group_id: a_item.val_fitted_group_id.map(|grp_aid| grp_aid.into_i32()),
             val_online_group_id: a_item.val_online_group_id.map(|grp_aid| grp_aid.into_i32()),
             val_active_group_id: a_item.val_active_group_id.map(|grp_aid| grp_aid.into_i32()),
-            cap_use_attr_ids: a_item.cap_use_attr_ids.clone(),
+            cap_use_attr_ids: a_item.cap_use_attr_ids.iter().copied().collect(),
             is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
         }
@@ -69,12 +73,18 @@ impl CItem {
             attrs: self
                 .attrs
                 .into_iter()
-                .map(|v| (v.id, rc::ad::AValue::from_f64(v.val)))
+                .map(|v| rc::ad::AItemAttr {
+                    id: v.id,
+                    value: rc::ad::AValue::from_f64(v.val),
+                })
                 .collect(),
             effect_datas: self
                 .effect_datas
                 .into_iter()
-                .map(|v| (v.id, v.data.into_adapted()))
+                .map(|v| rc::ad::AItemEffect {
+                    id: v.id,
+                    data: v.data.into_adapted(),
+                })
                 .collect(),
             defeff_id: self.defeff_id,
             abil_ids: self
@@ -85,15 +95,18 @@ impl CItem {
             srqs: self
                 .srqs
                 .into_iter()
-                .map(|(k, v)| (rc::ad::AItemId::from_i32(k), rc::ad::ASkillLevel::from_u8_clamped(v)))
+                .map(|(k, v)| rc::ad::AItemSkillReq {
+                    id: rc::ad::AItemId::from_i32(k),
+                    level: rc::ad::ASkillLevel::from_u8_clamped(v),
+                })
                 .collect(),
             max_state: self.max_state.into_adapted(),
-            proj_buff_item_list_ids: self.proj_buff_item_list_ids.clone(),
-            fleet_buff_item_list_ids: self.fleet_buff_item_list_ids.clone(),
+            proj_buff_item_list_ids: self.proj_buff_item_list_ids.into_iter().collect(),
+            fleet_buff_item_list_ids: self.fleet_buff_item_list_ids.into_iter().collect(),
             val_fitted_group_id: self.val_fitted_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
             val_online_group_id: self.val_online_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
             val_active_group_id: self.val_active_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
-            cap_use_attr_ids: self.cap_use_attr_ids.clone(),
+            cap_use_attr_ids: self.cap_use_attr_ids.into_iter().collect(),
             is_ice_harvester: self.is_ice_harvester,
             disallowed_in_wspace: self.disallowed_in_wspace,
         }

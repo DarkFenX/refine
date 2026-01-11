@@ -17,7 +17,7 @@ use crate::{
         funcs,
     },
     ud::{UFitId, UItemId},
-    util::{RMap, RSet, ceil_f64_to_usize},
+    util::{RMap, RSet},
 };
 
 const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {

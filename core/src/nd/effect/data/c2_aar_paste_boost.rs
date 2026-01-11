@@ -5,7 +5,7 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AState},
+    ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffect, AItemId, AState},
     api::AttrId,
     misc::EffectSpec,
     nd::NEffect,
@@ -48,11 +48,11 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items.values_mut().filter(|v| {
-        v.effect_datas.contains_key(&AEffectId::FUELED_ARMOR_REPAIR)
+        v.effect_datas.contains_id(&AEffectId::FUELED_ARMOR_REPAIR)
             || v.effect_datas
-                .contains_key(&AEffectId::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
+                .contains_id(&AEffectId::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
-        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

@@ -5,7 +5,7 @@
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffectData, AItemId, AItemListId, AState, AValue,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffect, AItemId, AItemListId, AState, AValue,
     },
     nd::{
         NEffect,
@@ -63,7 +63,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for item_aid in [AItemId::WARP_DISRUPT_PROBE, AItemId::SURGICAL_WARP_DISRUPT_PROBE] {
         if let Some(a_item) = a_items.get_mut(&item_aid) {
-            a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+            a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
             a_item.defeff_id = Some(EFFECT_AID);
             assigned = true;
         }

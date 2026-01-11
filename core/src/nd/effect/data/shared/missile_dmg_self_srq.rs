@@ -11,5 +11,5 @@ pub(in crate::nd::effect::data) fn update_effect(effect_aid: AEffectId, a_effect
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::SelfRef),
         affectee_attr_id: attr_aid,
     };
-    a_effect.modifiers.push(modifier);
+    a_effect.modifiers.insert(modifier);
 }

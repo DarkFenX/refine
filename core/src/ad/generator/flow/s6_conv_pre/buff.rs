@@ -1,13 +1,13 @@
 use crate::{
     ad::{
-        AAttrId, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, AItemGrpId, AItemId, AModifierSrq,
-        AOp,
+        AAttrId, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ABuffs, AItemGrpId, AItemId,
+        AModifierSrq, AOp,
     },
     ed::EData,
     util::{RMap, StrMsgError},
 };
 
-pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_buffs(e_data: &EData) -> RMap<ABuffId, ABuff> {
+pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_buffs(e_data: &EData) -> ABuffs {
     let mut a_buffs = RMap::new();
     for e_buff in e_data.buffs.data.iter() {
         let op = match conv_buff_op(&e_buff.operation) {
@@ -57,11 +57,11 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_buffs(e_data: &EData) ->
             id: ABuffId::from_eid(e_buff.id),
             aggr_mode,
             op,
-            mods: a_mods,
+            mods: a_mods.into_iter().collect(),
         };
         a_buffs.insert(a_buff.id, a_buff);
     }
-    a_buffs
+    ABuffs { data: a_buffs }
 }
 
 fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ABuffAggrMode, StrMsgError> {

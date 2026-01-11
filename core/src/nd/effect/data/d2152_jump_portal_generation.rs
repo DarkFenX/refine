@@ -26,5 +26,5 @@ fn update_effect(a_effect: &mut AEffect) {
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: AAttrId::DISALLOW_ASSISTANCE,
     };
-    a_effect.modifiers.push(modifier);
+    a_effect.modifiers.insert(modifier);
 }

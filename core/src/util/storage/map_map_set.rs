@@ -3,11 +3,10 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-use rustc_hash::FxBuildHasher;
-
 use super::{map::Map, map_set::MapSet};
 
-pub(crate) type RMapRMapRSet<K1, K2, V> = MapMapSet<K1, K2, V, FxBuildHasher, FxBuildHasher, FxBuildHasher>;
+pub(crate) type RMapRMapRSet<K1, K2, V> =
+    MapMapSet<K1, K2, V, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher>;
 
 #[derive(Clone)]
 pub(crate) struct MapMapSet<K1, K2, V, H1, H2, H3> {

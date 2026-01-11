@@ -17,7 +17,7 @@ impl RItemList {
         Self {
             aid: a_item_list.id,
             rid: item_list_rid,
-            item_aids: a_item_list.item_ids.clone(),
+            item_aids: a_item_list.item_ids.iter().copied().collect(),
         }
     }
 }

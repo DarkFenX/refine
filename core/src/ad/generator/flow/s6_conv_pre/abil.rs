@@ -1,12 +1,11 @@
 use crate::{
-    ad::{AAbil, AAbilId, AEffectId, generator::get_abil_effect},
+    ad::{AAbil, AAbilId, AAbils, AEffectId, generator::get_abil_effect},
     ed::EData,
-    util::RMap,
 };
 
-pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_abils(e_data: &EData) -> RMap<AAbilId, AAbil> {
+pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_abils(e_data: &EData) -> AAbils {
     // Abilities not known to the getter should've been removed during validation, so we just unwrap
-    e_data
+    let a_abils = e_data
         .abils
         .data
         .iter()
@@ -21,5 +20,6 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_abils(e_data: &EData) ->
                 },
             )
         })
-        .collect()
+        .collect();
+    AAbils { data: a_abils }
 }

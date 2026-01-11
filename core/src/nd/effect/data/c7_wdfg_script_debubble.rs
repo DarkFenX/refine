@@ -3,7 +3,7 @@
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItem,
-        AItemEffectData, AItemId, AOp, AState,
+        AItemEffect, AItemId, AOp, AState,
     },
     nd::NEffect,
     util::RMap,
@@ -26,12 +26,14 @@ fn make_effect() -> AEffect {
         id: EFFECT_AID,
         category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
-        modifiers: vec![AEffectModifier {
+        modifiers: [AEffectModifier {
             affector_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
             op: AOp::PostAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
             affectee_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
-        }],
+        }]
+        .into_iter()
+        .collect(),
         ..
     }
 }
@@ -40,11 +42,11 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items.values_mut().filter(|v| {
         v.effect_datas
-            .contains_key(&AEffectId::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT)
+            .contains_id(&AEffectId::SHIP_MOD_FOCUSED_WARP_SCRAM_SCRIPT)
             || v.effect_datas
-                .contains_key(&AEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT)
+                .contains_id(&AEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT)
     }) {
-        a_item.effect_datas.insert(EFFECT_AID, AItemEffectData::default());
+        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned
