@@ -65,7 +65,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
                     continue;
                 }
                 Err(e) => {
-                    let msg = format!("failed to build stopper for {a_effect}: {e}");
+                    let msg = format!("failed to build stopper for effect {}: {}", a_effect.id, e);
                     tracing::warn!("{msg}");
                     continue;
                 }
@@ -85,7 +85,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
             match a_mod_res {
                 Ok(a_mod) => a_effect.modifiers.insert(a_mod),
                 Err(e) => {
-                    let msg = format!("failed to build modifier for {a_effect}: {e}");
+                    let msg = format!("failed to build modifier for effect {}: {}", a_effect.id, e);
                     tracing::warn!("{msg}");
                     continue;
                 }
@@ -106,8 +106,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
                 }
                 _ => {
                     let msg = format!(
-                        "{} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
-                        a_effect,
+                        "effect {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
+                        a_effect.id,
                         flags.len()
                     );
                     tracing::warn!("{msg}");
@@ -123,8 +123,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
                 }
                 _ => {
                     let msg = format!(
-                        "{} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
-                        a_effect,
+                        "effect {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
+                        a_effect.id,
                         flags.len()
                     );
                     tracing::warn!("{msg}");

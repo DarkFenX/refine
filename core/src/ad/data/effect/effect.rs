@@ -19,8 +19,3 @@ pub struct AEffect {
     pub chance_attr_id: Option<AAttrId> = None,
     pub resist_attr_id: Option<AAttrId> = None,
 }
-impl std::fmt::Display for AEffect {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "AEffect(id={})", self.id)
-    }
-}
