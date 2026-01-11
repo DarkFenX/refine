@@ -7,7 +7,7 @@ use crate::{
         vast::{
             Vast,
             vaste_stats::{
-                item_cap::cap_sim::{
+                cap::sim::{
                     prepare::prepare_events,
                     sim::{CapSim, StatCapSim},
                     stagger::StatCapSimStaggerInt,

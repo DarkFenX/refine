@@ -1,6 +1,6 @@
+pub(crate) use cap::StatCapSimStaggerInt;
+pub use cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
 pub use in_jam::StatInJam;
-pub(crate) use item_cap::StatCapSimStaggerInt;
-pub use item_cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
 pub use mining::{StatMining, StatMiningItemKinds};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
@@ -12,9 +12,9 @@ pub use tank::{
 };
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
 
+mod cap;
 mod dmg;
 mod in_jam;
-mod item_cap;
 mod item_checks;
 mod mining;
 mod misc;

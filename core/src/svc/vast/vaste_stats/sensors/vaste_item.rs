@@ -1,11 +1,13 @@
-use super::item_checks::{check_drone_fighter_ship, check_fighter_ship, check_ship};
 use crate::{
     num::{Count, PValue, Value},
     svc::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{StatSensors, StatSensorsKind, Vast},
+        vast::{
+            StatSensors, StatSensorsKind, Vast,
+            vaste_stats::item_checks::{check_drone_fighter_ship, check_fighter_ship, check_ship},
+        },
     },
     ud::{UItem, UItemId, UShipKind},
 };
@@ -68,7 +70,7 @@ impl Vast {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid))
     }
-    pub(super) fn internal_get_stat_item_sensors_unchecked(
+    pub(in crate::svc::vast::vaste_stats) fn internal_get_stat_item_sensors_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

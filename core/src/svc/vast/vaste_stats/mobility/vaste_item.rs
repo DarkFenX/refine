@@ -1,9 +1,18 @@
-use super::item_checks::{
-    check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct, check_ship_no_struct,
-};
 use crate::{
     num::{PValue, Value},
-    svc::{SvcCtx, calc::Calc, err::StatItemCheckError, funcs, vast::Vast},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        err::StatItemCheckError,
+        funcs,
+        vast::{
+            Vast,
+            vaste_stats::item_checks::{
+                check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct,
+                check_ship_no_struct,
+            },
+        },
+    },
     ud::UItemId,
 };
 
@@ -63,7 +72,7 @@ impl Vast {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid))
     }
-    pub(super) fn internal_get_stat_item_sig_radius_unchecked(
+    pub(in crate::svc::vast::vaste_stats) fn internal_get_stat_item_sig_radius_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

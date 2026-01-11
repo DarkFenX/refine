@@ -1,7 +1,14 @@
-use super::item_checks::{check_character, check_fighter_ship_no_struct, check_ship_no_struct};
 use crate::{
     num::{Count, PValue, Value},
-    svc::{SvcCtx, calc::Calc, err::StatItemCheckError, vast::Vast},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        err::StatItemCheckError,
+        vast::{
+            Vast,
+            vaste_stats::item_checks::{check_character, check_fighter_ship_no_struct, check_ship_no_struct},
+        },
+    },
     ud::{UFitId, UItemId},
 };
 

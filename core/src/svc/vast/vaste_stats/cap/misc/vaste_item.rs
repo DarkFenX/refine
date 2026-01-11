@@ -28,7 +28,7 @@ impl Vast {
             .unwrap();
         PValue::from_value_clamped(cap_amount)
     }
-    pub(super) fn internal_get_stat_item_cap_recharge_time_unchecked(
+    pub(in crate::svc::vast::vaste_stats::cap) fn internal_get_stat_item_cap_recharge_time_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
