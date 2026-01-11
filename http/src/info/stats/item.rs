@@ -2,9 +2,8 @@ use serde::Serialize;
 
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatJamApplied, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp,
-        HStatLayerResist, HStatLayerRps, HStatLayerRpsRegen, HStatMining, HStatOutReps, HStatSensors, HStatTank,
-        HStatTankRegen,
+        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatJamApplied, HStatMining, HStatOutReps, HStatResists,
+        HStatRps, HStatSensors,
     },
     util::TriStateField,
 };
@@ -26,17 +25,17 @@ pub(crate) struct HItemStats {
     pub(crate) outgoing_cps: TriStateField<Vec<Option<f64>>>,
     // Tank
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) resists: TriStateField<HStatTank<HStatLayerResist>>,
+    pub(crate) resists: TriStateField<HStatResists>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) hp: TriStateField<HStatTank<HStatLayerHp>>,
+    pub(crate) hp: TriStateField<HStatHp>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) ehp: TriStateField<Vec<HStatTank<Option<HStatLayerEhp>>>>,
+    pub(crate) ehp: TriStateField<Vec<HStatEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) wc_ehp: TriStateField<HStatTank<Option<HStatLayerEhp>>>,
+    pub(crate) wc_ehp: TriStateField<HStatEhp>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) rps: TriStateField<Vec<HStatTankRegen<HStatLayerRps, HStatLayerRpsRegen>>>,
+    pub(crate) rps: TriStateField<Vec<HStatRps>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) erps: TriStateField<Vec<HStatTankRegen<Option<HStatLayerErps>, Option<HStatLayerErpsRegen>>>>,
+    pub(crate) erps: TriStateField<Vec<HStatErps>>,
     // Cap
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_amount: TriStateField<f64>,

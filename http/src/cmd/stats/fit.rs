@@ -12,8 +12,7 @@ use crate::{
     info::{
         HFitStats,
         stats::{
-            HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerRps,
-            HStatLayerRpsRegen, HStatMining, HStatOutReps, HStatTank, HStatTankRegen,
+            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatMining, HStatOutReps, HStatResists, HStatRps,
         },
     },
     util::{HExecError, default_true},
@@ -200,17 +199,17 @@ impl HGetFitStatsCmd {
         // Ship tank
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.resists.unwrap_or(self.default) {
-            stats.resists = core_fit.get_stat_resists().into();
+            stats.resists = core_fit.get_stat_resists().ok().map(HStatResists::from_core).into();
         }
         if self.hp.unwrap_or(self.default) {
-            stats.hp = core_fit.get_stat_hp().into();
+            stats.hp = core_fit.get_stat_hp().ok().map(HStatHp::from_core).into();
         }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
             stats.ehp = get_ehp_stats(&mut core_fit, ehp_opt.options).into();
         }
         if self.wc_ehp.unwrap_or(self.default) {
-            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(HStatTank::from_opt).into();
+            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(HStatEhp::from_core).into();
         }
         let rps_opt = HStatResolvedOption::new(&self.rps, self.default);
         if rps_opt.enabled {
@@ -429,46 +428,37 @@ fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_ehp_stats(
-    core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionEhp>,
-) -> Option<Vec<HStatTank<Option<HStatLayerEhp>>>> {
+fn get_ehp_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionEhp>) -> Option<Vec<HStatEhp>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(Into::into);
         match core_fit.get_stat_ehp(core_incoming_dps) {
-            Ok(core_result) => results.push(HStatTank::from_opt(core_result)),
+            Ok(core_stat) => results.push(HStatEhp::from_core(core_stat)),
             Err(_) => return None,
         }
     }
     Some(results)
 }
-fn get_rps_stats(
-    core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionRps>,
-) -> Option<Vec<HStatTankRegen<HStatLayerRps, HStatLayerRpsRegen>>> {
+fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionRps>) -> Option<Vec<HStatRps>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
         let core_shield = rc::UnitInterval::from_f64_clamped(option.shield_perc);
         match core_fit.get_stat_rps(core_time_options, core_shield) {
-            Ok(core_result) => results.push(core_result.into()),
+            Ok(core_stat) => results.push(HStatRps::from_core(core_stat)),
             Err(_) => return None,
         }
     }
     Some(results)
 }
-fn get_erps_stats(
-    core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionErps>,
-) -> Option<Vec<HStatTankRegen<Option<HStatLayerErps>, Option<HStatLayerErpsRegen>>>> {
+fn get_erps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionErps>) -> Option<Vec<HStatErps>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_incoming_dps = option.incoming_dps.map(Into::into);
         let core_time_options = option.time_options.into();
         let core_shield = rc::UnitInterval::from_f64_clamped(option.shield_perc);
         match core_fit.get_stat_erps(core_incoming_dps, core_time_options, core_shield) {
-            Ok(core_result) => results.push(HStatTankRegen::from_opt(core_result)),
+            Ok(core_stat) => results.push(HStatErps::from_core(core_stat)),
             Err(_) => return None,
         }
     }

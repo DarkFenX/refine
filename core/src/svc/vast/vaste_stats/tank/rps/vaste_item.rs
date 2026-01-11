@@ -1,3 +1,4 @@
+use super::stat::{StatRps, StatRpsLayer, StatRpsLayerRegen};
 use crate::{
     num::{PValue, UnitInterval, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
@@ -10,27 +11,11 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{
-            StatTankRegen, StatTimeOptions, Vast, shared::calc_regen,
-            vaste_stats::item_checks::check_drone_fighter_ship,
-        },
+        vast::{StatTimeOptions, Vast, shared::calc_regen, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::{UItem, UItemId},
     util::{RMapRMap, RMapRMapRMap},
 };
-
-pub struct StatLayerRps {
-    pub local: PValue,
-    pub remote: PValue,
-    pub remote_penalized: PValue,
-}
-
-pub struct StatLayerRpsRegen {
-    pub local: PValue,
-    pub remote: PValue,
-    pub remote_penalized: PValue,
-    pub regen: PValue,
-}
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_rps(
@@ -40,11 +25,11 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, StatItemCheckError> {
+    ) -> Result<StatRps, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_uid, item, time_options, shield_perc))
     }
-    pub(super) fn get_stat_item_rps_unchecked(
+    pub(in crate::svc::vast::vaste_stats::tank) fn get_stat_item_rps_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -52,7 +37,7 @@ impl Vast {
         item: &UItem,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> StatTankRegen<StatLayerRps, StatLayerRpsRegen> {
+    ) -> StatRps {
         // Local reps
         let (local_shield, local_armor, local_hull) = match item {
             UItem::Ship(u_ship) => {
@@ -70,19 +55,19 @@ impl Vast {
         let hull_irr_data = get_irr_data(ctx, calc, item_uid, time_options, &self.irr_hull);
         // Regen
         let shield_regen = get_shield_regen(ctx, calc, item_uid, shield_perc);
-        StatTankRegen {
-            shield: StatLayerRpsRegen {
+        StatRps {
+            shield: StatRpsLayerRegen {
                 local: local_shield,
                 remote: irr_data_to_raw(&shield_irr_data),
                 remote_penalized: irr_data_to_penalized(shield_irr_data),
                 regen: shield_regen,
             },
-            armor: StatLayerRps {
+            armor: StatRpsLayer {
                 local: local_armor,
                 remote: irr_data_to_raw(&armor_irr_data),
                 remote_penalized: irr_data_to_penalized(armor_irr_data),
             },
-            hull: StatLayerRps {
+            hull: StatRpsLayer {
                 local: local_hull,
                 remote: irr_data_to_raw(&hull_irr_data),
                 remote_penalized: irr_data_to_penalized(hull_irr_data),

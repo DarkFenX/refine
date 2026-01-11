@@ -1,3 +1,4 @@
+use super::stat::{StatHp, StatHpLayer};
 use crate::{
     num::{PValue, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
@@ -7,17 +8,11 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
+        vast::{Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::{UItem, UItemId},
     util::{RMapRMap, RMapRMapRMap},
 };
-
-pub struct StatLayerHp {
-    pub buffer: PValue,
-    pub ancil_local: PValue,
-    pub ancil_remote: PValue,
-}
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_hp(
@@ -25,17 +20,17 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<StatTank<StatLayerHp>, StatItemCheckError> {
+    ) -> Result<StatHp, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(self.get_stat_item_hp_unchecked(ctx, calc, item_uid, item))
     }
-    pub(super) fn get_stat_item_hp_unchecked(
+    pub(in crate::svc::vast::vaste_stats::tank) fn get_stat_item_hp_unchecked(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         item: &UItem,
-    ) -> StatTank<StatLayerHp> {
+    ) -> StatHp {
         let attr_consts = ctx.ac();
         // Buffer - if item is not loaded, fetching those will fail
         let shield_buffer = PValue::from_value_clamped(
@@ -63,18 +58,18 @@ impl Vast {
         // Incoming remote ancillary repairs
         let remote_asb = get_remote_ancil_hp(ctx, calc, item_uid, &self.irr_shield_limitable);
         let remote_aar = get_remote_ancil_hp(ctx, calc, item_uid, &self.irr_armor_limitable);
-        StatTank {
-            shield: StatLayerHp {
+        StatHp {
+            shield: StatHpLayer {
                 buffer: shield_buffer,
                 ancil_local: local_asb,
                 ancil_remote: remote_asb,
             },
-            armor: StatLayerHp {
+            armor: StatHpLayer {
                 buffer: armor_buffer,
                 ancil_local: local_aar,
                 ancil_remote: remote_aar,
             },
-            hull: StatLayerHp {
+            hull: StatHpLayer {
                 buffer: hull_buffer,
                 ancil_local: PValue::ZERO,
                 ancil_remote: PValue::ZERO,

@@ -1,9 +1,12 @@
 pub(crate) use item_cap::StatCapSimStaggerInt;
 pub use item_cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
-pub use item_tank::{StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen};
 pub use mining::{StatMining, StatMiningItemKinds};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
+pub use tank::{
+    StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatResists,
+    StatResistsLayer, StatRps, StatRpsLayer, StatRpsLayerRegen,
+};
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
 pub use vaste_fit_resource::StatRes;
 pub use vaste_fit_slot::StatSlot;
@@ -11,11 +14,11 @@ pub use vaste_fit_slot::StatSlot;
 mod dmg;
 mod item_cap;
 mod item_checks;
-mod item_tank;
 mod mining;
 mod neut;
 mod ocps;
 mod orps;
+mod tank;
 mod time_options;
 mod vaste_fit_resource;
 mod vaste_fit_slot;

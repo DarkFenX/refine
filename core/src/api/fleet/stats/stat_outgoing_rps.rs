@@ -1,7 +1,7 @@
 use crate::{
     api::{FleetMut, FleetStatAppliedError},
     num::PValue,
-    svc::vast::{StatOutRepItemKinds, StatOutReps, StatTank, StatTimeOptions},
+    svc::vast::{StatOutRepItemKinds, StatOutReps, StatTimeOptions},
     ud::ItemId,
 };
 

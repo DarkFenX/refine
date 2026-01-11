@@ -1,5 +1,3 @@
-use std::hash::{BuildHasher, Hash};
-
 use crate::{
     misc::{AttrSpec, EffectSpec},
     rd::RAttrId,
@@ -76,7 +74,7 @@ impl StandardRegister {
 
 fn filter_and_extend<K>(vec: &mut Vec<CtxModifier>, storage: &RMapRSet<K, CtxModifier>, key: &K, attr_rid: RAttrId)
 where
-    K: Eq + Hash,
+    K: Eq + std::hash::Hash,
 {
     vec.extend(
         storage

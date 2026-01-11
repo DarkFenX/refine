@@ -8,7 +8,7 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatTank, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_fighter_module},
+        vast::{StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_fighter_module},
     },
     ud::UItemId,
 };

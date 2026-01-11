@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatOutRepItemKinds, StatOutReps, StatTank, StatTimeOptions, Vast},
+        vast::{StatOutRepItemKinds, StatOutReps, StatTimeOptions, Vast},
     },
     ud::{UData, UFitId, UItemId},
 };

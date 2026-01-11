@@ -6,10 +6,7 @@ pub(crate) use out_reps::HStatOutReps;
 pub(crate) use resource::HStatRes;
 pub(crate) use sensors::HStatSensors;
 pub(crate) use slot::HStatSlot;
-pub(crate) use tank::{
-    HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerHp, HStatLayerResist, HStatLayerRps,
-    HStatLayerRpsRegen, HStatTank, HStatTankRegen,
-};
+pub(crate) use tank::{HStatEhp, HStatErps, HStatHp, HStatResists, HStatRps};
 
 mod cap;
 mod dmg;

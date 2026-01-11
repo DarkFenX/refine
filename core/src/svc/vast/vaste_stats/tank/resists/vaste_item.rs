@@ -1,12 +1,12 @@
+use super::stat::{StatResists, StatResistsLayer};
 use crate::{
-    misc::DmgKinds,
     num::{UnitInterval, Value},
     rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{StatTank, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
+        vast::{Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::UItemId,
 };
@@ -16,22 +16,22 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<StatTank<DmgKinds<UnitInterval>>, StatItemCheckError> {
+    ) -> Result<StatResists, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid))
     }
-    pub(super) fn get_stat_item_resists_unchecked(
+    pub(in crate::svc::vast::vaste_stats::tank) fn get_stat_item_resists_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> StatTank<DmgKinds<UnitInterval>> {
-        StatTank {
+    ) -> StatResists {
+        StatResists {
             shield: Vast::get_item_shield_resists(ctx, calc, item_uid),
             armor: Vast::get_item_armor_resists(ctx, calc, item_uid),
             hull: Vast::get_item_hull_resists(ctx, calc, item_uid),
         }
     }
-    fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> DmgKinds<UnitInterval> {
+    fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
         get_item_layer_resists(
             ctx,
             calc,
@@ -42,7 +42,7 @@ impl Vast {
             ctx.ac().shield_expl_dmg_resonance,
         )
     }
-    fn get_item_armor_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> DmgKinds<UnitInterval> {
+    fn get_item_armor_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
         get_item_layer_resists(
             ctx,
             calc,
@@ -53,7 +53,7 @@ impl Vast {
             ctx.ac().armor_expl_dmg_resonance,
         )
     }
-    fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> DmgKinds<UnitInterval> {
+    fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
         get_item_layer_resists(
             ctx,
             calc,
@@ -74,8 +74,8 @@ fn get_item_layer_resists(
     therm_attr_rid: Option<RAttrId>,
     kin_attr_rid: Option<RAttrId>,
     expl_attr_rid: Option<RAttrId>,
-) -> DmgKinds<UnitInterval> {
-    DmgKinds {
+) -> StatResistsLayer {
+    StatResistsLayer {
         em: UnitInterval::from_value_clamped(
             Value::ONE
                 - calc

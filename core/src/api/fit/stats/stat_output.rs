@@ -4,7 +4,7 @@ use crate::{
     num::PValue,
     svc::vast::{
         StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-        StatOutRepItemKinds, StatOutReps, StatTank, StatTimeOptions,
+        StatOutRepItemKinds, StatOutReps, StatTimeOptions,
     },
     ud::ItemId,
 };

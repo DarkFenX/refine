@@ -7,16 +7,15 @@ use super::err::{
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{DmgKinds, DpsProfile, EffectMode, Spool},
+    misc::{DpsProfile, EffectMode, Spool},
     num::{Count, PValue, UnitInterval, Value},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
     svc::{
         calc::Modification,
         vast::{
-            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
-            StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatOutReps,
-            StatSensors, StatTank, StatTankRegen, StatTimeOptions,
+            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatEhp, StatErps, StatHp,
+            StatJamApplied, StatMining, StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
         },
     },
     ud::{ItemId, UEffectUpdates, UItemId},
@@ -296,31 +295,28 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - tank
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<UnitInterval>>, ItemStatError> {
+    fn get_stat_resists(&mut self) -> Result<StatResists, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_resists(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, ItemStatError> {
+    fn get_stat_hp(&mut self) -> Result<StatHp, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_hp(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_ehp(
-        &mut self,
-        incoming_dps: Option<DpsProfile>,
-    ) -> Result<StatTank<Option<StatLayerEhp>>, ItemStatError> {
+    fn get_stat_ehp(&mut self, incoming_dps: Option<DpsProfile>) -> Result<StatEhp, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_ehp(&sol.u_data, item_uid, incoming_dps)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_wc_ehp(&mut self) -> Result<StatTank<Option<StatLayerEhp>>, ItemStatError> {
+    fn get_stat_wc_ehp(&mut self) -> Result<StatEhp, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
@@ -331,7 +327,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, ItemStatError> {
+    ) -> Result<StatRps, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
@@ -343,7 +339,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         incoming_dps: Option<DpsProfile>,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, ItemStatError> {
+    ) -> Result<StatErps, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc

@@ -1,35 +1,29 @@
 use crate::{
     api::{FitMut, ItemMutCommon},
     err::FitShipStatError,
-    misc::{DmgKinds, DpsProfile},
+    misc::DpsProfile,
     num::UnitInterval,
-    svc::vast::{
-        StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatTank,
-        StatTankRegen, StatTimeOptions,
-    },
+    svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_resists(&mut self) -> Result<StatTank<DmgKinds<UnitInterval>>, FitShipStatError> {
+    pub fn get_stat_resists(&mut self) -> Result<StatResists, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }
-    pub fn get_stat_hp(&mut self) -> Result<StatTank<StatLayerHp>, FitShipStatError> {
+    pub fn get_stat_hp(&mut self) -> Result<StatHp, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_hp()?)
     }
-    pub fn get_stat_ehp(
-        &mut self,
-        incoming_dps: Option<DpsProfile>,
-    ) -> Result<StatTank<Option<StatLayerEhp>>, FitShipStatError> {
+    pub fn get_stat_ehp(&mut self, incoming_dps: Option<DpsProfile>) -> Result<StatEhp, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_ehp(incoming_dps)?)
     }
-    pub fn get_stat_wc_ehp(&mut self) -> Result<StatTank<Option<StatLayerEhp>>, FitShipStatError> {
+    pub fn get_stat_wc_ehp(&mut self) -> Result<StatEhp, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_wc_ehp()?)
     }
     pub fn get_stat_rps(
         &mut self,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatTankRegen<StatLayerRps, StatLayerRpsRegen>, FitShipStatError> {
+    ) -> Result<StatRps, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_rps(time_options, shield_perc)?)
     }
     pub fn get_stat_erps(
@@ -37,7 +31,7 @@ impl<'a> FitMut<'a> {
         incoming_dps: Option<DpsProfile>,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatTankRegen<Option<StatLayerErps>, Option<StatLayerErpsRegen>>, FitShipStatError> {
+    ) -> Result<StatErps, FitShipStatError> {
         Ok(self
             .get_ship_for_stats()?
             .get_stat_erps(incoming_dps, time_options, shield_perc)?)

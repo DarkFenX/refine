@@ -1,6 +1,5 @@
 pub(crate) use details::{
-    HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerRps, HStatLayerRpsRegen,
-    HStatMining, HStatOutReps, HStatTank, HStatTankRegen,
+    HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatMining, HStatOutReps, HStatResists, HStatRps,
 };
 pub(crate) use fit::HFitStats;
 pub(crate) use fleet::HFleetStats;
