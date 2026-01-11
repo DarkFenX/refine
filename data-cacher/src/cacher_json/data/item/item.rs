@@ -7,7 +7,7 @@ pub(in crate::cacher_json::data) struct CItem {
     grp_id: i32,
     cat_id: i32,
     attrs: Vec<CItemAttr>,
-    effect_datas: Vec<CItemEffect>,
+    effects: Vec<CItemEffect>,
     #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
     defeff_id: Option<rc::ad::AEffectId>,
     abil_ids: Vec<i32>,
@@ -39,8 +39,8 @@ impl CItem {
                     val: v.value.into_f64(),
                 })
                 .collect(),
-            effect_datas: a_item
-                .effect_datas
+            effects: a_item
+                .effects
                 .iter()
                 .map(|v| CItemEffect {
                     id: v.id,
@@ -78,8 +78,8 @@ impl CItem {
                     value: rc::ad::AValue::from_f64(v.val),
                 })
                 .collect(),
-            effect_datas: self
-                .effect_datas
+            effects: self
+                .effects
                 .into_iter()
                 .map(|v| rc::ad::AItemEffect {
                     id: v.id,

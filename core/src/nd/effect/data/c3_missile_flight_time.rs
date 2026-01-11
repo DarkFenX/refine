@@ -49,12 +49,12 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for item in a_items.values_mut().filter(|v| {
-        v.effect_datas.contains_id(&AEffectId::MISSILE_LAUNCHING)
-            || v.effect_datas.contains_id(&AEffectId::DEFENDER_MISSILE_LAUNCHING)
-            || v.effect_datas.contains_id(&AEffectId::FOF_MISSILE_LAUNCHING)
-            || v.effect_datas.contains_id(&AEffectId::DOT_MISSILE_LAUNCHING)
+        v.effects.contains_id(&AEffectId::MISSILE_LAUNCHING)
+            || v.effects.contains_id(&AEffectId::DEFENDER_MISSILE_LAUNCHING)
+            || v.effects.contains_id(&AEffectId::FOF_MISSILE_LAUNCHING)
+            || v.effects.contains_id(&AEffectId::DOT_MISSILE_LAUNCHING)
     }) {
-        item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
+        item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

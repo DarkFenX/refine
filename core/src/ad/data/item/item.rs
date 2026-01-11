@@ -8,7 +8,7 @@ pub struct AItem {
     pub grp_id: AItemGrpId,
     pub cat_id: AItemCatId,
     pub attrs: AItemAttrs,
-    pub effect_datas: AItemEffects,
+    pub effects: AItemEffects,
     pub defeff_id: Option<AEffectId>,
     pub abil_ids: AItemAbils,
     pub srqs: AItemSkillReqs,

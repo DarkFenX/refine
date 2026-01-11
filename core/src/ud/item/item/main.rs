@@ -163,25 +163,25 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_attrs(),
         }
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
+    pub(crate) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_effect_datas(),
-            Self::Booster(booster) => booster.get_effect_datas(),
-            Self::Character(character) => character.get_effect_datas(),
-            Self::Charge(charge) => charge.get_effect_datas(),
-            Self::Drone(drone) => drone.get_effect_datas(),
-            Self::Fighter(fighter) => fighter.get_effect_datas(),
-            Self::FwEffect(fw_effect) => fw_effect.get_effect_datas(),
-            Self::Implant(implant) => implant.get_effect_datas(),
-            Self::Module(module) => module.get_effect_datas(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_effect_datas(),
-            Self::Rig(rig) => rig.get_effect_datas(),
-            Self::Service(service) => service.get_effect_datas(),
-            Self::Ship(ship) => ship.get_effect_datas(),
-            Self::Skill(skill) => skill.get_effect_datas(),
-            Self::Stance(stance) => stance.get_effect_datas(),
-            Self::Subsystem(subsystem) => subsystem.get_effect_datas(),
-            Self::SwEffect(sw_effect) => sw_effect.get_effect_datas(),
+            Self::Autocharge(autocharge) => autocharge.get_effects(),
+            Self::Booster(booster) => booster.get_effects(),
+            Self::Character(character) => character.get_effects(),
+            Self::Charge(charge) => charge.get_effects(),
+            Self::Drone(drone) => drone.get_effects(),
+            Self::Fighter(fighter) => fighter.get_effects(),
+            Self::FwEffect(fw_effect) => fw_effect.get_effects(),
+            Self::Implant(implant) => implant.get_effects(),
+            Self::Module(module) => module.get_effects(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_effects(),
+            Self::Rig(rig) => rig.get_effects(),
+            Self::Service(service) => service.get_effects(),
+            Self::Ship(ship) => ship.get_effects(),
+            Self::Skill(skill) => skill.get_effects(),
+            Self::Stance(stance) => stance.get_effects(),
+            Self::Subsystem(subsystem) => subsystem.get_effects(),
+            Self::SwEffect(sw_effect) => sw_effect.get_effects(),
         }
     }
     pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {

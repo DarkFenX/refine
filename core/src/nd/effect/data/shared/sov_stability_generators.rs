@@ -10,7 +10,7 @@ pub(in crate::nd::effect::data) fn assign_effect(
 ) -> bool {
     match a_items.get_mut(&item_aid) {
         Some(a_item) => {
-            a_item.effect_datas.insert(AItemEffect { id: effect_aid, .. });
+            a_item.effects.insert(AItemEffect { id: effect_aid, .. });
             a_item.defeff_id = Some(effect_aid);
             true
         }

@@ -63,7 +63,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for item_aid in [AItemId::WARP_DISRUPT_PROBE, AItemId::SURGICAL_WARP_DISRUPT_PROBE] {
         if let Some(a_item) = a_items.get_mut(&item_aid) {
-            a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
+            a_item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
             a_item.defeff_id = Some(EFFECT_AID);
             assigned = true;
         }

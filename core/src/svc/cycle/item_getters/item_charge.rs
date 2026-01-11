@@ -27,7 +27,7 @@ pub(super) fn get_charge_cseq_map(
     let cont_effect_cycle = cseq_map.remove(&cont_effect_rid)?;
     cseq_map.clear();
     let effect_rids = match ignore_state {
-        true => Either::Left(charge.get_effect_datas().unwrap().keys().copied()),
+        true => Either::Left(charge.get_effects().unwrap().keys().copied()),
         false => Either::Right(charge.get_reffs().unwrap().iter().copied()),
     };
     cseq_map.reserve(effect_rids.len());

@@ -48,8 +48,8 @@ pub trait ItemCommon: ItemSealed {
         let sol = self.get_sol();
         let item_uid = self.get_uid();
         let item = sol.u_data.items.get(item_uid);
-        let (effect_rids, reffs) = match (item.get_effect_datas(), item.get_reffs()) {
-            (Some(effect_datas), Some(reffs)) => (effect_datas.keys(), reffs),
+        let (effect_rids, reffs) = match (item.get_effects(), item.get_reffs()) {
+            (Some(effects), Some(reffs)) => (effects.keys(), reffs),
             _ => {
                 return Err(ItemLoadedError {
                     item_id: sol.u_data.items.xid_by_iid(item_uid),

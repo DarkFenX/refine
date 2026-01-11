@@ -5,7 +5,7 @@ use crate::{
 
 pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_autocharges(a_data: &mut AData) {
     for a_item in a_data.items.data.values_mut() {
-        for a_item_effect in a_item.effect_datas.iter_mut() {
+        for a_item_effect in a_item.effects.iter_mut() {
             if let Some(n_effect) = N_EFFECT_MAP.get(&a_item_effect.id)
                 && let Some(n_charge) = &n_effect.charge
                 && let Some(ac_attr_aid) = n_charge.location.get_autocharge_attr_aid()

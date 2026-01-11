@@ -96,7 +96,7 @@ fn update_running_effects(
     } else if !online_running && online_should_run {
         reuse_eupdates.to_start.push(src.get_online_effect().unwrap().clone());
     }
-    for &effect_rid in item.effect_datas.keys() {
+    for &effect_rid in item.effects.keys() {
         // Online effect has already been handled
         if Some(effect_rid) == src.get_effect_consts().online {
             continue;

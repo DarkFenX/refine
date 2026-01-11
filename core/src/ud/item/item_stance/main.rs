@@ -41,8 +41,8 @@ impl UStance {
     pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         self.base.get_attrs()
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        self.base.get_effect_datas()
+    pub(crate) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
+        self.base.get_effects()
     }
     pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
         self.base.get_defeff_rid()

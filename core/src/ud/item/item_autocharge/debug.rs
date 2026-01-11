@@ -15,7 +15,7 @@ impl UAutocharge {
         if !u_data
             .items
             .get(self.get_cont_item_uid())
-            .get_effect_datas()
+            .get_effects()
             .unwrap()
             .contains_key(&self.get_cont_effect_rid())
         {

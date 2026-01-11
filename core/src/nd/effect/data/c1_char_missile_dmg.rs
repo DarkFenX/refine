@@ -48,7 +48,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
         .values_mut()
         .filter(|a_item| a_item.grp_id == AItemGrpId::CHARACTER)
     {
-        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
+        a_item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

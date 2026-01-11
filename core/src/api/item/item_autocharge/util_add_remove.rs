@@ -31,7 +31,7 @@ impl SolarSystem {
             None => return,
         };
         let effects_with_ac_type_ids = u_item
-            .get_effect_datas()
+            .get_effects()
             .unwrap()
             .iter()
             .filter_map(|(effect_rid, effect_data)| effect_data.autocharge.map(|ac_type_id| (*effect_rid, ac_type_id)))

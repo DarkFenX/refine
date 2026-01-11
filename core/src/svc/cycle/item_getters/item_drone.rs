@@ -24,7 +24,7 @@ pub(super) fn get_drone_cseq_map(
     };
     let mut cseq_map = RMap::new();
     let effect_rids = match ignore_state {
-        true => Either::Left(drone.get_effect_datas().unwrap().keys().copied()),
+        true => Either::Left(drone.get_effects().unwrap().keys().copied()),
         false => Either::Right(drone.get_reffs().unwrap().iter().copied()),
     };
     for effect_rid in effect_rids {

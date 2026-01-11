@@ -48,11 +48,11 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items.values_mut().filter(|v| {
-        v.effect_datas.contains_id(&AEffectId::FUELED_ARMOR_REPAIR)
-            || v.effect_datas
+        v.effects.contains_id(&AEffectId::FUELED_ARMOR_REPAIR)
+            || v.effects
                 .contains_id(&AEffectId::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER)
     }) {
-        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
+        a_item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

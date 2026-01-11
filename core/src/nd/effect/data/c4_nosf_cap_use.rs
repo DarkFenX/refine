@@ -43,9 +43,9 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for a_item in a_items
         .values_mut()
-        .filter(|v| v.effect_datas.contains_id(&AEffectId::ENERGY_NOSF_FALLOFF))
+        .filter(|v| v.effects.contains_id(&AEffectId::ENERGY_NOSF_FALLOFF))
     {
-        a_item.effect_datas.insert(AItemEffect { id: EFFECT_AID, .. });
+        a_item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
         assigned = true;
     }
     assigned

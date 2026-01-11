@@ -79,15 +79,15 @@ impl UItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&type_id), mutated_r_item);
-        let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
-        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
+        let merged_effects = merge_effects(mutated_r_item, &merged_attrs, src);
+        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effects.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
         let regular_base = UItemBase::base_new_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_id: type_id,
             mutator: mutator.clone(),
             merged_attrs,
-            merged_effdatas,
+            merged_effects,
             axt: item_axt,
         });
         Self {
@@ -137,16 +137,16 @@ impl UItemBaseMutable {
             None => self.base.get_attrs(),
         }
     }
-    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
+    pub(in crate::ud::item) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
         // Merged effect data is set only if mutation is valid, and if it contained any differences
         // to mutated item effect data
         if let Some(item_mutation) = &self.mutation
             && let Some(mutation_cache) = &item_mutation.cache
-            && let Some(merged_effect_datas) = &mutation_cache.merged_effdatas
+            && let Some(merged_effects) = &mutation_cache.merged_effects
         {
-            return Some(merged_effect_datas);
+            return Some(merged_effects);
         }
-        self.base.get_effect_datas()
+        self.base.get_effects()
     }
     pub(in crate::ud::item) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
         self.base.get_defeff_rid()
@@ -278,8 +278,8 @@ impl UItemBaseMutable {
         };
         // Compose attribute cache
         let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&base_type_id), mutated_r_item);
-        let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
-        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
+        let merged_effects = merge_effects(mutated_r_item, &merged_attrs, src);
+        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effects.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation.attr_rolls, src);
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
@@ -287,7 +287,7 @@ impl UItemBaseMutable {
             base_type_id,
             mutator: mutator.clone(),
             merged_attrs,
-            merged_effdatas,
+            merged_effects,
             axt: item_axt,
         })
     }
@@ -330,15 +330,15 @@ impl UItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let mut merged_attrs = get_combined_attr_values(self.base.base_get_r_item(), mutated_r_item);
-        let merged_effdatas = merge_effect_datas(mutated_r_item, &merged_attrs, src);
-        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effdatas.as_ref(), src);
+        let merged_effects = merge_effects(mutated_r_item, &merged_attrs, src);
+        let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effects.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_id,
             mutator: mutator.clone(),
             merged_attrs,
-            merged_effdatas,
+            merged_effects,
             axt: item_axt,
         });
         self.mutation = Some(item_mutation_data);
@@ -536,7 +536,7 @@ pub(crate) struct ItemMutationDataCache {
     base_type_id: AItemId,
     mutator: RcMuta,
     pub(super) merged_attrs: RMap<RAttrId, Value>,
-    pub(super) merged_effdatas: Option<RMap<REffectId, RItemEffectData>>,
+    pub(super) merged_effects: Option<RMap<REffectId, RItemEffectData>>,
     pub(super) axt: RItemAXt,
 }
 impl ItemMutationDataCache {
@@ -637,14 +637,14 @@ fn get_combined_attr_value<'a>(
     Some(AttrRidVal { rid: attr_rid, value })
 }
 
-fn merge_effect_datas(
+fn merge_effects(
     mutated_item: &RItem,
     merged_attrs: &RMap<RAttrId, Value>,
     src: &Src,
 ) -> Option<RMap<REffectId, RItemEffectData>> {
     let mut result = None;
-    let effect_datas = &mutated_item.effect_datas;
-    for (&effect_rid, effect_data) in effect_datas.iter() {
+    let effects = &mutated_item.effects;
+    for (&effect_rid, effect_data) in effects.iter() {
         let effect = src.get_effect_by_rid(effect_rid);
         // Autocharge - if effect defines autocharge attr ID, and its value references some non-zero
         // type ID, compare it to what's already in effect data; if it's different, create a copy
@@ -660,7 +660,7 @@ fn merge_effect_datas(
                 }
             });
             if new_ac_type_id != effect_data.autocharge {
-                let inner = result.get_or_insert_with(|| effect_datas.clone());
+                let inner = result.get_or_insert_with(|| effects.clone());
                 inner.get_mut(&effect_rid).unwrap().autocharge = new_ac_type_id;
             }
         }
@@ -676,7 +676,7 @@ fn merge_effect_datas(
                 }
             });
             if new_projectee_filter != effect_data.projectee_filter {
-                let inner = result.get_or_insert_with(|| effect_datas.clone());
+                let inner = result.get_or_insert_with(|| effects.clone());
                 inner.get_mut(&effect_rid).unwrap().projectee_filter = new_projectee_filter;
             }
         }
@@ -710,7 +710,7 @@ fn make_axt(
         r_item.grp_id,
         r_item.cat_id,
         item_attrs,
-        item_effects_override.unwrap_or(&r_item.effect_datas),
+        item_effects_override.unwrap_or(&r_item.effects),
         src.get_attr_aid_rid_map(),
         src.get_attr_consts(),
         src.get_effect_consts(),

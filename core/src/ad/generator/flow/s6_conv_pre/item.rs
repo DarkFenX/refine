@@ -33,7 +33,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
             grp_id: AItemGrpId::from_eid(e_item.group_id),
             cat_id: AItemCatId::from_eid(cat_eid),
             attrs: AItemAttrs::new(),
-            effect_datas: AItemEffects::new(),
+            effects: AItemEffects::new(),
             defeff_id: defeff_eid.map(AEffectId::from_eid),
             abil_ids: AItemAbils::new(),
             srqs: AItemSkillReqs::new(),
@@ -63,7 +63,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
     // Item effects & extended effect data from abilities
     for e_item_effect in e_data.item_effects.data.iter() {
         if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_effect.item_id)) {
-            a_item.effect_datas.insert(AItemEffect {
+            a_item.effects.insert(AItemEffect {
                 id: AEffectId::from_eid(e_item_effect.effect_id),
                 ..
             });
@@ -78,7 +78,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
             Some(effect_eid) => effect_eid,
             None => continue,
         };
-        let a_item_eff_data = match a_item.effect_datas.get_mut(&AEffectId::from_eid(effect_eid)) {
+        let a_item_eff_data = match a_item.effects.get_mut(&AEffectId::from_eid(effect_eid)) {
             Some(a_item_eff_data) => a_item_eff_data,
             None => continue,
         };

@@ -14,7 +14,7 @@ pub(crate) struct RItem {
     pub(crate) grp_id: AItemGrpId,
     pub(crate) cat_id: AItemCatId,
     pub(crate) attrs: RMap<RAttrId, Value>,
-    pub(crate) effect_datas: RMap<REffectId, RItemEffectData>,
+    pub(crate) effects: RMap<REffectId, RItemEffectData>,
     pub(crate) defeff_rid: Option<REffectId>,
     pub(crate) abil_ids: Vec<AAbilId>,
     pub(crate) srqs: RMap<AItemId, SkillLevel>,
@@ -53,7 +53,7 @@ impl RItem {
             disallowed_in_wspace: a_item.disallowed_in_wspace,
             // Fields which depend on data not available during instantiation
             attrs: Default::default(),
-            effect_datas: Default::default(),
+            effects: Default::default(),
             defeff_rid: Default::default(),
             proj_buff_item_list_rids: Default::default(),
             fleet_buff_item_list_rids: Default::default(),
@@ -80,10 +80,10 @@ impl RItem {
                 self.attrs.insert(attr_rid, Value::from_a_value(a_item_attr.value));
             }
         }
-        for a_item_effect in a_item.effect_datas.iter() {
+        for a_item_effect in a_item.effects.iter() {
             if let Some(&effect_rid) = effect_aid_rid_map.get(&a_item_effect.id) {
                 let r_effect_data = RItemEffectData::from_a_effect_data(&a_item_effect.data, item_list_aid_rid_map);
-                self.effect_datas.insert(effect_rid, r_effect_data);
+                self.effects.insert(effect_rid, r_effect_data);
             }
         }
         self.defeff_rid = a_item
@@ -108,15 +108,15 @@ impl RItem {
                 .filter_map(|item_list_aid| attr_aid_rid_map.get(item_list_aid).copied()),
         );
         self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
-        self.has_online_effect = has_online_effect(&self.effect_datas, effect_aid_rid_map);
-        self.takes_turret_hardpoint = has_turret_effect(&self.effect_datas, effect_aid_rid_map);
-        self.takes_launcher_hardpoint = has_launcher_effect(&self.effect_datas, effect_aid_rid_map);
+        self.has_online_effect = has_online_effect(&self.effects, effect_aid_rid_map);
+        self.takes_turret_hardpoint = has_turret_effect(&self.effects, effect_aid_rid_map);
+        self.takes_launcher_hardpoint = has_launcher_effect(&self.effects, effect_aid_rid_map);
         self.axt.fill(
             self.aid,
             self.grp_id,
             self.cat_id,
             &self.attrs,
-            &self.effect_datas,
+            &self.effects,
             attr_aid_rid_map,
             attr_consts,
             effect_consts,

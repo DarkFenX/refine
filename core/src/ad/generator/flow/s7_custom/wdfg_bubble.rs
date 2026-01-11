@@ -8,7 +8,7 @@ const BUBBLE_EFFECT_ID: AEffectId = AEffectId::WARP_DISRUPT_SPHERE;
 pub(in crate::ad::generator::flow::s7_custom) fn add_wdfg_bubble_strength(a_data: &mut AData) {
     let mut applied = false;
     for item in a_data.items.data.values_mut() {
-        if !item.effect_datas.contains_id(&BUBBLE_EFFECT_ID) {
+        if !item.effects.contains_id(&BUBBLE_EFFECT_ID) {
             continue;
         }
         item.attrs.insert(AItemAttr {

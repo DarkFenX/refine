@@ -23,8 +23,8 @@ fn internal_cycle_count(item: &UItem, effect_rid: REffectId) -> InfCount {
         return InfCount::Count(Count::ZERO);
     };
     // Should always be available, since this method should never be requested for non-loaded items
-    let effect_datas = item.get_effect_datas().unwrap();
-    match effect_datas.get(&effect_rid).unwrap().charge_count {
+    let effects = item.get_effects().unwrap();
+    match effects.get(&effect_rid).unwrap().charge_count {
         Some(charge_count) => InfCount::Count(charge_count),
         None => InfCount::Infinite,
     }

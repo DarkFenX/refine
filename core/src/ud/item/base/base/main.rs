@@ -83,8 +83,8 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
         self.base_get_r_item().map(|v| &v.attrs)
     }
-    pub(in crate::ud::item) fn get_effect_datas(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        self.base_get_r_item().map(|v| &v.effect_datas)
+    pub(in crate::ud::item) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
+        self.base_get_r_item().map(|v| &v.effects)
     }
     pub(in crate::ud::item) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
         self.base_get_r_item().map(|v| v.defeff_rid)

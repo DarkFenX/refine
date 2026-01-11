@@ -12,8 +12,8 @@ impl UItemBaseMutable {
             for &attr_rid in mutation_cache.merged_attrs.keys() {
                 check_attr_rid(u_data, attr_rid)?;
             }
-            if let Some(effect_data) = &mutation_cache.merged_effdatas {
-                for &effect_rid in effect_data.keys() {
+            if let Some(effects) = &mutation_cache.merged_effects {
+                for &effect_rid in effects.keys() {
                     check_effect_rid(u_data, effect_rid)?;
                 }
             }

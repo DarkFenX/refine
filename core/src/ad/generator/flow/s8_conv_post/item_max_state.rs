@@ -5,7 +5,7 @@ use crate::{
 
 pub(in crate::ad::generator::flow::s8_conv_post) fn fill_max_state(a_data: &mut AData) {
     for a_item in a_data.items.data.values_mut() {
-        a_item.max_state = get_max_state(a_item.effect_datas.keys(), &a_data.effects.data);
+        a_item.max_state = get_max_state(a_item.effects.keys(), &a_data.effects.data);
     }
 }
 

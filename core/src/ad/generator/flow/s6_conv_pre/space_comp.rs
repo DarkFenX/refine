@@ -94,6 +94,6 @@ fn process_buffs(
         .data
         .get_mut(&item_aid)
         .unwrap()
-        .effect_datas
+        .effects
         .insert(AItemEffect { id: effect_aid, .. });
 }
