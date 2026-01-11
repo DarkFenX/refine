@@ -1,4 +1,4 @@
-use super::shared::StatOutReps;
+use super::stat::StatOutReps;
 use crate::{
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},

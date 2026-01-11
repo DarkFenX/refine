@@ -1,5 +1,7 @@
-pub use shared::StatOutReps;
+pub use option::StatOutRepItemKinds;
+pub use stat::StatOutReps;
 
-mod shared;
+mod option;
+mod stat;
 mod vaste_fit;
 mod vaste_item;
