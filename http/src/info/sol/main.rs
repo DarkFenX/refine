@@ -19,7 +19,7 @@ impl HSolInfo {
         item_mode: HItemInfoMode,
     ) -> Self {
         match sol_mode {
-            HSolInfoMode::Id => Self::Id(sol_id.into()),
+            HSolInfoMode::Id => Self::Id(HSolInfoId::from_sol_id(sol_id)),
             HSolInfoMode::Full => Self::Full(HSolInfoFull::mk_info(sol_id, core_sol, fleet_mode, fit_mode, item_mode)),
         }
     }

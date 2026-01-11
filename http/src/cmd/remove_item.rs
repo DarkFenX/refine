@@ -12,7 +12,7 @@ impl HRemoveItemCmd {
             rc::err::GetItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
         })?;
         core_item
-            .remove(self.rm_mode.as_ref().unwrap_or(&HRmMode::Free).into())
+            .remove(self.rm_mode.unwrap_or(HRmMode::Free).into_core())
             .map_err(|error| match error {
                 rc::err::RemoveItemError::UnremovableAutocharge => HExecError::UnremovableAutocharge,
             })?;
