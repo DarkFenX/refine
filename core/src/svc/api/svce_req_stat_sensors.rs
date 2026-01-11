@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatJamApplied, StatSensors, Vast},
+        vast::{StatInJam, StatSensors, Vast},
     },
     ud::{UData, UItemId},
 };
@@ -55,7 +55,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<StatJamApplied, StatItemCheckError> {
+    ) -> Result<StatInJam, StatItemCheckError> {
         self.vast
             .get_stat_item_incoming_jam(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }

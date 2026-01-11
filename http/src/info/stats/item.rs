@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatJamApplied, HStatMining, HStatOutReps, HStatResists,
+        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
         HStatRps, HStatSensors,
     },
     util::TriStateField,
@@ -59,7 +59,7 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) probing_size: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) incoming_jam: TriStateField<HStatJamApplied>,
+    pub(crate) incoming_jam: TriStateField<HStatInJam>,
     // Mobility
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) speed: TriStateField<f64>,

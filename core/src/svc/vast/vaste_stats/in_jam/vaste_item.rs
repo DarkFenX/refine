@@ -1,4 +1,4 @@
-use super::item_checks::check_drone_fighter_ship;
+use super::stat::StatInJam;
 use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
@@ -7,7 +7,7 @@ use crate::{
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatJamApplied, StatSensorsKind, Vast},
+        vast::{StatSensorsKind, Vast, vaste_stats::item_checks::check_drone_fighter_ship},
     },
     ud::UItemId,
 };
@@ -20,12 +20,12 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         projectee_item_uid: UItemId,
-    ) -> Result<StatJamApplied, StatItemCheckError> {
+    ) -> Result<StatInJam, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, projectee_item_uid)?;
         let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_uid) {
             Some(incoming_ecms) => incoming_ecms,
             None => {
-                return Ok(StatJamApplied {
+                return Ok(StatInJam {
                     chance: UnitInterval::ZERO,
                     uptime: UnitInterval::ZERO,
                 });
@@ -84,7 +84,7 @@ impl Vast {
                 projectee_unjam_uptime *= Value::ONE - jam_chance.into_value() * cycle_uptime.into_value();
             }
         }
-        let jam = StatJamApplied {
+        let jam = StatInJam {
             chance: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_chance),
             uptime: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_uptime),
         };

@@ -1,14 +1,10 @@
+use super::stat::StatResource;
 use crate::{
     num::Value,
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{UFit, UItemId},
 };
-
-pub struct StatResource {
-    pub used: Value,
-    pub output: Option<Value>,
-}
 
 impl VastFitData {
     // Public methods

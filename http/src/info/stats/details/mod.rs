@@ -1,6 +1,6 @@
 pub(crate) use cap::HStatCapSim;
 pub(crate) use dmg::HStatDmg;
-pub(crate) use jam::HStatJamApplied;
+pub(crate) use jam::HStatInJam;
 pub(crate) use mining::HStatMining;
 pub(crate) use out_reps::HStatOutReps;
 pub(crate) use resource::HStatResource;

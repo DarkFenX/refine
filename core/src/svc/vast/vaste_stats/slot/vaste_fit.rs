@@ -1,3 +1,4 @@
+use super::stat::StatSlot;
 use crate::{
     num::Count,
     svc::{
@@ -7,11 +8,6 @@ use crate::{
     },
     ud::UFit,
 };
-
-pub struct StatSlot {
-    pub used: Count,
-    pub total: Option<Count>,
-}
 
 impl VastFitData {
     // Modules
