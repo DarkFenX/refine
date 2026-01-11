@@ -6,7 +6,7 @@ use crate::{
     rd::{RAttrId, REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
-        vaste_vals::EffectSecZoneInfo,
+        validators::EffectSecZoneInfo,
     },
     ud::{UFitId, UItemId},
     util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet},
