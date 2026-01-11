@@ -4,7 +4,7 @@ use crate::{
     ud::UItemId,
 };
 
-pub(in crate::svc::vast) fn apply_breacher(
+pub(in crate::svc::vast::vaste_stats::dmg) fn apply_breacher(
     ctx: SvcCtx,
     calc: &mut Calc,
     breacher_raw: StatDmgBreacher,

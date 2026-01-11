@@ -1,13 +1,3 @@
-pub(in crate::svc::vast) use breacher::{BreacherAccum, apply_breacher};
-pub use dmg_opt::StatDmgItemKinds;
-pub use dmg_stat::{StatDmg, StatDmgApplied, StatDmgBreacher};
-pub(in crate::svc::vast) use regen::{calc_regen, regenerate};
-pub use sensors::{StatSensors, StatSensorsKind};
 pub(in crate::svc::vast) use slot::get_attr_as_count;
 
-mod breacher;
-mod dmg_opt;
-mod dmg_stat;
-mod regen;
-mod sensors;
 mod slot;

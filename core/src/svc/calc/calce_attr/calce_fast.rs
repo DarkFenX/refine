@@ -112,25 +112,6 @@ impl Calc {
             },
         }
     }
-    // - Optional item
-    // - Optional attribute
-    // - Fallback for all cases
-    // - Extra value
-    pub(crate) fn get_oitem_oattr_ffb_extra(
-        &mut self,
-        ctx: SvcCtx,
-        item_uid: Option<UItemId>,
-        attr_rid: Option<RAttrId>,
-        fallback: Value,
-    ) -> Value {
-        match (item_uid, attr_rid) {
-            (Some(item_uid), Some(attr_rid)) => match self.get_item_attr_rfull(ctx, item_uid, attr_rid) {
-                Ok(full) => full.extra,
-                Err(_) => fallback,
-            },
-            _ => fallback,
-        }
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Core query methods
     ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,10 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatTimeOptions, Vast, VastFitData, shared::calc_regen, vaste_stats::item_checks::check_ship},
+        vast::{
+            StatTimeOptions, Vast, VastFitData,
+            vaste_stats::{item_checks::check_ship, shared::calc_regen},
+        },
     },
     ud::UItemId,
 };

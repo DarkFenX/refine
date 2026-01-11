@@ -1,4 +1,3 @@
-pub use shared::{StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatSensors, StatSensorsKind};
 pub use val_options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
@@ -6,10 +5,11 @@ pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 pub(crate) use vaste_stats::StatCapSimStaggerInt;
 pub use vaste_stats::{
-    StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatEhp, StatEhpLayer, StatErps,
-    StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatMining, StatMiningItemKinds,
-    StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps,
-    StatRpsLayer, StatRpsLayerRegen, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+    StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatDmg, StatDmgApplied, StatDmgBreacher,
+    StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer,
+    StatInJam, StatMining, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists,
+    StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot,
+    StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
 };
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,

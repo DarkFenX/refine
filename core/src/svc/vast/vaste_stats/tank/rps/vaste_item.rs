@@ -11,7 +11,10 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatTimeOptions, Vast, shared::calc_regen, vaste_stats::item_checks::check_drone_fighter_ship},
+        vast::{
+            StatTimeOptions, Vast,
+            vaste_stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
+        },
     },
     ud::{UItem, UItemId},
     util::{RMapRMap, RMapRMapRMap},

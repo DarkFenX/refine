@@ -1,4 +1,7 @@
-use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options};
+use super::{
+    breacher::{BreacherAccum, apply_breacher},
+    shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options},
+};
 use crate::{
     misc::{DmgKinds, Spool},
     num::PValue,
@@ -10,7 +13,6 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
-            shared::{BreacherAccum, apply_breacher},
             vaste_stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },

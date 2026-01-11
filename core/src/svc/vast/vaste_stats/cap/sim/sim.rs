@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
     num::{PValue, UnitInterval, Value},
-    svc::{output::OutputIterItem, vast::shared::regenerate},
+    svc::{output::OutputIterItem, vast::vaste_stats::shared::regenerate},
 };
 
 const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);

@@ -21,7 +21,7 @@ struct AggrBreacher {
     ticks: AggrBreacherTicksLooped,
 }
 
-pub(in crate::svc::vast) struct BreacherAccum {
+pub(in crate::svc::vast::vaste_stats::dmg) struct BreacherAccum {
     data: RMap<AggrBreacher, Count>,
 }
 impl BreacherAccum {

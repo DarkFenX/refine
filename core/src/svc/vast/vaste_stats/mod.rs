@@ -1,10 +1,12 @@
 pub(crate) use cap::StatCapSimStaggerInt;
 pub use cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
+pub use dmg::{StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
 pub use mining::{StatMining, StatMiningItemKinds};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;
+pub use sensors::{StatSensors, StatSensorsKind};
 pub use slot::StatSlot;
 pub use tank::{
     StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatResists,
@@ -24,6 +26,7 @@ mod ocps;
 mod orps;
 mod resource;
 mod sensors;
+mod shared;
 mod slot;
 mod tank;
 mod time_options;

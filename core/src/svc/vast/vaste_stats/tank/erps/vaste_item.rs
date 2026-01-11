@@ -1,7 +1,7 @@
 use super::stat::{StatErps, StatErpsLayer, StatErpsLayerRegen};
 use crate::{
     misc::DpsProfile,
-    num::{PValue, UnitInterval},
+    num::UnitInterval,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -13,21 +13,6 @@ use crate::{
     },
     ud::UItemId,
 };
-
-pub struct StatLayerErps {
-    pub local: PValue,
-    pub remote: PValue,
-    pub remote_penalized: PValue,
-    pub mult: PValue,
-}
-
-pub struct StatLayerErpsRegen {
-    pub local: PValue,
-    pub remote: PValue,
-    pub remote_penalized: PValue,
-    pub regen: PValue,
-    pub mult: PValue,
-}
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_erps(

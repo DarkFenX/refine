@@ -1,4 +1,7 @@
-use super::shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options};
+use super::{
+    breacher::{BreacherAccum, apply_breacher},
+    shared::{VOLLEY_CYCLE_OPTIONS, get_dps_cycling_options},
+};
 use crate::{
     misc::{DmgKinds, Spool},
     num::PValue,
@@ -7,10 +10,7 @@ use crate::{
         aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
-        vast::{
-            StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
-            shared::{BreacherAccum, apply_breacher},
-        },
+        vast::{StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData},
     },
     ud::{UFitId, UItemId},
 };
