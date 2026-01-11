@@ -8,7 +8,7 @@ pub use tank::{
     StatResistsLayer, StatRps, StatRpsLayer, StatRpsLayerRegen,
 };
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
-pub use vaste_fit_resource::StatRes;
+pub use vaste_fit_resource::StatResource;
 pub use vaste_fit_slot::StatSlot;
 
 mod dmg;

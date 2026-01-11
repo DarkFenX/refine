@@ -3,7 +3,7 @@ pub(crate) use dmg::HStatDmg;
 pub(crate) use jam::HStatJamApplied;
 pub(crate) use mining::HStatMining;
 pub(crate) use out_reps::HStatOutReps;
-pub(crate) use resource::HStatRes;
+pub(crate) use resource::HStatResource;
 pub(crate) use sensors::HStatSensors;
 pub(crate) use slot::HStatSlot;
 pub(crate) use tank::{HStatEhp, HStatErps, HStatHp, HStatResists, HStatRps};

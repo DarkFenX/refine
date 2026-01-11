@@ -2,8 +2,8 @@ use serde::Serialize;
 
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatJamApplied, HStatMining, HStatOutReps, HStatRes,
-        HStatResists, HStatRps, HStatSensors, HStatSlot,
+        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatJamApplied, HStatMining, HStatOutReps, HStatResists,
+        HStatResource, HStatRps, HStatSensors, HStatSlot,
     },
     util::TriStateField,
 };
@@ -25,17 +25,17 @@ pub(crate) struct HFitStats {
     pub(crate) outgoing_cps: Option<Vec<Option<f64>>>,
     // Fit resources
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) cpu: Option<HStatRes>,
+    pub(crate) cpu: Option<HStatResource>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) powergrid: Option<HStatRes>,
+    pub(crate) powergrid: Option<HStatResource>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) calibration: Option<HStatRes>,
+    pub(crate) calibration: Option<HStatResource>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) drone_bay_volume: Option<HStatRes>,
+    pub(crate) drone_bay_volume: Option<HStatResource>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) drone_bandwidth: Option<HStatRes>,
+    pub(crate) drone_bandwidth: Option<HStatResource>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) fighter_bay_volume: Option<HStatRes>,
+    pub(crate) fighter_bay_volume: Option<HStatResource>,
     // Fit slots
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) high_slots: Option<HStatSlot>,
