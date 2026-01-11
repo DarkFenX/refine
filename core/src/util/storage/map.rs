@@ -96,9 +96,6 @@ where
     pub(crate) fn clear(&mut self) {
         self.data.clear()
     }
-    pub(crate) fn shrink_to_fit(&mut self) {
-        self.data.shrink_to_fit()
-    }
     pub(crate) fn reserve(&mut self, additional: usize) {
         self.data.reserve(additional)
     }
@@ -137,14 +134,6 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<K, V, H> IntoIterator for Map<K, V, H> {
-    type Item = (K, V);
-    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.data.into_iter()
-    }
-}
 impl<K, V, H> FromIterator<(K, V)> for Map<K, V, H>
 where
     K: Eq + Hash,
@@ -159,26 +148,12 @@ where
         }
     }
 }
-impl<K, V, H> From<HashMap<K, V>> for Map<K, V, H>
-where
-    K: Eq + Hash + Clone,
-    V: Clone,
-    H: BuildHasher + Default,
-{
-    fn from(h_map: HashMap<K, V>) -> Self {
-        Self {
-            data: HashMap::from_iter(h_map.iter().map(|(k, v)| (k.clone(), v.clone()))),
-        }
-    }
-}
-impl<K, V, H> From<Map<K, V, H>> for HashMap<K, V>
-where
-    K: Eq + Hash + Clone,
-    V: Clone,
-    H: BuildHasher + Default,
-{
-    fn from(st_map: Map<K, V, H>) -> HashMap<K, V> {
-        Self::from_iter(st_map.iter().map(|(k, v)| (k.clone(), v.clone())))
+impl<K, V, H> IntoIterator for Map<K, V, H> {
+    type Item = (K, V);
+    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
     }
 }
 

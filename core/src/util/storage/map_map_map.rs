@@ -14,9 +14,6 @@ pub(crate) struct MapMapMap<K1, K2, K3, V, H1, H2, H3> {
 }
 impl<K1, K2, K3, V, H1, H2, H3> MapMapMap<K1, K2, K3, V, H1, H2, H3>
 where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    K3: Eq + Hash,
     H1: BuildHasher + Default,
     H2: BuildHasher + Default,
     H3: BuildHasher + Default,
@@ -24,6 +21,20 @@ where
     pub(crate) fn new() -> Self {
         Self { data: Map::new() }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<K1, K2, K3, V, H1, H2, H3> MapMapMap<K1, K2, K3, V, H1, H2, H3>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+    K3: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher,
+    H3: BuildHasher,
+{
     // Query methods
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K1, &MapMap<K2, K3, V, H2, H3>)> {
         self.data.iter()
@@ -32,10 +43,6 @@ where
         self.data.get(key1)
     }
     // Modification methods
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
-        let m2l = self.data.entry(key1).or_default();
-        m2l.add_entry(key2, key3, value);
-    }
     pub(crate) fn remove_l3(&mut self, key1: K1, key2: K2, key3: &K3) {
         if let Entry::Occupied(mut entry_l1) = self.data.entry(key1) {
             let map_l2 = entry_l1.get_mut();
@@ -43,6 +50,20 @@ where
                 entry_l1.remove();
             }
         }
+    }
+}
+impl<K1, K2, K3, V, H1, H2, H3> MapMapMap<K1, K2, K3, V, H1, H2, H3>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+    K3: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher + Default,
+    H3: BuildHasher + Default,
+{
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
+        let m2l = self.data.entry(key1).or_default();
+        m2l.add_entry(key2, key3, value);
     }
 }
 impl<K1, K2, K3, V, H1, H2, H3> Default for MapMapMap<K1, K2, K3, V, H1, H2, H3>

@@ -10,7 +10,6 @@ pub(crate) struct MapVec<K, V, H> {
 }
 impl<K, V, H> MapVec<K, V, H>
 where
-    K: Eq + Hash,
     H: BuildHasher + Default,
 {
     pub(crate) fn new() -> Self {
@@ -19,6 +18,16 @@ where
             empty: Vec::new(),
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<K, V, H> MapVec<K, V, H>
+where
+    K: Eq + Hash,
+    H: BuildHasher,
+{
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> {
         match self.data.get(key) {
             Some(v) => v.iter(),

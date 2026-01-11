@@ -13,14 +13,24 @@ pub(crate) struct MapMap<K1, K2, V, H1, H2> {
 }
 impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
 where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
     H1: BuildHasher + Default,
     H2: BuildHasher + Default,
 {
     pub(crate) fn new() -> Self {
         Self { data: Map::new() }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher,
+{
     // Query methods
     pub(crate) fn get_l1(&self, key1: &K1) -> Option<&Map<K2, V, H2>> {
         self.data.get(key1)
@@ -38,10 +48,6 @@ where
         self.data.is_empty()
     }
     // Modification methods
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
-        let m1l = self.data.entry(key1).or_default();
-        m1l.insert(key2, value);
-    }
     pub(crate) fn remove_l2(&mut self, key1: K1, key2: &K2) -> bool {
         if let Entry::Occupied(mut entry_l1) = self.data.entry(key1) {
             let map_l2 = entry_l1.get_mut();
@@ -54,6 +60,18 @@ where
     }
     pub(crate) fn remove_l1(&mut self, key: &K1) -> Option<Map<K2, V, H2>> {
         self.data.remove(key)
+    }
+}
+impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher + Default,
+{
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
+        let m1l = self.data.entry(key1).or_default();
+        m1l.insert(key2, value);
     }
 }
 impl<K1, K2, V, H1, H2> Default for MapMap<K1, K2, V, H1, H2>

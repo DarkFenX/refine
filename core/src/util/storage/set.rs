@@ -11,7 +11,6 @@ pub(crate) struct Set<V, H> {
 }
 impl<V, H> Set<V, H>
 where
-    V: Eq + Hash,
     H: BuildHasher + Default,
 {
     pub(crate) fn new() -> Self {
@@ -24,6 +23,16 @@ where
             data: HashSet::with_capacity_and_hasher(capacity, Default::default()),
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<V, H> Set<V, H>
+where
+    V: Eq + Hash,
+    H: BuildHasher,
+{
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
         self.data.iter()
     }
@@ -87,6 +96,10 @@ where
         Self::new()
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<V, H> FromIterator<V> for Set<V, H>
 where
     V: Eq + Hash,

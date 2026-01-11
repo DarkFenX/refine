@@ -14,8 +14,6 @@ pub(crate) struct MapSet<K, V, H1, H2> {
 }
 impl<K, V, H1, H2> MapSet<K, V, H1, H2>
 where
-    K: Eq + Hash,
-    V: Eq + Hash,
     H1: BuildHasher + Default,
     H2: BuildHasher + Default,
 {
@@ -25,6 +23,18 @@ where
             buffer: Set::new(),
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<K, V, H1, H2> MapSet<K, V, H1, H2>
+where
+    K: Eq + Hash,
+    V: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher,
+{
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V, H1, H2> {
         match self.data.get(key) {
             Some(v) => v.iter(),
@@ -53,34 +63,6 @@ where
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
-    // Modification methods
-    pub(crate) fn add_entry(&mut self, key: K, value: V) {
-        self.data
-            .entry(key)
-            .or_insert_with(|| Set::with_capacity(1))
-            .insert(value);
-    }
-    pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
-        if entries.len() == 0 {
-            return;
-        }
-        self.data
-            .entry(key)
-            .or_insert_with(|| Set::with_capacity(entries.len()))
-            .extend(entries);
-    }
-    pub(crate) fn remove_entry(&mut self, key: K, value: &V) {
-        if let Entry::Occupied(mut entry) = self.data.entry(key) {
-            let set = entry.get_mut();
-            set.remove(value);
-            if set.is_empty() {
-                entry.remove();
-            }
-        }
-    }
-    pub(crate) fn remove_key(&mut self, key: &K) -> impl ExactSizeIterator<Item = V> + use<K, V, H1, H2> {
-        self.data.remove(key).unwrap_or_default().into_iter()
-    }
     // Buffer methods
     pub(crate) fn buffer_if<F>(&mut self, key: K, filter: F)
     where
@@ -96,6 +78,49 @@ where
     }
     pub(crate) fn drain_buffer(&mut self) -> impl ExactSizeIterator<Item = V> {
         self.buffer.drain()
+    }
+}
+impl<K, V, H1, H2> MapSet<K, V, H1, H2>
+where
+    K: Eq + Hash,
+    V: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher + Default,
+{
+    pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
+        if entries.len() == 0 {
+            return;
+        }
+        self.data
+            .entry(key)
+            .or_insert_with(|| Set::with_capacity(entries.len()))
+            .extend(entries);
+    }
+}
+impl<K, V, H1, H2> MapSet<K, V, H1, H2>
+where
+    K: Eq + Hash,
+    V: Eq + Hash,
+    H1: BuildHasher,
+    H2: BuildHasher + Default,
+{
+    pub(crate) fn add_entry(&mut self, key: K, value: V) {
+        self.data
+            .entry(key)
+            .or_insert_with(|| Set::with_capacity(1))
+            .insert(value);
+    }
+    pub(crate) fn remove_entry(&mut self, key: K, value: &V) {
+        if let Entry::Occupied(mut entry) = self.data.entry(key) {
+            let set = entry.get_mut();
+            set.remove(value);
+            if set.is_empty() {
+                entry.remove();
+            }
+        }
+    }
+    pub(crate) fn remove_key(&mut self, key: &K) -> impl ExactSizeIterator<Item = V> + use<K, V, H1, H2> {
+        self.data.remove(key).unwrap_or_default().into_iter()
     }
 }
 impl<K, V, H1, H2> Default for MapSet<K, V, H1, H2>
