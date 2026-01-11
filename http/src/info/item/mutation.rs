@@ -13,7 +13,7 @@ impl From<rc::EffectiveMutation<'_>> for HItemMutationInfo {
     fn from(core_effective_mutation: rc::EffectiveMutation) -> Self {
         Self {
             base_type_id: core_effective_mutation.get_base_type_id().into_i32(),
-            mutator_id: core_effective_mutation.get_mutator_id().into_i32(),
+            mutator_id: core_effective_mutation.get_mutator_type_id().into_i32(),
             attrs: core_effective_mutation
                 .iter_full_mattrs()
                 .map(|v| (v.get_attr_id().into(), v.into()))

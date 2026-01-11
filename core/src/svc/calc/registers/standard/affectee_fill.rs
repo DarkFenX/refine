@@ -82,15 +82,15 @@ impl StandardRegister {
                 let key = (fit_uid, loc_kind, item_grp_id);
                 extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
             }
-            AffecteeFilter::LocSrq(loc, srq_type_id)
+            AffecteeFilter::LocSrq(loc, srq_type_aid)
                 if let Ok(loc_kind) = loc.try_into()
                     && check_location_root(ctx.u_data, loc_kind, fit_uid) =>
             {
-                let key = (fit_uid, loc_kind, srq_type_id);
+                let key = (fit_uid, loc_kind, srq_type_aid);
                 extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
             }
-            AffecteeFilter::OwnSrq(srq_type_id) => {
-                let key = (fit_uid, srq_type_id);
+            AffecteeFilter::OwnSrq(srq_type_aid) => {
+                let key = (fit_uid, srq_type_aid);
                 extend_vec_from_map_set_l1(affectees, &self.affectee_own_srq, &key);
             }
             _ => (),
@@ -123,17 +123,17 @@ impl StandardRegister {
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
                 }
             }
-            AffecteeFilter::LocSrq(_, srq_type_id) => {
+            AffecteeFilter::LocSrq(_, srq_type_aid) => {
                 let projectee_item = ctx.u_data.items.get(projectee_uid);
                 if let UItem::Ship(projectee_ship) = projectee_item
                     && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
                 {
-                    let key = (projectee_ship.get_fit_uid(), loc_kind, srq_type_id);
+                    let key = (projectee_ship.get_fit_uid(), loc_kind, srq_type_aid);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
                 }
             }
-            AffecteeFilter::OwnSrq(srq_type_id) => {
-                let key = (fit_uid, srq_type_id);
+            AffecteeFilter::OwnSrq(srq_type_aid) => {
+                let key = (fit_uid, srq_type_aid);
                 extend_vec_from_map_set_l1(affectees, &self.affectee_own_srq, &key);
             }
             _ => (),
@@ -155,10 +155,10 @@ impl StandardRegister {
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
                 }
             }
-            AffecteeFilter::LocSrq(_, srq_type_id) => {
+            AffecteeFilter::LocSrq(_, srq_type_aid) => {
                 let fit = ctx.u_data.fits.get(fit_uid);
                 if let Ok(loc_kind) = fit.ship_kind.try_into() {
-                    let key = (fit_uid, loc_kind, srq_type_id);
+                    let key = (fit_uid, loc_kind, srq_type_aid);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);
                 }
             }

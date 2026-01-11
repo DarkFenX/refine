@@ -10,7 +10,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_ship(
         &mut self,
         fit_uid: UFitId,
-        type_id: AItemId,
+        type_aid: AItemId,
         physics: UPhysics,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
@@ -21,7 +21,7 @@ impl SolarSystem {
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
-        let u_ship = UShip::new(item_id, type_id, fit_uid, true, physics, &self.u_data.src);
+        let u_ship = UShip::new(item_id, type_aid, fit_uid, true, physics, &self.u_data.src);
         let ship_kind = u_ship.get_kind();
         let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(PValue::ZERO);
         let u_item = UItem::Ship(u_ship);

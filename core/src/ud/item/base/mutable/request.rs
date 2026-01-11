@@ -4,7 +4,7 @@ use crate::{
 };
 
 pub(crate) struct UItemMutationRequest {
-    pub(crate) mutator_item_aid: AItemId,
+    pub(crate) mutator_type_aid: AItemId,
     pub(crate) attrs: Vec<UAttrMutationRequest>,
 }
 

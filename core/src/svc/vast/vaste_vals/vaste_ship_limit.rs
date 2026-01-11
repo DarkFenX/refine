@@ -27,12 +27,12 @@ impl ValShipLimitItemInfo {
     fn from_r_item_ship_limit(item_ship_limit: &RItemShipLimit) -> Self {
         Self {
             allowed_type_ids: item_ship_limit
-                .type_ids
+                .type_aids
                 .iter()
-                .map(|item_aid| ItemTypeId::from_aid(*item_aid))
+                .map(|type_aid| ItemTypeId::from_aid(*type_aid))
                 .collect(),
             allowed_group_ids: item_ship_limit
-                .group_ids
+                .group_aids
                 .iter()
                 .map(|item_grp_aid| ItemGrpId::from_aid(*item_grp_aid))
                 .collect(),
@@ -52,14 +52,14 @@ impl VastFitData {
                 };
             }
         };
-        let ship_type_id = ship.get_type_id();
-        let ship_group_id = ship.get_group_id();
+        let ship_type_aid = ship.get_type_aid();
+        let ship_group_aid = ship.get_group_id();
         for (limited_item_uid, ship_limit) in self.ship_limited_items.iter() {
-            if ship_limit.type_ids.contains(&ship_type_id) {
+            if ship_limit.type_aids.contains(&ship_type_aid) {
                 continue;
             }
-            if let Some(ship_group_id) = ship_group_id
-                && ship_limit.group_ids.contains(&ship_group_id)
+            if let Some(ship_group_aid) = ship_group_aid
+                && ship_limit.group_aids.contains(&ship_group_aid)
             {
                 continue;
             }
@@ -80,19 +80,19 @@ impl VastFitData {
         if self.ship_limited_items.is_empty() {
             return None;
         }
-        let (ship_item_aid, ship_group_aid) = match ship {
-            Some(ship) => (Some(ship.get_type_id()), ship.get_group_id()),
+        let (ship_type_aid, ship_group_aid) = match ship {
+            Some(ship) => (Some(ship.get_type_aid()), ship.get_group_id()),
             None => (None, None),
         };
         let mut mismatches = HashMap::new();
         for (limited_item_uid, ship_limit) in self.ship_limited_items.iter() {
-            if let Some(ship_item_aid) = ship_item_aid
-                && ship_limit.type_ids.contains(&ship_item_aid)
+            if let Some(ship_type_aid) = ship_type_aid
+                && ship_limit.type_aids.contains(&ship_type_aid)
             {
                 continue;
             }
             if let Some(ship_group_aid) = ship_group_aid
-                && ship_limit.group_ids.contains(&ship_group_aid)
+                && ship_limit.group_aids.contains(&ship_group_aid)
             {
                 continue;
             }
@@ -107,7 +107,7 @@ impl VastFitData {
         match mismatches.is_empty() {
             true => None,
             false => Some(ValShipLimitFail {
-                ship_type_id: ship_item_aid.map(ItemTypeId::from_aid),
+                ship_type_id: ship_type_aid.map(ItemTypeId::from_aid),
                 ship_group_id: ship_group_aid.map(ItemGrpId::from_aid),
                 items: mismatches,
             }),

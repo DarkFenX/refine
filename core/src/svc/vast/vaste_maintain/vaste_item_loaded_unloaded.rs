@@ -165,7 +165,7 @@ impl Vast {
                 if let Some(max_fitted) = item_axt.max_type_fitted {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .add_entry(module.get_type_id(), item_uid, max_fitted);
+                        .add_entry(module.get_type_aid(), item_uid, max_fitted);
                 }
                 if let Some(RShipKind::CapitalShip) = item_axt.item_ship_kind {
                     fit_data.mods_capital.insert(item_uid, item_axt.volume);
@@ -236,7 +236,7 @@ impl Vast {
                 if let Some(max_fitted) = item_axt.max_type_fitted {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .add_entry(service.get_type_id(), item_uid, max_fitted);
+                        .add_entry(service.get_type_aid(), item_uid, max_fitted);
                 }
                 if item_axt.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_uid);
@@ -448,7 +448,7 @@ impl Vast {
                 if item_axt.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(module.get_type_id(), item_uid);
+                        .remove_l2(module.get_type_aid(), item_uid);
                 }
                 if item_axt.online_max_sec_class.is_some() {
                     fit_data.sec_zone_unonlineable_class.remove(item_uid);
@@ -500,7 +500,7 @@ impl Vast {
                 if item_axt.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(service.get_type_id(), item_uid);
+                        .remove_l2(service.get_type_aid(), item_uid);
                 }
                 if item_axt.sec_zone_limitable {
                     fit_data.sec_zone_fitted.remove(item_uid);

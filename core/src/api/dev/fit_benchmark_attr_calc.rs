@@ -21,13 +21,13 @@ impl<'a> FitMut<'a> {
                 attr_rids.push(attr_rid);
             }
         }
-        let item_aid = type_id.into_aid();
+        let type_aid = type_id.into_aid();
         for _ in 0..iterations {
             let item_uid = self.sol.internal_add_module(
                 self.uid,
                 ModRack::Low,
                 AddMode::Equip,
-                item_aid,
+                type_aid,
                 ModuleState::Online,
                 None,
                 None,

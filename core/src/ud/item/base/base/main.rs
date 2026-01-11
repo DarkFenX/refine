@@ -18,7 +18,7 @@ use crate::{
 pub(in crate::ud::item) struct UItemBase {
     // User-defined data
     item_id: ItemId,
-    type_id: AItemId,
+    type_aid: AItemId,
     state: RState,
     pub(super) effect_modes: UEffectModes,
     // Source-dependent data
@@ -26,26 +26,26 @@ pub(in crate::ud::item) struct UItemBase {
 }
 impl UItemBase {
     // Constructors
-    pub(in crate::ud::item) fn new(item_id: ItemId, type_id: AItemId, state: RState, src: &Src) -> Self {
+    pub(in crate::ud::item) fn new(item_id: ItemId, type_aid: AItemId, state: RState, src: &Src) -> Self {
         Self {
             item_id,
-            type_id,
+            type_aid,
             state,
             effect_modes: UEffectModes::new(),
-            cache: src.get_item_by_aid(&type_id).map(|r_item| ItemBaseCache {
+            cache: src.get_item_by_aid(&type_aid).map(|r_item| ItemBaseCache {
                 r_item: r_item.clone(),
                 reffs: RSet::new(),
             }),
         }
     }
-    pub(in crate::ud::item::base) fn base_new_with_type_id_not_loaded(
+    pub(in crate::ud::item::base) fn base_new_with_type_aid_not_loaded(
         item_id: ItemId,
-        type_id: AItemId,
+        type_aid: AItemId,
         state: RState,
     ) -> Self {
         Self {
             item_id,
-            type_id,
+            type_aid,
             state,
             effect_modes: UEffectModes::new(),
             cache: None,
@@ -54,7 +54,7 @@ impl UItemBase {
     pub(in crate::ud::item::base) fn base_new_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
         Self {
             item_id,
-            type_id: r_item.aid,
+            type_aid: r_item.aid,
             state,
             effect_modes: UEffectModes::new(),
             cache: Some(ItemBaseCache {
@@ -67,11 +67,11 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_item_id(&self) -> ItemId {
         self.item_id
     }
-    pub(in crate::ud::item) fn get_type_id(&self) -> AItemId {
-        self.type_id
+    pub(in crate::ud::item) fn get_type_aid(&self) -> AItemId {
+        self.type_aid
     }
-    pub(in crate::ud::item) fn set_type_id(&mut self, type_id: AItemId, src: &Src) {
-        self.type_id = type_id;
+    pub(in crate::ud::item) fn set_type_aid(&mut self, type_aid: AItemId, src: &Src) {
+        self.type_aid = type_aid;
         self.base_update_r_data(src);
     }
     pub(in crate::ud::item) fn get_group_id(&self) -> Option<AItemGrpId> {
@@ -180,21 +180,21 @@ impl UItemBase {
         self.base_update_r_data(src);
     }
     pub(in crate::ud::item::base) fn base_update_r_data(&mut self, src: &Src) {
-        match src.get_item_by_aid(&self.type_id) {
+        match src.get_item_by_aid(&self.type_aid) {
             Some(r_item) => self.base_set_r_item(r_item.clone()),
             None => self.cache = None,
         }
     }
     // Non-public methods
-    pub(in crate::ud::item::base) fn base_set_type_id_primitive(&mut self, type_id: AItemId) {
-        self.type_id = type_id;
+    pub(in crate::ud::item::base) fn base_set_type_aid_primitive(&mut self, type_aid: AItemId) {
+        self.type_aid = type_aid;
     }
-    pub(in crate::ud::item::base) fn base_set_type_id_not_loaded(&mut self, type_id: AItemId) {
-        self.type_id = type_id;
+    pub(in crate::ud::item::base) fn base_set_type_aid_not_loaded(&mut self, type_aid: AItemId) {
+        self.type_aid = type_aid;
         self.cache = None;
     }
     pub(in crate::ud::item::base) fn base_set_r_item(&mut self, r_item: RcItem) {
-        self.type_id = r_item.aid;
+        self.type_aid = r_item.aid;
         match &mut self.cache {
             Some(cache) => {
                 cache.r_item = r_item;

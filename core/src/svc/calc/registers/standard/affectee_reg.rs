@@ -35,14 +35,14 @@ impl StandardRegister {
             self.affectee_loc.add_entry((fit_uid, loc_kind), item_uid);
             self.affectee_loc_grp
                 .add_entry((fit_uid, loc_kind, item_grp_id), item_uid);
-            for &srq_type_id in srqs.keys() {
+            for &srq_type_aid in srqs.keys() {
                 self.affectee_loc_srq
-                    .add_entry((fit_uid, loc_kind, srq_type_id), item_uid);
+                    .add_entry((fit_uid, loc_kind, srq_type_aid), item_uid);
             }
         }
         if item.is_owner_modifiable() {
-            for &srq_type_id in srqs.keys() {
-                self.affectee_own_srq.add_entry((fit_uid, srq_type_id), item_uid);
+            for &srq_type_aid in srqs.keys() {
+                self.affectee_own_srq.add_entry((fit_uid, srq_type_aid), item_uid);
             }
         }
         // Buff-related processing
@@ -105,14 +105,14 @@ impl StandardRegister {
             self.affectee_loc.remove_entry((fit_uid, loc_kind), &item_uid);
             self.affectee_loc_grp
                 .remove_entry((fit_uid, loc_kind, item_grp_id), &item_uid);
-            for &srq_type_id in srqs.keys() {
+            for &srq_type_aid in srqs.keys() {
                 self.affectee_loc_srq
-                    .remove_entry((fit_uid, loc_kind, srq_type_id), &item_uid);
+                    .remove_entry((fit_uid, loc_kind, srq_type_aid), &item_uid);
             }
         }
         if item.is_owner_modifiable() {
-            for &srq_type_id in srqs.keys() {
-                self.affectee_own_srq.remove_entry((fit_uid, srq_type_id), &item_uid);
+            for &srq_type_aid in srqs.keys() {
+                self.affectee_own_srq.remove_entry((fit_uid, srq_type_aid), &item_uid);
             }
         }
         // Buff-related processing

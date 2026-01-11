@@ -16,8 +16,8 @@ impl ItemTypeId {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemTypeId {
-    pub(crate) fn from_aid(item_aid: AItemId) -> Self {
-        Self(item_aid.into_i32())
+    pub(crate) fn from_aid(type_aid: AItemId) -> Self {
+        Self(type_aid.into_i32())
     }
     pub(in crate::api) fn into_aid(self) -> AItemId {
         AItemId::from_i32(self.0)

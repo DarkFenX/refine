@@ -9,10 +9,10 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn skill_level_changed(&mut self, u_data: &UData, skill: &USkill) {
         let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
-        for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_id()) {
+        for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_aid()) {
             match fit_data.srqs_missing.entry(other_item_uid) {
                 Entry::Occupied(mut missing_skills_entry) => {
-                    match missing_skills_entry.get_mut().entry(skill.get_type_id()) {
+                    match missing_skills_entry.get_mut().entry(skill.get_type_aid()) {
                         // Entry for the item and entry for the skill - update / remove data as
                         // needed
                         Entry::Occupied(mut missing_skill_entry) => {
@@ -33,7 +33,7 @@ impl Vast {
                             let required_a_lvl = *other_item
                                 .get_effective_skill_reqs()
                                 .unwrap()
-                                .get(&skill.get_type_id())
+                                .get(&skill.get_type_aid())
                                 .unwrap();
                             if skill.get_level() < required_a_lvl {
                                 missing_skill_entry.insert(ValSrqSkillInfo {
@@ -50,12 +50,12 @@ impl Vast {
                     let required_a_lvl = *other_item
                         .get_effective_skill_reqs()
                         .unwrap()
-                        .get(&skill.get_type_id())
+                        .get(&skill.get_type_aid())
                         .unwrap();
                     if skill.get_level() < required_a_lvl {
                         let mut missing_skills = RMap::new();
                         missing_skills.insert(
-                            skill.get_type_id(),
+                            skill.get_type_aid(),
                             ValSrqSkillInfo {
                                 current_lvl: Some(skill.get_level().into()),
                                 required_lvl: required_a_lvl.into(),

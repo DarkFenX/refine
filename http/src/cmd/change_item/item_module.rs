@@ -55,7 +55,7 @@ impl HChangeModuleCmd {
                 HMutationOnChange::Mutator(mutator_id) => {
                     let core_mutator_id = rc::ItemTypeId::from_i32(*mutator_id);
                     match core_module.get_mutation_mut() {
-                        Some(mutation) => mutation.set_mutator_id(core_mutator_id),
+                        Some(mutation) => mutation.set_mutator_type_id(core_mutator_id),
                         None => core_module.mutate(core_mutator_id).unwrap(),
                     };
                 }

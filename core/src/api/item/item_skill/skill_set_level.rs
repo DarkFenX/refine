@@ -12,7 +12,7 @@ impl SolarSystem {
             .fits
             .get_mut(u_skill.get_fit_uid())
             .skills
-            .get_mut(&u_skill.get_type_id())
+            .get_mut(&u_skill.get_type_aid())
             .unwrap();
         fit_skill.level = level;
         let u_skill = self.u_data.items.get(skill_uid).dc_skill().unwrap();

@@ -41,18 +41,18 @@ impl StandardRegister {
                     &(fit_uid, loc_kind, item_grp_id),
                     attr_rid,
                 );
-                for &srq_type_id in srqs.keys() {
+                for &srq_type_aid in srqs.keys() {
                     filter_and_extend(
                         &mut cmods,
                         &self.cmods.loc_srq,
-                        &(fit_uid, loc_kind, srq_type_id),
+                        &(fit_uid, loc_kind, srq_type_aid),
                         attr_rid,
                     );
                 }
             }
             if item.is_owner_modifiable() {
-                for &srq_type_id in srqs.keys() {
-                    filter_and_extend(&mut cmods, &self.cmods.own_srq, &(fit_uid, srq_type_id), attr_rid);
+                for &srq_type_aid in srqs.keys() {
+                    filter_and_extend(&mut cmods, &self.cmods.own_srq, &(fit_uid, srq_type_aid), attr_rid);
                 }
             }
         }

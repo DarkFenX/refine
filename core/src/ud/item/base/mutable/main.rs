@@ -31,7 +31,7 @@ pub(in crate::ud::item) struct UItemBaseMutable {
 impl UItemBaseMutable {
     pub(in crate::ud::item) fn new(
         item_id: ItemId,
-        type_id: AItemId,
+        type_aid: AItemId,
         state: RState,
         mutation_request: Option<UItemMutationRequest>,
         src: &Src,
@@ -41,28 +41,28 @@ impl UItemBaseMutable {
             // No mutation - regular non-mutated item setup
             None => {
                 return Self {
-                    base: UItemBase::new(item_id, type_id, state, src),
+                    base: UItemBase::new(item_id, type_aid, state, src),
                     mutation: None,
                 };
             }
         };
-        let mutator_id = mutation_request.mutator_item_aid;
+        let mutator_type_aid = mutation_request.mutator_type_aid;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
-        let mutator = match src.get_mutator_by_aid(&mutator_id) {
+        let mutator = match src.get_mutator_by_aid(&mutator_type_aid) {
             Some(mutator) => mutator,
             // No mutator - base item with ineffective user-defined mutations
             None => {
                 return Self {
-                    base: UItemBase::new(item_id, type_id, state, src),
+                    base: UItemBase::new(item_id, type_aid, state, src),
                     mutation: Some(item_mutation_data),
                 };
             }
         };
         // No mutated item ID in mapping or no mutated item itself
-        let mutated_r_item = match mutator.item_map.get(&type_id).and_then(|v| src.get_item_by_aid(v)) {
+        let mutated_r_item = match mutator.item_map.get(&type_aid).and_then(|v| src.get_item_by_aid(v)) {
             Some(mutated_r_item) => mutated_r_item,
             None => {
-                return match src.get_item_by_aid(&type_id) {
+                return match src.get_item_by_aid(&type_aid) {
                     // If base item is available, return base item, but with ineffective
                     // user-defined mutations
                     Some(base_r_item) => Self {
@@ -71,20 +71,20 @@ impl UItemBaseMutable {
                     },
                     // No base item - unloaded item with ineffective user-defined mutations
                     None => Self {
-                        base: UItemBase::base_new_with_type_id_not_loaded(item_id, type_id, state),
+                        base: UItemBase::base_new_with_type_aid_not_loaded(item_id, type_aid, state),
                         mutation: Some(item_mutation_data),
                     },
                 };
             }
         };
         // Make proper mutated item once we have all the data
-        let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&type_id), mutated_r_item);
+        let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&type_aid), mutated_r_item);
         let merged_effects = merge_effects(mutated_r_item, &merged_attrs, src);
         let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effects.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
         let regular_base = UItemBase::base_new_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
-            base_type_id: type_id,
+            base_type_aid: type_aid,
             mutator: mutator.clone(),
             merged_attrs,
             merged_effects,
@@ -101,20 +101,20 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(in crate::ud::item) fn get_type_id(&self) -> AItemId {
-        self.base.get_type_id()
+    pub(in crate::ud::item) fn get_type_aid(&self) -> AItemId {
+        self.base.get_type_aid()
     }
-    pub(in crate::ud::item) fn set_type_id(&mut self, type_id: AItemId, src: &Src) {
+    pub(in crate::ud::item) fn set_type_aid(&mut self, type_aid: AItemId, src: &Src) {
         // Since this method is supposed to update base item ID for mutated items, location of ID
         // depends on item configuration
         match &mut self.mutation {
             Some(mutation_data) => match &mut mutation_data.cache {
                 Some(mutation_cache) => {
-                    mutation_cache.base_type_id = type_id;
+                    mutation_cache.base_type_aid = type_aid;
                 }
-                None => self.base.base_set_type_id_primitive(type_id),
+                None => self.base.base_set_type_aid_primitive(type_aid),
             },
-            None => self.base.base_set_type_id_primitive(type_id),
+            None => self.base.base_set_type_aid_primitive(type_aid),
         }
         // Even if mutation is not effective with old base type ID, it might become effective with
         // the new one, so - update the data the mutated way regardless of presence of the mutation
@@ -239,52 +239,56 @@ impl UItemBaseMutable {
                 return;
             }
         };
-        let base_type_id = match &item_mutation.cache {
-            Some(cache) => cache.base_type_id,
-            None => self.base.get_type_id(),
+        let base_type_aid = match &item_mutation.cache {
+            Some(cache) => cache.base_type_aid,
+            None => self.base.get_type_aid(),
         };
-        let mutator = match src.get_mutator_by_aid(&item_mutation.mutator_id) {
+        let mutator = match src.get_mutator_by_aid(&item_mutation.mutator_type_aid) {
             Some(mutator) => mutator,
             // No mutator - invalidate mutated cache and use non-mutated item
-            None => match src.get_item_by_aid(&base_type_id) {
+            None => match src.get_item_by_aid(&base_type_aid) {
                 Some(base_r_item) => {
                     self.base.base_set_r_item(base_r_item.clone());
                     item_mutation.cache = None;
                     return;
                 }
                 None => {
-                    self.base.base_set_type_id_not_loaded(base_type_id);
+                    self.base.base_set_type_aid_not_loaded(base_type_aid);
                     item_mutation.cache = None;
                     return;
                 }
             },
         };
-        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item_by_aid(v)) {
+        let mutated_r_item = match mutator
+            .item_map
+            .get(&base_type_aid)
+            .and_then(|v| src.get_item_by_aid(v))
+        {
             Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no item itself - invalidate mutated cache and use non-mutated
             // item
-            None => match src.get_item_by_aid(&base_type_id) {
+            None => match src.get_item_by_aid(&base_type_aid) {
                 Some(base_r_item) => {
                     self.base.base_set_r_item(base_r_item.clone());
                     item_mutation.cache = None;
                     return;
                 }
                 None => {
-                    self.base.base_set_type_id_not_loaded(base_type_id);
+                    self.base.base_set_type_aid_not_loaded(base_type_aid);
                     item_mutation.cache = None;
                     return;
                 }
             },
         };
         // Compose attribute cache
-        let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&base_type_id), mutated_r_item);
+        let mut merged_attrs = get_combined_attr_values(src.get_item_by_aid(&base_type_aid), mutated_r_item);
         let merged_effects = merge_effects(mutated_r_item, &merged_attrs, src);
         let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effects.as_ref(), src);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation.attr_rolls, src);
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
-            base_type_id,
+            base_type_aid,
             mutator: mutator.clone(),
             merged_attrs,
             merged_effects,
@@ -308,10 +312,10 @@ impl UItemBaseMutable {
             });
         };
         // Since item is not mutated, base aitem ID is always on non-mutated item base
-        let base_type_id = self.base.get_type_id();
-        let mutator_id = mutation_request.mutator_item_aid;
+        let base_type_aid = self.base.get_type_aid();
+        let mutator_type_aid = mutation_request.mutator_type_aid;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
-        let mutator = match src.get_mutator_by_aid(&mutator_id) {
+        let mutator = match src.get_mutator_by_aid(&mutator_type_aid) {
             Some(mutator) => mutator,
             // No mutator - nothing changes, except for user-defined mutations getting stored
             None => {
@@ -319,7 +323,11 @@ impl UItemBaseMutable {
                 return Ok(());
             }
         };
-        let mutated_r_item = match mutator.item_map.get(&base_type_id).and_then(|v| src.get_item_by_aid(v)) {
+        let mutated_r_item = match mutator
+            .item_map
+            .get(&base_type_aid)
+            .and_then(|v| src.get_item_by_aid(v))
+        {
             Some(mutated_r_item) => mutated_r_item,
             // No mutated aitem ID or no mutated item itself - nothing changes, except for
             // user-defined mutations getting stored
@@ -335,7 +343,7 @@ impl UItemBaseMutable {
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, src);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
-            base_type_id,
+            base_type_aid,
             mutator: mutator.clone(),
             merged_attrs,
             merged_effects,
@@ -378,12 +386,12 @@ impl UItemBaseMutable {
         // All the methods which set cache guarantee that all the following entities are available
         // for the source the cache was generated with, and this method is supposed to be called
         // with the same source
-        let mutated_type_id = mutation_cache
+        let mutated_type_aid = mutation_cache
             .mutator
             .item_map
-            .get(&mutation_cache.base_type_id)
+            .get(&mutation_cache.base_type_aid)
             .unwrap();
-        let mutated_r_item = src.get_item_by_aid(mutated_type_id).unwrap();
+        let mutated_r_item = src.get_item_by_aid(mutated_type_aid).unwrap();
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut base_r_item_cache = None;
         let mut changed_attr_rids = Vec::new();
@@ -398,7 +406,7 @@ impl UItemBaseMutable {
                     // Process source-dependent data and return new value
                     let unmutated_value = match get_combined_attr_value(
                         src,
-                        &mutation_cache.base_type_id,
+                        &mutation_cache.base_type_aid,
                         &mut base_r_item_cache,
                         mutated_r_item,
                         &attr_mutation_request.attr_aid,
@@ -429,7 +437,7 @@ impl UItemBaseMutable {
                     // Update source-dependent data
                     let unmutated_value = match get_combined_attr_value(
                         src,
-                        &mutation_cache.base_type_id,
+                        &mutation_cache.base_type_aid,
                         &mut base_r_item_cache,
                         mutated_r_item,
                         &attr_mutation_request.attr_aid,
@@ -461,9 +469,9 @@ impl UItemBaseMutable {
         }
         Ok(changed_attr_rids)
     }
-    pub(in crate::ud::item) fn set_mutator_id(
+    pub(in crate::ud::item) fn set_mutator_type_aid(
         &mut self,
-        mutator_id: AItemId,
+        mutator_type_aid: AItemId,
         src: &Src,
     ) -> Result<(), ItemMutatedError> {
         let item_mutation = match &mut self.mutation {
@@ -472,7 +480,7 @@ impl UItemBaseMutable {
                 return Err(ItemMutatedError {});
             }
         };
-        item_mutation.mutator_id = mutator_id;
+        item_mutation.mutator_type_aid = mutator_type_aid;
         self.update_r_data(src);
         Ok(())
     }
@@ -487,8 +495,8 @@ impl UItemBaseMutable {
             // If cache is there, mutation is effective - item base has mutated item, and base type
             // ID is stored on cache
             Some(cache) => {
-                let type_id = cache.base_type_id;
-                self.base.set_type_id(type_id, src);
+                let type_aid = cache.base_type_aid;
+                self.base.set_type_aid(type_aid, src);
                 self.mutation = None;
             }
             // No cache - mutation was not effective, and base item was used already, no changes
@@ -504,21 +512,21 @@ impl UItemBaseMutable {
 #[derive(Clone)]
 pub(crate) struct ItemMutationData {
     // User-defined data
-    mutator_id: AItemId,
+    mutator_type_aid: AItemId,
     attr_rolls: RMap<AAttrId, UnitInterval>,
     // Source-dependent data
     cache: Option<ItemMutationDataCache>,
 }
 impl ItemMutationData {
-    fn new_with_attrs(mutator_id: AItemId, attr_rolls: RMap<AAttrId, UnitInterval>) -> Self {
+    fn new_with_attrs(mutator_type_aid: AItemId, attr_rolls: RMap<AAttrId, UnitInterval>) -> Self {
         Self {
-            mutator_id,
+            mutator_type_aid,
             attr_rolls,
             cache: None,
         }
     }
-    pub(crate) fn get_mutator_id(&self) -> AItemId {
-        self.mutator_id
+    pub(crate) fn get_mutator_type_aid(&self) -> AItemId {
+        self.mutator_type_aid
     }
     pub(crate) fn get_attr_rolls(&self) -> &RMap<AAttrId, UnitInterval> {
         &self.attr_rolls
@@ -533,15 +541,15 @@ impl ItemMutationData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
 pub(crate) struct ItemMutationDataCache {
-    base_type_id: AItemId,
+    base_type_aid: AItemId,
     mutator: RcMuta,
     pub(super) merged_attrs: RMap<RAttrId, Value>,
     pub(super) merged_effects: Option<RMap<REffectId, RItemEffectData>>,
     pub(super) axt: RItemAXt,
 }
 impl ItemMutationDataCache {
-    pub(crate) fn get_base_type_id(&self) -> AItemId {
-        self.base_type_id
+    pub(crate) fn get_base_type_aid(&self) -> AItemId {
+        self.base_type_aid
     }
     pub(crate) fn get_r_mutator(&self) -> &RMuta {
         &self.mutator
@@ -550,7 +558,7 @@ impl ItemMutationDataCache {
 
 fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutationData {
     ItemMutationData::new_with_attrs(
-        mutation_request.mutator_item_aid,
+        mutation_request.mutator_type_aid,
         mutation_request
             .attrs
             .into_iter()
@@ -611,7 +619,7 @@ struct AttrRidVal {
 
 fn get_combined_attr_value<'a>(
     src: &'a Src,
-    base_type_id: &AItemId,
+    base_type_aid: &AItemId,
     base_r_item_cache: &mut Option<Option<&'a RcItem>>,
     mutated_r_item: &RItem,
     attr_id: &AAttrId,
@@ -625,7 +633,7 @@ fn get_combined_attr_value<'a>(
                 None => None,
             },
             None => {
-                let opt_base_r_item = src.get_item_by_aid(base_type_id);
+                let opt_base_r_item = src.get_item_by_aid(base_type_aid);
                 base_r_item_cache.replace(opt_base_r_item);
                 match opt_base_r_item {
                     Some(base_r_item) => base_r_item.attrs.get(&attr_rid).copied(),
@@ -652,16 +660,16 @@ fn merge_effects(
         if let Some(charge_info) = &effect.charge
             && let Some(attr_rid) = charge_info.location.get_autocharge_attr_rid()
         {
-            let new_ac_type_id = merged_attrs.get(&attr_rid).and_then(|v| {
-                let type_id = AItemId::from_f64_rounded(v.into_f64());
-                match type_id == AItemId::from_i32(0) {
+            let new_ac_type_aid = merged_attrs.get(&attr_rid).and_then(|v| {
+                let type_aid = AItemId::from_f64_rounded(v.into_f64());
+                match type_aid == AItemId::from_i32(0) {
                     true => None,
-                    false => Some(type_id),
+                    false => Some(type_aid),
                 }
             });
-            if new_ac_type_id != effect_data.autocharge {
+            if new_ac_type_aid != effect_data.autocharge {
                 let inner = result.get_or_insert_with(|| effects.clone());
-                inner.get_mut(&effect_rid).unwrap().autocharge = new_ac_type_id;
+                inner.get_mut(&effect_rid).unwrap().autocharge = new_ac_type_aid;
             }
         }
         // Projectee filter - same approach as for autocharges

@@ -79,25 +79,25 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_item_id(),
         }
     }
-    pub(crate) fn get_type_id(&self) -> AItemId {
+    pub(crate) fn get_type_aid(&self) -> AItemId {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_type_id(),
-            Self::Booster(booster) => booster.get_type_id(),
-            Self::Character(character) => character.get_type_id(),
-            Self::Charge(charge) => charge.get_type_id(),
-            Self::Drone(drone) => drone.get_type_id(),
-            Self::Fighter(fighter) => fighter.get_type_id(),
-            Self::FwEffect(fw_effect) => fw_effect.get_type_id(),
-            Self::Implant(implant) => implant.get_type_id(),
-            Self::Module(module) => module.get_type_id(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_type_id(),
-            Self::Rig(rig) => rig.get_type_id(),
-            Self::Service(service) => service.get_type_id(),
-            Self::Ship(ship) => ship.get_type_id(),
-            Self::Skill(skill) => skill.get_type_id(),
-            Self::Stance(stance) => stance.get_type_id(),
-            Self::Subsystem(subsystem) => subsystem.get_type_id(),
-            Self::SwEffect(sw_effect) => sw_effect.get_type_id(),
+            Self::Autocharge(autocharge) => autocharge.get_type_aid(),
+            Self::Booster(booster) => booster.get_type_aid(),
+            Self::Character(character) => character.get_type_aid(),
+            Self::Charge(charge) => charge.get_type_aid(),
+            Self::Drone(drone) => drone.get_type_aid(),
+            Self::Fighter(fighter) => fighter.get_type_aid(),
+            Self::FwEffect(fw_effect) => fw_effect.get_type_aid(),
+            Self::Implant(implant) => implant.get_type_aid(),
+            Self::Module(module) => module.get_type_aid(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_type_aid(),
+            Self::Rig(rig) => rig.get_type_aid(),
+            Self::Service(service) => service.get_type_aid(),
+            Self::Ship(ship) => ship.get_type_aid(),
+            Self::Skill(skill) => skill.get_type_aid(),
+            Self::Stance(stance) => stance.get_type_aid(),
+            Self::Subsystem(subsystem) => subsystem.get_type_aid(),
+            Self::SwEffect(sw_effect) => sw_effect.get_type_aid(),
         }
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {

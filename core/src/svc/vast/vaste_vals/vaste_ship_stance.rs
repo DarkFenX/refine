@@ -60,7 +60,7 @@ impl VastFitData {
 
 fn stanceable_matcher(ship: &UShip) -> bool {
     matches!(
-        ship.get_type_id(),
+        ship.get_type_aid(),
         AItemId::CONFESSOR | AItemId::HECATE | AItemId::JACKDAW | AItemId::SVIPUL | AItemId::SKUA | AItemId::ANHINGA
     )
 }

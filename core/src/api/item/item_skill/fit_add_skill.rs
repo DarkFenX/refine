@@ -13,15 +13,15 @@ impl SolarSystem {
     pub(in crate::api) fn internal_add_skill(
         &mut self,
         fit_uid: UFitId,
-        item_aid: AItemId,
+        type_aid: AItemId,
         level: SkillLevel,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<UItemId, SkillEveTypeError> {
         let fit = self.u_data.fits.get_mut(fit_uid);
-        match fit.skills.entry(item_aid) {
+        match fit.skills.entry(type_aid) {
             Entry::Vacant(entry) => {
                 let item_id = self.u_data.items.alloc_id();
-                let skill = USkill::new(item_id, item_aid, fit_uid, level.into(), true, &self.u_data.src);
+                let skill = USkill::new(item_id, type_aid, fit_uid, level.into(), true, &self.u_data.src);
                 let item = UItem::Skill(skill);
                 let skill_uid = self.u_data.items.add(item);
                 entry.insert(UFitSkill {
@@ -32,7 +32,7 @@ impl SolarSystem {
                 Ok(skill_uid)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
-                type_id: ItemTypeId::from_aid(item_aid),
+                type_id: ItemTypeId::from_aid(type_aid),
                 fit_id: fit.id,
                 item_id: self.u_data.items.xid_by_iid(entry.get().skill_uid),
             }),

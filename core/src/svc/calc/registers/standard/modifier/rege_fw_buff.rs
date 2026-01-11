@@ -59,13 +59,13 @@ impl StandardRegister {
                 }
                 true
             }
-            AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_id) => {
+            AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
-                    let key = (fit_uid, loc_kind, srq_type_id);
+                    let key = (fit_uid, loc_kind, srq_type_aid);
                     add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
@@ -120,13 +120,13 @@ impl StandardRegister {
                     reuse_cmods.push(cmod);
                 }
             }
-            AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_id) => {
+            AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
-                    let key = (fit_uid, loc_kind, srq_type_id);
+                    let key = (fit_uid, loc_kind, srq_type_aid);
                     remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
@@ -177,11 +177,11 @@ impl StandardRegister {
                     let key = (fit_uid, loc_kind, item_grp_id);
                     add_cmod(&mut self.cmods.loc_grp, key, cmod, &mut self.cmods.by_aspec);
                 }
-                AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_id)
+                AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid)
                     if proj_buff_item_lists.contains(&item_list_rid) =>
                 {
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, item_uid);
-                    let key = (fit_uid, loc_kind, srq_type_id);
+                    let key = (fit_uid, loc_kind, srq_type_aid);
                     add_cmod(&mut self.cmods.loc_srq, key, cmod, &mut self.cmods.by_aspec);
                 }
                 _ => (),
@@ -228,11 +228,11 @@ impl StandardRegister {
                     let key = (fit_uid, loc_kind, item_grp_id);
                     remove_cmod(&mut self.cmods.loc_grp, key, &cmod, &mut self.cmods.by_aspec);
                 }
-                AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_id)
+                AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid)
                     if proj_buff_item_lists.contains(&item_list_rid) =>
                 {
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, item_uid);
-                    let key = (fit_uid, loc_kind, srq_type_id);
+                    let key = (fit_uid, loc_kind, srq_type_aid);
                     remove_cmod(&mut self.cmods.loc_srq, key, &cmod, &mut self.cmods.by_aspec);
                 }
                 _ => (),

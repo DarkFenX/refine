@@ -30,22 +30,24 @@ impl SolarSystem {
             Some(fit_uid) => fit_uid,
             None => return,
         };
-        let effects_with_ac_type_ids = u_item
+        let effects_with_ac_type_aids = u_item
             .get_effects()
             .unwrap()
             .iter()
-            .filter_map(|(effect_rid, effect_data)| effect_data.autocharge.map(|ac_type_id| (*effect_rid, ac_type_id)))
+            .filter_map(|(effect_rid, effect_data)| {
+                effect_data.autocharge.map(|ac_type_aid| (*effect_rid, ac_type_aid))
+            })
             .collect_vec();
-        if effects_with_ac_type_ids.is_empty() {
+        if effects_with_ac_type_aids.is_empty() {
             return;
         }
         let projections = match u_item.get_projs() {
             Some(projs) => projs.iter().collect(),
             None => Vec::new(),
         };
-        let ac_datas = effects_with_ac_type_ids
+        let ac_datas = effects_with_ac_type_aids
             .into_iter()
-            .filter_map(|(effect_rid, ac_type_id)| {
+            .filter_map(|(effect_rid, ac_type_aid)| {
                 let autocharge_item_id = u_data.items.alloc_id();
                 // Autocharge is activated only if effect controlling it is running, and activates
                 // charges
@@ -57,7 +59,7 @@ impl SolarSystem {
                         .is_some_and(|v| v.contains(&effect_rid));
                 let u_autocharge = UAutocharge::new(
                     autocharge_item_id,
-                    ac_type_id,
+                    ac_type_aid,
                     fit_uid,
                     item_uid,
                     effect_rid,

@@ -46,7 +46,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
         return Err(ItemMAttrMutatorError {
             item_id: sol.u_data.items.xid_by_iid(item_uid),
             attr_id: AttrId::from_aid(*attr_aid),
-            mutator_id: ItemTypeId::from_aid(mutation_cache.get_r_mutator().id),
+            mutator_type_id: ItemTypeId::from_aid(mutation_cache.get_r_mutator().id),
         }
         .into());
     };

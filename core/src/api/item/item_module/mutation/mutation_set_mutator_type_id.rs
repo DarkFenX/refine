@@ -8,12 +8,12 @@ impl SolarSystem {
     pub(in crate::api) fn internal_set_module_mutator_aid(
         &mut self,
         module_uid: UItemId,
-        mutator_id: AItemId,
+        mutator_type_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         SolarSystem::util_remove_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        if let Err(error) = u_module.set_mutator_id(mutator_id, &self.u_data.src) {
+        if let Err(error) = u_module.set_mutator_type_aid(mutator_type_aid, &self.u_data.src) {
             SolarSystem::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
             return Err(error);
         }

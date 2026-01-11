@@ -9,14 +9,14 @@ impl SolarSystem {
     pub(in crate::api) fn internal_add_drone(
         &mut self,
         fit_uid: UFitId,
-        type_id: AItemId,
+        type_aid: AItemId,
         state: MinionState,
         mutation: Option<UItemMutationRequest>,
         physics: UPhysics,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
-        let u_drone = UDrone::new(item_id, type_id, fit_uid, state, mutation, physics, &self.u_data.src);
+        let u_drone = UDrone::new(item_id, type_aid, fit_uid, state, mutation, physics, &self.u_data.src);
         let u_item = UItem::Drone(u_drone);
         let drone_uid = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_uid);

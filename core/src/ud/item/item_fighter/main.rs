@@ -25,14 +25,14 @@ pub(crate) struct UFighter {
 impl UFighter {
     pub(crate) fn new(
         item_id: ItemId,
-        type_id: AItemId,
+        type_aid: AItemId,
         fit_uid: UFitId,
         fighter_state: MinionState,
         physics: UPhysics,
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBase::new(item_id, type_id, fighter_state.into_r_state(), src),
+            base: UItemBase::new(item_id, type_aid, fighter_state.into_r_state(), src),
             fit_uid,
             count_override: None,
             autocharges: UAutocharges::new(),
@@ -45,11 +45,11 @@ impl UFighter {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(crate) fn get_type_id(&self) -> AItemId {
-        self.base.get_type_id()
+    pub(crate) fn get_type_aid(&self) -> AItemId {
+        self.base.get_type_aid()
     }
-    pub(crate) fn set_type_id(&mut self, type_id: AItemId, src: &Src) {
-        self.base.set_type_id(type_id, src);
+    pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, src: &Src) {
+        self.base.set_type_aid(type_aid, src);
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_group_id()
@@ -186,7 +186,7 @@ impl std::fmt::Display for UFighter {
             "{}(item_id={}, type_id={})",
             Self::lib_get_name(),
             self.get_item_id(),
-            self.get_type_id(),
+            self.get_type_aid(),
         )
     }
 }

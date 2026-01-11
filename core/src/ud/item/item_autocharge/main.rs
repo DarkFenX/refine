@@ -23,7 +23,7 @@ pub(crate) struct UAutocharge {
 impl UAutocharge {
     pub(crate) fn new(
         item_id: ItemId,
-        type_id: AItemId,
+        type_aid: AItemId,
         fit_uid: UFitId,
         cont_item_uid: UItemId,
         cont_effect_rid: REffectId,
@@ -32,7 +32,7 @@ impl UAutocharge {
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBase::new(item_id, type_id, get_state(activated, force_disabled), src),
+            base: UItemBase::new(item_id, type_aid, get_state(activated, force_disabled), src),
             fit_uid,
             cont_item_uid,
             cont_effect_rid,
@@ -45,8 +45,8 @@ impl UAutocharge {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(crate) fn get_type_id(&self) -> AItemId {
-        self.base.get_type_id()
+    pub(crate) fn get_type_aid(&self) -> AItemId {
+        self.base.get_type_aid()
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_group_id()
@@ -153,7 +153,7 @@ impl std::fmt::Display for UAutocharge {
             "{}(item_id={}, type_id={})",
             Self::lib_get_name(),
             self.get_item_id(),
-            self.get_type_id(),
+            self.get_type_aid(),
         )
     }
 }

@@ -8,20 +8,20 @@ use crate::{
 
 pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_ids(
     src: &Src,
-    base_item_aid: &AItemId,
-    mutator_item_aid: &AItemId,
+    base_type_aid: &AItemId,
+    mutator_type_aid: &AItemId,
     values: &[(AAttrId, Value)],
 ) -> Vec<UAttrMutationRequest> {
-    let r_mutator = match src.get_mutator_by_aid(mutator_item_aid) {
+    let r_mutator = match src.get_mutator_by_aid(mutator_type_aid) {
         Some(r_mutator) => r_mutator,
         None => return Vec::new(),
     };
-    let mutated_item_aid = match r_mutator.item_map.get(base_item_aid) {
-        Some(&mutated_item_aid) => mutated_item_aid,
+    let mutated_type_aid = match r_mutator.item_map.get(base_type_aid) {
+        Some(&mutated_type_aid) => mutated_type_aid,
         None => return Vec::new(),
     };
-    let base_r_item = src.get_item_by_aid(base_item_aid);
-    let mutated_r_item = src.get_item_by_aid(&mutated_item_aid);
+    let base_r_item = src.get_item_by_aid(base_type_aid);
+    let mutated_r_item = src.get_item_by_aid(&mutated_type_aid);
     resolve_absolutes_into_rolls_with_items(src, base_r_item, mutated_r_item, r_mutator, values)
 }
 

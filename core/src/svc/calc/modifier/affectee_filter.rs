@@ -19,9 +19,9 @@ impl AffecteeFilter {
             AEffectAffecteeFilter::Loc(loc) => Self::Loc(Location::from_a_effect_loc(*loc)),
             AEffectAffecteeFilter::LocGrp(loc, grp_id) => Self::LocGrp(Location::from_a_effect_loc(*loc), *grp_id),
             AEffectAffecteeFilter::LocSrq(loc, mod_srq) => {
-                Self::LocSrq(Location::from_a_effect_loc(*loc), get_srq_type_id(mod_srq, item))
+                Self::LocSrq(Location::from_a_effect_loc(*loc), get_srq_type_aid(mod_srq, item))
             }
-            AEffectAffecteeFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq_type_id(mod_srq, item)),
+            AEffectAffecteeFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq_type_aid(mod_srq, item)),
         }
     }
     pub(super) fn from_buff_affectee_filter(
@@ -33,14 +33,14 @@ impl AffecteeFilter {
             ABuffAffecteeFilter::Direct => Self::Direct(loc),
             ABuffAffecteeFilter::Loc => Self::Loc(loc),
             ABuffAffecteeFilter::LocGrp(grp_id) => Self::LocGrp(loc, *grp_id),
-            ABuffAffecteeFilter::LocSrq(mod_srq) => Self::LocSrq(loc, get_srq_type_id(mod_srq, item)),
+            ABuffAffecteeFilter::LocSrq(mod_srq) => Self::LocSrq(loc, get_srq_type_aid(mod_srq, item)),
         }
     }
 }
 
-fn get_srq_type_id(mod_srq: &AModifierSrq, u_item: &UItem) -> AItemId {
+fn get_srq_type_aid(mod_srq: &AModifierSrq, u_item: &UItem) -> AItemId {
     match mod_srq {
-        AModifierSrq::SelfRef => u_item.get_type_id(),
-        AModifierSrq::ItemId(type_id) => *type_id,
+        AModifierSrq::SelfRef => u_item.get_type_aid(),
+        AModifierSrq::ItemId(type_aid) => *type_aid,
     }
 }

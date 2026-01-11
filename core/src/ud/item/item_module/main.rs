@@ -28,7 +28,7 @@ pub(crate) struct UModule {
 impl UModule {
     pub(crate) fn new(
         item_id: ItemId,
-        type_id: AItemId,
+        type_aid: AItemId,
         fit_uid: UFitId,
         module_state: ModuleState,
         rack: ModRack,
@@ -38,7 +38,7 @@ impl UModule {
         src: &Src,
     ) -> Self {
         Self {
-            base: UItemBaseMutable::new(item_id, type_id, module_state.into_r_state(), mutation, src),
+            base: UItemBaseMutable::new(item_id, type_aid, module_state.into_r_state(), mutation, src),
             fit_uid,
             rack,
             pos,
@@ -52,11 +52,11 @@ impl UModule {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(crate) fn get_type_id(&self) -> AItemId {
-        self.base.get_type_id()
+    pub(crate) fn get_type_aid(&self) -> AItemId {
+        self.base.get_type_aid()
     }
-    pub(crate) fn set_type_id(&mut self, type_id: AItemId, src: &Src) {
-        self.base.set_type_id(type_id, src);
+    pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, src: &Src) {
+        self.base.set_type_aid(type_aid, src);
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_group_id()
@@ -148,8 +148,12 @@ impl UModule {
     ) -> Result<Vec<RAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }
-    pub(crate) fn set_mutator_id(&mut self, mutator_id: AItemId, src: &Src) -> Result<(), ItemMutatedError> {
-        self.base.set_mutator_id(mutator_id, src)
+    pub(crate) fn set_mutator_type_aid(
+        &mut self,
+        mutator_type_aid: AItemId,
+        src: &Src,
+    ) -> Result<(), ItemMutatedError> {
+        self.base.set_mutator_type_aid(mutator_type_aid, src)
     }
     pub(crate) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         self.base.unmutate(src)
@@ -231,7 +235,7 @@ impl std::fmt::Display for UModule {
             "{}(item_id={}, type_id={})",
             Self::lib_get_name(),
             self.get_item_id(),
-            self.get_type_id(),
+            self.get_type_aid(),
         )
     }
 }

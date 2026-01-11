@@ -87,7 +87,7 @@ fn calc_add_custom_modifier(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrCon
 fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
     // Return multiplier only if everything could be fetched successfully
     if let Some(charge_uid) = ctx.u_data.items.get(espec.item_uid).get_charge_uid()
-        && let AItemId::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_uid).get_type_id()
+        && let AItemId::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_uid).get_type_aid()
         && let Some(val) = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().charged_armor_dmg_mult)
     {
         return Some(val);
@@ -108,7 +108,7 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
 
 fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, changed_uid: UItemId, changed_item: &UItem) -> bool {
     match ctx.u_data.items.get(affector_uid).get_charge_uid() {
-        Some(charge_uid) => changed_uid == charge_uid && changed_item.get_type_id() == AItemId::NANITE_REPAIR_PASTE,
+        Some(charge_uid) => changed_uid == charge_uid && changed_item.get_type_aid() == AItemId::NANITE_REPAIR_PASTE,
         // Not chargeable item, or no charge on AAR -> not changing anything
         None => false,
     }

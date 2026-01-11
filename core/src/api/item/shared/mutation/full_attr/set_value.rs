@@ -13,15 +13,15 @@ impl<'a> FullMAttrMut<'a> {
         let u_item = self.sol.u_data.items.get(self.item_uid);
         let attr_mutation_request = match absolute_value {
             Some(absolute_value) => {
-                let (base_item_aid, mutator_item_aid) = match u_item {
+                let (base_type_aid, mutator_type_aid) = match u_item {
                     UItem::Drone(drone) => (
                         drone
                             .get_mutation_data()
                             .unwrap()
                             .get_cache()
                             .unwrap()
-                            .get_base_type_id(),
-                        drone.get_mutation_data().unwrap().get_mutator_id(),
+                            .get_base_type_aid(),
+                        drone.get_mutation_data().unwrap().get_mutator_type_aid(),
                     ),
                     UItem::Module(module) => (
                         module
@@ -29,15 +29,15 @@ impl<'a> FullMAttrMut<'a> {
                             .unwrap()
                             .get_cache()
                             .unwrap()
-                            .get_base_type_id(),
-                        module.get_mutation_data().unwrap().get_mutator_id(),
+                            .get_base_type_aid(),
+                        module.get_mutation_data().unwrap().get_mutator_type_aid(),
                     ),
                     _ => unreachable!("unmutable item kind is used in mutation"),
                 };
                 resolve_absolutes_into_rolls_with_ids(
                     &self.sol.u_data.src,
-                    &base_item_aid,
-                    &mutator_item_aid,
+                    &base_type_aid,
+                    &mutator_type_aid,
                     &[(self.attr_aid, absolute_value)],
                 )
             }

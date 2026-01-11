@@ -24,9 +24,9 @@ impl SolarSystem {
 }
 
 impl<'a> ModuleMut<'a> {
-    pub fn mutate(&mut self, mutator_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
+    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
         let mutation = UItemMutationRequest {
-            mutator_item_aid: mutator_id.into_aid(),
+            mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
         let mut reuse_eupdates = UEffectUpdates::new();

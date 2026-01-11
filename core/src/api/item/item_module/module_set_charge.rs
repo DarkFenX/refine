@@ -11,7 +11,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_set_module_charge(
         &mut self,
         module_uid: UItemId,
-        charge_type_id: AItemId,
+        charge_type_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
@@ -66,7 +66,7 @@ impl SolarSystem {
         // Update user data
         let u_charge = UCharge::new(
             charge_item_id,
-            charge_type_id,
+            charge_type_aid,
             fit_uid,
             module_uid,
             activated,

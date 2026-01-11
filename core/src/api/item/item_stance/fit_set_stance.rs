@@ -9,7 +9,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_stance(
         &mut self,
         fit_uid: UFitId,
-        item_aid: AItemId,
+        type_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
@@ -19,7 +19,7 @@ impl SolarSystem {
         }
         // Add new stance
         let item_id = self.u_data.items.alloc_id();
-        let u_stance = UStance::new(item_id, item_aid, fit_uid, true, &self.u_data.src);
+        let u_stance = UStance::new(item_id, type_aid, fit_uid, true, &self.u_data.src);
         let u_item = UItem::Stance(u_stance);
         let stance_uid = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_uid);

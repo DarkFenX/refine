@@ -14,7 +14,7 @@ impl SolarSystem {
                 .unwrap()
                 .get_cache()
                 .unwrap()
-                .get_base_type_id(),
+                .get_base_type_aid(),
         )
     }
 }

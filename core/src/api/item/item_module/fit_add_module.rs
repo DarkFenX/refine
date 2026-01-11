@@ -14,10 +14,10 @@ impl SolarSystem {
         fit_uid: UFitId,
         rack: ModRack,
         pos_mode: AddMode,
-        type_id: AItemId,
+        type_aid: AItemId,
         state: ModuleState,
         mutation: Option<UItemMutationRequest>,
-        charge_type_id: Option<AItemId>,
+        charge_type_aid: Option<AItemId>,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let module_item_id = self.u_data.items.alloc_id();
@@ -26,7 +26,7 @@ impl SolarSystem {
         // start into the effect container
         let u_module = UModule::new(
             module_item_id,
-            type_id,
+            type_aid,
             fit_uid,
             state,
             rack,
@@ -76,13 +76,13 @@ impl SolarSystem {
             }
         };
         // Create and add charge
-        let charge_uid = match charge_type_id {
-            Some(charge_type_id) => {
+        let charge_uid = match charge_type_aid {
+            Some(charge_type_aid) => {
                 let charge_item_id = self.u_data.items.alloc_id();
                 // Update user data with new charge info
                 let u_charge = UCharge::new(
                     charge_item_id,
-                    charge_type_id,
+                    charge_type_aid,
                     fit_uid,
                     module_uid,
                     false,
