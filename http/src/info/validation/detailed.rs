@@ -1,7 +1,5 @@
-use std::collections::HashMap;
-
 use serde::Serialize;
-use serde_with::{DisplayFromStr, serde_as};
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::info::validation::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
@@ -31,9 +29,9 @@ impl From<&rc::val::ValResultSol> for HSolValResultDetailed {
 #[serde_as]
 #[derive(Serialize)]
 pub(crate) struct HSolValDetails {
-    #[serde(skip_serializing_if = "HashMap::is_empty")]
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    fits: HashMap<rc::FitId, HValFitInfo>,
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    fits: Vec<(rc::FitId, HValFitInfo)>,
     #[serde(skip_serializing_if = "Option::is_none")]
     not_loaded_item: Option<HValNotLoadedItemFail>,
 }

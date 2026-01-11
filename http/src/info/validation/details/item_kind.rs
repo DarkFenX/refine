@@ -1,15 +1,13 @@
-use std::collections::HashMap;
-
 use serde::Serialize;
 use serde_tuple::Serialize_tuple;
-use serde_with::{DisplayFromStr, serde_as};
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 #[serde_as]
 #[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValItemKindFail {
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    item_kinds: HashMap<rc::ItemId, HValItemKindItemInfo>,
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    item_kinds: Vec<(rc::ItemId, HValItemKindItemInfo)>,
 }
 impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
     fn from(core_val_fail: &rc::val::ValItemKindFail) -> Self {

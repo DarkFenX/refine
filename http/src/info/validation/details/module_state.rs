@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use serde::Serialize;
 use serde_tuple::Serialize_tuple;
-use serde_with::{DisplayFromStr, serde_as};
+use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::shared::HModuleState;
 
@@ -10,8 +8,8 @@ use crate::shared::HModuleState;
 #[derive(Serialize)]
 #[serde(transparent)]
 pub(in crate::info::validation) struct HValModuleStateFail {
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    modules: HashMap<rc::ItemId, HValModuleStateModuleInfo>,
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    modules: Vec<(rc::ItemId, HValModuleStateModuleInfo)>,
 }
 impl From<&rc::val::ValModuleStateFail> for HValModuleStateFail {
     fn from(core_val_fail: &rc::val::ValModuleStateFail) -> Self {
