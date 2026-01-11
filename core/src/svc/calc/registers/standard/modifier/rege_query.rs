@@ -8,7 +8,7 @@ use crate::{
         registers::standard::{StandardRegister, modifier::iter_loc_act::ActiveLocations},
     },
     ud::{UFits, UItem, UItemId},
-    util::MapSet,
+    util::RMapRSet,
 };
 
 impl StandardRegister {
@@ -74,15 +74,9 @@ impl StandardRegister {
     }
 }
 
-fn filter_and_extend<K, H1, H2>(
-    vec: &mut Vec<CtxModifier>,
-    storage: &MapSet<K, CtxModifier, H1, H2>,
-    key: &K,
-    attr_rid: RAttrId,
-) where
+fn filter_and_extend<K>(vec: &mut Vec<CtxModifier>, storage: &RMapRSet<K, CtxModifier>, key: &K, attr_rid: RAttrId)
+where
     K: Eq + Hash,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
 {
     vec.extend(
         storage

@@ -1,20 +1,14 @@
 use std::hash::{BuildHasher, Hash};
 
-use crate::{
-    misc::AttrSpec,
-    svc::calc::CtxModifier,
-    util::{MapSet, RMapRSet},
-};
+use crate::{misc::AttrSpec, svc::calc::CtxModifier, util::RMapRSet};
 
-pub(super) fn add_cmod<K, H1, H2>(
-    main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
+pub(super) fn add_cmod<K>(
+    main_storage: &mut RMapRSet<K, CtxModifier>,
     key: K,
     cmod: CtxModifier,
     aspec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
     K: Eq + Hash,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
 {
     main_storage.add_entry(key, cmod);
     if let Some(affector_attr_rid) = cmod.raw.get_affector_attr_rid() {
@@ -31,15 +25,13 @@ pub(super) fn add_cmod<K, H1, H2>(
     }
 }
 
-pub(super) fn remove_cmod<K, H1, H2>(
-    main_storage: &mut MapSet<K, CtxModifier, H1, H2>,
+pub(super) fn remove_cmod<K>(
+    main_storage: &mut RMapRSet<K, CtxModifier>,
     key: K,
     cmod: &CtxModifier,
     aspec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
     K: Eq + Hash,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
 {
     main_storage.remove_entry(key, cmod);
     if let Some(affector_attr_rid) = cmod.raw.get_affector_attr_rid() {
