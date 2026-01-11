@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatOutRepItemKinds, StatTank, StatTimeOptions, Vast},
+        vast::{StatOutRepItemKinds, StatOutReps, StatTank, StatTimeOptions, Vast},
     },
     ud::{UData, UFitId, UItemId},
 };
@@ -16,7 +16,7 @@ impl Svc {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> StatTank<PValue> {
+    ) -> StatOutReps {
         self.vast.get_stat_fits_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -33,7 +33,7 @@ impl Svc {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> StatTank<PValue> {
+    ) -> StatOutReps {
         self.vast.get_stat_fit_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -50,7 +50,7 @@ impl Svc {
         time_options: StatTimeOptions,
         ignore_state: bool,
         projectee_uid: Option<UItemId>,
-    ) -> Result<StatTank<PValue>, StatItemCheckError> {
+    ) -> Result<StatOutReps, StatItemCheckError> {
         Vast::get_stat_item_outgoing_rps(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,

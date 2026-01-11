@@ -1,3 +1,4 @@
+use super::shared::StatOutReps;
 use crate::{
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
@@ -6,7 +7,7 @@ use crate::{
         aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
-        vast::{StatOutRepItemKinds, StatTank, StatTimeOptions, Vast},
+        vast::{StatOutRepItemKinds, StatTimeOptions, Vast},
     },
     ud::{UFitId, UItemId},
     util::RMapRMap,
@@ -21,19 +22,17 @@ impl Vast {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> StatTank<PValue> {
-        let mut rps = StatTank {
-            shield: PValue::ZERO,
-            armor: PValue::ZERO,
-            hull: PValue::ZERO,
-        };
+    ) -> StatOutReps {
+        let mut shield = PValue::ZERO;
+        let mut armor = PValue::ZERO;
+        let mut hull = PValue::ZERO;
         for fit_uid in fit_uids {
             let fit_data = self.get_fit_data(&fit_uid);
-            rps.shield += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_shield);
-            rps.armor += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_armor);
-            rps.hull += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_hull);
+            shield += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_shield);
+            armor += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_armor);
+            hull += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_hull);
         }
-        rps
+        StatOutReps { shield, armor, hull }
     }
     pub(in crate::svc) fn get_stat_fit_outgoing_rps(
         &self,
@@ -43,9 +42,9 @@ impl Vast {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> StatTank<PValue> {
+    ) -> StatOutReps {
         let fit_data = self.get_fit_data(&fit_uid);
-        StatTank {
+        StatOutReps {
             shield: get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_shield),
             armor: get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_armor),
             hull: get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_hull),

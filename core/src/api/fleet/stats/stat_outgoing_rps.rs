@@ -1,7 +1,7 @@
 use crate::{
     api::{FleetMut, FleetStatAppliedError},
     num::PValue,
-    svc::vast::{StatOutRepItemKinds, StatTank, StatTimeOptions},
+    svc::vast::{StatOutRepItemKinds, StatOutReps, StatTank, StatTimeOptions},
     ud::ItemId,
 };
 
@@ -10,7 +10,7 @@ impl<'a> FleetMut<'a> {
         &mut self,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
-    ) -> StatTank<PValue> {
+    ) -> StatOutReps {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol
             .svc
@@ -21,7 +21,7 @@ impl<'a> FleetMut<'a> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatTank<PValue>, FleetStatAppliedError> {
+    ) -> Result<StatOutReps, FleetStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         Ok(self.sol.svc.get_stat_fits_outgoing_rps(

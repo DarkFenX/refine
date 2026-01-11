@@ -1,3 +1,4 @@
+use super::shared::StatOutReps;
 use crate::{
     num::PValue,
     rd::{REffect, REffectProjOpcSpec},
@@ -20,9 +21,9 @@ impl Vast {
         time_options: StatTimeOptions,
         ignore_state: bool,
         projectee_uid: Option<UItemId>,
-    ) -> Result<StatTank<PValue>, StatItemCheckError> {
+    ) -> Result<StatOutReps, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_uid)?;
-        let orps = StatTank {
+        let orps = StatOutReps {
             shield: get_orps(
                 ctx,
                 calc,

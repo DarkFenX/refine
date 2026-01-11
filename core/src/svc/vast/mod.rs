@@ -10,7 +10,7 @@ use vast::VastFitData;
 pub(crate) use vaste_stats::StatCapSimStaggerInt;
 pub use vaste_stats::{
     StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatLayerEhp, StatLayerErps,
-    StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatRes, StatSlot, StatTimeOptions,
+    StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatOutReps, StatRes, StatSlot, StatTimeOptions,
     StatTimeOptionsBurst, StatTimeOptionsSim,
 };
 pub use vaste_vals::{

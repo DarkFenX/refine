@@ -4,7 +4,7 @@ use crate::{
     num::PValue,
     svc::vast::{
         StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-        StatOutRepItemKinds, StatTank, StatTimeOptions,
+        StatOutRepItemKinds, StatOutReps, StatTank, StatTimeOptions,
     },
     ud::ItemId,
 };
@@ -54,7 +54,7 @@ impl<'a> FitMut<'a> {
         &mut self,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
-    ) -> StatTank<PValue> {
+    ) -> StatOutReps {
         self.sol
             .svc
             .get_stat_fit_outgoing_rps(&self.sol.u_data, self.uid, item_kinds, time_options, None)
@@ -64,7 +64,7 @@ impl<'a> FitMut<'a> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatTank<PValue>, FitStatAppliedError> {
+    ) -> Result<StatOutReps, FitStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         Ok(self.sol.svc.get_stat_fit_outgoing_rps(
             &self.sol.u_data,

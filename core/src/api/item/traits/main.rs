@@ -15,8 +15,8 @@ use crate::{
         calc::Modification,
         vast::{
             StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatJamApplied, StatLayerEhp,
-            StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatSensors,
-            StatTank, StatTankRegen, StatTimeOptions,
+            StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatOutReps,
+            StatSensors, StatTank, StatTankRegen, StatTimeOptions,
         },
     },
     ud::{ItemId, UEffectUpdates, UItemId},
@@ -249,7 +249,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         ignore_state: bool,
-    ) -> Result<StatTank<PValue>, ItemStatError> {
+    ) -> Result<StatOutReps, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
@@ -261,7 +261,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         time_options: StatTimeOptions,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatTank<PValue>, ItemStatAppliedError> {
+    ) -> Result<StatOutReps, ItemStatAppliedError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = get_stat_applied_projectee_uid(sol, projectee_item_id)?;

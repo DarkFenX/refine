@@ -10,7 +10,7 @@ use crate::{
     },
     info::{
         HFleetStats,
-        stats::{HStatDmg, HStatMining, HStatTank},
+        stats::{HStatDmg, HStatMining, HStatOutReps},
     },
     util::{HExecError, default_true},
 };
@@ -137,7 +137,7 @@ fn get_outgoing_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptio
 fn get_outgoing_rps_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<HStatOptionFitOutRps>,
-) -> Vec<Option<HStatTank<f64>>> {
+) -> Vec<Option<HStatOutReps>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
@@ -145,13 +145,13 @@ fn get_outgoing_rps_stats(
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_rps_applied(core_item_kinds, core_time_options, projectee_item_id) {
-                    Ok(result) => results.push(Some(result.into())),
+                    Ok(core_stat) => results.push(Some(HStatOutReps::from_core(core_stat))),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let result = core_fleet.get_stat_outgoing_rps(core_item_kinds, core_time_options);
-                results.push(Some(result.into()));
+                let core_stat = core_fleet.get_stat_outgoing_rps(core_item_kinds, core_time_options);
+                results.push(Some(HStatOutReps::from_core(core_stat)));
             }
         }
     }

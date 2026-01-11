@@ -13,7 +13,7 @@ use crate::{
         HFitStats,
         stats::{
             HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerRps,
-            HStatLayerRpsRegen, HStatMining, HStatTank, HStatTankRegen,
+            HStatLayerRpsRegen, HStatMining, HStatOutReps, HStatTank, HStatTankRegen,
         },
     },
     util::{HExecError, default_true},
@@ -386,10 +386,7 @@ fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
     }
     results
 }
-fn get_outgoing_rps_stats(
-    core_fit: &mut rc::FitMut,
-    options: Vec<HStatOptionFitOutRps>,
-) -> Vec<Option<HStatTank<f64>>> {
+fn get_outgoing_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitOutRps>) -> Vec<Option<HStatOutReps>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = (&option.item_kinds).into();
@@ -397,13 +394,13 @@ fn get_outgoing_rps_stats(
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_outgoing_rps_applied(core_item_kinds, core_time_options, projectee_item_id) {
-                    Ok(result) => results.push(Some(result.into())),
+                    Ok(core_stats) => results.push(Some(HStatOutReps::from_core(core_stats))),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let result = core_fit.get_stat_outgoing_rps(core_item_kinds, core_time_options);
-                results.push(Some(result.into()));
+                let core_stats = core_fit.get_stat_outgoing_rps(core_item_kinds, core_time_options);
+                results.push(Some(HStatOutReps::from_core(core_stats)));
             }
         }
     }

@@ -14,7 +14,7 @@ use crate::{
         HItemStats,
         stats::{
             HStatCapSim, HStatDmg, HStatLayerEhp, HStatLayerErps, HStatLayerErpsRegen, HStatLayerRps,
-            HStatLayerRpsRegen, HStatMining, HStatTank, HStatTankRegen,
+            HStatLayerRpsRegen, HStatMining, HStatOutReps, HStatTank, HStatTankRegen,
         },
     },
     util::{HExecError, default_true},
@@ -304,7 +304,7 @@ fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining
 fn get_outgoing_rps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<HStatOptionItemOutRps>,
-) -> Option<Vec<Option<HStatTank<f64>>>> {
+) -> Option<Vec<Option<HStatOutReps>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into();
@@ -312,7 +312,7 @@ fn get_outgoing_rps_stats(
             Some(projectee_item_id) => {
                 match core_item.get_stat_outgoing_rps_applied(core_time_options, option.ignore_state, projectee_item_id)
                 {
-                    Ok(result) => results.push(Some(result.into())),
+                    Ok(core_stat) => results.push(Some(HStatOutReps::from_core(core_stat))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -320,7 +320,7 @@ fn get_outgoing_rps_stats(
                 }
             }
             None => match core_item.get_stat_outgoing_rps(core_time_options, option.ignore_state) {
-                Ok(result) => results.push(Some(result.into())),
+                Ok(core_stat) => results.push(Some(HStatOutReps::from_core(core_stat))),
                 Err(core_err) => match is_fatal(core_err) {
                     true => return None,
                     false => results.push(None),
