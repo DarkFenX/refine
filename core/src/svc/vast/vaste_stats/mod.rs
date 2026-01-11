@@ -1,6 +1,8 @@
 pub(crate) use item_cap::StatCapSimStaggerInt;
 pub use item_cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
 pub use item_tank::{StatLayerEhp, StatLayerErps, StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen};
+pub use mining::{StatMining, StatMiningItemKinds};
+pub use neut::StatNeutItemKinds;
 pub use orps::StatOutReps;
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
 pub use vaste_fit_resource::StatRes;

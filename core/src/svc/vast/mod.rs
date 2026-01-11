@@ -1,6 +1,6 @@
 pub use shared::{
-    StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatJamApplied, StatMining, StatMiningItemKinds,
-    StatNeutItemKinds, StatOutRepItemKinds, StatSensors, StatSensorsKind, StatTank, StatTankRegen,
+    StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, StatJamApplied, StatOutRepItemKinds, StatSensors,
+    StatSensorsKind, StatTank, StatTankRegen,
 };
 pub use val_options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
@@ -10,8 +10,8 @@ use vast::VastFitData;
 pub(crate) use vaste_stats::StatCapSimStaggerInt;
 pub use vaste_stats::{
     StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatLayerEhp, StatLayerErps,
-    StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatOutReps, StatRes, StatSlot, StatTimeOptions,
-    StatTimeOptionsBurst, StatTimeOptionsSim,
+    StatLayerErpsRegen, StatLayerHp, StatLayerRps, StatLayerRpsRegen, StatMining, StatMiningItemKinds,
+    StatNeutItemKinds, StatOutReps, StatRes, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
 };
 pub use vaste_vals::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,

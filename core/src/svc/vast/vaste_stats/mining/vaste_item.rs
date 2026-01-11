@@ -1,3 +1,4 @@
+use super::stat::StatMining;
 use crate::{
     misc::MiningAmount,
     num::PValue,
@@ -8,7 +9,7 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatMining, StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_module},
+        vast::{StatTimeOptions, Vast, vaste_stats::item_checks::check_drone_module},
     },
     ud::UItemId,
 };

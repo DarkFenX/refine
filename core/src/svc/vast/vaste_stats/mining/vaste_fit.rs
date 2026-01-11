@@ -1,3 +1,4 @@
+use super::{option::StatMiningItemKinds, stat::StatMining};
 use crate::{
     misc::MiningAmount,
     num::PValue,
@@ -7,7 +8,7 @@ use crate::{
         aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
-        vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
+        vast::{StatTimeOptions, Vast},
     },
     ud::{UFitId, UItemId},
     util::RMapRMap,
