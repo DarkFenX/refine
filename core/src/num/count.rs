@@ -105,12 +105,6 @@ impl std::ops::AddAssign<Count> for Count {
     }
 }
 // Subtraction
-impl std::ops::Sub<u32> for Count {
-    type Output = Count;
-    fn sub(self, rhs: u32) -> Self::Output {
-        Count::from_u32(self.0 - rhs)
-    }
-}
 impl std::ops::Sub<Count> for Count {
     type Output = Count;
     fn sub(self, rhs: Count) -> Self::Output {

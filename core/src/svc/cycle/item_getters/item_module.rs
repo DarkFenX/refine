@@ -348,7 +348,7 @@ fn full_r(
                 interrupt: CycleInterrupt::try_new(int_cd, false),
                 chargedness: Some(UnitInterval::ONE),
             },
-            p1_repeat_count: full_count - 1,
+            p1_repeat_count: full_count - Count::ONE,
             p2_data: CycleDataFull {
                 time: duration + get_reload_time(ctx, calc, item_uid).max(cooldown),
                 interrupt: CycleInterrupt::try_new(int_cd, true),

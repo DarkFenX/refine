@@ -46,6 +46,9 @@ impl Value {
     pub(crate) fn from_count(count: Count) -> Self {
         Self(count.into_u32() as f64)
     }
+    pub(crate) fn from_usize(val: usize) -> Self {
+        Self(val as f64)
+    }
 }
 impl From<Value> for f64 {
     fn from(v: Value) -> Self {
@@ -194,12 +197,6 @@ impl std::ops::MulAssign<PValue> for Value {
     }
 }
 // Division
-impl std::ops::Div<f64> for Value {
-    type Output = Value;
-    fn div(self, rhs: f64) -> Self::Output {
-        Value(self.0 / rhs)
-    }
-}
 impl std::ops::Div<Value> for Value {
     type Output = Value;
     fn div(self, rhs: Value) -> Self::Output {
@@ -232,11 +229,5 @@ impl std::iter::Product<Value> for Value {
 impl<'a> std::iter::Product<&'a Value> for Value {
     fn product<I: Iterator<Item = &'a Value>>(iter: I) -> Self {
         Value(iter.map(|v| v.0).product())
-    }
-}
-// Others
-impl LibMax<f64> for Value {
-    fn lib_max(self, rhs: f64) -> Self {
-        Value(self.0.max(rhs))
     }
 }

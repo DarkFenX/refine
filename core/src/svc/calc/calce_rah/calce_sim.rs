@@ -392,7 +392,7 @@ fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<UItem
     }
     let mut avg_resos = RMap::with_capacity(resos_used.len());
     for (item_uid, resos) in resos_used.into_iter() {
-        let reso_len = resos.len() as f64;
+        let reso_len = Value::from_usize(resos.len());
         let item_avg_resos = match resos.into_iter().reduce(|a, v| DmgKinds {
             em: a.em + v.em,
             thermal: a.thermal + v.thermal,
