@@ -150,7 +150,7 @@ def test_module_targeted_struct(client, consts):
     assert api_tgt_ship_stats.incoming_jam == [0, 0]
 
 
-def test_module_doomsday(client, consts):
+def test_module_burst_projector(client, consts):
     eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
     eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
@@ -286,6 +286,7 @@ def test_module_burst(client, consts):
 def test_charge_bomb(client, consts):
     # Lockbreaker bombs ignore explosion radius of a bomb and signature radius of a target. Tested
     # on 2025-09-07 on Thunderdome by repeatedly bombing a Stiletto, 20+ runs broke lock
+    eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sensor_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength)
     eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
     eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
@@ -330,6 +331,8 @@ def test_charge_bomb(client, consts):
         eve_sensor_ladar_attr_id: 30.7, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.5})
     eve_tgt_ship2_id = client.mk_eve_ship(attrs={
         eve_sensor_grav_attr_id: 39.2, eve_radius_attr_id: 263, eve_sig_radius_attr_id: 266, eve_resist_attr_id: 1})
+    eve_tgt_ship3_id = client.mk_eve_ship(attrs={
+        eve_sensor_radar_attr_id: 4, eve_radius_attr_id: 220, eve_sig_radius_attr_id: 175, eve_resist_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -407,6 +410,21 @@ def test_charge_bomb(client, consts):
     assert api_tgt_fit_stats.incoming_jam == [0, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam == [0, 0]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id, coordinates=(0, 30000, 0))
+    # Verification - chance cannot exceed 100%
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [1, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [1, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 45000, 0))
+    # Verification - at this range, bomb has 50% chance to hit target, so regardless of how strong
+    # bomb jam strength is, it cannot go higher than 50%
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.5), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.5), 0]
 
 
 def test_drone(client, consts):
