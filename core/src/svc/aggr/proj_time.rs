@@ -351,18 +351,19 @@ where
                     // tracking uninterrupted cycle count. If they are the same, then output added
                     // by next loop should be the same, provided there is enough time for full loop
                     if uninterrupted_cycles == saved_interrupted_cycles && time >= Value::ZERO {
-                        let loop_time = inner
+                        let loop_duration = inner
                             .p1_data
-                            .time
-                            .mul_add(inner.p1_repeat_count.into_pvalue(), inner.p2_data.time);
-                        let loop_tail_time =
-                            PValue::from_value_clamped(inv_proj.output.get_completion_time() - inner.p2_data.time);
-                        let loop_full_repeat_count = get_full_repeats_count(time, loop_time, loop_tail_time);
+                            .duration
+                            .mul_add(inner.p1_repeat_count.into_pvalue(), inner.p2_data.duration);
+                        let loop_tail_duration = PValue::from_value_clamped(
+                            inv_proj.output.get_completion_duration() - inner.p2_data.duration,
+                        );
+                        let loop_full_repeat_count = get_full_repeats_count(time, loop_duration, loop_tail_duration);
                         // Fast-forward by count of full repeating loops remaining time can fit
                         if loop_full_repeat_count > Count::ZERO {
                             let loop_full_repeat_count = loop_full_repeat_count.into_pvalue();
                             total_amount += loop_total_amount * loop_full_repeat_count;
-                            time -= loop_time * loop_full_repeat_count;
+                            time -= loop_duration * loop_full_repeat_count;
                         }
                     }
                 }
@@ -394,15 +395,18 @@ fn process_single_spool<T>(
     if *time < Value::ZERO {
         return;
     }
-    let cycle_completion_time = cycle_data.time.max(inv_proj.output.get_completion_time()).into_value();
+    let cycle_completion_duration = cycle_data
+        .duration
+        .max(inv_proj.output.get_completion_duration())
+        .into_value();
     let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
     let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
     let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
-    match *time >= cycle_completion_time {
+    match *time >= cycle_completion_duration {
         true => *total_amount += cycle_output.get_amount_sum(),
         false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time)),
     }
-    *time -= cycle_data.time;
+    *time -= cycle_data.duration;
     match cycle_data.interrupt {
         Some(_) => *uninterrupted_cycles = Count::ZERO,
         None => *uninterrupted_cycles += Count::ONE,
@@ -429,56 +433,59 @@ fn process_limited_spool<T>(
         + std::ops::MulAssign<PValue>
         + LimitAmount,
 {
-    let cycle_tail_time = PValue::from_value_clamped(inv_proj.output.get_completion_time() - cycle_data.time);
-    let cycle_completion_time = (cycle_data.time + cycle_tail_time).into_value();
+    let cycle_tail_duration =
+        PValue::from_value_clamped(inv_proj.output.get_completion_duration() - cycle_data.duration);
+    let cycle_completion_duration = (cycle_data.duration + cycle_tail_duration).into_value();
     let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
     while *time >= Value::ZERO && repeat_limit > Count::ZERO {
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == Count::ZERO {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, Value::ZERO);
-            let full_repeats = repeat_limit.min(get_full_repeats_count(*time, cycle_data.time, cycle_tail_time));
+            let full_repeats =
+                repeat_limit.min(get_full_repeats_count(*time, cycle_data.duration, cycle_tail_duration));
             // Full repeats
             if full_repeats > Count::ZERO {
                 repeat_limit -= full_repeats;
                 let full_repeats = full_repeats.into_pvalue();
                 *total_amount += cycle_output.get_amount_sum() * full_repeats;
-                *time -= cycle_data.time * full_repeats;
+                *time -= cycle_data.duration * full_repeats;
             }
             // Partial repeats
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 repeat_limit -= Count::ONE;
                 *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
-                *time -= cycle_data.time;
+                *time -= cycle_data.duration;
             }
             return;
         } else if cycle_data.interrupt.is_none() && *uninterrupted_cycles >= inv_spool.cycles_to_max {
             // Shortcut #2: we're at max spool and sequence is not interruptable
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, inv_spool.max);
-            let full_repeats = repeat_limit.min(get_full_repeats_count(*time, cycle_data.time, cycle_tail_time));
+            let full_repeats =
+                repeat_limit.min(get_full_repeats_count(*time, cycle_data.duration, cycle_tail_duration));
             // Full repeats
             if full_repeats > Count::ZERO {
                 repeat_limit -= full_repeats;
                 *uninterrupted_cycles += full_repeats;
                 let full_repeats = full_repeats.into_pvalue();
                 *total_amount += cycle_output.get_amount_sum() * full_repeats;
-                *time -= cycle_data.time * full_repeats;
+                *time -= cycle_data.duration * full_repeats;
             }
             // Partial repeats
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 repeat_limit -= Count::ONE;
                 *uninterrupted_cycles += Count::ONE;
                 *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
-                *time -= cycle_data.time;
+                *time -= cycle_data.duration;
             }
             return;
         } else {
             let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
-            match *time >= cycle_completion_time {
+            match *time >= cycle_completion_duration {
                 true => *total_amount += cycle_output.get_amount_sum(),
                 false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time)),
             }
-            *time -= cycle_data.time;
+            *time -= cycle_data.duration;
             match cycle_data.interrupt {
                 Some(_) => *uninterrupted_cycles = Count::ZERO,
                 None => *uninterrupted_cycles += Count::ONE,
@@ -510,48 +517,49 @@ fn process_infinite_spool<T>(
     if *time < Value::ZERO {
         return;
     }
-    let cycle_tail_time = PValue::from_value_clamped(inv_proj.output.get_completion_time() - cycle_data.time);
-    let cycle_completion_time = (cycle_data.time + cycle_tail_time).into_value();
+    let cycle_tail_duration =
+        PValue::from_value_clamped(inv_proj.output.get_completion_duration() - cycle_data.duration);
+    let cycle_completion_duration = (cycle_data.duration + cycle_tail_duration).into_value();
     let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
     while *time >= Value::ZERO {
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == Count::ZERO {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, Value::ZERO);
-            let full_repeats = get_full_repeats_count(*time, cycle_data.time, cycle_tail_time).into_pvalue();
+            let full_repeats = get_full_repeats_count(*time, cycle_data.duration, cycle_tail_duration).into_pvalue();
             // Full repeats
             *total_amount += cycle_output.get_amount_sum() * full_repeats;
-            *time -= cycle_data.time * full_repeats;
+            *time -= cycle_data.duration * full_repeats;
             // Partial repeats
             while *time >= Value::ZERO {
                 *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
-                *time -= cycle_data.time;
+                *time -= cycle_data.duration;
             }
             return;
         } else if cycle_data.interrupt.is_none() && *uninterrupted_cycles >= inv_spool.cycles_to_max {
             // Shortcut #2: we're at max spool and sequence is not interruptable
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, inv_spool.max);
-            let full_repeats = get_full_repeats_count(*time, cycle_data.time, cycle_tail_time);
+            let full_repeats = get_full_repeats_count(*time, cycle_data.duration, cycle_tail_duration);
             // Full repeats
             *uninterrupted_cycles += full_repeats;
             let full_repeats = full_repeats.into_pvalue();
             *total_amount += cycle_output.get_amount_sum() * full_repeats;
-            *time -= cycle_data.time * full_repeats;
+            *time -= cycle_data.duration * full_repeats;
             // Partial repeats
             while *time >= Value::ZERO {
                 *uninterrupted_cycles += Count::ONE;
                 *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time));
-                *time -= cycle_data.time;
+                *time -= cycle_data.duration;
             }
             return;
         } else {
             // Regular cycle-by-cycle processing
             let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(inv_proj, charge_mult, cycle_spool);
-            match *time >= cycle_completion_time {
+            match *time >= cycle_completion_duration {
                 true => *total_amount += cycle_output.get_amount_sum(),
                 false => *total_amount += cycle_output.get_amount_sum_by_time(PValue::from_value_unchecked(*time)),
             }
-            *time -= cycle_data.time;
+            *time -= cycle_data.duration;
             match cycle_data.interrupt {
                 Some(_) => *uninterrupted_cycles = Count::ZERO,
                 None => *uninterrupted_cycles += Count::ONE,

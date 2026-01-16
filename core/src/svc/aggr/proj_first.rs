@@ -66,7 +66,7 @@ where
     aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool).map(|output_data| {
         AggrAmount {
             amount: output_data.output.get_amount_sum(),
-            time: output_data.time,
+            duration: output_data.duration,
         }
     })
 }
@@ -97,6 +97,6 @@ where
     };
     Some(AggrOutput {
         output,
-        time: cycle.time,
+        duration: cycle.duration,
     })
 }

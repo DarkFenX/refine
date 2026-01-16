@@ -14,9 +14,9 @@ struct FtrEffectInfo {
 
 #[derive(Copy, Clone)]
 struct FtrEffectRearmInfo {
-    time_until_rearm: PValue,
-    full_rearm_time: PValue,
-    charge_rearm_time: PValue,
+    duration_until_rearm: PValue,
+    full_rearm_duration: PValue,
+    charge_rearm_duration: PValue,
 }
 
 pub(super) fn get_fighter_cseq_map(

@@ -87,7 +87,7 @@ where
                 uninterrupted_cycles += remaining_cycles;
                 let remaining_cycles = remaining_cycles.into_pvalue();
                 total_amount += cycle_output.get_amount_sum() * remaining_cycles;
-                total_time += cycle_part.data.time * remaining_cycles;
+                total_time += cycle_part.data.duration * remaining_cycles;
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
@@ -98,7 +98,7 @@ where
                 None => uninterrupted_cycles += Count::ONE,
             }
             total_amount += cycle_output.get_amount_sum();
-            total_time += cycle_part.data.time;
+            total_time += cycle_part.data.duration;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
             if let Some(interrupt) = cycle_part.data.interrupt
@@ -115,7 +115,7 @@ where
     }
     Some(AggrAmount {
         amount: total_amount,
-        time: total_time,
+        duration: total_time,
     })
 }
 
@@ -149,7 +149,7 @@ where
             Some(interrupt) if interrupt.reload => {
                 reload = true;
                 total_amount += cycle_output.get_amount_sum();
-                total_time += cycle_part.data.time;
+                total_time += cycle_part.data.duration;
                 break;
             }
             _ => {
@@ -160,7 +160,7 @@ where
                     InfCount::Infinite => return None,
                 };
                 total_amount += cycle_output.get_amount_sum() * part_cycle_count;
-                total_time += cycle_part.data.time * part_cycle_count;
+                total_time += cycle_part.data.duration * part_cycle_count;
             }
         }
     }
@@ -170,6 +170,6 @@ where
     }
     Some(AggrAmount {
         amount: total_amount,
-        time: total_time,
+        duration: total_time,
     })
 }

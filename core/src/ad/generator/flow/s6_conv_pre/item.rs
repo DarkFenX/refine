@@ -84,7 +84,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
         };
         a_item_eff_data.data.cooldown = e_item_abil.cooldown.map(AValue::from_efloat);
         a_item_eff_data.data.charge_count = e_item_abil.charge_count.map(ACount::from_eint_clamped);
-        a_item_eff_data.data.charge_reload_time = e_item_abil.charge_rearm_time.map(AValue::from_efloat);
+        a_item_eff_data.data.charge_reload_duration = e_item_abil.charge_rearm_duration.map(AValue::from_efloat);
     }
     // Item abilities
     for e_item_abil in e_data

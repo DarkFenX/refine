@@ -5,7 +5,7 @@ use crate::{
     num::{PValue, Value},
     sol::SolarSystem,
     svc::{
-        cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
+        cycle::{CycleDataDur, CycleDataDurCharge, CycleSeq},
         output::Output,
     },
     ud::{ItemId, UItemId},
@@ -50,17 +50,17 @@ impl StatCapSimStaggerInt {
 pub(super) struct StaggerKey {
     // Out of all cycle parameters, only time between cycles is used to decide what goes into a
     // stagger group
-    pub(super) cseq: CycleSeq<CycleDataTime>,
+    pub(super) cseq: CycleSeq<CycleDataDur>,
     delay: PValue,
 }
 impl StaggerKey {
-    pub(super) fn new(cseq: &CycleSeq<CycleDataTime>, opc: &Output<Value>) -> Self {
+    pub(super) fn new(cseq: &CycleSeq<CycleDataDur>, opc: &Output<Value>) -> Self {
         // Round everything, so that small differences in result (which is possible due to different
         // order of float operations) end up having the same key
         Self {
             cseq: cseq.copy_rounded(),
             delay: match opc.iter_amounts().next() {
-                Some(output_event) => output_event.time.sig_rounded(SIG_ROUND_DIGITS),
+                Some(output_event) => output_event.time_passed.sig_rounded(SIG_ROUND_DIGITS),
                 None => PValue::ZERO,
             },
         }
@@ -68,7 +68,7 @@ impl StaggerKey {
 }
 
 pub(super) fn process_staggers(
-    stagger_map: RMapVec<StaggerKey, (CycleSeq<CycleDataTimeCharge>, Output<Value>)>,
+    stagger_map: RMapVec<StaggerKey, (CycleSeq<CycleDataDurCharge>, Output<Value>)>,
     aggregator: &mut Aggregator,
 ) {
     for (stagger_key, stagger_group) in stagger_map.into_iter() {
@@ -79,7 +79,7 @@ pub(super) fn process_staggers(
             continue;
         }
         // Sort by output value, from highest to lowest
-        let stagger_period = stagger_key.cseq.get_first_cycle().time / PValue::from_usize(stagger_group.len());
+        let stagger_period = stagger_key.cseq.get_first_cycle().duration / PValue::from_usize(stagger_group.len());
         for (i, (cycle, output)) in stagger_group
             .into_iter()
             .sorted_by_key(|(_, o)| -o.get_absolute_impact())

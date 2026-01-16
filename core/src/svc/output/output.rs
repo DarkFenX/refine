@@ -55,10 +55,10 @@ impl<T: Copy> Output<T> {
             Output::Complex(inner) => inner.get_max_amount(),
         }
     }
-    pub(in crate::svc) fn get_completion_time(&self) -> PValue {
+    pub(in crate::svc) fn get_completion_duration(&self) -> PValue {
         match self {
-            Output::Simple(inner) => inner.get_completion_time(),
-            Output::Complex(inner) => inner.get_completion_time(),
+            Output::Simple(inner) => inner.get_completion_duration(),
+            Output::Complex(inner) => inner.get_completion_duration(),
         }
     }
 }

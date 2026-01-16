@@ -5,7 +5,7 @@ pub enum StatTimeOptions {
     /// Burst value of parameter is considered, with ability to set some overrides.
     Burst(StatTimeOptionsBurst),
     /// Full cycling simulation happens, and the result returned is total or average value over that
-    /// time, depending on context.
+    /// duration, depending on context.
     Sim(StatTimeOptionsSim),
 }
 

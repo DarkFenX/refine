@@ -55,10 +55,10 @@ where
         let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_part.data.chargedness);
         let part_cycle_count = cycle_part.repeat_count.into_pvalue();
         total_amount += cycle_output.get_amount_sum() * part_cycle_count;
-        total_time += cycle_part.data.time * part_cycle_count;
+        total_time += cycle_part.data.duration * part_cycle_count;
     }
     Some(AggrAmount {
         amount: total_amount,
-        time: total_time,
+        duration: total_time,
     })
 }

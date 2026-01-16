@@ -42,7 +42,7 @@ pub(super) fn get_drone_cseq_map(
             effect_rid,
             CycleSeq::Inf(CSeqInf {
                 data: CycleDataFull {
-                    time: duration_s,
+                    duration: duration_s,
                     interrupt: None,
                     chargedness: None,
                 },

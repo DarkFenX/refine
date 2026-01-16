@@ -10,7 +10,7 @@ pub(crate) struct RItemEffectData {
     pub(crate) autocharge: Option<AItemId>,
     pub(crate) cooldown_s: PValue,
     pub(crate) charge_count: Option<Count>,
-    pub(crate) charge_reload_time_s: PValue,
+    pub(crate) charge_reload_duration: PValue,
     pub(crate) projectee_filter: Option<RItemListId>,
 }
 impl RItemEffectData {
@@ -25,8 +25,8 @@ impl RItemEffectData {
                 .map(PValue::from_a_value_clamped)
                 .unwrap_or(PValue::ZERO),
             charge_count: a_effect_data.charge_count.map(Count::from_a_count),
-            charge_reload_time_s: a_effect_data
-                .charge_reload_time
+            charge_reload_duration: a_effect_data
+                .charge_reload_duration
                 .map(PValue::from_a_value_clamped)
                 .unwrap_or(PValue::ZERO),
             projectee_filter: a_effect_data

@@ -1,4 +1,4 @@
-pub(in crate::svc) use data::{CycleDataFull, CycleDataTime, CycleDataTimeCharge, CycleDataTimeInt, CycleInterrupt};
+pub(in crate::svc) use data::{CycleDataDur, CycleDataDurCharge, CycleDataDurInt, CycleDataFull, CycleInterrupt};
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};
 pub(in crate::svc) use iter_cycle::CycleIter;
 pub(in crate::svc) use iter_part::{CSeqLoopedPart, CSeqPart, CSeqPartIter, CSeqParts};

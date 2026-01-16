@@ -115,9 +115,9 @@ impl Calc {
             // Compose history entry of current tick
             let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
             for &item_uid in sim_datas.keys() {
-                let item_cycling_time = *tick_data.cycling_times.get(&item_uid).unwrap();
+                let item_cycle_time = *tick_data.cycle_times.get(&item_uid).unwrap();
                 let item_resos = self.rah.resonances.get(&item_uid).unwrap().unwrap();
-                let item_history_entry = RahSimHistoryEntry::new(item_uid, item_cycling_time, &item_resos, false);
+                let item_history_entry = RahSimHistoryEntry::new(item_uid, item_cycle_time, &item_resos, false);
                 sim_history_entry.push(item_history_entry);
             }
             // See if we're in a loop, if we are - calculate average resists across tick states
@@ -219,13 +219,13 @@ impl Calc {
             return None;
         }
         let rah_espec = EffectSpec::new(item_uid, ctx.ec().adaptive_armor_hardener?);
-        let cycle_s = funcs::get_espec_duration_s(ctx, self, rah_espec)?;
+        let cycle_duration = funcs::get_espec_duration_s(ctx, self, rah_espec)?;
         let rah_info = RahInfo::new(
             res_em,
             res_therm,
             res_kin,
             res_expl,
-            cycle_s,
+            cycle_duration,
             PValue::from_value_clamped(shift_amount),
         );
         Some(RahDataSim::new(rah_info))
@@ -382,7 +382,7 @@ fn get_average_resonances(sim_history: &[Vec<RahSimHistoryEntry>]) -> RMap<UItem
     for sim_history_entry in sim_history {
         for item_history_entry in sim_history_entry {
             // Add resonances to container only when RAH cycle is just starting
-            if item_history_entry.cycling_time_rounded == PValue::ZERO {
+            if item_history_entry.cycle_time_rounded == PValue::ZERO {
                 resos_used
                     .entry(item_history_entry.item_uid)
                     .or_insert_with(Vec::new)
@@ -438,7 +438,7 @@ fn estimate_initial_adaptation_ticks(
     let slowest_item_uid = sim_datas
         .iter()
         .max_by_key(|(k, v)| {
-            v.info.cycle_time * PValue::from_f64_unchecked(exhaustion_cycles.get(k).unwrap().into_u32() as f64)
+            v.info.cycle_duration * PValue::from_f64_unchecked(exhaustion_cycles.get(k).unwrap().into_u32() as f64)
         })
         .map(|v| *v.0)
         .unwrap();
@@ -458,7 +458,7 @@ fn estimate_initial_adaptation_ticks(
         // Once slowest RAH finished last cycle, do not count this tick and break the loop
         for item_history_entry in sim_history_entry.iter() {
             if item_history_entry.item_uid == slowest_item_uid {
-                if item_history_entry.cycling_time_rounded == PValue::ZERO {
+                if item_history_entry.cycle_time_rounded == PValue::ZERO {
                     cycle_count += Count::ONE;
                 }
                 break;

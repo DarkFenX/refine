@@ -40,7 +40,7 @@ impl<T: Copy> Iterator for OutputComplexAmountIter<'_, T> {
         }
         self.cycles_done += Count::ONE;
         Some(OutputIterItem {
-            time: self.output.interval,
+            time_passed: self.output.interval,
             amount: self.output.amount,
         })
     }
@@ -56,7 +56,7 @@ impl<T: Copy> OutputComplex<T> {
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_completion_time(&self) -> PValue {
+    pub(super) fn get_completion_duration(&self) -> PValue {
         if self.repeats < Count::ONE {
             return PValue::ZERO;
         };

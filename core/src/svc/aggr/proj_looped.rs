@@ -9,7 +9,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleDataTimeCharge, CycleSeq, CycleSeqLooped},
+        cycle::{CycleDataDurCharge, CycleDataFull, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
     util::LibMax,
@@ -93,7 +93,7 @@ fn aggr_total_regular<T>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: CycleSeq<CycleDataTimeCharge>,
+    cseq: CycleSeq<CycleDataDurCharge>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrAmount<T>>
@@ -113,11 +113,11 @@ where
         let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         let part_cycle_count = cycle_part.repeat_count.into_pvalue();
         total_amount += cycle_output.get_amount_sum() * part_cycle_count;
-        total_time += cycle_part.data.time * part_cycle_count;
+        total_time += cycle_part.data.duration * part_cycle_count;
     }
     Some(AggrAmount {
         amount: total_amount,
-        time: total_time,
+        duration: total_time,
     })
 }
 
@@ -167,7 +167,7 @@ where
                 // Update total values
                 let remaining_cycles = (cycle_part.repeat_count - i).into_pvalue();
                 total_amount += cycle_output.get_amount_sum() * remaining_cycles;
-                total_time += cycle_part.data.time * remaining_cycles;
+                total_time += cycle_part.data.duration * remaining_cycles;
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
@@ -175,7 +175,7 @@ where
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update total values
             total_amount += cycle_output.get_amount_sum();
-            total_time += cycle_part.data.time;
+            total_time += cycle_part.data.duration;
             // Update state
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = Count::ZERO,
@@ -185,7 +185,7 @@ where
     }
     Some(AggrAmount {
         amount: total_amount,
-        time: total_time,
+        duration: total_time,
     })
 }
 
@@ -197,7 +197,7 @@ fn aggr_max_regular<T>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: CycleSeq<CycleDataTimeCharge>,
+    cseq: CycleSeq<CycleDataDurCharge>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
 ) -> Option<T>

@@ -215,10 +215,13 @@ fn fill_injectors(
                 None => continue,
             };
             let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, None);
-            let immediate_amount = opc.iter_amounts().next().and_then(|v| match v.time == PValue::ZERO {
-                true => Some(v.amount),
-                false => None,
-            });
+            let immediate_amount = opc
+                .iter_amounts()
+                .next()
+                .and_then(|v| match v.time_passed == PValue::ZERO {
+                    true => Some(v.amount),
+                    false => None,
+                });
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: PValue::ZERO,
                 cycle_iter: cseq.convert().iter_cycles(),

@@ -37,13 +37,13 @@ impl CapSim {
     pub(super) fn new(
         start_cap: PValue,
         max_cap: PValue,
-        recharge_time: PValue,
+        recharge_duration: PValue,
         events: BinaryHeap<CapSimEvent>,
     ) -> Self {
         Self {
             max_cap: max_cap.into_value(),
             max_pcap: max_cap,
-            tau: recharge_time / PValue::from_f64_unchecked(5.0),
+            tau: recharge_duration / PValue::from_f64_unchecked(5.0),
             events,
             injectors: Vec::new(),
             time: PValue::ZERO,
@@ -68,7 +68,7 @@ impl CapSim {
                         self.schedule_cycle_output(event.time, event.opc.iter_amounts());
                         // Schedule next cycle check
                         let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                            time: event.time + cycle_iter_info.time,
+                            time: event.time + cycle_iter_info.duration,
                             cycle_iter: event.cycle_iter,
                             opc: event.opc,
                         });
@@ -183,7 +183,7 @@ impl CapSim {
     fn schedule_cycle_output(&mut self, base_time: PValue, output_iter: impl Iterator<Item = OutputIterItem<Value>>) {
         let mut extra_delay = PValue::ZERO;
         for output_event in output_iter {
-            extra_delay += output_event.time;
+            extra_delay += output_event.time_passed;
             let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
                 time: base_time + extra_delay,
                 amount: output_event.amount,
@@ -204,7 +204,7 @@ impl CapSim {
             // format used in the lib makes it possible)
             self.schedule_cycle_output(self.time, output_iter);
             // Schedule next cycle
-            injector_event.time = self.time + cycle_iter_info.time;
+            injector_event.time = self.time + cycle_iter_info.duration;
             self.events.push(CapSimEvent::InjectorReady(injector_event));
         }
     }

@@ -5,8 +5,8 @@ use crate::{UnitInterval, num::PValue};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
-    // Full time (active time with any downtimes combined)
-    pub(in crate::svc) time: PValue,
+    // Full duration (active duration with downtime duration combined)
+    pub(in crate::svc) duration: PValue,
     // What kind of interruptions happen after current cycle
     pub(in crate::svc) interrupt: Option<CycleInterrupt>,
     // How charged current cycle is
@@ -16,53 +16,55 @@ pub(in crate::svc) struct CycleDataFull {
 // Simplified cycle data types, they are useful mostly because they allow cycle optimizations during
 // cycle conversion
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc) struct CycleDataTimeInt {
-    pub(in crate::svc) time: PValue,
+pub(in crate::svc) struct CycleDataDurInt {
+    pub(in crate::svc) duration: PValue,
     pub(in crate::svc) interrupt: bool,
 }
-impl From<CycleDataFull> for CycleDataTimeInt {
+impl From<CycleDataFull> for CycleDataDurInt {
     fn from(details_full: CycleDataFull) -> Self {
         Self {
-            time: details_full.time,
+            duration: details_full.duration,
             interrupt: details_full.interrupt.is_some(),
         }
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc) struct CycleDataTimeCharge {
-    pub(in crate::svc) time: PValue,
+pub(in crate::svc) struct CycleDataDurCharge {
+    pub(in crate::svc) duration: PValue,
     pub(in crate::svc) chargedness: Option<UnitInterval>,
 }
-impl From<CycleDataFull> for CycleDataTimeCharge {
+impl From<CycleDataFull> for CycleDataDurCharge {
     fn from(details_full: CycleDataFull) -> Self {
         Self {
-            time: details_full.time,
+            duration: details_full.duration,
             chargedness: details_full.chargedness,
         }
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleDataTime {
-    pub(in crate::svc) time: PValue,
+pub(in crate::svc) struct CycleDataDur {
+    pub(in crate::svc) duration: PValue,
 }
-impl CycleDataTime {
+impl CycleDataDur {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
-            time: self.time.sig_rounded(10),
+            duration: self.duration.sig_rounded(10),
         }
     }
 }
-impl From<CycleDataFull> for CycleDataTime {
+impl From<CycleDataFull> for CycleDataDur {
     fn from(data_full: CycleDataFull) -> Self {
-        Self { time: data_full.time }
+        Self {
+            duration: data_full.duration,
+        }
     }
 }
-impl From<CycleDataTimeCharge> for CycleDataTime {
-    fn from(data_time_charge: CycleDataTimeCharge) -> Self {
+impl From<CycleDataDurCharge> for CycleDataDur {
+    fn from(data_duration_charge: CycleDataDurCharge) -> Self {
         Self {
-            time: data_time_charge.time,
+            duration: data_duration_charge.duration,
         }
     }
 }

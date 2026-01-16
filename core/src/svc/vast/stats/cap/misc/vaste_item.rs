@@ -33,11 +33,11 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> PValue {
-        let cap_recharge_time = calc
+        let cap_recharge_duration = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO)
             .unwrap()
             / Value::THOUSAND;
-        PValue::from_value_clamped(cap_recharge_time)
+        PValue::from_value_clamped(cap_recharge_duration)
     }
     pub(in crate::svc) fn get_stat_item_neut_resist(
         ctx: SvcCtx,

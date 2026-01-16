@@ -80,7 +80,7 @@ impl Vast {
                 // - uptime is an approximate stat by its nature (since value depends on how item cycles would be
                 //   distributed, and the lib does not expose controls to that).
                 let cycle_uptime =
-                    UnitInterval::from_pvalue_clamped(projector_ecm.duration / projector_ecm_output.time);
+                    UnitInterval::from_pvalue_clamped(projector_ecm.duration / projector_ecm_output.duration);
                 projectee_unjam_uptime *= Value::ONE - jam_chance.into_value() * cycle_uptime.into_value();
             }
         }

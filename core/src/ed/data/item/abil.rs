@@ -9,7 +9,7 @@ pub struct EItemAbil {
     pub slot: EInt,
     pub cooldown: Option<EFloat>,
     pub charge_count: Option<EInt>,
-    pub charge_rearm_time: Option<EFloat>,
+    pub charge_rearm_duration: Option<EFloat>,
 }
 impl LibNamed for EItemAbil {
     fn lib_get_name() -> &'static str {

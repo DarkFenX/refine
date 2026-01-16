@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::{Count, PValue},
-    svc::cycle::{CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
+    svc::cycle::{CSeqPart, CycleDataDur, CycleDataFull, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConvertExtend,
 };
 
@@ -66,11 +66,11 @@ where
     }
 }
 impl CSeqLimInf {
-    pub(super) fn get_average_time(&self) -> PValue {
-        self.p2_data.time
+    pub(super) fn get_average_duration(&self) -> PValue {
+        self.p2_data.duration
     }
 }
-impl CSeqLimInf<CycleDataTime> {
+impl CSeqLimInf<CycleDataDur> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             p1_data: self.p1_data.copy_rounded(),

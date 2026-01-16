@@ -4,7 +4,7 @@ use crate::{misc::DmgKinds, num::PValue, svc::calc::CalcAttrVals};
 #[derive(Copy, Clone)]
 pub(super) struct RahInfo {
     pub(super) resos: DmgKinds<CalcAttrVals>,
-    pub(super) cycle_time: PValue,
+    pub(super) cycle_duration: PValue,
     pub(super) shift_amount: PValue,
 }
 impl RahInfo {
@@ -13,7 +13,7 @@ impl RahInfo {
         res_therm: CalcAttrVals,
         res_kin: CalcAttrVals,
         res_expl: CalcAttrVals,
-        cycle_time: PValue,
+        cycle_duration: PValue,
         shift_amount: PValue,
     ) -> Self {
         Self {
@@ -23,7 +23,7 @@ impl RahInfo {
                 kinetic: res_kin,
                 explosive: res_expl,
             },
-            cycle_time,
+            cycle_duration,
             shift_amount,
         }
     }

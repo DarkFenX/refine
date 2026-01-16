@@ -53,8 +53,8 @@ impl Vast {
 
 fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: UnitInterval) -> PValue {
     let max_amount = Vast::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
-    let cap_regen_time = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
-    calc_regen(max_amount, cap_regen_time, cap_perc)
+    let cap_recharge_duration = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
+    calc_regen(max_amount, cap_recharge_duration, cap_perc)
 }
 
 fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_data: &VastFitData) -> PValue {
@@ -123,7 +123,7 @@ fn get_cap_consumed(
                 Some(cseq) => cseq,
                 None => continue,
             };
-            cps += cap_consumed / cseq.get_average_time();
+            cps += cap_consumed / cseq.get_average_duration();
         }
     }
     cps

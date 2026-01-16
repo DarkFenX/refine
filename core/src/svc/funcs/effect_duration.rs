@@ -18,7 +18,7 @@ pub(crate) fn get_effect_duration_s(
     effect: &REffect,
 ) -> Option<PValue> {
     let val = calc.get_item_oattr_oextra(ctx, item_uid, effect.duration_attr_rid)?;
-    // Discard zero / negative cycle time as invalid
+    // Discard zero / negative cycle duration as invalid
     match val > Value::FLOAT_TOLERANCE {
         true => Some(PValue::from_f64_unchecked(val.into_f64() / 1000.0)),
         false => None,

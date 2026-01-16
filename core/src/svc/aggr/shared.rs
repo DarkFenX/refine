@@ -29,17 +29,17 @@ pub(super) fn process_mult(mult: PValue) -> Option<PValue> {
 
 pub(in crate::svc) struct AggrAmount<T> {
     pub(in crate::svc) amount: T,
-    pub(in crate::svc) time: PValue,
+    pub(in crate::svc) duration: PValue,
 }
 impl<T> AggrAmount<T>
 where
     T: std::ops::Div<PValue, Output = T>,
 {
     pub(super) fn get_ps(self) -> Option<T> {
-        if self.time == PValue::ZERO {
+        if self.duration == PValue::ZERO {
             return None;
         }
-        Some(self.amount / self.time)
+        Some(self.amount / self.duration)
     }
 }
 
@@ -48,5 +48,5 @@ where
     T: Copy,
 {
     pub(in crate::svc) output: Output<T>,
-    pub(in crate::svc) time: PValue,
+    pub(in crate::svc) duration: PValue,
 }

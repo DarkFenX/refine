@@ -124,7 +124,7 @@ fn get_local_rps(
 
 struct IrrEntry {
     amount: PValue,
-    cycle_time: PValue,
+    cycle_duration: PValue,
 }
 
 fn get_irr_data(
@@ -165,7 +165,7 @@ fn get_irr_data(
                     ) {
                         result.push(IrrEntry {
                             amount: effect_rep.amount,
-                            cycle_time: effect_rep.time,
+                            cycle_duration: effect_rep.duration,
                         });
                     }
                 }
@@ -184,10 +184,10 @@ fn get_irr_data(
                             // Adjust averaged reps per second to initial cycle duration to for
                             // purposes of RR stacking penalty calculation. This does not provide
                             // accurate result, but is likely to be a good enough approximation.
-                            let first_cycle_duration = cseq.get_first_cycle().time;
+                            let first_cycle_duration = cseq.get_first_cycle().duration;
                             result.push(IrrEntry {
                                 amount: effect_rps * first_cycle_duration,
-                                cycle_time: first_cycle_duration,
+                                cycle_duration: first_cycle_duration,
                             });
                         }
                     }
@@ -204,10 +204,10 @@ fn get_irr_data(
                             // Adjust averaged reps per second to initial cycle duration to for
                             // purposes of RR stacking penalty calculation. This does not provide
                             // accurate result, but is likely to be a good enough approximation.
-                            let first_cycle_duration = cseq.get_first_cycle().time;
+                            let first_cycle_duration = cseq.get_first_cycle().duration;
                             result.push(IrrEntry {
                                 amount: effect_rps * first_cycle_duration,
-                                cycle_time: first_cycle_duration,
+                                cycle_duration: first_cycle_duration,
                             });
                         }
                     }
@@ -237,25 +237,25 @@ fn irr_data_to_penalized(irr_data: Vec<IrrEntry>) -> PValue {
         let mult = PValue::from_value_clamped(
             PValue::ONE - (((adjusted_rps + modified_rps) / (total_adjusted_rps + modified_rps)) - PValue::ONE).pow2(),
         );
-        // Truncated cycle time is used only for multiplier
+        // Truncated cycle duration is used only for multiplier
         result += mult * get_normal_rps(entry).unwrap();
     }
     result
 }
 fn get_normal_rps(entry: &IrrEntry) -> Option<PValue> {
-    let rps = entry.amount / entry.cycle_time;
+    let rps = entry.amount / entry.cycle_duration;
     match rps.is_finite() {
         true => Some(rps),
         false => None,
     }
 }
 fn get_adjusted_rps(entry: &IrrEntry) -> Option<PValue> {
-    // For considerations of RR diminishing returns multiplier, cycle time is rounded this way
-    let main = entry.amount / entry.cycle_time.floor_unerr();
+    // For considerations of RR diminishing returns multiplier, cycle duration is rounded this way
+    let main = entry.amount / entry.cycle_duration.floor_unerr();
     match main.is_finite() {
         true => Some(main),
         // Fallback variants do not exist in the original formula, but provided here just in case
-        // some users set cycle time to values below 1 second
+        // some users set cycle duration to values below 1 second
         false => get_normal_rps(entry),
     }
 }
@@ -266,10 +266,10 @@ fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, shield_perc
         calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.shield_capacity, Value::ZERO)
             .unwrap(),
     );
-    let shield_regen_time = PValue::from_value_clamped(
+    let shield_regen_duration = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.shield_recharge_rate, Value::ZERO)
             .unwrap()
             / Value::THOUSAND,
     );
-    calc_regen(shield_hp, shield_regen_time, shield_perc)
+    calc_regen(shield_hp, shield_regen_duration, shield_perc)
 }

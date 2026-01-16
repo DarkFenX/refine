@@ -3,7 +3,7 @@ use std::cmp::Ordering;
 use crate::{
     num::{PValue, Value},
     svc::{
-        cycle::{CycleDataTimeCharge, CycleIter},
+        cycle::{CycleDataDurCharge, CycleIter},
         output::Output,
     },
 };
@@ -62,7 +62,7 @@ impl Eq for CapSimEvent {}
 
 pub(super) struct CapSimEventCycleCheck {
     pub(super) time: PValue,
-    pub(super) cycle_iter: CycleIter<CycleDataTimeCharge>,
+    pub(super) cycle_iter: CycleIter<CycleDataDurCharge>,
     pub(super) opc: Output<Value>,
 }
 
@@ -73,7 +73,7 @@ pub(super) struct CapSimEventCapGain {
 
 pub(super) struct CapSimEventInjector {
     pub(super) time: PValue,
-    pub(super) cycle_iter: CycleIter<CycleDataTimeCharge>,
+    pub(super) cycle_iter: CycleIter<CycleDataDurCharge>,
     pub(super) opc: Output<Value>,
     pub(super) immediate_amount: Option<Value>,
 }

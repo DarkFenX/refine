@@ -34,7 +34,7 @@ impl<T: Copy> Iterator for OutputSimpleAmountIter<'_, T> {
             false => {
                 self.done = true;
                 Some(OutputIterItem {
-                    time: self.output.delay,
+                    time_passed: self.output.delay,
                     amount: self.output.amount,
                 })
             }
@@ -52,7 +52,7 @@ impl<T: Copy> OutputSimple<T> {
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_completion_time(&self) -> PValue {
+    pub(super) fn get_completion_duration(&self) -> PValue {
         self.delay
     }
 }

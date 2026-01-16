@@ -1,8 +1,12 @@
 use crate::num::{PValue, UnitInterval, Value};
 
-pub(in crate::svc::vast::stats) fn calc_regen(max: PValue, rech_time: PValue, cap_perc: UnitInterval) -> PValue {
+pub(in crate::svc::vast::stats) fn calc_regen(
+    max: PValue,
+    recharge_duration: PValue,
+    cap_perc: UnitInterval,
+) -> PValue {
     let cap_perc = cap_perc.into_pvalue();
-    let result = PValue::TEN * max / rech_time * PValue::from_value_unchecked(cap_perc.sqrt() - cap_perc);
+    let result = PValue::TEN * max / recharge_duration * PValue::from_value_unchecked(cap_perc.sqrt() - cap_perc);
     match result.is_finite() {
         true => result,
         false => PValue::ZERO,

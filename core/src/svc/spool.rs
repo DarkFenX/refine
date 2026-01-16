@@ -28,7 +28,7 @@ impl ResolvedSpool {
     }
 }
 
-fn resolve_spool(spool: Spool, step: Value, max: Value, cycle_time: PValue) -> Option<ResolvedSpool> {
+fn resolve_spool(spool: Spool, step: Value, max: Value, cycle_duration: PValue) -> Option<ResolvedSpool> {
     // Step is used as divisor when calculating all spool types
     if step.abs() < PValue::FLOAT_TOLERANCE {
         return None;
@@ -46,7 +46,7 @@ fn resolve_spool(spool: Spool, step: Value, max: Value, cycle_time: PValue) -> O
         }
         Spool::Time(time) => {
             // Choose count of cycles finished by specified time, and limit by max spool cycles
-            let cycles_by_time = Count::from_pvalue_trunced(time / cycle_time);
+            let cycles_by_time = Count::from_pvalue_trunced(time / cycle_duration);
             cycles_max.min(cycles_by_time)
         }
         Spool::SpoolScale(range_value) => Count::from_pvalue_ceiled(range_value.into_pvalue() * ratio),

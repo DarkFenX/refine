@@ -42,7 +42,7 @@ where
 {
     aggr_local_first_output(ctx, calc, item_uid, effect, cseq, ospec).map(|output_data| AggrAmount {
         amount: output_data.output.get_amount_sum(),
-        time: output_data.time,
+        duration: output_data.duration,
     })
 }
 
@@ -61,6 +61,6 @@ where
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     Some(AggrOutput {
         output: get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.chargedness),
-        time: cycle_data.time,
+        duration: cycle_data.duration,
     })
 }

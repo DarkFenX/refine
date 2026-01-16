@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::{Count, PValue},
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataFull, CycleDataTime, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
+    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataDur, CycleDataFull, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConvertExtend,
 };
 
@@ -70,13 +70,13 @@ where
     }
 }
 impl CycleSeqLoopLimSin {
-    pub(super) fn get_average_time(&self) -> PValue {
-        let p1_total_time = self.p1_data.time * self.p1_repeat_count.into_pvalue();
-        let p2_total_time = self.p2_data.time;
-        (p1_total_time + p2_total_time) / (self.p1_repeat_count + Count::ONE).into_pvalue()
+    pub(super) fn get_average_duration(&self) -> PValue {
+        let p1_total_duration = self.p1_data.duration * self.p1_repeat_count.into_pvalue();
+        let p2_total_duration = self.p2_data.duration;
+        (p1_total_duration + p2_total_duration) / (self.p1_repeat_count + Count::ONE).into_pvalue()
     }
 }
-impl CycleSeqLoopLimSin<CycleDataTime> {
+impl CycleSeqLoopLimSin<CycleDataDur> {
     pub(super) fn copy_rounded(&self) -> Self {
         Self {
             p1_data: self.p1_data.copy_rounded(),

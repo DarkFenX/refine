@@ -12,10 +12,10 @@ pub(super) struct AggrPartData<T>
 where
     T: Copy,
 {
-    // Time it takes per cycle in this part
-    pub(super) time: PValue,
-    // After "time" part is complete, it takes this time to finish with output
-    pub(super) tail_time: PValue,
+    // Duration it takes per cycle in this part
+    pub(super) duration: PValue,
+    // After duration part is complete, it takes this duration to finish with output
+    pub(super) tail_duration: PValue,
     pub(super) output: Output<T>,
 }
 
@@ -25,8 +25,8 @@ where
 {
     fn lib_convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
         AggrPartData {
-            time: self.time,
-            tail_time: PValue::from_value_clamped(xt.get_completion_time() - self.time),
+            duration: self.duration,
+            tail_duration: PValue::from_value_clamped(xt.get_completion_duration() - self.duration),
             output: xt,
         }
     }
@@ -63,27 +63,28 @@ where
                 // Calculate total "tail time" for whole looped sequence. Data format implies that
                 // output can be different, so theoretically tail from first part can be longer than
                 // second part with its tail
-                let full_tail_time = inner
+                let full_tail_duration = inner
                     .p2_data
-                    .tail_time
-                    .max_value(inner.p1_data.tail_time - inner.p2_data.time);
-                let full_time = inner.p1_data.time * inner.p1_repeat_count.into_pvalue() + inner.p2_data.time;
+                    .tail_duration
+                    .max_value(inner.p1_data.tail_duration - inner.p2_data.duration);
+                let full_duration =
+                    inner.p1_data.duration * inner.p1_repeat_count.into_pvalue() + inner.p2_data.duration;
                 // Process full loop repeats
-                let full_repeats = get_full_repeats_count(time, full_time, full_tail_time).into_pvalue();
+                let full_repeats = get_full_repeats_count(time, full_duration, full_tail_duration).into_pvalue();
                 total_amount +=
                     inner.p1_data.output.get_amount_sum() * inner.p1_repeat_count.into_pvalue() * full_repeats;
                 total_amount += inner.p2_data.output.get_amount_sum() * full_repeats;
-                time -= full_time * full_repeats;
+                time -= full_duration * full_repeats;
                 while time >= Value::ZERO {
                     let mut p1_remaining_repeats = inner.p1_repeat_count;
                     // Process as many full part 1 repeats as time can fit
                     let p1_repeats = inner.p1_repeat_count.min(get_full_repeats_count(
                         time,
-                        inner.p1_data.time,
-                        inner.p1_data.tail_time,
+                        inner.p1_data.duration,
+                        inner.p1_data.tail_duration,
                     ));
                     total_amount += inner.p1_data.output.get_amount_sum() * p1_repeats.into_pvalue();
-                    time -= inner.p1_data.time * p1_repeats.into_pvalue();
+                    time -= inner.p1_data.duration * p1_repeats.into_pvalue();
                     p1_remaining_repeats -= p1_repeats;
                     // Process partial part 1 repeats
                     while time >= Value::ZERO && p1_remaining_repeats > Count::ZERO {
@@ -91,7 +92,7 @@ where
                             .p1_data
                             .output
                             .get_amount_sum_by_time(PValue::from_value_unchecked(time));
-                        time -= inner.p1_data.time;
+                        time -= inner.p1_data.duration;
                     }
                     // Process partial part 2
                     if time >= Value::ZERO {
@@ -99,7 +100,7 @@ where
                             .p2_data
                             .output
                             .get_amount_sum_by_time(PValue::from_value_unchecked(time));
-                        time -= inner.p2_data.time;
+                        time -= inner.p2_data.duration;
                     }
                     // Outer while loop is for cases of really long tails, which never happen in EVE
                     // but can happen in current data format
@@ -118,11 +119,11 @@ where
         true => return,
         false => PValue::from_value_unchecked(*time),
     };
-    match ptime >= data.time + data.tail_time {
+    match ptime >= data.duration + data.tail_duration {
         true => *total_amount += data.output.get_amount_sum(),
         false => *total_amount += data.output.get_amount_sum_by_time(ptime),
     }
-    *time -= data.time;
+    *time -= data.duration;
 }
 
 fn process_limited_regular<T>(total_amount: &mut T, time: &mut Value, data: &AggrPartData<T>, repeat_limit: Count)
@@ -132,13 +133,13 @@ where
     if *time < Value::ZERO {
         return;
     }
-    let full_repeats = repeat_limit.min(get_full_repeats_count(*time, data.time, data.tail_time));
+    let full_repeats = repeat_limit.min(get_full_repeats_count(*time, data.duration, data.tail_duration));
     *total_amount += data.output.get_amount_sum() * full_repeats.into_pvalue();
     let mut remaining_repeats = repeat_limit - full_repeats;
     while *time >= Value::ZERO && remaining_repeats > Count::ZERO {
         let ptime = PValue::from_value_unchecked(*time);
         *total_amount += data.output.get_amount_sum_by_time(ptime);
-        *time -= data.time;
+        *time -= data.duration;
         remaining_repeats -= Count::ONE;
     }
 }
@@ -150,21 +151,21 @@ where
     if *time < Value::ZERO {
         return;
     }
-    let full_repeats = get_full_repeats_count(*time, data.time, data.tail_time).into_pvalue();
+    let full_repeats = get_full_repeats_count(*time, data.duration, data.tail_duration).into_pvalue();
     *total_amount += data.output.get_amount_sum() * full_repeats;
-    *time -= data.time * full_repeats;
+    *time -= data.duration * full_repeats;
     while *time >= Value::ZERO {
         let ptime = PValue::from_value_unchecked(*time);
         *total_amount += data.output.get_amount_sum_by_time(ptime);
-        *time -= data.time;
+        *time -= data.duration;
     }
 }
 
-pub(super) fn get_full_repeats_count(time: Value, cycle_time: PValue, cycle_tail_time: PValue) -> Count {
-    let time_no_tail = time - cycle_tail_time;
+pub(super) fn get_full_repeats_count(time: Value, cycle_duration: PValue, cycle_tail_duration: PValue) -> Count {
+    let time_no_tail = time - cycle_tail_duration;
     let time_no_tail = match time_no_tail < Value::ZERO {
         true => return Count::ZERO,
         false => PValue::from_value_unchecked(time_no_tail),
     };
-    Count::from_pvalue_trunced(time_no_tail / cycle_time)
+    Count::from_pvalue_trunced(time_no_tail / cycle_duration)
 }

@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     num::PValue,
-    svc::cycle::{CycleDataFull, CycleDataTime, CycleDataTimeCharge},
+    svc::cycle::{CycleDataDur, CycleDataDurCharge, CycleDataFull},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -51,24 +51,24 @@ where
     }
 }
 impl CycleSeq {
-    pub(in crate::svc) fn get_average_time(&self) -> PValue {
+    pub(in crate::svc) fn get_average_duration(&self) -> PValue {
         match self {
-            Self::Lim(inner) => inner.get_time(),
-            Self::Inf(inner) => inner.get_time(),
-            Self::LimInf(inner) => inner.get_average_time(),
-            Self::LimSinInf(inner) => inner.get_average_time(),
-            Self::LoopLimSin(inner) => inner.get_average_time(),
+            Self::Lim(inner) => inner.get_duration(),
+            Self::Inf(inner) => inner.get_duration(),
+            Self::LimInf(inner) => inner.get_average_duration(),
+            Self::LimSinInf(inner) => inner.get_average_duration(),
+            Self::LoopLimSin(inner) => inner.get_average_duration(),
         }
     }
     // Convenience conversion methods, to avoid type hinting in some cases
-    pub(in crate::svc) fn to_time_charge(&self) -> CycleSeq<CycleDataTimeCharge> {
+    pub(in crate::svc) fn to_duration_charge(&self) -> CycleSeq<CycleDataDurCharge> {
         self.convert()
     }
-    pub(in crate::svc) fn to_time(&self) -> CycleSeq<CycleDataTime> {
+    pub(in crate::svc) fn to_duration(&self) -> CycleSeq<CycleDataDur> {
         self.convert()
     }
 }
-impl CycleSeq<CycleDataTime> {
+impl CycleSeq<CycleDataDur> {
     pub(in crate::svc) fn copy_rounded(&self) -> Self {
         match self {
             Self::Lim(inner) => Self::Lim(inner.copy_rounded()),

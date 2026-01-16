@@ -7,16 +7,16 @@ use super::{
 use crate::{num::PValue, ud::UItemId, util::RMap};
 
 struct RahDataIter {
+    cycle_duration: PValue,
+    cycle_duration_rounded: PValue,
     cycle_time: PValue,
-    cycle_time_rounded: PValue,
-    cycling_time: PValue,
 }
 impl RahDataIter {
-    fn new(cycle_time: PValue) -> Self {
+    fn new(cycle_duration: PValue) -> Self {
         Self {
-            cycle_time,
-            cycle_time_rounded: cycle_time.sig_rounded(SIG_ROUND_DIGITS),
-            cycling_time: PValue::ZERO,
+            cycle_duration,
+            cycle_duration_rounded: cycle_duration.sig_rounded(SIG_ROUND_DIGITS),
+            cycle_time: PValue::ZERO,
         }
     }
 }
@@ -24,7 +24,7 @@ impl RahDataIter {
 pub(super) struct RahSimTickData<'a> {
     pub(super) time_passed: PValue,
     pub(super) cycled: &'a Vec<UItemId>,
-    pub(super) cycling_times: &'a RMap<UItemId, PValue>,
+    pub(super) cycle_times: &'a RMap<UItemId, PValue>,
 }
 
 pub(super) struct RahSimTickIter {
@@ -32,19 +32,19 @@ pub(super) struct RahSimTickIter {
     rah_iter_data: RMap<UItemId, RahDataIter>,
     // Fields exposed in iter items
     cycled: Vec<UItemId>,
-    cycling_times: RMap<UItemId, PValue>,
+    cycle_times: RMap<UItemId, PValue>,
 }
 impl RahSimTickIter {
     pub(super) fn new<'a>(sim_datas: impl ExactSizeIterator<Item = (&'a UItemId, &'a RahDataSim)>) -> Self {
         let mut iter_datas = RMap::with_capacity(sim_datas.len());
         for (&item_uid, sim_data) in sim_datas {
-            iter_datas.insert(item_uid, RahDataIter::new(sim_data.info.cycle_time));
+            iter_datas.insert(item_uid, RahDataIter::new(sim_data.info.cycle_duration));
         }
         Self {
             tick: 0,
             rah_iter_data: iter_datas,
             cycled: Vec::new(),
-            cycling_times: RMap::new(),
+            cycle_times: RMap::new(),
         }
     }
 }
@@ -59,12 +59,12 @@ impl Lender for RahSimTickIter {
         self.tick += 1;
         // Clear state exposed to iter caller
         self.cycled.clear();
-        self.cycling_times.clear();
+        self.cycle_times.clear();
         // Pick time remaining until some RAH finishes its cycle
         let time_passed = PValue::from_value_clamped(
             self.rah_iter_data
                 .values()
-                .map(|v| v.cycle_time - v.cycling_time)
+                .map(|v| v.cycle_duration - v.cycle_time)
                 .min()
                 .unwrap(),
         );
@@ -73,8 +73,8 @@ impl Lender for RahSimTickIter {
             // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
             // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
             // heated one does 20, but sum of 20x 0.85 f64's is less than 17.
-            if (item_iter_data.cycling_time + time_passed).sig_rounded(SIG_ROUND_DIGITS)
-                >= item_iter_data.cycle_time_rounded
+            if (item_iter_data.cycle_time + time_passed).sig_rounded(SIG_ROUND_DIGITS)
+                >= item_iter_data.cycle_duration_rounded
             {
                 self.cycled.push(*item_uid);
             }
@@ -82,16 +82,16 @@ impl Lender for RahSimTickIter {
         // Update iterator state
         for (item_uid, item_iter_data) in self.rah_iter_data.iter_mut() {
             match self.cycled.contains(item_uid) {
-                true => item_iter_data.cycling_time = PValue::ZERO,
-                false => item_iter_data.cycling_time += time_passed,
+                true => item_iter_data.cycle_time = PValue::ZERO,
+                false => item_iter_data.cycle_time += time_passed,
             }
         }
-        self.cycling_times
-            .extend(self.rah_iter_data.iter().map(|(k, v)| (*k, v.cycling_time)));
+        self.cycle_times
+            .extend(self.rah_iter_data.iter().map(|(k, v)| (*k, v.cycle_time)));
         Some(RahSimTickData {
             time_passed,
             cycled: &self.cycled,
-            cycling_times: &self.cycling_times,
+            cycle_times: &self.cycle_times,
         })
     }
 }

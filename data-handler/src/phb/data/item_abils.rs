@@ -19,16 +19,16 @@ impl FsdMerge<rc::ed::EItemAbil> for PItemFighterAbils {
                 Some(p_abil_data) => p_abil_data,
                 None => continue,
             };
-            let (charge_count, charge_rearm_time) = p_abil_data
+            let (charge_count, charge_rearm_duration) = p_abil_data
                 .charges
-                .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
+                .map_or((None, None), |v| (Some(v.count), Some(v.rearm_duration)));
             vec.push(rc::ed::EItemAbil {
                 item_id: rc::ed::EItemId::from_i32(id),
                 abil_id: rc::ed::EAbilId::from_i32(p_abil_data.abil_id),
                 slot: rc::ed::EInt::from_i32(slot as i32),
                 cooldown: p_abil_data.cooldown.map(rc::ed::EFloat::from_f64),
                 charge_count: charge_count.map(rc::ed::EInt::from_i32),
-                charge_rearm_time: charge_rearm_time.map(rc::ed::EFloat::from_f64),
+                charge_rearm_duration: charge_rearm_duration.map(rc::ed::EFloat::from_f64),
             });
         }
         vec
@@ -49,5 +49,5 @@ pub(in crate::phb) struct PItemFighterAbilChargeData {
     #[serde(rename = "chargeCount")]
     pub(in crate::phb) count: i32,
     #[serde(rename = "rearmTimeSeconds")]
-    pub(in crate::phb) rearm_time: f64,
+    pub(in crate::phb) rearm_duration: f64,
 }

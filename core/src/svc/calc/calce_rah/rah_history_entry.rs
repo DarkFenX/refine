@@ -10,12 +10,12 @@ use crate::{
 pub(super) struct RahSimHistoryEntry {
     pub(super) item_uid: UItemId,
     pub(super) resonances: DmgKinds<Value>,
-    pub(super) cycling_time_rounded: PValue,
+    pub(super) cycle_time_rounded: PValue,
 }
 impl RahSimHistoryEntry {
     pub(super) fn new(
         item_uid: UItemId,
-        cycling_time: PValue,
+        cycle_time: PValue,
         resonances: &DmgKinds<CalcAttrVals>,
         round_resos: bool,
     ) -> Self {
@@ -36,7 +36,7 @@ impl RahSimHistoryEntry {
         Self {
             item_uid,
             resonances,
-            cycling_time_rounded: cycling_time.sig_rounded(SIG_ROUND_DIGITS),
+            cycle_time_rounded: cycle_time.sig_rounded(SIG_ROUND_DIGITS),
         }
     }
 }

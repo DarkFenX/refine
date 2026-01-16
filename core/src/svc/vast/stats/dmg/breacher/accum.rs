@@ -5,7 +5,7 @@ use crate::{
     def::SERVER_TICK_HZ,
     num::{Count, PValue, UnitInterval},
     svc::{
-        cycle::{CycleDataTime, CycleSeq},
+        cycle::{CycleDataDur, CycleSeq},
         output::OutputDmgBreacher,
         vast::StatDmgBreacher,
     },
@@ -28,7 +28,7 @@ impl BreacherAccum {
     pub(in crate::svc::vast) fn new() -> Self {
         Self { data: RMap::new() }
     }
-    pub(in crate::svc::vast) fn add(&mut self, opc: OutputDmgBreacher, cseq: CycleSeq<CycleDataTime>) {
+    pub(in crate::svc::vast) fn add(&mut self, opc: OutputDmgBreacher, cseq: CycleSeq<CycleDataDur>) {
         let ticks = match cseq_to_ticks(cseq, opc.tick_count) {
             Some(ticks) => ticks,
             None => return,

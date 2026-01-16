@@ -7,7 +7,7 @@ use super::{
 use crate::{
     num::{Count, PValue, Value},
     svc::{
-        cycle::{CycleDataTime, CycleDataTimeCharge, CycleSeq},
+        cycle::{CycleDataDur, CycleDataDurCharge, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
     },
     util::RMapVec,
@@ -20,7 +20,7 @@ impl Aggregator {
     pub(super) fn new() -> Self {
         Self { data: RMapVec::new() }
     }
-    pub(super) fn add_entry(&mut self, start_delay: PValue, cseq: CycleSeq<CycleDataTimeCharge>, opc: Output<Value>) {
+    pub(super) fn add_entry(&mut self, start_delay: PValue, cseq: CycleSeq<CycleDataDurCharge>, opc: Output<Value>) {
         self.data.add_entry(
             AggrKey::new(start_delay, &cseq, &opc),
             AggrEventInfo { start_delay, cseq, opc },
@@ -54,7 +54,7 @@ impl Aggregator {
 // converted into cap sim events, where some data needed for aggregation will be lost
 struct AggrEventInfo {
     start_delay: PValue,
-    cseq: CycleSeq<CycleDataTimeCharge>,
+    cseq: CycleSeq<CycleDataDurCharge>,
     opc: Output<Value>,
 }
 impl AggrEventInfo {
@@ -71,11 +71,11 @@ impl AggrEventInfo {
 #[derive(Eq, PartialEq, Hash)]
 struct AggrKey {
     start_delay: PValue,
-    cseq: CycleSeq<CycleDataTime>,
+    cseq: CycleSeq<CycleDataDur>,
     opc: AggrKeyOutput,
 }
 impl AggrKey {
-    fn new(start_delay: PValue, cseq: &CycleSeq<CycleDataTimeCharge>, opc: &Output<Value>) -> Self {
+    fn new(start_delay: PValue, cseq: &CycleSeq<CycleDataDurCharge>, opc: &Output<Value>) -> Self {
         Self {
             start_delay: start_delay.sig_rounded(SIG_ROUND_DIGITS),
             cseq: cseq.convert().copy_rounded(),

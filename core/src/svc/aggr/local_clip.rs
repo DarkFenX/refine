@@ -40,7 +40,7 @@ where
             Some(interrupt) if interrupt.reload => {
                 reload = true;
                 total_amount += cycle_output.get_amount_sum();
-                total_time += cycle_part.data.time;
+                total_time += cycle_part.data.duration;
                 break;
             }
             _ => {
@@ -51,7 +51,7 @@ where
                     InfCount::Infinite => return None,
                 };
                 total_amount += cycle_output.get_amount_sum() * part_cycle_count;
-                total_time += cycle_part.data.time * part_cycle_count;
+                total_time += cycle_part.data.duration * part_cycle_count;
             }
         }
     }
@@ -61,6 +61,6 @@ where
     }
     Some(AggrAmount {
         amount: total_amount,
-        time: total_time,
+        duration: total_time,
     })
 }
