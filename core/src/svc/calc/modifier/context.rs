@@ -1,13 +1,13 @@
 use crate::ud::{UFitId, UItemId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc::calc) enum Context {
+pub(in crate::svc::calc) enum ModContext {
     None,
     Item(UItemId),
     Fit(UFitId),
     FitItem(UFitId, UItemId),
 }
-impl Context {
+impl ModContext {
     pub(in crate::svc::calc) fn get_item_uid(&self) -> Option<UItemId> {
         match self {
             Self::Item(projectee_uid) => Some(*projectee_uid),

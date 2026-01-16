@@ -9,32 +9,43 @@ pub(crate) struct DebugError {}
 
 pub(crate) type DebugResult = Result<(), DebugError>;
 
-pub(crate) fn check_fit_uid(data: &UData, fit_uid: UFitId) -> DebugResult {
-    if data.fits.try_get(fit_uid).is_none() {
-        return Err(DebugError {});
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Definitions for a few basic entities
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UFitId {
+    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        if u_data.fits.try_get(*self).is_none() {
+            return Err(DebugError {});
+        }
+        Ok(())
     }
-    Ok(())
 }
 
-pub(crate) fn check_item_uid(data: &UData, item_uid: UItemId, check_load: bool) -> DebugResult {
-    let item = match data.items.try_get(item_uid) {
-        Some(item) => item,
-        None => return Err(DebugError {}),
-    };
-    if check_load && !item.is_loaded() {
-        return Err(DebugError {});
+impl UItemId {
+    pub(crate) fn consistency_check(&self, u_data: &UData, check_load: bool) -> DebugResult {
+        let item = match u_data.items.try_get(*self) {
+            Some(item) => item,
+            None => return Err(DebugError {}),
+        };
+        if check_load && !item.is_loaded() {
+            return Err(DebugError {});
+        }
+        Ok(())
     }
-    Ok(())
 }
 
-pub(crate) fn check_attr_rid(data: &UData, attr_rid: RAttrId) -> DebugResult {
-    // Will crash if attr ID is not valid
-    data.src.get_attr_by_rid(attr_rid);
-    Ok(())
+impl RAttrId {
+    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        // Will crash if attr ID is not valid
+        u_data.src.get_attr_by_rid(*self);
+        Ok(())
+    }
 }
 
-pub(crate) fn check_effect_rid(data: &UData, effect_rid: REffectId) -> DebugResult {
-    // Will crash if effect ID is not valid
-    data.src.get_effect_by_rid(effect_rid);
-    Ok(())
+impl REffectId {
+    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        // Will crash if effect ID is not valid
+        u_data.src.get_effect_by_rid(*self);
+        Ok(())
+    }
 }

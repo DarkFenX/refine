@@ -4,7 +4,7 @@ use crate::{
     ad::AValue,
     def::AU,
     num::{Count, PValue},
-    util::{FLOAT_TOLERANCE, LibMax, round, sig_round},
+    util::{FLOAT_TOLERANCE, round, sig_round},
 };
 
 /// Float value.

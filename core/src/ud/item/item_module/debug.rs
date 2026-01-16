@@ -1,16 +1,16 @@
 use itertools::Itertools;
 
 use crate::{
-    dbg::{DebugError, DebugResult, check_fit_uid, check_item_uid},
+    dbg::{DebugError, DebugResult},
     ud::{UData, UModule},
 };
 
 impl UModule {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.base.consistency_check(u_data)?;
-        check_fit_uid(u_data, self.get_fit_uid())?;
+        self.get_fit_uid().consistency_check(u_data)?;
         if let Some(charge_uid) = self.get_charge_uid() {
-            check_item_uid(u_data, charge_uid, false)?;
+            charge_uid.consistency_check(u_data, false)?;
         }
         self.get_projs().consistency_check(u_data)?;
         // Radius of projector should match radius of ship, radius of projectee should match

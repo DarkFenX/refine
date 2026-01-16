@@ -2,7 +2,6 @@ use std::hash::{Hash, Hasher};
 
 use smallvec::SmallVec;
 
-use super::AffectorValue;
 use crate::{
     ad::AEffectCatId,
     misc::EffectSpec,
@@ -12,7 +11,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser, Location, ModifierKind,
+            AffecteeFilter, Affector, AffectorValue, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser,
+            Location, ModifierKind,
         },
         funcs,
     },

@@ -1,150 +1,143 @@
 use super::StandardRegister;
-use crate::{
-    dbg::{DebugResult, check_attr_rid, check_effect_rid, check_fit_uid, check_item_uid},
-    svc::calc::debug::{check_cmod, check_rmod},
-    ud::UData,
-};
+use crate::{dbg::DebugResult, ud::UData};
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for ((fit_uid, _), item_uids) in self.affectee_root.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for item_uid in item_uids {
-                check_item_uid(u_data, *item_uid, true)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for ((fit_uid, _), item_uids) in self.affectee_loc.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for item_uid in item_uids {
-                check_item_uid(u_data, *item_uid, true)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for ((fit_uid, _, _), item_uids) in self.affectee_loc_grp.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for item_uid in item_uids {
-                check_item_uid(u_data, *item_uid, true)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for ((fit_uid, _, _), item_uids) in self.affectee_loc_srq.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for item_uid in item_uids {
-                check_item_uid(u_data, *item_uid, true)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for ((fit_uid, _), item_uids) in self.affectee_own_srq.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for item_uid in item_uids {
-                check_item_uid(u_data, *item_uid, true)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for ((fit_uid, _), item_uids) in self.affectee_buffable.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for item_uid in item_uids {
-                check_item_uid(u_data, *item_uid, true)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for afectee_infos in self.affectee_buffable_ships.values() {
             for (fit_uid, item_uid, _) in afectee_infos {
-                check_fit_uid(u_data, *fit_uid)?;
-                check_item_uid(u_data, *item_uid, true)?;
+                fit_uid.consistency_check(u_data)?;
+                item_uid.consistency_check(u_data, true)?;
             }
         }
         for (espec, rmods) in self.rmods_all.iter() {
-            check_item_uid(u_data, espec.item_uid, true)?;
-            check_effect_rid(u_data, espec.effect_rid)?;
+            espec.consistency_check(u_data, true)?;
             for rmod in rmods {
-                check_rmod(u_data, rmod)?;
+                rmod.consistency_check(u_data)?;
             }
         }
         for (espec, rmods) in self.rmods_proj.iter() {
-            check_item_uid(u_data, espec.item_uid, true)?;
-            check_effect_rid(u_data, espec.effect_rid)?;
+            espec.consistency_check(u_data, true)?;
             for rmod in rmods {
-                check_rmod(u_data, rmod)?;
+                rmod.consistency_check(u_data)?;
             }
         }
         for (fit_uid, rmods) in self.rmods_fleet.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for rmod in rmods {
-                check_rmod(u_data, rmod)?;
+                rmod.consistency_check(u_data)?;
             }
         }
         for rmod in self.rmods_sw_system.iter() {
-            check_rmod(u_data, rmod)?;
+            rmod.consistency_check(u_data)?;
         }
         for rmod in self.rmods_sw_buff.iter() {
-            check_rmod(u_data, rmod)?;
+            rmod.consistency_check(u_data)?;
         }
         for (fit_uid, rmods) in self.rmods_fw_buff.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for rmod in rmods {
-                check_rmod(u_data, rmod)?;
+                rmod.consistency_check(u_data)?;
             }
         }
         for (&projectee_uid, rmods) in self.rmods_proj_status.active.iter() {
             // Projectees don't have to be loaded for an entry to be added here
-            check_item_uid(u_data, projectee_uid, false)?;
+            projectee_uid.consistency_check(u_data, false)?;
             for rmod in rmods {
-                check_rmod(u_data, rmod)?;
+                rmod.consistency_check(u_data)?;
             }
         }
         for (&projectee_uid, rmods) in self.rmods_proj_status.inactive.iter() {
             // Projectees don't have to be loaded for an entry to be added here
-            check_item_uid(u_data, projectee_uid, false)?;
+            projectee_uid.consistency_check(u_data, false)?;
             for rmod in rmods {
-                check_rmod(u_data, rmod)?;
+                rmod.consistency_check(u_data)?;
             }
         }
         // Attributes of attr specs are not checked, because we do not verify if those do exist when
         // adding modifiers
         for (aspec, cmods) in self.cmods.by_aspec.iter() {
-            check_item_uid(u_data, aspec.item_uid, true)?;
-            check_attr_rid(u_data, aspec.attr_rid)?;
+            aspec.consistency_check(u_data, true)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for (item_uid, cmods) in self.cmods.direct.iter() {
             // Sometimes direct modifications can target non-loaded items (e.g. drones)
-            check_item_uid(u_data, *item_uid, false)?;
+            item_uid.consistency_check(u_data, false)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for (item_uid, cmods) in self.cmods.other.iter() {
-            check_item_uid(u_data, *item_uid, true)?;
+            item_uid.consistency_check(u_data, true)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for ((fit_uid, _), cmods) in self.cmods.root.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for ((fit_uid, _), cmods) in self.cmods.loc.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for ((fit_uid, _, _), cmods) in self.cmods.loc_grp.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for ((fit_uid, _, _), cmods) in self.cmods.loc_srq.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         for ((fit_uid, _), cmods) in self.cmods.own_srq.iter() {
-            check_fit_uid(u_data, *fit_uid)?;
+            fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
-                check_cmod(u_data, cmod)?;
+                cmod.consistency_check(u_data)?;
             }
         }
         Ok(())

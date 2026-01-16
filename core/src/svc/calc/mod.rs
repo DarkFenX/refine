@@ -39,7 +39,7 @@ pub(crate) use modifier::{
     AffecteeFilter, AffectorValue, AggrKey, AggrMode, CalcOp, CustomAffectorValue, CustomAffectorValueKind,
     ItemAddReviser, ItemRemoveReviser, Location, ModifierKind, RawModifier,
 };
-use modifier::{Context, CtxModifier, debug};
+use modifier::{CtxModifier, ModContext};
 
 mod accum;
 mod calc;

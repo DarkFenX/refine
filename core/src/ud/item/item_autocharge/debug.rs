@@ -1,16 +1,16 @@
 use crate::{
-    dbg::{DebugError, DebugResult, check_effect_rid, check_fit_uid, check_item_uid},
+    dbg::{DebugError, DebugResult},
     ud::{UAutocharge, UData},
 };
 
 impl UAutocharge {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.base.consistency_check(u_data)?;
-        check_fit_uid(u_data, self.get_fit_uid())?;
-        // All autocharges are supposed to be loaded
-        check_item_uid(u_data, self.get_cont_item_uid(), true)?;
+        self.get_fit_uid().consistency_check(u_data)?;
+        // Autocharges should exist only for containers which are loaded
+        self.get_cont_item_uid().consistency_check(u_data, true)?;
         // Autocharges should exist only for effects available on current source
-        check_effect_rid(u_data, self.get_cont_effect_rid())?;
+        self.get_cont_effect_rid().consistency_check(u_data)?;
         // Effect ID should be available on containing item
         if !u_data
             .items

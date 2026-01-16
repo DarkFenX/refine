@@ -1,12 +1,12 @@
 use crate::{
-    dbg::{DebugError, DebugResult, check_fit_uid},
+    dbg::{DebugError, DebugResult},
     ud::{UData, UDrone},
 };
 
 impl UDrone {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.base.consistency_check(u_data)?;
-        check_fit_uid(u_data, self.get_fit_uid())?;
+        self.get_fit_uid().consistency_check(u_data)?;
         self.get_projs().consistency_check(u_data)?;
         // Radius of projector should match radius of drone, radius of projectee should match
         // projectee items

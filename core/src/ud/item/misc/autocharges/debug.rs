@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugResult, check_item_uid},
+    dbg::DebugResult,
     ud::{UData, item::misc::UAutocharges},
 };
 
@@ -7,7 +7,7 @@ impl UAutocharges {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for autocharge_uid in self.values() {
             // All autocharges are supposed to be loaded
-            check_item_uid(u_data, autocharge_uid, true)?;
+            autocharge_uid.consistency_check(u_data, true)?;
         }
         Ok(())
     }
