@@ -15,8 +15,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -25,8 +26,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -35,8 +37,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -45,8 +48,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -55,8 +59,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -65,8 +70,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -75,8 +81,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -85,8 +92,9 @@ impl Vast {
             projectee_uid.consistency_check(u_data, false)?;
             for (projector_uid, projector_data) in projector_data.iter() {
                 projector_uid.consistency_check(u_data, true)?;
-                for effect_rid in projector_data.keys() {
+                for (effect_rid, ospec) in projector_data.iter() {
                     effect_rid.consistency_check(u_data)?;
+                    ospec.consistency_check(u_data)?;
                 }
             }
         }
@@ -333,8 +341,9 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         for (item_uid, item_data) in self.dmg_normal.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.dmg_breacher.iter() {
@@ -348,20 +357,23 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         for (item_uid, item_data) in self.mining_ore.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.mining_ice.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.mining_gas.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -369,20 +381,23 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         for (item_uid, item_data) in self.orr_shield.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.orr_armor.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.orr_hull.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,14 +405,16 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         for (item_uid, item_data) in self.out_neuts.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.out_cap.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,32 +422,37 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         for (item_uid, item_data) in self.lr_shield.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.lr_shield_limitable.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.lr_armor.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.lr_armor_limitable.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.lr_hull.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,8 +467,9 @@ impl VastFitData {
         }
         for (item_uid, item_data) in self.cap_injects.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
