@@ -469,11 +469,18 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - cap
         ////////////////////////////////////////////////////////////////////////////////////////////
-        for (item_uid, item_data) in self.cap_consumers_active.iter() {
+        for (item_uid, item_data) in self.cap_consumers.iter() {
             item_uid.consistency_check(u_data, true)?;
             for (effect_rid, attr_rid) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
                 attr_rid.consistency_check(u_data)?;
+            }
+        }
+        for (item_uid, item_data) in self.cap_nosfs.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            for (effect_rid, ospec) in item_data.iter() {
+                effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         for (item_uid, item_data) in self.cap_injects.iter() {

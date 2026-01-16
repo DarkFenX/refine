@@ -1,5 +1,3 @@
-use std::cmp::Ordering;
-
 use super::option::StatCapSrcKinds;
 use crate::{
     num::{PValue, UnitInterval, Value},
@@ -38,14 +36,17 @@ impl Vast {
         if src_kinds.cap_injectors {
             balance += get_cap_injects(ctx, calc, time_options, fit_data);
         }
-        if src_kinds.consumers || src_kinds.nosfs {
-            balance -= get_cap_consumed(ctx, calc, time_options, fit_data, src_kinds.consumers, src_kinds.nosfs);
+        if src_kinds.nosfs {
+            balance += get_nosfs(ctx, calc, time_options, fit_data);
+        }
+        if src_kinds.consumers {
+            balance -= get_cap_consumed(ctx, calc, time_options, fit_data);
         }
         if src_kinds.incoming_transfers {
-            balance += get_cap_transfers(ctx, calc, time_options, item_uid, self);
+            balance += get_incoming_cap_transfers(ctx, calc, time_options, item_uid, self);
         }
         if src_kinds.incoming_neuts {
-            balance -= get_neuts(ctx, calc, time_options, item_uid, self);
+            balance -= get_incoming_neuts(ctx, calc, time_options, item_uid, self);
         }
         Ok(balance)
     }
@@ -95,17 +96,10 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
     cps
 }
 
-fn get_cap_consumed(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    time_options: StatTimeOptions,
-    fit_data: &VastFitData,
-    drains: bool,
-    gains: bool,
-) -> Value {
+fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_data: &VastFitData) -> Value {
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    for (&item_uid, item_data) in fit_data.cap_consumers_active.iter() {
+    for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
             Some(cseq_map) => cseq_map,
             None => continue,
@@ -115,10 +109,9 @@ fn get_cap_consumed(
                 Some(cap_consumed) => cap_consumed,
                 None => continue,
             };
-            match (cap_consumed.cmp(&Value::ZERO), drains, gains) {
-                (Ordering::Greater, true, _) | (Ordering::Less, _, true) => (),
-                _ => continue,
-            };
+            if cap_consumed == Value::ZERO {
+                continue;
+            }
             let cseq = match cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
@@ -129,7 +122,51 @@ fn get_cap_consumed(
     cps
 }
 
-fn get_cap_transfers(
+fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_data: &VastFitData) -> Value {
+    let mut cps = Value::ZERO;
+    let cycling_options = CyclingOptions::from_time_options(time_options);
+    for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
+        let cseq_map = match get_item_cseq_map(ctx, calc, nosf_item_uid, cycling_options, false) {
+            Some(cseq_map) => cseq_map,
+            None => continue,
+        };
+        for (&effect_rid, ospec) in item_data.iter() {
+            let cseq = match cseq_map.get(&effect_rid) {
+                Some(cseq) => cseq,
+                None => continue,
+            };
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            match time_options {
+                StatTimeOptions::Burst(burst_opts) => {
+                    if let Some(effect_cps) =
+                        aggr_proj_first_ps(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, burst_opts.spool)
+                    {
+                        cps += effect_cps;
+                    }
+                }
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > PValue::ZERO => {
+                        if let Some(effect_cps) =
+                            aggr_proj_time_ps(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, time)
+                        {
+                            cps += effect_cps;
+                        }
+                    }
+                    _ => {
+                        if let Some(effect_cps) =
+                            aggr_proj_looped_ps(ctx, calc, nosf_item_uid, effect, cseq, ospec, None)
+                        {
+                            cps += effect_cps;
+                        }
+                    }
+                },
+            }
+        }
+    }
+    cps
+}
+
+fn get_incoming_cap_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
@@ -197,7 +234,7 @@ fn get_cap_transfers(
     cps
 }
 
-fn get_neuts(
+fn get_incoming_neuts(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,

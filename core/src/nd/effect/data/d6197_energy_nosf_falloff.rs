@@ -3,7 +3,10 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectProjOpcSpec, NEffectResist,
-        effect::data::shared::{base_opc::get_nosf_base_opc, proj_mult::get_neut_proj_mult},
+        effect::data::shared::{
+            base_opc::{get_nosf_neut_base_opc, get_nosf_nosf_base_opc},
+            proj_mult::get_neut_proj_mult,
+        },
     },
 };
 
@@ -15,7 +18,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         neut_opc_spec: Some(NEffectProjOpcSpec {
-            base: get_nosf_base_opc,
+            base: get_nosf_neut_base_opc,
+            proj_mult_str: Some(get_neut_proj_mult),
+            resist: Some(NEffectResist::Standard),
+            limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
+            ..
+        }),
+        nosf_opc_spec: Some(NEffectProjOpcSpec {
+            base: get_nosf_nosf_base_opc,
             proj_mult_str: Some(get_neut_proj_mult),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),

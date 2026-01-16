@@ -68,6 +68,8 @@ pub(crate) struct NEffect {
     pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     // Getters/specs - cap
     pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    // Nosf spec is used only for purposes of cap balance/sim calcs
+    pub(crate) nosf_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     // Getters/specs - misc

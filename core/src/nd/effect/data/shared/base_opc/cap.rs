@@ -12,6 +12,9 @@ use crate::{
     ud::UItemId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Neuts
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -21,7 +24,7 @@ pub(in crate::nd::effect::data) fn get_neut_base_opc(
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().energy_neut_amount, true)
 }
 
-pub(in crate::nd::effect::data) fn get_nosf_base_opc(
+pub(in crate::nd::effect::data) fn get_nosf_neut_base_opc(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -74,4 +77,16 @@ fn get_aoe_dd_side_neut_base_opc(
     effect: &REffect,
 ) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::nd::effect::data) fn get_nosf_nosf_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+) -> Option<Output<PValue>> {
+    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
 }

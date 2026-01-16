@@ -28,49 +28,46 @@ pub(super) fn prepare_events(
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
 ) -> BinaryHeap<CapSimEvent> {
+    let cycling_options = CyclingOptions::Sim(CycleOptionsSim { reload_optionals, .. });
     let mut aggregator = Aggregator::new();
-    fill_consumers(ctx, calc, &mut aggregator, reload_optionals, &stagger, fit_data);
-    fill_neuts(
+    fill_consumers(ctx, calc, &mut aggregator, cycling_options, &stagger, fit_data);
+    fill_nosfs(ctx, calc, &mut aggregator, cycling_options, &stagger, fit_data);
+    fill_incoming_neuts(
         ctx,
         calc,
         &mut aggregator,
-        reload_optionals,
+        cycling_options,
         &stagger,
         vast,
         cap_item_uid,
     );
-    fill_transfers(
+    fill_incoming_transfers(
         ctx,
         calc,
         &mut aggregator,
-        reload_optionals,
+        cycling_options,
         &stagger,
         vast,
         cap_item_uid,
     );
     let mut events = BinaryHeap::new();
     aggregator.into_sim_events(&mut events);
-    fill_injectors(ctx, calc, &mut events, reload_optionals, fit_data);
+    fill_injectors(ctx, calc, &mut events, cycling_options, fit_data);
     events
-}
-
-fn get_cycling_options(reload_optionals: Option<bool>) -> CyclingOptions {
-    CyclingOptions::Sim(CycleOptionsSim { reload_optionals, .. })
 }
 
 fn fill_consumers(
     ctx: SvcCtx,
     calc: &mut Calc,
     aggregator: &mut Aggregator,
-    reload_optionals: Option<bool>,
+    cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
 ) {
     let mut stagger_map = RMapVec::new();
-    let cycling_options = get_cycling_options(reload_optionals);
-    for (&item_uid, item_data) in fit_data.cap_consumers_active.iter() {
-        let cycle_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
-            Some(cycle_map) => cycle_map,
+    for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
+            Some(cseq_map) => cseq_map,
             None => continue,
         };
         for (&effect_rid, &attr_rid) in item_data.iter() {
@@ -79,8 +76,8 @@ fn fill_consumers(
                 Some(cap_consumed) if cap_consumed.abs() > PValue::FLOAT_TOLERANCE => cap_consumed,
                 _ => continue,
             };
-            let effect_cycles = match cycle_map.get(&effect_rid) {
-                Some(effect_cycles) => effect_cycles,
+            let cseq = match cseq_map.get(&effect_rid) {
+                Some(cseq) => cseq,
                 None => continue,
             };
             let opc = Output::Simple(OutputSimple {
@@ -88,22 +85,57 @@ fn fill_consumers(
                 delay: PValue::ZERO,
             });
             match stagger.is_staggered(item_uid) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&effect_cycles.convert(), &opc),
-                    (effect_cycles.convert(), opc),
-                ),
-                false => aggregator.add_entry(PValue::ZERO, effect_cycles.convert(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&cseq.convert(), &opc), (cseq.convert(), opc)),
+                false => aggregator.add_entry(PValue::ZERO, cseq.convert(), opc),
             }
         }
     }
     process_staggers(stagger_map, aggregator);
 }
 
-fn fill_neuts(
+fn fill_nosfs(
     ctx: SvcCtx,
     calc: &mut Calc,
     aggregator: &mut Aggregator,
-    reload_optionals: Option<bool>,
+    cycling_options: CyclingOptions,
+    stagger: &StatCapSimStaggerInt,
+    fit_data: &VastFitData,
+) {
+    let mut stagger_map = RMapVec::new();
+    for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
+        let cseq_map = match get_item_cseq_map(ctx, calc, nosf_item_uid, cycling_options, false) {
+            Some(cseq_map) => cseq_map,
+            None => continue,
+        };
+        for (&effect_rid, ospec) in item_data.iter() {
+            let cseq = match cseq_map.get(&effect_rid) {
+                Some(cseq) => cseq,
+                None => continue,
+            };
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let inv_proj = match AggrProjInvData::try_make(ctx, calc, nosf_item_uid, effect, ospec, None) {
+                Some(inv_proj) => inv_proj,
+                None => continue,
+            };
+            let opc = get_proj_output(ctx, calc, nosf_item_uid, ospec, &inv_proj, None);
+            if !opc.has_impact() {
+                continue;
+            }
+            let opc = opc.into_value();
+            match stagger.is_staggered(nosf_item_uid) {
+                true => stagger_map.add_entry(StaggerKey::new(&cseq.convert(), &opc), (cseq.convert(), opc)),
+                false => aggregator.add_entry(PValue::ZERO, cseq.convert(), opc),
+            }
+        }
+    }
+    process_staggers(stagger_map, aggregator);
+}
+
+fn fill_incoming_neuts(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    aggregator: &mut Aggregator,
+    cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_uid: UItemId,
@@ -113,7 +145,6 @@ fn fill_neuts(
         None => return,
     };
     let mut stagger_map = RMapVec::new();
-    let cycling_options = get_cycling_options(reload_optionals);
     for (&neut_item_uid, item_data) in neut_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, neut_item_uid, cycling_options, false) {
             Some(cseq_map) => cseq_map,
@@ -146,11 +177,11 @@ fn fill_neuts(
     process_staggers(stagger_map, aggregator);
 }
 
-fn fill_transfers(
+fn fill_incoming_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
     aggregator: &mut Aggregator,
-    reload_optionals: Option<bool>,
+    cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
     cap_item_uid: UItemId,
@@ -160,7 +191,6 @@ fn fill_transfers(
         None => return,
     };
     let mut stagger_map = RMapVec::new();
-    let cycling_options = get_cycling_options(reload_optionals);
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_uid, cycling_options, false) {
             Some(cseq_map) => cseq_map,
@@ -195,10 +225,9 @@ fn fill_injectors(
     ctx: SvcCtx,
     calc: &mut Calc,
     events: &mut BinaryHeap<CapSimEvent>,
-    reload_optionals: Option<bool>,
+    cycling_options: CyclingOptions,
     fit_data: &VastFitData,
 ) {
-    let cycling_options = get_cycling_options(reload_optionals);
     for (&item_uid, item_data) in fit_data.cap_injects.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
             Some(cseq_map) => cseq_map,

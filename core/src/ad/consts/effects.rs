@@ -156,12 +156,11 @@ impl AEffectId {
     pub(crate) const CHAR_MISSILE_DMG: Self = Self::Custom(ACustomEffectId::from_i32(1));
     pub(crate) const AAR_PASTE_BOOST: Self = Self::Custom(ACustomEffectId::from_i32(2));
     pub(crate) const MISSILE_FLIGHT_TIME: Self = Self::Custom(ACustomEffectId::from_i32(3));
-    pub(crate) const NOSF_CAP_USE: Self = Self::Custom(ACustomEffectId::from_i32(4));
-    pub(crate) const WARP_DISRUPT_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(5));
-    pub(crate) const STASIS_WEB_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(6));
-    pub(crate) const WDFG_SCRIPT_DEBUBBLE: Self = Self::Custom(ACustomEffectId::from_i32(7));
-    pub(crate) const STABILITY_GENERATOR_ELECTRIC: Self = Self::Custom(ACustomEffectId::from_i32(8));
-    pub(crate) const STABILITY_GENERATOR_PLASMA: Self = Self::Custom(ACustomEffectId::from_i32(9));
-    pub(crate) const STABILITY_GENERATOR_EXOTIC: Self = Self::Custom(ACustomEffectId::from_i32(10));
-    pub(crate) const STABILITY_GENERATOR_GAMMA: Self = Self::Custom(ACustomEffectId::from_i32(11));
+    pub(crate) const WARP_DISRUPT_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(4));
+    pub(crate) const STASIS_WEB_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(5));
+    pub(crate) const WDFG_SCRIPT_DEBUBBLE: Self = Self::Custom(ACustomEffectId::from_i32(6));
+    pub(crate) const STABILITY_GENERATOR_ELECTRIC: Self = Self::Custom(ACustomEffectId::from_i32(7));
+    pub(crate) const STABILITY_GENERATOR_PLASMA: Self = Self::Custom(ACustomEffectId::from_i32(8));
+    pub(crate) const STABILITY_GENERATOR_EXOTIC: Self = Self::Custom(ACustomEffectId::from_i32(9));
+    pub(crate) const STABILITY_GENERATOR_GAMMA: Self = Self::Custom(ACustomEffectId::from_i32(10));
 }

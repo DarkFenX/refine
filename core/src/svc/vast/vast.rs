@@ -141,7 +141,8 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     // Stats-related - cap
-    pub(in crate::svc::vast) cap_consumers_active: RMapRMap<UItemId, REffectId, RAttrId>,
+    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemId, REffectId, RAttrId>,
+    pub(in crate::svc::vast) cap_nosfs: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     // Stats-related - misc
     pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
@@ -225,6 +226,7 @@ impl VastFitData {
             orr_hull: RMapRMap::new(),
             // Stats-related - misc output
             out_neuts: RMapRMap::new(),
+            cap_nosfs: RMapRMap::new(),
             out_cap: RMapRMap::new(),
             // Stats-related - local active tank
             lr_shield: RMapRMap::new(),
@@ -233,7 +235,7 @@ impl VastFitData {
             lr_armor_limitable: RMapRMap::new(),
             lr_hull: RMapRMap::new(),
             // Stats-related - cap
-            cap_consumers_active: RMapRMap::new(),
+            cap_consumers: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
             // Stats-related - misc
             aggro_effects: RSet::new(),
