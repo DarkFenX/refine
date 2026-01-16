@@ -1,7 +1,7 @@
 use crate::{
     misc::Spool,
     num::{Count, PValue, Value},
-    rd::{REffect, RSpoolAttrs},
+    rd::{REffect, REffectSpoolAttrs},
     svc::{SvcCtx, calc::Calc, funcs},
     ud::UItemId,
 };
@@ -18,7 +18,7 @@ impl ResolvedSpool {
         item_uid: UItemId,
         effect: &REffect,
         spool: Option<Spool>,
-        spool_attrs: RSpoolAttrs,
+        spool_attrs: REffectSpoolAttrs,
     ) -> Option<Self> {
         let duration_s = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
         let spool_step = calc.get_item_attr_oextra(ctx, item_uid, spool_attrs.step_attr_rid)?;

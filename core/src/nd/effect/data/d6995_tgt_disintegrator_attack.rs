@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKind,
-        NEffectProjOpcSpec, NSpoolAttrs,
+        NEffectProjOpcSpec, NEffectSpoolAttrs,
         effect::data::shared::{
             base_opc::get_instant_charge_mult_dmg_base_opc, proj_mult::get_disintegrator_proj_mult,
         },
@@ -22,7 +22,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate { .. })),
             activates_charge: false,
         }),
-        spool_attrs: Some(NSpoolAttrs {
+        spool_attrs: Some(NEffectSpoolAttrs {
             step_attr_id: AAttrId::DMG_MULT_BONUS_PER_CYCLE,
             max_attr_id: AAttrId::DMG_MULT_BONUS_MAX,
         }),

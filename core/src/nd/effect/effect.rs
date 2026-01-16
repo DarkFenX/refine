@@ -2,7 +2,10 @@ use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
     misc::{DmgKinds, Ecm, EffectSpec, MiningAmount},
-    nd::{NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NSpoolAttrs},
+    nd::{
+        NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter,
+        NEffectSpoolAttrs,
+    },
     num::PValue,
     rd::{RAttrConsts, REffect},
     svc::{
@@ -19,14 +22,14 @@ pub(crate) type NEffectMaker = fn() -> AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
 // General
-pub(crate) type NCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
+pub(crate) type NEffectCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
 // Getters - projection
 // TODO: consider if proj attr getter should be a function or an enum like resists (standard/attrs)
-pub(crate) type NModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-pub(crate) type NProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> PValue;
+pub(crate) type NEffectModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
+pub(crate) type NEffectProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> PValue;
 // Getters - damage output
-pub(crate) type NDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
-pub(crate) type NBreacherDmgGetter =
+pub(crate) type NEffectDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
+pub(crate) type NEffectBreacherDmgGetter =
     fn(SvcCtx, &mut Calc, UItemId, &REffect, Option<UItemId>) -> Option<OutputDmgBreacher>;
 
 pub(crate) struct NEffect {
@@ -44,16 +47,16 @@ pub(crate) struct NEffect {
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) kills_item: bool = false,
-    pub(crate) spool_attrs: Option<NSpoolAttrs> = None,
+    pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization function ran during runtime in calculator service
-    pub(crate) calc_customizer: Option<NCalcCustomizer> = None,
+    pub(crate) calc_customizer: Option<NEffectCalcCustomizer> = None,
     // Getters/specs - modifier projection
-    pub(crate) modifier_proj_attrs_getter: Option<NModProjAttrGetter> = None,
-    pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter> = None,
+    pub(crate) modifier_proj_attrs_getter: Option<NEffectModProjAttrGetter> = None,
+    pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter> = None,
     // Getters/specs - damage output
-    pub(crate) dmg_kind_getter: Option<NDmgKindGetter> = None,
+    pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter> = None,
     pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<PValue>>> = None,
-    pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter> = None,
+    pub(crate) breacher_dmg_opc_getter: Option<NEffectBreacherDmgGetter> = None,
     // Getters/specs - mining
     pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,

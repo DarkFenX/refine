@@ -1,11 +1,11 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     misc::{DmgKinds, Ecm, MiningAmount},
-    nd::{N_EFFECT_MAP, NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NProjMultGetter},
+    nd::{N_EFFECT_MAP, NEffectBreacherDmgGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter},
     num::PValue,
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
-        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, RItem, RItemListId, RSpoolAttrs, RState,
+        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
     },
     util::RMap,
 };
@@ -32,7 +32,7 @@ pub(crate) struct REffect {
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
-    pub(crate) calc_customizer: Option<NCalcCustomizer>,
+    pub(crate) calc_customizer: Option<NEffectCalcCustomizer>,
     // References to attributes which are used to describe some effect properties
     pub(crate) discharge_attr_rid: Option<RAttrId>,
     pub(crate) duration_attr_rid: Option<RAttrId>,
@@ -41,13 +41,13 @@ pub(crate) struct REffect {
     pub(crate) track_attr_rid: Option<RAttrId>,
     pub(crate) chance_attr_rid: Option<RAttrId>,
     pub(crate) resist_attr_rid: Option<RAttrId>,
-    pub(crate) spool_attr_rids: Option<RSpoolAttrs>,
+    pub(crate) spool_attr_rids: Option<REffectSpoolAttrs>,
     pub(crate) modifier_proj_attr_rids: [Option<RAttrId>; 2],
-    pub(crate) modifier_proj_mult_getter: Option<NProjMultGetter>,
+    pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter>,
     // Output getters/specs
-    pub(crate) dmg_kind_getter: Option<NDmgKindGetter>,
+    pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter>,
     pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<PValue>>>,
-    pub(crate) breacher_dmg_opc_getter: Option<NBreacherDmgGetter>,
+    pub(crate) breacher_dmg_opc_getter: Option<NEffectBreacherDmgGetter>,
     pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
@@ -180,7 +180,7 @@ impl REffect {
             self.spool_attr_rids = n_effect
                 .spool_attrs
                 .as_ref()
-                .and_then(|n_spool_attrs| RSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_aid_rid_map));
+                .and_then(|n_spool_attrs| REffectSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_aid_rid_map));
             if let Some(modifier_proj_attrs_getter) = n_effect.modifier_proj_attrs_getter {
                 let proj_attr_aids = modifier_proj_attrs_getter(a_effect);
                 self.modifier_proj_attr_rids = proj_attr_aids

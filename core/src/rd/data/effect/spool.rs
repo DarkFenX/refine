@@ -1,13 +1,13 @@
-use crate::{ad::AAttrId, nd::NSpoolAttrs, rd::RAttrId, util::RMap};
+use crate::{ad::AAttrId, nd::NEffectSpoolAttrs, rd::RAttrId, util::RMap};
 
 #[derive(Copy, Clone)]
-pub(crate) struct RSpoolAttrs {
+pub(crate) struct REffectSpoolAttrs {
     pub(crate) step_attr_rid: RAttrId,
     pub(crate) max_attr_rid: RAttrId,
 }
-impl RSpoolAttrs {
+impl REffectSpoolAttrs {
     pub(in crate::rd::data::effect) fn try_from_n_spool_attrs(
-        n_spool_attrs: &NSpoolAttrs,
+        n_spool_attrs: &NEffectSpoolAttrs,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Option<Self> {
         Some(Self {

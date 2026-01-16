@@ -1,6 +1,6 @@
 use crate::{
     ad::AAttrId,
-    nd::{NBaseOutputGetter, NChargeMultGetter, NEffectProjOpcSpec, NProjMultGetter},
+    nd::{NBaseOutputGetter, NChargeMultGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
     rd::{RAttrId, REffectResist},
     util::RMap,
 };
@@ -13,8 +13,8 @@ where
     pub(crate) base: NBaseOutputGetter<T>,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
     pub(crate) spoolable: bool,
-    pub(crate) proj_mult_str: Option<NProjMultGetter>,
-    pub(crate) proj_mult_chance: Option<NProjMultGetter>,
+    pub(crate) proj_mult_str: Option<NEffectProjMultGetter>,
+    pub(crate) proj_mult_chance: Option<NEffectProjMultGetter>,
     pub(crate) resist: Option<REffectResist>,
     pub(crate) limit_attr_rid: Option<RAttrId>,
 }

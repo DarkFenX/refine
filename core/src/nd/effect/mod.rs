@@ -3,11 +3,13 @@ pub(crate) use charge::{
 };
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::NEffectDmgKind;
-pub(crate) use effect::{NBreacherDmgGetter, NCalcCustomizer, NDmgKindGetter, NEffect, NProjMultGetter};
+pub(crate) use effect::{
+    NEffect, NEffectBreacherDmgGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter,
+};
 pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use resist::NEffectResist;
-pub(crate) use spool::NSpoolAttrs;
+pub(crate) use spool::NEffectSpoolAttrs;
 
 mod charge;
 mod container;

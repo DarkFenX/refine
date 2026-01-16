@@ -5,7 +5,7 @@ use smallvec::SmallVec;
 use crate::{
     ad::AEffectCatId,
     misc::EffectSpec,
-    nd::NProjMultGetter,
+    nd::NEffectProjMultGetter,
     num::Value,
     rd::{RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModifier},
     svc::{
@@ -31,7 +31,7 @@ pub(crate) struct RawModifier {
     // Buff-related
     pub(crate) buff_type_attr_rid: Option<RAttrId> = None,
     // Projection-related
-    pub(crate) proj_mult_getter: Option<NProjMultGetter> = None,
+    pub(crate) proj_mult_getter: Option<NEffectProjMultGetter> = None,
     pub(crate) proj_attr_rids: [Option<RAttrId>; 2] = [None, None],
     pub(crate) resist_attr_rid: Option<RAttrId> = None,
 }

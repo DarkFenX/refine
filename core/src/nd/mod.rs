@@ -7,10 +7,10 @@
 pub(crate) use attr::{N_ATTR_MAP, NAttr};
 pub(crate) use buff::{N_BUFF_MAP, NBuff};
 pub(crate) use effect::{
-    N_EFFECT_MAP, NBaseOutputGetter, NBreacherDmgGetter, NCalcCustomizer, NChargeMultGetter, NDmgKindGetter, NEffect,
+    N_EFFECT_MAP, NBaseOutputGetter, NChargeMultGetter, NEffect, NEffectBreacherDmgGetter, NEffectCalcCustomizer,
     NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,
-    NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectResist, NProjMultGetter,
-    NSpoolAttrs,
+    NEffectDmgKind, NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec,
+    NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 

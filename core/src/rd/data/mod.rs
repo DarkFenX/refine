@@ -6,7 +6,7 @@ pub(crate) use data::{RcEffect, RcItem, RcMuta};
 pub(crate) use effect::{
     REffect, REffectBuff, REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge,
     REffectChargeLoc, REffectConsts, REffectId, REffectLocalOpcSpec, REffectModifier, REffectProjOpcSpec,
-    REffectProjecteeFilter, REffectResist, RSpoolAttrs,
+    REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
 };
 pub(crate) use item::{
     RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemShipLimit, RShipDroneLimit, RShipKind,
