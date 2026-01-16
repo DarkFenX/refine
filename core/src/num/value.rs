@@ -2,6 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
+    dbg::{DebugError, DebugResult},
     def::AU,
     num::{Count, PValue},
     util::{FLOAT_TOLERANCE, round, sig_round},
@@ -229,5 +230,17 @@ impl std::iter::Product<Value> for Value {
 impl<'a> std::iter::Product<&'a Value> for Value {
     fn product<I: Iterator<Item = &'a Value>>(iter: I) -> Self {
         Value(iter.map(|v| v.0).product())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debug checks
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Value {
+    pub(crate) fn consistency_check(&self) -> DebugResult {
+        match self.0.is_finite() {
+            true => Ok(()),
+            false => Err(DebugError {}),
+        }
     }
 }

@@ -2,6 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
+    dbg::{DebugError, DebugResult},
     def::SERVER_TICK_HZ,
     num::Value,
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
@@ -194,5 +195,17 @@ impl std::ops::Div<Value> for PValue {
 impl std::iter::Sum<PValue> for PValue {
     fn sum<I: Iterator<Item = PValue>>(iter: I) -> Self {
         PValue(iter.map(|v| v.0).sum())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debug checks
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl PValue {
+    pub(crate) fn consistency_check(&self) -> DebugResult {
+        match self.0.is_finite() {
+            true => Ok(()),
+            false => Err(DebugError {}),
+        }
     }
 }

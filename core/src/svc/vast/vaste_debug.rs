@@ -107,21 +107,26 @@ impl VastFitData {
         for item_uid in self.mods_svcs_online.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
-        for item_uid in self.rigs_offline_calibration.keys() {
+        for (item_uid, val) in self.rigs_offline_calibration.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
-        for item_uid in self.drones_volume.keys() {
+        for (item_uid, val) in self.drones_volume.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
-        for item_uid in self.drones_bandwidth.keys() {
+        for (item_uid, val) in self.drones_bandwidth.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
-        for item_uid in self.drones_online_bandwidth.keys() {
+        for (item_uid, val) in self.drones_online_bandwidth.iter() {
             // Holds not loaded drones as well
             item_uid.consistency_check(u_data, false)?;
+            val.consistency_check()?;
         }
-        for item_uid in self.fighters_volume.keys() {
+        for (item_uid, val) in self.fighters_volume.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
         for item_uid in self.fighters_online.iter() {
             // Holds not loaded fighters as well
@@ -211,9 +216,12 @@ impl VastFitData {
         for item_uid in self.mods_max_group_active_limited.keys() {
             item_uid.consistency_check(u_data, true)?;
         }
-        for item_uid in self.rigs_rig_size.keys() {
+        for (item_uid, val) in self.rigs_rig_size.iter() {
             // This container can store info about non-loaded rigs
             item_uid.consistency_check(u_data, false)?;
+            if let Some(val) = val {
+                val.consistency_check()?;
+            }
         }
         for item_uids in self.srqs_skill_item_map.values() {
             for item_uid in item_uids {
@@ -239,8 +247,9 @@ impl VastFitData {
             cont_uid.consistency_check(u_data, true)?;
             charge_uid.consistency_check(u_data, true)?;
         }
-        for item_uid in self.mods_capital.keys() {
+        for (item_uid, val) in self.mods_capital.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
         for item_uid in self.not_loaded.iter() {
             item_uid.consistency_check(u_data, false)?;
@@ -271,14 +280,16 @@ impl VastFitData {
         for item_uid in self.sec_zone_fitted_wspace_banned.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
-        for item_uid in self.sec_zone_online_class.keys() {
+        for (item_uid, val) in self.sec_zone_online_class.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
         for item_uid in self.sec_zone_active.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
-        for item_uid in self.sec_zone_unonlineable_class.keys() {
+        for (item_uid, val) in self.sec_zone_unonlineable_class.iter() {
             item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
         }
         for item_uid in self.sec_zone_unactivable.iter() {
             item_uid.consistency_check(u_data, true)?;
