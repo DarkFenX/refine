@@ -33,6 +33,8 @@ def test_module_targeted_ship(client, consts):
         attrs={eve_sensor_grav_attr_id: 25, eve_radius_attr_id: 150, eve_resist_attr_id: 0.5})
     eve_tgt_ship2_id = client.mk_eve_ship(
         attrs={eve_sensor_radar_attr_id: 22, eve_radius_attr_id: 150, eve_resist_attr_id: 1})
+    eve_tgt_ship3_id = client.mk_eve_ship(attrs={
+        eve_sensor_radar_attr_id: 4, eve_radius_attr_id: 220, eve_resist_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -74,10 +76,26 @@ def test_module_targeted_ship(client, consts):
     assert api_tgt_fit_stats.incoming_jam == [0, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam == [0, 0]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id, coordinates=(0, 75520, 0))
+    # Verification - despite being in falloff, chance to jam is still 100% (since effect strength is
+    # reduced with range, not chance of effect application)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(1), approx(1)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(1), approx(1)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 100520, 0))
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.1875), approx(0.1875)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.1875), approx(0.1875)]
 
 
 def test_module_targeted_struct(client, consts):
     # Also check jam / sensor ratio > 1
+    eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sensor_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength)
     eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
     eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
@@ -107,6 +125,8 @@ def test_module_targeted_struct(client, consts):
         attrs={eve_sensor_grav_attr_id: 50, eve_radius_attr_id: 150, eve_resist_attr_id: 0.5})
     eve_tgt_ship2_id = client.mk_eve_ship(
         attrs={eve_sensor_ladar_attr_id: 35, eve_radius_attr_id: 150, eve_resist_attr_id: 1})
+    eve_tgt_ship3_id = client.mk_eve_ship(attrs={
+        eve_sensor_radar_attr_id: 4, eve_radius_attr_id: 220, eve_resist_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -148,6 +168,21 @@ def test_module_targeted_struct(client, consts):
     assert api_tgt_fit_stats.incoming_jam == [0, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam == [0, 0]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id, coordinates=(0, 240220, 0))
+    # Verification - despite being in falloff, chance to jam is still 100% (since effect strength is
+    # reduced with range, not chance of effect application)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(1), approx(1)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(1), approx(1)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 337720, 0))
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam == [approx(0.609375), approx(0.609375)]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam == [approx(0.609375), approx(0.609375)]
 
 
 def test_module_burst_projector(client, consts):
