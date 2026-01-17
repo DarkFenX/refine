@@ -1,10 +1,10 @@
 use crate::num::PValue;
 
 #[derive(Copy, Clone)]
-pub struct Ecm {
-    pub radar: PValue,
-    pub magnetometric: PValue,
-    pub gravimetric: PValue,
-    pub ladar: PValue,
-    pub duration: PValue,
+pub(crate) struct Ecm {
+    pub(crate) radar: PValue,
+    pub(crate) magnetometric: PValue,
+    pub(crate) gravimetric: PValue,
+    pub(crate) ladar: PValue,
+    pub(crate) duration: PValue,
 }

@@ -1,7 +1,7 @@
 pub(crate) use attr_spec::AttrSpec;
 pub use dmg_kinds::DmgKinds;
 pub use dps_profile::{Breacher, BreacherError, DpsProfile, DpsProfileError};
-pub use ecm::Ecm;
+pub(crate) use ecm::Ecm;
 pub use effect_mode::EffectMode;
 pub(crate) use effect_spec::EffectSpec;
 pub(crate) use inf_count::InfCount;
