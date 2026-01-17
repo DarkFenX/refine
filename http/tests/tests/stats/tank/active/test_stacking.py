@@ -136,6 +136,53 @@ def test_range(client, consts):
     assert api_tgt_ship_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313), ANY_VALUE]
 
 
+def test_resist(client, consts):
+    # Not tested in EVE, but the lib assumes that RR impedance-reduced rep amount is considered for
+    # penalization
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        hps=(100000, 100000, 100000),
+        rr_resist=1,
+        maker=client.mk_eve_ship)
+    eve_module_id = make_eve_remote_sb(
+        client=client,
+        basic_info=eve_basic_info,
+        rep_amount=8593.75,
+        cycle_time=4015.625)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_rr_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_basic_info.rr_res_attr_id)
+    eve_rr_mod_effect_id = client.mk_eve_effect(mod_info=[eve_rr_mod])
+    eve_rr_mod_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_rr_mod_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mods = [api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active) for _ in range(20)]
+    for api_mod in api_mods:
+        api_mod.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516), ANY_VALUE]
+    # Action
+    api_tgt_fit.add_rig(type_id=eve_rr_mod_rig_id)
+    # Verification - raw reps are cut in half, penalized are cut less
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(21400.77821), approx(17830.309313), ANY_VALUE]
+
+
 def test_spool(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000))
