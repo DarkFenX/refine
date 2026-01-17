@@ -65,42 +65,6 @@ def test_layers(client, consts):
     assert api_tgt_ship_stats.rps.one().hull == [0, approx(17188), approx(15988.777992)]
 
 
-def test_rounding(client, consts):
-    # For the sake of penalty multiplier calculation, cycle time is rounded down to integer seconds
-    # for some reason. This has been tested sometime in 2024 and confirmed to work like this (like
-    # the rest of pre-change RR penalization formula). First rep represents self-linked CONCORD RR
-    # on minokawa, second module is same but t3c/CD-linked
-    eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000))
-    eve_module1_id = make_eve_remote_sb(
-        client=client, basic_info=eve_basic_info, rep_amount=8593.75, cycle_time=4015.625)
-    eve_module2_id = make_eve_remote_sb(
-        client=client, basic_info=eve_basic_info, rep_amount=8593.75, cycle_time=3968.75)
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_src_fit = api_sol.create_fit()
-    api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_mods = [api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active) for _ in range(40)]
-    for api_mod in api_mods:
-        api_mod.change_module(add_projs=[api_tgt_ship.id])
-    # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
-    # Action
-    for api_mod in api_mods:
-        api_mod.change_module(type_id=eve_module2_id)
-    # Verification - when cycle in seconds goes past integer threshold, it increases rep power per
-    # second in RR penalty multiplier calculation. In extreme cases like this, faster cycling rep
-    # can lead to lower amount of RR/s applied to target ship
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
-    assert api_tgt_fit_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027), ANY_VALUE]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
-    assert api_tgt_ship_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027), ANY_VALUE]
-
-
 def test_range(client, consts):
     # Not tested in EVE, but the lib assumes that range-reduced rep amount is considered for
     # penalization
@@ -141,16 +105,9 @@ def test_resist(client, consts):
     # penalization
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(
-        client=client,
-        basic_info=eve_basic_info,
-        hps=(100000, 100000, 100000),
-        rr_resist=1,
-        maker=client.mk_eve_ship)
+        client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000), rr_resist=1, maker=client.mk_eve_ship)
     eve_module_id = make_eve_remote_sb(
-        client=client,
-        basic_info=eve_basic_info,
-        rep_amount=8593.75,
-        cycle_time=4015.625)
+        client=client, basic_info=eve_basic_info, rep_amount=8593.75, cycle_time=4015.625)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_rr_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -216,3 +173,88 @@ def test_spool(client, consts):
     assert api_tgt_ship_stats_prespool.armor == [0, approx(3413.333333), approx(3225.597)]
     assert api_tgt_ship_stats_midspool.armor == [0, approx(6690.133333), approx(6039.5067468)]
     assert api_tgt_ship_stats_spooled.armor == [0, approx(9557.333333), approx(8402.05019)]
+
+
+def test_cycle_duration_rounding(client, consts):
+    # For the sake of penalty multiplier calculation, cycle time is rounded down to integer seconds
+    # for some reason. This has been tested sometime in 2024 and confirmed to work like this (like
+    # the rest of pre-change RR penalization formula). First rep represents self-linked CONCORD RR
+    # on minokawa, second module is same but t3c/CD-linked
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000))
+    eve_module1_id = make_eve_remote_sb(
+        client=client, basic_info=eve_basic_info, rep_amount=8593.75, cycle_time=4015.625)
+    eve_module2_id = make_eve_remote_sb(
+        client=client, basic_info=eve_basic_info, rep_amount=8593.75, cycle_time=3968.75)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mods = [api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active) for _ in range(40)]
+    for api_mod in api_mods:
+        api_mod.change_module(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
+    # Action
+    for api_mod in api_mods:
+        api_mod.change_module(type_id=eve_module2_id)
+    # Verification - when cycle in seconds goes past integer threshold, it increases rep power per
+    # second in RR penalty multiplier calculation. In extreme cases like this, faster cycling rep
+    # can lead to lower amount of RR/s applied to target ship
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(86614.173228), approx(52827.782027), ANY_VALUE]
+
+
+def test_cycle_duration_sub_one(client, consts):
+    # Since cycle time is rounded down, check what happens when cycle time is below 0 and 1
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000))
+    eve_module1_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=1000, cycle_time=900)
+    eve_module2_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=1000, cycle_time=400)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mods = [api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active) for _ in range(40)]
+    for api_mod in api_mods:
+        api_mod.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - penalized value is not really relevant here (the lib takes non-rounded cycle
+    # duration in this case), just check that nothing explodes
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(44444.444444), approx(29065.743945), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(44444.444444), approx(29065.743945), ANY_VALUE]
+    # Action
+    for api_mod in api_mods:
+        api_mod.change_module(type_id=eve_module2_id)
+    # Verification - just check that nothing explodes here as well
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, approx(100000), approx(61433.526715), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, approx(100000), approx(61433.526715), ANY_VALUE]
+
+
+def test_cycle_duration_zero(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(100000, 100000, 100000))
+    eve_module_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=1000, cycle_time=0)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_mods = [api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active) for _ in range(40)]
+    for api_mod in api_mods:
+        api_mod.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - the lib ignores modules with cycle duration of 0
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
+    assert api_tgt_fit_stats.rps.one().shield == [0, 0, 0, ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=True))
+    assert api_tgt_ship_stats.rps.one().shield == [0, 0, 0, ANY_VALUE]
