@@ -15,7 +15,7 @@ impl HAddFitCmd {
             core_fit.set_sec_status(core_sec_status);
         }
         if let Some(rah_incoming_dps) = self.rah_incoming_dps {
-            core_fit.set_rah_incoming_dps(rah_incoming_dps.into());
+            core_fit.set_rah_incoming_dps(rah_incoming_dps.into_core());
         }
         core_fit.into()
     }

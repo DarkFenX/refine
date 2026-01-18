@@ -20,7 +20,8 @@ impl HAddServiceCmd {
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
-        let core_service = core_fit.add_service(core_type_id, (&self.state).into());
+        let core_state = self.state.into_core();
+        let core_service = core_fit.add_service(core_type_id, core_state);
         Ok(core_service.into())
     }
 }

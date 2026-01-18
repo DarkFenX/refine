@@ -27,11 +27,10 @@ impl HAddModuleCmd {
         fit_id: &rc::FitId,
     ) -> Result<HItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let mut core_module = core_fit.add_module(
-            (&self.rack).into(),
+            self.rack.into_core(),
             self.add_mode.into_core(),
-            core_type_id,
+            rc::ItemTypeId::from_i32(self.type_id),
             self.state.into_core(),
         );
         if let Some(h_mutation) = self.mutation.as_ref() {

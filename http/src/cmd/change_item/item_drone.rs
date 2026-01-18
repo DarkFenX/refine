@@ -103,7 +103,7 @@ impl HChangeDroneCmd {
             core_drone.set_movement(movement.into_core());
         }
         match self.prop_mode {
-            TriStateField::Value(h_npc_prop) => core_drone.set_prop_mode(Some(h_npc_prop.into())),
+            TriStateField::Value(h_npc_prop) => core_drone.set_prop_mode(Some(h_npc_prop.into_core())),
             TriStateField::None => core_drone.set_prop_mode(None),
             TriStateField::Absent => (),
         }

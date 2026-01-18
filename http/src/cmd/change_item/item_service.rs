@@ -32,8 +32,8 @@ impl HChangeServiceCmd {
             let core_type_id = rc::ItemTypeId::from_i32(type_id);
             core_service.set_type_id(core_type_id);
         }
-        if let Some(state) = &self.state {
-            core_service.set_state(state.into());
+        if let Some(state) = self.state {
+            core_service.set_state(state.into_core());
         }
         apply_effect_modes(&mut core_service, &self.effect_modes);
         Ok(core_service.into())

@@ -63,7 +63,7 @@ impl HModuleInfoPartial {
             type_id: core_module.get_type_id().into_i32(),
             fit_id: core_module.get_fit().get_fit_id(),
             state: HModuleState::from_core(core_module.get_state()),
-            rack: (&core_module.get_rack()).into(),
+            rack: HModRack::from_core(core_module.get_rack()),
             pos: core_module.get_pos().into_usize(),
             mutation: match core_module.get_mutation() {
                 Some(rc::Mutation::Effective(effective_mutation)) => Some(effective_mutation.into()),

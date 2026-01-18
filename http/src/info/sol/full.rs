@@ -49,7 +49,7 @@ impl HSolInfoFull {
                 .collect(),
             sec_zone: HSecZone::from_core(core_sol.get_sec_zone()),
             default_spool: HSpool::from_core(core_sol.get_default_spool()),
-            default_incoming_dps: core_sol.get_default_incoming_dps().into(),
+            default_incoming_dps: HDpsProfile::from_core(core_sol.get_default_incoming_dps()),
         }
     }
 }

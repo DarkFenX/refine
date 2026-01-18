@@ -18,7 +18,7 @@ impl HAddSolCmd {
             core_sol.set_default_spool(spool.into_core());
         }
         if let Some(default_incoming_dps) = self.default_incoming_dps {
-            core_sol.set_default_incoming_dps(default_incoming_dps.into());
+            core_sol.set_default_incoming_dps(default_incoming_dps.into_core());
         }
         core_sol
     }

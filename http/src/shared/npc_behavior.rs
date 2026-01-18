@@ -6,19 +6,21 @@ pub(crate) enum HNpcProp {
     Cruise,
     Chase,
 }
-impl From<rc::NpcProp> for HNpcProp {
-    fn from(core_prop_mode: rc::NpcProp) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HNpcProp {
+    pub(crate) fn from_core(core_prop_mode: rc::NpcProp) -> Self {
         match core_prop_mode {
             rc::NpcProp::Cruise => Self::Cruise,
             rc::NpcProp::Chase => Self::Chase,
         }
     }
-}
-impl From<HNpcProp> for rc::NpcProp {
-    fn from(h_prop_mode: HNpcProp) -> Self {
-        match h_prop_mode {
-            HNpcProp::Cruise => Self::Cruise,
-            HNpcProp::Chase => Self::Chase,
+    pub(crate) fn into_core(self) -> rc::NpcProp {
+        match self {
+            Self::Cruise => rc::NpcProp::Cruise,
+            Self::Chase => rc::NpcProp::Chase,
         }
     }
 }

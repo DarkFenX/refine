@@ -431,7 +431,7 @@ fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFit
 fn get_ehp_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionEhp>) -> Option<Vec<HStatEhp>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_incoming_dps = option.incoming_dps.map(Into::into);
+        let core_incoming_dps = option.incoming_dps.map(|v| v.into_core());
         match core_fit.get_stat_ehp(core_incoming_dps) {
             Ok(core_stat) => results.push(HStatEhp::from_core(core_stat)),
             Err(_) => return None,
@@ -454,7 +454,7 @@ fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionRps>) -> Opt
 fn get_erps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionErps>) -> Option<Vec<HStatErps>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_incoming_dps = option.incoming_dps.map(Into::into);
+        let core_incoming_dps = option.incoming_dps.map(|v| v.into_core());
         let core_time_options = option.time_options.into();
         let core_shield = rc::UnitInterval::from_f64_clamped(option.shield_perc);
         match core_fit.get_stat_erps(core_incoming_dps, core_time_options, core_shield) {

@@ -13,7 +13,7 @@ pub(crate) struct HServiceInfoPartial {
     type_id: i32,
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
-    enabled: HServiceState,
+    state: HServiceState,
 }
 impl From<&mut rc::ServiceMut<'_>> for HServiceInfoPartial {
     fn from(core_service: &mut rc::ServiceMut) -> Self {
@@ -22,7 +22,7 @@ impl From<&mut rc::ServiceMut<'_>> for HServiceInfoPartial {
             kind: "service",
             type_id: core_service.get_type_id().into_i32(),
             fit_id: core_service.get_fit().get_fit_id(),
-            enabled: (&core_service.get_state()).into(),
+            state: HServiceState::from_core(core_service.get_state()),
         }
     }
 }
