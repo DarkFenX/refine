@@ -41,19 +41,23 @@ pub(in crate::cmd) struct HStatNeutItemKinds {
     minion: Option<bool>,
     bomb: Option<bool>,
 }
-impl From<&HStatNeutItemKinds> for rc::stats::StatNeutItemKinds {
-    fn from(h_item_kinds: &HStatNeutItemKinds) -> Self {
-        let mut core_item_kinds = match h_item_kinds.default {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatNeutItemKinds {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatNeutItemKinds {
+        let mut core_item_kinds = match self.default {
             true => rc::stats::StatNeutItemKinds::all_enabled(),
             false => rc::stats::StatNeutItemKinds::all_disabled(),
         };
-        if let Some(modules) = h_item_kinds.module {
+        if let Some(modules) = self.module {
             core_item_kinds.module = modules;
         }
-        if let Some(minions) = h_item_kinds.minion {
+        if let Some(minions) = self.minion {
             core_item_kinds.minion = minions;
         }
-        if let Some(bomb) = h_item_kinds.bomb {
+        if let Some(bomb) = self.bomb {
             core_item_kinds.bomb = bomb;
         }
         core_item_kinds

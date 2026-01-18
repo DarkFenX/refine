@@ -67,7 +67,7 @@ impl HGetFleetStatsCmd {
 fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>) -> Vec<Option<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = (&option.item_kinds).into();
+        let core_item_kinds = option.item_kinds.into_core();
         let core_spool = option.spool.map(|v| v.into_core()).into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
@@ -87,7 +87,7 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>)
 fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = (&option.item_kinds).into();
+        let core_item_kinds = option.item_kinds.into_core();
         let core_spool = option.spool.map(|v| v.into_core()).into();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
@@ -107,8 +107,8 @@ fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVo
 fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMining>) -> Vec<HStatMining> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = (&option.item_kinds).into();
-        let core_time_options = option.time_options.into();
+        let core_item_kinds = option.item_kinds.into_core();
+        let core_time_options = option.time_options.into_core();
         let core_result = core_fleet.get_stat_mps(core_item_kinds, core_time_options);
         results.push(core_result.into());
     }
@@ -117,8 +117,8 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMinin
 fn get_outgoing_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitOutNps>) -> Vec<Option<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = (&option.item_kinds).into();
-        let core_time_options = option.time_options.into();
+        let core_item_kinds = option.item_kinds.into_core();
+        let core_time_options = option.time_options.into_core();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_nps_applied(core_item_kinds, core_time_options, projectee_item_id) {
@@ -140,8 +140,8 @@ fn get_outgoing_rps_stats(
 ) -> Vec<Option<HStatOutReps>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_item_kinds = (&option.item_kinds).into();
-        let core_time_options = option.time_options.into();
+        let core_item_kinds = option.item_kinds.into_core();
+        let core_time_options = option.time_options.into_core();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_rps_applied(core_item_kinds, core_time_options, projectee_item_id) {
@@ -160,7 +160,7 @@ fn get_outgoing_rps_stats(
 fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitOutCps>) -> Vec<Option<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_time_options = option.time_options.into();
+        let core_time_options = option.time_options.into_core();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_cps_applied(core_time_options, projectee_item_id) {

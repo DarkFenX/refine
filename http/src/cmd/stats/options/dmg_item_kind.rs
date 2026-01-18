@@ -18,37 +18,41 @@ pub(in crate::cmd) struct HStatDmgItemKinds {
     minion_mobile: Option<bool>,
     minion_static: Option<bool>,
 }
-impl From<&HStatDmgItemKinds> for rc::stats::StatDmgItemKinds {
-    fn from(h_item_kinds: &HStatDmgItemKinds) -> Self {
-        let mut core_item_kinds = match h_item_kinds.default {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatDmgItemKinds {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatDmgItemKinds {
+        let mut core_item_kinds = match self.default {
             true => rc::stats::StatDmgItemKinds::all_enabled(),
             false => rc::stats::StatDmgItemKinds::all_disabled(),
         };
-        if let Some(turret) = h_item_kinds.turret {
+        if let Some(turret) = self.turret {
             core_item_kinds.turret = turret;
         }
-        if let Some(missile) = h_item_kinds.missile {
+        if let Some(missile) = self.missile {
             core_item_kinds.missile = missile;
         }
-        if let Some(breacher) = h_item_kinds.breacher {
+        if let Some(breacher) = self.breacher {
             core_item_kinds.breacher = breacher;
         }
-        if let Some(vorton) = h_item_kinds.vorton {
+        if let Some(vorton) = self.vorton {
             core_item_kinds.vorton = vorton;
         }
-        if let Some(bomb) = h_item_kinds.bomb {
+        if let Some(bomb) = self.bomb {
             core_item_kinds.bomb = bomb;
         }
-        if let Some(smartbomb) = h_item_kinds.smartbomb {
+        if let Some(smartbomb) = self.smartbomb {
             core_item_kinds.smartbomb = smartbomb;
         }
-        if let Some(superweapon) = h_item_kinds.superweapon {
+        if let Some(superweapon) = self.superweapon {
             core_item_kinds.superweapon = superweapon;
         }
-        if let Some(minion_mobile) = h_item_kinds.minion_mobile {
+        if let Some(minion_mobile) = self.minion_mobile {
             core_item_kinds.minion_mobile = minion_mobile;
         }
-        if let Some(minion_static) = h_item_kinds.minion_static {
+        if let Some(minion_static) = self.minion_static {
             core_item_kinds.minion_static = minion_static;
         }
         core_item_kinds

@@ -37,16 +37,20 @@ pub(in crate::cmd) struct HOutRepItemKinds {
     module: Option<bool>,
     minion: Option<bool>,
 }
-impl From<&HOutRepItemKinds> for rc::stats::StatOutRepItemKinds {
-    fn from(h_item_kinds: &HOutRepItemKinds) -> Self {
-        let mut core_item_kinds = match h_item_kinds.default {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HOutRepItemKinds {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatOutRepItemKinds {
+        let mut core_item_kinds = match self.default {
             true => rc::stats::StatOutRepItemKinds::all_enabled(),
             false => rc::stats::StatOutRepItemKinds::all_disabled(),
         };
-        if let Some(modules) = h_item_kinds.module {
+        if let Some(modules) = self.module {
             core_item_kinds.module = modules;
         }
-        if let Some(minions) = h_item_kinds.minion {
+        if let Some(minions) = self.minion {
             core_item_kinds.minion = minions;
         }
         core_item_kinds

@@ -30,16 +30,20 @@ pub(in crate::cmd) struct HStatMiningItemKinds {
     module: Option<bool>,
     minion: Option<bool>,
 }
-impl From<&HStatMiningItemKinds> for rc::stats::StatMiningItemKinds {
-    fn from(h_item_kinds: &HStatMiningItemKinds) -> Self {
-        let mut core_item_kinds = match h_item_kinds.default {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatMiningItemKinds {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatMiningItemKinds {
+        let mut core_item_kinds = match self.default {
             true => rc::stats::StatMiningItemKinds::all_enabled(),
             false => rc::stats::StatMiningItemKinds::all_disabled(),
         };
-        if let Some(modules) = h_item_kinds.module {
+        if let Some(modules) = self.module {
             core_item_kinds.module = modules;
         }
-        if let Some(minions) = h_item_kinds.minion {
+        if let Some(minions) = self.minion {
             core_item_kinds.minion = minions;
         }
         core_item_kinds

@@ -24,15 +24,18 @@ pub(in crate::cmd) enum HStatOptionCapSimStagger {
     Simple(bool),
     Extended(bool, #[serde_as(as = "Vec<DisplayFromStr>")] Vec<rc::ItemId>),
 }
-impl From<&HStatOptionCapSimStagger> for rc::stats::StatCapSimStagger {
-    fn from(h_stagger: &HStatOptionCapSimStagger) -> Self {
-        match h_stagger {
-            HStatOptionCapSimStagger::Simple(default) => rc::stats::StatCapSimStagger::new(*default),
-            HStatOptionCapSimStagger::Extended(default, exceptions) => {
-                let mut core_stagger = rc::stats::StatCapSimStagger::new(*default);
-                core_stagger.exception_item_ids.extend(exceptions);
-                core_stagger
-            }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatOptionCapSimStagger {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatCapSimStagger {
+        match self {
+            Self::Simple(default) => rc::stats::StatCapSimStagger::new(default),
+            Self::Extended(default, exceptions) => rc::stats::StatCapSimStagger {
+                default,
+                exception_item_ids: exceptions,
+            },
         }
     }
 }

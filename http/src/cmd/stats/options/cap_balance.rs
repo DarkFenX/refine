@@ -37,34 +37,6 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
 }
-impl From<&HStatCapSrcKinds> for rc::stats::StatCapSrcKinds {
-    fn from(h_src_kinds: &HStatCapSrcKinds) -> Self {
-        let mut core_src_kinds = match h_src_kinds.default {
-            true => rc::stats::StatCapSrcKinds::all_enabled(),
-            false => rc::stats::StatCapSrcKinds::all_disabled(),
-        };
-        if let Some(regen) = h_src_kinds.regen {
-            core_src_kinds.regen.enabled = regen.is_enabled();
-            core_src_kinds.regen.cap_perc = rc::UnitInterval::from_f64_clamped(regen.get_cap_perc().unwrap_or(0.25));
-        }
-        if let Some(cap_injectors) = h_src_kinds.cap_injectors {
-            core_src_kinds.cap_injectors = cap_injectors;
-        }
-        if let Some(nosfs) = h_src_kinds.nosfs {
-            core_src_kinds.nosfs = nosfs;
-        }
-        if let Some(consumers) = h_src_kinds.consumers {
-            core_src_kinds.consumers = consumers;
-        }
-        if let Some(incoming_transfers) = h_src_kinds.incoming_transfers {
-            core_src_kinds.incoming_transfers = incoming_transfers;
-        }
-        if let Some(incoming_neuts) = h_src_kinds.incoming_neuts {
-            core_src_kinds.incoming_neuts = incoming_neuts;
-        }
-        core_src_kinds
-    }
-}
 
 #[derive(Copy, Clone, Deserialize)]
 #[serde(untagged)]
@@ -89,4 +61,36 @@ impl HStatCapRegenOptions {
 #[derive(Copy, Clone, Deserialize)]
 struct HStatCapRegenOptionsFull {
     cap_perc: Option<f64>,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatCapSrcKinds {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatCapSrcKinds {
+        let mut core_src_kinds = match self.default {
+            true => rc::stats::StatCapSrcKinds::all_enabled(),
+            false => rc::stats::StatCapSrcKinds::all_disabled(),
+        };
+        if let Some(regen) = self.regen {
+            core_src_kinds.regen.enabled = regen.is_enabled();
+            core_src_kinds.regen.cap_perc = rc::UnitInterval::from_f64_clamped(regen.get_cap_perc().unwrap_or(0.25));
+        }
+        if let Some(cap_injectors) = self.cap_injectors {
+            core_src_kinds.cap_injectors = cap_injectors;
+        }
+        if let Some(nosfs) = self.nosfs {
+            core_src_kinds.nosfs = nosfs;
+        }
+        if let Some(consumers) = self.consumers {
+            core_src_kinds.consumers = consumers;
+        }
+        if let Some(incoming_transfers) = self.incoming_transfers {
+            core_src_kinds.incoming_transfers = incoming_transfers;
+        }
+        if let Some(incoming_neuts) = self.incoming_neuts {
+            core_src_kinds.incoming_neuts = incoming_neuts;
+        }
+        core_src_kinds
+    }
 }
