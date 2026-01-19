@@ -23,7 +23,7 @@ impl HAddFwEffectCmd {
         if let Some(state) = self.state {
             core_fw_effect.set_state(state);
         }
-        Ok(core_fw_effect.into())
+        Ok(HItemIdsResp::from_core_fw_effect(core_fw_effect))
     }
 }
 

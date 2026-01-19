@@ -23,7 +23,7 @@ impl HAddRigCmd {
         if let Some(state) = self.state {
             core_rig.set_state(state);
         }
-        Ok(core_rig.into())
+        Ok(HItemIdsResp::from_core_rig(core_rig))
     }
 }
 

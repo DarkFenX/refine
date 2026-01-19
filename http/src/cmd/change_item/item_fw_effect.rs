@@ -35,6 +35,6 @@ impl HChangeFwEffectCmd {
             core_fw_effect.set_state(state);
         }
         apply_effect_modes(&mut core_fw_effect, &self.effect_modes);
-        Ok(core_fw_effect.into())
+        Ok(HItemIdsResp::from_core_fw_effect(core_fw_effect))
     }
 }

@@ -53,7 +53,7 @@ impl HAddModuleCmd {
         if let Some(h_spool) = self.spool {
             core_module.set_spool(Some(h_spool.into_core()));
         }
-        Ok(core_module.into())
+        Ok(HItemIdsResp::from_core_module(core_module))
     }
 }
 

@@ -43,6 +43,6 @@ impl HChangeSkillCmd {
             core_skill.set_state(state);
         }
         apply_effect_modes(&mut core_skill, &self.effect_modes);
-        Ok(core_skill.into())
+        Ok(HItemIdsResp::from_core_skill(core_skill))
     }
 }

@@ -36,6 +36,6 @@ impl HChangeServiceCmd {
             core_service.set_state(state.into_core());
         }
         apply_effect_modes(&mut core_service, &self.effect_modes);
-        Ok(core_service.into())
+        Ok(HItemIdsResp::from_core_service(core_service))
     }
 }

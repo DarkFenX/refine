@@ -46,6 +46,6 @@ impl HChangeShipCmd {
             core_ship.set_movement(movement.into_core());
         }
         apply_effect_modes(&mut core_ship, &self.effect_modes);
-        Ok(core_ship.into())
+        Ok(HItemIdsResp::from_core_ship(core_ship))
     }
 }

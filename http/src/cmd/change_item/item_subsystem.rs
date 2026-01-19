@@ -35,6 +35,6 @@ impl HChangeSubsystemCmd {
             core_subsystem.set_state(state);
         }
         apply_effect_modes(&mut core_subsystem, &self.effect_modes);
-        Ok(core_subsystem.into())
+        Ok(HItemIdsResp::from_core_subsystem(core_subsystem))
     }
 }

@@ -115,6 +115,6 @@ impl HChangeDroneCmd {
             })?;
         }
         apply_effect_modes(&mut core_drone, &self.effect_modes);
-        Ok(core_drone.into())
+        Ok(HItemIdsResp::from_core_drone(core_drone))
     }
 }

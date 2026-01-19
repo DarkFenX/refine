@@ -35,6 +35,6 @@ impl HChangeStanceCmd {
             core_stance.set_state(state);
         }
         apply_effect_modes(&mut core_stance, &self.effect_modes);
-        Ok(core_stance.into())
+        Ok(HItemIdsResp::from_core_stance(core_stance))
     }
 }

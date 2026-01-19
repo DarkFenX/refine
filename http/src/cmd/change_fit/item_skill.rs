@@ -28,7 +28,7 @@ impl HAddSkillCmd {
         if let Some(state) = self.state {
             core_skill.set_state(state);
         }
-        Ok(core_skill.into())
+        Ok(HItemIdsResp::from_core_skill(core_skill))
     }
 }
 

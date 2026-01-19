@@ -38,6 +38,6 @@ impl HChangeBoosterCmd {
         }
         apply_side_effects(&mut core_booster, &self.side_effects);
         apply_effect_modes(&mut core_booster, &self.effect_modes);
-        Ok(core_booster.into())
+        Ok(HItemIdsResp::from_core_booster(core_booster))
     }
 }

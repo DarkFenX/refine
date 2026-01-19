@@ -35,6 +35,6 @@ impl HChangeCharacterCmd {
             core_character.set_state(state);
         }
         apply_effect_modes(&mut core_character, &self.effect_modes);
-        Ok(core_character.into())
+        Ok(HItemIdsResp::from_core_character(core_character))
     }
 }

@@ -24,7 +24,7 @@ impl HSetStanceCmd {
         if let Some(state) = self.state {
             core_stance.set_state(state);
         }
-        Ok(core_stance.into())
+        Ok(HItemIdsResp::from_core_stance(core_stance))
     }
 }
 

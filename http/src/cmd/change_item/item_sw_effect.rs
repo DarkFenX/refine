@@ -35,6 +35,6 @@ impl HChangeSwEffectCmd {
             core_sw_effect.set_state(state);
         }
         apply_effect_modes(&mut core_sw_effect, &self.effect_modes);
-        Ok(core_sw_effect.into())
+        Ok(HItemIdsResp::from_core_sw_effect(core_sw_effect))
     }
 }

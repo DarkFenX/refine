@@ -35,6 +35,6 @@ impl HChangeChargeCmd {
             core_charge.set_state(state);
         }
         apply_effect_modes(&mut core_charge, &self.effect_modes);
-        Ok(core_charge.into())
+        Ok(HItemIdsResp::from_core_charge(core_charge))
     }
 }

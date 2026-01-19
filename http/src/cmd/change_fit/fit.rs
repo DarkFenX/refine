@@ -49,6 +49,6 @@ impl HChangeFitCmd {
             }
             TriStateField::Absent => (),
         }
-        Ok(core_fit.into())
+        Ok(HFitIdResp::from_core_fit(core_fit))
     }
 }

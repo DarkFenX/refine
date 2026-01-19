@@ -23,7 +23,7 @@ impl HSetCharacterCmd {
         if let Some(state) = self.state {
             core_character.set_state(state);
         }
-        Ok(core_character.into())
+        Ok(HItemIdsResp::from_core_character(core_character))
     }
 }
 

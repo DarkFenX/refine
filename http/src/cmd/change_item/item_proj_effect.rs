@@ -61,6 +61,6 @@ impl HChangeProjEffectCmd {
                 .remove();
         }
         apply_effect_modes(&mut core_proj_effect, &self.effect_modes);
-        Ok(core_proj_effect.into())
+        Ok(HItemIdsResp::from_core_proj_effect(core_proj_effect))
     }
 }

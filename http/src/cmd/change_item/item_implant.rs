@@ -35,6 +35,6 @@ impl HChangeImplantCmd {
             core_implant.set_state(state);
         };
         apply_effect_modes(&mut core_implant, &self.effect_modes);
-        Ok(core_implant.into())
+        Ok(HItemIdsResp::from_core_implant(core_implant))
     }
 }

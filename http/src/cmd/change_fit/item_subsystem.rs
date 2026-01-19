@@ -23,7 +23,7 @@ impl HAddSubsystemCmd {
         if let Some(state) = self.state {
             core_subsystem.set_state(state);
         }
-        Ok(core_subsystem.into())
+        Ok(HItemIdsResp::from_core_subsystem(core_subsystem))
     }
 }
 

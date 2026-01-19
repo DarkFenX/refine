@@ -35,6 +35,6 @@ impl HChangeFleetCmd {
                 rc::err::FleetAddFitError::FitAlreadyInThisFleet(e) => HExecError::FitAlreadyInThisFleet(e),
             })?;
         }
-        Ok(core_fleet.into())
+        Ok(HFleetIdResp::from_core_fleet(core_fleet))
     }
 }

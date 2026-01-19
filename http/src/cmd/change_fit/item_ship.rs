@@ -31,7 +31,7 @@ impl HSetShipCmd {
         if let Some(state) = self.state {
             core_ship.set_state(state);
         }
-        Ok(core_ship.into())
+        Ok(HItemIdsResp::from_core_ship(core_ship))
     }
 }
 

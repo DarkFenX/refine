@@ -23,7 +23,7 @@ impl HAddImplantCmd {
         if let Some(state) = self.state {
             core_implant.set_state(state);
         }
-        Ok(core_implant.into())
+        Ok(HItemIdsResp::from_core_implant(core_implant))
     }
 }
 

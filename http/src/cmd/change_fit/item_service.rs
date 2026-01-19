@@ -22,7 +22,7 @@ impl HAddServiceCmd {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_state = self.state.into_core();
         let core_service = core_fit.add_service(core_type_id, core_state);
-        Ok(core_service.into())
+        Ok(HItemIdsResp::from_core_service(core_service))
     }
 }
 

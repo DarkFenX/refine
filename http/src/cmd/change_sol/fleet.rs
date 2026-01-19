@@ -10,7 +10,8 @@ use crate::{
 pub(crate) struct HAddFleetCmd {}
 impl HAddFleetCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HFleetIdResp {
-        core_sol.add_fleet().into()
+        let core_fleet = core_sol.add_fleet();
+        HFleetIdResp::from_core_fleet(core_fleet)
     }
 }
 

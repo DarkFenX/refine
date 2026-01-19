@@ -18,7 +18,7 @@ impl HAddSwEffectCmd {
         if let Some(state) = self.state {
             sw_effect.set_state(state);
         }
-        sw_effect.into()
+        HItemIdsResp::from_core_sw_effect(sw_effect)
     }
 }
 

@@ -118,6 +118,6 @@ impl HChangeModuleCmd {
                 .remove();
         }
         apply_effect_modes(&mut core_module, &self.effect_modes);
-        Ok(core_module.into())
+        Ok(HItemIdsResp::from_core_module(core_module))
     }
 }

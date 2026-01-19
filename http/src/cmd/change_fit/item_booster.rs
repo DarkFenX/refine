@@ -27,7 +27,7 @@ impl HAddBoosterCmd {
             core_booster.set_state(state);
         }
         apply_side_effects(&mut core_booster, &self.side_effects);
-        Ok(core_booster.into())
+        Ok(HItemIdsResp::from_core_booster(core_booster))
     }
 }
 

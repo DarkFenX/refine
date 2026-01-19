@@ -35,6 +35,6 @@ impl HChangeRigCmd {
             core_rig.set_state(state);
         }
         apply_effect_modes(&mut core_rig, &self.effect_modes);
-        Ok(core_rig.into())
+        Ok(HItemIdsResp::from_core_rig(core_rig))
     }
 }

@@ -27,6 +27,6 @@ impl HChangeAutochargeCmd {
             core_autocharge.set_state(state);
         }
         apply_effect_modes(&mut core_autocharge, &self.effect_modes);
-        Ok(core_autocharge.into())
+        Ok(HItemIdsResp::from_core_autocharge(core_autocharge))
     }
 }

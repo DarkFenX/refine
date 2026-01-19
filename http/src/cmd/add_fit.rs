@@ -17,6 +17,6 @@ impl HAddFitCmd {
         if let Some(rah_incoming_dps) = self.rah_incoming_dps {
             core_fit.set_rah_incoming_dps(rah_incoming_dps.into_core());
         }
-        core_fit.into()
+        HFitIdResp::from_core_fit(core_fit)
     }
 }

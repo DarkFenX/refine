@@ -84,6 +84,6 @@ impl HChangeFighterCmd {
             core_fighter.set_movement(movement.into_core());
         }
         apply_effect_modes(&mut core_fighter, &self.effect_modes);
-        Ok(core_fighter.into())
+        Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }
 }

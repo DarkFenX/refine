@@ -14,11 +14,11 @@ pub(crate) struct HAddProjEffectCmd {
 impl HAddProjEffectCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HItemIdsResp {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
-        let mut proj_effect = core_sol.add_proj_effect(core_type_id);
+        let mut core_proj_effect = core_sol.add_proj_effect(core_type_id);
         if let Some(state) = self.state {
-            proj_effect.set_state(state);
+            core_proj_effect.set_state(state);
         }
-        proj_effect.into()
+        HItemIdsResp::from_core_proj_effect(core_proj_effect)
     }
 }
 

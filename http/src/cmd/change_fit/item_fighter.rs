@@ -37,7 +37,7 @@ impl HAddFighterCmd {
             core_fighter.set_count_override(Some(fighter_count_override));
         }
         apply_abilities(&mut core_fighter, &self.abilities);
-        Ok(core_fighter.into())
+        Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }
 }
 
