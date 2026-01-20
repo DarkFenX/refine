@@ -65,12 +65,7 @@ impl HModuleInfoPartial {
             state: HModuleState::from_core(core_module.get_state()),
             rack: HModRack::from_core(core_module.get_rack()),
             pos: core_module.get_pos().into_usize(),
-            mutation: match core_module.get_mutation() {
-                Some(rc::Mutation::Effective(effective_mutation)) => {
-                    Some(HItemMutationInfo::from_core(effective_mutation))
-                }
-                _ => None,
-            },
+            mutation: core_module.get_mutation().and_then(HItemMutationInfo::try_from_core),
             charge: charge_info,
             charge_count,
             cycles_until_empty,

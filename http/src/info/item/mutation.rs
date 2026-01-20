@@ -20,15 +20,19 @@ struct HAttrMutationInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HItemMutationInfo {
-    pub(in crate::info::item) fn from_core(core_effective_mutation: rc::EffectiveMutation) -> Self {
-        Self {
-            base_type_id: core_effective_mutation.get_base_type_id().into_i32(),
-            mutator_id: core_effective_mutation.get_mutator_type_id().into_i32(),
-            attrs: core_effective_mutation
+    pub(in crate::info::item) fn try_from_core(core_mutation: rc::Mutation) -> Option<Self> {
+        let core_mutation = match core_mutation {
+            rc::Mutation::Effective(core_mutation) => core_mutation,
+            rc::Mutation::Incomplete(_) => return None,
+        };
+        Some(Self {
+            base_type_id: core_mutation.get_base_type_id().into_i32(),
+            mutator_id: core_mutation.get_mutator_type_id().into_i32(),
+            attrs: core_mutation
                 .iter_full_mattrs()
                 .map(|v| (v.get_attr_id(), HAttrMutationInfo::from_core(v)))
                 .collect(),
-        }
+        })
     }
 }
 

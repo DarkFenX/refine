@@ -33,12 +33,7 @@ impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
             type_id: core_drone.get_type_id().into_i32(),
             fit_id: core_drone.get_fit().get_fit_id(),
             state: HMinionState::from_core(core_drone.get_state()),
-            mutation: match core_drone.get_mutation() {
-                Some(rc::Mutation::Effective(effective_mutation)) => {
-                    Some(HItemMutationInfo::from_core(effective_mutation))
-                }
-                _ => None,
-            },
+            mutation: core_drone.get_mutation().and_then(HItemMutationInfo::try_from_core),
             coordinates: HCoordinates::from_core(core_drone.get_coordinates()),
             movement: HMovement::from_core(core_drone.get_movement()),
             prop_mode: core_drone.get_npc_prop().map(HNpcProp::from_core),
