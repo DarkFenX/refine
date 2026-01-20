@@ -62,7 +62,7 @@ pub(crate) async fn change_fit(
                 HBrError::ExecFailed(HExecError::FitNotFoundPrimary(_)) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(br_err))).into_response()
+            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
         }
     };
     resp

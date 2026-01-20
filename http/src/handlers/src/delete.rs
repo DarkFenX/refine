@@ -15,7 +15,7 @@ pub(crate) async fn delete_source(State(state): State<HAppState>, Path(alias): P
                 HBrError::SrcNotFound(_) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(br_err))).into_response()
+            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
         }
     }
 }

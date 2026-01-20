@@ -22,7 +22,7 @@ pub(in crate::handlers) async fn get_guarded_sol(sol_mgr: &HSolMgr, sol_id: &str
                 HBrError::SolNotFound(_) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            let resp = (code, Json(HSingleErr::from(e))).into_response();
+            let resp = (code, Json(HSingleErr::from_bridge(e))).into_response();
             HGSolResult::ErrResp(resp)
         }
     }

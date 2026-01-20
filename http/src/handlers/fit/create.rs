@@ -35,7 +35,7 @@ pub(crate) async fn create_fit(
         .await
     {
         Ok(fit_info) => (StatusCode::CREATED, Json(fit_info)).into_response(),
-        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
+        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response(),
     };
     resp
 }

@@ -27,7 +27,7 @@ pub(crate) async fn create_fleet(
         .await
     {
         Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),
-        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
+        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response(),
     };
     resp
 }

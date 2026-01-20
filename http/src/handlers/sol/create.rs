@@ -34,7 +34,7 @@ pub(crate) async fn create_sol(
                 HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(HSingleErr::from(br_err))).into_response();
+            return (code, Json(HSingleErr::from_bridge(br_err))).into_response();
         }
     };
     let sol_info = state

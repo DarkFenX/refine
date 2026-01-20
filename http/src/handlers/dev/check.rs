@@ -21,7 +21,7 @@ pub(crate) async fn dev_check_sol(State(state): State<HAppState>, Path(sol_id): 
             true => StatusCode::OK.into_response(),
             false => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         },
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(e))).into_response(),
     };
     resp
 }

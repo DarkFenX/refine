@@ -32,7 +32,7 @@ pub(crate) async fn dev_benchmark_sol(
         }
     } {
         Ok(_) => StatusCode::OK.into_response(),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(e))).into_response(),
     };
     resp
 }

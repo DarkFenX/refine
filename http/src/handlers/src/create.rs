@@ -36,7 +36,7 @@ pub(crate) async fn create_source(
                 HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(br_err))).into_response()
+            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
         }
     }
 }

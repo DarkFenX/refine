@@ -35,7 +35,7 @@ pub(crate) async fn change_sol_src(
                 HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(HSingleErr::from(br_err))).into_response();
+            return (code, Json(HSingleErr::from_bridge(br_err))).into_response();
         }
     };
     let sol_info = match guarded_sol
@@ -53,7 +53,7 @@ pub(crate) async fn change_sol_src(
     {
         Ok(sol_info) => sol_info,
         Err(br_err) => {
-            return (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response();
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response();
         }
     };
     (StatusCode::OK, Json(sol_info)).into_response()

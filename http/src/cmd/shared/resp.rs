@@ -10,26 +10,6 @@ pub(crate) enum HCmdResp {
     FleetId(HFleetIdResp),
     ItemIds(HItemIdsResp),
 }
-impl From<()> for HCmdResp {
-    fn from(_: ()) -> Self {
-        HCmdResp::NoData
-    }
-}
-impl From<HFitIdResp> for HCmdResp {
-    fn from(resp: HFitIdResp) -> Self {
-        HCmdResp::FitId(resp)
-    }
-}
-impl From<HFleetIdResp> for HCmdResp {
-    fn from(resp: HFleetIdResp) -> Self {
-        HCmdResp::FleetId(resp)
-    }
-}
-impl From<HItemIdsResp> for HCmdResp {
-    fn from(resp: HItemIdsResp) -> Self {
-        HCmdResp::ItemIds(resp)
-    }
-}
 
 #[serde_as]
 #[derive(Serialize)]
@@ -58,6 +38,27 @@ pub(crate) struct HItemIdsResp {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl From<()> for HCmdResp {
+    fn from(_: ()) -> Self {
+        HCmdResp::NoData
+    }
+}
+impl From<HFitIdResp> for HCmdResp {
+    fn from(resp: HFitIdResp) -> Self {
+        HCmdResp::FitId(resp)
+    }
+}
+impl From<HFleetIdResp> for HCmdResp {
+    fn from(resp: HFleetIdResp) -> Self {
+        HCmdResp::FleetId(resp)
+    }
+}
+impl From<HItemIdsResp> for HCmdResp {
+    fn from(resp: HItemIdsResp) -> Self {
+        HCmdResp::ItemIds(resp)
+    }
+}
+
 impl HFleetIdResp {
     pub(in crate::cmd) fn from_core_fleet(core_fleet: rc::FleetMut) -> Self {
         Self {
