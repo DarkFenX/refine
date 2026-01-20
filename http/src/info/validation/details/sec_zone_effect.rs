@@ -10,22 +10,26 @@ pub(in crate::info::validation) struct HValEffectSecZoneFail {
     #[serde_as(as = "&Map<DisplayFromStr, Map<DisplayFromStr, _>>")]
     items: Vec<(rc::ItemId, Vec<(rc::EffectId, Vec<HSecZone>)>)>,
 }
-impl From<&rc::val::ValEffectSecZoneFail> for HValEffectSecZoneFail {
-    fn from(core_val_fail: &rc::val::ValEffectSecZoneFail) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValEffectSecZoneFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValEffectSecZoneFail) -> Self {
         Self {
             zone: HSecZone::from_core(core_val_fail.zone),
             items: core_val_fail
                 .items
-                .iter()
+                .into_iter()
                 .map(|(item_id, item_data)| {
                     (
-                        *item_id,
+                        item_id,
                         item_data
-                            .iter()
+                            .into_iter()
                             .map(|(effect_id, allowed_sec_zones)| {
                                 (
-                                    *effect_id,
-                                    allowed_sec_zones.iter().map(|v| HSecZone::from_core(*v)).collect(),
+                                    effect_id,
+                                    allowed_sec_zones.into_iter().map(|v| HSecZone::from_core(v)).collect(),
                                 )
                             })
                             .collect(),

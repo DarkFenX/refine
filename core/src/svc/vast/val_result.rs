@@ -6,7 +6,7 @@ use crate::{
         ValChargeVolumeFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
         ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail,
         ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail,
-        ValResFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
+        ValResourceFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
         ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
     },
     ud::FitId,
@@ -42,8 +42,8 @@ pub struct ValResultFit {
     pub implant_slot_index: Option<ValSlotIndexFail>,
     pub booster_slot_index: Option<ValSlotIndexFail>,
     // Shared between mod-alike items
-    pub cpu: Option<ValResFail>,
-    pub powergrid: Option<ValResFail>,
+    pub cpu: Option<ValResourceFail>,
+    pub powergrid: Option<ValResourceFail>,
     pub ship_limit: Option<ValShipLimitFail>,
     pub max_group_fitted: Option<ValMaxGroupFail>,
     pub max_group_online: Option<ValMaxGroupFail>,
@@ -67,7 +67,7 @@ pub struct ValResultFit {
     pub charge_volume: Option<ValChargeVolumeFail>,
     // Rigs
     pub rig_slot_count: Option<ValSlotCountFail>,
-    pub calibration: Option<ValResFail>,
+    pub calibration: Option<ValResourceFail>,
     pub rig_size: Option<ValRigSizeFail>,
     // Services
     pub service_slot_count: Option<ValSlotCountFail>,
@@ -76,14 +76,14 @@ pub struct ValResultFit {
     pub subsystem_slot_index: Option<ValSlotIndexFail>,
     pub ship_stance: Option<ValShipStanceFail>,
     // Drones
-    pub drone_bay_volume: Option<ValResFail>,
+    pub drone_bay_volume: Option<ValResourceFail>,
     pub launched_drone_count: Option<ValSlotCountFail>,
-    pub drone_bandwidth: Option<ValResFail>,
+    pub drone_bandwidth: Option<ValResourceFail>,
     pub unlaunchable_drone_slot: Option<ValUnusableSlotFail>,
     pub unlaunchable_drone_bandwidth: Option<ValUnusableResFail>,
     pub drone_group: Option<ValDroneGroupFail>,
     // Fighters
-    pub fighter_bay_volume: Option<ValResFail>,
+    pub fighter_bay_volume: Option<ValResourceFail>,
     pub launched_fighter_count: Option<ValSlotCountFail>,
     pub launched_light_fighter_count: Option<ValSlotCountFail>,
     pub launched_heavy_fighter_count: Option<ValSlotCountFail>,

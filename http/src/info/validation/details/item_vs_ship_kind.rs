@@ -9,18 +9,6 @@ pub(in crate::info::validation) struct HValItemVsShipKindFail {
     #[serde_as(as = "&Map<DisplayFromStr, _>")]
     items: Vec<(rc::ItemId, HShipKind)>,
 }
-impl From<&rc::val::ValItemVsShipKindFail> for HValItemVsShipKindFail {
-    fn from(core_val_fail: &rc::val::ValItemVsShipKindFail) -> Self {
-        Self {
-            ship_kind: (&core_val_fail.ship_kind).into(),
-            items: core_val_fail
-                .items
-                .iter()
-                .map(|(item_id, needed_kind)| (*item_id, needed_kind.into()))
-                .collect(),
-        }
-    }
-}
 
 #[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -29,8 +17,25 @@ enum HShipKind {
     Structure,
     Unknown,
 }
-impl From<&rc::val::ValShipKind> for HShipKind {
-    fn from(core_ship_kind: &rc::val::ValShipKind) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValItemVsShipKindFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValItemVsShipKindFail) -> Self {
+        Self {
+            ship_kind: HShipKind::from_core(core_val_fail.ship_kind),
+            items: core_val_fail
+                .items
+                .into_iter()
+                .map(|(item_id, needed_kind)| (item_id, HShipKind::from_core(needed_kind)))
+                .collect(),
+        }
+    }
+}
+
+impl HShipKind {
+    fn from_core(core_ship_kind: rc::val::ValShipKind) -> Self {
         match core_ship_kind {
             rc::val::ValShipKind::Ship => Self::Ship,
             rc::val::ValShipKind::Structure => Self::Structure,

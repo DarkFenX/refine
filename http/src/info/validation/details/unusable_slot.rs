@@ -8,11 +8,15 @@ pub(in crate::info::validation) struct HValUnusableSlotFail {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     users: Vec<rc::ItemId>,
 }
-impl From<&rc::val::ValUnusableSlotFail> for HValUnusableSlotFail {
-    fn from(core_val_fail: &rc::val::ValUnusableSlotFail) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValUnusableSlotFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValUnusableSlotFail) -> Self {
         Self {
             max: core_val_fail.max.map(|v| v.into_u32()),
-            users: core_val_fail.users.clone(),
+            users: core_val_fail.users,
         }
     }
 }

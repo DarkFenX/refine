@@ -16,7 +16,7 @@ pub(in crate::info::validation) use not_loaded_item::HValNotLoadedItemFail;
 pub(in crate::info::validation) use overload_skill::HValOverloadSkillFail;
 pub(in crate::info::validation) use proj_immunity::HValProjImmunityFail;
 pub(in crate::info::validation) use projectee_filter::HValProjFilterFail;
-pub(in crate::info::validation) use resource::HValResFail;
+pub(in crate::info::validation) use resource::HValResourceFail;
 pub(in crate::info::validation) use rig_size::HValRigSizeFail;
 pub(in crate::info::validation) use sec_zone_effect::HValEffectSecZoneFail;
 pub(in crate::info::validation) use sec_zone_item::HValItemSecZoneFail;

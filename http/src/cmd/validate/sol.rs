@@ -21,8 +21,8 @@ impl HValidateSolCmd {
             options: self.options.to_core(),
         };
         match valid_mode {
-            HValidInfoMode::Simple => core_sol.validate_fast(&core_options).into(),
-            HValidInfoMode::Detailed => (&core_sol.validate_verbose(&core_options)).into(),
+            HValidInfoMode::Simple => HSolValResult::from_core_simple(core_sol.validate_fast(&core_options)),
+            HValidInfoMode::Detailed => HSolValResult::from_core_detailed(core_sol.validate_verbose(&core_options)),
         }
     }
 }

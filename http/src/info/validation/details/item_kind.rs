@@ -9,31 +9,12 @@ pub(in crate::info::validation) struct HValItemKindFail {
     #[serde_as(as = "Map<DisplayFromStr, _>")]
     item_kinds: Vec<(rc::ItemId, HValItemKindItemInfo)>,
 }
-impl From<&rc::val::ValItemKindFail> for HValItemKindFail {
-    fn from(core_val_fail: &rc::val::ValItemKindFail) -> Self {
-        Self {
-            item_kinds: core_val_fail
-                .item_kinds
-                .iter()
-                .map(|(item_id, core_item_info)| (*item_id, core_item_info.into()))
-                .collect(),
-        }
-    }
-}
 
 #[serde_as]
 #[derive(Serialize_tuple)]
 struct HValItemKindItemInfo {
     kind: Option<HValItemKind>,
     expected_kind: HValItemKind,
-}
-impl From<&rc::val::ValItemKindItemInfo> for HValItemKindItemInfo {
-    fn from(core_val_item_info: &rc::val::ValItemKindItemInfo) -> Self {
-        Self {
-            kind: core_val_item_info.kind.map(|v| (&v).into()),
-            expected_kind: (&core_val_item_info.expected_kind).into(),
-        }
-    }
 }
 
 #[derive(Serialize)]
@@ -55,9 +36,34 @@ enum HValItemKind {
     Stance,
     Subsystem,
 }
-impl From<&rc::val::ValItemKind> for HValItemKind {
-    fn from(a_item_kind: &rc::val::ValItemKind) -> Self {
-        match a_item_kind {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValItemKindFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValItemKindFail) -> Self {
+        Self {
+            item_kinds: core_val_fail
+                .item_kinds
+                .into_iter()
+                .map(|(item_id, core_item_info)| (item_id, HValItemKindItemInfo::from_core(core_item_info)))
+                .collect(),
+        }
+    }
+}
+
+impl HValItemKindItemInfo {
+    fn from_core(core_val_item_info: rc::val::ValItemKindItemInfo) -> Self {
+        Self {
+            kind: core_val_item_info.kind.map(HValItemKind::from_core),
+            expected_kind: HValItemKind::from_core(core_val_item_info.expected_kind),
+        }
+    }
+}
+
+impl HValItemKind {
+    fn from_core(core_item_kind: rc::val::ValItemKind) -> Self {
+        match core_item_kind {
             rc::val::ValItemKind::Booster => Self::Booster,
             rc::val::ValItemKind::Character => Self::Character,
             rc::val::ValItemKind::Charge => Self::Charge,

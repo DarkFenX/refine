@@ -16,7 +16,7 @@ pub use vaste_not_loaded_item::ValNotLoadedItemFail;
 pub use vaste_overload_skill::ValOverloadSkillFail;
 pub use vaste_proj_immunity::ValProjImmunityFail;
 pub use vaste_projectee_filter::ValProjFilterFail;
-pub use vaste_resource::ValResFail;
+pub use vaste_resource::ValResourceFail;
 pub use vaste_rig_size::ValRigSizeFail;
 pub(in crate::svc::vast) use vaste_sec_zone_effect::EffectSecZoneInfo;
 pub use vaste_sec_zone_effect::ValEffectSecZoneFail;

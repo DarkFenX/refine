@@ -9,18 +9,30 @@ pub(in crate::info::validation) struct HValSrqFail {
     #[serde_as(as = "Map<DisplayFromStr, Map<DisplayFromStr, _>>")]
     items: Vec<(rc::ItemId, Vec<(i32, HValSrqSkillInfo)>)>,
 }
-impl From<&rc::val::ValSrqFail> for HValSrqFail {
-    fn from(core_val_fail: &rc::val::ValSrqFail) -> Self {
+
+#[derive(Serialize_tuple)]
+struct HValSrqSkillInfo {
+    current_lvl: Option<u8>,
+    required_lvl: u8,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValSrqFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValSrqFail) -> Self {
         Self {
             items: core_val_fail
                 .items
-                .iter()
+                .into_iter()
                 .map(|(item_id, item_info)| {
                     (
-                        *item_id,
+                        item_id,
                         item_info
-                            .iter()
-                            .map(|(skill_type_id, skill_info)| (skill_type_id.into_i32(), skill_info.into()))
+                            .into_iter()
+                            .map(|(skill_type_id, skill_info)| {
+                                (skill_type_id.into_i32(), HValSrqSkillInfo::from_core(skill_info))
+                            })
                             .collect(),
                     )
                 })
@@ -29,13 +41,8 @@ impl From<&rc::val::ValSrqFail> for HValSrqFail {
     }
 }
 
-#[derive(Serialize_tuple)]
-struct HValSrqSkillInfo {
-    current_lvl: Option<u8>,
-    required_lvl: u8,
-}
-impl From<&rc::val::ValSrqSkillInfo> for HValSrqSkillInfo {
-    fn from(core_val_skill: &rc::val::ValSrqSkillInfo) -> Self {
+impl HValSrqSkillInfo {
+    fn from_core(core_val_skill: rc::val::ValSrqSkillInfo) -> Self {
         Self {
             current_lvl: core_val_skill
                 .current_lvl

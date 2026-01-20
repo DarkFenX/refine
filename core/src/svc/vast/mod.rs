@@ -16,7 +16,7 @@ pub use validators::{
     ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail,
     ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo,
     ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail,
-    ValProjImmunityFail, ValResFail, ValRigSizeFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo,
+    ValProjImmunityFail, ValResourceFail, ValRigSizeFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo,
     ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableCapFail,
     ValUnusableResFail, ValUnusableSlotFail,
 };

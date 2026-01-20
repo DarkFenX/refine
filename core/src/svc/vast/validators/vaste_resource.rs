@@ -9,7 +9,7 @@ use crate::{
     util::RSet,
 };
 
-pub struct ValResFail {
+pub struct ValResourceFail {
     /// How much resource is used by all of its consumers.
     pub used: Value,
     /// Max available resource (e.g. amount of CPU produced by ship).
@@ -125,7 +125,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValResFail> {
+    ) -> Option<ValResourceFail> {
         validate_verbose_fitting(
             kfs,
             ctx,
@@ -142,7 +142,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValResFail> {
+    ) -> Option<ValResourceFail> {
         validate_verbose_fitting(
             kfs,
             ctx,
@@ -159,7 +159,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValResFail> {
+    ) -> Option<ValResourceFail> {
         validate_verbose_other(
             kfs,
             ctx,
@@ -175,7 +175,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValResFail> {
+    ) -> Option<ValResourceFail> {
         validate_verbose_other(
             kfs,
             ctx,
@@ -191,7 +191,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValResFail> {
+    ) -> Option<ValResourceFail> {
         validate_verbose_other(
             kfs,
             ctx,
@@ -207,7 +207,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValResFail> {
+    ) -> Option<ValResourceFail> {
         validate_verbose_other(
             kfs,
             ctx,
@@ -276,7 +276,7 @@ fn validate_verbose_fitting(
     items: impl ExactSizeIterator<Item = UItemId>,
     use_attr_rid: Option<RAttrId>,
     max_attr_rid: Option<RAttrId>,
-) -> Option<ValResFail> {
+) -> Option<ValResourceFail> {
     let mut total_use = Value::ZERO;
     let mut users = HashMap::with_capacity(items.len());
     for item_uid in items {
@@ -296,7 +296,7 @@ fn validate_verbose_fitting(
     if total_use <= max.unwrap_or(Value::ZERO) {
         return None;
     }
-    Some(ValResFail {
+    Some(ValResourceFail {
         used: total_use,
         max,
         users,
@@ -309,7 +309,7 @@ fn validate_verbose_other(
     fit: &UFit,
     items: impl ExactSizeIterator<Item = (UItemId, Value)>,
     max_attr_rid: Option<RAttrId>,
-) -> Option<ValResFail> {
+) -> Option<ValResourceFail> {
     let mut total_use = Value::ZERO;
     let mut users = HashMap::with_capacity(items.len());
     for (item_uid, item_use) in items {
@@ -325,7 +325,7 @@ fn validate_verbose_other(
     if total_use <= max.unwrap_or(Value::ZERO) {
         return None;
     }
-    Some(ValResFail {
+    Some(ValResourceFail {
         used: total_use,
         max,
         users,

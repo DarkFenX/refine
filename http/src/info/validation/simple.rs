@@ -4,8 +4,12 @@ use serde::Serialize;
 pub(crate) struct HValResultSimple {
     passed: bool,
 }
-impl From<bool> for HValResultSimple {
-    fn from(passed: bool) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValResultSimple {
+    pub(crate) fn from_core(passed: bool) -> Self {
         Self { passed }
     }
 }

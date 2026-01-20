@@ -8,14 +8,22 @@ pub(in crate::info::validation) struct HValDroneGroupFail {
     #[serde_as(as = "&Map<DisplayFromStr, _>")]
     drone_groups: Vec<(rc::ItemId, i32)>,
 }
-impl From<&rc::val::ValDroneGroupFail> for HValDroneGroupFail {
-    fn from(core_val_fail: &rc::val::ValDroneGroupFail) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValDroneGroupFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValDroneGroupFail) -> Self {
         Self {
-            allowed_group_ids: core_val_fail.allowed_group_ids.iter().map(|v| v.into_i32()).collect(),
+            allowed_group_ids: core_val_fail
+                .allowed_group_ids
+                .into_iter()
+                .map(|v| v.into_i32())
+                .collect(),
             drone_groups: core_val_fail
                 .drone_groups
-                .iter()
-                .map(|(k, v)| (*k, v.into_i32()))
+                .into_iter()
+                .map(|(k, v)| (k, v.into_i32()))
                 .collect(),
         }
     }

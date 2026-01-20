@@ -9,17 +9,6 @@ pub(in crate::info::validation) struct HValChargeVolumeFail {
     #[serde_as(as = "Map<DisplayFromStr, _>")]
     charges: Vec<(rc::ItemId, HValChargeVolumeItemInfo)>,
 }
-impl From<&rc::val::ValChargeVolumeFail> for HValChargeVolumeFail {
-    fn from(core_val_fail: &rc::val::ValChargeVolumeFail) -> Self {
-        Self {
-            charges: core_val_fail
-                .charges
-                .iter()
-                .map(|(charge_item_id, core_charge_info)| (*charge_item_id, core_charge_info.into()))
-                .collect(),
-        }
-    }
-}
 
 #[serde_as]
 #[derive(Serialize_tuple)]
@@ -29,8 +18,26 @@ struct HValChargeVolumeItemInfo {
     charge_volume: f64,
     max_volume: f64,
 }
-impl From<&rc::val::ValChargeVolumeChargeInfo> for HValChargeVolumeItemInfo {
-    fn from(core_val_charge_info: &rc::val::ValChargeVolumeChargeInfo) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HValChargeVolumeFail {
+    pub(in crate::info::validation) fn from_core(core_val_fail: rc::val::ValChargeVolumeFail) -> Self {
+        Self {
+            charges: core_val_fail
+                .charges
+                .into_iter()
+                .map(|(charge_item_id, core_charge_info)| {
+                    (charge_item_id, HValChargeVolumeItemInfo::from_core(core_charge_info))
+                })
+                .collect(),
+        }
+    }
+}
+
+impl HValChargeVolumeItemInfo {
+    fn from_core(core_val_charge_info: rc::val::ValChargeVolumeChargeInfo) -> Self {
         Self {
             parent_item_id: core_val_charge_info.parent_item_id,
             charge_volume: core_val_charge_info.charge_volume.into_f64(),
