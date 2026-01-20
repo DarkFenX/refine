@@ -11,8 +11,12 @@ pub(crate) struct HFleetInfoFull {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     fits: Vec<rc::FitId>,
 }
-impl From<&mut rc::FleetMut<'_>> for HFleetInfoFull {
-    fn from(core_fleet: &mut rc::FleetMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HFleetInfoFull {
+    pub(in crate::info::fleet) fn from_core_fleet(core_fleet: &mut rc::FleetMut) -> Self {
         Self {
             id: core_fleet.get_fleet_id(),
             fits: core_fleet

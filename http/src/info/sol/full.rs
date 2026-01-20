@@ -33,7 +33,7 @@ impl HSolInfoFull {
             id: sol_id,
             fleets: core_sol
                 .iter_fleets_mut()
-                .map_into_iter(|mut core_fleet| HFleetInfo::mk_info(&mut core_fleet, fleet_mode))
+                .map_into_iter(|mut core_fleet| HFleetInfo::from_core_fleet(&mut core_fleet, fleet_mode))
                 .collect(),
             fits: core_sol
                 .iter_fits_mut()

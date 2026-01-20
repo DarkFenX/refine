@@ -151,7 +151,7 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let result = match get_primary_fleet(&mut core_sol, &fleet_id) {
-                    Ok(mut core_fleet) => Ok(HFleetInfo::mk_info(&mut core_fleet, fleet_mode)),
+                    Ok(mut core_fleet) => Ok(HFleetInfo::from_core_fleet(&mut core_fleet, fleet_mode)),
                     Err(exec_error) => Err(exec_error.into()),
                 };
                 (core_sol, result)
@@ -174,7 +174,7 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let mut core_fleet = core_sol.add_fleet();
-                let fleet_info = HFleetInfo::mk_info(&mut core_fleet, fleet_mode);
+                let fleet_info = HFleetInfo::from_core_fleet(&mut core_fleet, fleet_mode);
                 (core_sol, fleet_info)
             })
             .await;
@@ -200,7 +200,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 command.execute(&mut core_sol, &fleet_id).map_err(HBrError::from)?;
                 let mut core_fleet = get_primary_fleet(&mut core_sol, &fleet_id).unwrap();
-                let info = HFleetInfo::mk_info(&mut core_fleet, fleet_mode);
+                let info = HFleetInfo::from_core_fleet(&mut core_fleet, fleet_mode);
                 Ok((core_sol, info))
             })
             .await
