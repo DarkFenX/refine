@@ -8,8 +8,12 @@ pub(crate) struct HImplantInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::ImplantMut<'_>> for HImplantInfoId {
-    fn from(core_implant: &mut rc::ImplantMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HImplantInfoId {
+    pub(super) fn from_core(core_implant: &mut rc::ImplantMut) -> Self {
         Self {
             id: core_implant.get_item_id(),
         }

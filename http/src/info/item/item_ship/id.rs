@@ -8,8 +8,12 @@ pub(crate) struct HShipInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::ShipMut<'_>> for HShipInfoId {
-    fn from(core_ship: &mut rc::ShipMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HShipInfoId {
+    pub(super) fn from_core(core_ship: &mut rc::ShipMut) -> Self {
         Self {
             id: core_ship.get_item_id(),
         }

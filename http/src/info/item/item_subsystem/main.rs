@@ -10,12 +10,16 @@ pub(crate) enum HSubsystemInfo {
     Partial(HSubsystemInfoPartial),
     Full(HSubsystemInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSubsystemInfo {
-    pub(in crate::info::item) fn mk_info(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_subsystem.into()),
-            HItemInfoMode::Partial => Self::Partial(core_subsystem.into()),
-            HItemInfoMode::Full => Self::Full(core_subsystem.into()),
+            HItemInfoMode::Id => Self::Id(HSubsystemInfoId::from_core(core_subsystem)),
+            HItemInfoMode::Partial => Self::Partial(HSubsystemInfoPartial::from_core(core_subsystem)),
+            HItemInfoMode::Full => Self::Full(HSubsystemInfoFull::from_core(core_subsystem)),
         }
     }
 }

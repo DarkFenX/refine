@@ -15,8 +15,12 @@ pub(crate) struct HSubsystemInfoPartial {
     slot: Option<i32>,
     enabled: bool,
 }
-impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoPartial {
-    fn from(core_subsystem: &mut rc::SubsystemMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSubsystemInfoPartial {
+    pub(super) fn from_core(core_subsystem: &mut rc::SubsystemMut) -> Self {
         Self {
             id: core_subsystem.get_item_id(),
             kind: "subsystem",

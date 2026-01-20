@@ -14,8 +14,12 @@ pub(crate) struct HSkillInfoPartial {
     level: u8,
     enabled: bool,
 }
-impl From<&mut rc::SkillMut<'_>> for HSkillInfoPartial {
-    fn from(core_skill: &mut rc::SkillMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSkillInfoPartial {
+    pub(super) fn from_core(core_skill: &mut rc::SkillMut) -> Self {
         Self {
             id: core_skill.get_item_id(),
             kind: "skill",

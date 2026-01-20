@@ -10,11 +10,15 @@ pub(crate) struct HFighterInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFighterInfoFull {
-    pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+    pub(super) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         Self {
-            partial_info: HFighterInfoPartial::mk_info(core_fighter, item_mode),
-            extended_info: core_fighter.into(),
+            partial_info: HFighterInfoPartial::from_core(core_fighter, item_mode),
+            extended_info: HItemExtendedInfo::from_core(core_fighter),
         }
     }
 }

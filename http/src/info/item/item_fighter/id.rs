@@ -13,8 +13,12 @@ pub(crate) struct HFighterInfoId {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     autocharges: Vec<(rc::EffectId, HAutochargeInfo)>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFighterInfoId {
-    pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+    pub(super) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         Self {
             id: core_fighter.get_item_id(),
             autocharges: core_fighter
@@ -22,7 +26,7 @@ impl HFighterInfoId {
                 .map_into_iter(|mut autocharge| {
                     (
                         autocharge.get_cont_effect_id().into(),
-                        HAutochargeInfo::mk_info(&mut autocharge, item_mode),
+                        HAutochargeInfo::from_core(&mut autocharge, item_mode),
                     )
                 })
                 .collect(),

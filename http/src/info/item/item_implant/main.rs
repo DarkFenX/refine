@@ -10,12 +10,16 @@ pub(crate) enum HImplantInfo {
     Partial(HImplantInfoPartial),
     Full(HImplantInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HImplantInfo {
-    pub(in crate::info::item) fn mk_info(core_implant: &mut rc::ImplantMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_implant: &mut rc::ImplantMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_implant.into()),
-            HItemInfoMode::Partial => Self::Partial(core_implant.into()),
-            HItemInfoMode::Full => Self::Full(core_implant.into()),
+            HItemInfoMode::Id => Self::Id(HImplantInfoId::from_core(core_implant)),
+            HItemInfoMode::Partial => Self::Partial(HImplantInfoPartial::from_core(core_implant)),
+            HItemInfoMode::Full => Self::Full(HImplantInfoFull::from_core(core_implant)),
         }
     }
 }

@@ -10,12 +10,16 @@ pub(crate) enum HBoosterInfo {
     Partial(HBoosterInfoPartial),
     Full(HBoosterInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HBoosterInfo {
-    pub(in crate::info::item) fn mk_info(core_booster: &mut rc::BoosterMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_booster: &mut rc::BoosterMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_booster.into()),
-            HItemInfoMode::Partial => Self::Partial(core_booster.into()),
-            HItemInfoMode::Full => Self::Full(core_booster.into()),
+            HItemInfoMode::Id => Self::Id(HBoosterInfoId::from_core(core_booster)),
+            HItemInfoMode::Partial => Self::Partial(HBoosterInfoPartial::from_core(core_booster)),
+            HItemInfoMode::Full => Self::Full(HBoosterInfoFull::from_core(core_booster)),
         }
     }
 }

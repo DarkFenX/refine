@@ -10,12 +10,16 @@ pub(crate) enum HFighterInfo {
     Partial(HFighterInfoPartial),
     Full(HFighterInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFighterInfo {
-    pub(in crate::info::item) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(HFighterInfoId::mk_info(core_fighter, item_mode)),
-            HItemInfoMode::Partial => Self::Partial(HFighterInfoPartial::mk_info(core_fighter, item_mode)),
-            HItemInfoMode::Full => Self::Full(HFighterInfoFull::mk_info(core_fighter, item_mode)),
+            HItemInfoMode::Id => Self::Id(HFighterInfoId::from_core(core_fighter, item_mode)),
+            HItemInfoMode::Partial => Self::Partial(HFighterInfoPartial::from_core(core_fighter, item_mode)),
+            HItemInfoMode::Full => Self::Full(HFighterInfoFull::from_core(core_fighter, item_mode)),
         }
     }
 }

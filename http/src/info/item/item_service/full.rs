@@ -10,11 +10,15 @@ pub(crate) struct HServiceInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::ServiceMut<'_>> for HServiceInfoFull {
-    fn from(core_service: &mut rc::ServiceMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HServiceInfoFull {
+    pub(super) fn from_core(core_service: &mut rc::ServiceMut) -> Self {
         Self {
-            partial_info: core_service.into(),
-            extended_info: core_service.into(),
+            partial_info: HServiceInfoPartial::from_core(core_service),
+            extended_info: HItemExtendedInfo::from_core(core_service),
         }
     }
 }

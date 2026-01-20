@@ -8,8 +8,12 @@ pub(crate) struct HSubsystemInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoId {
-    fn from(core_subsystem: &mut rc::SubsystemMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSubsystemInfoId {
+    pub(super) fn from_core(core_subsystem: &mut rc::SubsystemMut) -> Self {
         Self {
             id: core_subsystem.get_item_id(),
         }

@@ -8,8 +8,12 @@ pub(crate) struct HRigInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::RigMut<'_>> for HRigInfoId {
-    fn from(core_rig: &mut rc::RigMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HRigInfoId {
+    pub(super) fn from_core(core_rig: &mut rc::RigMut) -> Self {
         Self {
             id: core_rig.get_item_id(),
         }

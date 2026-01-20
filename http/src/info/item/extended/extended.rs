@@ -17,11 +17,15 @@ pub(in crate::info::item) struct HItemExtendedInfo {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     mods: Vec<(rc::AttrId, Vec<HModification>)>,
 }
-impl<T> From<&mut T> for HItemExtendedInfo
-where
-    T: ItemMutCommon,
-{
-    fn from(core_item: &mut T) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HItemExtendedInfo {
+    pub(in crate::info::item) fn from_core<T>(core_item: &mut T) -> Self
+    where
+        T: ItemMutCommon,
+    {
         let attrs = match core_item.iter_attrs() {
             Ok(iter_attrs) => iter_attrs.map(|(k, v)| (k, HAttrVals::from_core(v))).collect(),
             Err(_) => Vec::new(),

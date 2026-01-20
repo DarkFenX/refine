@@ -10,11 +10,15 @@ pub(crate) struct HSubsystemInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::SubsystemMut<'_>> for HSubsystemInfoFull {
-    fn from(core_subsystem: &mut rc::SubsystemMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSubsystemInfoFull {
+    pub(super) fn from_core(core_subsystem: &mut rc::SubsystemMut) -> Self {
         Self {
-            partial_info: core_subsystem.into(),
-            extended_info: core_subsystem.into(),
+            partial_info: HSubsystemInfoPartial::from_core(core_subsystem),
+            extended_info: HItemExtendedInfo::from_core(core_subsystem),
         }
     }
 }

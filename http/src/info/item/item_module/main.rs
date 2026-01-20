@@ -10,12 +10,16 @@ pub(crate) enum HModuleInfo {
     Partial(HModuleInfoPartial),
     Full(HModuleInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HModuleInfo {
-    pub(in crate::info::item) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(HModuleInfoId::mk_info(core_module, item_mode)),
-            HItemInfoMode::Partial => Self::Partial(HModuleInfoPartial::mk_info(core_module, item_mode)),
-            HItemInfoMode::Full => Self::Full(HModuleInfoFull::mk_info(core_module, item_mode)),
+            HItemInfoMode::Id => Self::Id(HModuleInfoId::from_core(core_module, item_mode)),
+            HItemInfoMode::Partial => Self::Partial(HModuleInfoPartial::from_core(core_module, item_mode)),
+            HItemInfoMode::Full => Self::Full(HModuleInfoFull::from_core(core_module, item_mode)),
         }
     }
 }

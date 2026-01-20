@@ -13,8 +13,12 @@ pub(crate) struct HCharacterInfoPartial {
     fit_id: rc::FitId,
     enabled: bool,
 }
-impl From<&mut rc::CharacterMut<'_>> for HCharacterInfoPartial {
-    fn from(core_character: &mut rc::CharacterMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HCharacterInfoPartial {
+    pub(super) fn from_core(core_character: &mut rc::CharacterMut) -> Self {
         Self {
             id: core_character.get_item_id(),
             kind: "character",

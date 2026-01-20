@@ -36,8 +36,12 @@ pub(crate) struct HFighterInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFighterInfoPartial {
-    pub(super) fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+    pub(super) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         Self {
             id: core_fighter.get_item_id(),
             kind: "fighter",
@@ -54,7 +58,7 @@ impl HFighterInfoPartial {
                 .map_into_iter(|mut autocharge| {
                     (
                         autocharge.get_cont_effect_id().into(),
-                        HAutochargeInfo::mk_info(&mut autocharge, item_mode),
+                        HAutochargeInfo::from_core(&mut autocharge, item_mode),
                     )
                 })
                 .collect(),

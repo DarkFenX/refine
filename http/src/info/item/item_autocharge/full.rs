@@ -10,11 +10,15 @@ pub(crate) struct HAutochargeInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::AutochargeMut<'_>> for HAutochargeInfoFull {
-    fn from(core_autocharge: &mut rc::AutochargeMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HAutochargeInfoFull {
+    pub(super) fn from_core(core_autocharge: &mut rc::AutochargeMut) -> Self {
         Self {
-            partial_info: core_autocharge.into(),
-            extended_info: core_autocharge.into(),
+            partial_info: HAutochargeInfoPartial::from_core(core_autocharge),
+            extended_info: HItemExtendedInfo::from_core(core_autocharge),
         }
     }
 }

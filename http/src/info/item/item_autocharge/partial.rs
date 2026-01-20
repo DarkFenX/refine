@@ -17,8 +17,12 @@ pub(crate) struct HAutochargeInfoPartial {
     cont_effect_id: rc::EffectId,
     enabled: bool,
 }
-impl From<&mut rc::AutochargeMut<'_>> for HAutochargeInfoPartial {
-    fn from(core_autocharge: &mut rc::AutochargeMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HAutochargeInfoPartial {
+    pub(super) fn from_core(core_autocharge: &mut rc::AutochargeMut) -> Self {
         Self {
             id: core_autocharge.get_item_id(),
             kind: "autocharge",

@@ -10,12 +10,16 @@ pub(crate) enum HDroneInfo {
     Partial(HDroneInfoPartial),
     Full(HDroneInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HDroneInfo {
-    pub(in crate::info::item) fn mk_info(core_drone: &mut rc::DroneMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_drone: &mut rc::DroneMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_drone.into()),
-            HItemInfoMode::Partial => Self::Partial(core_drone.into()),
-            HItemInfoMode::Full => Self::Full(core_drone.into()),
+            HItemInfoMode::Id => Self::Id(HDroneInfoId::from_core(core_drone)),
+            HItemInfoMode::Partial => Self::Partial(HDroneInfoPartial::from_core(core_drone)),
+            HItemInfoMode::Full => Self::Full(HDroneInfoFull::from_core(core_drone)),
         }
     }
 }

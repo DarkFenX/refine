@@ -10,11 +10,15 @@ pub(crate) struct HImplantInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::ImplantMut<'_>> for HImplantInfoFull {
-    fn from(core_implant: &mut rc::ImplantMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HImplantInfoFull {
+    pub(super) fn from_core(core_implant: &mut rc::ImplantMut) -> Self {
         Self {
-            partial_info: core_implant.into(),
-            extended_info: core_implant.into(),
+            partial_info: HImplantInfoPartial::from_core(core_implant),
+            extended_info: HItemExtendedInfo::from_core(core_implant),
         }
     }
 }

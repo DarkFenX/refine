@@ -20,8 +20,12 @@ pub(crate) struct HBoosterInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     side_effects: Vec<(rc::EffectId, HSideEffectInfo)>,
 }
-impl From<&mut rc::BoosterMut<'_>> for HBoosterInfoPartial {
-    fn from(core_booster: &mut rc::BoosterMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HBoosterInfoPartial {
+    pub(super) fn from_core(core_booster: &mut rc::BoosterMut) -> Self {
         Self {
             id: core_booster.get_item_id(),
             kind: "booster",

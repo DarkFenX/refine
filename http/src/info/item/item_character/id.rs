@@ -8,8 +8,12 @@ pub(crate) struct HCharacterInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::CharacterMut<'_>> for HCharacterInfoId {
-    fn from(core_character: &mut rc::CharacterMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HCharacterInfoId {
+    pub(super) fn from_core(core_character: &mut rc::CharacterMut) -> Self {
         Self {
             id: core_character.get_item_id(),
         }

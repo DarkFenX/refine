@@ -10,11 +10,15 @@ pub(crate) struct HModuleInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HModuleInfoFull {
-    pub(super) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
+    pub(super) fn from_core(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         Self {
-            partial_info: HModuleInfoPartial::mk_info(core_module, item_mode),
-            extended_info: core_module.into(),
+            partial_info: HModuleInfoPartial::from_core(core_module, item_mode),
+            extended_info: HItemExtendedInfo::from_core(core_module),
         }
     }
 }

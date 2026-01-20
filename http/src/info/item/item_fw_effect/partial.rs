@@ -13,8 +13,12 @@ pub(crate) struct HFwEffectInfoPartial {
     fit_id: rc::FitId,
     enabled: bool,
 }
-impl From<&mut rc::FwEffectMut<'_>> for HFwEffectInfoPartial {
-    fn from(core_fw_effect: &mut rc::FwEffectMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HFwEffectInfoPartial {
+    pub(super) fn from_core(core_fw_effect: &mut rc::FwEffectMut) -> Self {
         Self {
             id: core_fw_effect.get_item_id(),
             kind: "fw_effect",

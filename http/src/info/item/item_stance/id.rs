@@ -8,8 +8,12 @@ pub(crate) struct HStanceInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::StanceMut<'_>> for HStanceInfoId {
-    fn from(core_stance: &mut rc::StanceMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStanceInfoId {
+    pub(super) fn from_core(core_stance: &mut rc::StanceMut) -> Self {
         Self {
             id: core_stance.get_item_id(),
         }

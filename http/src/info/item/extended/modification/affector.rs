@@ -9,6 +9,10 @@ pub(in crate::info::item::extended::modification) struct HAffector {
     #[serde_as(as = "Option<DisplayFromStr>")]
     attr_id: Option<rc::AttrId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HAffector {
     pub(in crate::info::item::extended::modification) fn from_core(core_affector: rc::Affector) -> Self {
         Self {

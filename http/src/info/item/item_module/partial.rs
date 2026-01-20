@@ -38,11 +38,15 @@ pub(crate) struct HModuleInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HModuleInfoPartial {
-    pub(super) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
+    pub(super) fn from_core(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         let charge_info = core_module
             .get_charge_mut()
-            .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode));
+            .map(|mut charge| HChargeInfo::from_core(&mut charge, item_mode));
         let charge_count = match charge_info.is_some() {
             true => match core_module.get_charge_count() {
                 Some(charge_count) => TriStateField::Value(charge_count.into_u32()),

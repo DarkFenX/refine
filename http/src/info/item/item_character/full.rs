@@ -10,11 +10,15 @@ pub(crate) struct HCharacterInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::CharacterMut<'_>> for HCharacterInfoFull {
-    fn from(core_character: &mut rc::CharacterMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HCharacterInfoFull {
+    pub(super) fn from_core(core_character: &mut rc::CharacterMut) -> Self {
         Self {
-            partial_info: core_character.into(),
-            extended_info: core_character.into(),
+            partial_info: HCharacterInfoPartial::from_core(core_character),
+            extended_info: HItemExtendedInfo::from_core(core_character),
         }
     }
 }

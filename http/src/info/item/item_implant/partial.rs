@@ -15,8 +15,12 @@ pub(crate) struct HImplantInfoPartial {
     slot: Option<i32>,
     enabled: bool,
 }
-impl From<&mut rc::ImplantMut<'_>> for HImplantInfoPartial {
-    fn from(core_implant: &mut rc::ImplantMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HImplantInfoPartial {
+    pub(super) fn from_core(core_implant: &mut rc::ImplantMut) -> Self {
         Self {
             id: core_implant.get_item_id(),
             kind: "implant",

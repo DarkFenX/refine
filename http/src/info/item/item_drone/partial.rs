@@ -25,8 +25,12 @@ pub(crate) struct HDroneInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
-impl From<&mut rc::DroneMut<'_>> for HDroneInfoPartial {
-    fn from(core_drone: &mut rc::DroneMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HDroneInfoPartial {
+    pub(super) fn from_core(core_drone: &mut rc::DroneMut) -> Self {
         Self {
             id: core_drone.get_item_id(),
             kind: "drone",

@@ -10,11 +10,15 @@ pub(crate) struct HStanceInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::StanceMut<'_>> for HStanceInfoFull {
-    fn from(core_stance: &mut rc::StanceMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStanceInfoFull {
+    pub(super) fn from_core(core_stance: &mut rc::StanceMut) -> Self {
         Self {
-            partial_info: core_stance.into(),
-            extended_info: core_stance.into(),
+            partial_info: HStanceInfoPartial::from_core(core_stance),
+            extended_info: HItemExtendedInfo::from_core(core_stance),
         }
     }
 }

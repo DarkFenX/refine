@@ -10,12 +10,16 @@ pub(crate) enum HSwEffectInfo {
     Partial(HSwEffectInfoPartial),
     Full(HSwEffectInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSwEffectInfo {
     pub(in crate::info::item) fn mk_info(core_sw_effect: &mut rc::SwEffectMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_sw_effect.into()),
-            HItemInfoMode::Partial => Self::Partial(core_sw_effect.into()),
-            HItemInfoMode::Full => Self::Full(core_sw_effect.into()),
+            HItemInfoMode::Id => Self::Id(HSwEffectInfoId::from_core(core_sw_effect)),
+            HItemInfoMode::Partial => Self::Partial(HSwEffectInfoPartial::from_core(core_sw_effect)),
+            HItemInfoMode::Full => Self::Full(HSwEffectInfoFull::from_core(core_sw_effect)),
         }
     }
 }

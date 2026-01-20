@@ -17,8 +17,12 @@ pub(crate) struct HShipInfoPartial {
     coordinates: HCoordinates,
     movement: HMovement,
 }
-impl From<&mut rc::ShipMut<'_>> for HShipInfoPartial {
-    fn from(core_ship: &mut rc::ShipMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HShipInfoPartial {
+    pub(super) fn from_core(core_ship: &mut rc::ShipMut) -> Self {
         Self {
             id: core_ship.get_item_id(),
             kind: "ship",

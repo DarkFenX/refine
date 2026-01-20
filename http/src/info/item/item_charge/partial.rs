@@ -15,8 +15,12 @@ pub(crate) struct HChargeInfoPartial {
     cont_item_id: rc::ItemId,
     enabled: bool,
 }
-impl From<&mut rc::ChargeMut<'_>> for HChargeInfoPartial {
-    fn from(core_charge: &mut rc::ChargeMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HChargeInfoPartial {
+    pub(super) fn from_core(core_charge: &mut rc::ChargeMut) -> Self {
         Self {
             id: core_charge.get_item_id(),
             kind: "charge",

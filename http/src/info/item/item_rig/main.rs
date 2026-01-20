@@ -10,12 +10,16 @@ pub(crate) enum HRigInfo {
     Partial(HRigInfoPartial),
     Full(HRigInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HRigInfo {
-    pub(in crate::info::item) fn mk_info(core_rig: &mut rc::RigMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_rig: &mut rc::RigMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_rig.into()),
-            HItemInfoMode::Partial => Self::Partial(core_rig.into()),
-            HItemInfoMode::Full => Self::Full(core_rig.into()),
+            HItemInfoMode::Id => Self::Id(HRigInfoId::from_core(core_rig)),
+            HItemInfoMode::Partial => Self::Partial(HRigInfoPartial::from_core(core_rig)),
+            HItemInfoMode::Full => Self::Full(HRigInfoFull::from_core(core_rig)),
         }
     }
 }

@@ -15,8 +15,12 @@ pub(crate) struct HProjEffectInfoPartial {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HProjInfo>,
 }
-impl From<&mut rc::ProjEffectMut<'_>> for HProjEffectInfoPartial {
-    fn from(core_proj_effect: &mut rc::ProjEffectMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HProjEffectInfoPartial {
+    pub(super) fn from_core(core_proj_effect: &mut rc::ProjEffectMut) -> Self {
         Self {
             id: core_proj_effect.get_item_id(),
             kind: "proj_effect",

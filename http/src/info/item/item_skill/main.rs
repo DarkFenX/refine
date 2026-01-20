@@ -10,12 +10,16 @@ pub(crate) enum HSkillInfo {
     Partial(HSkillInfoPartial),
     Full(HSkillInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSkillInfo {
-    pub(in crate::info::item) fn mk_info(core_skill: &mut rc::SkillMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_skill: &mut rc::SkillMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_skill.into()),
-            HItemInfoMode::Partial => Self::Partial(core_skill.into()),
-            HItemInfoMode::Full => Self::Full(core_skill.into()),
+            HItemInfoMode::Id => Self::Id(HSkillInfoId::from_core(core_skill)),
+            HItemInfoMode::Partial => Self::Partial(HSkillInfoPartial::from_core(core_skill)),
+            HItemInfoMode::Full => Self::Full(HSkillInfoFull::from_core(core_skill)),
         }
     }
 }

@@ -12,13 +12,17 @@ pub(crate) struct HModuleInfoId {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<HChargeInfo>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HModuleInfoId {
-    pub(super) fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
+    pub(super) fn from_core(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         Self {
             id: core_module.get_item_id(),
             charge: core_module
                 .get_charge_mut()
-                .map(|mut charge| HChargeInfo::mk_info(&mut charge, item_mode)),
+                .map(|mut charge| HChargeInfo::from_core(&mut charge, item_mode)),
         }
     }
 }

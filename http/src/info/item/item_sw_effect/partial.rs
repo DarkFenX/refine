@@ -11,8 +11,12 @@ pub(crate) struct HSwEffectInfoPartial {
     type_id: i32,
     enabled: bool,
 }
-impl From<&mut rc::SwEffectMut<'_>> for HSwEffectInfoPartial {
-    fn from(core_sw_effect: &mut rc::SwEffectMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSwEffectInfoPartial {
+    pub(super) fn from_core(core_sw_effect: &mut rc::SwEffectMut) -> Self {
         Self {
             id: core_sw_effect.get_item_id(),
             kind: "sw_effect",

@@ -10,12 +10,16 @@ pub(crate) enum HShipInfo {
     Partial(HShipInfoPartial),
     Full(HShipInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HShipInfo {
-    pub(in crate::info::item) fn mk_info(core_ship: &mut rc::ShipMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_ship: &mut rc::ShipMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_ship.into()),
-            HItemInfoMode::Partial => Self::Partial(core_ship.into()),
-            HItemInfoMode::Full => Self::Full(core_ship.into()),
+            HItemInfoMode::Id => Self::Id(HShipInfoId::from_core(core_ship)),
+            HItemInfoMode::Partial => Self::Partial(HShipInfoPartial::from_core(core_ship)),
+            HItemInfoMode::Full => Self::Full(HShipInfoFull::from_core(core_ship)),
         }
     }
 }

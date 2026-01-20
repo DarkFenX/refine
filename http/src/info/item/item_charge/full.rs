@@ -10,11 +10,15 @@ pub(crate) struct HChargeInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::ChargeMut<'_>> for HChargeInfoFull {
-    fn from(core_charge: &mut rc::ChargeMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HChargeInfoFull {
+    pub(super) fn from_core(core_charge: &mut rc::ChargeMut) -> Self {
         Self {
-            partial_info: core_charge.into(),
-            extended_info: core_charge.into(),
+            partial_info: HChargeInfoPartial::from_core(core_charge),
+            extended_info: HItemExtendedInfo::from_core(core_charge),
         }
     }
 }

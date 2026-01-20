@@ -8,8 +8,12 @@ pub(crate) struct HServiceInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::ServiceMut<'_>> for HServiceInfoId {
-    fn from(core_service: &mut rc::ServiceMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HServiceInfoId {
+    pub(super) fn from_core(core_service: &mut rc::ServiceMut) -> Self {
         Self {
             id: core_service.get_item_id(),
         }

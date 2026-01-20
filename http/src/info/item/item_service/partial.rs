@@ -15,8 +15,12 @@ pub(crate) struct HServiceInfoPartial {
     fit_id: rc::FitId,
     state: HServiceState,
 }
-impl From<&mut rc::ServiceMut<'_>> for HServiceInfoPartial {
-    fn from(core_service: &mut rc::ServiceMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HServiceInfoPartial {
+    pub(super) fn from_core(core_service: &mut rc::ServiceMut) -> Self {
         Self {
             id: core_service.get_item_id(),
             kind: "service",

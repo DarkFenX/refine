@@ -10,11 +10,15 @@ pub(crate) struct HBoosterInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::BoosterMut<'_>> for HBoosterInfoFull {
-    fn from(core_booster: &mut rc::BoosterMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HBoosterInfoFull {
+    pub(super) fn from_core(core_booster: &mut rc::BoosterMut) -> Self {
         Self {
-            partial_info: core_booster.into(),
-            extended_info: core_booster.into(),
+            partial_info: HBoosterInfoPartial::from_core(core_booster),
+            extended_info: HItemExtendedInfo::from_core(core_booster),
         }
     }
 }

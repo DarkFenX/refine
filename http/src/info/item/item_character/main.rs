@@ -10,12 +10,16 @@ pub(crate) enum HCharacterInfo {
     Partial(HCharacterInfoPartial),
     Full(HCharacterInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HCharacterInfo {
-    pub(in crate::info::item) fn mk_info(core_character: &mut rc::CharacterMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_character: &mut rc::CharacterMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_character.into()),
-            HItemInfoMode::Partial => Self::Partial(core_character.into()),
-            HItemInfoMode::Full => Self::Full(core_character.into()),
+            HItemInfoMode::Id => Self::Id(HCharacterInfoId::from_core(core_character)),
+            HItemInfoMode::Partial => Self::Partial(HCharacterInfoPartial::from_core(core_character)),
+            HItemInfoMode::Full => Self::Full(HCharacterInfoFull::from_core(core_character)),
         }
     }
 }

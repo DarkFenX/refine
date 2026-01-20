@@ -8,8 +8,12 @@ pub(crate) struct HChargeInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::ItemId,
 }
-impl From<&mut rc::ChargeMut<'_>> for HChargeInfoId {
-    fn from(core_charge: &mut rc::ChargeMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HChargeInfoId {
+    pub(super) fn from_core(core_charge: &mut rc::ChargeMut) -> Self {
         Self {
             id: core_charge.get_item_id(),
         }

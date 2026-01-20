@@ -13,8 +13,12 @@ pub(crate) struct HRigInfoPartial {
     fit_id: rc::FitId,
     enabled: bool,
 }
-impl From<&mut rc::RigMut<'_>> for HRigInfoPartial {
-    fn from(core_rig: &mut rc::RigMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HRigInfoPartial {
+    pub(super) fn from_core(core_rig: &mut rc::RigMut) -> Self {
         Self {
             id: core_rig.get_item_id(),
             kind: "rig",

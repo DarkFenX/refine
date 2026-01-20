@@ -10,11 +10,15 @@ pub(crate) struct HDroneInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::DroneMut<'_>> for HDroneInfoFull {
-    fn from(core_drone: &mut rc::DroneMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HDroneInfoFull {
+    pub(super) fn from_core(core_drone: &mut rc::DroneMut) -> Self {
         Self {
-            partial_info: core_drone.into(),
-            extended_info: core_drone.into(),
+            partial_info: HDroneInfoPartial::from_core(core_drone),
+            extended_info: HItemExtendedInfo::from_core(core_drone),
         }
     }
 }

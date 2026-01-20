@@ -10,11 +10,15 @@ pub(crate) struct HRigInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::RigMut<'_>> for HRigInfoFull {
-    fn from(core_rig: &mut rc::RigMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HRigInfoFull {
+    pub(super) fn from_core(core_rig: &mut rc::RigMut) -> Self {
         Self {
-            partial_info: core_rig.into(),
-            extended_info: core_rig.into(),
+            partial_info: HRigInfoPartial::from_core(core_rig),
+            extended_info: HItemExtendedInfo::from_core(core_rig),
         }
     }
 }

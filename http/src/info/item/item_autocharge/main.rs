@@ -10,12 +10,16 @@ pub(crate) enum HAutochargeInfo {
     Partial(HAutochargeInfoPartial),
     Full(HAutochargeInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HAutochargeInfo {
-    pub(in crate::info::item) fn mk_info(core_autocharge: &mut rc::AutochargeMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_autocharge: &mut rc::AutochargeMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_autocharge.into()),
-            HItemInfoMode::Partial => Self::Partial(core_autocharge.into()),
-            HItemInfoMode::Full => Self::Full(core_autocharge.into()),
+            HItemInfoMode::Id => Self::Id(HAutochargeInfoId::from_core(core_autocharge)),
+            HItemInfoMode::Partial => Self::Partial(HAutochargeInfoPartial::from_core(core_autocharge)),
+            HItemInfoMode::Full => Self::Full(HAutochargeInfoFull::from_core(core_autocharge)),
         }
     }
 }

@@ -10,11 +10,15 @@ pub(crate) struct HShipInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::ShipMut<'_>> for HShipInfoFull {
-    fn from(core_ship: &mut rc::ShipMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HShipInfoFull {
+    pub(super) fn from_core(core_ship: &mut rc::ShipMut) -> Self {
         Self {
-            partial_info: core_ship.into(),
-            extended_info: core_ship.into(),
+            partial_info: HShipInfoPartial::from_core(core_ship),
+            extended_info: HItemExtendedInfo::from_core(core_ship),
         }
     }
 }

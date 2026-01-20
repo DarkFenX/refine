@@ -10,12 +10,16 @@ pub(crate) enum HServiceInfo {
     Partial(HServiceInfoPartial),
     Full(HServiceInfoFull),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HServiceInfo {
-    pub(in crate::info::item) fn mk_info(core_service: &mut rc::ServiceMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_service: &mut rc::ServiceMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_service.into()),
-            HItemInfoMode::Partial => Self::Partial(core_service.into()),
-            HItemInfoMode::Full => Self::Full(core_service.into()),
+            HItemInfoMode::Id => Self::Id(HServiceInfoId::from_core(core_service)),
+            HItemInfoMode::Partial => Self::Partial(HServiceInfoPartial::from_core(core_service)),
+            HItemInfoMode::Full => Self::Full(HServiceInfoFull::from_core(core_service)),
         }
     }
 }

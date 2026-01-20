@@ -10,11 +10,15 @@ pub(crate) struct HFwEffectInfoFull {
     #[serde(flatten)]
     extended_info: HItemExtendedInfo,
 }
-impl From<&mut rc::FwEffectMut<'_>> for HFwEffectInfoFull {
-    fn from(core_fw_effect: &mut rc::FwEffectMut) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HFwEffectInfoFull {
+    pub(super) fn from_core(core_fw_effect: &mut rc::FwEffectMut) -> Self {
         Self {
-            partial_info: core_fw_effect.into(),
-            extended_info: core_fw_effect.into(),
+            partial_info: HFwEffectInfoPartial::from_core(core_fw_effect),
+            extended_info: HItemExtendedInfo::from_core(core_fw_effect),
         }
     }
 }
