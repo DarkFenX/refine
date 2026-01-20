@@ -12,7 +12,8 @@ use crate::{
     info::{
         HFitStats,
         stats::{
-            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatMining, HStatOutReps, HStatResists, HStatRps,
+            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
+            HStatRps, HStatSlot,
         },
     },
     util::{HExecError, default_true},
@@ -148,52 +149,55 @@ impl HGetFitStatsCmd {
         // Fit slots
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.high_slots.unwrap_or(self.default) {
-            stats.high_slots = Some(core_fit.get_stat_high_slots().into());
+            stats.high_slots = Some(HStatSlot::from_core(core_fit.get_stat_high_slots()));
         }
         if self.mid_slots.unwrap_or(self.default) {
-            stats.mid_slots = Some(core_fit.get_stat_mid_slots().into());
+            stats.mid_slots = Some(HStatSlot::from_core(core_fit.get_stat_mid_slots()));
         }
         if self.low_slots.unwrap_or(self.default) {
-            stats.low_slots = Some(core_fit.get_stat_low_slots().into());
+            stats.low_slots = Some(HStatSlot::from_core(core_fit.get_stat_low_slots()));
         }
         if self.turret_slots.unwrap_or(self.default) {
-            stats.turret_slots = Some(core_fit.get_stat_turret_slots().into());
+            stats.turret_slots = Some(HStatSlot::from_core(core_fit.get_stat_turret_slots()));
         }
         if self.launcher_slots.unwrap_or(self.default) {
-            stats.launcher_slots = Some(core_fit.get_stat_launcher_slots().into());
+            stats.launcher_slots = Some(HStatSlot::from_core(core_fit.get_stat_launcher_slots()));
         }
         if self.rig_slots.unwrap_or(self.default) {
-            stats.rig_slots = Some(core_fit.get_stat_rig_slots().into());
+            stats.rig_slots = Some(HStatSlot::from_core(core_fit.get_stat_rig_slots()));
         }
         if self.service_slots.unwrap_or(self.default) {
-            stats.service_slots = Some(core_fit.get_stat_service_slots().into());
+            stats.service_slots = Some(HStatSlot::from_core(core_fit.get_stat_service_slots()));
         }
         if self.subsystem_slots.unwrap_or(self.default) {
-            stats.subsystem_slots = Some(core_fit.get_stat_subsystem_slots().into());
+            stats.subsystem_slots = Some(HStatSlot::from_core(core_fit.get_stat_subsystem_slots()));
         }
         if self.launched_drones.unwrap_or(self.default) {
-            stats.launched_drones = Some(core_fit.get_stat_launched_drones().into());
+            stats.launched_drones = Some(HStatSlot::from_core(core_fit.get_stat_launched_drones()));
         }
         if self.launched_fighters.unwrap_or(self.default) {
-            stats.launched_fighters = Some(core_fit.get_stat_launched_fighters().into());
+            stats.launched_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_fighters()));
         }
         if self.launched_light_fighters.unwrap_or(self.default) {
-            stats.launched_light_fighters = Some(core_fit.get_stat_launched_light_fighters().into());
+            stats.launched_light_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_light_fighters()));
         }
         if self.launched_heavy_fighters.unwrap_or(self.default) {
-            stats.launched_heavy_fighters = Some(core_fit.get_stat_launched_heavy_fighters().into());
+            stats.launched_heavy_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_heavy_fighters()));
         }
         if self.launched_support_fighters.unwrap_or(self.default) {
-            stats.launched_support_fighters = Some(core_fit.get_stat_launched_support_fighters().into());
+            stats.launched_support_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_support_fighters()));
         }
         if self.launched_st_light_fighters.unwrap_or(self.default) {
-            stats.launched_st_light_fighters = Some(core_fit.get_stat_launched_st_light_fighters().into());
+            stats.launched_st_light_fighters =
+                Some(HStatSlot::from_core(core_fit.get_stat_launched_st_light_fighters()));
         }
         if self.launched_st_heavy_fighters.unwrap_or(self.default) {
-            stats.launched_st_heavy_fighters = Some(core_fit.get_stat_launched_st_heavy_fighters().into());
+            stats.launched_st_heavy_fighters =
+                Some(HStatSlot::from_core(core_fit.get_stat_launched_st_heavy_fighters()));
         }
         if self.launched_st_support_fighters.unwrap_or(self.default) {
-            stats.launched_st_support_fighters = Some(core_fit.get_stat_launched_st_support_fighters().into());
+            stats.launched_st_support_fighters =
+                Some(HStatSlot::from_core(core_fit.get_stat_launched_st_support_fighters()));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship tank

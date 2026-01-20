@@ -5,8 +5,12 @@ pub(crate) struct HStatInJam {
     chance: f64,
     uptime: f64,
 }
-impl From<rc::stats::StatInJam> for HStatInJam {
-    fn from(core_stat: rc::stats::StatInJam) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatInJam {
+    pub(crate) fn from_core(core_stat: rc::stats::StatInJam) -> Self {
         Self {
             chance: core_stat.chance.into_f64(),
             uptime: core_stat.uptime.into_f64(),

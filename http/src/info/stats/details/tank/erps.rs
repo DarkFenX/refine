@@ -6,6 +6,27 @@ pub(crate) struct HStatErps {
     armor: Option<HStatErpsLayer>,
     hull: Option<HStatErpsLayer>,
 }
+
+#[derive(Serialize_tuple)]
+struct HStatErpsLayerRegen {
+    local: f64,
+    remote: f64,
+    remote_penalized: f64,
+    regen: f64,
+    mult: f64,
+}
+
+#[derive(Serialize_tuple)]
+struct HStatErpsLayer {
+    local: f64,
+    remote: f64,
+    remote_penalized: f64,
+    mult: f64,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HStatErps {
     pub(crate) fn from_core(core_stat: rc::stats::StatErps) -> Self {
         Self {
@@ -16,14 +37,6 @@ impl HStatErps {
     }
 }
 
-#[derive(Serialize_tuple)]
-struct HStatErpsLayerRegen {
-    local: f64,
-    remote: f64,
-    remote_penalized: f64,
-    regen: f64,
-    mult: f64,
-}
 impl HStatErpsLayerRegen {
     fn from_core(core_stat: rc::stats::StatErpsLayerRegen) -> Self {
         Self {
@@ -36,13 +49,6 @@ impl HStatErpsLayerRegen {
     }
 }
 
-#[derive(Serialize_tuple)]
-struct HStatErpsLayer {
-    local: f64,
-    remote: f64,
-    remote_penalized: f64,
-    mult: f64,
-}
 impl HStatErpsLayer {
     fn from_core(core_stat: rc::stats::StatErpsLayer) -> Self {
         Self {

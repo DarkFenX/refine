@@ -6,6 +6,18 @@ pub(crate) struct HStatEhp {
     armor: Option<HStatEhpLayer>,
     hull: Option<HStatEhpLayer>,
 }
+
+#[derive(Serialize_tuple)]
+struct HStatEhpLayer {
+    buffer: f64,
+    ancil_local: f64,
+    ancil_remote: f64,
+    mult: f64,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HStatEhp {
     pub(crate) fn from_core(core_stat: rc::stats::StatEhp) -> Self {
         Self {
@@ -14,14 +26,6 @@ impl HStatEhp {
             hull: core_stat.hull.map(HStatEhpLayer::from_core),
         }
     }
-}
-
-#[derive(Serialize_tuple)]
-struct HStatEhpLayer {
-    buffer: f64,
-    ancil_local: f64,
-    ancil_remote: f64,
-    mult: f64,
 }
 impl HStatEhpLayer {
     fn from_core(core_stat: rc::stats::StatEhpLayer) -> Self {

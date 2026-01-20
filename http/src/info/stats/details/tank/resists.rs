@@ -6,6 +6,18 @@ pub(crate) struct HStatResists {
     armor: HStatResistsLayer,
     hull: HStatResistsLayer,
 }
+
+#[derive(Serialize_tuple)]
+struct HStatResistsLayer {
+    em: f64,
+    thermal: f64,
+    kinetic: f64,
+    explosive: f64,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HStatResists {
     pub(crate) fn from_core(core_stat: rc::stats::StatResists) -> Self {
         Self {
@@ -16,13 +28,6 @@ impl HStatResists {
     }
 }
 
-#[derive(Serialize_tuple)]
-struct HStatResistsLayer {
-    em: f64,
-    thermal: f64,
-    kinetic: f64,
-    explosive: f64,
-}
 impl HStatResistsLayer {
     fn from_core(core_stat: rc::stats::StatResistsLayer) -> Self {
         Self {
