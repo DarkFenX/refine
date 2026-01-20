@@ -15,7 +15,7 @@ pub(crate) enum HSwEffectInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSwEffectInfo {
-    pub(in crate::info::item) fn mk_info(core_sw_effect: &mut rc::SwEffectMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::item) fn from_core(core_sw_effect: &mut rc::SwEffectMut, item_mode: HItemInfoMode) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(HSwEffectInfoId::from_core(core_sw_effect)),
             HItemInfoMode::Partial => Self::Partial(HSwEffectInfoPartial::from_core(core_sw_effect)),

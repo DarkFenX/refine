@@ -141,6 +141,6 @@ impl MkItemInfo<&mut rc::SubsystemMut<'_>> for HItemInfo {
 }
 impl MkItemInfo<&mut rc::SwEffectMut<'_>> for HItemInfo {
     fn mk_info(core_sw_effect: &mut rc::SwEffectMut, item_mode: HItemInfoMode) -> Self {
-        Self::SwEffect(HSwEffectInfo::mk_info(core_sw_effect, item_mode))
+        Self::SwEffect(HSwEffectInfo::from_core(core_sw_effect, item_mode))
     }
 }

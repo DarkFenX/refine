@@ -14,9 +14,9 @@ pub(crate) enum HFleetInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFleetInfo {
-    pub(crate) fn from_core_fleet(core_fleet: &mut rc::FleetMut, fleet_mode: HFleetInfoMode) -> Self {
+    pub(crate) fn from_core(core_fleet: &mut rc::FleetMut, fleet_mode: HFleetInfoMode) -> Self {
         match fleet_mode {
-            HFleetInfoMode::Id => Self::Id(HFleetInfoId::from_core_fleet(core_fleet)),
+            HFleetInfoMode::Id => Self::Id(HFleetInfoId::from_core(core_fleet)),
             HFleetInfoMode::Full => Self::Full(HFleetInfoFull::from_core(core_fleet)),
         }
     }
