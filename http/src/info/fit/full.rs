@@ -45,8 +45,27 @@ pub(crate) struct HFitInfoFull {
     #[serde(skip_serializing_if = "Option::is_none")]
     rah_incoming_dps: Option<HDpsProfile>,
 }
+
+#[derive(Serialize)]
+struct HModuleRacks {
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    high: Vec<Option<HItemInfo>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    mid: Vec<Option<HItemInfo>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    low: Vec<Option<HItemInfo>>,
+}
+impl HModuleRacks {
+    fn is_empty(&self) -> bool {
+        self.high.is_empty() && self.mid.is_empty() && self.low.is_empty()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFitInfoFull {
-    pub(in crate::info::fit) fn mk_info(core_fit: &mut rc::FitMut, item_mode: HItemInfoMode) -> Self {
+    pub(in crate::info::fit) fn from_core(core_fit: &mut rc::FitMut, item_mode: HItemInfoMode) -> Self {
         Self {
             id: core_fit.get_fit_id(),
             fleet: core_fit.get_fleet().map(|v| v.get_fleet_id()),
@@ -118,20 +137,5 @@ impl HFitInfoFull {
             sec_status: core_fit.get_sec_status().into_f64(),
             rah_incoming_dps: core_fit.get_rah_incoming_dps().map(HDpsProfile::from_core),
         }
-    }
-}
-
-#[derive(Serialize)]
-struct HModuleRacks {
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    high: Vec<Option<HItemInfo>>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    mid: Vec<Option<HItemInfo>>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    low: Vec<Option<HItemInfo>>,
-}
-impl HModuleRacks {
-    fn is_empty(&self) -> bool {
-        self.high.is_empty() && self.mid.is_empty() && self.low.is_empty()
     }
 }

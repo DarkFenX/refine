@@ -60,7 +60,8 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = HSolInfo::mk_info(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+                let result =
+                    HSolInfo::from_id_and_core(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
                 (core_sol, result)
             })
             .await;
@@ -93,7 +94,8 @@ impl HSolarSystemInner {
                         .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
                     cmd_resps.push(resp);
                 }
-                let sol_info = HSolInfo::mk_info(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+                let sol_info =
+                    HSolInfo::from_id_and_core(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
                 Ok((core_sol, sol_info, cmd_resps))
             })
             .await
@@ -127,7 +129,8 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 core_sol.set_src(src);
-                let info = HSolInfo::mk_info(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+                let info =
+                    HSolInfo::from_id_and_core(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
                 (core_sol, info)
             })
             .await;
@@ -278,7 +281,7 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let result = match get_primary_fit(&mut core_sol, &fit_id) {
-                    Ok(mut core_fit) => Ok(HFitInfo::mk_info(&mut core_fit, fit_mode, item_mode)),
+                    Ok(mut core_fit) => Ok(HFitInfo::from_core(&mut core_fit, fit_mode, item_mode)),
                     Err(exec_error) => Err(exec_error.into()),
                 };
                 (core_sol, result)
@@ -304,7 +307,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let cmd_resp = command.execute(&mut core_sol);
                 let mut core_fit = core_sol.get_fit_mut(&cmd_resp.id).unwrap();
-                let fit_info = HFitInfo::mk_info(&mut core_fit, fit_mode, item_mode);
+                let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);
                 (core_sol, fit_info)
             })
             .await;
@@ -337,7 +340,7 @@ impl HSolarSystemInner {
                     cmd_resps.push(resp);
                 }
                 let mut core_fit = get_primary_fit(&mut core_sol, &fit_id)?;
-                let fit_info = HFitInfo::mk_info(&mut core_fit, fit_mode, item_mode);
+                let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);
                 Ok((core_sol, fit_info, cmd_resps))
             })
             .await

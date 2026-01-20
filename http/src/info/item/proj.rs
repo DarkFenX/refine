@@ -9,13 +9,6 @@ pub(in crate::info::item) struct HProjInfo {
     #[serde_as(as = "DisplayFromStr")]
     projectee_item_id: rc::ItemId,
 }
-impl HProjInfo {
-    pub(in crate::info::item) fn from_core(core_proj: rc::Proj) -> Self {
-        Self {
-            projectee_item_id: core_proj.get_projectee_item_id(),
-        }
-    }
-}
 
 #[serde_as]
 #[derive(Serialize_tuple)]
@@ -24,6 +17,18 @@ pub(in crate::info::item) struct HRangedProjInfo {
     projectee_item_id: rc::ItemId,
     range: Option<(f64, f64)>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HProjInfo {
+    pub(in crate::info::item) fn from_core(core_proj: rc::Proj) -> Self {
+        Self {
+            projectee_item_id: core_proj.get_projectee_item_id(),
+        }
+    }
+}
+
 impl HRangedProjInfo {
     pub(in crate::info::item) fn from_core(core_ranged_proj: rc::RangedProj) -> Self {
         Self {

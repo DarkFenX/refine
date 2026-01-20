@@ -9,11 +9,15 @@ pub(crate) enum HFitInfo {
     Id(HFitInfoId),
     Full(Box<HFitInfoFull>),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFitInfo {
-    pub(crate) fn mk_info(core_fit: &mut rc::FitMut, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core(core_fit: &mut rc::FitMut, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> Self {
         match fit_mode {
-            HFitInfoMode::Id => Self::Id(HFitInfoId::from_core_fit(core_fit)),
-            HFitInfoMode::Full => Self::Full(Box::new(HFitInfoFull::mk_info(core_fit, item_mode))),
+            HFitInfoMode::Id => Self::Id(HFitInfoId::from_core(core_fit)),
+            HFitInfoMode::Full => Self::Full(Box::new(HFitInfoFull::from_core(core_fit, item_mode))),
         }
     }
 }

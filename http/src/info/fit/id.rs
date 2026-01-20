@@ -7,8 +7,12 @@ pub(crate) struct HFitInfoId {
     #[serde_as(as = "DisplayFromStr")]
     id: rc::FitId,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFitInfoId {
-    pub(in crate::info::fit) fn from_core_fit(core_fit: &mut rc::FitMut<'_>) -> Self {
+    pub(in crate::info::fit) fn from_core(core_fit: &mut rc::FitMut<'_>) -> Self {
         Self {
             id: core_fit.get_fit_id(),
         }

@@ -21,8 +21,12 @@ pub(crate) struct HSolInfoFull {
     default_spool: HSpool,
     default_incoming_dps: HDpsProfile,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolInfoFull {
-    pub(in crate::info::sol) fn mk_info(
+    pub(in crate::info::sol) fn from_id_and_core(
         sol_id: String,
         core_sol: &mut rc::SolarSystem,
         fleet_mode: HFleetInfoMode,
@@ -37,7 +41,7 @@ impl HSolInfoFull {
                 .collect(),
             fits: core_sol
                 .iter_fits_mut()
-                .map_into_iter(|mut core_fit| HFitInfo::mk_info(&mut core_fit, fit_mode, item_mode))
+                .map_into_iter(|mut core_fit| HFitInfo::from_core(&mut core_fit, fit_mode, item_mode))
                 .collect(),
             sw_effects: core_sol
                 .iter_sw_effects_mut()

@@ -4,8 +4,12 @@ use serde::Serialize;
 pub(crate) struct HSolInfoId {
     id: String,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolInfoId {
-    pub(in crate::info::sol) fn from_sol_id(sol_id: String) -> Self {
+    pub(in crate::info::sol) fn from_id(sol_id: String) -> Self {
         Self { id: sol_id }
     }
 }
