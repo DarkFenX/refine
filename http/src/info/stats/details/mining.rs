@@ -10,15 +10,6 @@ pub(crate) struct HStatMining {
     #[serde(skip_serializing_if = "HStatMiningAmount::is_null")]
     gas: HStatMiningAmount,
 }
-impl From<rc::stats::StatMining> for HStatMining {
-    fn from(core_stat: rc::stats::StatMining) -> Self {
-        Self {
-            ore: core_stat.ore.into(),
-            ice: core_stat.ice.into(),
-            gas: core_stat.gas.into(),
-        }
-    }
-}
 
 #[derive(Serialize_tuple)]
 struct HStatMiningAmount {
@@ -30,8 +21,22 @@ impl HStatMiningAmount {
         self.yield_ == 0.0 && self.drain == 0.0
     }
 }
-impl From<rc::MiningAmount> for HStatMiningAmount {
-    fn from(core_stat: rc::MiningAmount) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatMining {
+    pub(crate) fn from_core(core_stat: rc::stats::StatMining) -> Self {
+        Self {
+            ore: HStatMiningAmount::from_core(core_stat.ore),
+            ice: HStatMiningAmount::from_core(core_stat.ice),
+            gas: HStatMiningAmount::from_core(core_stat.gas),
+        }
+    }
+}
+
+impl HStatMiningAmount {
+    fn from_core(core_stat: rc::MiningAmount) -> Self {
         Self {
             yield_: core_stat.yield_.into_f64(),
             drain: core_stat.drain.into_f64(),

@@ -13,7 +13,8 @@ use crate::{
     info::{
         HItemStats,
         stats::{
-            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatMining, HStatOutReps, HStatResists, HStatRps,
+            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
+            HStatRps, HStatSensors,
         },
     },
     util::{HExecError, default_true},
@@ -132,7 +133,7 @@ impl HGetItemStatsCmd {
         // Cap
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cap_amount.unwrap_or(self.default) {
-            stats.cap_amount = core_item.get_stat_cap_amount().into();
+            stats.cap_amount = core_item.get_stat_cap_amount().map(|v| v.into_f64()).into();
         }
         let cap_blc_opt = HStatResolvedOption::new(&self.cap_balance, self.default);
         if cap_blc_opt.enabled {
@@ -143,61 +144,81 @@ impl HGetItemStatsCmd {
             stats.cap_sim = get_cap_sim_stats(&mut core_item, cap_sim_opt.options).into();
         }
         if self.neut_resist.unwrap_or(self.default) {
-            stats.neut_resist = core_item.get_stat_neut_resist().into();
+            stats.neut_resist = core_item.get_stat_neut_resist().map(|v| v.into_f64()).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Sensors
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.locks.unwrap_or(self.default) {
-            stats.locks = core_item.get_stat_locks().into();
+            stats.locks = core_item.get_stat_locks().map(|v| v.into_u32()).into();
         }
         if self.lock_range.unwrap_or(self.default) {
-            stats.lock_range = core_item.get_stat_lock_range().into();
+            stats.lock_range = core_item.get_stat_lock_range().map(|v| v.into_f64()).into();
         }
         if self.scan_res.unwrap_or(self.default) {
-            stats.scan_res = core_item.get_stat_scan_res().into();
+            stats.scan_res = core_item.get_stat_scan_res().map(|v| v.into_f64()).into();
         }
         if self.sensors.unwrap_or(self.default) {
-            stats.sensors = core_item.get_stat_sensors().into();
+            stats.sensors = core_item.get_stat_sensors().map(HStatSensors::from_core).into();
         }
         if self.dscan_range.unwrap_or(self.default) {
-            stats.dscan_range = core_item.get_stat_dscan_range().into();
+            stats.dscan_range = core_item.get_stat_dscan_range().map(|v| v.into_f64()).into();
         }
         if self.probing_size.unwrap_or(self.default) {
-            stats.probing_size = core_item.get_stat_probing_size().unwrap_or_default().into();
+            stats.probing_size = core_item
+                .get_stat_probing_size()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.incoming_jam.unwrap_or(self.default) {
-            stats.incoming_jam = core_item.get_stat_incoming_jam().into();
+            stats.incoming_jam = core_item.get_stat_incoming_jam().map(HStatInJam::from_core).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.unwrap_or(self.default) {
-            stats.speed = core_item.get_stat_speed().into();
+            stats.speed = core_item.get_stat_speed().map(|v| v.into_f64()).into();
         }
         if self.agility.unwrap_or(self.default) {
-            stats.agility = core_item.get_stat_agility().unwrap_or_default().into();
+            stats.agility = core_item
+                .get_stat_agility()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.align_time.unwrap_or(self.default) {
-            stats.align_time = core_item.get_stat_align_time().unwrap_or_default().into();
+            stats.align_time = core_item
+                .get_stat_align_time()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.sig_radius.unwrap_or(self.default) {
-            stats.sig_radius = core_item.get_stat_sig_radius().into();
+            stats.sig_radius = core_item.get_stat_sig_radius().map(|v| v.into_f64()).into();
         }
         if self.mass.unwrap_or(self.default) {
-            stats.mass = core_item.get_stat_mass().into();
+            stats.mass = core_item.get_stat_mass().map(|v| v.into_f64()).into();
         }
         if self.warp_speed.unwrap_or(self.default) {
-            stats.warp_speed = core_item.get_stat_warp_speed().unwrap_or_default().into();
+            stats.warp_speed = core_item
+                .get_stat_warp_speed()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.max_warp_range.unwrap_or(self.default) {
-            stats.max_warp_range = core_item.get_stat_max_warp_range().unwrap_or_default().into();
+            stats.max_warp_range = core_item
+                .get_stat_max_warp_range()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Misc
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.unwrap_or(self.default) {
-            stats.drone_control_range = core_item.get_stat_drone_control_range().into();
+            stats.drone_control_range = core_item.get_stat_drone_control_range().map(|v| v.into_f64()).into();
         }
         if self.can_warp.unwrap_or(self.default) {
             stats.can_warp = core_item.get_stat_can_warp().into();
@@ -237,7 +258,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -246,7 +267,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
             }
             None => {
                 match core_item.get_stat_dps(option.reload, core_spool, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core(core_stat))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -269,7 +290,7 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -278,7 +299,7 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
             }
             None => {
                 match core_item.get_stat_volley(core_spool, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core(core_stat))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -294,7 +315,7 @@ fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining
     for option in options {
         let core_time_options = option.time_options.into_core();
         match core_item.get_stat_mps(core_time_options, option.ignore_state) {
-            Ok(core_stat) => results.push(core_stat.into()),
+            Ok(core_stat) => results.push(HStatMining::from_core(core_stat)),
             Err(_) => return None,
         }
     }

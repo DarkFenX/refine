@@ -72,13 +72,13 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>)
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fleet.get_stat_dps(core_item_kinds, option.reload, core_spool);
-                results.push(Some(core_stat.into()));
+                results.push(Some(HStatDmg::from_core(core_stat)));
             }
         }
     }
@@ -92,13 +92,13 @@ fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVo
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_volley_applied(core_item_kinds, core_spool, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fleet.get_stat_volley(core_item_kinds, core_spool);
-                results.push(Some(core_stat.into()));
+                results.push(Some(HStatDmg::from_core(core_stat)));
             }
         }
     }
@@ -109,8 +109,8 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMinin
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
         let core_time_options = option.time_options.into_core();
-        let core_result = core_fleet.get_stat_mps(core_item_kinds, core_time_options);
-        results.push(core_result.into());
+        let core_stat = core_fleet.get_stat_mps(core_item_kinds, core_time_options);
+        results.push(HStatMining::from_core(core_stat));
     }
     results
 }

@@ -6,14 +6,6 @@ pub(crate) struct HStatSensors {
     kind: HStatSensorKind,
     strength: f64,
 }
-impl From<rc::stats::StatSensors> for HStatSensors {
-    fn from(core_stat: rc::stats::StatSensors) -> Self {
-        Self {
-            kind: core_stat.kind.into(),
-            strength: core_stat.strength.into_f64(),
-        }
-    }
-}
 
 #[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -23,8 +15,21 @@ enum HStatSensorKind {
     Magnetometric,
     Ladar,
 }
-impl From<rc::stats::StatSensorsKind> for HStatSensorKind {
-    fn from(core_stat: rc::stats::StatSensorsKind) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatSensors {
+    pub(crate) fn from_core(core_stat: rc::stats::StatSensors) -> Self {
+        Self {
+            kind: HStatSensorKind::from_core(core_stat.kind),
+            strength: core_stat.strength.into_f64(),
+        }
+    }
+}
+
+impl HStatSensorKind {
+    fn from_core(core_stat: rc::stats::StatSensorsKind) -> Self {
         match core_stat {
             rc::stats::StatSensorsKind::Radar => Self::Radar,
             rc::stats::StatSensorsKind::Gravimetric => Self::Gravimetric,

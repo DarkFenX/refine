@@ -13,7 +13,7 @@ use crate::{
         HFitStats,
         stats::{
             HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
-            HStatRps, HStatSlot,
+            HStatResource, HStatRps, HStatSensors, HStatSlot,
         },
     },
     util::{HExecError, default_true},
@@ -128,22 +128,22 @@ impl HGetFitStatsCmd {
         // Fit resources
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cpu.unwrap_or(self.default) {
-            stats.cpu = Some(core_fit.get_stat_cpu().into());
+            stats.cpu = Some(HStatResource::from_core(core_fit.get_stat_cpu()));
         }
         if self.powergrid.unwrap_or(self.default) {
-            stats.powergrid = Some(core_fit.get_stat_powergrid().into());
+            stats.powergrid = Some(HStatResource::from_core(core_fit.get_stat_powergrid()));
         }
         if self.calibration.unwrap_or(self.default) {
-            stats.calibration = Some(core_fit.get_stat_calibration().into());
+            stats.calibration = Some(HStatResource::from_core(core_fit.get_stat_calibration()));
         }
         if self.drone_bay_volume.unwrap_or(self.default) {
-            stats.drone_bay_volume = Some(core_fit.get_stat_drone_bay_volume().into());
+            stats.drone_bay_volume = Some(HStatResource::from_core(core_fit.get_stat_drone_bay_volume()));
         }
         if self.drone_bandwidth.unwrap_or(self.default) {
-            stats.drone_bandwidth = Some(core_fit.get_stat_drone_bandwidth().into());
+            stats.drone_bandwidth = Some(HStatResource::from_core(core_fit.get_stat_drone_bandwidth()));
         }
         if self.fighter_bay_volume.unwrap_or(self.default) {
-            stats.fighter_bay_volume = Some(core_fit.get_stat_fighter_bay_volume().into());
+            stats.fighter_bay_volume = Some(HStatResource::from_core(core_fit.get_stat_fighter_bay_volume()));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit slots
@@ -227,7 +227,7 @@ impl HGetFitStatsCmd {
         // Ship cap
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cap_amount.unwrap_or(self.default) {
-            stats.cap_amount = core_fit.get_stat_cap_amount().into();
+            stats.cap_amount = core_fit.get_stat_cap_amount().map(|v| v.into_f64()).into();
         }
         let cap_blc_opt = HStatResolvedOption::new(&self.cap_balance, self.default);
         if cap_blc_opt.enabled {
@@ -238,61 +238,81 @@ impl HGetFitStatsCmd {
             stats.cap_sim = get_cap_sim_stats(&mut core_fit, cap_sim_opt.options).into();
         }
         if self.neut_resist.unwrap_or(self.default) {
-            stats.neut_resist = core_fit.get_stat_neut_resist().into();
+            stats.neut_resist = core_fit.get_stat_neut_resist().map(|v| v.into_f64()).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship sensors
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.locks.unwrap_or(self.default) {
-            stats.locks = core_fit.get_stat_locks().into();
+            stats.locks = core_fit.get_stat_locks().map(|v| v.into_u32()).into();
         }
         if self.lock_range.unwrap_or(self.default) {
-            stats.lock_range = core_fit.get_stat_lock_range().into();
+            stats.lock_range = core_fit.get_stat_lock_range().map(|v| v.into_f64()).into();
         }
         if self.scan_res.unwrap_or(self.default) {
-            stats.scan_res = core_fit.get_stat_scan_res().into();
+            stats.scan_res = core_fit.get_stat_scan_res().map(|v| v.into_f64()).into();
         }
         if self.sensors.unwrap_or(self.default) {
-            stats.sensors = core_fit.get_stat_sensors().into();
+            stats.sensors = core_fit.get_stat_sensors().map(HStatSensors::from_core).into();
         }
         if self.dscan_range.unwrap_or(self.default) {
-            stats.dscan_range = core_fit.get_stat_dscan_range().into();
+            stats.dscan_range = core_fit.get_stat_dscan_range().map(|v| v.into_f64()).into();
         }
         if self.probing_size.unwrap_or(self.default) {
-            stats.probing_size = core_fit.get_stat_probing_size().unwrap_or_default().into();
+            stats.probing_size = core_fit
+                .get_stat_probing_size()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.incoming_jam.unwrap_or(self.default) {
-            stats.incoming_jam = core_fit.get_stat_incoming_jam().into();
+            stats.incoming_jam = core_fit.get_stat_incoming_jam().map(HStatInJam::from_core).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.unwrap_or(self.default) {
-            stats.speed = core_fit.get_stat_speed().into();
+            stats.speed = core_fit.get_stat_speed().map(|v| v.into_f64()).into();
         }
         if self.agility.unwrap_or(self.default) {
-            stats.agility = core_fit.get_stat_agility().unwrap_or_default().into();
+            stats.agility = core_fit
+                .get_stat_agility()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.align_time.unwrap_or(self.default) {
-            stats.align_time = core_fit.get_stat_align_time().unwrap_or_default().into();
+            stats.align_time = core_fit
+                .get_stat_align_time()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.sig_radius.unwrap_or(self.default) {
-            stats.sig_radius = core_fit.get_stat_sig_radius().into();
+            stats.sig_radius = core_fit.get_stat_sig_radius().map(|v| v.into_f64()).into();
         }
         if self.mass.unwrap_or(self.default) {
-            stats.mass = core_fit.get_stat_mass().into();
+            stats.mass = core_fit.get_stat_mass().map(|v| v.into_f64()).into();
         }
         if self.warp_speed.unwrap_or(self.default) {
-            stats.warp_speed = core_fit.get_stat_warp_speed().unwrap_or_default().into();
+            stats.warp_speed = core_fit
+                .get_stat_warp_speed()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         if self.max_warp_range.unwrap_or(self.default) {
-            stats.max_warp_range = core_fit.get_stat_max_warp_range().unwrap_or_default().into();
+            stats.max_warp_range = core_fit
+                .get_stat_max_warp_range()
+                .unwrap_or_default()
+                .map(|v| v.into_f64())
+                .into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship misc stats
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.unwrap_or(self.default) {
-            stats.drone_control_range = core_fit.get_stat_drone_control_range().into();
+            stats.drone_control_range = core_fit.get_stat_drone_control_range().map(|v| v.into_f64()).into();
         }
         if self.can_warp.unwrap_or(self.default) {
             stats.can_warp = core_fit.get_stat_can_warp().into();
@@ -327,13 +347,13 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fit.get_stat_dps(core_item_kinds, option.reload, core_spool);
-                results.push(Some(core_stat.into()));
+                results.push(Some(HStatDmg::from_core(core_stat)));
             }
         }
     }
@@ -347,13 +367,13 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_volley_applied(core_item_kinds, core_spool, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(core_stat.into())),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fit.get_stat_volley(core_item_kinds, core_spool);
-                results.push(Some(core_stat.into()));
+                results.push(Some(HStatDmg::from_core(core_stat)));
             }
         }
     }
@@ -364,8 +384,8 @@ fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitMining>) 
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
         let core_time_options = option.time_options.into_core();
-        let core_result = core_fit.get_stat_mps(core_item_kinds, core_time_options);
-        results.push(core_result.into());
+        let core_stat = core_fit.get_stat_mps(core_item_kinds, core_time_options);
+        results.push(HStatMining::from_core(core_stat));
     }
     results
 }

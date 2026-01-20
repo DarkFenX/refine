@@ -25,24 +25,18 @@ impl<T> TriStateField<T> {
         }
     }
 }
-impl<T, V> From<Option<V>> for TriStateField<T>
-where
-    V: Into<T>,
-{
-    fn from(val: Option<V>) -> Self {
+impl<T> From<Option<T>> for TriStateField<T> {
+    fn from(val: Option<T>) -> Self {
         match val {
-            Some(inner) => Self::Value(inner.into()),
+            Some(inner) => Self::Value(inner),
             None => Self::None,
         }
     }
 }
-impl<T, V, E> From<Result<V, E>> for TriStateField<T>
-where
-    V: Into<T>,
-{
-    fn from(val: Result<V, E>) -> Self {
+impl<T, E> From<Result<T, E>> for TriStateField<T> {
+    fn from(val: Result<T, E>) -> Self {
         match val {
-            Ok(inner) => Self::Value(inner.into()),
+            Ok(inner) => Self::Value(inner),
             Err(_) => Self::None,
         }
     }
