@@ -2,7 +2,7 @@ use rc::Lender;
 use serde::Serialize;
 
 use crate::{
-    info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, MkItemInfo},
+    info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode},
     shared::{HDpsProfile, HSecZone, HSpool},
 };
 
@@ -45,11 +45,11 @@ impl HSolInfoFull {
                 .collect(),
             sw_effects: core_sol
                 .iter_sw_effects_mut()
-                .map_into_iter(|mut core_sw_effect| HItemInfo::mk_info(&mut core_sw_effect, item_mode))
+                .map_into_iter(|mut core_sw_effect| HItemInfo::from_core_sw_effect(&mut core_sw_effect, item_mode))
                 .collect(),
             proj_effects: core_sol
                 .iter_proj_effects_mut()
-                .map_into_iter(|mut proj_effect| HItemInfo::mk_info(&mut proj_effect, item_mode))
+                .map_into_iter(|mut proj_effect| HItemInfo::from_core_proj_effect(&mut proj_effect, item_mode))
                 .collect(),
             sec_zone: HSecZone::from_core(core_sol.get_sec_zone()),
             default_spool: HSpool::from_core(core_sol.get_default_spool()),

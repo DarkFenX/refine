@@ -11,10 +11,6 @@ use crate::info::{
     },
 };
 
-pub(crate) trait MkItemInfo<T> {
-    fn mk_info(source: T, item_mode: HItemInfoMode) -> HItemInfo;
-}
-
 #[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HItemInfo {
@@ -36,111 +32,81 @@ pub(crate) enum HItemInfo {
     Subsystem(HSubsystemInfo),
     SwEffect(HSwEffectInfo),
 }
-impl MkItemInfo<&mut rc::ItemMut<'_>> for HItemInfo {
-    fn mk_info(core_item: &mut rc::ItemMut, item_mode: HItemInfoMode) -> Self {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HItemInfo {
+    pub(crate) fn from_core(core_item: &mut rc::ItemMut, item_mode: HItemInfoMode) -> Self {
         match core_item {
-            rc::ItemMut::Autocharge(core_autocharge) => Self::mk_info(core_autocharge, item_mode),
-            rc::ItemMut::Booster(core_booster) => Self::mk_info(core_booster, item_mode),
-            rc::ItemMut::Character(core_character) => Self::mk_info(core_character, item_mode),
-            rc::ItemMut::Charge(core_charge) => Self::mk_info(core_charge, item_mode),
-            rc::ItemMut::Drone(core_drone) => Self::mk_info(core_drone, item_mode),
-            rc::ItemMut::Fighter(core_fighter) => Self::mk_info(core_fighter, item_mode),
-            rc::ItemMut::FwEffect(core_fw_effect) => Self::mk_info(core_fw_effect, item_mode),
-            rc::ItemMut::Implant(core_implant) => Self::mk_info(core_implant, item_mode),
-            rc::ItemMut::Module(core_module) => Self::mk_info(core_module, item_mode),
-            rc::ItemMut::ProjEffect(core_proj_effect) => Self::mk_info(core_proj_effect, item_mode),
-            rc::ItemMut::Rig(core_rig) => Self::mk_info(core_rig, item_mode),
-            rc::ItemMut::Service(core_service) => Self::mk_info(core_service, item_mode),
-            rc::ItemMut::Ship(core_ship) => Self::mk_info(core_ship, item_mode),
-            rc::ItemMut::Skill(core_skill) => Self::mk_info(core_skill, item_mode),
-            rc::ItemMut::Stance(core_stance) => Self::mk_info(core_stance, item_mode),
-            rc::ItemMut::Subsystem(core_subsystem) => Self::mk_info(core_subsystem, item_mode),
-            rc::ItemMut::SwEffect(core_sw_effect) => Self::mk_info(core_sw_effect, item_mode),
+            rc::ItemMut::Autocharge(core_autocharge) => Self::from_core_autocharge(core_autocharge, item_mode),
+            rc::ItemMut::Booster(core_booster) => Self::from_core_booster(core_booster, item_mode),
+            rc::ItemMut::Character(core_character) => Self::from_core_character(core_character, item_mode),
+            rc::ItemMut::Charge(core_charge) => Self::from_core_charge(core_charge, item_mode),
+            rc::ItemMut::Drone(core_drone) => Self::from_core_drone(core_drone, item_mode),
+            rc::ItemMut::Fighter(core_fighter) => Self::from_core_fighter(core_fighter, item_mode),
+            rc::ItemMut::FwEffect(core_fw_effect) => Self::from_core_fw_effect(core_fw_effect, item_mode),
+            rc::ItemMut::Implant(core_implant) => Self::from_core_implant(core_implant, item_mode),
+            rc::ItemMut::Module(core_module) => Self::from_core_module(core_module, item_mode),
+            rc::ItemMut::ProjEffect(core_proj_effect) => Self::from_core_proj_effect(core_proj_effect, item_mode),
+            rc::ItemMut::Rig(core_rig) => Self::from_core_rig(core_rig, item_mode),
+            rc::ItemMut::Service(core_service) => Self::from_core_service(core_service, item_mode),
+            rc::ItemMut::Ship(core_ship) => Self::from_core_ship(core_ship, item_mode),
+            rc::ItemMut::Skill(core_skill) => Self::from_core_skill(core_skill, item_mode),
+            rc::ItemMut::Stance(core_stance) => Self::from_core_stance(core_stance, item_mode),
+            rc::ItemMut::Subsystem(core_subsystem) => Self::from_core_subsystem(core_subsystem, item_mode),
+            rc::ItemMut::SwEffect(core_sw_effect) => Self::from_core_sw_effect(core_sw_effect, item_mode),
         }
     }
-}
-impl MkItemInfo<&mut rc::AutochargeMut<'_>> for HItemInfo {
-    fn mk_info(core_autocharge: &mut rc::AutochargeMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_autocharge(core_autocharge: &mut rc::AutochargeMut, item_mode: HItemInfoMode) -> Self {
         Self::Autocharge(HAutochargeInfo::from_core(core_autocharge, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::BoosterMut<'_>> for HItemInfo {
-    fn mk_info(core_booster: &mut rc::BoosterMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_booster(core_booster: &mut rc::BoosterMut, item_mode: HItemInfoMode) -> Self {
         Self::Booster(HBoosterInfo::from_core(core_booster, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::CharacterMut<'_>> for HItemInfo {
-    fn mk_info(core_character: &mut rc::CharacterMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_character(core_character: &mut rc::CharacterMut, item_mode: HItemInfoMode) -> Self {
         Self::Character(HCharacterInfo::from_core(core_character, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::ChargeMut<'_>> for HItemInfo {
-    fn mk_info(core_charge: &mut rc::ChargeMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_charge(core_charge: &mut rc::ChargeMut, item_mode: HItemInfoMode) -> Self {
         Self::Charge(HChargeInfo::from_core(core_charge, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::DroneMut<'_>> for HItemInfo {
-    fn mk_info(core_drone: &mut rc::DroneMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_drone(core_drone: &mut rc::DroneMut, item_mode: HItemInfoMode) -> Self {
         Self::Drone(HDroneInfo::from_core(core_drone, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::FighterMut<'_>> for HItemInfo {
-    fn mk_info(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_fighter(core_fighter: &mut rc::FighterMut, item_mode: HItemInfoMode) -> Self {
         Self::Fighter(HFighterInfo::from_core(core_fighter, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::FwEffectMut<'_>> for HItemInfo {
-    fn mk_info(core_fw_effect: &mut rc::FwEffectMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_fw_effect(core_fw_effect: &mut rc::FwEffectMut, item_mode: HItemInfoMode) -> Self {
         Self::FwEffect(HFwEffectInfo::from_core(core_fw_effect, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::ImplantMut<'_>> for HItemInfo {
-    fn mk_info(core_implant: &mut rc::ImplantMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_implant(core_implant: &mut rc::ImplantMut, item_mode: HItemInfoMode) -> Self {
         Self::Implant(HImplantInfo::from_core(core_implant, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::ModuleMut<'_>> for HItemInfo {
-    fn mk_info(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_module(core_module: &mut rc::ModuleMut, item_mode: HItemInfoMode) -> Self {
         Self::Module(Box::new(HModuleInfo::from_core(core_module, item_mode)))
     }
-}
-impl MkItemInfo<&mut rc::ProjEffectMut<'_>> for HItemInfo {
-    fn mk_info(core_proj_effect: &mut rc::ProjEffectMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_proj_effect(core_proj_effect: &mut rc::ProjEffectMut, item_mode: HItemInfoMode) -> Self {
         Self::ProjEffect(HProjEffectInfo::from_core(core_proj_effect, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::RigMut<'_>> for HItemInfo {
-    fn mk_info(core_rig: &mut rc::RigMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_rig(core_rig: &mut rc::RigMut, item_mode: HItemInfoMode) -> Self {
         Self::Rig(HRigInfo::from_core(core_rig, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::ServiceMut<'_>> for HItemInfo {
-    fn mk_info(core_service: &mut rc::ServiceMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_service(core_service: &mut rc::ServiceMut, item_mode: HItemInfoMode) -> Self {
         Self::Service(HServiceInfo::from_core(core_service, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::ShipMut<'_>> for HItemInfo {
-    fn mk_info(core_ship: &mut rc::ShipMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_ship(core_ship: &mut rc::ShipMut, item_mode: HItemInfoMode) -> Self {
         Self::Ship(HShipInfo::from_core(core_ship, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::SkillMut<'_>> for HItemInfo {
-    fn mk_info(core_skill: &mut rc::SkillMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_skill(core_skill: &mut rc::SkillMut, item_mode: HItemInfoMode) -> Self {
         Self::Skill(HSkillInfo::from_core(core_skill, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::StanceMut<'_>> for HItemInfo {
-    fn mk_info(core_stance: &mut rc::StanceMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_stance(core_stance: &mut rc::StanceMut, item_mode: HItemInfoMode) -> Self {
         Self::Stance(HStanceInfo::from_core(core_stance, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::SubsystemMut<'_>> for HItemInfo {
-    fn mk_info(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_subsystem(core_subsystem: &mut rc::SubsystemMut, item_mode: HItemInfoMode) -> Self {
         Self::Subsystem(HSubsystemInfo::from_core(core_subsystem, item_mode))
     }
-}
-impl MkItemInfo<&mut rc::SwEffectMut<'_>> for HItemInfo {
-    fn mk_info(core_sw_effect: &mut rc::SwEffectMut, item_mode: HItemInfoMode) -> Self {
+    pub(crate) fn from_core_sw_effect(core_sw_effect: &mut rc::SwEffectMut, item_mode: HItemInfoMode) -> Self {
         Self::SwEffect(HSwEffectInfo::from_core(core_sw_effect, item_mode))
     }
 }

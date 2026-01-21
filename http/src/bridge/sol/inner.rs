@@ -10,7 +10,7 @@ use crate::{
     },
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
-        HItemInfoMode, HItemStats, HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode, MkItemInfo,
+        HItemInfoMode, HItemStats, HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode,
     },
     util::HExecError,
 };
@@ -487,7 +487,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 match core_sol.get_item_mut(&item_id) {
                     Ok(mut core_item) => {
-                        let item_info = HItemInfo::mk_info(&mut core_item, item_mode);
+                        let item_info = HItemInfo::from_core(&mut core_item, item_mode);
                         (core_sol, Ok(item_info))
                     }
                     Err(core_err) => {
@@ -519,7 +519,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let cmd_resp = command.execute(&mut core_sol).map_err(HBrError::from)?;
                 let mut core_item = core_sol.get_item_mut(&cmd_resp.id).unwrap();
-                let item_info = HItemInfo::mk_info(&mut core_item, item_mode);
+                let item_info = HItemInfo::from_core(&mut core_item, item_mode);
                 Ok((core_sol, item_info))
             })
             .await
@@ -555,7 +555,7 @@ impl HSolarSystemInner {
                 let mut core_item = core_sol.get_item_mut(&item_id).map_err(|core_err| match core_err {
                     rc::err::GetItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                 })?;
-                let item_info = HItemInfo::mk_info(&mut core_item, item_mode);
+                let item_info = HItemInfo::from_core(&mut core_item, item_mode);
                 Ok((core_sol, item_info))
             })
             .await

@@ -1,4 +1,4 @@
-pub(crate) use main::{HItemInfo, MkItemInfo};
+pub(crate) use main::HItemInfo;
 
 mod adj_count;
 mod extended;

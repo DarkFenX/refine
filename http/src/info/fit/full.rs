@@ -3,7 +3,7 @@ use serde::Serialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    info::{HItemInfo, HItemInfoMode, MkItemInfo},
+    info::{HItemInfo, HItemInfoMode},
     shared::HDpsProfile,
 };
 
@@ -71,68 +71,68 @@ impl HFitInfoFull {
             fleet: core_fit.get_fleet().map(|v| v.get_fleet_id()),
             character: core_fit
                 .get_character_mut()
-                .map(|mut core_character| HItemInfo::mk_info(&mut core_character, item_mode)),
+                .map(|mut core_character| HItemInfo::from_core_character(&mut core_character, item_mode)),
             skills: core_fit
                 .iter_skills_mut()
-                .map_into_iter(|mut core_skill| HItemInfo::mk_info(&mut core_skill, item_mode))
+                .map_into_iter(|mut core_skill| HItemInfo::from_core_skill(&mut core_skill, item_mode))
                 .collect(),
             implants: core_fit
                 .iter_implants_mut()
-                .map_into_iter(|mut core_implant| HItemInfo::mk_info(&mut core_implant, item_mode))
+                .map_into_iter(|mut core_implant| HItemInfo::from_core_implant(&mut core_implant, item_mode))
                 .collect(),
             boosters: core_fit
                 .iter_boosters_mut()
-                .map_into_iter(|mut core_booster| HItemInfo::mk_info(&mut core_booster, item_mode))
+                .map_into_iter(|mut core_booster| HItemInfo::from_core_booster(&mut core_booster, item_mode))
                 .collect(),
             ship: core_fit
                 .get_ship_mut()
-                .map(|mut core_ship| HItemInfo::mk_info(&mut core_ship, item_mode)),
+                .map(|mut core_ship| HItemInfo::from_core_ship(&mut core_ship, item_mode)),
             stance: core_fit
                 .get_stance_mut()
-                .map(|mut core_stance| HItemInfo::mk_info(&mut core_stance, item_mode)),
+                .map(|mut core_stance| HItemInfo::from_core_stance(&mut core_stance, item_mode)),
             subsystems: core_fit
                 .iter_subsystems_mut()
-                .map_into_iter(|mut core_subsystem| HItemInfo::mk_info(&mut core_subsystem, item_mode))
+                .map_into_iter(|mut core_subsystem| HItemInfo::from_core_subsystem(&mut core_subsystem, item_mode))
                 .collect(),
             modules: HModuleRacks {
                 high: core_fit
                     .iter_modules_mut(rc::ModRack::High)
                     .map_into_iter(|core_module| {
-                        core_module.map(|mut core_module| HItemInfo::mk_info(&mut core_module, item_mode))
+                        core_module.map(|mut core_module| HItemInfo::from_core_module(&mut core_module, item_mode))
                     })
                     .collect(),
                 mid: core_fit
                     .iter_modules_mut(rc::ModRack::Mid)
                     .map_into_iter(|core_module| {
-                        core_module.map(|mut core_module| HItemInfo::mk_info(&mut core_module, item_mode))
+                        core_module.map(|mut core_module| HItemInfo::from_core_module(&mut core_module, item_mode))
                     })
                     .collect(),
                 low: core_fit
                     .iter_modules_mut(rc::ModRack::Low)
                     .map_into_iter(|core_module| {
-                        core_module.map(|mut core_module| HItemInfo::mk_info(&mut core_module, item_mode))
+                        core_module.map(|mut core_module| HItemInfo::from_core_module(&mut core_module, item_mode))
                     })
                     .collect(),
             },
             rigs: core_fit
                 .iter_rigs_mut()
-                .map_into_iter(|mut core_rig| HItemInfo::mk_info(&mut core_rig, item_mode))
+                .map_into_iter(|mut core_rig| HItemInfo::from_core_rig(&mut core_rig, item_mode))
                 .collect(),
             services: core_fit
                 .iter_services_mut()
-                .map_into_iter(|mut core_service| HItemInfo::mk_info(&mut core_service, item_mode))
+                .map_into_iter(|mut core_service| HItemInfo::from_core_service(&mut core_service, item_mode))
                 .collect(),
             drones: core_fit
                 .iter_drones_mut()
-                .map_into_iter(|mut core_drone| HItemInfo::mk_info(&mut core_drone, item_mode))
+                .map_into_iter(|mut core_drone| HItemInfo::from_core_drone(&mut core_drone, item_mode))
                 .collect(),
             fighters: core_fit
                 .iter_fighters_mut()
-                .map_into_iter(|mut core_fighter| HItemInfo::mk_info(&mut core_fighter, item_mode))
+                .map_into_iter(|mut core_fighter| HItemInfo::from_core_fighter(&mut core_fighter, item_mode))
                 .collect(),
             fw_effects: core_fit
                 .iter_fw_effects_mut()
-                .map_into_iter(|mut core_fw_effect| HItemInfo::mk_info(&mut core_fw_effect, item_mode))
+                .map_into_iter(|mut core_fw_effect| HItemInfo::from_core_fw_effect(&mut core_fw_effect, item_mode))
                 .collect(),
             sec_status: core_fit.get_sec_status().into_f64(),
             rah_incoming_dps: core_fit.get_rah_incoming_dps().map(HDpsProfile::from_core),
