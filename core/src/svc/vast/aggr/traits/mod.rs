@@ -1,4 +1,4 @@
-pub(in crate::svc::aggr) use limit_amount::LimitAmount;
+pub(in crate::svc::vast::aggr) use limit_amount::LimitAmount;
 
 mod impl_output;
 mod impl_value_attr_val;

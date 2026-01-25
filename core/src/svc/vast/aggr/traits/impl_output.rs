@@ -8,7 +8,7 @@ impl<T> Output<T>
 where
     T: Copy + std::ops::Mul<PValue, Output = T>,
 {
-    pub(in crate::svc::aggr) fn get_amount_sum(&self) -> T {
+    pub(in crate::svc::vast::aggr) fn get_amount_sum(&self) -> T {
         match self {
             Self::Simple(inner) => inner.get_amount_sum(),
             Self::Complex(inner) => inner.get_amount_sum(),
@@ -19,7 +19,7 @@ impl<T> Output<T>
 where
     T: Copy + Default + std::ops::Mul<PValue, Output = T>,
 {
-    pub(in crate::svc::aggr) fn get_amount_sum_by_time(&self, time: PValue) -> T {
+    pub(in crate::svc::vast::aggr) fn get_amount_sum_by_time(&self, time: PValue) -> T {
         match self {
             Output::Simple(inner) => inner.get_amount_sum_by_time(time),
             Output::Complex(inner) => inner.get_amount_sum_by_time(time),
@@ -30,7 +30,7 @@ impl<T> Output<T>
 where
     T: Copy + LimitAmount,
 {
-    pub(in crate::svc::aggr) fn limit_amount(&mut self, limit: Value) {
+    pub(in crate::svc::vast::aggr) fn limit_amount(&mut self, limit: Value) {
         match self {
             Self::Simple(inner) => inner.limit_amount(limit),
             Self::Complex(inner) => inner.limit_amount(limit),

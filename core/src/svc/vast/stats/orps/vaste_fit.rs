@@ -4,10 +4,12 @@ use crate::{
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
-        vast::{StatOutRepItemKinds, StatTimeOptions, Vast},
+        vast::{
+            StatOutRepItemKinds, StatTimeOptions, Vast,
+            aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
+        },
     },
     ud::{UFitId, UItemId},
     util::RMapRMap,

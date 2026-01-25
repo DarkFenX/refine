@@ -3,7 +3,6 @@
 pub(crate) use ctx::SvcCtx;
 pub(crate) use svc::Svc;
 
-mod aggr;
 mod api;
 pub(crate) mod calc;
 mod ctx;

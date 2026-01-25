@@ -3,7 +3,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, aggr::traits::LimitAmount, calc::Calc, funcs, output::Output},
+    svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::LimitAmount},
     ud::UItemId,
 };
 

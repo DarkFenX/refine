@@ -7,12 +7,12 @@ use crate::{
     num::PValue,
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
+            aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
             stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },

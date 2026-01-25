@@ -3,11 +3,10 @@ use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
         SvcCtx,
-        aggr::aggr_proj_first_output,
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatSensorsKind, Vast, stats::item_checks::check_drone_fighter_ship},
+        vast::{StatSensorsKind, Vast, aggr::aggr_proj_first_output, stats::item_checks::check_drone_fighter_ship},
     },
     ud::UItemId,
 };

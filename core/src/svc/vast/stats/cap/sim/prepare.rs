@@ -9,11 +9,13 @@ use crate::{
     num::PValue,
     svc::{
         SvcCtx,
-        aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         output::{Output, OutputSimple},
-        vast::{Vast, VastFitData},
+        vast::{
+            Vast, VastFitData,
+            aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
+        },
     },
     ud::UItemId,
     util::RMapVec,

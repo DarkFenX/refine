@@ -23,6 +23,7 @@ pub use validators::{
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 
+mod aggr;
 mod maintain;
 mod shared;
 mod stats;

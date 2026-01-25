@@ -5,11 +5,14 @@ use crate::{
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{StatTimeOptions, Vast, stats::item_checks::check_drone_module},
+        vast::{
+            StatTimeOptions, Vast,
+            aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
+            stats::item_checks::check_drone_module,
+        },
     },
     ud::UItemId,
 };

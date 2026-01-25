@@ -4,11 +4,14 @@ use crate::{
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{aggr_local_clip_amount, aggr_proj_clip_amount},
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
-        vast::{Vast, stats::item_checks::check_drone_fighter_ship},
+        vast::{
+            Vast,
+            aggr::{aggr_local_clip_amount, aggr_proj_clip_amount},
+            stats::item_checks::check_drone_fighter_ship,
+        },
     },
     ud::{UItem, UItemId},
     util::{RMapRMap, RMapRMapRMap},

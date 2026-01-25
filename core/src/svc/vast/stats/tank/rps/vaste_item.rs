@@ -4,15 +4,15 @@ use crate::{
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::{
-            aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time_ps, aggr_proj_first_amount, aggr_proj_looped_ps,
-            aggr_proj_time_ps,
-        },
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
+            aggr::{
+                aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time_ps, aggr_proj_first_amount,
+                aggr_proj_looped_ps, aggr_proj_time_ps,
+            },
             stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
         },
     },

@@ -7,10 +7,12 @@ use crate::{
     num::PValue,
     svc::{
         SvcCtx,
-        aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
-        vast::{StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData},
+        vast::{
+            StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
+            aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
+        },
     },
     ud::{UFitId, UItemId},
 };

@@ -8,9 +8,9 @@ use crate::{
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
-        aggr::shared::calc_charge_mult,
         calc::Calc,
         cycle::{CycleDataFull, CycleSeq},
+        vast::aggr::shared::calc_charge_mult,
     },
     ud::UItemId,
 };
