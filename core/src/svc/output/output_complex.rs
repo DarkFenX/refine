@@ -56,12 +56,6 @@ impl<T: Copy> OutputComplex<T> {
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_completion_duration(&self) -> PValue {
-        if self.repeats < Count::ONE {
-            return PValue::ZERO;
-        };
-        self.delay + self.interval * PValue::from_f64_unchecked((self.repeats.into_u32() - 1) as f64)
-    }
 }
 impl OutputComplex<Value> {
     pub(super) fn get_absolute_impact(&self) -> PValue {

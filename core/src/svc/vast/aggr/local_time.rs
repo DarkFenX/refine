@@ -1,7 +1,7 @@
 use super::{
     local_shared::{AggrLocalInvData, get_local_output},
     precalc::aggr_precalc_by_time,
-    traits::LimitAmount,
+    traits::{GetDuration, LimitAmount},
 };
 use crate::{
     num::PValue,
@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Local effects, aggregates total output by specified time
-pub(in crate::svc) fn aggr_local_time_ps<T>(
+pub(in crate::svc::vast) fn aggr_local_time_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -28,12 +28,13 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
+        + GetDuration
         + LimitAmount,
 {
     aggr_local_time_amount(ctx, calc, item_uid, effect, cseq, ospec, time).map(|v| v / time)
 }
 
-pub(in crate::svc) fn aggr_local_time_amount<T>(
+pub(in crate::svc::vast) fn aggr_local_time_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -49,6 +50,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;

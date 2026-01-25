@@ -52,9 +52,6 @@ impl<T: Copy> OutputSimple<T> {
     pub(super) fn get_max_amount(&self) -> T {
         self.amount
     }
-    pub(super) fn get_completion_duration(&self) -> PValue {
-        self.delay
-    }
 }
 impl OutputSimple<Value> {
     pub(super) fn get_absolute_impact(&self) -> PValue {

@@ -55,12 +55,6 @@ impl<T: Copy> Output<T> {
             Output::Complex(inner) => inner.get_max_amount(),
         }
     }
-    pub(in crate::svc) fn get_completion_duration(&self) -> PValue {
-        match self {
-            Output::Simple(inner) => inner.get_completion_duration(),
-            Output::Complex(inner) => inner.get_completion_duration(),
-        }
-    }
 }
 impl Output<Value> {
     pub(in crate::svc) fn get_absolute_impact(&self) -> PValue {

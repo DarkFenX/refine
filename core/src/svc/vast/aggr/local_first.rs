@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Local effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc) fn aggr_local_first_ps<T>(
+pub(in crate::svc::vast) fn aggr_local_first_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -29,7 +29,7 @@ where
     aggr_local_first_amount(ctx, calc, item_uid, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
-pub(in crate::svc) fn aggr_local_first_amount<T>(
+pub(in crate::svc::vast) fn aggr_local_first_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -46,7 +46,7 @@ where
     })
 }
 
-pub(in crate::svc) fn aggr_local_first_output<T>(
+pub(in crate::svc::vast) fn aggr_local_first_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,

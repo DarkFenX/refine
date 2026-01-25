@@ -10,7 +10,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // General data which stays the same through projected effect cycling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct AggrProjInvData<T>
+pub(in crate::svc::vast) struct AggrProjInvData<T>
 where
     T: Copy,
 {
@@ -22,7 +22,7 @@ impl<T> AggrProjInvData<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    pub(in crate::svc) fn try_make(
+    pub(in crate::svc::vast) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
@@ -132,7 +132,7 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) fn get_proj_output<T>(
+pub(in crate::svc::vast) fn get_proj_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,

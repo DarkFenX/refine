@@ -16,7 +16,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_proj_looped_ps<T>(
+pub(in crate::svc::vast) fn aggr_proj_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -38,7 +38,7 @@ where
         .and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
-pub(in crate::svc) fn aggr_proj_looped_max<T>(
+pub(in crate::svc::vast) fn aggr_proj_looped_max<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -62,7 +62,7 @@ where
     }
 }
 
-pub(in crate::svc) fn aggr_proj_looped_amount<T>(
+pub(in crate::svc::vast) fn aggr_proj_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

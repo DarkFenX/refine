@@ -27,9 +27,9 @@ pub(super) fn process_mult(mult: PValue) -> Option<PValue> {
     }
 }
 
-pub(in crate::svc) struct AggrAmount<T> {
-    pub(in crate::svc) amount: T,
-    pub(in crate::svc) duration: PValue,
+pub(in crate::svc::vast) struct AggrAmount<T> {
+    pub(in crate::svc::vast) amount: T,
+    pub(in crate::svc::vast) duration: PValue,
 }
 impl<T> AggrAmount<T>
 where
@@ -43,10 +43,10 @@ where
     }
 }
 
-pub(in crate::svc) struct AggrOutput<T>
+pub(in crate::svc::vast) struct AggrOutput<T>
 where
     T: Copy,
 {
-    pub(in crate::svc) output: Output<T>,
-    pub(in crate::svc) duration: PValue,
+    pub(in crate::svc::vast) output: Output<T>,
+    pub(in crate::svc::vast) duration: PValue,
 }

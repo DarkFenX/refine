@@ -12,7 +12,7 @@ use crate::{
 };
 
 // Projected effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc) fn aggr_proj_first_ps<T>(
+pub(in crate::svc::vast) fn aggr_proj_first_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -33,7 +33,7 @@ where
         .and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
-pub(in crate::svc) fn aggr_proj_first_max<T>(
+pub(in crate::svc::vast) fn aggr_proj_first_max<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -50,7 +50,7 @@ where
         .map(|output_data| output_data.output.get_max_amount())
 }
 
-pub(in crate::svc) fn aggr_proj_first_amount<T>(
+pub(in crate::svc::vast) fn aggr_proj_first_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -71,7 +71,7 @@ where
     })
 }
 
-pub(in crate::svc) fn aggr_proj_first_output<T>(
+pub(in crate::svc::vast) fn aggr_proj_first_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

@@ -1,4 +1,3 @@
-use super::limit_amount::LimitAmount;
 use crate::{
     num::{PValue, Value},
     svc::output::{Output, OutputComplex, OutputSimple},
@@ -26,17 +25,6 @@ where
         }
     }
 }
-impl<T> Output<T>
-where
-    T: Copy + LimitAmount,
-{
-    pub(in crate::svc::vast::aggr) fn limit_amount(&mut self, limit: Value) {
-        match self {
-            Self::Simple(inner) => inner.limit_amount(limit),
-            Self::Complex(inner) => inner.limit_amount(limit),
-        }
-    }
-}
 
 impl<T> OutputSimple<T>
 where
@@ -55,14 +43,6 @@ where
             true => self.amount,
             false => T::default(),
         }
-    }
-}
-impl<T> OutputSimple<T>
-where
-    T: Copy + LimitAmount,
-{
-    fn limit_amount(&mut self, limit: Value) {
-        self.amount.limit_amount(limit);
     }
 }
 
@@ -89,13 +69,5 @@ where
             return T::default();
         }
         self.amount * count.floor_unerr()
-    }
-}
-impl<T> OutputComplex<T>
-where
-    T: Copy + LimitAmount,
-{
-    fn limit_amount(&mut self, limit: Value) {
-        self.amount.limit_amount(limit);
     }
 }

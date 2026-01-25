@@ -1,3 +1,4 @@
+use super::traits::GetDuration;
 use crate::{
     num::{Count, PValue, Value},
     svc::{
@@ -21,7 +22,7 @@ where
 
 impl<T> LibConvertExtend<Output<T>, AggrPartData<T>> for CycleDataFull
 where
-    T: Copy,
+    T: Copy + GetDuration,
 {
     fn lib_convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
         AggrPartData {

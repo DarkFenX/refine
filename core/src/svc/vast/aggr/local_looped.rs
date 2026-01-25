@@ -11,7 +11,7 @@ use crate::{
 };
 
 // Local effects, considers only infinite parts of cycles
-pub(in crate::svc) fn aggr_local_looped_ps<T>(
+pub(in crate::svc::vast) fn aggr_local_looped_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -31,7 +31,7 @@ where
     aggr_local_looped_amount(ctx, calc, item_uid, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
 
-pub(in crate::svc) fn aggr_local_looped_amount<T>(
+pub(in crate::svc::vast) fn aggr_local_looped_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,

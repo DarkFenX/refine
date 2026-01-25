@@ -1,4 +1,4 @@
-use super::limit_amount::LimitAmount;
+use super::{get_duration::GetDuration, limit_amount::LimitAmount};
 use crate::{
     misc::DmgKinds,
     num::{PValue, Value},
@@ -8,10 +8,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl GetDuration for DmgKinds<PValue> {
+    fn get_duration(&self) -> PValue {
+        PValue::ZERO
+    }
+}
 impl LimitAmount for DmgKinds<PValue> {
     // No-op, since there is no logic to limit damage depending on target attrs
     fn limit_amount(&mut self, _limit: Value) {}
 }
+// TODO: remove, since it's supposed to be handled in accumulator now
 impl LibMax for DmgKinds<PValue> {
     fn lib_max(self, rhs: Self) -> Self {
         match self.get_total() >= rhs.get_total() {

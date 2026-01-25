@@ -1,7 +1,7 @@
 use super::{
     precalc::{aggr_precalc_by_time, get_full_repeats_count},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
-    traits::LimitAmount,
+    traits::{GetDuration, LimitAmount},
 };
 use crate::{
     num::{Count, PValue, Value},
@@ -16,7 +16,7 @@ use crate::{
 };
 
 // Projected effects, aggregates total output by specified time
-pub(in crate::svc) fn aggr_proj_time_ps<T>(
+pub(in crate::svc::vast) fn aggr_proj_time_ps<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -34,12 +34,13 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
+        + GetDuration
         + LimitAmount,
 {
     aggr_proj_time_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, time).map(|v| v / time)
 }
 
-pub(in crate::svc) fn aggr_proj_time_amount<T>(
+pub(in crate::svc::vast) fn aggr_proj_time_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -56,6 +57,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
@@ -94,6 +96,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -147,6 +150,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -390,6 +394,7 @@ fn process_single_spool<T>(
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     if *time < Value::ZERO {
@@ -431,6 +436,7 @@ fn process_limited_spool<T>(
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     let cycle_tail_duration =
@@ -512,6 +518,7 @@ fn process_infinite_spool<T>(
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
+        + GetDuration
         + LimitAmount,
 {
     if *time < Value::ZERO {

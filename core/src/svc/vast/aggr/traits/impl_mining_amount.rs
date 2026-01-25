@@ -1,4 +1,4 @@
-use super::limit_amount::LimitAmount;
+use super::{get_duration::GetDuration, limit_amount::LimitAmount};
 use crate::{
     misc::MiningAmount,
     num::{PValue, Value},
@@ -7,6 +7,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl GetDuration for MiningAmount {
+    fn get_duration(&self) -> PValue {
+        PValue::ZERO
+    }
+}
 impl LimitAmount for MiningAmount {
     // No-op, since there is no logic to limit mining amount depending on target attrs
     fn limit_amount(&mut self, _limit: Value) {}

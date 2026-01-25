@@ -12,7 +12,7 @@ use crate::{
 };
 
 // Local effects, considers only part of sequence until charges are out
-pub(in crate::svc) fn aggr_local_clip_amount<T>(
+pub(in crate::svc::vast) fn aggr_local_clip_amount<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
