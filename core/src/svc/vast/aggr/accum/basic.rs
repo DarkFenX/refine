@@ -1,23 +1,23 @@
-use super::accum::StatAccum;
+use super::accum::StatAccumSynced;
 use crate::{Count, PValue, util::LibDefault};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Basic accumulator which tracks just output amount
+// Synced
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct BasicAccum<T> {
+pub(in crate::svc::vast) struct BasicAccumSynced<T> {
     total_amount: T,
 }
-impl<T> BasicAccum<T>
+impl<T> BasicAccumSynced<T>
 where
     T: LibDefault,
 {
-    pub(in crate::svc::vast::aggr) fn new() -> Self {
-        BasicAccum {
+    pub(in crate::svc::vast) fn new() -> Self {
+        BasicAccumSynced {
             total_amount: T::lib_default(),
         }
     }
 }
-impl<T> StatAccum<T, T> for BasicAccum<T>
+impl<T> StatAccumSynced<T, T> for BasicAccumSynced<T>
 where
     T: std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
 {
@@ -37,7 +37,3 @@ where
         self.total_amount
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Regular accumulator where
-////////////////////////////////////////////////////////////////////////////////////////////////////

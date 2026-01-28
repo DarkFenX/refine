@@ -1,4 +1,4 @@
-pub(in crate::svc::vast::aggr) use accum::StatAccum;
+pub(in crate::svc::vast) use basic::BasicAccumSynced;
 
 mod accum;
 mod basic;
