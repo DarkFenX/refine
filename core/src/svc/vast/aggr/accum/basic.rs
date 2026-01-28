@@ -1,4 +1,4 @@
-use super::accum::StatAccumSynced;
+use super::traits::StatAccumSynced;
 use crate::{Count, PValue, util::LibDefault};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ where
         }
     }
 }
-impl<T> StatAccumSynced<T, T> for BasicAccumSynced<T>
+impl<T> StatAccumSynced<T> for BasicAccumSynced<T>
 where
     T: std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
 {
@@ -32,8 +32,5 @@ where
             amount *= chance_mult;
         }
         self.total_amount += amount * count.into_pvalue();
-    }
-    fn get_stat(self) -> T {
-        self.total_amount
     }
 }
