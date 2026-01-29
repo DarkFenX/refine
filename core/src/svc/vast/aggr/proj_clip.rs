@@ -1,7 +1,7 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::{AggrAmount, calc_charge_mult},
-    traits::LimitAmount,
+    traits::LimitInstance,
 };
 use crate::{
     misc::InfCount,
@@ -31,7 +31,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, inv_spool),
@@ -58,7 +58,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut uninterrupted_cycles = Count::ZERO;
@@ -134,7 +134,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut total_amount = T::default();

@@ -1,7 +1,7 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::{AggrAmount, calc_charge_mult},
-    traits::LimitAmount,
+    traits::LimitInstance,
 };
 use crate::{
     num::{Count, PValue, Value},
@@ -32,7 +32,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
-        + LimitAmount,
+        + LimitInstance,
 {
     aggr_proj_looped_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid)
         .and_then(|aggr_amount| aggr_amount.get_ps())
@@ -54,7 +54,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + LibMax
-        + LimitAmount,
+        + LimitInstance,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_max_spool(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, inv_spool),
@@ -77,7 +77,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_total_spool(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, inv_spool),
@@ -103,7 +103,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -137,7 +137,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -208,7 +208,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + LibMax
-        + LimitAmount,
+        + LimitInstance,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
@@ -238,7 +238,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + LibMax
-        + LimitAmount,
+        + LimitInstance,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;

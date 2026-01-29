@@ -1,4 +1,4 @@
-use super::{instance_duration::InstanceDuration, limit_amount::LimitAmount};
+use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
 use crate::num::{PValue, Value};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -10,8 +10,8 @@ impl InstanceDuration for PValue {
     }
     fn limit_duration(&mut self, _limit: PValue) {}
 }
-impl LimitAmount for PValue {
-    fn limit_amount(&mut self, limit: Value) {
+impl LimitInstance for PValue {
+    fn limit_instance(&mut self, limit: Value) {
         *self = PValue::min(*self, PValue::from_value_clamped(limit));
     }
 }

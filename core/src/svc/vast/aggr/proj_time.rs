@@ -1,7 +1,7 @@
 use super::{
     precalc::{aggr_precalc_by_time, get_full_repeats_count},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
-    traits::{InstanceDuration, LimitAmount},
+    traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
     num::{Count, PValue, Value},
@@ -35,7 +35,7 @@ where
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     aggr_proj_time_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, time).map(|v| v / time)
 }
@@ -58,7 +58,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_total_spool(
@@ -97,7 +97,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let precalc = match cseq {
@@ -151,7 +151,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     match cseq {
@@ -395,7 +395,7 @@ fn process_single_spool<T>(
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     if *time < Value::ZERO {
         return;
@@ -437,7 +437,7 @@ fn process_limited_spool<T>(
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     let cycle_tail_duration =
         PValue::from_value_clamped(inv_proj.output.get_completion_duration() - cycle_data.duration);
@@ -519,7 +519,7 @@ fn process_infinite_spool<T>(
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     if *time < Value::ZERO {
         return;

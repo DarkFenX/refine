@@ -3,7 +3,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::LimitAmount},
+    svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::LimitInstance},
     ud::UItemId,
 };
 
@@ -141,7 +141,7 @@ pub(in crate::svc::vast) fn get_proj_output<T>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
     let mut output = inv_proj.output;
     // Chargedness
@@ -168,7 +168,7 @@ pub(super) fn get_proj_output_spool<T>(
     spool_extra_mult: Value,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
     let mut output = inv_proj.output;
     // Chargedness

@@ -1,7 +1,7 @@
 use super::{
     local_shared::{AggrLocalInvData, get_local_output},
     shared::{AggrAmount, AggrOutput},
-    traits::LimitAmount,
+    traits::LimitInstance,
 };
 use crate::{
     num::PValue,
@@ -24,7 +24,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
-        + LimitAmount,
+        + LimitInstance,
 {
     aggr_local_first_amount(ctx, calc, item_uid, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
@@ -38,7 +38,7 @@ pub(in crate::svc::vast) fn aggr_local_first_amount<T>(
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<AggrAmount<T>>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
 {
     aggr_local_first_output(ctx, calc, item_uid, effect, cseq, ospec).map(|output_data| AggrAmount {
         amount: output_data.output.get_amount_sum(),
@@ -55,7 +55,7 @@ pub(in crate::svc::vast) fn aggr_local_first_output<T>(
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<AggrOutput<T>>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
     let cycle_data = cseq.get_first_cycle();
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;

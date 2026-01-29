@@ -1,7 +1,7 @@
 use super::{
     local_shared::{AggrLocalInvData, get_local_output},
     precalc::aggr_precalc_by_time,
-    traits::{InstanceDuration, LimitAmount},
+    traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
     num::PValue,
@@ -29,7 +29,7 @@ where
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     aggr_local_time_amount(ctx, calc, item_uid, effect, cseq, ospec, time).map(|v| v / time)
 }
@@ -51,7 +51,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + InstanceDuration
-        + LimitAmount,
+        + LimitInstance,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let precalc = match cseq {

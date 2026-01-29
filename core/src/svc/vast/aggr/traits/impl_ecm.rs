@@ -1,4 +1,4 @@
-use super::{instance_duration::InstanceDuration, limit_amount::LimitAmount};
+use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
 use crate::{
     misc::Ecm,
     num::{PValue, Value},
@@ -15,9 +15,9 @@ impl InstanceDuration for Ecm {
         self.duration = self.duration.min(limit);
     }
 }
-impl LimitAmount for Ecm {
+impl LimitInstance for Ecm {
     // No-op, since there is no logic to limit ECM depending on target attrs
-    fn limit_amount(&mut self, _limit: Value) {}
+    fn limit_instance(&mut self, _limit: Value) {}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

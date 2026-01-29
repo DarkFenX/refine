@@ -1,7 +1,7 @@
 use super::{
     local_shared::{AggrLocalInvData, get_local_output},
     shared::AggrAmount,
-    traits::LimitAmount,
+    traits::LimitInstance,
 };
 use crate::{
     num::PValue,
@@ -26,7 +26,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
-        + LimitAmount,
+        + LimitInstance,
 {
     aggr_local_looped_amount(ctx, calc, item_uid, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
 }
@@ -45,7 +45,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     let cseq = cseq.try_loop_cseq()?;
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;

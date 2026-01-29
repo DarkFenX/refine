@@ -3,8 +3,8 @@ use crate::{
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(crate) trait LimitAmount {
-    fn limit_amount(&mut self, limit: Value);
+pub(crate) trait LimitInstance {
+    fn limit_instance(&mut self, limit: Value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,28 +12,28 @@ pub(crate) trait LimitAmount {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
-    T: Copy + LimitAmount,
+    T: Copy + LimitInstance,
 {
     pub(in crate::svc::vast::aggr) fn limit_amount(&mut self, limit: Value) {
         match self {
-            Self::Simple(inner) => inner.limit_amount(limit),
-            Self::Complex(inner) => inner.limit_amount(limit),
+            Self::Simple(inner) => inner.limit_instance(limit),
+            Self::Complex(inner) => inner.limit_instance(limit),
         }
     }
 }
 impl<T> OutputSimple<T>
 where
-    T: Copy + LimitAmount,
+    T: Copy + LimitInstance,
 {
-    fn limit_amount(&mut self, limit: Value) {
-        self.instance.limit_amount(limit);
+    fn limit_instance(&mut self, limit: Value) {
+        self.instance.limit_instance(limit);
     }
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + LimitAmount,
+    T: Copy + LimitInstance,
 {
-    fn limit_amount(&mut self, limit: Value) {
-        self.instance.limit_amount(limit);
+    fn limit_instance(&mut self, limit: Value) {
+        self.instance.limit_instance(limit);
     }
 }

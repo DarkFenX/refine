@@ -1,7 +1,7 @@
 use super::{
     proj_shared::{AggrProjInvData, get_proj_output, get_proj_output_spool},
     shared::{AggrAmount, AggrOutput, calc_charge_mult},
-    traits::LimitAmount,
+    traits::LimitInstance,
 };
 use crate::{
     misc::Spool,
@@ -27,7 +27,7 @@ where
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
         + std::ops::Div<PValue, Output = T>
-        + LimitAmount,
+        + LimitInstance,
 {
     aggr_proj_first_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool)
         .and_then(|aggr_amount| aggr_amount.get_ps())
@@ -44,7 +44,7 @@ pub(in crate::svc::vast) fn aggr_proj_first_max<T>(
     spool: Option<Spool>,
 ) -> Option<T>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
 {
     aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool)
         .map(|output_data| output_data.output.get_max_instance())
@@ -61,7 +61,7 @@ pub(in crate::svc::vast) fn aggr_proj_first_amount<T>(
     spool: Option<Spool>,
 ) -> Option<AggrAmount<T>>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
 {
     aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool).map(|output_data| {
         AggrAmount {
@@ -82,7 +82,7 @@ pub(in crate::svc::vast) fn aggr_proj_first_output<T>(
     spool: Option<Spool>,
 ) -> Option<AggrOutput<T>>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitAmount,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
     let cycle = cseq.get_first_cycle();
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;

@@ -1,7 +1,7 @@
 use super::{
     local_shared::{AggrLocalInvData, get_local_output},
     shared::AggrAmount,
-    traits::LimitAmount,
+    traits::LimitInstance,
 };
 use crate::{
     misc::InfCount,
@@ -26,7 +26,7 @@ where
         + std::ops::AddAssign<T>
         + std::ops::Mul<PValue, Output = T>
         + std::ops::MulAssign<PValue>
-        + LimitAmount,
+        + LimitInstance,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut total_amount = T::default();
