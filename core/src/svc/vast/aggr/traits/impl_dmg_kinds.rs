@@ -1,4 +1,4 @@
-use super::{get_duration::GetDuration, limit_amount::LimitAmount};
+use super::{instance_duration::InstanceDuration, limit_amount::LimitAmount};
 use crate::{
     misc::DmgKinds,
     num::{PValue, Value},
@@ -8,10 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl GetDuration for DmgKinds<PValue> {
+impl InstanceDuration for DmgKinds<PValue> {
     fn get_duration(&self) -> PValue {
         PValue::ZERO
     }
+    fn limit_duration(&mut self, _limit: PValue) {}
 }
 impl LimitAmount for DmgKinds<PValue> {
     // No-op, since there is no logic to limit damage depending on target attrs

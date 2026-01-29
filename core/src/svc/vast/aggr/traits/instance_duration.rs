@@ -3,8 +3,9 @@ use crate::{
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(crate) trait GetDuration {
+pub(crate) trait InstanceDuration {
     fn get_duration(&self) -> PValue;
+    fn limit_duration(&mut self, duration: PValue);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +13,7 @@ pub(crate) trait GetDuration {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
-    T: Copy + GetDuration,
+    T: Copy + InstanceDuration,
 {
     pub(in crate::svc::vast) fn get_completion_duration(&self) -> PValue {
         match self {
@@ -23,7 +24,7 @@ where
 }
 impl<T> OutputSimple<T>
 where
-    T: Copy + GetDuration,
+    T: Copy + InstanceDuration,
 {
     pub(super) fn get_completion_duration(&self) -> PValue {
         self.delay + self.instance.get_duration()
@@ -31,7 +32,7 @@ where
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + GetDuration,
+    T: Copy + InstanceDuration,
 {
     pub(super) fn get_completion_duration(&self) -> PValue {
         if self.repeats < Count::ONE {

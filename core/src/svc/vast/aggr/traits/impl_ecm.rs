@@ -1,4 +1,4 @@
-use super::{get_duration::GetDuration, limit_amount::LimitAmount};
+use super::{instance_duration::InstanceDuration, limit_amount::LimitAmount};
 use crate::{
     misc::Ecm,
     num::{PValue, Value},
@@ -7,9 +7,12 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl GetDuration for Ecm {
+impl InstanceDuration for Ecm {
     fn get_duration(&self) -> PValue {
         self.duration
+    }
+    fn limit_duration(&mut self, limit: PValue) {
+        self.duration = self.duration.min(limit);
     }
 }
 impl LimitAmount for Ecm {
