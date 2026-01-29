@@ -64,14 +64,14 @@ fn internal_get_neut_base_opc(
     item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<PValue>> {
-    let amount = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
-    let amount = match amount > Value::ZERO {
-        true => PValue::from_value_unchecked(amount),
+    let instance = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
+    let instance = match instance > Value::ZERO {
+        true => PValue::from_value_unchecked(instance),
         // Do not return neut stats for non-neut bombs
         false => return None,
     };
     Some(Output::Simple(OutputSimple {
-        amount,
+        instance,
         delay: PValue::ZERO,
     }))
 }
@@ -115,7 +115,7 @@ fn internal_get_ecm_base_opc(
         return None;
     }
     Some(Output::Simple(OutputSimple {
-        amount: Ecm {
+        instance: Ecm {
             radar: str_radar,
             magnetometric: str_magnet,
             gravimetric: str_grav,

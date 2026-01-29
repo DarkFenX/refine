@@ -83,7 +83,7 @@ fn fill_consumers(
                 None => continue,
             };
             let opc = Output::Simple(OutputSimple {
-                amount: -cap_consumed,
+                instance: -cap_consumed,
                 delay: PValue::ZERO,
             });
             match stagger.is_staggered(item_uid) {
@@ -247,10 +247,10 @@ fn fill_injectors(
             };
             let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, None);
             let immediate_amount = opc
-                .iter_amounts()
+                .iter_instances()
                 .next()
                 .and_then(|v| match v.time_passed == PValue::ZERO {
-                    true => Some(v.amount),
+                    true => Some(v.instance),
                     false => None,
                 });
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {

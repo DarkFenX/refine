@@ -44,7 +44,7 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
     _effect: &REffect,
 ) -> Option<Output<PValue>> {
     let attr_consts = ctx.ac();
-    let amount = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(
+    let instance = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(
         ctx,
         item_uid,
         attr_consts.energy_neut_amount,
@@ -54,7 +54,7 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.doomsday_warning_duration, Value::ZERO)?
             / Value::THOUSAND,
     );
-    Some(Output::Simple(OutputSimple { amount, delay }))
+    Some(Output::Simple(OutputSimple { instance, delay }))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

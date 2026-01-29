@@ -11,10 +11,10 @@ pub(crate) enum Output<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> Output<T> {
-    pub(in crate::svc) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+    pub(in crate::svc) fn iter_instances(&self) -> impl Iterator<Item = OutputIterItem<T>> {
         match self {
-            Self::Simple(inner) => OutputIter::Simple(inner.iter_amounts()),
-            Self::Complex(inner) => OutputIter::Complex(inner.iter_amounts()),
+            Self::Simple(inner) => OutputIter::Simple(inner.iter_instances()),
+            Self::Complex(inner) => OutputIter::Complex(inner.iter_instances()),
         }
     }
 }
@@ -43,16 +43,16 @@ where
 // General operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> Output<T> {
-    pub(in crate::svc) fn get_amount(&self) -> T {
+    pub(in crate::svc) fn get_instance(&self) -> T {
         match self {
-            Output::Simple(inner) => inner.get_amount(),
-            Output::Complex(inner) => inner.get_amount(),
+            Output::Simple(inner) => inner.get_instance(),
+            Output::Complex(inner) => inner.get_instance(),
         }
     }
-    pub(in crate::svc) fn get_max_amount(&self) -> T {
+    pub(in crate::svc) fn get_max_instance(&self) -> T {
         match self {
-            Output::Simple(inner) => inner.get_max_amount(),
-            Output::Complex(inner) => inner.get_max_amount(),
+            Output::Simple(inner) => inner.get_max_instance(),
+            Output::Complex(inner) => inner.get_max_instance(),
         }
     }
 }
@@ -63,10 +63,10 @@ impl Output<Value> {
             Output::Complex(inner) => inner.get_absolute_impact(),
         }
     }
-    pub(in crate::svc) fn add_amount(&mut self, amount: Value) {
+    pub(in crate::svc) fn add_instance(&mut self, instance: Value) {
         match self {
-            Output::Simple(inner) => inner.add_amount(amount),
-            Output::Complex(inner) => inner.add_amount(amount),
+            Output::Simple(inner) => inner.add_instance(instance),
+            Output::Complex(inner) => inner.add_instance(instance),
         }
     }
 }

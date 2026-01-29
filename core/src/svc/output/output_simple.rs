@@ -3,7 +3,7 @@ use crate::num::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputSimple<T: Copy> {
-    pub(crate) amount: T,
+    pub(crate) instance: T,
     pub(crate) delay: PValue,
 }
 
@@ -11,21 +11,21 @@ pub(crate) struct OutputSimple<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputSimple<T> {
-    pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
-        OutputSimpleAmountIter::new(self)
+    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+        OutputSimpleInstanceIter::new(self)
     }
 }
 
-struct OutputSimpleAmountIter<'a, T: Copy> {
+struct OutputSimpleInstanceIter<'a, T: Copy> {
     output: &'a OutputSimple<T>,
     done: bool,
 }
-impl<'a, T: Copy> OutputSimpleAmountIter<'a, T> {
+impl<'a, T: Copy> OutputSimpleInstanceIter<'a, T> {
     fn new(output: &'a OutputSimple<T>) -> Self {
         Self { output, done: false }
     }
 }
-impl<T: Copy> Iterator for OutputSimpleAmountIter<'_, T> {
+impl<T: Copy> Iterator for OutputSimpleInstanceIter<'_, T> {
     type Item = OutputIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -35,7 +35,7 @@ impl<T: Copy> Iterator for OutputSimpleAmountIter<'_, T> {
                 self.done = true;
                 Some(OutputIterItem {
                     time_passed: self.output.delay,
-                    amount: self.output.amount,
+                    instance: self.output.instance,
                 })
             }
         }
@@ -46,24 +46,24 @@ impl<T: Copy> Iterator for OutputSimpleAmountIter<'_, T> {
 // General operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputSimple<T> {
-    pub(super) fn get_amount(&self) -> T {
-        self.amount
+    pub(super) fn get_instance(&self) -> T {
+        self.instance
     }
-    pub(super) fn get_max_amount(&self) -> T {
-        self.amount
+    pub(super) fn get_max_instance(&self) -> T {
+        self.instance
     }
 }
 impl OutputSimple<Value> {
     pub(super) fn get_absolute_impact(&self) -> PValue {
-        self.amount.abs()
+        self.instance.abs()
     }
-    pub(super) fn add_amount(&mut self, amount: Value) {
-        self.amount += amount;
+    pub(super) fn add_instance(&mut self, instance: Value) {
+        self.instance += instance;
     }
 }
 impl OutputSimple<PValue> {
     pub(super) fn has_impact(&self) -> bool {
-        self.amount > PValue::FLOAT_TOLERANCE
+        self.instance > PValue::FLOAT_TOLERANCE
     }
 }
 impl<T> std::ops::Mul<PValue> for OutputSimple<T>
@@ -74,7 +74,7 @@ where
 
     fn mul(self, rhs: PValue) -> Self::Output {
         Self {
-            amount: self.amount * rhs,
+            instance: self.instance * rhs,
             delay: self.delay,
         }
     }
@@ -84,7 +84,7 @@ where
     T: Copy + std::ops::MulAssign<PValue>,
 {
     fn mul_assign(&mut self, rhs: PValue) {
-        self.amount.mul_assign(rhs);
+        self.instance.mul_assign(rhs);
     }
 }
 
@@ -94,7 +94,7 @@ where
 impl OutputSimple<PValue> {
     pub(super) fn into_value(self) -> OutputSimple<Value> {
         OutputSimple {
-            amount: self.amount.into_value(),
+            instance: self.instance.into_value(),
             delay: self.delay,
         }
     }
@@ -108,7 +108,7 @@ where
 
     fn neg(self) -> Self::Output {
         OutputSimple {
-            amount: -self.amount,
+            instance: -self.instance,
             delay: self.delay,
         }
     }

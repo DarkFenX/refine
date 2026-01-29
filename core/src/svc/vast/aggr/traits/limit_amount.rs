@@ -26,7 +26,7 @@ where
     T: Copy + LimitAmount,
 {
     fn limit_amount(&mut self, limit: Value) {
-        self.amount.limit_amount(limit);
+        self.instance.limit_amount(limit);
     }
 }
 impl<T> OutputComplex<T>
@@ -34,6 +34,6 @@ where
     T: Copy + LimitAmount,
 {
     fn limit_amount(&mut self, limit: Value) {
-        self.amount.limit_amount(limit);
+        self.instance.limit_amount(limit);
     }
 }

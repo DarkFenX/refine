@@ -216,7 +216,7 @@ where
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         // Update result
-        max_amount = max_amount.lib_max(cycle_output.get_max_amount());
+        max_amount = max_amount.lib_max(cycle_output.get_max_instance());
     }
     Some(max_amount)
 }
@@ -264,14 +264,14 @@ where
             };
             if let Some(stable_spool) = stable_spool {
                 let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
-                max_amount = max_amount.lib_max(cycle_output.get_max_amount());
+                max_amount = max_amount.lib_max(cycle_output.get_max_instance());
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
             let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
             // Update result
-            max_amount = max_amount.lib_max(cycle_output.get_max_amount());
+            max_amount = max_amount.lib_max(cycle_output.get_max_instance());
             // Update state
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = Count::ZERO,

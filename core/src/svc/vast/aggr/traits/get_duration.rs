@@ -26,7 +26,7 @@ where
     T: Copy + GetDuration,
 {
     pub(super) fn get_completion_duration(&self) -> PValue {
-        self.delay + self.amount.get_duration()
+        self.delay + self.instance.get_duration()
     }
 }
 impl<T> OutputComplex<T>
@@ -37,6 +37,6 @@ where
         if self.repeats < Count::ONE {
             return PValue::ZERO;
         };
-        self.delay + self.interval * (self.repeats - Count::ONE).into_pvalue() + self.amount.get_duration()
+        self.delay + self.interval * (self.repeats - Count::ONE).into_pvalue() + self.instance.get_duration()
     }
 }

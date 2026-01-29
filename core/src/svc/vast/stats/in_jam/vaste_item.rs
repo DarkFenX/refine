@@ -57,7 +57,7 @@ impl Vast {
                     Some(projector_ecm) => projector_ecm,
                     None => continue,
                 };
-                let projector_ecm = projector_ecm_output.output.get_amount();
+                let projector_ecm = projector_ecm_output.output.get_instance();
                 let projector_ecm_str = match sensors.kind {
                     StatSensorsKind::Radar => projector_ecm.radar,
                     StatSensorsKind::Magnetometric => projector_ecm.magnetometric,

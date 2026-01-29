@@ -15,7 +15,7 @@ where
     T: Copy,
 {
     pub(super) output: Output<T>,
-    amount_limit: Option<Value>,
+    instance_limit: Option<Value>,
     mult_post: Option<PValue>,
 }
 impl<T> AggrProjInvData<T>
@@ -31,7 +31,7 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self> {
         let mut output = (ospec.base)(ctx, calc, projector_uid, effect)?;
-        let mut amount_limit = None;
+        let mut instance_limit = None;
         let mut mult_post = None;
         if let Some(projectee_uid) = projectee_uid {
             let proj_data = ctx.eff_projs.get_or_make_proj_data(
@@ -68,7 +68,7 @@ where
                 output *= mult_pre;
             }
             // Amount limit
-            amount_limit = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid);
+            instance_limit = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid);
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
                 let mult = proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
@@ -77,7 +77,7 @@ where
         }
         Some(Self {
             output,
-            amount_limit,
+            instance_limit,
             mult_post,
         })
     }
@@ -152,7 +152,7 @@ where
         output *= charge_mult;
     }
     // Limit
-    if let Some(limit) = inv_proj.amount_limit {
+    if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
     }
     // Chance-based multipliers
@@ -178,7 +178,7 @@ where
     // Spool
     output *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
     // Limit
-    if let Some(limit) = inv_proj.amount_limit {
+    if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
     }
     // Chance-based multipliers

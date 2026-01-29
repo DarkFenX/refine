@@ -85,7 +85,7 @@ fn internal_get_dmg_base_opc(
         Value::ZERO,
     )?);
     Some(Output::Simple(OutputSimple {
-        amount: DmgKinds {
+        instance: DmgKinds {
             em: dmg_em * dmg_mult,
             thermal: dmg_therm * dmg_mult,
             kinetic: dmg_kin * dmg_mult,

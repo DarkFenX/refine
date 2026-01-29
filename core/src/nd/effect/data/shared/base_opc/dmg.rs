@@ -18,7 +18,7 @@ pub(in crate::nd::effect::data) fn get_instant_dmg_base_opc(
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
-        amount: DmgKinds {
+        instance: DmgKinds {
             em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
                 ctx,
                 item_uid,
@@ -66,7 +66,7 @@ pub(in crate::nd::effect::data) fn get_instant_charge_mult_dmg_base_opc(
     let dmg_expl =
         PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, charge_uid, ctx.ac().expl_dmg, Value::ZERO)?);
     Some(Output::Simple(OutputSimple {
-        amount: DmgKinds {
+        instance: DmgKinds {
             em: dmg_em * dmg_mult,
             thermal: dmg_therm * dmg_mult,
             kinetic: dmg_kin * dmg_mult,
@@ -93,7 +93,7 @@ fn get_direct_dd_dmg_base_opc(
     _effect: &REffect,
 ) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
-        amount: DmgKinds {
+        instance: DmgKinds {
             em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
                 ctx,
                 item_uid,
@@ -158,7 +158,7 @@ fn get_aoe_dd_dmg_base_opc(
         let repeats = Count::from_value_trunced(duration_ms / interval_ms);
         if repeats > Count::ONE {
             return Some(Output::Complex(OutputComplex {
-                amount: DmgKinds {
+                instance: DmgKinds {
                     em: dmg_em,
                     thermal: dmg_therm,
                     kinetic: dmg_kin,
@@ -171,7 +171,7 @@ fn get_aoe_dd_dmg_base_opc(
         }
     }
     Some(Output::Simple(OutputSimple {
-        amount: DmgKinds {
+        instance: DmgKinds {
             em: dmg_em,
             thermal: dmg_therm,
             kinetic: dmg_kin,

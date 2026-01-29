@@ -14,7 +14,7 @@ where
     T: Copy,
 {
     output: Output<T>,
-    amount_limit: Option<Value>,
+    instance_limit: Option<Value>,
 }
 impl<T> AggrLocalInvData<T>
 where
@@ -29,7 +29,7 @@ where
     ) -> Option<Self> {
         Some(AggrLocalInvData {
             output: (ospec.base)(ctx, calc, item_uid, effect)?,
-            amount_limit: get_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
+            instance_limit: get_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
         })
     }
 }
@@ -64,7 +64,7 @@ where
         output *= charge_mult;
     }
     // Limit
-    if let Some(limit) = inv_local.amount_limit {
+    if let Some(limit) = inv_local.instance_limit {
         output.limit_amount(limit);
     }
     output

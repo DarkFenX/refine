@@ -21,7 +21,7 @@ pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, effect.duration_attr_rid, Value::ZERO)? / Value::THOUSAND,
     );
     Some(Output::Simple(OutputSimple {
-        amount: Ecm {
+        instance: Ecm {
             radar,
             magnetometric,
             gravimetric,
@@ -40,7 +40,7 @@ pub(in crate::nd::effect::data) fn get_ecm_burst_base_opc(
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
     Some(Output::Simple(OutputSimple {
-        amount: Ecm {
+        instance: Ecm {
             radar,
             magnetometric,
             gravimetric,
@@ -66,7 +66,7 @@ pub(in crate::nd::effect::data) fn get_aoe_ecm_base_opc(
             / Value::THOUSAND,
     );
     Some(Output::Simple(OutputSimple {
-        amount: Ecm {
+        instance: Ecm {
             radar,
             magnetometric,
             gravimetric,
@@ -88,7 +88,7 @@ pub(in crate::nd::effect::data) fn get_ecm_drone_base_opc(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().ecm_jam_duration, Value::ZERO)? / Value::THOUSAND,
     );
     Some(Output::Simple(OutputSimple {
-        amount: Ecm {
+        instance: Ecm {
             radar,
             magnetometric,
             gravimetric,

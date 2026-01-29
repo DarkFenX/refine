@@ -40,9 +40,9 @@ impl Aggregator {
         // TODO: check if get_amount() is the right method to use here
         events.extend(
             aggr_group
-                .extract_if(.., |v| filter_fn(v.opc.get_amount(), Value::ZERO))
+                .extract_if(.., |v| filter_fn(v.opc.get_instance(), Value::ZERO))
                 .reduce(|mut l, r| {
-                    l.opc.add_amount(r.opc.get_amount());
+                    l.opc.add_instance(r.opc.get_instance());
                     l
                 })
                 .map(AggrEventInfo::into_cap_sim_event),

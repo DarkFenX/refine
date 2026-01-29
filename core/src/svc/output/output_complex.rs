@@ -3,9 +3,9 @@ use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputComplex<T: Copy> {
-    pub(crate) amount: T,
+    pub(crate) instance: T,
     pub(crate) delay: PValue,
-    // Total count of times amount is output
+    // Total count of instances
     pub(crate) repeats: Count,
     pub(crate) interval: PValue,
 }
@@ -14,16 +14,16 @@ pub(crate) struct OutputComplex<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputComplex<T> {
-    pub(super) fn iter_amounts(&self) -> impl Iterator<Item = OutputIterItem<T>> {
-        OutputComplexAmountIter::new(self)
+    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+        OutputComplexInstanceIter::new(self)
     }
 }
 
-struct OutputComplexAmountIter<'a, T: Copy> {
+struct OutputComplexInstanceIter<'a, T: Copy> {
     output: &'a OutputComplex<T>,
     cycles_done: Count,
 }
-impl<'a, T: Copy> OutputComplexAmountIter<'a, T> {
+impl<'a, T: Copy> OutputComplexInstanceIter<'a, T> {
     fn new(output: &'a OutputComplex<T>) -> Self {
         Self {
             output,
@@ -31,7 +31,7 @@ impl<'a, T: Copy> OutputComplexAmountIter<'a, T> {
         }
     }
 }
-impl<T: Copy> Iterator for OutputComplexAmountIter<'_, T> {
+impl<T: Copy> Iterator for OutputComplexInstanceIter<'_, T> {
     type Item = OutputIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -41,7 +41,7 @@ impl<T: Copy> Iterator for OutputComplexAmountIter<'_, T> {
         self.cycles_done += Count::ONE;
         Some(OutputIterItem {
             time_passed: self.output.interval,
-            amount: self.output.amount,
+            instance: self.output.instance,
         })
     }
 }
@@ -50,24 +50,24 @@ impl<T: Copy> Iterator for OutputComplexAmountIter<'_, T> {
 // General operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputComplex<T> {
-    pub(super) fn get_amount(&self) -> T {
-        self.amount
+    pub(super) fn get_instance(&self) -> T {
+        self.instance
     }
-    pub(super) fn get_max_amount(&self) -> T {
-        self.amount
+    pub(super) fn get_max_instance(&self) -> T {
+        self.instance
     }
 }
 impl OutputComplex<Value> {
     pub(super) fn get_absolute_impact(&self) -> PValue {
-        self.amount.abs() * PValue::from_f64_unchecked(self.repeats.into_u32() as f64)
+        self.instance.abs() * PValue::from_f64_unchecked(self.repeats.into_u32() as f64)
     }
-    pub(super) fn add_amount(&mut self, amount: Value) {
-        self.amount += amount;
+    pub(super) fn add_instance(&mut self, instance: Value) {
+        self.instance += instance;
     }
 }
 impl OutputComplex<PValue> {
     pub(super) fn has_impact(&self) -> bool {
-        self.amount > PValue::FLOAT_TOLERANCE
+        self.instance > PValue::FLOAT_TOLERANCE
     }
 }
 impl<T> std::ops::Mul<PValue> for OutputComplex<T>
@@ -78,7 +78,7 @@ where
 
     fn mul(self, rhs: PValue) -> Self::Output {
         Self {
-            amount: self.amount * rhs,
+            instance: self.instance * rhs,
             delay: self.delay,
             repeats: self.repeats,
             interval: self.interval,
@@ -90,7 +90,7 @@ where
     T: Copy + std::ops::MulAssign<PValue>,
 {
     fn mul_assign(&mut self, rhs: PValue) {
-        self.amount.mul_assign(rhs);
+        self.instance.mul_assign(rhs);
     }
 }
 
@@ -100,7 +100,7 @@ where
 impl OutputComplex<PValue> {
     pub(super) fn into_value(self) -> OutputComplex<Value> {
         OutputComplex {
-            amount: self.amount.into_value(),
+            instance: self.instance.into_value(),
             delay: self.delay,
             repeats: self.repeats,
             interval: self.interval,
@@ -116,7 +116,7 @@ where
 
     fn neg(self) -> Self::Output {
         OutputComplex {
-            amount: -self.amount,
+            instance: -self.instance,
             delay: self.delay,
             repeats: self.repeats,
             interval: self.interval,

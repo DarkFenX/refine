@@ -31,7 +31,7 @@ where
     T: Copy,
 {
     fn get_amount_sum(&self) -> T {
-        self.amount
+        self.instance
     }
 }
 impl<T> OutputSimple<T>
@@ -40,7 +40,7 @@ where
 {
     fn get_amount_sum_by_time(&self, time: PValue) -> T {
         match self.delay <= time {
-            true => self.amount,
+            true => self.instance,
             false => T::default(),
         }
     }
@@ -51,7 +51,7 @@ where
     T: Copy + std::ops::Mul<PValue, Output = T>,
 {
     fn get_amount_sum(&self) -> T {
-        self.amount * self.repeats.into_pvalue()
+        self.instance * self.repeats.into_pvalue()
     }
 }
 impl<T> OutputComplex<T>
@@ -68,6 +68,6 @@ where
         if !count.is_finite() {
             return T::default();
         }
-        self.amount * count.floor_unerr()
+        self.instance * count.floor_unerr()
     }
 }

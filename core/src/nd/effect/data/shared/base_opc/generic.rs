@@ -18,10 +18,10 @@ pub(super) fn get_generic_base_opc(
     attr_rid: Option<RAttrId>,
     applied_at_start: bool,
 ) -> Option<Output<PValue>> {
-    let amount = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_rid, Value::ZERO)?);
+    let instance = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(ctx, item_uid, attr_rid, Value::ZERO)?);
     let delay = match applied_at_start {
         true => PValue::ZERO,
         false => funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?,
     };
-    Some(Output::Simple(OutputSimple { amount, delay }))
+    Some(Output::Simple(OutputSimple { instance, delay }))
 }

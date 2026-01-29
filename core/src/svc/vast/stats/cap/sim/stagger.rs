@@ -59,7 +59,7 @@ impl StaggerKey {
         // order of float operations) end up having the same key
         Self {
             cseq: cseq.copy_rounded(),
-            delay: match opc.iter_amounts().next() {
+            delay: match opc.iter_instances().next() {
                 Some(output_event) => output_event.time_passed.sig_rounded(SIG_ROUND_DIGITS),
                 None => PValue::ZERO,
             },
