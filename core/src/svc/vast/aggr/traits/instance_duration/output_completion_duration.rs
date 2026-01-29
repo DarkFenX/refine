@@ -1,16 +1,9 @@
+use super::instance_duration::InstanceDuration;
 use crate::{
     num::{Count, PValue},
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(crate) trait InstanceDuration {
-    fn get_duration(&self) -> PValue;
-    fn limit_duration(&mut self, duration: PValue);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Output impls
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
     T: Copy + InstanceDuration,
