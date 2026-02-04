@@ -1,5 +1,8 @@
 use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
-use crate::num::{PValue, Value};
+use crate::{
+    num::{PValue, Value},
+    util::LibDefault,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
@@ -13,5 +16,10 @@ impl InstanceDuration for PValue {
 impl LimitInstance for PValue {
     fn limit_instance(&mut self, limit: Value) {
         *self = PValue::min(*self, PValue::from_value_clamped(limit));
+    }
+}
+impl LibDefault for PValue {
+    fn lib_default() -> Self {
+        PValue::ZERO
     }
 }

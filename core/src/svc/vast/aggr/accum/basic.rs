@@ -1,36 +1,36 @@
-use super::traits::StatAccumSynced;
-use crate::{Count, PValue, util::LibDefault};
+use super::traits::SeqAccum;
+use crate::{
+    num::{Count, PValue},
+    util::LibDefault,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Synced
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct BasicAccumSynced<T> {
-    total_amount: T,
+pub(in crate::svc::vast) struct BasicSeqAccum<T> {
+    pub(in crate::svc::vast) amount: T,
 }
-impl<T> BasicAccumSynced<T>
+impl<T> Default for BasicSeqAccum<T>
 where
     T: LibDefault,
 {
-    pub(in crate::svc::vast) fn new() -> Self {
-        BasicAccumSynced {
-            total_amount: T::lib_default(),
+    fn default() -> Self {
+        BasicSeqAccum {
+            amount: T::lib_default(),
         }
     }
 }
-impl<T> StatAccumSynced<T> for BasicAccumSynced<T>
+impl<T> SeqAccum<T> for BasicSeqAccum<T>
 where
-    T: std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
+    T: Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
 {
-    fn add_amount(&mut self, mut amount: T, chance_mult: Option<PValue>) {
+    fn add_instance(&mut self, mut instance: T, chance_mult: Option<PValue>, count: Count) {
         if let Some(chance_mult) = chance_mult {
-            amount *= chance_mult;
+            instance *= chance_mult;
         }
-        self.total_amount += amount;
+        self.amount += instance * count.into_pvalue();
     }
-    fn add_amount_multiple(&mut self, mut amount: T, chance_mult: Option<PValue>, count: Count) {
-        if let Some(chance_mult) = chance_mult {
-            amount *= chance_mult;
-        }
-        self.total_amount += amount * count.into_pvalue();
+    fn merge(&mut self, other: &Self, count: Count) {
+        self.amount += other.amount * count.into_pvalue();
     }
 }

@@ -1,4 +1,4 @@
-use std::hash::{BuildHasher, Hash};
+use std::hash::Hash;
 
 use crate::{misc::AttrSpec, svc::calc::CtxModifier, util::RMapRSet};
 

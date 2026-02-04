@@ -1,5 +1,5 @@
-pub(in crate::svc::vast) use basic::BasicAccumSynced;
-pub(in crate::svc::vast::aggr) use traits::{StatAccumLooped, StatAccumSynced, StatAccumUnsynced};
+pub(in crate::svc::vast) use basic::BasicSeqAccum;
+pub(in crate::svc::vast) use traits::SeqAccum;
 
 mod basic;
 mod traits;

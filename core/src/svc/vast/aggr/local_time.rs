@@ -1,4 +1,5 @@
 use super::{
+    accum::SeqAccum,
     local_shared::{AggrLocalInvData, get_local_output},
     precalc::aggr_precalc_by_time,
     traits::{InstanceDuration, LimitInstance},
@@ -11,49 +12,23 @@ use crate::{
 };
 
 // Local effects, aggregates total output by specified time
-pub(in crate::svc::vast) fn aggr_local_time_ps<T>(
+pub(in crate::svc::vast) fn aggr_local_time<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
+    accum: &mut A,
     time: PValue,
-) -> Option<T>
-where
-    T: Default
-        + Copy
-        + Eq
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + std::ops::Div<PValue, Output = T>
-        + InstanceDuration
-        + LimitInstance,
+) where
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    A: SeqAccum<T> + Default,
 {
-    aggr_local_time_amount(ctx, calc, item_uid, effect, cseq, ospec, time).map(|v| v / time)
-}
-
-pub(in crate::svc::vast) fn aggr_local_time_amount<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectLocalOpcSpec<T>,
-    time: PValue,
-) -> Option<T>
-where
-    T: Default
-        + Copy
-        + Eq
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + InstanceDuration
-        + LimitInstance,
-{
-    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
+    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
+        Some(inv_local) => inv_local,
+        None => return,
+    };
     let precalc = match cseq {
         CycleSeq::Lim(inner) => {
             let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.data.chargedness);
@@ -80,5 +55,5 @@ where
             inner.convert_extend(p1_opc, p2_opc)
         }
     };
-    Some(aggr_precalc_by_time(precalc, time))
+    aggr_precalc_by_time(precalc, None, accum, time);
 }

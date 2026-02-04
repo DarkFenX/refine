@@ -1,5 +1,5 @@
 use super::shared::OutputIterItem;
-use crate::num::{PValue, Value};
+use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputSimple<T: Copy> {
@@ -48,6 +48,9 @@ impl<T: Copy> Iterator for OutputSimpleInstanceIter<'_, T> {
 impl<T: Copy> OutputSimple<T> {
     pub(super) fn get_instance(&self) -> T {
         self.instance
+    }
+    pub(super) fn get_instance_count(&self) -> Count {
+        Count::ONE
     }
     pub(super) fn get_max_instance(&self) -> T {
         self.instance

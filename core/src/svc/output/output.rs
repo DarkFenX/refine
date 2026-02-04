@@ -1,5 +1,5 @@
 use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::OutputIterItem};
-use crate::num::{PValue, Value};
+use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) enum Output<T: Copy> {
@@ -47,6 +47,12 @@ impl<T: Copy> Output<T> {
         match self {
             Output::Simple(inner) => inner.get_instance(),
             Output::Complex(inner) => inner.get_instance(),
+        }
+    }
+    pub(in crate::svc) fn get_instance_count(&self) -> Count {
+        match self {
+            Output::Simple(inner) => inner.get_instance_count(),
+            Output::Complex(inner) => inner.get_instance_count(),
         }
     }
     pub(in crate::svc) fn get_max_instance(&self) -> T {

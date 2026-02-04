@@ -7,7 +7,7 @@ use crate::{
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{
             StatNeutItemKinds, StatTimeOptions, Vast,
-            aggr::{aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time_ps},
+            aggr::{BasicSeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
         },
     },
     ud::{UFitId, UItemId},
@@ -93,11 +93,19 @@ fn get_nps(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_nps) =
-                            aggr_proj_time_ps(ctx, calc, item_uid, effect, cseq, ospec, projectee_item_uid, time)
-                        {
-                            nps += effect_nps;
-                        }
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_proj_time(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            projectee_item_uid,
+                            &mut accum,
+                            time,
+                        );
+                        nps += accum.amount / time;
                     }
                     _ => {
                         if let Some(effect_nps) =

@@ -53,6 +53,9 @@ impl<T: Copy> OutputComplex<T> {
     pub(super) fn get_instance(&self) -> T {
         self.instance
     }
+    pub(super) fn get_instance_count(&self) -> Count {
+        self.repeats
+    }
     pub(super) fn get_max_instance(&self) -> T {
         self.instance
     }

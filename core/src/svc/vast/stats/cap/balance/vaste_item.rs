@@ -9,8 +9,8 @@ use crate::{
         vast::{
             StatTimeOptions, Vast, VastFitData,
             aggr::{
-                aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time_ps, aggr_proj_first_ps, aggr_proj_looped_ps,
-                aggr_proj_time_ps,
+                BasicSeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_ps,
+                aggr_proj_looped_ps, aggr_proj_time,
             },
             stats::{item_checks::check_ship, shared::calc_regen},
         },
@@ -80,9 +80,9 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_cps) = aggr_local_time_ps(ctx, calc, item_uid, effect, cseq, ospec, time) {
-                            cps += effect_cps;
-                        }
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time);
+                        cps += accum.amount / time;
                     }
                     _ => {
                         if let Some(effect_cps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
@@ -146,11 +146,9 @@ fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_da
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_cps) =
-                            aggr_proj_time_ps(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, time)
-                        {
-                            cps += effect_cps;
-                        }
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_proj_time(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum, time);
+                        cps += accum.amount / time;
                     }
                     _ => {
                         if let Some(effect_cps) =
@@ -207,7 +205,8 @@ fn get_incoming_cap_transfers(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_cps) = aggr_proj_time_ps(
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_proj_time(
                             ctx,
                             calc,
                             transfer_item_uid,
@@ -215,10 +214,10 @@ fn get_incoming_cap_transfers(
                             cseq,
                             ospec,
                             Some(cap_item_uid),
+                            &mut accum,
                             time,
-                        ) {
-                            cps += effect_cps;
-                        }
+                        );
+                        cps += accum.amount / time;
                     }
                     _ => {
                         if let Some(effect_cps) =
@@ -275,11 +274,19 @@ fn get_incoming_neuts(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_nps) =
-                            aggr_proj_time_ps(ctx, calc, neut_item_uid, effect, cseq, ospec, Some(cap_item_uid), time)
-                        {
-                            nps += effect_nps;
-                        }
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_proj_time(
+                            ctx,
+                            calc,
+                            neut_item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            Some(cap_item_uid),
+                            &mut accum,
+                            time,
+                        );
+                        nps += accum.amount / time;
                     }
                     _ => {
                         if let Some(effect_nps) =

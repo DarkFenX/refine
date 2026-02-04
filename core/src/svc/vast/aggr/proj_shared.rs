@@ -16,7 +16,7 @@ where
 {
     pub(super) output: Output<T>,
     instance_limit: Option<Value>,
-    mult_post: Option<PValue>,
+    pub(super) chance_mult: Option<PValue>,
 }
 impl<T> AggrProjInvData<T>
 where
@@ -32,7 +32,7 @@ where
     ) -> Option<Self> {
         let mut output = (ospec.base)(ctx, calc, projector_uid, effect)?;
         let mut instance_limit = None;
-        let mut mult_post = None;
+        let mut chance_mult = None;
         if let Some(projectee_uid) = projectee_uid {
             let proj_data = ctx.eff_projs.get_or_make_proj_data(
                 ctx.u_data,
@@ -72,13 +72,13 @@ where
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
                 let mult = proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
-                mult_post = process_mult(mult);
+                chance_mult = process_mult(mult);
             }
         }
         Some(Self {
             output,
             instance_limit,
-            mult_post,
+            chance_mult,
         })
     }
 }
@@ -155,10 +155,6 @@ where
     if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
     }
-    // Chance-based multipliers
-    if let Some(mult_post) = inv_proj.mult_post {
-        output *= mult_post;
-    }
     output
 }
 
@@ -180,10 +176,6 @@ where
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
-    }
-    // Chance-based multipliers
-    if let Some(mult_post) = inv_proj.mult_post {
-        output *= mult_post;
     }
     output
 }

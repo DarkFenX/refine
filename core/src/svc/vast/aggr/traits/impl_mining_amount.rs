@@ -2,6 +2,7 @@ use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
 use crate::{
     misc::MiningAmount,
     num::{PValue, Value},
+    util::LibDefault,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +17,14 @@ impl InstanceDuration for MiningAmount {
 impl LimitInstance for MiningAmount {
     // No-op, since there is no logic to limit mining amount depending on target attrs
     fn limit_instance(&mut self, _limit: Value) {}
+}
+impl LibDefault for MiningAmount {
+    fn lib_default() -> Self {
+        Self {
+            yield_: PValue::ZERO,
+            drain: PValue::ZERO,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

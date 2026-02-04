@@ -10,8 +10,8 @@ use crate::{
         vast::{
             StatTimeOptions, Vast,
             aggr::{
-                aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time_ps, aggr_proj_first_amount,
-                aggr_proj_looped_ps, aggr_proj_time_ps,
+                BasicSeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_amount,
+                aggr_proj_looped_ps, aggr_proj_time,
             },
             stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
         },
@@ -106,9 +106,9 @@ fn get_local_rps(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_rps) = aggr_local_time_ps(ctx, calc, item_uid, effect, cseq, ospec, time) {
-                            total_rps += effect_rps;
-                        }
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time);
+                        total_rps += accum.amount / time;
                     }
                     _ => {
                         if let Some(effect_rps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
@@ -171,7 +171,8 @@ fn get_irr_data(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        if let Some(effect_rps) = aggr_proj_time_ps(
+                        let mut accum = BasicSeqAccum::default();
+                        aggr_proj_time(
                             ctx,
                             calc,
                             projector_item_uid,
@@ -179,17 +180,17 @@ fn get_irr_data(
                             cseq,
                             ospec,
                             Some(projectee_item_uid),
+                            &mut accum,
                             time,
-                        ) {
-                            // Adjust averaged reps per second to initial cycle duration to for
-                            // purposes of RR stacking penalty calculation. This does not provide
-                            // accurate result, but is likely to be a good enough approximation.
-                            let first_cycle_duration = cseq.get_first_cycle().duration;
-                            result.push(IrrEntry {
-                                amount: effect_rps * first_cycle_duration,
-                                cycle_duration: first_cycle_duration,
-                            });
-                        }
+                        );
+                        // Adjust averaged reps per second to initial cycle duration to for purposes
+                        // of RR stacking penalty calculation. This does not provide accurate
+                        // result, but is likely to be a good enough approximation.
+                        let first_cycle_duration = cseq.get_first_cycle().duration;
+                        result.push(IrrEntry {
+                            amount: accum.amount / time * first_cycle_duration,
+                            cycle_duration: first_cycle_duration,
+                        });
                     }
                     _ => {
                         if let Some(effect_rps) = aggr_proj_looped_ps(
