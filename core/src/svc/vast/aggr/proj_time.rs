@@ -1,5 +1,5 @@
 use super::{
-    accum::SeqAccum,
+    accum::{SeqAccum, SeqInstanceAccum},
     precalc::{aggr_precalc_by_time, get_full_repeats_count, process_incomplete_cycle},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::calc_charge_mult,
@@ -25,11 +25,11 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    accum: &mut A,
+    accum: &mut SeqAccum<A>,
     time: PValue,
 ) where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqAccum<T> + Default,
+    A: SeqInstanceAccum<T> + Default,
 {
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_spool(
@@ -40,7 +40,7 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
             cseq,
             ospec,
             projectee_uid,
-            accum,
+            &mut accum.instances,
             time,
             inv_spool,
         ),
@@ -52,10 +52,11 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
             cseq,
             ospec,
             projectee_uid,
-            accum,
+            &mut accum.instances,
             time,
         ),
     }
+    accum.time = time;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +74,7 @@ fn aggr_regular<T, A>(
     time: PValue,
 ) where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
         Some(inv_proj) => inv_proj,
@@ -124,7 +125,7 @@ fn aggr_spool<A, T>(
     inv_spool: AggrSpoolInvData,
 ) where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: Default + SeqAccum<T>,
+    A: Default + SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
         Some(inv_proj) => inv_proj,
@@ -356,7 +357,7 @@ fn process_single_spool<T, A>(
     uninterrupted_cycles: &mut Count,
 ) where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     if *time < Value::ZERO {
         return;
@@ -397,7 +398,7 @@ fn process_limited_spool<T, A>(
     mut repeat_limit: Count,
 ) where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     let cycle_tail_duration =
         PValue::from_value_clamped(inv_proj.output.get_completion_duration() - cycle_data.duration);
@@ -484,7 +485,7 @@ fn process_infinite_spool<T, A>(
     uninterrupted_cycles: &mut Count,
 ) where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     if *time < Value::ZERO {
         return;

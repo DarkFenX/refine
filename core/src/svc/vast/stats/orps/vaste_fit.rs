@@ -8,7 +8,7 @@ use crate::{
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{
             StatOutRepItemKinds, StatTimeOptions, Vast,
-            aggr::{BasicSeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
         },
     },
     ud::{UFitId, UItemId},
@@ -96,7 +96,7 @@ fn get_orps(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_proj_time(
                             ctx,
                             calc,
@@ -108,7 +108,7 @@ fn get_orps(
                             &mut accum,
                             time,
                         );
-                        orps += accum.amount / time;
+                        orps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_orps) =

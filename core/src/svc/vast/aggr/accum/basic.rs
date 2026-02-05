@@ -1,26 +1,44 @@
-use super::traits::SeqAccum;
+use super::shared::{SeqAccum, SeqInstanceAccum};
 use crate::{
     num::{Count, PValue},
     util::LibDefault,
 };
 
+impl<T> SeqAccum<BasicSeqInstanceAccum<T>> {
+    pub(in crate::svc::vast) fn new_basic() -> Self
+    where
+        T: LibDefault,
+    {
+        SeqAccum {
+            instances: BasicSeqInstanceAccum::default(),
+            time: PValue::ZERO,
+        }
+    }
+    pub(in crate::svc::vast) fn get_per_second(self) -> T
+    where
+        T: std::ops::Div<PValue, Output = T>,
+    {
+        self.instances.amount / self.time
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Synced
+// Instance accumulator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct BasicSeqAccum<T> {
+pub(in crate::svc::vast) struct BasicSeqInstanceAccum<T> {
     pub(in crate::svc::vast) amount: T,
 }
-impl<T> Default for BasicSeqAccum<T>
+impl<T> Default for BasicSeqInstanceAccum<T>
 where
     T: LibDefault,
 {
     fn default() -> Self {
-        BasicSeqAccum {
+        BasicSeqInstanceAccum {
             amount: T::lib_default(),
         }
     }
 }
-impl<T> SeqAccum<T> for BasicSeqAccum<T>
+impl<T> SeqInstanceAccum<T> for BasicSeqInstanceAccum<T>
 where
     T: Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
 {

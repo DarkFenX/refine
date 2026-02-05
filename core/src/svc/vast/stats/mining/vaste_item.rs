@@ -10,7 +10,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
-            aggr::{BasicSeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
             stats::item_checks::check_drone_module,
         },
     },
@@ -65,9 +65,9 @@ fn get_mps_item_uid(
             }
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => {
-                    let mut accum = BasicSeqAccum::default();
+                    let mut accum = SeqAccum::new_basic();
                     aggr_proj_time(ctx, calc, item_uid, effect, &cseq, &ospec, None, &mut accum, time);
-                    mps += accum.amount / time;
+                    mps += accum.get_per_second();
                 }
                 _ => {
                     if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_uid, effect, &cseq, &ospec, None) {

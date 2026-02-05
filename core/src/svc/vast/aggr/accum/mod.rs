@@ -1,5 +1,5 @@
-pub(in crate::svc::vast) use basic::BasicSeqAccum;
-pub(in crate::svc::vast) use traits::SeqAccum;
+pub(in crate::svc::vast) use basic::BasicSeqInstanceAccum;
+pub(in crate::svc::vast) use shared::{SeqAccum, SeqInstanceAccum};
 
 mod basic;
-mod traits;
+mod shared;

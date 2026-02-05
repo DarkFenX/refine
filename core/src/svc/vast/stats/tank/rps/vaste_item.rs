@@ -10,7 +10,7 @@ use crate::{
         vast::{
             StatTimeOptions, Vast,
             aggr::{
-                BasicSeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_amount,
+                SeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_amount,
                 aggr_proj_looped_ps, aggr_proj_time,
             },
             stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
@@ -106,9 +106,9 @@ fn get_local_rps(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time);
-                        total_rps += accum.amount / time;
+                        total_rps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_rps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
@@ -171,7 +171,7 @@ fn get_irr_data(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_proj_time(
                             ctx,
                             calc,
@@ -188,7 +188,7 @@ fn get_irr_data(
                         // result, but is likely to be a good enough approximation.
                         let first_cycle_duration = cseq.get_first_cycle().duration;
                         result.push(IrrEntry {
-                            amount: accum.amount / time * first_cycle_duration,
+                            amount: accum.get_per_second() * first_cycle_duration,
                             cycle_duration: first_cycle_duration,
                         });
                     }

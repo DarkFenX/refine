@@ -7,7 +7,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
-            aggr::{BasicSeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_first_ps, aggr_proj_looped_ps, aggr_proj_time},
             stats::item_checks::check_charge_drone_fighter_module,
         },
     },
@@ -54,7 +54,7 @@ impl Vast {
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_proj_time(
                             ctx,
                             calc,
@@ -66,7 +66,7 @@ impl Vast {
                             &mut accum,
                             time,
                         );
-                        nps += accum.amount / time;
+                        nps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_nps) =

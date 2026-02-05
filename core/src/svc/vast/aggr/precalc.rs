@@ -1,4 +1,4 @@
-use super::{accum::SeqAccum, traits::InstanceDuration};
+use super::{accum::SeqInstanceAccum, traits::InstanceDuration};
 use crate::{
     num::{Count, PValue, Value},
     svc::{
@@ -43,7 +43,7 @@ pub(super) fn aggr_precalc_by_time<T, A>(
     ptime: PValue,
 ) where
     T: Copy + InstanceDuration,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     // Locally time can go negative
     let mut time = ptime.into_value();
@@ -123,7 +123,7 @@ pub(super) fn aggr_precalc_by_time<T, A>(
 fn process_single_regular<T, A>(accum: &mut A, time: &mut Value, data: &AggrPartData<T>, chance_mult: Option<PValue>)
 where
     T: Copy + InstanceDuration,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     let ptime = match *time < Value::ZERO {
         true => return,
@@ -148,7 +148,7 @@ fn process_limited_regular<T, A>(
     repeat_limit: Count,
 ) where
     T: Copy + InstanceDuration,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     if *time < Value::ZERO {
         return;
@@ -174,7 +174,7 @@ fn process_limited_regular<T, A>(
 fn process_infinite_regular<T, A>(accum: &mut A, time: &mut Value, data: &AggrPartData<T>, chance_mult: Option<PValue>)
 where
     T: Copy + InstanceDuration,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     if *time < Value::ZERO {
         return;
@@ -211,7 +211,7 @@ pub(super) fn process_incomplete_cycle<T, A>(
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,
-    A: SeqAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     // Time here is supposed to be modified only locally, and should not affect time out-of-cycle
     // time tracking

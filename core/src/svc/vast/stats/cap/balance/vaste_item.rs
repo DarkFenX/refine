@@ -9,7 +9,7 @@ use crate::{
         vast::{
             StatTimeOptions, Vast, VastFitData,
             aggr::{
-                BasicSeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_ps,
+                SeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_ps,
                 aggr_proj_looped_ps, aggr_proj_time,
             },
             stats::{item_checks::check_ship, shared::calc_regen},
@@ -80,9 +80,9 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time);
-                        cps += accum.amount / time;
+                        cps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_cps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
@@ -146,9 +146,9 @@ fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_da
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_proj_time(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum, time);
-                        cps += accum.amount / time;
+                        cps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_cps) =
@@ -205,7 +205,7 @@ fn get_incoming_cap_transfers(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_proj_time(
                             ctx,
                             calc,
@@ -217,7 +217,7 @@ fn get_incoming_cap_transfers(
                             &mut accum,
                             time,
                         );
-                        cps += accum.amount / time;
+                        cps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_cps) =
@@ -274,7 +274,7 @@ fn get_incoming_neuts(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = BasicSeqAccum::default();
+                        let mut accum = SeqAccum::new_basic();
                         aggr_proj_time(
                             ctx,
                             calc,
@@ -286,7 +286,7 @@ fn get_incoming_neuts(
                             &mut accum,
                             time,
                         );
-                        nps += accum.amount / time;
+                        nps += accum.get_per_second();
                     }
                     _ => {
                         if let Some(effect_nps) =

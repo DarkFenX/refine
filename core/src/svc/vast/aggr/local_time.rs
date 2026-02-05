@@ -1,5 +1,5 @@
 use super::{
-    accum::SeqAccum,
+    accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
     precalc::aggr_precalc_by_time,
     traits::{InstanceDuration, LimitInstance},
@@ -19,11 +19,11 @@ pub(in crate::svc::vast) fn aggr_local_time<T, A>(
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-    accum: &mut A,
+    accum: &mut SeqAccum<A>,
     time: PValue,
 ) where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqAccum<T> + Default,
+    A: SeqInstanceAccum<T> + Default,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
         Some(inv_local) => inv_local,
@@ -55,5 +55,6 @@ pub(in crate::svc::vast) fn aggr_local_time<T, A>(
             inner.convert_extend(p1_opc, p2_opc)
         }
     };
-    aggr_precalc_by_time(precalc, None, accum, time);
+    aggr_precalc_by_time(precalc, None, &mut accum.instances, time);
+    accum.time = time;
 }
