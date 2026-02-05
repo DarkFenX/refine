@@ -10,8 +10,8 @@ use crate::{
         vast::{
             StatTimeOptions, Vast,
             aggr::{
-                SeqAccum, aggr_local_first, aggr_local_looped_ps, aggr_local_time, aggr_proj_first,
-                aggr_proj_looped_ps, aggr_proj_time,
+                SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
+                aggr_proj_time,
             },
             stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
         },
@@ -113,8 +113,9 @@ fn get_local_rps(
                         }
                     }
                     _ => {
-                        if let Some(effect_rps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
-                            total_rps += effect_rps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
+                            total_rps += accum.get_per_second();
                         }
                     }
                 },
@@ -198,7 +199,8 @@ fn get_irr_data(
                         }
                     }
                     _ => {
-                        if let Some(effect_rps) = aggr_proj_looped_ps(
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_proj_looped(
                             ctx,
                             calc,
                             projector_item_uid,
@@ -206,13 +208,14 @@ fn get_irr_data(
                             cseq,
                             ospec,
                             Some(projectee_item_uid),
+                            &mut accum,
                         ) {
                             // Adjust averaged reps per second to initial cycle duration to for
                             // purposes of RR stacking penalty calculation. This does not provide
                             // accurate result, but is likely to be a good enough approximation.
                             let first_cycle_duration = cseq.get_first_cycle().duration;
                             result.push(IrrEntry {
-                                amount: effect_rps * first_cycle_duration,
+                                amount: accum.get_per_second() * first_cycle_duration,
                                 cycle_duration: first_cycle_duration,
                             });
                         }

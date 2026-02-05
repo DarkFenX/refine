@@ -11,7 +11,7 @@ use crate::{
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped_ps},
+            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped},
         },
     },
     ud::{UFitId, UItemId},
@@ -287,10 +287,9 @@ impl VastFitData {
                         }
                     }
                     CyclingOptions::Sim(_) => {
-                        if let Some(effect_dps) =
-                            aggr_proj_looped_ps(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid)
-                        {
-                            *dps_normal += effect_dps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid, &mut accum) {
+                            *dps_normal += accum.get_per_second();
                         }
                     }
                 }

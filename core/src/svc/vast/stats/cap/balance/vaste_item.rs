@@ -9,8 +9,8 @@ use crate::{
         vast::{
             StatTimeOptions, Vast, VastFitData,
             aggr::{
-                SeqAccum, aggr_local_first, aggr_local_looped_ps, aggr_local_time, aggr_proj_first,
-                aggr_proj_looped_ps, aggr_proj_time,
+                SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
+                aggr_proj_time,
             },
             stats::{item_checks::check_ship, shared::calc_regen},
         },
@@ -87,8 +87,9 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
                         }
                     }
                     _ => {
-                        if let Some(effect_cps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
-                            cps += effect_cps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
+                            cps += accum.get_per_second();
                         }
                     }
                 },
@@ -163,10 +164,9 @@ fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_da
                         }
                     }
                     _ => {
-                        if let Some(effect_cps) =
-                            aggr_proj_looped_ps(ctx, calc, nosf_item_uid, effect, cseq, ospec, None)
-                        {
-                            cps += effect_cps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum) {
+                            cps += accum.get_per_second();
                         }
                     }
                 },
@@ -235,10 +235,18 @@ fn get_incoming_cap_transfers(
                         }
                     }
                     _ => {
-                        if let Some(effect_cps) =
-                            aggr_proj_looped_ps(ctx, calc, transfer_item_uid, effect, cseq, ospec, Some(cap_item_uid))
-                        {
-                            cps += effect_cps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_proj_looped(
+                            ctx,
+                            calc,
+                            transfer_item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            Some(cap_item_uid),
+                            &mut accum,
+                        ) {
+                            cps += accum.get_per_second();
                         }
                     }
                 },
@@ -307,10 +315,18 @@ fn get_incoming_neuts(
                         }
                     }
                     _ => {
-                        if let Some(effect_nps) =
-                            aggr_proj_looped_ps(ctx, calc, neut_item_uid, effect, cseq, ospec, Some(cap_item_uid))
-                        {
-                            nps += effect_nps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_proj_looped(
+                            ctx,
+                            calc,
+                            neut_item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            Some(cap_item_uid),
+                            &mut accum,
+                        ) {
+                            nps += accum.get_per_second();
                         }
                     }
                 },

@@ -10,7 +10,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped_ps, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
             stats::item_checks::check_drone_module,
         },
     },
@@ -80,8 +80,9 @@ fn get_mps_item_uid(
                     }
                 }
                 _ => {
-                    if let Some(effect_mps) = aggr_proj_looped_ps(ctx, calc, item_uid, effect, &cseq, &ospec, None) {
-                        mps += effect_mps;
+                    let mut accum = SeqAccum::new_stack();
+                    if aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, &ospec, None, &mut accum) {
+                        mps += accum.get_per_second();
                     }
                 }
             },

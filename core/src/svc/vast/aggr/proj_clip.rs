@@ -17,6 +17,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
+#[must_use]
 pub(in crate::svc::vast) fn aggr_proj_clip<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
