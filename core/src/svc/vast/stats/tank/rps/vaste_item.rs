@@ -107,8 +107,9 @@ fn get_local_rps(
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         let mut accum = SeqAccum::new_basic();
-                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time);
-                        total_rps += accum.get_per_second();
+                        if aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time) {
+                            total_rps += accum.get_per_second();
+                        }
                     }
                     _ => {
                         if let Some(effect_rps) = aggr_local_looped_ps(ctx, calc, item_uid, effect, cseq, ospec) {
@@ -172,7 +173,7 @@ fn get_irr_data(
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         let mut accum = SeqAccum::new_basic();
-                        aggr_proj_time(
+                        if aggr_proj_time(
                             ctx,
                             calc,
                             projector_item_uid,
@@ -182,15 +183,16 @@ fn get_irr_data(
                             Some(projectee_item_uid),
                             &mut accum,
                             time,
-                        );
-                        // Adjust averaged reps per second to initial cycle duration to for purposes
-                        // of RR stacking penalty calculation. This does not provide accurate
-                        // result, but is likely to be a good enough approximation.
-                        let first_cycle_duration = cseq.get_first_cycle().duration;
-                        result.push(IrrEntry {
-                            amount: accum.get_per_second() * first_cycle_duration,
-                            cycle_duration: first_cycle_duration,
-                        });
+                        ) {
+                            // Adjust averaged reps per second to initial cycle duration to for
+                            // purposes of RR stacking penalty calculation. This does not provide
+                            // accurate result, but is likely to be a good enough approximation.
+                            let first_cycle_duration = cseq.get_first_cycle().duration;
+                            result.push(IrrEntry {
+                                amount: accum.get_per_second() * first_cycle_duration,
+                                cycle_duration: first_cycle_duration,
+                            });
+                        }
                     }
                     _ => {
                         if let Some(effect_rps) = aggr_proj_looped_ps(

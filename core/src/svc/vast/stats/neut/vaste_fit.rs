@@ -94,7 +94,7 @@ fn get_nps(
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         let mut accum = SeqAccum::new_basic();
-                        aggr_proj_time(
+                        if aggr_proj_time(
                             ctx,
                             calc,
                             item_uid,
@@ -104,8 +104,9 @@ fn get_nps(
                             projectee_item_uid,
                             &mut accum,
                             time,
-                        );
-                        nps += accum.get_per_second();
+                        ) {
+                            nps += accum.get_per_second();
+                        }
                     }
                     _ => {
                         if let Some(effect_nps) =

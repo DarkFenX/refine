@@ -54,7 +54,7 @@ impl Vast {
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         let mut accum = SeqAccum::new_basic();
-                        aggr_proj_time(
+                        if aggr_proj_time(
                             ctx,
                             calc,
                             item_uid,
@@ -64,9 +64,9 @@ impl Vast {
                             projectee_uid,
                             &mut accum,
                             time,
-                        );
-
-                        ocps += accum.get_per_second();
+                        ) {
+                            ocps += accum.get_per_second();
+                        }
                     }
                     _ => {
                         if let Some(effect_ocps) =

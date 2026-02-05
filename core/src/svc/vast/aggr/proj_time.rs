@@ -17,6 +17,7 @@ use crate::{
 };
 
 // Projected effects, aggregates total output by specified time
+#[must_use]
 pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -27,19 +28,23 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
     projectee_uid: Option<UItemId>,
     accum: &mut SeqAccum<A>,
     time: PValue,
-) where
+) -> bool
+where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T> + Default,
 {
+    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
+        Some(inv_proj) => inv_proj,
+        None => return false,
+    };
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_spool(
             ctx,
             calc,
             projector_uid,
-            effect,
             cseq,
             ospec,
-            projectee_uid,
+            inv_proj,
             &mut accum.instances,
             time,
             inv_spool,
@@ -48,15 +53,15 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
             ctx,
             calc,
             projector_uid,
-            effect,
             cseq,
             ospec,
-            projectee_uid,
+            inv_proj,
             &mut accum.instances,
             time,
         ),
     }
     accum.time = time;
+    true
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,20 +71,15 @@ fn aggr_regular<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
+    inv_proj: AggrProjInvData<T>,
     accum: &mut A,
     time: PValue,
 ) where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
-    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
-        Some(inv_proj) => inv_proj,
-        None => return,
-    };
     let precalc = match cseq {
         CycleSeq::Lim(inner) => {
             let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
@@ -116,10 +116,9 @@ fn aggr_spool<A, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
+    inv_proj: AggrProjInvData<T>,
     accum: &mut A,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
@@ -127,10 +126,6 @@ fn aggr_spool<A, T>(
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: Default + SeqInstanceAccum<T>,
 {
-    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
-        Some(inv_proj) => inv_proj,
-        None => return,
-    };
     match cseq {
         CycleSeq::Lim(inner) => {
             match inner.data.interrupt.is_some() {

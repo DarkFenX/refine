@@ -98,7 +98,7 @@ fn get_orps(
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => {
                     let mut accum = SeqAccum::new_basic();
-                    aggr_proj_time(
+                    if aggr_proj_time(
                         ctx,
                         calc,
                         item_uid,
@@ -108,8 +108,9 @@ fn get_orps(
                         projectee_uid,
                         &mut accum,
                         time,
-                    );
-                    orps += accum.get_per_second();
+                    ) {
+                        orps += accum.get_per_second();
+                    }
                 }
                 _ => {
                     if let Some(effect_orps) =

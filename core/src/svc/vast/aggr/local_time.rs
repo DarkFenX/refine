@@ -12,6 +12,7 @@ use crate::{
 };
 
 // Local effects, aggregates total output by specified time
+#[must_use]
 pub(in crate::svc::vast) fn aggr_local_time<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -21,13 +22,14 @@ pub(in crate::svc::vast) fn aggr_local_time<T, A>(
     ospec: &REffectLocalOpcSpec<T>,
     accum: &mut SeqAccum<A>,
     time: PValue,
-) where
+) -> bool
+where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T> + Default,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
         Some(inv_local) => inv_local,
-        None => return,
+        None => return false,
     };
     let precalc = match cseq {
         CycleSeq::Lim(inner) => {
@@ -57,4 +59,5 @@ pub(in crate::svc::vast) fn aggr_local_time<T, A>(
     };
     aggr_precalc_by_time(precalc, None, &mut accum.instances, time);
     accum.time = time;
+    true
 }
