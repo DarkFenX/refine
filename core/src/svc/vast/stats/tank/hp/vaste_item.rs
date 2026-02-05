@@ -9,7 +9,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             Vast,
-            aggr::{aggr_local_clip_amount, aggr_proj_clip_amount},
+            aggr::{SeqAccum, aggr_local_clip, aggr_proj_clip},
             stats::item_checks::check_drone_fighter_ship,
         },
     },
@@ -103,8 +103,9 @@ fn get_local_ancil_hp(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            if let Some(effect_clip_data) = aggr_local_clip_amount(ctx, calc, item_uid, effect, cseq, ospec) {
-                total_ancil_hp += effect_clip_data.amount;
+            let mut accum = SeqAccum::new_stack();
+            if aggr_local_clip(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
+                total_ancil_hp += accum.instances.stacked;
             }
         }
     }
@@ -133,7 +134,8 @@ fn get_remote_ancil_hp(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            if let Some(effect_clip_data) = aggr_proj_clip_amount(
+            let mut accum = SeqAccum::new_stack();
+            if aggr_proj_clip(
                 ctx,
                 calc,
                 projector_item_uid,
@@ -141,8 +143,9 @@ fn get_remote_ancil_hp(
                 cseq,
                 ospec,
                 Some(projectee_item_uid),
+                &mut accum,
             ) {
-                total_ancil_hp += effect_clip_data.amount;
+                total_ancil_hp += accum.instances.stacked;
             }
         }
     }

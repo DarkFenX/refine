@@ -1,6 +1,7 @@
 use super::{
+    accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
-    shared::{AggrAmount, calc_charge_mult},
+    shared::calc_charge_mult,
     traits::LimitInstance,
 };
 use crate::{
@@ -16,7 +17,7 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-pub(in crate::svc::vast) fn aggr_proj_clip_amount<T>(
+pub(in crate::svc::vast) fn aggr_proj_clip<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -24,46 +25,40 @@ pub(in crate::svc::vast) fn aggr_proj_clip_amount<T>(
     cseq: &CycleSeq,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-) -> Option<AggrAmount<T>>
+    accum: &mut SeqAccum<A>,
+) -> bool
 where
-    T: Default
-        + Copy
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    A: SeqInstanceAccum<T>,
 {
+    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
+        Some(inv_proj) => inv_proj,
+        None => return false,
+    };
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, inv_spool),
-        None => aggr_regular(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid),
+        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
+        None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<T>(
+fn aggr_spool<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
+    inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
-) -> Option<AggrAmount<T>>
+    accum: &mut SeqAccum<A>,
+) -> bool
 where
-    T: Default
-        + Copy
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    A: SeqInstanceAccum<T>,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let mut uninterrupted_cycles = Count::ZERO;
-    let mut total_amount = T::default();
-    let mut total_time = PValue::ZERO;
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     'part: for cycle_part in cycle_parts.iter() {
@@ -74,7 +69,7 @@ where
                 // are infinite
                 Some(interrupt) if interrupt.reload => Count::ONE,
                 // No reloads in infinite sequence - sequence is not a clip - no data to return
-                _ => return None,
+                _ => return false,
             },
         };
         // Calculate chargedness mult once for every part, no need to do it for every cycle
@@ -85,9 +80,12 @@ where
                 let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, inv_spool.max);
                 let remaining_cycles = part_cycle_count - i;
                 uninterrupted_cycles += remaining_cycles;
-                let remaining_cycles = remaining_cycles.into_pvalue();
-                total_amount += cycle_output.get_amount_sum() * remaining_cycles;
-                total_time += cycle_part.data.duration * remaining_cycles;
+                accum.add_instance(
+                    cycle_output.get_instance(),
+                    inv_proj.chance_mult,
+                    cycle_output.get_instance_count() * remaining_cycles,
+                );
+                accum.time += cycle_part.data.duration * remaining_cycles.into_pvalue();
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
@@ -97,8 +95,12 @@ where
                 Some(_) => uninterrupted_cycles = Count::ZERO,
                 None => uninterrupted_cycles += Count::ONE,
             }
-            total_amount += cycle_output.get_amount_sum();
-            total_time += cycle_part.data.duration;
+            accum.add_instance(
+                cycle_output.get_instance(),
+                inv_proj.chance_mult,
+                cycle_output.get_instance_count(),
+            );
+            accum.time += cycle_part.data.duration;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
             if let Some(interrupt) = cycle_part.data.interrupt
@@ -110,35 +112,22 @@ where
         }
     }
     // If cycles are infinite and have no reload, return no data
-    if cycle_parts.loops && !reload {
-        return None;
-    }
-    Some(AggrAmount {
-        amount: total_amount,
-        duration: total_time,
-    })
+    !cycle_parts.loops || reload
 }
 
-fn aggr_regular<T>(
+fn aggr_regular<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
-) -> Option<AggrAmount<T>>
+    inv_proj: AggrProjInvData<T>,
+    accum: &mut SeqAccum<A>,
+) -> bool
 where
-    T: Default
-        + Copy
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    A: SeqInstanceAccum<T>,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
-    let mut total_amount = T::default();
-    let mut total_time = PValue::ZERO;
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
@@ -148,28 +137,30 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += cycle_output.get_amount_sum();
-                total_time += cycle_part.data.duration;
+                accum.add_instance(
+                    cycle_output.get_instance(),
+                    inv_proj.chance_mult,
+                    cycle_output.get_instance_count(),
+                );
+                accum.time += cycle_part.data.duration;
                 break;
             }
             _ => {
                 let part_cycle_count = match cycle_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => part_cycle_count.into_pvalue(),
+                    InfCount::Count(part_cycle_count) => part_cycle_count,
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
-                    InfCount::Infinite => return None,
+                    InfCount::Infinite => return false,
                 };
-                total_amount += cycle_output.get_amount_sum() * part_cycle_count;
-                total_time += cycle_part.data.duration * part_cycle_count;
+                accum.add_instance(
+                    cycle_output.get_instance(),
+                    inv_proj.chance_mult,
+                    cycle_output.get_instance_count() * part_cycle_count,
+                );
+                accum.time += cycle_part.data.duration * part_cycle_count.into_pvalue();
             }
         }
     }
     // If cycles are infinite and have no reload, return no data
-    if cycle_parts.loops && !reload {
-        return None;
-    }
-    Some(AggrAmount {
-        amount: total_amount,
-        duration: total_time,
-    })
+    !cycle_parts.loops || reload
 }

@@ -1,6 +1,6 @@
 use super::{
+    accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
-    shared::AggrAmount,
     traits::LimitInstance,
 };
 use crate::{
@@ -12,25 +12,23 @@ use crate::{
 };
 
 // Local effects, considers only part of sequence until charges are out
-pub(in crate::svc::vast) fn aggr_local_clip_amount<T>(
+pub(in crate::svc::vast) fn aggr_local_clip<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrAmount<T>>
+    accum: &mut SeqAccum<A>,
+) -> bool
 where
-    T: Default
-        + Copy
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    A: SeqInstanceAccum<T>,
 {
-    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
-    let mut total_amount = T::default();
-    let mut total_time = PValue::ZERO;
+    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
+        Some(inv_local) => inv_local,
+        None => return false,
+    };
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
@@ -39,28 +37,26 @@ where
             // Add first cycle after which there is a reload
             Some(interrupt) if interrupt.reload => {
                 reload = true;
-                total_amount += cycle_output.get_amount_sum();
-                total_time += cycle_part.data.duration;
+                accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
+                accum.time += cycle_part.data.duration;
                 break;
             }
             _ => {
                 let part_cycle_count = match cycle_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => part_cycle_count.into_pvalue(),
+                    InfCount::Count(part_cycle_count) => part_cycle_count,
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
-                    InfCount::Infinite => return None,
+                    InfCount::Infinite => return false,
                 };
-                total_amount += cycle_output.get_amount_sum() * part_cycle_count;
-                total_time += cycle_part.data.duration * part_cycle_count;
+                accum.add_instance(
+                    cycle_output.get_instance(),
+                    None,
+                    cycle_output.get_instance_count() * part_cycle_count,
+                );
+                accum.time += cycle_part.data.duration * part_cycle_count.into_pvalue();
             }
         }
     }
     // If cycles are infinite and have no reload, return no data
-    if cycle_parts.loops && !reload {
-        return None;
-    }
-    Some(AggrAmount {
-        amount: total_amount,
-        duration: total_time,
-    })
+    !cycle_parts.loops || reload
 }
