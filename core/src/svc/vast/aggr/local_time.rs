@@ -58,6 +58,6 @@ where
         }
     };
     aggr_precalc_by_time(precalc, None, &mut accum.instances, time);
-    accum.time = time;
+    accum.time += time;
     true
 }

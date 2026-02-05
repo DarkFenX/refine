@@ -2,7 +2,7 @@ use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
 use crate::{
     misc::DmgKinds,
     num::{PValue, Value},
-    util::LibMax,
+    util::{LibDefault, LibMax},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,6 +17,16 @@ impl InstanceDuration for DmgKinds<PValue> {
 impl LimitInstance for DmgKinds<PValue> {
     // No-op, since there is no logic to limit damage depending on target attrs
     fn limit_instance(&mut self, _limit: Value) {}
+}
+impl LibDefault for DmgKinds<PValue> {
+    fn lib_default() -> Self {
+        Self {
+            em: PValue::ZERO,
+            thermal: PValue::ZERO,
+            kinetic: PValue::ZERO,
+            explosive: PValue::ZERO,
+        }
+    }
 }
 // TODO: remove, since it's supposed to be handled in accumulator now
 impl LibMax for DmgKinds<PValue> {

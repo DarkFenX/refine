@@ -60,7 +60,7 @@ where
             time,
         ),
     }
-    accum.time = time;
+    accum.time += time;
     true
 }
 

@@ -1,6 +1,6 @@
 use super::{
+    accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
-    shared::{AggrAmount, AggrOutput},
     traits::LimitInstance,
 };
 use crate::{
@@ -11,56 +11,27 @@ use crate::{
 };
 
 // Local effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc::vast) fn aggr_local_first_ps<T>(
+#[must_use]
+pub(in crate::svc::vast) fn aggr_local_first<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<T>
-where
-    T: Copy
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + std::ops::Div<PValue, Output = T>
-        + LimitInstance,
-{
-    aggr_local_first_amount(ctx, calc, item_uid, effect, cseq, ospec).and_then(|aggr_amount| aggr_amount.get_ps())
-}
-
-pub(in crate::svc::vast) fn aggr_local_first_amount<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrAmount<T>>
-where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
-{
-    aggr_local_first_output(ctx, calc, item_uid, effect, cseq, ospec).map(|output_data| AggrAmount {
-        amount: output_data.output.get_amount_sum(),
-        duration: output_data.duration,
-    })
-}
-
-pub(in crate::svc::vast) fn aggr_local_first_output<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrOutput<T>>
+    accum: &mut SeqAccum<A>,
+) -> bool
 where
     T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    A: SeqInstanceAccum<T>,
 {
+    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
+        Some(inv_local) => inv_local,
+        None => return false,
+    };
     let cycle_data = cseq.get_first_cycle();
-    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
-    Some(AggrOutput {
-        output: get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.chargedness),
-        duration: cycle_data.duration,
-    })
+    let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.chargedness);
+    accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
+    accum.time += cycle_data.duration;
+    true
 }

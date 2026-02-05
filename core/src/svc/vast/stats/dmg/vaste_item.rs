@@ -12,7 +12,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
-            aggr::{aggr_proj_first_max, aggr_proj_first_ps, aggr_proj_looped_ps},
+            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped_ps},
             stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },
@@ -116,10 +116,19 @@ impl Vast {
                         }
                     }
                     false => {
-                        if let Some(effect_dps) =
-                            aggr_proj_first_ps(ctx, calc, item_uid, effect, &cseq, &ospec, projectee_uid, spool)
-                        {
-                            *dps_normal += effect_dps;
+                        let mut accum = SeqAccum::new_stack();
+                        if aggr_proj_first(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            &cseq,
+                            &ospec,
+                            projectee_uid,
+                            spool,
+                            &mut accum,
+                        ) {
+                            *dps_normal += accum.get_per_second();
                         }
                     }
                 }
@@ -228,10 +237,19 @@ impl Vast {
         for (effect_rid, cseq) in cseq_map {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg_opc_spec {
-                if let Some(dmg_max) =
-                    aggr_proj_first_max(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid, spool)
-                {
-                    *volley_normal += dmg_max;
+                let mut accum = SeqAccum::new_stack_max();
+                if aggr_proj_first(
+                    ctx,
+                    calc,
+                    item_uid,
+                    effect,
+                    &cseq,
+                    ospec,
+                    projectee_uid,
+                    spool,
+                    &mut accum,
+                ) {
+                    *volley_normal += accum.instances.max;
                 }
             }
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter

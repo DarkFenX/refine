@@ -27,6 +27,7 @@ pub(super) fn process_mult(mult: PValue) -> Option<PValue> {
     }
 }
 
+// TODO: likely will be unused, check if can be removed
 pub(in crate::svc::vast) struct AggrAmount<T> {
     pub(in crate::svc::vast) amount: T,
     pub(in crate::svc::vast) duration: PValue,

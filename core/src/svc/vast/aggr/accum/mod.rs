@@ -1,5 +1,6 @@
-pub(in crate::svc::vast) use basic::BasicSeqInstanceAccum;
 pub(in crate::svc::vast) use shared::{SeqAccum, SeqInstanceAccum};
+pub(in crate::svc::vast) use stack::SeqInstanceAccumStack;
 
-mod basic;
 mod shared;
+mod stack;
+mod stack_max;

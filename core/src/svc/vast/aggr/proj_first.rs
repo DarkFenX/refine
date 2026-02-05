@@ -1,6 +1,7 @@
 use super::{
+    accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{AggrProjInvData, get_proj_output, get_proj_output_spool},
-    shared::{AggrAmount, AggrOutput, calc_charge_mult},
+    shared::calc_charge_mult,
     traits::LimitInstance,
 };
 use crate::{
@@ -12,7 +13,8 @@ use crate::{
 };
 
 // Projected effects, considers only first cycle (for "burst" stats)
-pub(in crate::svc::vast) fn aggr_proj_first_ps<T>(
+#[must_use]
+pub(in crate::svc::vast) fn aggr_proj_first<T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -21,82 +23,31 @@ pub(in crate::svc::vast) fn aggr_proj_first_ps<T>(
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
     spool: Option<Spool>,
-) -> Option<T>
-where
-    T: Copy
-        + std::ops::Mul<PValue, Output = T>
-        + std::ops::MulAssign<PValue>
-        + std::ops::Div<PValue, Output = T>
-        + LimitInstance,
-{
-    aggr_proj_first_amount(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool)
-        .and_then(|aggr_amount| aggr_amount.get_ps())
-}
-
-pub(in crate::svc::vast) fn aggr_proj_first_max<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
-) -> Option<T>
-where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
-{
-    aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool)
-        .map(|output_data| output_data.output.get_max_instance())
-}
-
-pub(in crate::svc::vast) fn aggr_proj_first_amount<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
-) -> Option<AggrAmount<T>>
-where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
-{
-    aggr_proj_first_output(ctx, calc, projector_uid, effect, cseq, ospec, projectee_uid, spool).map(|output_data| {
-        AggrAmount {
-            amount: output_data.output.get_amount_sum(),
-            duration: output_data.duration,
-        }
-    })
-}
-
-pub(in crate::svc::vast) fn aggr_proj_first_output<T>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    cseq: &CycleSeq,
-    ospec: &REffectProjOpcSpec<T>,
-    projectee_uid: Option<UItemId>,
-    spool: Option<Spool>,
-) -> Option<AggrOutput<T>>
+    accum: &mut SeqAccum<A>,
+) -> bool
 where
     T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    A: SeqInstanceAccum<T>,
 {
-    let cycle = cseq.get_first_cycle();
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
-    let output = if ospec.spoolable
+    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
+        Some(inv_proj) => inv_proj,
+        None => return false,
+    };
+    let cycle_data = cseq.get_first_cycle();
+    let cycle_output = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_rids
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_uid, effect, spool, spool_attrs)
     {
-        let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle.chargedness);
+        let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
         get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - Value::ONE)
     } else {
-        get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle.chargedness)
+        get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness)
     };
-    Some(AggrOutput {
-        output,
-        duration: cycle.duration,
-    })
+    accum.add_instance(
+        cycle_output.get_instance(),
+        inv_proj.chance_mult,
+        cycle_output.get_instance_count(),
+    );
+    accum.time += cycle_data.duration;
+    true
 }

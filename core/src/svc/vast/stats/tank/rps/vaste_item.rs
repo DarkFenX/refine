@@ -10,7 +10,7 @@ use crate::{
         vast::{
             StatTimeOptions, Vast,
             aggr::{
-                SeqAccum, aggr_local_first_ps, aggr_local_looped_ps, aggr_local_time, aggr_proj_first_amount,
+                SeqAccum, aggr_local_first, aggr_local_looped_ps, aggr_local_time, aggr_proj_first,
                 aggr_proj_looped_ps, aggr_proj_time,
             },
             stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
@@ -100,13 +100,14 @@ fn get_local_rps(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             match time_options {
                 StatTimeOptions::Burst(_) => {
-                    if let Some(effect_rps) = aggr_local_first_ps(ctx, calc, item_uid, effect, cseq, ospec) {
-                        total_rps += effect_rps;
+                    let mut accum = SeqAccum::new_stack();
+                    if aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
+                        total_rps += accum.get_per_second();
                     }
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = SeqAccum::new_basic();
+                        let mut accum = SeqAccum::new_stack();
                         if aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time) {
                             total_rps += accum.get_per_second();
                         }
@@ -154,7 +155,8 @@ fn get_irr_data(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
-                    if let Some(effect_rep) = aggr_proj_first_amount(
+                    let mut accum = SeqAccum::new_stack();
+                    if aggr_proj_first(
                         ctx,
                         calc,
                         projector_item_uid,
@@ -163,16 +165,17 @@ fn get_irr_data(
                         ospec,
                         Some(projectee_item_uid),
                         burst_opts.spool,
+                        &mut accum,
                     ) {
                         result.push(IrrEntry {
-                            amount: effect_rep.amount,
-                            cycle_duration: effect_rep.duration,
+                            amount: accum.instances.stacked,
+                            cycle_duration: accum.time,
                         });
                     }
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = SeqAccum::new_basic();
+                        let mut accum = SeqAccum::new_stack();
                         if aggr_proj_time(
                             ctx,
                             calc,

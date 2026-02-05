@@ -4,13 +4,16 @@ use crate::{
     util::LibDefault,
 };
 
-impl<T> SeqAccum<BasicSeqInstanceAccum<T>> {
-    pub(in crate::svc::vast) fn new_basic() -> Self
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Top-level accumulator interface
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> SeqAccum<SeqInstanceAccumStack<T>> {
+    pub(in crate::svc::vast) fn new_stack() -> Self
     where
         T: LibDefault,
     {
         SeqAccum {
-            instances: BasicSeqInstanceAccum::default(),
+            instances: SeqInstanceAccumStack::default(),
             time: PValue::ZERO,
         }
     }
@@ -18,27 +21,27 @@ impl<T> SeqAccum<BasicSeqInstanceAccum<T>> {
     where
         T: std::ops::Div<PValue, Output = T>,
     {
-        self.instances.amount / self.time
+        self.instances.stacked / self.time
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Instance accumulator
+// Sequence accumulator implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct BasicSeqInstanceAccum<T> {
-    pub(in crate::svc::vast) amount: T,
+pub(in crate::svc::vast) struct SeqInstanceAccumStack<T> {
+    pub(in crate::svc::vast) stacked: T,
 }
-impl<T> Default for BasicSeqInstanceAccum<T>
+impl<T> Default for SeqInstanceAccumStack<T>
 where
     T: LibDefault,
 {
     fn default() -> Self {
-        BasicSeqInstanceAccum {
-            amount: T::lib_default(),
+        Self {
+            stacked: T::lib_default(),
         }
     }
 }
-impl<T> SeqInstanceAccum<T> for BasicSeqInstanceAccum<T>
+impl<T> SeqInstanceAccum<T> for SeqInstanceAccumStack<T>
 where
     T: Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
 {
@@ -46,9 +49,9 @@ where
         if let Some(chance_mult) = chance_mult {
             instance *= chance_mult;
         }
-        self.amount += instance * count.into_pvalue();
+        self.stacked += instance * count.into_pvalue();
     }
     fn merge(&mut self, other: &Self, count: Count) {
-        self.amount += other.amount * count.into_pvalue();
+        self.stacked += other.stacked * count.into_pvalue();
     }
 }
