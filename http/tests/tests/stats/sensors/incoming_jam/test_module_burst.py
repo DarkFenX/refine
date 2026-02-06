@@ -83,7 +83,7 @@ def test_projection_and_resists(client, consts):
 
 
 def test_time(client, consts):
-    eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, eve_tgt_ship3_id = setup_burst_test(
+    eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, _ = setup_burst_test(
         client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()

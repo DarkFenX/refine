@@ -46,7 +46,8 @@ def setup_bomb_test(client, consts):
         defeff_id=eve_bomb_effect_id)
     eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 20.5})
     eve_tgt_ship1_id = client.mk_eve_ship(attrs={
-        eve_sensor_ladar_attr_id: 0.01, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.0001})
+        eve_sensor_ladar_attr_id: 0.01, eve_radius_attr_id: 258,
+        eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.0001})
     eve_tgt_ship2_id = client.mk_eve_ship(attrs={
         eve_sensor_ladar_attr_id: 30.7, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.5})
     eve_tgt_ship3_id = client.mk_eve_ship(attrs={
