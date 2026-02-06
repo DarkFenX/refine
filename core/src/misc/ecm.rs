@@ -1,6 +1,6 @@
 use crate::num::PValue;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct Ecm {
     pub(crate) radar: PValue,
     pub(crate) magnetometric: PValue,
