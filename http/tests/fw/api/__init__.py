@@ -20,6 +20,7 @@ from .types import (
     StatsOptionFitOutNps,
     StatsOptionFitOutRps,
     StatsOptionFitVolley,
+    StatsOptionInJam,
     StatsOptionItemDps,
     StatsOptionItemMining,
     StatsOptionItemOutCps,
