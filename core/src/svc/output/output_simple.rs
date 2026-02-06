@@ -52,9 +52,6 @@ impl<T: Copy> OutputSimple<T> {
     pub(super) fn get_instance_count(&self) -> Count {
         Count::ONE
     }
-    pub(super) fn get_max_instance(&self) -> T {
-        self.instance
-    }
 }
 impl OutputSimple<Value> {
     pub(super) fn get_absolute_impact(&self) -> PValue {

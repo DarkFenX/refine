@@ -1,7 +1,7 @@
 use crate::{
     nd::NChargeMultGetter,
     num::{PValue, UnitInterval},
-    svc::{SvcCtx, calc::Calc, output::Output},
+    svc::{SvcCtx, calc::Calc},
     ud::UItemId,
 };
 
@@ -25,29 +25,4 @@ pub(super) fn process_mult(mult: PValue) -> Option<PValue> {
         PValue::ONE => None,
         v => Some(v),
     }
-}
-
-// TODO: likely will be unused, check if can be removed
-pub(in crate::svc::vast) struct AggrAmount<T> {
-    pub(in crate::svc::vast) amount: T,
-    pub(in crate::svc::vast) duration: PValue,
-}
-impl<T> AggrAmount<T>
-where
-    T: std::ops::Div<PValue, Output = T>,
-{
-    pub(super) fn get_ps(self) -> Option<T> {
-        if self.duration == PValue::ZERO {
-            return None;
-        }
-        Some(self.amount / self.duration)
-    }
-}
-
-pub(in crate::svc::vast) struct AggrOutput<T>
-where
-    T: Copy,
-{
-    pub(in crate::svc::vast) output: Output<T>,
-    pub(in crate::svc::vast) duration: PValue,
 }

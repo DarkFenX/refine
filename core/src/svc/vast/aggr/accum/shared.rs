@@ -11,12 +11,6 @@ impl<A> SeqAccum<A> {
     {
         self.instances.add_instance(instance, chance_mult, count);
     }
-    pub(in crate::svc::vast::aggr) fn merge_instance_accum<T>(&mut self, other: &A, count: Count)
-    where
-        A: SeqInstanceAccum<T>,
-    {
-        self.instances.merge(other, count);
-    }
 }
 
 pub(in crate::svc::vast) trait SeqInstanceAccum<T> {

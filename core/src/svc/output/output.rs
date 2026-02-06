@@ -55,12 +55,6 @@ impl<T: Copy> Output<T> {
             Output::Complex(inner) => inner.get_instance_count(),
         }
     }
-    pub(in crate::svc) fn get_max_instance(&self) -> T {
-        match self {
-            Output::Simple(inner) => inner.get_max_instance(),
-            Output::Complex(inner) => inner.get_max_instance(),
-        }
-    }
 }
 impl Output<Value> {
     pub(in crate::svc) fn get_absolute_impact(&self) -> PValue {
