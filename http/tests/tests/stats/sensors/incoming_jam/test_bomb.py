@@ -1,11 +1,9 @@
 
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionInJam, StatTimeBurst, StatTimeSim
 
 
-def test_general(client, consts):
-    # Lockbreaker bombs ignore explosion radius of a bomb and signature radius of a target. Tested
-    # on 2025-09-07 on Thunderdome by repeatedly bombing a Stiletto, 20+ runs broke lock
+def setup_bomb_test(client, consts):
     eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sensor_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength)
     eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
@@ -48,12 +46,34 @@ def test_general(client, consts):
         defeff_id=eve_bomb_effect_id)
     eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 20.5})
     eve_tgt_ship1_id = client.mk_eve_ship(attrs={
-        eve_sensor_ladar_attr_id: 30.7, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.5})
+        eve_sensor_ladar_attr_id: 0.01, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.0001})
     eve_tgt_ship2_id = client.mk_eve_ship(attrs={
-        eve_sensor_grav_attr_id: 39.2, eve_radius_attr_id: 263, eve_sig_radius_attr_id: 266, eve_resist_attr_id: 1})
+        eve_sensor_ladar_attr_id: 30.7, eve_radius_attr_id: 258, eve_sig_radius_attr_id: 177, eve_resist_attr_id: 0.5})
     eve_tgt_ship3_id = client.mk_eve_ship(attrs={
+        eve_sensor_grav_attr_id: 39.2, eve_radius_attr_id: 263, eve_sig_radius_attr_id: 266, eve_resist_attr_id: 1})
+    eve_tgt_ship4_id = client.mk_eve_ship(attrs={
         eve_sensor_radar_attr_id: 4, eve_radius_attr_id: 220, eve_sig_radius_attr_id: 175, eve_resist_attr_id: 1})
     client.create_sources()
+    return (
+        eve_module_id,
+        eve_charge_id,
+        eve_src_ship_id,
+        eve_tgt_ship1_id,
+        eve_tgt_ship2_id,
+        eve_tgt_ship3_id,
+        eve_tgt_ship4_id)
+
+
+def test_projection_and_resists(client, consts):
+    # Lockbreaker bombs ignore explosion radius of a bomb and signature radius of a target. Tested
+    # on 2025-09-07 on Thunderdome by repeatedly bombing a Stiletto, 20+ runs broke lock
+    (eve_module_id,
+     eve_charge_id,
+     eve_src_ship_id,
+     eve_tgt_ship1_id,
+     eve_tgt_ship2_id,
+     eve_tgt_ship3_id,
+     eve_tgt_ship4_id) = setup_bomb_test(client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
@@ -64,11 +84,18 @@ def test_general(client, consts):
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam.one() == [0, 0]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.2035831), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.2035831), 0]
     # Action
-    api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.3188776), 0]
@@ -131,7 +158,7 @@ def test_general(client, consts):
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam.one() == [0, 0]
     # Action
-    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id, coordinates=(0, 30000, 0))
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship4_id, coordinates=(0, 30000, 0))
     # Verification - chance cannot exceed 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [1, 0]
@@ -145,3 +172,53 @@ def test_general(client, consts):
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.5), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.5), 0]
+
+
+def test_time(client, consts):
+    eve_module_id, eve_charge_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, _, _ = setup_bomb_test(
+        client=client, consts=consts)
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship2_id, coordinates=(0, 30000, 0))
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - burst stats (first cycle)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeBurst())])))
+    assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.2035831), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeBurst())])))
+    assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.2035831), 0]
+    # Sim stats without time - loop stats are exposed, any chance higher than 0% is exposed as 100%
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.incoming_jam.one() == [1, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.incoming_jam.one() == [1, 0]
+    # Sim with time which covers first cycle almost completely, but does not reach the second one
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=77))])))
+    assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.2035831), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=77))])))
+    assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.2035831), 0]
+    # Sim with time which covers first cycle completely, and 1 second of the second one
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=78))])))
+    assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.3657201), 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=78))])))
+    assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.3657201), 0]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship1_id)
+    # Verification - when chance to jam is 0%, loop doesn't make it 100%
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.incoming_jam.one() == [0, 0]
