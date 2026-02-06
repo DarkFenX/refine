@@ -1,5 +1,6 @@
 import pytest
 
+# ruff: noqa: RUF067
 pytest.register_assert_rewrite(
     'fw.api.client.sol',
     'fw.api.client.src',

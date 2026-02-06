@@ -1,5 +1,9 @@
-from fw.api.aliases import MutaAdd, MutaChange
+import typing
+
 from fw.util import Absent, cast_prefixed_to_int, cast_to_prefixed_str
+
+if typing.TYPE_CHECKING:
+    from fw.api.aliases import MutaAdd, MutaChange
 
 
 def attr_fw_to_http(attr_id: int | str) -> str:
@@ -33,7 +37,10 @@ def process_muta_add_request(*, mutation: MutaAdd | type[Absent]) -> MutaAdd | t
     return mutator_id, _cast_map(data=attrs)
 
 
-def process_muta_change_request(*, mutation: MutaAdd | MutaChange | type[Absent]) -> MutaAdd | MutaChange | type[Absent]:
+def process_muta_change_request(
+        *,
+        mutation: MutaAdd | MutaChange | type[Absent],
+) -> MutaAdd | MutaChange | type[Absent]:
     if mutation is Absent:
         return mutation
     if isinstance(mutation, dict):
