@@ -37,10 +37,21 @@ impl Vast {
                 Some(ospec) => ospec,
                 None => continue,
             };
-            match time_options {
-                StatTimeOptions::Burst(burst_opts) => {
-                    let mut accum = SeqAccum::new_stack();
-                    if aggr_proj_first(
+            let mut accum = SeqAccum::new_stack();
+            if match time_options {
+                StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                    ctx,
+                    calc,
+                    item_uid,
+                    effect,
+                    &cseq,
+                    &ospec,
+                    projectee_uid,
+                    burst_opts.spool,
+                    &mut accum,
+                ),
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > PValue::ZERO => aggr_proj_time(
                         ctx,
                         calc,
                         item_uid,
@@ -48,36 +59,13 @@ impl Vast {
                         &cseq,
                         &ospec,
                         projectee_uid,
-                        burst_opts.spool,
                         &mut accum,
-                    ) {
-                        nps += accum.get_per_second();
-                    }
-                }
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
-                    Some(time) if time > PValue::ZERO => {
-                        let mut accum = SeqAccum::new_stack();
-                        if aggr_proj_time(
-                            ctx,
-                            calc,
-                            item_uid,
-                            effect,
-                            &cseq,
-                            &ospec,
-                            projectee_uid,
-                            &mut accum,
-                            time,
-                        ) {
-                            nps += accum.get_per_second();
-                        }
-                    }
-                    _ => {
-                        let mut accum = SeqAccum::new_stack();
-                        if aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, &ospec, projectee_uid, &mut accum) {
-                            nps += accum.get_per_second();
-                        }
-                    }
+                        time,
+                    ),
+                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, &ospec, projectee_uid, &mut accum),
                 },
+            } {
+                nps += accum.get_per_second();
             }
         }
         if include_charges {

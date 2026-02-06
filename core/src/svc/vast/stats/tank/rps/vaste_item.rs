@@ -98,27 +98,17 @@ fn get_local_rps(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            match time_options {
-                StatTimeOptions::Burst(_) => {
-                    let mut accum = SeqAccum::new_stack();
-                    if aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
-                        total_rps += accum.get_per_second();
-                    }
-                }
+            let mut accum = SeqAccum::new_stack();
+            if match time_options {
+                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = SeqAccum::new_stack();
-                        if aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time) {
-                            total_rps += accum.get_per_second();
-                        }
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time)
                     }
-                    _ => {
-                        let mut accum = SeqAccum::new_stack();
-                        if aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
-                            total_rps += accum.get_per_second();
-                        }
-                    }
+                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
                 },
+            } {
+                total_rps += accum.get_per_second();
             }
         }
     }
@@ -154,9 +144,9 @@ fn get_irr_data(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let mut accum = SeqAccum::new_stack();
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
-                    let mut accum = SeqAccum::new_stack();
                     if aggr_proj_first(
                         ctx,
                         calc,
@@ -176,7 +166,6 @@ fn get_irr_data(
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = SeqAccum::new_stack();
                         if aggr_proj_time(
                             ctx,
                             calc,
@@ -199,7 +188,6 @@ fn get_irr_data(
                         }
                     }
                     _ => {
-                        let mut accum = SeqAccum::new_stack();
                         if aggr_proj_looped(
                             ctx,
                             calc,
@@ -213,7 +201,10 @@ fn get_irr_data(
                             // Adjust averaged reps per second to initial cycle duration to for
                             // purposes of RR stacking penalty calculation. This does not provide
                             // accurate result, but is likely to be a good enough approximation.
-                            let first_cycle_duration = cseq.get_first_cycle().duration;
+                            let first_cycle_duration = match cseq.try_loop_cseq() {
+                                Some(cseq_looped) => cseq_looped.get_first_cycle().duration,
+                                None => cseq.get_first_cycle().duration,
+                            };
                             result.push(IrrEntry {
                                 amount: accum.get_per_second() * first_cycle_duration,
                                 cycle_duration: first_cycle_duration,

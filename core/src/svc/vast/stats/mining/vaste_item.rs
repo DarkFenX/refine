@@ -55,37 +55,27 @@ fn get_mps_item_uid(
             Some(ospec) => ospec,
             None => continue,
         };
-        match time_options {
-            StatTimeOptions::Burst(burst_opts) => {
-                let mut accum = SeqAccum::new_stack();
-                if aggr_proj_first(
-                    ctx,
-                    calc,
-                    item_uid,
-                    effect,
-                    &cseq,
-                    &ospec,
-                    None,
-                    burst_opts.spool,
-                    &mut accum,
-                ) {
-                    mps += accum.get_per_second();
-                }
-            }
+        let mut accum = SeqAccum::new_stack();
+        if match time_options {
+            StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                ctx,
+                calc,
+                item_uid,
+                effect,
+                &cseq,
+                &ospec,
+                None,
+                burst_opts.spool,
+                &mut accum,
+            ),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => {
-                    let mut accum = SeqAccum::new_stack();
-                    if aggr_proj_time(ctx, calc, item_uid, effect, &cseq, &ospec, None, &mut accum, time) {
-                        mps += accum.get_per_second();
-                    }
+                    aggr_proj_time(ctx, calc, item_uid, effect, &cseq, &ospec, None, &mut accum, time)
                 }
-                _ => {
-                    let mut accum = SeqAccum::new_stack();
-                    if aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, &ospec, None, &mut accum) {
-                        mps += accum.get_per_second();
-                    }
-                }
+                _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, &ospec, None, &mut accum),
             },
+        } {
+            mps += accum.get_per_second();
         }
     }
     mps
