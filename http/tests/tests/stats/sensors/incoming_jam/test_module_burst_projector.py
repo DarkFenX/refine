@@ -3,7 +3,7 @@ from fw import approx
 from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionInJam, StatTimeBurst, StatTimeSim
 
 
-def test_general(client, consts):
+def setup_burst_projector_test(client, consts):
     eve_sensor_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
     eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
@@ -11,6 +11,7 @@ def test_general(client, consts):
     eve_jam_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength_bonus)
     eve_jam_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength_bonus)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
     eve_aoe_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_duration)
     eve_aoe_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_range)
     eve_optimal_attr_id = client.mk_eve_attr()
@@ -27,7 +28,7 @@ def test_general(client, consts):
     eve_module_id = client.mk_eve_item(
         attrs={
             eve_jam_radar_attr_id: 5, eve_jam_magnet_attr_id: 5, eve_jam_grav_attr_id: 5, eve_jam_ladar_attr_id: 5,
-            eve_cycle_time_attr_id: 168750, eve_aoe_duration_attr_id: 40000,
+            eve_cycle_time_attr_id: 168750, eve_delay_attr_id: 10000, eve_aoe_duration_attr_id: 40000,
             eve_optimal_attr_id: 500000, eve_aoe_range_attr_id: 10000},
         eff_ids=[eve_jam_effect_id],
         defeff_id=eve_jam_effect_id)
@@ -37,6 +38,12 @@ def test_general(client, consts):
     eve_tgt_ship2_id = client.mk_eve_ship(
         attrs={eve_sensor_radar_attr_id: 35, eve_radius_attr_id: 150, eve_resist_attr_id: 1})
     client.create_sources()
+    return eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id
+
+
+def test_general(client, consts):
+    eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id = setup_burst_projector_test(
+        client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
@@ -73,37 +80,7 @@ def test_general(client, consts):
 
 
 def test_time(client, consts):
-    eve_sensor_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
-    eve_jam_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength_bonus)
-    eve_jam_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength_bonus)
-    eve_jam_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength_bonus)
-    eve_jam_ladar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength_bonus)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
-    eve_aoe_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_duration)
-    eve_aoe_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_range)
-    eve_optimal_attr_id = client.mk_eve_attr()
-    eve_falloff_attr_id = client.mk_eve_attr()
-    eve_resist_attr_id = client.mk_eve_attr()
-    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_jam_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.doomsday_aoe_ecm,
-        cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id,
-        range_attr_id=eve_optimal_attr_id,
-        falloff_attr_id=eve_falloff_attr_id,
-        resist_attr_id=eve_resist_attr_id)
-    eve_module_id = client.mk_eve_item(
-        attrs={
-            eve_jam_radar_attr_id: 5, eve_jam_magnet_attr_id: 5, eve_jam_grav_attr_id: 5, eve_jam_ladar_attr_id: 5,
-            eve_cycle_time_attr_id: 168750, eve_delay_attr_id: 10000, eve_aoe_duration_attr_id: 40000,
-            eve_optimal_attr_id: 500000, eve_aoe_range_attr_id: 10000},
-        eff_ids=[eve_jam_effect_id],
-        defeff_id=eve_jam_effect_id)
-    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 4032})
-    eve_tgt_ship_id = client.mk_eve_ship(
-        attrs={eve_sensor_grav_attr_id: 50, eve_radius_attr_id: 150, eve_resist_attr_id: 0.5})
-    client.create_sources()
+    eve_module_id, eve_src_ship_id, eve_tgt_ship_id, _ = setup_burst_projector_test(client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
