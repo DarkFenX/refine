@@ -75,31 +75,56 @@ def test_time(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
-        StatsOptionFitOutNps(time_options=StatTimeBurst()),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=9)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=11)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=60))])))
-    assert api_fleet_stats.outgoing_nps == [
-        approx(63.492063), approx(63.492063), 0, approx(363.6363636), approx(66.6666667)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
-        StatsOptionFitOutNps(time_options=StatTimeBurst()),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=9)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=11)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=60))])))
-    assert api_fit_stats.outgoing_nps == [
-        approx(63.492063), approx(63.492063), 0, approx(363.6363636), approx(66.6666667)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
-        StatsOptionItemOutNps(time_options=StatTimeBurst()),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=None)),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=9)),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=11)),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=60))])))
-    assert api_module_stats.outgoing_nps == [
-        approx(63.492063), approx(63.492063), 0, approx(363.6363636), approx(66.6666667)]
+    # Verification - burst stats (first cycle)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(63.492063)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
+    assert api_fit_stats.outgoing_nps.one() == approx(63.492063)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeBurst())])))
+    assert api_module_stats.outgoing_nps.one() == approx(63.492063)
+    # Sim stats without time - loop stats are exposed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(63.492063)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.outgoing_nps.one() == approx(63.492063)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=None))])))
+    assert api_module_stats.outgoing_nps.one() == approx(63.492063)
+    # Sim with time before neut effect is applied
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=9))])))
+    assert api_fleet_stats.outgoing_nps.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=9))])))
+    assert api_fit_stats.outgoing_nps.one() == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=9))])))
+    assert api_module_stats.outgoing_nps.one() == 0
+    # Sim with time when neut effect has just been applied
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=11))])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(363.6363636)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=11))])))
+    assert api_fit_stats.outgoing_nps.one() == approx(363.6363636)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=11))])))
+    assert api_module_stats.outgoing_nps.one() == approx(363.6363636)
+    # Sim with time when 1st cycle is about to complete
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=60))])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(66.6666667)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=60))])))
+    assert api_fit_stats.outgoing_nps.one() == approx(66.6666667)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=60))])))
+    assert api_module_stats.outgoing_nps.one() == approx(66.6666667)
 
 
 def test_range(client, consts):

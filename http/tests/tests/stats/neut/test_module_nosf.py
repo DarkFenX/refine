@@ -76,28 +76,56 @@ def test_time(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification - nosfs are applied at the end of the cycle
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
-        StatsOptionFitOutNps(time_options=StatTimeBurst()),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=9)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=10)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=15))])))
-    assert api_fleet_stats.outgoing_nps == [approx(21), approx(21), 0, approx(21), approx(14)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
-        StatsOptionFitOutNps(time_options=StatTimeBurst()),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=None)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=9)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=10)),
-        StatsOptionFitOutNps(time_options=StatTimeSim(time=15))])))
-    assert api_fit_stats.outgoing_nps == [approx(21), approx(21), 0, approx(21), approx(14)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
-        StatsOptionItemOutNps(time_options=StatTimeBurst()),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=None)),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=9)),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=10)),
-        StatsOptionItemOutNps(time_options=StatTimeSim(time=15))])))
-    assert api_module_stats.outgoing_nps == [approx(21), approx(21), 0, approx(21), approx(14)]
+    # Verification - burst stats (first cycle)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(21)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
+    assert api_fit_stats.outgoing_nps.one() == approx(21)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeBurst())])))
+    assert api_module_stats.outgoing_nps.one() == approx(21)
+    # Sim stats without time - loop stats are exposed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(21)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.outgoing_nps.one() == approx(21)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=None))])))
+    assert api_module_stats.outgoing_nps.one() == approx(21)
+    # Sim with time before nosf effect is applied (which happens at the end of cycle)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=9))])))
+    assert api_fleet_stats.outgoing_nps.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=9))])))
+    assert api_fit_stats.outgoing_nps.one() == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=9))])))
+    assert api_module_stats.outgoing_nps.one() == 0
+    # Sim with time right between cycles
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=10))])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(21)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=10))])))
+    assert api_fit_stats.outgoing_nps.one() == approx(21)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=10))])))
+    assert api_module_stats.outgoing_nps.one() == approx(21)
+    # Sim with time in the middle of 2nd cycle
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=15))])))
+    assert api_fleet_stats.outgoing_nps.one() == approx(14)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=15))])))
+    assert api_fit_stats.outgoing_nps.one() == approx(14)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=15))])))
+    assert api_module_stats.outgoing_nps.one() == approx(14)
 
 
 def test_override(client, consts):
