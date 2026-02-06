@@ -34,15 +34,17 @@ def setup_burst_projector_test(client, consts):
         defeff_id=eve_jam_effect_id)
     eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 4032})
     eve_tgt_ship1_id = client.mk_eve_ship(
-        attrs={eve_sensor_grav_attr_id: 50, eve_radius_attr_id: 150, eve_resist_attr_id: 0.5})
+        attrs={eve_sensor_radar_attr_id: 0.01, eve_radius_attr_id: 150, eve_resist_attr_id: 0.0001})
     eve_tgt_ship2_id = client.mk_eve_ship(
+        attrs={eve_sensor_grav_attr_id: 50, eve_radius_attr_id: 150, eve_resist_attr_id: 0.5})
+    eve_tgt_ship3_id = client.mk_eve_ship(
         attrs={eve_sensor_radar_attr_id: 35, eve_radius_attr_id: 150, eve_resist_attr_id: 1})
     client.create_sources()
-    return eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id
+    return eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, eve_tgt_ship3_id
 
 
 def test_general(client, consts):
-    eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id = setup_burst_projector_test(
+    eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, eve_tgt_ship3_id = setup_burst_projector_test(
         client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -51,13 +53,20 @@ def test_general(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - resist is above immunity threshold, can't jam
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
+    assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
+    assert api_tgt_ship_stats.incoming_jam.one() == [0, 0]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.05), approx(0.01185185)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.05), approx(0.01185185)]
     # Action
-    api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.1428571), approx(0.03386243)]
@@ -80,13 +89,14 @@ def test_general(client, consts):
 
 
 def test_time(client, consts):
-    eve_module_id, eve_src_ship_id, eve_tgt_ship_id, _ = setup_burst_projector_test(client=client, consts=consts)
+    eve_module_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, _ = setup_burst_projector_test(
+        client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship2_id, coordinates=(0, 0, 0))
     api_src_module.change_module(add_projs=[api_tgt_ship.id])
     # Verification - burst stats (first cycle)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
@@ -137,3 +147,12 @@ def test_time(client, consts):
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
         incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=179))])))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.0975), approx(0.01124302)]
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship1_id)
+    # Verification - when chance to jam is 0%, loop doesn't make it 100%
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.incoming_jam.one() == [0, 0]
