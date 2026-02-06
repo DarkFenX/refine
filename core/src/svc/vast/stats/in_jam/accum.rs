@@ -1,8 +1,10 @@
-use super::shared::{SeqAccum, SeqInstanceAccum};
 use crate::{
     misc::Ecm,
     num::{Count, PValue, UnitInterval},
-    svc::vast::{StatSensors, StatSensorsKind},
+    svc::vast::{
+        StatSensors, StatSensorsKind,
+        aggr::{SeqAccum, SeqInstanceAccum},
+    },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

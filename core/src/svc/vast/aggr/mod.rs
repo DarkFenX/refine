@@ -1,7 +1,7 @@
 //! Aggregators convert cycle sequence and output-per-cycle into a more processed form like
 //! single-number stats.
 
-pub(in crate::svc::vast) use accum::SeqAccum;
+pub(in crate::svc::vast) use accum::{SeqAccum, SeqInstanceAccum};
 pub(in crate::svc::vast) use local_clip::aggr_local_clip;
 pub(in crate::svc::vast) use local_first::aggr_local_first;
 pub(in crate::svc::vast) use local_looped::aggr_local_looped;
