@@ -4,7 +4,7 @@ use crate::{
     ad::AValue,
     dbg::{DebugError, DebugResult},
     def::SERVER_TICK_HZ,
-    num::Value,
+    num::{Count, Value},
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
 };
 
@@ -99,6 +99,9 @@ impl PValue {
     }
     pub(crate) fn powi(self, n: i32) -> Self {
         Self(self.0.powi(n))
+    }
+    pub(crate) fn pow_count(self, n: Count) -> Self {
+        Self(self.0.powi(n.into_u32() as i32))
     }
     pub(crate) fn pow_pvalue(self, n: Self) -> Self {
         Self(self.0.powf(n.into_f64()))
