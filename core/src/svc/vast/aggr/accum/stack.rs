@@ -13,7 +13,7 @@ impl<T> SeqAccum<SeqInstanceAccumStack<T>> {
         T: LibDefault,
     {
         SeqAccum {
-            instances: SeqInstanceAccumStack::default(),
+            instances: SeqInstanceAccumStack::new(),
             time: PValue::ZERO,
         }
     }
@@ -31,11 +31,11 @@ impl<T> SeqAccum<SeqInstanceAccumStack<T>> {
 pub(in crate::svc::vast) struct SeqInstanceAccumStack<T> {
     pub(in crate::svc::vast) stacked: T,
 }
-impl<T> Default for SeqInstanceAccumStack<T>
+impl<T> SeqInstanceAccumStack<T>
 where
     T: LibDefault,
 {
-    fn default() -> Self {
+    pub(in crate::svc::vast) fn new() -> Self {
         Self {
             stacked: T::lib_default(),
         }
@@ -43,13 +43,16 @@ where
 }
 impl<T> SeqInstanceAccum<T> for SeqInstanceAccumStack<T>
 where
-    T: Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue>,
+    T: Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LibDefault,
 {
     fn add_instance(&mut self, mut instance: T, chance_mult: Option<PValue>, count: Count) {
         if let Some(chance_mult) = chance_mult {
             instance *= chance_mult;
         }
         self.stacked += instance * count.into_pvalue();
+    }
+    fn copy_blank(&self) -> Self {
+        Self::new()
     }
     fn merge(&mut self, other: &Self, count: Count) {
         self.stacked += other.stacked * count.into_pvalue();

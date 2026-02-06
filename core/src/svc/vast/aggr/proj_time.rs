@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
 ) -> bool
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqInstanceAccum<T> + Default,
+    A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
         Some(inv_proj) => inv_proj,
@@ -124,7 +124,7 @@ fn aggr_spool<A, T>(
     inv_spool: AggrSpoolInvData,
 ) where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: Default + SeqInstanceAccum<T>,
+    A: SeqInstanceAccum<T>,
 {
     match cseq {
         CycleSeq::Lim(inner) => {
@@ -286,7 +286,7 @@ fn aggr_spool<A, T>(
                 let mut time = ptime.into_value();
                 let mut uninterrupted_cycles = Count::ZERO;
                 while time >= Value::ZERO {
-                    let mut loop_accum = A::default();
+                    let mut loop_accum = accum.copy_blank();
                     let saved_interrupted_cycles = uninterrupted_cycles;
                     process_limited_spool(
                         ctx,

@@ -21,5 +21,6 @@ impl<A> SeqAccum<A> {
 
 pub(in crate::svc::vast) trait SeqInstanceAccum<T> {
     fn add_instance(&mut self, instance: T, chance_mult: Option<PValue>, count: Count);
+    fn copy_blank(&self) -> Self;
     fn merge(&mut self, other: &Self, count: Count);
 }

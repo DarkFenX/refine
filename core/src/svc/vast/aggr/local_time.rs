@@ -25,7 +25,7 @@ pub(in crate::svc::vast) fn aggr_local_time<T, A>(
 ) -> bool
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqInstanceAccum<T> + Default,
+    A: SeqInstanceAccum<T>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
         Some(inv_local) => inv_local,

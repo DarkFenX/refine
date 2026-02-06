@@ -13,7 +13,7 @@ impl<T> SeqAccum<SeqInstanceAccumStackMax<T>> {
         T: LibDefault,
     {
         SeqAccum {
-            instances: SeqInstanceAccumStackMax::default(),
+            instances: SeqInstanceAccumStackMax::new(),
             time: PValue::ZERO,
         }
     }
@@ -32,11 +32,11 @@ pub(in crate::svc::vast) struct SeqInstanceAccumStackMax<T> {
     pub(in crate::svc::vast) stacked: T,
     pub(in crate::svc::vast) max: T,
 }
-impl<T> Default for SeqInstanceAccumStackMax<T>
+impl<T> SeqInstanceAccumStackMax<T>
 where
     T: LibDefault,
 {
-    fn default() -> Self {
+    pub(in crate::svc::vast) fn new() -> Self {
         Self {
             stacked: T::lib_default(),
             max: T::lib_default(),
@@ -45,7 +45,12 @@ where
 }
 impl<T> SeqInstanceAccum<T> for SeqInstanceAccumStackMax<T>
 where
-    T: Copy + std::ops::AddAssign<T> + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LibMax,
+    T: Copy
+        + std::ops::AddAssign<T>
+        + std::ops::Mul<PValue, Output = T>
+        + std::ops::MulAssign<PValue>
+        + LibDefault
+        + LibMax,
 {
     fn add_instance(&mut self, mut instance: T, chance_mult: Option<PValue>, count: Count) {
         if let Some(chance_mult) = chance_mult {
@@ -53,6 +58,9 @@ where
         }
         self.stacked += instance * count.into_pvalue();
         self.max = LibMax::lib_max(self.max, instance);
+    }
+    fn copy_blank(&self) -> Self {
+        Self::new()
     }
     fn merge(&mut self, other: &Self, count: Count) {
         self.stacked += other.stacked * count.into_pvalue();
