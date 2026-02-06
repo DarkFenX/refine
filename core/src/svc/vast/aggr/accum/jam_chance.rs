@@ -51,11 +51,14 @@ impl SeqInstanceAccum<Ecm> for SeqInstanceAccumEcm {
             StatSensorsKind::Gravimetric => instance.gravimetric,
             StatSensorsKind::Ladar => instance.ladar,
         };
+        if jam_str <= PValue::FLOAT_TOLERANCE {
+            return;
+        }
         let mut jam_chance = UnitInterval::from_pvalue_clamped(jam_str / self.sensors.strength);
         if let Some(chance_mult) = chance_mult {
             jam_chance = UnitInterval::from_pvalue_clamped(jam_chance.into_pvalue() * chance_mult);
         }
-        self.jam_time += instance.duration + jam_chance.into_pvalue() * count.into_pvalue();
+        self.jam_time += instance.duration * jam_chance.into_pvalue() * count.into_pvalue();
         self.unjam_chance *= PValue::from_value_unchecked(PValue::ONE - jam_chance.into_pvalue()).pow_count(count)
     }
     fn copy_blank(&self) -> Self {
