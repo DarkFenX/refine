@@ -1,5 +1,5 @@
 pub(crate) use attr_spec::AttrSpec;
-pub use dmg_kinds::DmgKinds;
+pub(crate) use dmg_kinds::DmgKinds;
 pub use dps_profile::{Breacher, BreacherError, DpsProfile, DpsProfileError};
 pub(crate) use ecm::Ecm;
 pub use effect_mode::EffectMode;

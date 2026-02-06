@@ -28,7 +28,6 @@ impl LibDefault for DmgKinds<PValue> {
         }
     }
 }
-// TODO: remove, since it's supposed to be handled in accumulator now
 impl LibMax for DmgKinds<PValue> {
     fn lib_max(self, rhs: Self) -> Self {
         match self.get_total() >= rhs.get_total() {

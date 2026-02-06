@@ -1,12 +1,12 @@
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct DmgKinds<T> {
-    pub em: T,
-    pub thermal: T,
-    pub kinetic: T,
-    pub explosive: T,
+pub(crate) struct DmgKinds<T> {
+    pub(crate) em: T,
+    pub(crate) thermal: T,
+    pub(crate) kinetic: T,
+    pub(crate) explosive: T,
 }
 impl<T> DmgKinds<T> {
-    pub fn iter(&self) -> impl Iterator<Item = &T> {
+    pub(crate) fn iter(&self) -> impl Iterator<Item = &T> {
         DmgKindsIter::new(self)
     }
 }
@@ -14,7 +14,7 @@ impl<T> DmgKinds<T>
 where
     T: Copy + std::ops::Add<T, Output = T>,
 {
-    pub fn get_total(&self) -> T {
+    pub(crate) fn get_total(&self) -> T {
         self.em + self.thermal + self.kinetic + self.explosive
     }
 }
@@ -56,7 +56,7 @@ impl<T> std::ops::IndexMut<usize> for DmgKinds<T> {
     }
 }
 
-pub struct DmgKindsIter<'a, T> {
+pub(crate) struct DmgKindsIter<'a, T> {
     item: &'a DmgKinds<T>,
     index: usize,
 }
