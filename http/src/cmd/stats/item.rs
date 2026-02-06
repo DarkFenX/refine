@@ -5,9 +5,9 @@ use crate::{
     cmd::{
         shared::get_primary_item,
         stats::options::{
-            HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionItemDps,
-            HStatOptionItemMining, HStatOptionItemOutCps, HStatOptionItemOutNps, HStatOptionItemOutRps,
-            HStatOptionItemVolley, HStatOptionRps, HStatResolvedOption,
+            HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps,
+            HStatOptionIncomingJam, HStatOptionItemDps, HStatOptionItemMining, HStatOptionItemOutCps,
+            HStatOptionItemOutNps, HStatOptionItemOutRps, HStatOptionItemVolley, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -52,7 +52,7 @@ pub(crate) struct HGetItemStatsCmd {
     sensors: Option<bool>,
     dscan_range: Option<bool>,
     probing_size: Option<bool>,
-    incoming_jam: Option<bool>,
+    incoming_jam: Option<HStatOption<HStatOptionIncomingJam>>,
     // Mobility
     speed: Option<bool>,
     agility: Option<bool>,
@@ -171,8 +171,9 @@ impl HGetItemStatsCmd {
                 .map(|v| v.into_f64())
                 .into();
         }
-        if self.incoming_jam.unwrap_or(self.default) {
-            stats.incoming_jam = core_item.get_stat_incoming_jam().map(HStatInJam::from_core).into();
+        let in_jam_opt = HStatResolvedOption::new(&self.incoming_jam, self.default);
+        if in_jam_opt.enabled {
+            stats.incoming_jam = get_incoming_jam_stats(&mut core_item, in_jam_opt.options).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Mobility
@@ -471,6 +472,24 @@ fn get_cap_sim_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapSim
         let stagger = option.stagger.into_core();
         match core_item.get_stat_cap_sim(core_cap_perc, option.reload_optionals, stagger) {
             Ok(result) => results.push(HStatCapSim::from_core(result)),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sensors
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_incoming_jam_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionIncomingJam>,
+) -> Option<Vec<HStatInJam>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_time_options = option.time_options.into_core();
+        match core_item.get_stat_incoming_jam(core_time_options) {
+            Ok(core_stat) => results.push(HStatInJam::from_core(core_stat)),
             Err(_) => return None,
         }
     }

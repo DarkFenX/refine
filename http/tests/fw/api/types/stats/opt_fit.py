@@ -7,6 +7,7 @@ if typing.TYPE_CHECKING:
     from .opt_cap import StatsOptionCapBalance, StatsOptionCapSim
     from .opt_dmg import StatsOptionFitDps, StatsOptionFitVolley
     from .opt_ehp import StatsOptionEhp
+    from .opt_incoming_jam import StatsOptionInJam
     from .opt_mining import StatsOptionFitMining
     from .opt_outgoing_cps import StatsOptionFitOutCps
     from .opt_outgoing_nps import StatsOptionFitOutNps
@@ -68,7 +69,7 @@ class FitStatsOptions:
     sensors: bool | type[Absent] = Absent
     dscan_range: bool | type[Absent] = Absent
     probing_size: bool | type[Absent] = Absent
-    incoming_jam: bool | type[Absent] = Absent
+    incoming_jam: bool | tuple[bool, list[StatsOptionInJam]] | type[Absent] = Absent
     # Ship mobility
     speed: bool | type[Absent] = Absent
     agility: bool | type[Absent] = Absent

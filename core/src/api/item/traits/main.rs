@@ -437,11 +437,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_probing_size(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_incoming_jam(&mut self) -> Result<StatInJam, ItemStatError> {
+    fn get_stat_incoming_jam(&mut self, time_options: StatTimeOptions) -> Result<StatInJam, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_incoming_jam(&sol.u_data, item_uid)
+            .get_stat_item_incoming_jam(&sol.u_data, item_uid, time_options)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

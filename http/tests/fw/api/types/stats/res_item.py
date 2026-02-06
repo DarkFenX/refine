@@ -40,4 +40,6 @@ class ItemStats(AttrDict):
             'cap_sim': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             # Sensors
             'sensors': AttrHookDef(func=lambda d: StatSensors(data=d) if d is not None else None),
-            'incoming_jam': AttrHookDef(func=lambda d: StatIncomingJam(data=d) if d is not None else None)})
+            'incoming_jam': AttrHookDef(func=lambda d: (
+                NttList(StatIncomingJam(data=e) for e in d)
+                if d is not None else None))})

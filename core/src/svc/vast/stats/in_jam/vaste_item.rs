@@ -7,7 +7,7 @@ use crate::{
         cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
-            Vast,
+            StatTimeOptions, Vast,
             aggr::{SeqAccum, aggr_proj_first},
             stats::item_checks::check_drone_fighter_ship,
         },
@@ -21,6 +21,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         projectee_item_uid: UItemId,
+        time_options: StatTimeOptions,
     ) -> Result<StatInJam, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, projectee_item_uid)?;
         let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_uid) {
@@ -58,6 +59,7 @@ impl Vast {
                     None,
                     &mut accum,
                 ) {
+                    // Across different effects, both chance and uptime stack multiplicatively
                     projectee_unjam_chance *= accum.get_unjam_chance().into_value();
                     projectee_unjam_uptime *= accum.get_unjam_uptime().into_value();
                 };

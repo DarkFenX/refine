@@ -105,7 +105,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) probing_size: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) incoming_jam: TriStateField<HStatInJam>,
+    pub(crate) incoming_jam: TriStateField<Vec<HStatInJam>>,
     // Ship mobility
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) speed: TriStateField<f64>,

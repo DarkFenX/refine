@@ -1,7 +1,7 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
     num::{Count, PValue},
-    svc::vast::{StatInJam, StatSensors},
+    svc::vast::{StatInJam, StatSensors, StatTimeOptions},
 };
 
 impl<'a> FitMut<'a> {
@@ -23,7 +23,7 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_probing_size(&mut self) -> Result<Option<PValue>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_probing_size()?)
     }
-    pub fn get_stat_incoming_jam(&mut self) -> Result<StatInJam, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_incoming_jam()?)
+    pub fn get_stat_incoming_jam(&mut self, time_options: StatTimeOptions) -> Result<StatInJam, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_incoming_jam(time_options)?)
     }
 }

@@ -6,7 +6,7 @@ use crate::{
         stats::options::{
             HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
             HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps, HStatOptionFitOutRps,
-            HStatOptionFitVolley, HStatOptionRps, HStatResolvedOption,
+            HStatOptionFitVolley, HStatOptionIncomingJam, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -75,7 +75,7 @@ pub(crate) struct HGetFitStatsCmd {
     sensors: Option<bool>,
     dscan_range: Option<bool>,
     probing_size: Option<bool>,
-    incoming_jam: Option<bool>,
+    incoming_jam: Option<HStatOption<HStatOptionIncomingJam>>,
     // Ship mobility
     speed: Option<bool>,
     agility: Option<bool>,
@@ -265,8 +265,9 @@ impl HGetFitStatsCmd {
                 .map(|v| v.into_f64())
                 .into();
         }
-        if self.incoming_jam.unwrap_or(self.default) {
-            stats.incoming_jam = core_fit.get_stat_incoming_jam().map(HStatInJam::from_core).into();
+        let in_jam_opt = HStatResolvedOption::new(&self.incoming_jam, self.default);
+        if in_jam_opt.enabled {
+            stats.incoming_jam = get_incoming_jam_stats(&mut core_fit, in_jam_opt.options).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship mobility
@@ -511,6 +512,21 @@ fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapSim>)
         let stagger = option.stagger.into_core();
         match core_fit.get_stat_cap_sim(cap_perc, option.reload_optionals, stagger) {
             Ok(result) => results.push(HStatCapSim::from_core(result)),
+            Err(_) => return None,
+        }
+    }
+    Some(results)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sensors
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_incoming_jam_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionIncomingJam>) -> Option<Vec<HStatInJam>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_time_options = option.time_options.into_core();
+        match core_fit.get_stat_incoming_jam(core_time_options) {
+            Ok(core_stat) => results.push(HStatInJam::from_core(core_stat)),
             Err(_) => return None,
         }
     }
