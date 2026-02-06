@@ -7,4 +7,3 @@ mod impl_mining_amount;
 mod impl_pvalue;
 mod instance_duration;
 mod limit_amount;
-mod output_math;

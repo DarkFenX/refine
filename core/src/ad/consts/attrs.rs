@@ -15,7 +15,6 @@ impl AAttrId {
         [Self::CPU, Self::POWER, Self::CPU_OUTPUT, Self::POWER_OUTPUT];
     // Attribute IDs
     pub(crate) const MASS: Self = Self::from_eid(EAttrId::MASS);
-    pub(crate) const CAPACITOR_NEED: Self = Self::from_eid(EAttrId::CAPACITOR_NEED);
     pub(crate) const HP: Self = Self::from_eid(EAttrId::HP);
     pub(crate) const POWER_OUTPUT: Self = Self::from_eid(EAttrId::POWER_OUTPUT);
     pub(crate) const LOW_SLOTS: Self = Self::from_eid(EAttrId::LOW_SLOTS);

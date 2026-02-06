@@ -28,7 +28,10 @@ impl SeqAccum<SeqInstanceAccumEcm> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct SeqInstanceAccumEcm {
     sensors: StatSensors,
+    // This is total chance target won't be jammed a single time over sequence
     unjam_chance: PValue,
+    // Jam time is jam chance multiplied by jam duration for a single instance. Different instances
+    // within the same sequence stack additively, which is considered a good enough approximation.
     jam_time: PValue,
 }
 impl SeqInstanceAccumEcm {
@@ -41,7 +44,7 @@ impl SeqInstanceAccumEcm {
     }
 }
 impl SeqInstanceAccum<Ecm> for SeqInstanceAccumEcm {
-    fn add_instance(&mut self, mut instance: Ecm, chance_mult: Option<PValue>, count: Count) {
+    fn add_instance(&mut self, instance: Ecm, chance_mult: Option<PValue>, count: Count) {
         if count == Count::ZERO {
             return;
         }
@@ -51,13 +54,19 @@ impl SeqInstanceAccum<Ecm> for SeqInstanceAccumEcm {
             StatSensorsKind::Gravimetric => instance.gravimetric,
             StatSensorsKind::Ladar => instance.ladar,
         };
-        if jam_str <= PValue::FLOAT_TOLERANCE {
+        // For case when jam strength is 0 and sensor strength is 0
+        if jam_str < PValue::FLOAT_TOLERANCE {
             return;
         }
+        // First, clamp jam strength to 100%, then apply chance-based multipliers. This is needed
+        // for cases like: bomb has 10+ jam strength, target has 4 sensor strength, but bomb has 50%
+        // chance to hit target (due to varying flight time), thus it can't jam target in more than
+        // 50% cases in this case
         let mut jam_chance = UnitInterval::from_pvalue_clamped(jam_str / self.sensors.strength);
         if let Some(chance_mult) = chance_mult {
             jam_chance = UnitInterval::from_pvalue_clamped(jam_chance.into_pvalue() * chance_mult);
         }
+        // Record changes based on calculated jam chance
         self.jam_time += instance.duration * jam_chance.into_pvalue() * count.into_pvalue();
         self.unjam_chance *= PValue::from_value_unchecked(PValue::ONE - jam_chance.into_pvalue()).pow_count(count)
     }
@@ -65,6 +74,7 @@ impl SeqInstanceAccum<Ecm> for SeqInstanceAccumEcm {
         Self::new(self.sensors)
     }
     fn merge(&mut self, other: &Self, count: Count) {
+        // Consider accum being merged as part of the same sequence for stacking considerations
         self.unjam_chance *= other.unjam_chance.pow_count(count);
         self.jam_time += other.jam_time * count.into_pvalue();
     }

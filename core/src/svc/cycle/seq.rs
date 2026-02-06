@@ -84,11 +84,3 @@ pub(in crate::svc) enum CycleSeqLooped<T = CycleDataFull> {
     Inf(CSeqInf<T>),
     LoopLimSin(CycleSeqLoopLimSin<T>),
 }
-impl<T> CycleSeqLooped<T> {
-    pub(in crate::svc) fn get_first_cycle(&self) -> &T {
-        match self {
-            Self::Inf(inner) => inner.get_first_cycle(),
-            Self::LoopLimSin(inner) => inner.get_first_cycle(),
-        }
-    }
-}
