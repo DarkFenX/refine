@@ -48,27 +48,12 @@ def test_state(client, consts):
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=(True, [
-        StatsOptionFitOutCps(time_options=StatTimeBurst()),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=None)),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=4)),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=6)),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=9))])))
-    assert api_fleet_stats.outgoing_cps == [approx(70.2), approx(70.2), 0, approx(58.5), approx(39)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=(True, [
-        StatsOptionFitOutCps(time_options=StatTimeBurst()),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=None)),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=4)),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=6)),
-        StatsOptionFitOutCps(time_options=StatTimeSim(time=9))])))
-    assert api_fit_stats.outgoing_cps == [approx(70.2), approx(70.2), 0, approx(58.5), approx(39)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=(True, [
-        StatsOptionItemOutCps(time_options=StatTimeBurst()),
-        StatsOptionItemOutCps(time_options=StatTimeSim(time=None)),
-        StatsOptionItemOutCps(time_options=StatTimeSim(time=4)),
-        StatsOptionItemOutCps(time_options=StatTimeSim(time=6)),
-        StatsOptionItemOutCps(time_options=StatTimeSim(time=9))])))
-    assert api_module_stats.outgoing_cps == [approx(70.2), approx(70.2), 0, approx(58.5), approx(39)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    assert api_fit_stats.outgoing_cps.one() == approx(70.2)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_module_stats.outgoing_cps.one() == approx(70.2)
 
 
 def test_time(client, consts):
@@ -88,13 +73,56 @@ def test_time(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=True))
+    # Verification - burst stats (first cycle)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeBurst())])))
     assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeBurst())])))
     assert api_fit_stats.outgoing_cps.one() == approx(70.2)
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeBurst())])))
     assert api_module_stats.outgoing_cps.one() == approx(70.2)
+    # Sim stats without time - loop stats are exposed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.outgoing_cps.one() == approx(70.2)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=None))])))
+    assert api_module_stats.outgoing_cps.one() == approx(70.2)
+    # Sim with time before transfer effect is applied (which happens at the end of cycle)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=4))])))
+    assert api_fleet_stats.outgoing_cps.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=4))])))
+    assert api_fit_stats.outgoing_cps.one() == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=4))])))
+    assert api_module_stats.outgoing_cps.one() == 0
+    # Sim with time just after 2nd cycle has started
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=6))])))
+    assert api_fleet_stats.outgoing_cps.one() == approx(58.5)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=6))])))
+    assert api_fit_stats.outgoing_cps.one() == approx(58.5)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=6))])))
+    assert api_module_stats.outgoing_cps.one() == approx(58.5)
+    # Sim with time just before completion of 2nd cycle
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=9))])))
+    assert api_fleet_stats.outgoing_cps.one() == approx(39)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=9))])))
+    assert api_fit_stats.outgoing_cps.one() == approx(39)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=9))])))
+    assert api_module_stats.outgoing_cps.one() == approx(39)
 
 
 def test_zero_cycle_time(client, consts):
