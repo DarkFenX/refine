@@ -11,7 +11,6 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
-        output::{Output, OutputSimple},
         vast::{
             Vast, VastFitData,
             aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
@@ -72,20 +71,20 @@ fn fill_consumers(
             Some(cseq_map) => cseq_map,
             None => continue,
         };
-        for (&effect_rid, &attr_rid) in item_data.iter() {
-            let cap_consumed = match calc.get_item_attr_oextra(ctx, item_uid, attr_rid) {
-                // Cap consumed can be negative value, e.g. for nosfs
-                Some(cap_consumed) if cap_consumed.abs() > PValue::FLOAT_TOLERANCE => cap_consumed,
-                _ => continue,
-            };
+        for (&effect_rid, ospec) in item_data.iter() {
             let cseq = match cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let opc = Output::Simple(OutputSimple {
-                instance: -cap_consumed,
-                delay: PValue::ZERO,
-            });
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
+                Some(inv_local) => inv_local,
+                None => continue,
+            };
+            let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, None);
+            // Negate output, since consumers negatively impact cap, but output of consumption
+            // getter function is positive
+            let opc = -opc;
             match stagger.is_staggered(item_uid) {
                 true => stagger_map.add_entry(StaggerKey::new(&cseq.convert(), &opc), (cseq.convert(), opc)),
                 false => aggregator.add_entry(PValue::ZERO, cseq.convert(), opc),

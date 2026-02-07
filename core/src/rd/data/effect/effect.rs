@@ -1,7 +1,10 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     misc::{DmgKinds, Ecm, MiningAmount},
-    nd::{N_EFFECT_MAP, NEffectBreacherDmgGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter},
+    nd::{
+        N_EFFECT_MAP, NEffectBreacherDmgGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter,
+        get_cap_consumer_base_opc,
+    },
     num::PValue,
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
@@ -60,6 +63,7 @@ pub(crate) struct REffect {
     pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<PValue>>,
     pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<PValue>>,
     pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<PValue>>,
+    pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
 }
@@ -111,6 +115,7 @@ impl REffect {
             neut_opc_spec: Default::default(),
             nosf_opc_spec: Default::default(),
             outgoing_cap_opc_spec: Default::default(),
+            cap_consume_opc_spec: Default::default(),
             cap_inject_opc_spec: Default::default(),
             ecm_opc_spec: Default::default(),
         }
@@ -246,6 +251,16 @@ impl REffect {
                 .ecm_opc_spec
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+            // Cap use OPC spec is not defined for every effect, and instead is generated here
+            if let Some(cap_consume_attr_aid) = a_effect.discharge_attr_id
+                && attr_aid_rid_map.get(&cap_consume_attr_aid).is_some()
+            {
+                self.cap_consume_opc_spec = Some(REffectLocalOpcSpec {
+                    base: get_cap_consumer_base_opc,
+                    charge_mult: None,
+                    limit_attr_rid: None,
+                })
+            }
         }
         self.is_active_with_duration = self.state == RState::Active && self.duration_attr_rid.is_some();
     }

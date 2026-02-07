@@ -1,3 +1,5 @@
+pub(crate) use shared::base_opc::get_cap_consumer_base_opc;
+
 pub(in crate::nd::effect) mod c10_stability_generator_gamma;
 pub(in crate::nd::effect) mod c1_char_missile_dmg;
 pub(in crate::nd::effect) mod c2_aar_paste_boost;

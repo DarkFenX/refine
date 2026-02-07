@@ -141,7 +141,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     // Stats-related - cap
-    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemId, REffectId, RAttrId>,
+    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     pub(in crate::svc::vast) cap_nosfs: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
     // Stats-related - misc

@@ -107,19 +107,24 @@ fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions,
             Some(cseq_map) => cseq_map,
             None => continue,
         };
-        for (&effect_rid, &attr_rid) in item_data.iter() {
-            let cap_consumed = match calc.get_item_attr_oextra(ctx, item_uid, attr_rid) {
-                Some(cap_consumed) => cap_consumed,
-                None => continue,
-            };
-            if cap_consumed == Value::ZERO {
-                continue;
-            }
+        for (&effect_rid, ospec) in item_data.iter() {
             let cseq = match cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
-            cps += cap_consumed / cseq.get_average_duration();
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let mut accum = SeqAccum::new_stack();
+            if match time_options {
+                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    Some(time) if time > PValue::ZERO => {
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time)
+                    }
+                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                },
+            } {
+                cps += accum.get_per_second();
+            }
         }
     }
     cps
@@ -139,37 +144,27 @@ fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_da
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            match time_options {
-                StatTimeOptions::Burst(burst_opts) => {
-                    let mut accum = SeqAccum::new_stack();
-                    if aggr_proj_first(
-                        ctx,
-                        calc,
-                        nosf_item_uid,
-                        effect,
-                        cseq,
-                        ospec,
-                        None,
-                        burst_opts.spool,
-                        &mut accum,
-                    ) {
-                        cps += accum.get_per_second();
-                    }
-                }
+            let mut accum = SeqAccum::new_stack();
+            if match time_options {
+                StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                    ctx,
+                    calc,
+                    nosf_item_uid,
+                    effect,
+                    cseq,
+                    ospec,
+                    None,
+                    burst_opts.spool,
+                    &mut accum,
+                ),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        let mut accum = SeqAccum::new_stack();
-                        if aggr_proj_time(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum, time) {
-                            cps += accum.get_per_second();
-                        }
+                        aggr_proj_time(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum, time)
                     }
-                    _ => {
-                        let mut accum = SeqAccum::new_stack();
-                        if aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum) {
-                            cps += accum.get_per_second();
-                        }
-                    }
+                    _ => aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum),
                 },
+            } {
+                cps += accum.get_per_second();
             }
         }
     }

@@ -1,12 +1,16 @@
 use super::generic::get_generic_base_opc;
 use crate::{
     ad::AAttrId,
-    nd::{NEffectProjOpcSpec, NEffectResist, effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult},
+    nd::{
+        NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectResist,
+        effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult,
+    },
     num::{PValue, Value},
     rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
+        funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemId,
@@ -43,15 +47,14 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
     item_uid: UItemId,
     _effect: &REffect,
 ) -> Option<Output<PValue>> {
-    let attr_consts = ctx.ac();
     let instance = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(
         ctx,
         item_uid,
-        attr_consts.energy_neut_amount,
+        ctx.ac().energy_neut_amount,
         Value::ZERO,
     )?);
     let delay = PValue::from_value_clamped(
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.doomsday_warning_duration, Value::ZERO)?
+        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
             / Value::THOUSAND,
     );
     Some(Output::Simple(OutputSimple { instance, delay }))
@@ -80,7 +83,7 @@ fn get_aoe_dd_side_neut_base_opc(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Misc
+// Nosferatus
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_nosf_nosf_base_opc(
     ctx: SvcCtx,
@@ -89,4 +92,21 @@ pub(in crate::nd::effect::data) fn get_nosf_nosf_base_opc(
     effect: &REffect,
 ) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cap consumers
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(crate) fn get_cap_consumer_base_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+) -> Option<Output<PValue>> {
+    let attr_rid = effect.discharge_attr_rid?;
+    let instance = PValue::from_value_clamped(calc.get_item_attr_oextra(ctx, item_uid, attr_rid)?);
+    Some(Output::Simple(OutputSimple {
+        instance,
+        delay: PValue::ZERO,
+    }))
 }

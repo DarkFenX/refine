@@ -1,3 +1,4 @@
+pub(crate) use cap::get_cap_consumer_base_opc;
 pub(in crate::nd::effect::data) use cap::{
     get_aoe_dd_side_neut_opc_spec, get_aoe_neut_base_opc, get_neut_base_opc, get_nosf_neut_base_opc,
     get_nosf_nosf_base_opc,

@@ -85,9 +85,9 @@ impl Vast {
                         // Outgoing reps
                         self.handle_orrs_start(effect, item_uid, &module.get_fit_uid());
                         // Cap
-                        if let Some(use_attr_rid) = effect.discharge_attr_rid {
+                        if let Some(cap_ospec) = effect.cap_consume_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
-                            fit_data.cap_consumers.add_entry(item_uid, effect.rid, use_attr_rid);
+                            fit_data.cap_consumers.add_entry(item_uid, effect.rid, cap_ospec);
                         }
                         if let Some(nosf_ospec) = effect.nosf_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
@@ -178,7 +178,7 @@ impl Vast {
                         // Outgoing reps
                         self.handle_orrs_stop(effect, item_uid, &module.get_fit_uid());
                         // Cap
-                        if effect.discharge_attr_rid.is_some() {
+                        if effect.cap_consume_opc_spec.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                             fit_data.cap_consumers.remove_l2(item_uid, &effect.rid);
                         }
