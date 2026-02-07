@@ -11,14 +11,14 @@ from fw.api import (
 
 
 def test_state(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_module_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
     client.create_sources()
@@ -57,14 +57,14 @@ def test_state(client, consts):
 
 
 def test_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_module_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
     client.create_sources()
@@ -125,15 +125,136 @@ def test_time(client, consts):
     assert api_module_stats.outgoing_cps.one() == approx(39)
 
 
+def test_range(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_module_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id,
+        range_attr_id=eve_optimal_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000, eve_optimal_attr_id: 7500},
+        eff_ids=[eve_module_effect_id],
+        defeff_id=eve_module_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 550})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 120})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_module_proj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 8169, 0))
+    api_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_src_fit.id])
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_cps.one() == approx(140.4)
+    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fit_stats.outgoing_cps.one() == approx(140.4)
+    api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.outgoing_cps.one() == approx(70.2)
+    api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.outgoing_cps.one() == approx(70.2)
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 8171, 0))
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_cps.one() == 0
+    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fit_stats.outgoing_cps.one() == 0
+    api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.outgoing_cps.one() == 0
+    api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.outgoing_cps.one() == 0
+
+
+def test_resist_and_limit(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_resist_attr_id = client.mk_eve_attr()
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_module_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id,
+        range_attr_id=eve_optimal_attr_id,
+        resist_attr_id=eve_resist_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000, eve_optimal_attr_id: 7500},
+        eff_ids=[eve_module_effect_id],
+        defeff_id=eve_module_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 550})
+    eve_tgt_ship1_id = client.mk_eve_ship(
+        attrs={eve_ship_amount_attr_id: 300, eve_resist_attr_id: 1, eve_radius_attr_id: 120})
+    eve_tgt_ship2_id = client.mk_eve_ship(
+        attrs={eve_ship_amount_attr_id: 300, eve_resist_attr_id: 0.5, eve_radius_attr_id: 120})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id)
+    api_module_proj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
+    api_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_src_fit.id])
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_cps.one() == approx(120)
+    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fit_stats.outgoing_cps.one() == approx(120)
+    api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.outgoing_cps.one() == approx(60)
+    api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.outgoing_cps.one() == approx(60)
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
+    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fit_stats.outgoing_cps.one() == approx(70.2)
+    api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_proj_stats.outgoing_cps.one() == approx(35.1)
+    api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_module_nonproj_stats.outgoing_cps.one() == approx(35.1)
+
+
 def test_zero_cycle_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_module_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 351, eve_cycle_time_attr_id: 0},
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 0},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
     client.create_sources()
@@ -152,13 +273,13 @@ def test_zero_cycle_time(client, consts):
 
 
 def test_no_cycle_time(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_module_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
         cat_id=consts.EveEffCat.target)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
     client.create_sources()
@@ -194,14 +315,14 @@ def test_item_not_loaded(client, consts):
 
 
 def test_not_requested(client, consts):
-    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_module_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_rep_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
         eff_ids=[eve_module_effect_id],
         defeff_id=eve_module_effect_id)
     client.create_sources()

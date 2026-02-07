@@ -11,6 +11,7 @@ if typing.TYPE_CHECKING:
 class StatsOptionFitOutCps:
 
     time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -18,3 +19,4 @@ class StatsOptionItemOutCps:
 
     time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
+    projectee_item_id: str | type[Absent] = Absent
