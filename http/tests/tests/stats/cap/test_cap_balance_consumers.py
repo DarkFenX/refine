@@ -115,7 +115,7 @@ def test_src_kind(client, consts):
     assert api_ship_stats.cap_balance == [approx(-2), approx(-2), 0]
 
 
-def test_reload(client, consts):
+def test_time(client, consts):
     eve_use_attr_id = client.mk_eve_attr()
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
@@ -137,15 +137,34 @@ def test_reload(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    # Verification
-    api_options = [
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True)),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeBurst()),
-        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim())]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
-    assert api_fit_stats.cap_balance == [approx(-1.180328), approx(-1.2), approx(-1.180328)]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
-    assert api_ship_stats.cap_balance == [approx(-1.180328), approx(-1.2), approx(-1.180328)]
+    # Verification - default is sim with no time (looped stats)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True))])))
+    assert api_fit_stats.cap_balance.one() == approx(-1.180328)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True))])))
+    assert api_ship_stats.cap_balance.one() == approx(-1.180328)
+    # Burst stats - first cycle of each module
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeBurst())])))
+    assert api_fit_stats.cap_balance.one() == approx(-1.2)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeBurst())])))
+    assert api_ship_stats.cap_balance.one() == approx(-1.2)
+    # Sim without specified time - looped stats
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance.one() == approx(-1.180328)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=None))])))
+    assert api_ship_stats.cap_balance.one() == approx(-1.180328)
+    # Sim with time just after cap was used on 1st cycle
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=1))])))
+    assert api_fit_stats.cap_balance.one() == approx(-3)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=1))])))
+    assert api_ship_stats.cap_balance.one() == approx(-3)
 
 
 def test_ancil(client, consts):
