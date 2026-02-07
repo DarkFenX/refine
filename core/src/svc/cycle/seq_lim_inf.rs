@@ -1,6 +1,6 @@
 use crate::{
     misc::InfCount,
-    num::{Count, PValue},
+    num::Count,
     svc::cycle::{CSeqPart, CycleDataDur, CycleDataFull, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConvertExtend,
 };
@@ -63,11 +63,6 @@ where
     }
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(CSeqInf { data: self.p2_data }))
-    }
-}
-impl CSeqLimInf {
-    pub(super) fn get_average_duration(&self) -> PValue {
-        self.p2_data.duration
     }
 }
 impl CSeqLimInf<CycleDataDur> {

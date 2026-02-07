@@ -1,6 +1,6 @@
 use crate::{
     misc::InfCount,
-    num::{Count, PValue},
+    num::Count,
     svc::cycle::{CSeqPart, CycleDataDur, CycleDataFull, CycleSeq, CycleSeqLooped},
     util::LibConvertExtend,
 };
@@ -48,11 +48,6 @@ where
     }
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
         CSeqLimPartIter::new(self)
-    }
-}
-impl CSeqLim {
-    pub(super) fn get_duration(&self) -> PValue {
-        self.data.duration
     }
 }
 impl CSeqLim<CycleDataDur> {
