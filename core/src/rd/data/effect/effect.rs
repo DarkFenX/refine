@@ -252,9 +252,7 @@ impl REffect {
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
             // Cap use OPC spec is not defined for every effect, and instead is generated here
-            if let Some(cap_consume_attr_aid) = a_effect.discharge_attr_id
-                && attr_aid_rid_map.get(&cap_consume_attr_aid).is_some()
-            {
+            if self.discharge_attr_rid.is_some() {
                 self.cap_consume_opc_spec = Some(REffectLocalOpcSpec {
                     base: get_cap_consumer_base_opc,
                     charge_mult: None,
