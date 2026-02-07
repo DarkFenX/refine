@@ -165,6 +165,13 @@ def test_time(client, consts):
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=1))])))
     assert api_ship_stats.cap_balance.one() == approx(-3)
+    # Sim with time just after cap was used on 2nd cycle
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=3))])))
+    assert api_fit_stats.cap_balance.one() == approx(-2)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(src_kinds=StatCapSrcKinds(consumers=True), time_options=StatTimeSim(time=3))])))
+    assert api_ship_stats.cap_balance.one() == approx(-2)
 
 
 def test_ancil(client, consts):
