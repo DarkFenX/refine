@@ -20,7 +20,7 @@ pub(crate) struct UFighter {
     physics: UPhysics,
     projs: UProjs,
     // Optional settings related to cycling
-    rearm_minions: Option<bool>,
+    rearm_minion: Option<bool>,
 }
 impl UFighter {
     pub(crate) fn new(
@@ -38,7 +38,7 @@ impl UFighter {
             autocharges: UAutocharges::new(),
             physics,
             projs: UProjs::new(),
-            rearm_minions: None,
+            rearm_minion: None,
         }
     }
     // Item base methods
@@ -167,11 +167,11 @@ impl UFighter {
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
-    pub(crate) fn get_rearm_minions(&self) -> Option<bool> {
-        self.rearm_minions
+    pub(crate) fn get_rearm_minion(&self) -> Option<bool> {
+        self.rearm_minion
     }
-    pub(crate) fn set_rearm_minions(&mut self, rearm_minions: Option<bool>) {
-        self.rearm_minions = rearm_minions
+    pub(crate) fn set_rearm_minion(&mut self, rearm_minion: Option<bool>) {
+        self.rearm_minion = rearm_minion
     }
 }
 impl LibNamed for UFighter {

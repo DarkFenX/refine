@@ -591,9 +591,9 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_rearm_minions(&self) -> Option<bool> {
+    pub(crate) fn get_rearm_minion(&self) -> Option<bool> {
         match self {
-            Self::Fighter(fighter) => fighter.get_rearm_minions(),
+            Self::Fighter(fighter) => fighter.get_rearm_minion(),
             _ => None,
         }
     }

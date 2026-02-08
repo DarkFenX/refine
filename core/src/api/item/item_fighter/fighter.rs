@@ -31,8 +31,8 @@ impl<'a> Fighter<'a> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
     }
-    pub fn get_rearm_minions(&self) -> Option<bool> {
-        get_rearm_minions(self.sol, self.uid)
+    pub fn get_rearm_minion(&self) -> Option<bool> {
+        get_rearm_minion(self.sol, self.uid)
     }
 }
 impl<'a> ItemSealed for Fighter<'a> {
@@ -72,8 +72,8 @@ impl<'a> FighterMut<'a> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
     }
-    pub fn get_rearm_minions(&self) -> Option<bool> {
-        get_rearm_minions(self.sol, self.uid)
+    pub fn get_rearm_minion(&self) -> Option<bool> {
+        get_rearm_minion(self.sol, self.uid)
     }
 }
 impl<'a> ItemSealed for FighterMut<'a> {
@@ -108,8 +108,8 @@ fn get_coordinates(sol: &SolarSystem, fighter_uid: UItemId) -> Coordinates {
 fn get_movement(sol: &SolarSystem, fighter_uid: UItemId) -> Movement {
     Movement::from_u_physics(get_u_fighter(sol, fighter_uid).get_physics())
 }
-fn get_rearm_minions(sol: &SolarSystem, fighter_uid: UItemId) -> Option<bool> {
-    get_u_fighter(sol, fighter_uid).get_rearm_minions()
+fn get_rearm_minion(sol: &SolarSystem, fighter_uid: UItemId) -> Option<bool> {
+    get_u_fighter(sol, fighter_uid).get_rearm_minion()
 }
 fn get_u_fighter(sol: &SolarSystem, fighter_uid: UItemId) -> &UFighter {
     sol.u_data.items.get(fighter_uid).dc_fighter().unwrap()

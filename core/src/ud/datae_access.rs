@@ -46,13 +46,13 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_rearm_minions(&self, item_uid: UItemId, rearm_minions_override: Option<bool>) -> bool {
+    pub(crate) fn get_item_rearm_minion(&self, item_uid: UItemId, rearm_minions_override: Option<bool>) -> bool {
         match rearm_minions_override {
-            Some(rearm_minions) => rearm_minions,
+            Some(rearm_minion) => rearm_minion,
             None => {
                 let u_item = self.items.get(item_uid);
-                match u_item.get_rearm_minions() {
-                    Some(rearm_minions) => rearm_minions,
+                match u_item.get_rearm_minion() {
+                    Some(rearm_minion) => rearm_minion,
                     None => self.default_rearm_minions,
                 }
             }
