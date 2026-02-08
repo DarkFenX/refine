@@ -21,6 +21,8 @@ pub(crate) struct HChangeFighterCmd {
     count: TriStateField<u32>,
     #[serde(default)]
     abilities: Option<HAbilityMap>,
+    #[serde(default)]
+    rearm_minion: TriStateField<bool>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
@@ -61,6 +63,11 @@ impl HChangeFighterCmd {
             TriStateField::Absent => (),
         }
         apply_abilities(&mut core_fighter, &self.abilities);
+        match self.rearm_minion {
+            TriStateField::Value(rearm_minion) => core_fighter.set_rearm_minion(Some(rearm_minion)),
+            TriStateField::None => core_fighter.set_rearm_minion(None),
+            TriStateField::Absent => (),
+        }
         for projectee_item_id in self.rm_projs.iter() {
             core_fighter
                 .get_proj_mut(projectee_item_id)

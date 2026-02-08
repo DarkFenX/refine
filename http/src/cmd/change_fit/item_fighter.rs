@@ -16,6 +16,7 @@ pub(crate) struct HAddFighterCmd {
     state: HMinionState,
     count: Option<u32>,
     abilities: Option<HAbilityMap>,
+    rearm_minion: Option<bool>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
 }
@@ -37,6 +38,9 @@ impl HAddFighterCmd {
             core_fighter.set_count_override(Some(fighter_count_override));
         }
         apply_abilities(&mut core_fighter, &self.abilities);
+        if let Some(rearm_minion) = self.rearm_minion {
+            core_fighter.set_rearm_minion(Some(rearm_minion));
+        }
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }
 }

@@ -19,6 +19,7 @@ pub(crate) struct HAddModuleCmd {
     mutation: Option<HMutationOnAdd>,
     charge_type_id: Option<i32>,
     spool: Option<HSpool>,
+    optional_reload: Option<bool>,
 }
 impl HAddModuleCmd {
     pub(in crate::cmd) fn execute(
@@ -52,6 +53,9 @@ impl HAddModuleCmd {
         }
         if let Some(h_spool) = self.spool {
             core_module.set_spool(Some(h_spool.into_core()));
+        }
+        if let Some(optional_reload) = self.optional_reload {
+            core_module.set_optional_reload(Some(optional_reload));
         }
         Ok(HItemIdsResp::from_core_module(core_module))
     }

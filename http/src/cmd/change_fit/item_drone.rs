@@ -15,9 +15,9 @@ pub(crate) struct HAddDroneCmd {
     type_id: i32,
     state: HMinionState,
     mutation: Option<HMutationOnAdd>,
+    npc_prop: Option<HNpcProp>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
-    npc_prop: Option<HNpcProp>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(

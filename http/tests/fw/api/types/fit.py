@@ -261,9 +261,9 @@ class Fit(AttrDict):
             type_id: int,
             state: ApiMinionState = ApiMinionState.in_bay,
             mutation: MutaAdd | type[Absent] = Absent,
+            npc_prop: str | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
-            npc_prop: str | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -273,9 +273,9 @@ class Fit(AttrDict):
             type_id=type_id,
             state=state,
             mutation=process_muta_add_request(mutation=mutation),
+            npc_prop=npc_prop,
             coordinates=coordinates,
             movement=movement,
-            npc_prop=npc_prop,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -287,8 +287,9 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: ApiMinionState = ApiMinionState.in_bay,
-            count: int | type[Absent] | None = Absent,
+            count: int | type[Absent] = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
+            rearm_minion: bool | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -301,6 +302,7 @@ class Fit(AttrDict):
             state=state,
             count=count,
             abilities=abilities,
+            rearm_minion=rearm_minion,
             coordinates=coordinates,
             movement=movement,
             item_info_mode=item_info_mode).send()
@@ -356,6 +358,7 @@ class Fit(AttrDict):
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
             spool: str | type[Absent] = Absent,
+            optional_reload: bool | type[Absent] = Absent,
             mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
@@ -370,6 +373,7 @@ class Fit(AttrDict):
             mutation=process_muta_add_request(mutation=mutation),
             charge_type_id=charge_type_id,
             spool=spool,
+            optional_reload=optional_reload,
             mode=mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)

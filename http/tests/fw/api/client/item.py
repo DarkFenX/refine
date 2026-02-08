@@ -194,9 +194,9 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             state: ApiMinionState,
             mutation: MutaAdd | type[Absent],
+            npc_prop: ApiNpcPropMode | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
-            npc_prop: ApiNpcPropMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
@@ -205,9 +205,9 @@ class ApiClientItem(ApiClientBase):
             'type_id': type_id,
             'state': state}
         conditional_insert(container=body, path=['mutation'], value=mutation)
+        conditional_insert(container=body, path=['npc_prop'], value=npc_prop)
         conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['movement'], value=movement)
-        conditional_insert(container=body, path=['npc_prop'], value=npc_prop)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -224,11 +224,11 @@ class ApiClientItem(ApiClientBase):
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             mutation: MutaAdd | MutaChange | type[Absent] | None,
+            npc_prop: ApiNpcPropMode | type[Absent] | None,
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
-            npc_prop: ApiNpcPropMode | type[Absent] | None,
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -236,11 +236,11 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['type_id'], value=type_id)
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['mutation'], value=mutation)
+        conditional_insert(container=body, path=['npc_prop'], value=npc_prop)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
         conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['movement'], value=movement)
-        conditional_insert(container=body, path=['npc_prop'], value=npc_prop)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
@@ -260,6 +260,7 @@ class ApiClientItem(ApiClientBase):
             state: ApiMinionState,
             count: int | type[Absent] | None,
             abilities: dict[int, bool] | type[Absent],
+            rearm_minion: bool | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -271,6 +272,7 @@ class ApiClientItem(ApiClientBase):
             'state': state}
         conditional_insert(container=body, path=['count'], value=count)
         conditional_insert(container=body, path=['abilities'], value=abilities)
+        conditional_insert(container=body, path=['rearm_minion'], value=rearm_minion)
         conditional_insert(container=body, path=['coordinates'], value=coordinates)
         conditional_insert(container=body, path=['movement'], value=movement)
         params = {}
@@ -290,6 +292,7 @@ class ApiClientItem(ApiClientBase):
             state: ApiMinionState | type[Absent],
             count: int | type[Absent] | None,
             abilities: dict[int, bool] | type[Absent],
+            rearm_minion: bool | type[Absent],
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
@@ -302,6 +305,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['state'], value=state)
         conditional_insert(container=body, path=['count'], value=count)
         conditional_insert(container=body, path=['abilities'], value=abilities)
+        conditional_insert(container=body, path=['rearm_minion'], value=rearm_minion)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
         conditional_insert(container=body, path=['coordinates'], value=coordinates)
@@ -397,6 +401,7 @@ class ApiClientItem(ApiClientBase):
             mutation: MutaAdd | type[Absent],
             charge_type_id: int | type[Absent],
             spool: str | type[Absent],
+            optional_reload: bool | type[Absent],
             mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -409,6 +414,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
         conditional_insert(container=body, path=['spool'], value=spool)
+        conditional_insert(container=body, path=['optional_reload'], value=optional_reload)
         conditional_insert(container=body, path=['add_mode'], value=mode)
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
@@ -428,6 +434,7 @@ class ApiClientItem(ApiClientBase):
             mutation: MutaAdd | MutaChange | type[Absent] | None,
             charge_type_id: int | type[Absent] | None,
             spool: str | type[Absent] | None,
+            optional_reload: bool | type[Absent] | None,
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -439,6 +446,7 @@ class ApiClientItem(ApiClientBase):
         conditional_insert(container=body, path=['mutation'], value=mutation)
         conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
         conditional_insert(container=body, path=['spool'], value=spool)
+        conditional_insert(container=body, path=['optional_reload'], value=optional_reload)
         conditional_insert(container=body, path=['add_projs'], value=add_projs)
         conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
         conditional_insert(container=body, path=['effect_modes'], value=effect_modes)

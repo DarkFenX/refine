@@ -24,7 +24,7 @@ pub(crate) struct HChangeModuleCmd {
     #[serde(default)]
     spool: TriStateField<HSpool>,
     #[serde(default)]
-    reload_optional: TriStateField<bool>,
+    optional_reload: TriStateField<bool>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
@@ -101,6 +101,11 @@ impl HChangeModuleCmd {
         match self.spool {
             TriStateField::Value(h_spool) => core_module.set_spool(Some(h_spool.into_core())),
             TriStateField::None => core_module.set_spool(None),
+            TriStateField::Absent => (),
+        }
+        match self.optional_reload {
+            TriStateField::Value(optional_reload) => core_module.set_optional_reload(Some(optional_reload)),
+            TriStateField::None => core_module.set_optional_reload(None),
             TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {

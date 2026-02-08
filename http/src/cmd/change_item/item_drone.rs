@@ -19,6 +19,8 @@ pub(crate) struct HChangeDroneCmd {
     state: Option<HMinionState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
+    #[serde(default)]
+    npc_prop: TriStateField<HNpcProp>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
@@ -29,8 +31,6 @@ pub(crate) struct HChangeDroneCmd {
     coordinates: Option<HCoordinates>,
     #[serde(default)]
     movement: Option<HMovement>,
-    #[serde(default)]
-    npc_prop: TriStateField<HNpcProp>,
     #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
@@ -87,6 +87,11 @@ impl HChangeDroneCmd {
             }
             TriStateField::Absent => (),
         }
+        match self.npc_prop {
+            TriStateField::Value(h_npc_prop) => core_drone.set_npc_prop(Some(h_npc_prop.into_core())),
+            TriStateField::None => core_drone.set_npc_prop(None),
+            TriStateField::Absent => (),
+        }
         for projectee_item_id in self.rm_projs.iter() {
             core_drone
                 .get_proj_mut(projectee_item_id)
@@ -101,11 +106,6 @@ impl HChangeDroneCmd {
         }
         if let Some(movement) = self.movement {
             core_drone.set_movement(movement.into_core());
-        }
-        match self.npc_prop {
-            TriStateField::Value(h_npc_prop) => core_drone.set_npc_prop(Some(h_npc_prop.into_core())),
-            TriStateField::None => core_drone.set_npc_prop(None),
-            TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {
             core_drone.add_proj(projectee_item_id).map_err(|error| match error {
