@@ -1,0 +1,2 @@
+mod sol_get_default_npc_prop;
+mod sol_set_default_npc_prop;

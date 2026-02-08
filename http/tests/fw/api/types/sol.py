@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
     from fw import eve
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile
-    from fw.consts import ApiSecZone
+    from fw.consts import ApiNpcPropMode, ApiSecZone
     from fw.response import Response
     from .validation import ValOptions
 
@@ -81,8 +81,11 @@ class SolarSystem(AttrDict):
     def change(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_spool: str | type[Absent] = Absent,
             default_incoming_dps: DpsProfile | type[Absent] = Absent,
+            default_spool: str | type[Absent] = Absent,
+            default_npc_prop: ApiNpcPropMode | type[Absent] = Absent,
+            default_reload_optionals: bool | type[Absent] = Absent,
+            default_rearm_minions: bool | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
@@ -92,8 +95,11 @@ class SolarSystem(AttrDict):
         resp = self._client.change_sol_request(
             sol_id=self.id,
             sec_zone=sec_zone,
-            default_spool=default_spool,
             default_incoming_dps=default_incoming_dps,
+            default_spool=default_spool,
+            default_npc_prop=default_npc_prop,
+            default_reload_optionals=default_reload_optionals,
+            default_rearm_minions=default_rearm_minions,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,

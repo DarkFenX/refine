@@ -9,7 +9,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import DpsProfile
-    from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSecZone, ApiValInfoMode
+    from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiNpcPropMode, ApiSecZone, ApiValInfoMode
 
 
 class ApiSolCheckError(Exception):
@@ -26,8 +26,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default],
             sec_zone: ApiSecZone | type[Absent],
-            default_spool: str | type[Absent],
             default_incoming_dps: DpsProfile | type[Absent],
+            default_spool: str | type[Absent],
+            default_npc_prop: ApiNpcPropMode | type[Absent],
+            default_reload_optionals: bool | type[Absent],
+            default_rearm_minions: bool | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
@@ -44,8 +47,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         conditional_insert(container=body, path=['sec_zone'], value=sec_zone)
-        conditional_insert(container=body, path=['default_spool'], value=default_spool)
         conditional_insert(container=body, path=['default_incoming_dps'], value=default_incoming_dps)
+        conditional_insert(container=body, path=['default_spool'], value=default_spool)
+        conditional_insert(container=body, path=['default_npc_prop'], value=default_npc_prop)
+        conditional_insert(container=body, path=['default_reload_optionals'], value=default_reload_optionals)
+        conditional_insert(container=body, path=['default_rearm_minions'], value=default_rearm_minions)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol',
@@ -60,8 +66,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default] = Default,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_spool: str | type[Absent] = Absent,
             default_incoming_dps: DpsProfile | type[Absent] = Absent,
+            default_spool: str | type[Absent] = Absent,
+            default_npc_prop: ApiNpcPropMode | type[Absent] = Absent,
+            default_reload_optionals: bool | type[Absent] = Absent,
+            default_rearm_minions: bool | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
@@ -72,8 +81,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         resp = self.create_sol_request(
             data=data,
             sec_zone=sec_zone,
-            default_spool=default_spool,
             default_incoming_dps=default_incoming_dps,
+            default_spool=default_spool,
+            default_npc_prop=default_npc_prop,
+            default_reload_optionals=default_reload_optionals,
+            default_rearm_minions=default_rearm_minions,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
@@ -167,8 +179,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             sol_id: str,
             sec_zone: ApiSecZone | type[Absent],
-            default_spool: str | type[Absent],
             default_incoming_dps: DpsProfile | type[Absent],
+            default_spool: str | type[Absent],
+            default_npc_prop: ApiNpcPropMode | type[Absent],
+            default_reload_optionals: bool | type[Absent],
+            default_rearm_minions: bool | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
@@ -176,8 +191,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     ) -> Request:
         command = {'type': 'change_sol'}
         conditional_insert(container=command, path=['sec_zone'], value=sec_zone)
-        conditional_insert(container=command, path=['default_spool'], value=default_spool)
         conditional_insert(container=command, path=['default_incoming_dps'], value=default_incoming_dps)
+        conditional_insert(container=command, path=['default_spool'], value=default_spool)
+        conditional_insert(container=command, path=['default_npc_prop'], value=default_npc_prop)
+        conditional_insert(container=command, path=['default_reload_optionals'], value=default_reload_optionals)
+        conditional_insert(container=command, path=['default_rearm_minions'], value=default_rearm_minions)
         params = {}
         conditional_insert(container=params, path=['sol'], value=sol_info_mode)
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
