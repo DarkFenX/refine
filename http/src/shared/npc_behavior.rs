@@ -11,8 +11,8 @@ pub(crate) enum HNpcProp {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HNpcProp {
-    pub(crate) fn from_core(core_prop_mode: rc::NpcProp) -> Self {
-        match core_prop_mode {
+    pub(crate) fn from_core(core_npc_prop: rc::NpcProp) -> Self {
+        match core_npc_prop {
             rc::NpcProp::Cruise => Self::Cruise,
             rc::NpcProp::Chase => Self::Chase,
         }

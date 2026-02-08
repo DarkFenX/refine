@@ -17,7 +17,7 @@ pub(crate) struct HAddDroneCmd {
     mutation: Option<HMutationOnAdd>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
-    prop_mode: Option<HNpcProp>,
+    npc_prop: Option<HNpcProp>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(
@@ -45,8 +45,8 @@ impl HAddDroneCmd {
                 }
             }
         }
-        if let Some(prop_mode) = self.prop_mode {
-            core_drone.set_prop_mode(Some(prop_mode.into_core()))
+        if let Some(h_npc_prop) = self.npc_prop {
+            core_drone.set_npc_prop(Some(h_npc_prop.into_core()))
         }
         Ok(HItemIdsResp::from_core_drone(core_drone))
     }

@@ -263,7 +263,7 @@ class Fit(AttrDict):
             mutation: MutaAdd | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
-            prop_mode: str | type[Absent] = Absent,
+            npc_prop: str | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -275,7 +275,7 @@ class Fit(AttrDict):
             mutation=process_muta_add_request(mutation=mutation),
             coordinates=coordinates,
             movement=movement,
-            prop_mode=prop_mode,
+            npc_prop=npc_prop,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

@@ -216,7 +216,7 @@ def test_application_and_cap_limit(client, consts):
     api_src_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
-    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id, prop_mode=consts.ApiNpcPropMode.cruise)
+    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id, npc_prop=consts.ApiNpcPropMode.cruise)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id])
@@ -239,7 +239,7 @@ def test_application_and_cap_limit(client, consts):
     assert api_src_module_nonproj_stats.outgoing_nps == [approx(47.619048), approx(12.698413)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
-    api_tgt_drone.change_drone(prop_mode=consts.ApiNpcPropMode.chase)
+    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcPropMode.chase)
     # Verification - application vs ship now is limited by sig and not cap pool, and drone sig is
     # blown
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
@@ -259,7 +259,7 @@ def test_application_and_cap_limit(client, consts):
         StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
     assert api_src_module_nonproj_stats.outgoing_nps == [approx(25.396825), approx(63.492063)]
     # Action
-    api_tgt_drone.change_drone(prop_mode=consts.ApiNpcPropMode.cruise)
+    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcPropMode.cruise)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))

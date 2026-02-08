@@ -131,12 +131,12 @@ def test_drone_modified(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, prop_mode=consts.ApiNpcPropMode.cruise)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcPropMode.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_drone_stats.sig_radius == approx(1350)
     # Action
-    api_drone.change_drone(prop_mode=consts.ApiNpcPropMode.chase)
+    api_drone.change_drone(npc_prop=consts.ApiNpcPropMode.chase)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_drone_stats.sig_radius == approx(8100)
@@ -146,7 +146,7 @@ def test_drone_modified(client, consts):
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_drone_stats.sig_radius == approx(32400)
     # Action
-    api_drone.change_drone(prop_mode=consts.ApiNpcPropMode.cruise)
+    api_drone.change_drone(npc_prop=consts.ApiNpcPropMode.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
     assert api_drone_stats.sig_radius == approx(5400)

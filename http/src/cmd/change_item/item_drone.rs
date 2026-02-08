@@ -30,7 +30,7 @@ pub(crate) struct HChangeDroneCmd {
     #[serde(default)]
     movement: Option<HMovement>,
     #[serde(default)]
-    prop_mode: TriStateField<HNpcProp>,
+    npc_prop: TriStateField<HNpcProp>,
     #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
@@ -102,9 +102,9 @@ impl HChangeDroneCmd {
         if let Some(movement) = self.movement {
             core_drone.set_movement(movement.into_core());
         }
-        match self.prop_mode {
-            TriStateField::Value(h_npc_prop) => core_drone.set_prop_mode(Some(h_npc_prop.into_core())),
-            TriStateField::None => core_drone.set_prop_mode(None),
+        match self.npc_prop {
+            TriStateField::Value(h_npc_prop) => core_drone.set_npc_prop(Some(h_npc_prop.into_core())),
+            TriStateField::None => core_drone.set_npc_prop(None),
             TriStateField::Absent => (),
         }
         for projectee_item_id in self.add_projs.iter() {
