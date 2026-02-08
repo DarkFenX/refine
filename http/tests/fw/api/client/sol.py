@@ -29,7 +29,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             default_incoming_dps: DpsProfile | type[Absent],
             default_spool: str | type[Absent],
             default_npc_prop: ApiNpcPropMode | type[Absent],
-            default_reload_optionals: bool | type[Absent],
+            default_optional_reloads: bool | type[Absent],
             default_rearm_minions: bool | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
@@ -50,7 +50,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         conditional_insert(container=body, path=['default_incoming_dps'], value=default_incoming_dps)
         conditional_insert(container=body, path=['default_spool'], value=default_spool)
         conditional_insert(container=body, path=['default_npc_prop'], value=default_npc_prop)
-        conditional_insert(container=body, path=['default_reload_optionals'], value=default_reload_optionals)
+        conditional_insert(container=body, path=['default_optional_reloads'], value=default_optional_reloads)
         conditional_insert(container=body, path=['default_rearm_minions'], value=default_rearm_minions)
         kwargs = {
             'method': 'POST',
@@ -69,7 +69,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             default_incoming_dps: DpsProfile | type[Absent] = Absent,
             default_spool: str | type[Absent] = Absent,
             default_npc_prop: ApiNpcPropMode | type[Absent] = Absent,
-            default_reload_optionals: bool | type[Absent] = Absent,
+            default_optional_reloads: bool | type[Absent] = Absent,
             default_rearm_minions: bool | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
@@ -84,7 +84,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             default_incoming_dps=default_incoming_dps,
             default_spool=default_spool,
             default_npc_prop=default_npc_prop,
-            default_reload_optionals=default_reload_optionals,
+            default_optional_reloads=default_optional_reloads,
             default_rearm_minions=default_rearm_minions,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
@@ -182,7 +182,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             default_incoming_dps: DpsProfile | type[Absent],
             default_spool: str | type[Absent],
             default_npc_prop: ApiNpcPropMode | type[Absent],
-            default_reload_optionals: bool | type[Absent],
+            default_optional_reloads: bool | type[Absent],
             default_rearm_minions: bool | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
@@ -194,7 +194,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         conditional_insert(container=command, path=['default_incoming_dps'], value=default_incoming_dps)
         conditional_insert(container=command, path=['default_spool'], value=default_spool)
         conditional_insert(container=command, path=['default_npc_prop'], value=default_npc_prop)
-        conditional_insert(container=command, path=['default_reload_optionals'], value=default_reload_optionals)
+        conditional_insert(container=command, path=['default_optional_reloads'], value=default_optional_reloads)
         conditional_insert(container=command, path=['default_rearm_minions'], value=default_rearm_minions)
         params = {}
         conditional_insert(container=params, path=['sol'], value=sol_info_mode)

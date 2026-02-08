@@ -15,5 +15,5 @@ class StatTimeSim:
 
     mode: str = 'sim'
     time: float | type[Absent] | None = Absent
-    reload_optionals: bool | type[Absent] | None = Absent
+    optional_reloads: bool | type[Absent] | None = Absent
     rearm_minions: bool | type[Absent] | None = Absent

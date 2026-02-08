@@ -14,7 +14,7 @@ pub(in crate::svc) enum CyclingOptions {
 pub(in crate::svc) struct CycleOptionsSim {
     // Controls if effects which can run with/without charges (e.g. ancillary reps) are forced to
     // reload once they run out of charges
-    pub(in crate::svc) reload_optionals: Option<bool> = None,
+    pub(in crate::svc) optional_reloads: Option<bool> = None,
     // Controls if depleted fighter abilities force fighter recall, refuel and rearm
     pub(in crate::svc) rearm_minions: Option<bool> = None,
 }
@@ -39,7 +39,7 @@ impl CyclingOptions {
 impl CycleOptionsSim {
     fn from_time_options_sim(time_options_sim: StatTimeOptionsSim) -> Self {
         Self {
-            reload_optionals: time_options_sim.reload_optionals,
+            optional_reloads: time_options_sim.optional_reloads,
             rearm_minions: time_options_sim.rearm_minions,
         }
     }

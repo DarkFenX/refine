@@ -82,7 +82,7 @@ impl Vast {
 }
 
 const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
-    reload_optionals: Some(true),
+    optional_reloads: Some(true),
     ..
 });
 

@@ -8,7 +8,7 @@ pub(crate) struct HChangeSolCmd {
     default_incoming_dps: Option<HDpsProfile>,
     default_spool: Option<HSpool>,
     default_npc_prop: Option<HNpcProp>,
-    default_reload_optionals: Option<bool>,
+    default_optional_reloads: Option<bool>,
     default_rearm_minions: Option<bool>,
 }
 impl HChangeSolCmd {
@@ -25,8 +25,8 @@ impl HChangeSolCmd {
         if let Some(npc_prop) = self.default_npc_prop {
             core_sol.set_default_npc_prop(npc_prop.into_core());
         }
-        if let Some(reload_optionals) = self.default_reload_optionals {
-            core_sol.set_default_reload_optionals(reload_optionals);
+        if let Some(optional_reloads) = self.default_optional_reloads {
+            core_sol.set_default_optional_reloads(optional_reloads);
         }
         if let Some(rearm_minions) = self.default_rearm_minions {
             core_sol.set_default_rearm_minions(rearm_minions);

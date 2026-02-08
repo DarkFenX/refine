@@ -22,7 +22,7 @@ pub(in crate::cmd) struct HStatTimeOptionsSim {
     #[serde(default)]
     pub(in crate::cmd) time: Option<f64>,
     #[serde(default)]
-    pub(in crate::cmd) reload_optionals: Option<bool>,
+    pub(in crate::cmd) optional_reloads: Option<bool>,
     #[serde(default)]
     pub(in crate::cmd) rearm_minions: Option<bool>,
 }
@@ -49,7 +49,7 @@ impl HStatTimeOptionsSim {
     fn into_core(self) -> rc::stats::StatTimeOptionsSim {
         rc::stats::StatTimeOptionsSim {
             time: self.time.map(rc::PValue::from_f64_clamped),
-            reload_optionals: self.reload_optionals,
+            optional_reloads: self.optional_reloads,
             rearm_minions: self.rearm_minions,
         }
     }

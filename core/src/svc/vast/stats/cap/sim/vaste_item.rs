@@ -26,7 +26,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         cap_perc: UnitInterval,
-        reload_optionals: Option<bool>,
+        optional_reloads: Option<bool>,
         stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
@@ -34,7 +34,7 @@ impl Vast {
         let recharge_time = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
         let start_cap = max_cap * cap_perc.into_pvalue();
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
-        let events = prepare_events(ctx, calc, self, reload_optionals, stagger, fit_data, item_uid);
+        let events = prepare_events(ctx, calc, self, optional_reloads, stagger, fit_data, item_uid);
         let mut sim = CapSim::new(start_cap, max_cap, recharge_time, events);
         Ok(sim.run())
     }

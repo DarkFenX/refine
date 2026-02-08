@@ -23,7 +23,7 @@ pub(crate) struct UModule {
     projs: UProjs,
     // Optional settings related to cycling
     spool: Option<Spool>,
-    reload_optionals: Option<bool>,
+    optional_reload: Option<bool>,
 }
 impl UModule {
     pub(crate) fn new(
@@ -45,7 +45,7 @@ impl UModule {
             charge_uid,
             projs: UProjs::new(),
             spool: None,
-            reload_optionals: None,
+            optional_reload: None,
         }
     }
     // Item base methods
@@ -216,11 +216,11 @@ impl UModule {
     pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
         self.spool = spool
     }
-    pub(crate) fn get_reload_optionals(&self) -> Option<bool> {
-        self.reload_optionals
+    pub(crate) fn get_optional_reload(&self) -> Option<bool> {
+        self.optional_reload
     }
-    pub(crate) fn set_reload_optionals(&mut self, reload_optionals: Option<bool>) {
-        self.reload_optionals = reload_optionals
+    pub(crate) fn set_optional_reload(&mut self, optional_reload: Option<bool>) {
+        self.optional_reload = optional_reload
     }
 }
 impl LibNamed for UModule {

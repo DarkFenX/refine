@@ -22,7 +22,7 @@ pub struct StatTimeOptionsSim {
     /// infinite period of time.
     pub time: Option<PValue> = None,
     /// Are modules which can run uncharged reloaded upon depleting their charges.
-    pub reload_optionals: Option<bool> = None,
+    pub optional_reloads: Option<bool> = None,
     /// Are fighters sent into refueling/rearming once one of their charge-limited abilities runs
     /// out.
     pub rearm_minions: Option<bool> = None,

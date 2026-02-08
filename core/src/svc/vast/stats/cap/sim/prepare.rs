@@ -24,12 +24,12 @@ pub(super) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
-    reload_optionals: Option<bool>,
+    optional_reloads: Option<bool>,
     stagger: StatCapSimStaggerInt,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
 ) -> BinaryHeap<CapSimEvent> {
-    let cycling_options = CyclingOptions::Sim(CycleOptionsSim { reload_optionals, .. });
+    let cycling_options = CyclingOptions::Sim(CycleOptionsSim { optional_reloads, .. });
     let mut aggregator = Aggregator::new();
     fill_consumers(ctx, calc, &mut aggregator, cycling_options, &stagger, fit_data);
     fill_nosfs(ctx, calc, &mut aggregator, cycling_options, &stagger, fit_data);

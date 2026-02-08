@@ -34,20 +34,20 @@ impl UData {
             None => self.default_npc_prop,
         })
     }
-    pub(crate) fn get_item_reload_optionals(&self, item_uid: UItemId, reload_optionals: Option<bool>) -> bool {
-        match reload_optionals {
-            Some(reload_optionals) => reload_optionals,
+    pub(crate) fn get_item_optional_reload(&self, item_uid: UItemId, optional_reload_override: Option<bool>) -> bool {
+        match optional_reload_override {
+            Some(optional_reload) => optional_reload,
             None => {
                 let u_item = self.items.get(item_uid);
-                match u_item.get_reload_optionals() {
-                    Some(reload_optionals) => reload_optionals,
-                    None => self.default_reload_optionals,
+                match u_item.get_optional_reload() {
+                    Some(optional_reload) => optional_reload,
+                    None => self.default_optional_reloads,
                 }
             }
         }
     }
-    pub(crate) fn get_item_rearm_minions(&self, item_uid: UItemId, rearm_minions: Option<bool>) -> bool {
-        match rearm_minions {
+    pub(crate) fn get_item_rearm_minions(&self, item_uid: UItemId, rearm_minions_override: Option<bool>) -> bool {
+        match rearm_minions_override {
             Some(rearm_minions) => rearm_minions,
             None => {
                 let u_item = self.items.get(item_uid);

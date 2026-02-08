@@ -23,6 +23,8 @@ pub(crate) struct HChangeModuleCmd {
     charge_type_id: TriStateField<i32>,
     #[serde(default)]
     spool: TriStateField<HSpool>,
+    #[serde(default)]
+    reload_optional: TriStateField<bool>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,

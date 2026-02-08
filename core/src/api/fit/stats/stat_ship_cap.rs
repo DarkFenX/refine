@@ -20,12 +20,12 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_cap_sim(
         &mut self,
         cap_perc: UnitInterval,
-        reload_optionals: Option<bool>,
+        optional_reloads: Option<bool>,
         stagger: StatCapSimStagger,
     ) -> Result<StatCapSim, FitShipStatError> {
         Ok(self
             .get_ship_for_stats()?
-            .get_stat_cap_sim(cap_perc, reload_optionals, stagger)?)
+            .get_stat_cap_sim(cap_perc, optional_reloads, stagger)?)
     }
     pub fn get_stat_neut_resist(&mut self) -> Result<UnitInterval, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_neut_resist()?)

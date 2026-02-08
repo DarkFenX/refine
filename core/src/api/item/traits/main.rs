@@ -370,7 +370,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_cap_sim(
         &mut self,
         cap_perc: UnitInterval,
-        reload_optionals: Option<bool>,
+        optional_reloads: Option<bool>,
         stagger: StatCapSimStagger,
     ) -> Result<StatCapSim, ItemStatError> {
         let item_uid = self.get_uid();
@@ -380,7 +380,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 &sol.u_data,
                 item_uid,
                 cap_perc,
-                reload_optionals,
+                optional_reloads,
                 StatCapSimStaggerInt::from_pub(sol, &stagger),
             )
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
