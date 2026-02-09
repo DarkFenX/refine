@@ -7,7 +7,7 @@ use super::err::{
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{DpsProfile, EffectMode, Spool},
+    misc::{DpsProfile, EffectMode, OptionalReload, Spool},
     num::{Count, PValue, UnitInterval, Value},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
@@ -370,7 +370,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_cap_sim(
         &mut self,
         cap_perc: UnitInterval,
-        optional_reloads: Option<bool>,
+        optional_reloads: Option<OptionalReload>,
         stagger: StatCapSimStagger,
     ) -> Result<StatCapSim, ItemStatError> {
         let item_uid = self.get_uid();

@@ -623,7 +623,19 @@ class ApiSideEffectOp(StrEnum):
 
 
 @unique
-class ApiNpcPropMode(StrEnum):
+class ApiOptionalReload(StrEnum):
+    disabled = 'disabled'
+    on_empty = 'on_empty'
+
+
+@unique
+class ApiRearmMinion(StrEnum):
+    disabled = 'disabled'
+    on_first_empty = 'on_first_empty'
+
+
+@unique
+class ApiNpcProp(StrEnum):
     cruise = 'cruise'
     chase = 'chase'
 

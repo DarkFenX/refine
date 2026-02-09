@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::MinionState,
-    misc::{EffectMode, FighterCountInfo},
+    misc::{EffectMode, FighterCountInfo, RearmMinion},
     num::{FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
@@ -20,7 +20,7 @@ pub(crate) struct UFighter {
     physics: UPhysics,
     projs: UProjs,
     // Optional settings related to cycling
-    rearm_minion: Option<bool>,
+    rearm_minion: Option<RearmMinion>,
 }
 impl UFighter {
     pub(crate) fn new(
@@ -167,10 +167,10 @@ impl UFighter {
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
-    pub(crate) fn get_rearm_minion(&self) -> Option<bool> {
+    pub(crate) fn get_rearm_minion(&self) -> Option<RearmMinion> {
         self.rearm_minion
     }
-    pub(crate) fn set_rearm_minion(&mut self, rearm_minion: Option<bool>) {
+    pub(crate) fn set_rearm_minion(&mut self, rearm_minion: Option<RearmMinion>) {
         self.rearm_minion = rearm_minion
     }
 }

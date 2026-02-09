@@ -1,5 +1,5 @@
 use crate::{
-    misc::{DpsProfile, NpcProp, Spool},
+    misc::{DpsProfile, NpcProp, OptionalReload, RearmMinion, Spool},
     num::PValue,
     ud::{UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
@@ -34,7 +34,11 @@ impl UData {
             None => self.default_npc_prop,
         })
     }
-    pub(crate) fn get_item_optional_reload(&self, item_uid: UItemId, optional_reload_override: Option<bool>) -> bool {
+    pub(crate) fn get_item_optional_reload(
+        &self,
+        item_uid: UItemId,
+        optional_reload_override: Option<OptionalReload>,
+    ) -> OptionalReload {
         match optional_reload_override {
             Some(optional_reload) => optional_reload,
             None => {
@@ -46,7 +50,11 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_rearm_minion(&self, item_uid: UItemId, rearm_minions_override: Option<bool>) -> bool {
+    pub(crate) fn get_item_rearm_minion(
+        &self,
+        item_uid: UItemId,
+        rearm_minions_override: Option<RearmMinion>,
+    ) -> RearmMinion {
         match rearm_minions_override {
             Some(rearm_minion) => rearm_minion,
             None => {

@@ -1,4 +1,5 @@
 use crate::{
+    misc::OptionalReload,
     num::UnitInterval,
     svc::{
         SvcCtx,
@@ -26,7 +27,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         cap_perc: UnitInterval,
-        optional_reloads: Option<bool>,
+        optional_reloads: Option<OptionalReload>,
         stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;

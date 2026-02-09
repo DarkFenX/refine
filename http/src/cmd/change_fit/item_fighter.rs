@@ -6,7 +6,7 @@ use crate::{
         HItemIdsResp, change_item,
         shared::{HAbilityMap, apply_abilities, get_primary_fit},
     },
-    shared::{HCoordinates, HMinionState, HMovement},
+    shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::HExecError,
 };
 
@@ -16,7 +16,7 @@ pub(crate) struct HAddFighterCmd {
     state: HMinionState,
     count: Option<u32>,
     abilities: Option<HAbilityMap>,
-    rearm_minion: Option<bool>,
+    rearm_minion: Option<HRearmMinion>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
 }
@@ -38,8 +38,8 @@ impl HAddFighterCmd {
             core_fighter.set_count_override(Some(fighter_count_override));
         }
         apply_abilities(&mut core_fighter, &self.abilities);
-        if let Some(rearm_minion) = self.rearm_minion {
-            core_fighter.set_rearm_minion(Some(rearm_minion));
+        if let Some(h_rearm_minion) = self.rearm_minion {
+            core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core()));
         }
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }

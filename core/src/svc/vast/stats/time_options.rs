@@ -1,4 +1,7 @@
-use crate::{misc::Spool, num::PValue};
+use crate::{
+    misc::{OptionalReload, RearmMinion, Spool},
+    num::PValue,
+};
 
 #[derive(Copy, Clone)]
 pub enum StatTimeOptions {
@@ -21,9 +24,8 @@ pub struct StatTimeOptionsSim {
     /// Time over which period stats will be considered. If not set or invalid, fetches stats over
     /// infinite period of time.
     pub time: Option<PValue> = None,
-    /// Are modules which can run uncharged reloaded upon depleting their charges.
-    pub optional_reloads: Option<bool> = None,
-    /// Are fighters sent into refueling/rearming once one of their charge-limited abilities runs
-    /// out.
-    pub rearm_minions: Option<bool> = None,
+    /// Overrides on-item and on-sol optional reload settings.
+    pub optional_reloads: Option<OptionalReload> = None,
+    /// Overrides on-item and on-sol rearm minion settings.
+    pub rearm_minions: Option<RearmMinion> = None,
 }

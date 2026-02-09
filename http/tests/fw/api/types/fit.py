@@ -21,6 +21,7 @@ from .validation import FitValResult, SolValResult
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile, MutaAdd
+    from fw.consts import ApiOptionalReload, ApiRearmMinion
     from fw.response import Response
     from .stats import FitStatsOptions
     from .validation import ValOptions
@@ -289,7 +290,7 @@ class Fit(AttrDict):
             state: ApiMinionState = ApiMinionState.in_bay,
             count: int | type[Absent] = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
-            rearm_minion: bool | type[Absent] = Absent,
+            rearm_minion: ApiRearmMinion | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -358,7 +359,7 @@ class Fit(AttrDict):
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
             spool: str | type[Absent] = Absent,
-            optional_reload: bool | type[Absent] = Absent,
+            optional_reload: ApiOptionalReload | type[Absent] = Absent,
             mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,

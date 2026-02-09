@@ -224,7 +224,7 @@ def test_npc_prop_mode(client, consts):
         type_id=eve_tgt_drone_id,
         coordinates=(0, 50000, 0),
         movement=(0, 0, 1),
-        npc_prop=consts.ApiNpcPropMode.cruise)
+        npc_prop=consts.ApiNpcProp.cruise)
     # Verification
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_drone.id)]),
@@ -237,7 +237,7 @@ def test_npc_prop_mode(client, consts):
     assert api_module_nonproj_stats.dps.one() == [approx(128.90625), 0, 0, 0]
     assert api_module_nonproj_stats.volley.one() == [approx(2062.5), 0, 0, 0]
     # Action
-    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcPropMode.chase)
+    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
     # Verification
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_drone.id)]),
@@ -250,7 +250,7 @@ def test_npc_prop_mode(client, consts):
     assert api_module_nonproj_stats.dps.one() == [approx(644.53125), 0, 0, 0]
     assert api_module_nonproj_stats.volley.one() == [approx(10312.5), 0, 0, 0]
     # Action
-    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcPropMode.cruise)
+    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
     # Verification
     api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_drone.id)]),

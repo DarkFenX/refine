@@ -1,5 +1,6 @@
 use super::stat::{StatHp, StatHpLayer};
 use crate::{
+    misc::OptionalReload,
     num::{PValue, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
@@ -82,7 +83,7 @@ impl Vast {
 }
 
 const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
-    optional_reloads: Some(true),
+    optional_reloads: Some(OptionalReload::OnEmpty),
     ..
 });
 

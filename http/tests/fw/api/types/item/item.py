@@ -24,7 +24,15 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import MutaAdd, MutaChange
     from fw.api.types import ItemStatsOptions
-    from fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
+    from fw.consts import (
+        ApiEffMode,
+        ApiMinionState,
+        ApiModRmMode,
+        ApiModuleState,
+        ApiOptionalReload,
+        ApiRearmMinion,
+        ApiServiceState,
+    )
 
 
 class Item(AttrDict):
@@ -215,7 +223,7 @@ class Item(AttrDict):
             state: ApiMinionState | type[Absent] = Absent,
             count: int | type[Absent] | None = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
-            rearm_minion: bool | type[Absent] | None = Absent,
+            rearm_minion: ApiRearmMinion | type[Absent] | None = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
@@ -296,7 +304,7 @@ class Item(AttrDict):
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,
             spool: str | type[Absent] | None = Absent,
-            optional_reload: bool | type[Absent] | None = Absent,
+            optional_reload: ApiOptionalReload | type[Absent] | None = Absent,
             add_projs: list[str] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,

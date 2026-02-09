@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-use crate::util::default_one;
+use crate::{shared::HOptionalReload, util::default_one};
 
 #[derive(Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
@@ -10,7 +10,7 @@ pub(in crate::cmd) struct HStatOptionCapSim {
     #[educe(Default = 1)]
     pub(in crate::cmd) cap_perc: f64,
     #[serde(default)]
-    pub(in crate::cmd) optional_reloads: Option<bool>,
+    pub(in crate::cmd) optional_reloads: Option<HOptionalReload>,
     #[serde(default)]
     pub(in crate::cmd) stagger: HStatOptionCapSimStagger,
 }

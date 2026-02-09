@@ -6,7 +6,7 @@ use crate::{
         HItemIdsResp, change_item,
         shared::{HAddMode, HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
-    shared::{HModRack, HModuleState, HSpool},
+    shared::{HModRack, HModuleState, HOptionalReload, HSpool},
     util::HExecError,
 };
 
@@ -19,7 +19,7 @@ pub(crate) struct HAddModuleCmd {
     mutation: Option<HMutationOnAdd>,
     charge_type_id: Option<i32>,
     spool: Option<HSpool>,
-    optional_reload: Option<bool>,
+    optional_reload: Option<HOptionalReload>,
 }
 impl HAddModuleCmd {
     pub(in crate::cmd) fn execute(
@@ -54,8 +54,8 @@ impl HAddModuleCmd {
         if let Some(h_spool) = self.spool {
             core_module.set_spool(Some(h_spool.into_core()));
         }
-        if let Some(optional_reload) = self.optional_reload {
-            core_module.set_optional_reload(Some(optional_reload));
+        if let Some(h_optional_reload) = self.optional_reload {
+            core_module.set_optional_reload(Some(h_optional_reload.into_core()));
         }
         Ok(HItemIdsResp::from_core_module(core_module))
     }

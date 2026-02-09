@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, NpcProp, Spool},
+    misc::{EffectMode, NpcProp, OptionalReload, RearmMinion, Spool},
     num::{PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
@@ -585,13 +585,13 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_optional_reload(&self) -> Option<bool> {
+    pub(crate) fn get_optional_reload(&self) -> Option<OptionalReload> {
         match self {
             Self::Module(module) => module.get_optional_reload(),
             _ => None,
         }
     }
-    pub(crate) fn get_rearm_minion(&self) -> Option<bool> {
+    pub(crate) fn get_rearm_minion(&self) -> Option<RearmMinion> {
         match self {
             Self::Fighter(fighter) => fighter.get_rearm_minion(),
             _ => None,

@@ -6,7 +6,7 @@ use crate::{
         HItemIdsResp,
         shared::{HAbilityMap, HEffectModeMap, apply_abilities, apply_effect_modes},
     },
-    shared::{HCoordinates, HMinionState, HMovement},
+    shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::{HExecError, TriStateField},
 };
 
@@ -22,7 +22,7 @@ pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
     abilities: Option<HAbilityMap>,
     #[serde(default)]
-    rearm_minion: TriStateField<bool>,
+    rearm_minion: TriStateField<HRearmMinion>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
@@ -64,7 +64,7 @@ impl HChangeFighterCmd {
         }
         apply_abilities(&mut core_fighter, &self.abilities);
         match self.rearm_minion {
-            TriStateField::Value(rearm_minion) => core_fighter.set_rearm_minion(Some(rearm_minion)),
+            TriStateField::Value(h_rearm_minion) => core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core())),
             TriStateField::None => core_fighter.set_rearm_minion(None),
             TriStateField::Absent => (),
         }

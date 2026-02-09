@@ -4,6 +4,7 @@ import typing
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
+    from fw.consts import ApiOptionalReload
     from .opt_shared import StatTimeBurst, StatTimeSim
 
 
@@ -36,5 +37,5 @@ class StatCapRegenOptions:
 class StatsOptionCapSim:
 
     cap_perc: float | type[Absent] = Absent
-    optional_reloads: bool | type[Absent] = Absent
+    optional_reloads: ApiOptionalReload | type[Absent] = Absent
     stagger: bool | tuple[bool, list[str]] | type[Absent] = Absent

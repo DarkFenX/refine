@@ -1,5 +1,6 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
+    misc::OptionalReload,
     num::{PValue, UnitInterval, Value},
     svc::vast::{StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatTimeOptions},
 };
@@ -20,7 +21,7 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_cap_sim(
         &mut self,
         cap_perc: UnitInterval,
-        optional_reloads: Option<bool>,
+        optional_reloads: Option<OptionalReload>,
         stagger: StatCapSimStagger,
     ) -> Result<StatCapSim, FitShipStatError> {
         Ok(self

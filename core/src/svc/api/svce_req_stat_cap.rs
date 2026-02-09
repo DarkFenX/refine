@@ -1,4 +1,5 @@
 use crate::{
+    misc::OptionalReload,
     num::{PValue, UnitInterval, Value},
     svc::{
         Svc, SvcCtx,
@@ -36,7 +37,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         cap_perc: UnitInterval,
-        optional_reloads: Option<bool>,
+        optional_reloads: Option<OptionalReload>,
         stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast.get_stat_item_cap_sim(

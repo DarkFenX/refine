@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::shared::HSpool;
+use crate::shared::{HOptionalReload, HRearmMinion, HSpool};
 
 #[derive(Copy, Clone, educe::Educe, Deserialize)]
 #[serde(tag = "mode", rename_all = "snake_case")]
@@ -22,9 +22,9 @@ pub(in crate::cmd) struct HStatTimeOptionsSim {
     #[serde(default)]
     pub(in crate::cmd) time: Option<f64>,
     #[serde(default)]
-    pub(in crate::cmd) optional_reloads: Option<bool>,
+    pub(in crate::cmd) optional_reloads: Option<HOptionalReload>,
     #[serde(default)]
-    pub(in crate::cmd) rearm_minions: Option<bool>,
+    pub(in crate::cmd) rearm_minions: Option<HRearmMinion>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +49,8 @@ impl HStatTimeOptionsSim {
     fn into_core(self) -> rc::stats::StatTimeOptionsSim {
         rc::stats::StatTimeOptionsSim {
             time: self.time.map(rc::PValue::from_f64_clamped),
-            optional_reloads: self.optional_reloads,
-            rearm_minions: self.rearm_minions,
+            optional_reloads: self.optional_reloads.map(|v| v.into_core()),
+            rearm_minions: self.rearm_minions.map(|v| v.into_core()),
         }
     }
 }

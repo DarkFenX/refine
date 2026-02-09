@@ -1,5 +1,5 @@
 use crate::{
-    misc::{InfCount, SpoolCycleCountInfo},
+    misc::{InfCount, OptionalReload, SpoolCycleCountInfo},
     num::Count,
     svc::{
         Svc, SvcCtx,
@@ -10,7 +10,7 @@ use crate::{
 };
 
 const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim {
-    optional_reloads: Some(true),
+    optional_reloads: Some(OptionalReload::OnEmpty),
     ..
 });
 

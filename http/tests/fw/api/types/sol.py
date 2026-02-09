@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
     from fw import eve
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile
-    from fw.consts import ApiNpcPropMode, ApiSecZone
+    from fw.consts import ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
     from .validation import ValOptions
 
@@ -83,9 +83,9 @@ class SolarSystem(AttrDict):
             sec_zone: ApiSecZone | type[Absent] = Absent,
             default_incoming_dps: DpsProfile | type[Absent] = Absent,
             default_spool: str | type[Absent] = Absent,
-            default_npc_prop: ApiNpcPropMode | type[Absent] = Absent,
-            default_optional_reloads: bool | type[Absent] = Absent,
-            default_rearm_minions: bool | type[Absent] = Absent,
+            default_npc_prop: ApiNpcProp | type[Absent] = Absent,
+            default_optional_reloads: ApiOptionalReload | type[Absent] = Absent,
+            default_rearm_minions: ApiRearmMinion | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,

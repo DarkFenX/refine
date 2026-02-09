@@ -508,9 +508,10 @@ fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapB
 fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapSim>) -> Option<Vec<HStatCapSim>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let cap_perc = rc::UnitInterval::from_f64_clamped(option.cap_perc);
-        let stagger = option.stagger.into_core();
-        match core_fit.get_stat_cap_sim(cap_perc, option.optional_reloads, stagger) {
+        let core_cap_perc = rc::UnitInterval::from_f64_clamped(option.cap_perc);
+        let core_optional_reloads = option.optional_reloads.map(|v| v.into_core());
+        let core_stagger = option.stagger.into_core();
+        match core_fit.get_stat_cap_sim(core_cap_perc, core_optional_reloads, core_stagger) {
             Ok(result) => results.push(HStatCapSim::from_core(result)),
             Err(_) => return None,
         }

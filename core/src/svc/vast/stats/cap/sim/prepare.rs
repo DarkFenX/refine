@@ -6,6 +6,7 @@ use super::{
     stagger::{StaggerKey, StatCapSimStaggerInt, process_staggers},
 };
 use crate::{
+    misc::OptionalReload,
     num::PValue,
     svc::{
         SvcCtx,
@@ -24,7 +25,7 @@ pub(super) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
-    optional_reloads: Option<bool>,
+    optional_reloads: Option<OptionalReload>,
     stagger: StatCapSimStaggerInt,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,

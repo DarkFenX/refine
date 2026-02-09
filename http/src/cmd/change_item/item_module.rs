@@ -6,7 +6,7 @@ use crate::{
         HItemIdsResp,
         shared::{HEffectModeMap, HMutationOnChange, apply_effect_modes, apply_mattrs_on_add, apply_mattrs_on_change},
     },
-    shared::{HModuleState, HSpool},
+    shared::{HModuleState, HOptionalReload, HSpool},
     util::{HExecError, TriStateField},
 };
 
@@ -24,7 +24,7 @@ pub(crate) struct HChangeModuleCmd {
     #[serde(default)]
     spool: TriStateField<HSpool>,
     #[serde(default)]
-    optional_reload: TriStateField<bool>,
+    optional_reload: TriStateField<HOptionalReload>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_projs: Vec<rc::ItemId>,
@@ -104,7 +104,9 @@ impl HChangeModuleCmd {
             TriStateField::Absent => (),
         }
         match self.optional_reload {
-            TriStateField::Value(optional_reload) => core_module.set_optional_reload(Some(optional_reload)),
+            TriStateField::Value(h_optional_reload) => {
+                core_module.set_optional_reload(Some(h_optional_reload.into_core()))
+            }
             TriStateField::None => core_module.set_optional_reload(None),
             TriStateField::Absent => (),
         }

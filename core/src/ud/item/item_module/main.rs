@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::ModuleState,
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, ModRack, Spool},
+    misc::{EffectMode, ModRack, OptionalReload, Spool},
     num::{Count, Index, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
     ud::{
@@ -23,7 +23,7 @@ pub(crate) struct UModule {
     projs: UProjs,
     // Optional settings related to cycling
     spool: Option<Spool>,
-    optional_reload: Option<bool>,
+    optional_reload: Option<OptionalReload>,
 }
 impl UModule {
     pub(crate) fn new(
@@ -216,10 +216,10 @@ impl UModule {
     pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
         self.spool = spool
     }
-    pub(crate) fn get_optional_reload(&self) -> Option<bool> {
+    pub(crate) fn get_optional_reload(&self) -> Option<OptionalReload> {
         self.optional_reload
     }
-    pub(crate) fn set_optional_reload(&mut self, optional_reload: Option<bool>) {
+    pub(crate) fn set_optional_reload(&mut self, optional_reload: Option<OptionalReload>) {
         self.optional_reload = optional_reload
     }
 }

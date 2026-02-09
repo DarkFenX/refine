@@ -207,10 +207,10 @@ def test_ancil(client, consts):
     api_options = [
         StatsOptionCapBalance(
             src_kinds=StatCapSrcKinds(consumers=True),
-            time_options=StatTimeSim(optional_reloads=False)),
+            time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionCapBalance(
             src_kinds=StatCapSrcKinds(consumers=True),
-            time_options=StatTimeSim(optional_reloads=True))]
+            time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
     assert api_fit_stats.cap_balance == [approx(-8.888889), approx(-3.333333)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
@@ -221,10 +221,10 @@ def test_ancil(client, consts):
     api_options = [
         StatsOptionCapBalance(
             src_kinds=StatCapSrcKinds(consumers=True),
-            time_options=StatTimeSim(optional_reloads=False)),
+            time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionCapBalance(
             src_kinds=StatCapSrcKinds(consumers=True),
-            time_options=StatTimeSim(optional_reloads=True))]
+            time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty))]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
     assert api_fit_stats.cap_balance == [approx(-8.888889), approx(-8.888889)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))

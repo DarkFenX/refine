@@ -3,7 +3,7 @@ use either::Either;
 use super::shared::{CyclingOptions, SelfKillerInfo};
 use crate::{
     def::SERVER_TICK_S,
-    misc::InfCount,
+    misc::{InfCount, OptionalReload},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffectChargeLoc, REffectId},
@@ -201,7 +201,7 @@ fn fill_module_effect_info(
             .u_data
             .get_item_optional_reload(item_uid, sim_options.optional_reloads)
         {
-            true => part_r(
+            OptionalReload::OnEmpty => part_r(
                 ctx,
                 calc,
                 item_uid,
@@ -210,7 +210,7 @@ fn fill_module_effect_info(
                 int_cd,
                 charge_info.part_charged,
             ),
-            false => CycleSeq::LimInf(CSeqLimInf {
+            OptionalReload::Disabled => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: CycleDataFull {
                     duration: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -231,8 +231,8 @@ fn fill_module_effect_info(
             .u_data
             .get_item_optional_reload(item_uid, sim_options.optional_reloads)
         {
-            true => full_r(ctx, calc, item_uid, duration, cooldown, int_cd, full_count),
-            false => CycleSeq::LimInf(CSeqLimInf {
+            OptionalReload::OnEmpty => full_r(ctx, calc, item_uid, duration, cooldown, int_cd, full_count),
+            OptionalReload::Disabled => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: CycleDataFull {
                     duration: duration + cooldown,
                     interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -263,7 +263,7 @@ fn fill_module_effect_info(
                 .u_data
                 .get_item_optional_reload(item_uid, sim_options.optional_reloads)
             {
-                true => both_r(
+                OptionalReload::OnEmpty => both_r(
                     ctx,
                     calc,
                     item_uid,
@@ -273,7 +273,7 @@ fn fill_module_effect_info(
                     full_count,
                     charge_info.part_charged,
                 ),
-                false => CycleSeq::LimSinInf(CSeqLimSinInf {
+                OptionalReload::Disabled => CycleSeq::LimSinInf(CSeqLimSinInf {
                     p1_data: CycleDataFull {
                         duration: duration + cooldown,
                         interrupt: CycleInterrupt::try_new(int_cd, false),
