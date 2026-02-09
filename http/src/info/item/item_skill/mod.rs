@@ -1,6 +1,6 @@
-pub(crate) use main::HSkillInfo;
+pub(crate) use skill::HSkillInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod skill;
+mod skill_full;
+mod skill_id;
+mod skill_partial;

@@ -1,6 +1,7 @@
-pub(crate) use main::HModuleInfo;
+pub(crate) use module::HModuleInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod module;
+mod module_full;
+mod module_id;
+mod module_partial;
+mod optional_reload;

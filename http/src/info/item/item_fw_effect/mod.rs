@@ -1,6 +1,6 @@
-pub(crate) use main::HFwEffectInfo;
+pub(crate) use fw_effect::HFwEffectInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod fw_effect;
+mod fw_effect_full;
+mod fw_effect_id;
+mod fw_effect_partial;

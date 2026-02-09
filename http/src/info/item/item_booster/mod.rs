@@ -1,7 +1,7 @@
-pub(crate) use main::HBoosterInfo;
+pub(crate) use booster::HBoosterInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod booster;
+mod booster_full;
+mod booster_id;
+mod booster_partial;
 mod side_effect;

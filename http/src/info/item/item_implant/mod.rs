@@ -1,6 +1,6 @@
-pub(crate) use main::HImplantInfo;
+pub(crate) use implant::HImplantInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod implant;
+mod implant_full;
+mod implant_id;
+mod implant_partial;

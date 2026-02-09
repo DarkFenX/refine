@@ -1,6 +1,6 @@
-pub(crate) use main::HShipInfo;
+pub(crate) use ship::HShipInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod ship;
+mod ship_full;
+mod ship_id;
+mod ship_partial;

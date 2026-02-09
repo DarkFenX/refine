@@ -1,6 +1,6 @@
 use crate::{
     api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState, Movement},
-    misc::NpcProp,
+    misc::ItemNpcPropInfo,
     sol::SolarSystem,
     ud::{UDrone, UItemId},
 };
@@ -19,7 +19,7 @@ impl<'a> Drone<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
-    pub fn get_npc_prop(&self) -> Option<NpcProp> {
+    pub fn get_npc_prop(&self) -> ItemNpcPropInfo {
         get_npc_prop(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
@@ -57,7 +57,7 @@ impl<'a> DroneMut<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
-    pub fn get_npc_prop(&self) -> Option<NpcProp> {
+    pub fn get_npc_prop(&self) -> ItemNpcPropInfo {
         get_npc_prop(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
@@ -90,8 +90,10 @@ fn get_fit(sol: &SolarSystem, drone_uid: UItemId) -> Fit<'_> {
 fn get_state(sol: &SolarSystem, drone_uid: UItemId) -> MinionState {
     get_u_drone(sol, drone_uid).get_drone_state()
 }
-fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> Option<NpcProp> {
-    get_u_drone(sol, drone_uid).get_npc_prop()
+fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> ItemNpcPropInfo {
+    let value = sol.u_data.get_item_npc_prop(drone_uid).unwrap();
+    let overridden = get_u_drone(sol, drone_uid).get_npc_prop().is_some();
+    ItemNpcPropInfo { value, overridden }
 }
 fn get_coordinates(sol: &SolarSystem, drone_uid: UItemId) -> Coordinates {
     Coordinates::from_xyz(get_u_drone(sol, drone_uid).get_physics().coordinates)

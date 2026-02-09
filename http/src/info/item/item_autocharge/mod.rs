@@ -1,6 +1,6 @@
-pub(crate) use main::HAutochargeInfo;
+pub(crate) use autocharge::HAutochargeInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod autocharge;
+mod autocharge_full;
+mod autocharge_id;
+mod autocharge_partial;

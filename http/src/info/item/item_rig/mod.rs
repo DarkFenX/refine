@@ -1,6 +1,6 @@
-pub(crate) use main::HRigInfo;
+pub(crate) use rig::HRigInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod rig;
+mod rig_full;
+mod rig_id;
+mod rig_partial;

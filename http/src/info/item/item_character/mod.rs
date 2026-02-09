@@ -1,6 +1,6 @@
-pub(crate) use main::HCharacterInfo;
+pub(crate) use character::HCharacterInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod character;
+mod character_full;
+mod character_id;
+mod character_partial;

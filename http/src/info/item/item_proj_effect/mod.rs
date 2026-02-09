@@ -1,6 +1,6 @@
-pub(crate) use main::HProjEffectInfo;
+pub(crate) use proj_effect::HProjEffectInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod proj_effect;
+mod proj_effect_full;
+mod proj_effect_id;
+mod proj_effect_partial;

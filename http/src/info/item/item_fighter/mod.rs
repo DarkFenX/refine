@@ -1,7 +1,8 @@
-pub(crate) use main::HFighterInfo;
+pub(crate) use fighter::HFighterInfo;
 
 mod ability;
-mod full;
-mod id;
-mod main;
-mod partial;
+mod fighter;
+mod fighter_full;
+mod fighter_id;
+mod fighter_partial;
+mod rearm_minion;

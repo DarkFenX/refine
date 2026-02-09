@@ -1,6 +1,6 @@
-pub(crate) use main::HSwEffectInfo;
+pub(crate) use sw_effect::HSwEffectInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod sw_effect;
+mod sw_effect_full;
+mod sw_effect_id;
+mod sw_effect_partial;

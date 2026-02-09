@@ -1,6 +1,7 @@
-pub(crate) use main::HDroneInfo;
+pub(crate) use drone::HDroneInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod drone;
+mod drone_full;
+mod drone_id;
+mod drone_partial;
+mod npc_prop;

@@ -1,6 +1,6 @@
-pub(crate) use main::HServiceInfo;
+pub(crate) use service::HServiceInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod service;
+mod service_full;
+mod service_id;
+mod service_partial;

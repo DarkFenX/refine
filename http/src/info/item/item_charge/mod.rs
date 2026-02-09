@@ -1,6 +1,6 @@
-pub(crate) use main::HChargeInfo;
+pub(crate) use charge::HChargeInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod charge;
+mod charge_full;
+mod charge_id;
+mod charge_partial;

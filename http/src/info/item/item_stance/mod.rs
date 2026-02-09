@@ -1,6 +1,6 @@
-pub(crate) use main::HStanceInfo;
+pub(crate) use stance::HStanceInfo;
 
-mod full;
-mod id;
-mod main;
-mod partial;
+mod stance;
+mod stance_full;
+mod stance_id;
+mod stance_partial;

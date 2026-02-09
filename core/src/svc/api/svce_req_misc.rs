@@ -1,5 +1,5 @@
 use crate::{
-    misc::{InfCount, OptionalReload, SpoolCycleCountInfo},
+    misc::{InfCount, ItemSpoolInfo, OptionalReload},
     num::Count,
     svc::{
         Svc, SvcCtx,
@@ -53,11 +53,7 @@ impl Svc {
         }
         Some(InfCount::Count(charged_cycles))
     }
-    pub(crate) fn get_effect_spool_cycle_count(
-        &mut self,
-        u_data: &UData,
-        item_uid: UItemId,
-    ) -> Option<SpoolCycleCountInfo> {
+    pub(crate) fn get_effect_spool_cycle_count(&mut self, u_data: &UData, item_uid: UItemId) -> Option<ItemSpoolInfo> {
         let u_item = u_data.items.get(item_uid);
         let defeff_rid = u_item.get_defeff_rid()??;
         let defeff = u_data.src.get_effect_by_rid(defeff_rid);
@@ -66,7 +62,7 @@ impl Svc {
         let ctx = SvcCtx::new(u_data, &self.eff_projs);
         let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, None, spool_attrs)?;
         let overridden = u_item.get_spool().is_some();
-        Some(SpoolCycleCountInfo {
+        Some(ItemSpoolInfo {
             current: resolved_spool.cycles,
             max: resolved_spool.cycles_max,
             overridden,

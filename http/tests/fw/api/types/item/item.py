@@ -10,14 +10,17 @@ from fw.api.types.stats import ItemStats
 from fw.consts import ApiItemInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef
 from .ability_info import AbilityInfo
-from .adj_count import AdjustableCount
+from .count import ItemCountInfo
 from .attr_vals import AttrVals
 from .coordinates import Coordinates
 from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
 from .movement import Movement
 from .mutation import ItemMutation
+from .npc_prop import ItemNpcPropInfo
+from .optional_reload import ItemOptionalReloadInfo
 from .proj_range import ProjRangeInfo
+from .rearm_minion import ItemRearmMinionInfo
 from .side_effect_info import SideEffectInfo
 
 if typing.TYPE_CHECKING:
@@ -39,13 +42,16 @@ class Item(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={
-            'mutation': AttrHookDef(func=lambda m: ItemMutation(data=m)),
-            'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
-            'autocharges': AttrHookDef(func=lambda acs: {
+            'mutation': AttrHookDef(func=lambda d: ItemMutation(data=d)),
+            'charge': AttrHookDef(func=lambda d: Item(client=client, data=d, sol_id=sol_id)),
+            'autocharges': AttrHookDef(func=lambda d: {
                 effect_http_to_fw(effect_id=k): Item(client=client, data=v, sol_id=sol_id)
-                for k, v in acs.items()}),
-            'spool_cycles': AttrHookDef(func=lambda sc: AdjustableCount(data=sc)),
-            'count': AttrHookDef(func=lambda c: AdjustableCount(data=c)),
+                for k, v in d.items()}),
+            'spool_cycles': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
+            'count': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
+            'optional_reload': AttrHookDef(func=lambda d: ItemOptionalReloadInfo(data=d)),
+            'rearm_minion': AttrHookDef(func=lambda d: ItemRearmMinionInfo(data=d)),
+            'npc_prop': AttrHookDef(func=lambda d: ItemNpcPropInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
                 effect_http_to_fw(effect_id=k): SideEffectInfo(data=v) for k, v in ses.items()}),

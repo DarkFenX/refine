@@ -1,7 +1,8 @@
-pub(crate) use main::HItemInfo;
+pub(crate) use item::HItemInfo;
 
 mod count_info;
 mod extended;
+mod item;
 mod item_autocharge;
 mod item_booster;
 mod item_character;
@@ -19,6 +20,5 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
-mod main;
 mod mutation;
 mod proj;
