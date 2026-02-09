@@ -10,9 +10,9 @@ from fw.api.types.stats import ItemStats
 from fw.consts import ApiItemInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef
 from .ability_info import AbilityInfo
-from .count import ItemCountInfo
 from .attr_vals import AttrVals
 from .coordinates import Coordinates
+from .count import ItemCountInfo
 from .effect import EffectInfo
 from .mod_info import AttrModInfoMap
 from .movement import Movement
