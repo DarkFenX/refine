@@ -5,9 +5,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     info::{
         HItemInfoMode,
-        item::{
-            adj_count::HAdjustableCount, item_charge::HChargeInfo, mutation::HItemMutationInfo, proj::HRangedProjInfo,
-        },
+        item::{count_info::HCountInfo, item_charge::HChargeInfo, mutation::HItemMutationInfo, proj::HRangedProjInfo},
     },
     shared::{HModRack, HModuleState},
     util::TriStateField,
@@ -34,7 +32,7 @@ pub(crate) struct HModuleInfoPartial {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     cycles_until_empty: TriStateField<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    spool_cycles: Option<HAdjustableCount>,
+    spool_cycles: Option<HCountInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -75,7 +73,7 @@ impl HModuleInfoPartial {
             cycles_until_empty,
             spool_cycles: core_module
                 .get_spool_cycle_count()
-                .map(HAdjustableCount::from_core_count),
+                .map(HCountInfo::from_core_spool_cycle_count),
             projs: core_module.iter_projs().map(HRangedProjInfo::from_core).collect(),
         }
     }

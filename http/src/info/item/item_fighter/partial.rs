@@ -6,7 +6,7 @@ use crate::{
     info::{
         HItemInfoMode,
         item::{
-            adj_count::HAdjustableCount, item_autocharge::HAutochargeInfo, item_fighter::ability::HAbilityInfo,
+            count_info::HCountInfo, item_autocharge::HAutochargeInfo, item_fighter::ability::HAbilityInfo,
             proj::HRangedProjInfo,
         },
     },
@@ -24,7 +24,7 @@ pub(crate) struct HFighterInfoPartial {
     fit_id: rc::FitId,
     state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
-    count: Option<HAdjustableCount>,
+    count: Option<HCountInfo>,
     #[serde_as(as = "Map<DisplayFromStr, _>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     abilities: Vec<(i32, HAbilityInfo)>,
@@ -48,7 +48,7 @@ impl HFighterInfoPartial {
             type_id: core_fighter.get_type_id().into_i32(),
             fit_id: core_fighter.get_fit().get_fit_id(),
             state: HMinionState::from_core(core_fighter.get_state()),
-            count: core_fighter.get_count().map(HAdjustableCount::from_core_fighter_count),
+            count: core_fighter.get_count().map(HCountInfo::from_core_fighter_count),
             abilities: core_fighter
                 .iter_abilities()
                 .map(|v| (v.get_id().into_i32(), HAbilityInfo::from_core(v)))

@@ -1,8 +1,6 @@
 use crate::{
-    api::{
-        Adjustable, Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ModuleState,
-    },
-    misc::{InfCount, ModRack},
+    api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ModuleState},
+    misc::{InfCount, ModRack, SpoolCycleCountInfo},
     num::{Count, Index},
     sol::SolarSystem,
     ud::{UItemId, UModule},
@@ -92,7 +90,7 @@ impl<'a> ModuleMut<'a> {
             _ => None,
         }
     }
-    pub fn get_spool_cycle_count(&mut self) -> Option<Adjustable<Count>> {
+    pub fn get_spool_cycle_count(&mut self) -> Option<SpoolCycleCountInfo> {
         self.sol.svc.get_effect_spool_cycle_count(&self.sol.u_data, self.uid)
     }
 }

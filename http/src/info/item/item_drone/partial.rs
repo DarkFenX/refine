@@ -19,9 +19,9 @@ pub(crate) struct HDroneInfoPartial {
     state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
     mutation: Option<HItemMutationInfo>,
+    npc_prop: Option<HNpcProp>,
     coordinates: HCoordinates,
     movement: HMovement,
-    npc_prop: Option<HNpcProp>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     projs: Vec<HRangedProjInfo>,
 }
@@ -38,9 +38,9 @@ impl HDroneInfoPartial {
             fit_id: core_drone.get_fit().get_fit_id(),
             state: HMinionState::from_core(core_drone.get_state()),
             mutation: core_drone.get_mutation().and_then(HItemMutationInfo::try_from_core),
+            npc_prop: core_drone.get_npc_prop().map(HNpcProp::from_core),
             coordinates: HCoordinates::from_core(core_drone.get_coordinates()),
             movement: HMovement::from_core(core_drone.get_movement()),
-            npc_prop: core_drone.get_npc_prop().map(HNpcProp::from_core),
             projs: core_drone.iter_projs().map(HRangedProjInfo::from_core).collect(),
         }
     }

@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::{Adjustable, MinionState},
-    misc::EffectMode,
+    api::MinionState,
+    misc::{EffectMode, FighterCountInfo},
     num::{FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RState, Src},
     ud::{
@@ -123,15 +123,15 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_count(&self) -> Option<Adjustable<FighterCount>> {
+    pub(crate) fn get_count(&self) -> Option<FighterCountInfo> {
         match self.get_axt() {
             Some(axt) => match self.count_override {
-                Some(count_override) => Some(Adjustable {
+                Some(count_override) => Some(FighterCountInfo {
                     current: count_override,
                     max: axt.max_fighter_count,
                     overridden: true,
                 }),
-                None => Some(Adjustable {
+                None => Some(FighterCountInfo {
                     current: axt.max_fighter_count,
                     max: axt.max_fighter_count,
                     overridden: false,

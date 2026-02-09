@@ -19,14 +19,14 @@ impl<'a> Drone<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
+    pub fn get_npc_prop(&self) -> Option<NpcProp> {
+        get_npc_prop(self.sol, self.uid)
+    }
     pub fn get_coordinates(&self) -> Coordinates {
         get_coordinates(self.sol, self.uid)
     }
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
-    }
-    pub fn get_npc_prop(&self) -> Option<NpcProp> {
-        get_npc_prop(self.sol, self.uid)
     }
 }
 impl<'a> ItemSealed for Drone<'a> {
@@ -57,14 +57,14 @@ impl<'a> DroneMut<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
+    pub fn get_npc_prop(&self) -> Option<NpcProp> {
+        get_npc_prop(self.sol, self.uid)
+    }
     pub fn get_coordinates(&self) -> Coordinates {
         get_coordinates(self.sol, self.uid)
     }
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
-    }
-    pub fn get_npc_prop(&self) -> Option<NpcProp> {
-        get_npc_prop(self.sol, self.uid)
     }
 }
 impl<'a> ItemSealed for DroneMut<'a> {
@@ -90,14 +90,14 @@ fn get_fit(sol: &SolarSystem, drone_uid: UItemId) -> Fit<'_> {
 fn get_state(sol: &SolarSystem, drone_uid: UItemId) -> MinionState {
     get_u_drone(sol, drone_uid).get_drone_state()
 }
+fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> Option<NpcProp> {
+    get_u_drone(sol, drone_uid).get_npc_prop()
+}
 fn get_coordinates(sol: &SolarSystem, drone_uid: UItemId) -> Coordinates {
     Coordinates::from_xyz(get_u_drone(sol, drone_uid).get_physics().coordinates)
 }
 fn get_movement(sol: &SolarSystem, drone_uid: UItemId) -> Movement {
     Movement::from_u_physics(get_u_drone(sol, drone_uid).get_physics())
-}
-fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> Option<NpcProp> {
-    get_u_drone(sol, drone_uid).get_npc_prop()
 }
 fn get_u_drone(sol: &SolarSystem, drone_uid: UItemId) -> &UDrone {
     sol.u_data.items.get(drone_uid).dc_drone().unwrap()

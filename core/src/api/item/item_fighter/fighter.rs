@@ -1,9 +1,6 @@
 use crate::{
-    api::{
-        Adjustable, Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState,
-        Movement,
-    },
-    num::FighterCount,
+    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState, Movement},
+    misc::FighterCountInfo,
     sol::SolarSystem,
     ud::{UFighter, UItemId},
 };
@@ -22,7 +19,7 @@ impl<'a> Fighter<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
-    pub fn get_count(&self) -> Option<Adjustable<FighterCount>> {
+    pub fn get_count(&self) -> Option<FighterCountInfo> {
         get_count(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
@@ -63,7 +60,7 @@ impl<'a> FighterMut<'a> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
-    pub fn get_count(&self) -> Option<Adjustable<FighterCount>> {
+    pub fn get_count(&self) -> Option<FighterCountInfo> {
         get_count(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
@@ -99,7 +96,7 @@ fn get_fit(sol: &SolarSystem, fighter_uid: UItemId) -> Fit<'_> {
 fn get_state(sol: &SolarSystem, fighter_uid: UItemId) -> MinionState {
     get_u_fighter(sol, fighter_uid).get_fighter_state()
 }
-fn get_count(sol: &SolarSystem, fighter_uid: UItemId) -> Option<Adjustable<FighterCount>> {
+fn get_count(sol: &SolarSystem, fighter_uid: UItemId) -> Option<FighterCountInfo> {
     get_u_fighter(sol, fighter_uid).get_count()
 }
 fn get_coordinates(sol: &SolarSystem, fighter_uid: UItemId) -> Coordinates {

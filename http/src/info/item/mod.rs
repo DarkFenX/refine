@@ -1,6 +1,6 @@
 pub(crate) use main::HItemInfo;
 
-mod adj_count;
+mod count_info;
 mod extended;
 mod item_autocharge;
 mod item_booster;

@@ -25,8 +25,8 @@
 //!   items, and fetch data and stats
 
 pub use api::{
-    AbilId, Ability, AbilityIter, AbilityMut, AddMode, Adjustable, AttrId, AttrVals, Autocharge, AutochargeMut,
-    Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, Direction, Drone, DroneMut, EffectId,
+    AbilId, Ability, AbilityIter, AbilityMut, AddMode, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
+    BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, Direction, Drone, DroneMut, EffectId,
     EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr,
     FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut, Implant, ImplantMut,
     IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemTypeId, MinionState,
@@ -38,7 +38,10 @@ pub use api::{
 };
 pub use def::VERSION;
 pub use lender::Lender;
-pub use misc::{Breacher, DpsProfile, EffectMode, MiningAmount, ModRack, NpcProp, SecZone, SecZoneCorruption, Spool};
+pub use misc::{
+    Breacher, DpsProfile, EffectMode, FighterCountInfo, MiningAmount, ModRack, NpcProp, SecZone, SecZoneCorruption,
+    Spool, SpoolCycleCountInfo,
+};
 pub use num::{Count, FighterCount, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use rd::Src;
 pub use sol::SolarSystem;
