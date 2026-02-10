@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
 
 
 def test_state(client, consts):
@@ -284,6 +284,75 @@ def test_src_kind(client, consts):
     assert api_tgt_fit_stats.cap_balance == [approx(-25.0), approx(-25.0), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
     assert api_tgt_ship_stats.cap_balance == [approx(-25.0), approx(-25.0), 0]
+
+
+def test_time(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
+    eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_neut_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_neut_falloff,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_neut_id = client.mk_eve_item(
+        attrs={eve_neut_amount_attr_id: 600, eve_cycle_time_attr_id: 24000},
+        eff_ids=[eve_neut_effect_id],
+        defeff_id=eve_neut_effect_id)
+    eve_nosf_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_nosf_falloff,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_nosf_id = client.mk_eve_item(
+        attrs={eve_nosf_amount_attr_id: 210, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 1},
+        eff_ids=[eve_nosf_effect_id],
+        defeff_id=eve_nosf_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 1000, eve_sig_radius_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_neut = api_src_fit.add_module(type_id=eve_neut_id, state=consts.ApiModuleState.active)
+    api_src_nosf = api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_src_neut.change_module(add_projs=[api_tgt_ship.id])
+    api_src_nosf.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - default is sim with no time (looped stats)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
+    # Burst stats - first cycle of each module
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
+    # Sim without specified time - looped stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
+    # Sim with time just after neut applied its deduction, and nosf did not (nosf cycle happens at
+    # the end of its cycle)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(-600)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(-600)
+    # Sim with time nosf applied its deduction as well
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(-73.636364)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(-73.636364)
 
 
 def test_effect_no_duration(client, consts):

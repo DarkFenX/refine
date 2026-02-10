@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
 
 
 def test_state(client, consts):
@@ -148,6 +148,61 @@ def test_src_kind(client, consts):
     assert api_tgt_fit_stats.cap_balance == [approx(70.2), approx(70.2), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
     assert api_tgt_ship_stats.cap_balance == [approx(70.2), approx(70.2), 0]
+
+
+def test_time(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - default is sim with no time (looped stats)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(70.2)
+    # Burst stats - first cycle of the module
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(70.2)
+    # Sim without specified time - looped stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(70.2)
+    # Sim with time at the end of transfer first cycle
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=4))])))
+    assert api_tgt_fit_stats.cap_balance.one() == 0
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=4))])))
+    assert api_tgt_ship_stats.cap_balance.one() == 0
+    # Sim with time just after first cycle was completed
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=6))])))
+    assert api_tgt_fit_stats.cap_balance.one() == approx(58.5)
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=6))])))
+    assert api_tgt_ship_stats.cap_balance.one() == approx(58.5)
 
 
 def test_effect_no_duration(client, consts):

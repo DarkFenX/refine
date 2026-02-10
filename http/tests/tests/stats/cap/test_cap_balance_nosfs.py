@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
 
 
 def test_state(client, consts):
@@ -102,3 +102,58 @@ def test_src_kind(client, consts):
     assert api_fit_stats.cap_balance == [approx(12), approx(12), 0]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
     assert api_ship_stats.cap_balance == [approx(12), approx(12), 0]
+
+
+def test_time(client, consts):
+    eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
+    eve_use_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_nosf_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_nosf_falloff,
+        cat_id=consts.EveEffCat.target,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_nosf_id = client.mk_eve_item(
+        attrs={eve_nosf_amount_attr_id: 120, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 0},
+        eff_ids=[eve_nosf_effect_id],
+        defeff_id=eve_nosf_effect_id)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
+    # Verification - default is sim with no time (looped stats)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(12)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == approx(12)
+    # Burst stats - first cycle of the module
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_fit_stats.cap_balance.one() == approx(12)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_ship_stats.cap_balance.one() == approx(12)
+    # Sim without specified time - looped stats
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance.one() == approx(12)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_ship_stats.cap_balance.one() == approx(12)
+    # Sim with time at the end of nosf first cycle
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=9))])))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=9))])))
+    assert api_ship_stats.cap_balance.one() == 0
+    # Sim with time just after first cycle was completed
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+    assert api_fit_stats.cap_balance.one() == approx(10.909091)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+    assert api_ship_stats.cap_balance.one() == approx(10.909091)
