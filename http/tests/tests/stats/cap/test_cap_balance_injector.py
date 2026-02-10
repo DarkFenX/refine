@@ -202,7 +202,7 @@ def test_time(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    # Verification - default is sim with no time (looped stats)
+    # Verification - for cap balance default is sim with no time (looped stats)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_fit_stats.cap_balance.one() == approx(9.782609)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))

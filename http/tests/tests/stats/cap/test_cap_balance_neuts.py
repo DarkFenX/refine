@@ -319,7 +319,7 @@ def test_time(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_neut.change_module(add_projs=[api_tgt_ship.id])
     api_src_nosf.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - default is sim with no time (looped stats)
+    # Verification - for cap balance default is sim with no time (looped stats)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=True))

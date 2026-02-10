@@ -6,6 +6,8 @@ from fw.api import (
     StatMiningItemKinds,
     StatsOptionFitMining,
     StatsOptionItemMining,
+    StatTimeBurst,
+    StatTimeSim,
 )
 
 
@@ -289,6 +291,77 @@ def test_item_kind(client, consts):
         [approx(15.37037), approx(19.851852)],
         [approx(15.37037), approx(19.851852)],
         None]
+
+
+def test_time(client, consts):
+    eve_yield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_amount)
+    eve_crit_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_crit_chance)
+    eve_crit_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_crit_bonus_yield)
+    eve_waste_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_waste_probability)
+    eve_waste_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_wasted_volume_mult)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mining_laser,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
+    eve_module_id = client.mk_eve_item(
+        attrs={
+            eve_yield_attr_id: 1000,
+            eve_cycle_time_attr_id: 67500,
+            eve_crit_chance_attr_id: 0.015,
+            eve_crit_bonus_attr_id: 2.5,
+            eve_waste_chance_attr_id: 34,
+            eve_waste_mult_attr_id: 1},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id,
+        srqs={eve_skill_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification - burst stats
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeBurst())])))
+    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        mps=(True, [StatsOptionItemMining(time_options=StatTimeBurst())])))
+    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
+    # Sim without specified time - looped stats
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=None))])))
+    assert api_module_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
+    # Sim with time at the end of first cycle
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=67))])))
+    assert api_fleet_stats.mps.one().ice is None
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=67))])))
+    assert api_fit_stats.mps.one().ice is None
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=67))])))
+    assert api_module_stats.mps.one().ice is None
+    # Sim with time just after first cycle was completed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=68))])))
+    assert api_fleet_stats.mps.one().ice == [approx(15.257353), approx(19.705882)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=68))])))
+    assert api_fit_stats.mps.one().ice == [approx(15.257353), approx(19.705882)]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=68))])))
+    assert api_module_stats.mps.one().ice == [approx(15.257353), approx(19.705882)]
 
 
 def test_other_mining_kinds(client, consts):

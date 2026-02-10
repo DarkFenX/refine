@@ -4,7 +4,7 @@ use crate::{
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, derive_more::Display)]
 pub struct Count(u32);
 impl Count {
     pub const fn from_u32(value: u32) -> Self {
