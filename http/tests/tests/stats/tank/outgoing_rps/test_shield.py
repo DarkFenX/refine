@@ -9,7 +9,13 @@ from fw.api import (
     StatTimeBurst,
     StatTimeSim,
 )
-from tests.stats.tank import make_eve_drone_shield, make_eve_remote_asb, make_eve_remote_sb, setup_tank_basics
+from tests.stats.tank import (
+    make_eve_drone_shield,
+    make_eve_remote_asb,
+    make_eve_remote_sb,
+    make_eve_tankable,
+    setup_tank_basics,
+)
 
 
 def test_state(client, consts):
@@ -68,6 +74,83 @@ def test_state(client, consts):
     assert api_module_ancil_stats.outgoing_rps.one().shield == approx(118.75)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_drone_stats.outgoing_rps.one().shield == approx(14.4)
+
+
+def test_hp_limit_and_resist(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship1_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(200, 1000, 1000), rr_resist=0.5)
+    eve_ship2_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(200, 1000, 1000), rr_resist=0.3)
+    eve_module_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=508, cycle_time=8000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_src_fit.id])
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_rps.one().shield == approx(25)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.outgoing_rps.one().shield == approx(25)
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_module_stats.outgoing_rps.one().shield == approx(25)
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_rps.one().shield == approx(19.05)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.outgoing_rps.one().shield == approx(19.05)
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_module_stats.outgoing_rps.one().shield == approx(19.05)
+
+
+def test_hp_limit_and_range(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_src_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, radius=150)
+    eve_tgt_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(200, 1000, 1000), radius=120)
+    eve_module_id = make_eve_remote_sb(
+        client=client, basic_info=eve_basic_info,
+        rep_amount=508, cycle_time=8000, optimal_range=7250, falloff_range=10875)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 18395, 0))
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_src_fit.id])
+    # Verification - range is close enough to be limited by HP
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_rps.one().shield == approx(25)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.outgoing_rps.one().shield == approx(25)
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_module_stats.outgoing_rps.one().shield == approx(25)
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 29270, 0))
+    # Verification - range is far enough not to be limited by range
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_rps.one().shield == approx(3.96875)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.outgoing_rps.one().shield == approx(3.96875)
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_module_stats.outgoing_rps.one().shield == approx(3.96875)
 
 
 def test_item_kind(client, consts):
@@ -197,7 +280,6 @@ def test_time(client, consts):
         StatsOptionItemOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ])))
     assert api_module_ancil_stats.outgoing_rps.map(lambda i: i.shield) == [approx(121.078431), approx(83.823529)]
-
 
 
 def test_zero_cycle_time(client, consts):

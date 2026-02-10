@@ -115,29 +115,22 @@ def test_hp_limit_and_resist(client, consts):
 
 def test_hp_limit_and_range(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 100))
+    eve_src_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, radius=150)
+    eve_tgt_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 100), radius=120)
     eve_module_lhr_id = make_eve_local_hr(client=client, basic_info=eve_basic_info, rep_amount=120, cycle_time=24000)
     eve_module_rhr_id = make_eve_remote_hr(
-        client=client,
-        basic_info=eve_basic_info,
-        rep_amount=230,
-        cycle_time=6000,
-        optimal_range=10000,
-        falloff_range=5000)
+        client=client, basic_info=eve_basic_info,
+        rep_amount=230, cycle_time=6000, optimal_range=10000, falloff_range=5000)
     eve_drone_id = make_eve_drone_hull(
-        client=client,
-        basic_info=eve_basic_info,
-        rep_amount=36,
-        cycle_time=5000,
-        optimal_range=10000)
+        client=client, basic_info=eve_basic_info, rep_amount=36, cycle_time=5000, optimal_range=10000, radius=120)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_module_rhr = api_src_fit.add_module(type_id=eve_module_rhr_id, state=consts.ApiModuleState.active)
-    api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(15000, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(15270, 0, 0))
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
     api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
     api_drone.change_drone(add_projs=[api_tgt_ship.id])

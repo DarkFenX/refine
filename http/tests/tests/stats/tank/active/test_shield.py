@@ -138,38 +138,28 @@ def test_hp_limit_and_resist(client, consts):
 
 def test_hp_limit_and_range(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(300, 1000, 1000))
+    eve_src_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, radius=150)
+    eve_tgt_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(300, 1000, 1000), radius=120)
     eve_module_lsb_id = make_eve_local_sb(client=client, basic_info=eve_basic_info, rep_amount=228, cycle_time=3000)
     eve_module_lasb_id = make_eve_local_asb(client=client, basic_info=eve_basic_info, rep_amount=146, cycle_time=3000)
     eve_module_rsb_id = make_eve_remote_sb(
-        client=client,
-        basic_info=eve_basic_info,
-        rep_amount=508,
-        cycle_time=8000,
-        optimal_range=10000,
-        falloff_range=5000)
+        client=client, basic_info=eve_basic_info,
+        rep_amount=508, cycle_time=8000, optimal_range=10000, falloff_range=5000)
     eve_module_rasb_id = make_eve_remote_asb(
-        client=client,
-        basic_info=eve_basic_info,
-        rep_amount=950,
-        cycle_time=8000,
-        optimal_range=10000,
-        falloff_range=5000)
+        client=client, basic_info=eve_basic_info,
+        rep_amount=950, cycle_time=8000, optimal_range=10000, falloff_range=5000)
     eve_drone_id = make_eve_drone_shield(
-        client=client,
-        basic_info=eve_basic_info,
-        rep_amount=72,
-        cycle_time=5000,
-        optimal_range=10000)
+        client=client, basic_info=eve_basic_info,
+        rep_amount=72, cycle_time=5000, optimal_range=10000, radius=150)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_module_rsb = api_src_fit.add_module(type_id=eve_module_rsb_id, state=consts.ApiModuleState.active)
     api_module_rasb = api_src_fit.add_module(type_id=eve_module_rasb_id, state=consts.ApiModuleState.active)
-    api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(15000, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(15270, 0, 0))
     api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lasb_id, state=consts.ApiModuleState.active)
     api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
