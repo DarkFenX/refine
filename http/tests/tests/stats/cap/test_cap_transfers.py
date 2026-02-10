@@ -41,9 +41,8 @@ def test_state(client, consts):
     assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
     assert api_fit_stats.outgoing_cps.one() == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=(True, [
-        StatsOptionItemOutCps(ignore_state=False),
-        StatsOptionItemOutCps(ignore_state=True)])))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_cps=(True, [StatsOptionItemOutCps(ignore_state=False), StatsOptionItemOutCps(ignore_state=True)])))
     assert api_module_stats.outgoing_cps == [0, approx(70.2)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
