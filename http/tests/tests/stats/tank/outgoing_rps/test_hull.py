@@ -6,6 +6,8 @@ from fw.api import (
     StatOutRepItemKinds,
     StatsOptionFitOutRps,
     StatsOptionItemOutRps,
+    StatTimeBurst,
+    StatTimeSim,
 )
 from tests.stats.tank import make_eve_drone_hull, make_eve_remote_hr, setup_tank_basics
 
@@ -85,6 +87,57 @@ def test_item_kind(client, consts):
     assert api_fit_rrps_default.hull == approx(9.7)
     assert api_fit_rrps_module.hull == approx(2.5)
     assert api_fit_rrps_minion.hull == approx(7.2)
+
+
+def test_time(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_module_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=60, cycle_time=24000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification - burst stats
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.outgoing_rps.one().hull == approx(2.5)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeBurst())])))
+    assert api_fit_stats.outgoing_rps.one().hull == approx(2.5)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeBurst())])))
+    assert api_module_stats.outgoing_rps.one().hull == approx(2.5)
+    # Sim without specified time - looped stats
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.outgoing_rps.one().hull == approx(2.5)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.outgoing_rps.one().hull == approx(2.5)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=None))])))
+    assert api_module_stats.outgoing_rps.one().hull == approx(2.5)
+    # Sim with time before first cycle is completed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=23))])))
+    assert api_fleet_stats.outgoing_rps.one().hull == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=23))])))
+    assert api_fit_stats.outgoing_rps.one().hull == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=23))])))
+    assert api_module_stats.outgoing_rps.one().hull == 0
+    # Sim with time just after first cycle is completed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=25))])))
+    assert api_fleet_stats.outgoing_rps.one().hull == approx(2.4)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=25))])))
+    assert api_fit_stats.outgoing_rps.one().hull == approx(2.4)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=25))])))
+    assert api_module_stats.outgoing_rps.one().hull == approx(2.4)
 
 
 def test_zero_cycle_time(client, consts):

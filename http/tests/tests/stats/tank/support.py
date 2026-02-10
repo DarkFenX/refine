@@ -37,6 +37,7 @@ class TankBasicInfo:
     armor_spool_max_attr_id: int
     hull_rep_amount_attr_id: int
     cycle_time_attr_id: int
+    reload_time_attr_id: int
     rr_optimal_attr_id: int
     rr_falloff_attr_id: int
     rr_res_attr_id: int
@@ -129,6 +130,7 @@ def setup_tank_basics(
     eve_armor_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
     eve_hull_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.structure_dmg_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
     eve_rr_optimal_attr_id = client.mk_eve_attr()
     eve_rr_falloff_attr_id = client.mk_eve_attr()
     eve_rr_res_attr_id = client.mk_eve_attr(def_val=1)
@@ -262,6 +264,7 @@ def setup_tank_basics(
         armor_spool_max_attr_id=eve_armor_spool_max_attr_id,
         hull_rep_amount_attr_id=eve_hull_rep_amount_attr_id,
         cycle_time_attr_id=eve_cycle_time_attr_id,
+        reload_time_attr_id=eve_reload_time_attr_id,
         rr_optimal_attr_id=eve_rr_optimal_attr_id,
         rr_falloff_attr_id=eve_rr_falloff_attr_id,
         rr_res_attr_id=eve_rr_res_attr_id,
@@ -353,11 +356,13 @@ def make_eve_local_asb(
         rep_amount: float | type[Absent] = Absent,
         cycle_time: float | type[Absent] = Absent,
         capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
     conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
     conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_asb_effect_id],
@@ -388,12 +393,14 @@ def make_eve_local_aar(
         cycle_time: float | type[Absent] = Absent,
         capacity: float | type[Absent] = Absent,
         charge_rate: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.armor_rep_amount_mult_attr_id: 3.0}
     conditional_insert(container=attrs, path=[basic_info.armor_rep_amount_attr_id], value=rep_amount)
     conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
     conditional_insert(container=attrs, path=[basic_info.charge_rate_attr_id], value=charge_rate)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.local_aar_effect_id],
@@ -443,6 +450,7 @@ def make_eve_remote_asb(
         rep_amount: float | type[Absent] = Absent,
         cycle_time: float | type[Absent] = Absent,
         capacity: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
         optimal_range: float | type[Absent] = Absent,
         falloff_range: float | type[Absent] = Absent,
 ) -> int:
@@ -450,6 +458,7 @@ def make_eve_remote_asb(
     conditional_insert(container=attrs, path=[basic_info.shield_rep_amount_attr_id], value=rep_amount)
     conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
     conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
@@ -504,6 +513,7 @@ def make_eve_remote_aar(
         cycle_time: float | type[Absent] = Absent,
         capacity: float | type[Absent] = Absent,
         charge_rate: float | type[Absent] = Absent,
+        reload_time: float | type[Absent] = Absent,
         optimal_range: float | type[Absent] = Absent,
         falloff_range: float | type[Absent] = Absent,
 ) -> int:
@@ -512,6 +522,7 @@ def make_eve_remote_aar(
     conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
     conditional_insert(container=attrs, path=[basic_info.charge_rate_attr_id], value=charge_rate)
+    conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     conditional_insert(container=attrs, path=[basic_info.rr_optimal_attr_id], value=optimal_range)
     conditional_insert(container=attrs, path=[basic_info.rr_falloff_attr_id], value=falloff_range)
     return client.mk_eve_item(
