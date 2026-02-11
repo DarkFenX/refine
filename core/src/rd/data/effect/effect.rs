@@ -60,10 +60,10 @@ pub(crate) struct REffect {
     pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
+    pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<PValue>>,
     pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<PValue>>,
     pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
     pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
 }
@@ -112,10 +112,10 @@ impl REffect {
             local_shield_rep_opc_spec: Default::default(),
             local_armor_rep_opc_spec: Default::default(),
             local_hull_rep_opc_spec: Default::default(),
+            cap_consume_opc_spec: Default::default(),
             neut_opc_spec: Default::default(),
             nosf_opc_spec: Default::default(),
             outgoing_cap_opc_spec: Default::default(),
-            cap_consume_opc_spec: Default::default(),
             cap_inject_opc_spec: Default::default(),
             ecm_opc_spec: Default::default(),
         }
@@ -238,6 +238,10 @@ impl REffect {
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
             self.local_hull_rep_opc_spec = n_effect
                 .local_hull_rep_opc_spec
+                .as_ref()
+                .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
+            self.cap_consume_opc_spec = n_effect
+                .cap_consume_opc_spec
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
             self.neut_opc_spec = n_effect

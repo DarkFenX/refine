@@ -85,6 +85,7 @@ impl EAttrId {
     pub(crate) const DMG_MULT_BONUS: Self = Self::from_i32(292);
     pub(crate) const ROF_BONUS: Self = Self::from_i32(293);
     pub(crate) const MAX_TARGET_RANGE_BONUS: Self = Self::from_i32(309);
+    pub(crate) const CAP_NEED_BONUS: Self = Self::from_i32(317);
     pub(crate) const IMPLANTNESS: Self = Self::from_i32(331);
     pub(crate) const FALLOFF_BONUS: Self = Self::from_i32(349);
     pub(crate) const MAX_RANGE_BONUS: Self = Self::from_i32(351);

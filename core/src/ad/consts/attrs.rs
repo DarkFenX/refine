@@ -90,6 +90,7 @@ impl AAttrId {
     pub(crate) const DMG_MULT_BONUS: Self = Self::from_eid(EAttrId::DMG_MULT_BONUS);
     pub(crate) const ROF_BONUS: Self = Self::from_eid(EAttrId::ROF_BONUS);
     pub(crate) const MAX_TARGET_RANGE_BONUS: Self = Self::from_eid(EAttrId::MAX_TARGET_RANGE_BONUS);
+    pub(crate) const CAP_NEED_BONUS: Self = Self::from_eid(EAttrId::CAP_NEED_BONUS);
     pub(crate) const IMPLANTNESS: Self = Self::from_eid(EAttrId::IMPLANTNESS);
     pub(crate) const FALLOFF_BONUS: Self = Self::from_eid(EAttrId::FALLOFF_BONUS);
     pub(crate) const MAX_RANGE_BONUS: Self = Self::from_eid(EAttrId::MAX_RANGE_BONUS);

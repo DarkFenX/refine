@@ -70,6 +70,7 @@ pub(crate) struct NEffect {
     pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     // Getters/specs - cap
+    pub(crate) cap_consume_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     // Nosf spec is used only for purposes of cap balance/sim calcs
     pub(crate) nosf_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,

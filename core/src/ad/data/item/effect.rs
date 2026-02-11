@@ -54,4 +54,7 @@ impl AItemEffects {
     pub(in crate::ad) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = &mut AItemEffect> {
         self.data.values_mut()
     }
+    pub(in crate::ad) fn remove(&mut self, id: &AEffectId) -> Option<AItemEffect> {
+        self.data.remove(id)
+    }
 }

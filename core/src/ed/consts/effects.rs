@@ -24,6 +24,7 @@ impl EEffectId {
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_i32(661);
     pub(crate) const MISSILE_THERM_DMG_BONUS: Self = Self::from_i32(662);
     pub(crate) const MISSILE_KIN_DMG_BONUS: Self = Self::from_i32(668);
+    pub(crate) const AMMO_INFLUENCE_CAP_NEED: Self = Self::from_i32(804);
     pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: Self = Self::from_i32(848);
     pub(crate) const DRONE_DMG_BONUS: Self = Self::from_i32(1730);
     pub(crate) const SELF_ROF: Self = Self::from_i32(1851);

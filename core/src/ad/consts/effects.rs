@@ -30,6 +30,7 @@ impl AEffectId {
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EXPL_DMG_BONUS);
     pub(crate) const MISSILE_THERM_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_THERM_DMG_BONUS);
     pub(crate) const MISSILE_KIN_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_KIN_DMG_BONUS);
+    pub(crate) const AMMO_INFLUENCE_CAP_NEED: Self = Self::from_eid(EEffectId::AMMO_INFLUENCE_CAP_NEED);
     pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: Self = Self::from_eid(EEffectId::CLOAKING_TARGETING_DELAY_BONUS);
     pub(crate) const DRONE_DMG_BONUS: Self = Self::from_eid(EEffectId::DRONE_DMG_BONUS);
     pub(crate) const SELF_ROF: Self = Self::from_eid(EEffectId::SELF_ROF);

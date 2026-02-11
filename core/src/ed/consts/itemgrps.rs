@@ -4,6 +4,7 @@ impl EItemGrpId {
     pub(crate) const CHARACTER: Self = Self::from_i32(1);
     pub(crate) const HAULER: Self = Self::from_i32(28);
     pub(crate) const PROPULSION_MODULE: Self = Self::from_i32(46);
+    pub(crate) const CAPACITOR_BOOSTER_CHARGE: Self = Self::from_i32(87);
     pub(crate) const DEEP_SPACE_TRANSPORT: Self = Self::from_i32(380);
     pub(crate) const MINING_BARGE: Self = Self::from_i32(463);
     pub(crate) const FREIGHTER: Self = Self::from_i32(513);

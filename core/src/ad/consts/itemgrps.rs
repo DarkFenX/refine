@@ -4,6 +4,7 @@ impl AItemGrpId {
     pub(crate) const CHARACTER: Self = Self::from_eid(EItemGrpId::CHARACTER);
     pub(crate) const HAULER: Self = Self::from_eid(EItemGrpId::HAULER);
     pub(crate) const PROPULSION_MODULE: Self = Self::from_eid(EItemGrpId::PROPULSION_MODULE);
+    pub(crate) const CAPACITOR_BOOSTER_CHARGE: Self = Self::from_eid(EItemGrpId::CAPACITOR_BOOSTER_CHARGE);
     pub(crate) const DEEP_SPACE_TRANSPORT: Self = Self::from_eid(EItemGrpId::DEEP_SPACE_TRANSPORT);
     pub(crate) const MINING_BARGE: Self = Self::from_eid(EItemGrpId::MINING_BARGE);
     pub(crate) const FREIGHTER: Self = Self::from_eid(EItemGrpId::FREIGHTER);

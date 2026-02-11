@@ -1,16 +1,12 @@
 use super::generic::get_generic_base_opc;
 use crate::{
-    ad::AAttrId,
-    nd::{
-        NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectResist,
-        effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult,
-    },
-    num::{PValue, Value},
+    ad::{AAttrId, AItemGrpId},
+    nd::{NEffectProjOpcSpec, NEffectResist, effect::data::shared::proj_mult::get_aoe_dd_side_neut_proj_mult},
+    num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
         SvcCtx,
         calc::Calc,
-        funcs,
         output::{Output, OutputSimple},
     },
     ud::UItemId,
@@ -109,4 +105,21 @@ pub(crate) fn get_cap_consumer_base_opc(
         instance,
         delay: PValue::ZERO,
     }))
+}
+
+pub(in crate::nd::effect::data) fn get_ancillary_cap_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    _chargedness: UnitInterval,
+) -> Option<PValue> {
+    if let Some(charge_uid) = ctx.u_data.items.get(item_uid).get_charge_uid()
+        && ctx.u_data.items.get(charge_uid).get_group_id() == Some(AItemGrpId::CAPACITOR_BOOSTER_CHARGE)
+        && let Some(cap_bonus_perc) = calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().cap_need_bonus)
+    {
+        return Some(PValue::from_value_clamped(
+            cap_bonus_perc.mul_add(Value::HUNDREDTH, Value::ONE),
+        ));
+    }
+    None
 }
