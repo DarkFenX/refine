@@ -359,11 +359,11 @@ def test_time(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=(True, [
         StatsOptionFitOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionFitOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.on_empty))])))
-    assert api_fleet_stats.outgoing_rps.map(lambda i: i.armor) == [approx(274.700253), approx(250.839494)]
+    assert api_fleet_stats.outgoing_rps.map(lambda i: i.armor) == [approx(260.016709), approx(250.839494)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=(True, [
         StatsOptionFitOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionFitOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.on_empty))])))
-    assert api_fit_stats.outgoing_rps.map(lambda i: i.armor) == [approx(274.700253), approx(250.839494)]
+    assert api_fit_stats.outgoing_rps.map(lambda i: i.armor) == [approx(260.016709), approx(250.839494)]
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(outgoing_rps=(True, [
         StatsOptionItemOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionItemOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.on_empty))])))
@@ -371,7 +371,7 @@ def test_time(client, consts):
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(outgoing_rps=(True, [
         StatsOptionItemOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionItemOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.on_empty))])))
-    assert api_module_ancil_stats.outgoing_rps.map(lambda i: i.armor) == [approx(67.911392), approx(44.050633)]
+    assert api_module_ancil_stats.outgoing_rps.map(lambda i: i.armor) == [approx(53.227848), approx(44.050633)]
     api_module_spool_stats = api_module_spool.get_stats(options=ItemStatsOptions(outgoing_rps=(True, [
         StatsOptionItemOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionItemOutRps(time_options=StatTimeSim(time=79, optional_reloads=consts.ApiOptionalReload.on_empty))])))

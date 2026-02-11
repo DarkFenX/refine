@@ -322,17 +322,17 @@ def test_time(client, consts):
     assert api_tgt_ship_stats.rps.one().armor == [approx(89.153846), approx(219.341538), ANY_VALUE]
     # Sim with time when AARs exhausted their clips, and trig rep spooled a bit
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
-        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.on_empty))])))
     assert api_tgt_fit_stats.rps.map(lambda i: i.armor) == [
-        [approx(106.097087), approx(277.605049), ANY_VALUE],
-        [approx(90.019417), approx(253.67301), ANY_VALUE]]
+        [approx(91.899083), approx(266.296514), ANY_VALUE],
+        [approx(90), approx(252.993761), ANY_VALUE]]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
-        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.on_empty))])))
     assert api_tgt_ship_stats.rps.map(lambda i: i.armor) == [
-        [approx(106.097087), approx(277.605049), ANY_VALUE],
-        [approx(90.019417), approx(253.67301), ANY_VALUE]]
+        [approx(91.899083), approx(266.296514), ANY_VALUE],
+        [approx(90), approx(252.993761), ANY_VALUE]]
     # Action
     api_module_laar.change_module(charge_type_id=None)
     api_module_raar.change_module(charge_type_id=None)
