@@ -1,5 +1,5 @@
 from fw import ANY_VALUE, approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps, StatTimeBurst, StatTimeSim
 from tests.stats.tank import (
     make_eve_drone_shield,
     make_eve_local_asb,
@@ -176,6 +176,108 @@ def test_hp_limit_and_range(client, consts):
     assert api_tgt_ship_stats.rps.one().shield == [approx(124.666667), approx(69.25), ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
+
+
+def test_time(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000), shield_regen=900000)
+    eve_module_lsb_id = make_eve_local_sb(client=client, basic_info=eve_basic_info, rep_amount=228, cycle_time=3000)
+    eve_module_lasb_id = make_eve_local_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=146, cycle_time=3000, capacity=14, reload_time=60000)
+    eve_module_rsb_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=508, cycle_time=8000)
+    eve_module_rasb_id = make_eve_remote_asb(
+        client=client, basic_info=eve_basic_info, rep_amount=950, cycle_time=8000, capacity=42, reload_time=60000)
+    eve_drone_id = make_eve_drone_shield(client=client, basic_info=eve_basic_info, rep_amount=72, cycle_time=5000)
+    eve_charge_lasb_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 1.5})
+    eve_charge_rasb_id = client.mk_eve_item(attrs={eve_basic_info.volume_attr_id: 4.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_module_rsb = api_src_fit.add_module(type_id=eve_module_rsb_id, state=consts.ApiModuleState.active)
+    api_module_rasb = api_src_fit.add_module(
+        type_id=eve_module_rasb_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_rasb_id)
+    api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
+    api_module_lasb = api_tgt_fit.add_module(
+        type_id=eve_module_lasb_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_lasb_id)
+    api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rasb.change_module(add_projs=[api_tgt_ship.id])
+    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    # Verification - burst stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+    assert api_tgt_fit_stats.rps.one().shield == [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+    assert api_tgt_ship_stats.rps.one().shield == [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE]
+    # Sim without specified time - looped stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_tgt_fit_stats.rps.map(lambda i: i.shield) == [
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(91.103448), approx(142.672727), ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_tgt_ship_stats.rps.map(lambda i: i.shield) == [
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(91.103448), approx(142.672727), ANY_VALUE, ANY_VALUE]]
+    # Sim with time just after 1st cycle has started
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=1))])))
+    assert api_tgt_fit_stats.rps.one().shield == [approx(374), approx(1530), ANY_VALUE, ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=1))])))
+    assert api_tgt_ship_stats.rps.one().shield == [approx(374), approx(1530), ANY_VALUE, ANY_VALUE]
+    # Sim with time when ASBs exhausted their clips
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_tgt_fit_stats.rps.map(lambda i: i.shield) == [
+        [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
+        [approx(95.037037), approx(189.654321), ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_tgt_ship_stats.rps.map(lambda i: i.shield) == [
+        [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
+        [approx(95.037037), approx(189.654321), ANY_VALUE, ANY_VALUE]]
+    # Action
+    api_module_lasb.change_module(charge_type_id=None)
+    api_module_rasb.change_module(charge_type_id=None)
+    # Verification - check same modes again, but with ancils not loaded
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+        StatsOptionRps(time_options=StatTimeBurst()),
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionRps(time_options=StatTimeSim(time=1)),
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_tgt_fit_stats.rps.map(lambda i: i.shield) == [
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(374), approx(1530), ANY_VALUE, ANY_VALUE],
+        [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
+        [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+        StatsOptionRps(time_options=StatTimeBurst()),
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionRps(time_options=StatTimeSim(time=1)),
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_tgt_ship_stats.rps.map(lambda i: i.shield) == [
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
+        [approx(374), approx(1530), ANY_VALUE, ANY_VALUE],
+        [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
+        [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE]]
 
 
 def test_zero_cycle_time(client, consts):

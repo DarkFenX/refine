@@ -175,6 +175,49 @@ def test_hp_limit_and_range(client, consts):
     assert api_src_module_stats.outgoing_rps.one().armor == approx(3.916667)
 
 
+def test_hp_limit_and_time_burst_spool(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1300, 1000))
+    eve_module_spool_id = make_eve_remote_sar(
+        client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_module_spool_id,
+        state=consts.ApiModuleState.active,
+        spool=Spool.spool_scale_to_api(val=0.5))
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_src_fit.id])
+    # Verification - limited by HP at max spool (1433.6 > 1300)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=(True, [
+        StatsOptionFitOutRps(
+            time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0)), projectee_item_id=api_tgt_ship.id),
+        StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id),
+        StatsOptionFitOutRps(
+            time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)), projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_rps.map(lambda i: i.armor) == [
+        approx(85.333333), approx(167.253333), approx(216.666667)]
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_rps=(True, [
+        StatsOptionFitOutRps(
+            time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0)), projectee_item_id=api_tgt_ship.id),
+        StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id),
+        StatsOptionFitOutRps(
+            time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)), projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.outgoing_rps.map(lambda i: i.armor) == [
+        approx(85.333333), approx(167.253333), approx(216.666667)]
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(outgoing_rps=(True, [
+        StatsOptionItemOutRps(
+            time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0)), projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemOutRps(
+            time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)), projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_module_stats.outgoing_rps.map(lambda i: i.armor) == [
+        approx(85.333333), approx(167.253333), approx(216.666667)]
+
+
 def test_item_kind(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_module_normal_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=376, cycle_time=6000)
@@ -296,7 +339,7 @@ def test_time(client, consts):
     api_module_spool_stats = api_module_spool.get_stats(options=ItemStatsOptions(
         outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=5))])))
     assert api_module_spool_stats.outgoing_rps.one().armor == 0
-    # Sim with time just after first rep cycle completes
+    # Sim with time just after first rep cycle has completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=7))])))
     assert api_fleet_stats.outgoing_rps.one().armor == approx(189)
@@ -352,46 +395,6 @@ def test_time(client, consts):
         approx(20.714286),
         approx(23.860759),
         approx(23.860759)]
-
-
-def test_time_burst_spool(client, consts):
-    eve_basic_info = setup_tank_basics(client=client, consts=consts)
-    eve_module_spool_id = make_eve_remote_sar(
-        client=client, basic_info=eve_basic_info, rep_amount=512, spool_step=0.12, spool_max=1.8, cycle_time=6000)
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(
-        type_id=eve_module_spool_id,
-        state=consts.ApiModuleState.active,
-        spool=Spool.spool_scale_to_api(val=0.5))
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=(True, [
-        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
-        StatsOptionFitOutRps(),
-        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
-    assert api_fleet_stats.outgoing_rps.map(lambda i: i.armor) == [
-        approx(85.333333),
-        approx(167.253333),
-        approx(238.933333)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=(True, [
-        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
-        StatsOptionFitOutRps(),
-        StatsOptionFitOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
-    assert api_fit_stats.outgoing_rps.map(lambda i: i.armor) == [
-        approx(85.333333),
-        approx(167.253333),
-        approx(238.933333)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=(True, [
-        StatsOptionItemOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
-        StatsOptionItemOutRps(),
-        StatsOptionItemOutRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
-    assert api_module_stats.outgoing_rps.map(lambda i: i.armor) == [
-        approx(85.333333),
-        approx(167.253333),
-        approx(238.933333)]
 
 
 def test_zero_cycle_time(client, consts):

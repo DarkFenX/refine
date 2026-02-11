@@ -1,5 +1,5 @@
-from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionErps
+from fw import ANY_VALUE, approx
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionErps, StatTimeBurst, StatTimeSim
 from tests.stats.tank import (
     make_eve_local_ar,
     make_eve_local_hr,
@@ -269,3 +269,87 @@ def test_shield_regen(client, consts):
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(erps=(True, api_options)))
     assert api_ship_stats.erps.map(lambda i: i.shield.regen) == [
         approx(31.746032), 0, approx(27.457494), approx(31.746032), approx(17.353654), 0]
+
+
+def test_time(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(
+        client=client,
+        basic_info=eve_basic_info,
+        hps=(100000, 100000, 100000),
+        shield_regen=11250000,
+        resos_shield=(1, 0.8, 0.6, 0.4),
+        resos_armor=(0.5, 0.65, 0.75, 0.7),
+        resos_hull=(0.67, 0.67, 0.67, 0.67))
+    eve_module_lsb_id = make_eve_local_sb(client=client, basic_info=eve_basic_info, rep_amount=45000, cycle_time=11250)
+    eve_module_lar_id = make_eve_local_ar(client=client, basic_info=eve_basic_info, rep_amount=45000, cycle_time=11250)
+    eve_module_lhr_id = make_eve_local_hr(client=client, basic_info=eve_basic_info, rep_amount=45000, cycle_time=11250)
+    eve_module_rsb_id = make_eve_remote_sb(client=client, basic_info=eve_basic_info, rep_amount=8594, cycle_time=5000)
+    eve_module_rar_id = make_eve_remote_ar(client=client, basic_info=eve_basic_info, rep_amount=8594, cycle_time=5000)
+    eve_module_rhr_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=8594, cycle_time=5000)
+    client.create_sources()
+    api_sol = client.create_sol(default_incoming_dps=(1, 1, 0, 0))
+    api_src_fit = api_sol.create_fit()
+    api_module_rsb = api_src_fit.add_module(type_id=eve_module_rsb_id, state=consts.ApiModuleState.active)
+    api_module_rar = api_src_fit.add_module(type_id=eve_module_rar_id, state=consts.ApiModuleState.active)
+    api_module_rhr = api_src_fit.add_module(type_id=eve_module_rhr_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
+    api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
+    api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
+    api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - burst stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeBurst())])))
+    assert api_tgt_fit_stats.erps.one() == [
+        [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
+        [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeBurst())])))
+    assert api_tgt_ship_stats.erps.one() == [
+        [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
+        [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
+    # Sim without specified time - looped stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.erps.one() == [
+        [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
+        [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.erps.one() == [
+        [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
+        [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
+    # Sim with time before any of rep cycles complete
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=4))])))
+    assert api_tgt_fit_stats.erps.one() == [
+        [approx(12500), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [0, 0, ANY_VALUE, ANY_VALUE],
+        [0, 0, ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=4))])))
+    assert api_tgt_ship_stats.erps.one() == [
+        [approx(12500), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [0, 0, ANY_VALUE, ANY_VALUE],
+        [0, 0, ANY_VALUE, ANY_VALUE]]
+    # Sim with time just after first rep cycle has completed for slowest items (some completed 2)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=12))])))
+    assert api_tgt_fit_stats.erps.one() == [
+        [approx(8333.333333), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [approx(6521.73913), approx(2491.014493), ANY_VALUE, ANY_VALUE],
+        [approx(5597.014925), approx(2137.810945), ANY_VALUE, ANY_VALUE]]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=12))])))
+    assert api_tgt_ship_stats.erps.one() == [
+        [approx(8333.333333), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
+        [approx(6521.73913), approx(2491.014493), ANY_VALUE, ANY_VALUE],
+        [approx(5597.014925), approx(2137.810945), ANY_VALUE, ANY_VALUE]]

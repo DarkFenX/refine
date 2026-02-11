@@ -1,5 +1,5 @@
 from fw import ANY_VALUE, approx
-from fw.api import FitStatsOptions, ItemStatsOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps, StatTimeBurst, StatTimeSim
 from tests.stats.tank import (
     make_eve_drone_hull,
     make_eve_local_hr,
@@ -144,6 +144,52 @@ def test_hp_limit_and_range(client, consts):
     assert api_tgt_ship_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     assert api_tgt_ship_stats.rps.one().hull == [approx(4.166667), approx(16.666667), ANY_VALUE]
+
+
+def test_time(client, consts):
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
+    eve_module_lhr_id = make_eve_local_hr(client=client, basic_info=eve_basic_info, rep_amount=120, cycle_time=24000)
+    eve_module_rhr_id = make_eve_remote_hr(client=client, basic_info=eve_basic_info, rep_amount=230, cycle_time=6000)
+    eve_drone_id = make_eve_drone_hull(client=client, basic_info=eve_basic_info, rep_amount=36, cycle_time=5000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_module_rhr = api_src_fit.add_module(type_id=eve_module_rhr_id, state=consts.ApiModuleState.active)
+    api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
+    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    # Verification - burst stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+    assert api_tgt_fit_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+    assert api_tgt_ship_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
+    # Sim without specified time - looped stats
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_fit_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=None))])))
+    assert api_tgt_ship_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
+    # Sim with time before any of rep cycles complete
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=4))])))
+    assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=4))])))
+    assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
+    # Sim with time just after first rep cycle has completed for slowest items (some completed more)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=25))])))
+    assert api_tgt_fit_stats.rps.one().hull == [approx(4.8), approx(44), ANY_VALUE]
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
+        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=25))])))
+    assert api_tgt_ship_stats.rps.one().hull == [approx(4.8), approx(44), ANY_VALUE]
 
 
 def test_zero_cycle_time(client, consts):
