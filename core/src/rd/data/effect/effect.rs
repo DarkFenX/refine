@@ -170,15 +170,6 @@ impl REffect {
                 .iter()
                 .filter_map(|effect_aid| effect_aid_rid_map.get(effect_aid)),
         );
-        // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
-        // all effects which need it.
-        if self.discharge_attr_rid.is_some() {
-            self.cap_consume_opc_spec = Some(REffectLocalOpcSpec {
-                base: get_cap_consumer_base_opc,
-                charge_mult: None,
-                limit_attr_rid: None,
-            })
-        }
         if let Some(n_effect) = N_EFFECT_MAP.get(&a_effect.id) {
             self.charge = n_effect
                 .charge
@@ -264,6 +255,15 @@ impl REffect {
                 .ecm_opc_spec
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+        }
+        // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
+        // all effects which need it.
+        if self.cap_consume_opc_spec.is_none() && self.discharge_attr_rid.is_some() {
+            self.cap_consume_opc_spec = Some(REffectLocalOpcSpec {
+                base: get_cap_consumer_base_opc,
+                charge_mult: None,
+                limit_attr_rid: None,
+            })
         }
         self.is_active_with_duration = self.state == RState::Active && self.duration_attr_rid.is_some();
     }
