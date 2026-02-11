@@ -172,7 +172,7 @@ def test_time_reload(client, consts):
     assert api_ship_stats.cap_balance.one() == approx(-2)
 
 
-def test_time_ancil(client, consts):
+def test_time_ancil_armor(client, consts):
     eve_use_attr_id = client.mk_eve_attr()
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
@@ -254,6 +254,93 @@ def test_time_ancil(client, consts):
         StatsOptionCapBalance(time_options=StatTimeSim(time=66, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionCapBalance(time_options=StatTimeSim(time=66, optional_reloads=consts.ApiOptionalReload.on_empty))])))
     assert api_ship_stats.cap_balance == [approx(-9.090909), approx(-9.090909)]
+
+
+def test_time_ancil_shield(client, consts):
+    eve_use_attr_id = client.mk_eve_attr()
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_reload_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
+    eve_cap_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cap_need_bonus)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fueled_shield_boosting,
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_use_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={
+            eve_use_attr_id: 1320,
+            eve_cycle_time_attr_id: 5000,
+            eve_reload_attr_id: 60000,
+            eve_capacity_attr_id: 112},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_charge_id = client.mk_eve_item(
+        grp_id=consts.EveItemGrp.capacitor_booster_charge,
+        attrs={eve_volume_attr_id: 12, eve_cap_bonus_attr_id: -100})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol(default_optional_reloads=consts.ApiOptionalReload.on_empty)
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    # Verification - for cap balance default is sim with no time (looped stats), optional reload
+    # setting is taken from sol
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == 0
+    # Burst stats - first cycle of the module
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_ship_stats.cap_balance.one() == 0
+    # Sim without specified time - looped stats
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+    ])))
+    assert api_fit_stats.cap_balance == [approx(-264), 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+    ])))
+    assert api_ship_stats.cap_balance == [approx(-264), 0]
+    # Sim with time within first clip - stats are the same
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=44, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=44, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_fit_stats.cap_balance == [0, 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=44, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=44, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_ship_stats.cap_balance == [0, 0]
+    # Sim with time in the middle of reload
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_fit_stats.cap_balance == [approx(-121.578947), 0]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_ship_stats.cap_balance == [approx(-121.578947), 0]
+    # Action
+    api_module.change_module(charge_type_id=None)
+    # Sim with time in the middle of reload - without charge stats are the same
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_fit_stats.cap_balance == [approx(-277.894737), approx(-277.894737)]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=76, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+    assert api_ship_stats.cap_balance == [approx(-277.894737), approx(-277.894737)]
 
 
 def test_time_reactivation_delay(client, consts):

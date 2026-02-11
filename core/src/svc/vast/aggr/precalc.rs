@@ -163,6 +163,7 @@ fn process_limited_regular<T, A>(
         chance_mult,
         data.output.get_instance_count() * full_repeats,
     );
+    *time -= data.cycle_duration * full_repeats.into_pvalue();
     let mut remaining_repeats = repeat_limit - full_repeats;
     while *time >= Value::ZERO && remaining_repeats > Count::ZERO {
         process_incomplete_cycle(accum, *time, &data.output, chance_mult);

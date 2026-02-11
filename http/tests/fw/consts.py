@@ -44,6 +44,7 @@ class EveItem(IntEnum):
 @unique
 class EveItemGrp(IntEnum):
     character = 1
+    capacitor_booster_charge = 87
     freighter = 513
     jump_freighter = 902
     effect_beacon = 920
@@ -330,6 +331,7 @@ class EveAttr(IntEnum):
     drone_capacity = 283
     dmg_mult_bonus = 292
     rof_bonus = 293
+    cap_need_bonus = 317
     implantness = 331
     max_active_drones = 352
     drone_control_distance = 458
