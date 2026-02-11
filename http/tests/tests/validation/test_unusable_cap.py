@@ -76,6 +76,43 @@ def test_multiple_effects(client, consts):
     assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1200)})
 
 
+def test_asb(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_use_attr_id = client.mk_eve_attr()
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_reload_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
+    eve_cap_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cap_need_bonus)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fueled_shield_boosting,
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_use_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={
+            eve_use_attr_id: 1320,
+            eve_cycle_time_attr_id: 5000,
+            eve_reload_attr_id: 60000,
+            eve_capacity_attr_id: 112},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_charge_id = client.mk_eve_item(
+        grp_id=consts.EveItemGrp.capacitor_booster_charge,
+        attrs={eve_volume_attr_id: 12, eve_cap_bonus_attr_id: -100})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 750})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.disabled, charge_type_id=eve_charge_id)
+    # Verification - validation passes even if non-charged cap use is more than ship has
+    api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_known_failures(client, consts):
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_use_attr_id = client.mk_eve_attr()
