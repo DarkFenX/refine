@@ -281,7 +281,7 @@ def test_time_ancil_shield(client, consts):
         attrs={eve_volume_attr_id: 12, eve_cap_bonus_attr_id: -100})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
-    api_sol = client.create_sol(default_optional_reloads=consts.ApiOptionalReload.on_empty)
+    api_sol = client.create_sol(default_optional_reloads=consts.ApiOptionalReload.disabled)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(
@@ -291,9 +291,9 @@ def test_time_ancil_shield(client, consts):
     # Verification - for cap balance default is sim with no time (looped stats), optional reload
     # setting is taken from sol
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
-    assert api_fit_stats.cap_balance.one() == 0
+    assert api_fit_stats.cap_balance.one() == approx(-264)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
-    assert api_ship_stats.cap_balance.one() == 0
+    assert api_ship_stats.cap_balance.one() == approx(-264)
     # Burst stats - first cycle of the module
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
