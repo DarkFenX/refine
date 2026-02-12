@@ -1,4 +1,4 @@
-use super::shared::OutputIterItem;
+use super::shared::OutputInstanceIterItem;
 use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -14,16 +14,16 @@ pub(crate) struct OutputComplex<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputComplex<T> {
-    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputIterItem<T>> {
-        OutputComplexInstanceIter::new(self)
+    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputInstanceIterItem<T>> {
+        OutputInstanceIterComplex::new(self)
     }
 }
 
-struct OutputComplexInstanceIter<'a, T: Copy> {
+struct OutputInstanceIterComplex<'a, T: Copy> {
     output: &'a OutputComplex<T>,
     cycles_done: Count,
 }
-impl<'a, T: Copy> OutputComplexInstanceIter<'a, T> {
+impl<'a, T: Copy> OutputInstanceIterComplex<'a, T> {
     fn new(output: &'a OutputComplex<T>) -> Self {
         Self {
             output,
@@ -31,15 +31,15 @@ impl<'a, T: Copy> OutputComplexInstanceIter<'a, T> {
         }
     }
 }
-impl<T: Copy> Iterator for OutputComplexInstanceIter<'_, T> {
-    type Item = OutputIterItem<T>;
+impl<T: Copy> Iterator for OutputInstanceIterComplex<'_, T> {
+    type Item = OutputInstanceIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.cycles_done >= self.output.repeats {
             return None;
         }
         self.cycles_done += Count::ONE;
-        Some(OutputIterItem {
+        Some(OutputInstanceIterItem {
             time_passed: self.output.interval,
             instance: self.output.instance,
         })

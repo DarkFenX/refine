@@ -1,4 +1,4 @@
-use super::shared::OutputIterItem;
+use super::shared::OutputInstanceIterItem;
 use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -11,29 +11,29 @@ pub(crate) struct OutputSimple<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputSimple<T> {
-    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputIterItem<T>> {
-        OutputSimpleInstanceIter::new(self)
+    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputInstanceIterItem<T>> {
+        OutputInstanceIterSimple::new(self)
     }
 }
 
-struct OutputSimpleInstanceIter<'a, T: Copy> {
+struct OutputInstanceIterSimple<'a, T: Copy> {
     output: &'a OutputSimple<T>,
     done: bool,
 }
-impl<'a, T: Copy> OutputSimpleInstanceIter<'a, T> {
+impl<'a, T: Copy> OutputInstanceIterSimple<'a, T> {
     fn new(output: &'a OutputSimple<T>) -> Self {
         Self { output, done: false }
     }
 }
-impl<T: Copy> Iterator for OutputSimpleInstanceIter<'_, T> {
-    type Item = OutputIterItem<T>;
+impl<T: Copy> Iterator for OutputInstanceIterSimple<'_, T> {
+    type Item = OutputInstanceIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.done {
             true => None,
             false => {
                 self.done = true;
-                Some(OutputIterItem {
+                Some(OutputInstanceIterItem {
                     time_passed: self.output.delay,
                     instance: self.output.instance,
                 })

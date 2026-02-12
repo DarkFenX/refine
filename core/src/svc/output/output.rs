@@ -1,4 +1,4 @@
-use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::OutputIterItem};
+use super::{output_complex::OutputComplex, output_simple::OutputSimple, shared::OutputInstanceIterItem};
 use crate::num::{Count, PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -11,25 +11,25 @@ pub(crate) enum Output<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> Output<T> {
-    pub(in crate::svc) fn iter_instances(&self) -> impl Iterator<Item = OutputIterItem<T>> {
+    pub(in crate::svc) fn iter_instances(&self) -> impl Iterator<Item = OutputInstanceIterItem<T>> {
         match self {
-            Self::Simple(inner) => OutputIter::Simple(inner.iter_instances()),
-            Self::Complex(inner) => OutputIter::Complex(inner.iter_instances()),
+            Self::Simple(inner) => OutputInstanceIter::Simple(inner.iter_instances()),
+            Self::Complex(inner) => OutputInstanceIter::Complex(inner.iter_instances()),
         }
     }
 }
 
-pub(in crate::svc) enum OutputIter<S, C> {
+pub(in crate::svc) enum OutputInstanceIter<S, C> {
     Simple(S),
     Complex(C),
 }
-impl<S, C, T> Iterator for OutputIter<S, C>
+impl<S, C, T> Iterator for OutputInstanceIter<S, C>
 where
-    S: Iterator<Item = OutputIterItem<T>>,
-    C: Iterator<Item = OutputIterItem<T>>,
+    S: Iterator<Item = OutputInstanceIterItem<T>>,
+    C: Iterator<Item = OutputInstanceIterItem<T>>,
     T: Copy,
 {
-    type Item = OutputIterItem<T>;
+    type Item = OutputInstanceIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {

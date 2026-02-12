@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
     num::{PValue, UnitInterval, Value},
-    svc::{output::OutputIterItem, vast::stats::shared::regenerate},
+    svc::{output::OutputInstanceIterItem, vast::stats::shared::regenerate},
 };
 
 const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);
@@ -180,7 +180,11 @@ impl CapSim {
             self.wm_aux_low = self.cap;
         }
     }
-    fn schedule_cycle_output(&mut self, base_time: PValue, output_iter: impl Iterator<Item = OutputIterItem<Value>>) {
+    fn schedule_cycle_output(
+        &mut self,
+        base_time: PValue,
+        output_iter: impl Iterator<Item = OutputInstanceIterItem<Value>>,
+    ) {
         let mut extra_delay = PValue::ZERO;
         for output_event in output_iter {
             extra_delay += output_event.time_passed;
