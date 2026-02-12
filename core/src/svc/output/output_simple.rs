@@ -11,12 +11,12 @@ pub(crate) struct OutputSimple<T: Copy> {
 // Iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputSimple<T> {
-    pub(super) fn iter_instances(&self) -> impl Iterator<Item = OutputInstanceIterItem<T>> {
+    pub(super) fn iter_instances(&self) -> OutputInstanceIterSimple<'_, T> {
         OutputInstanceIterSimple::new(self)
     }
 }
 
-struct OutputInstanceIterSimple<'a, T: Copy> {
+pub(in crate::svc) struct OutputInstanceIterSimple<'a, T: Copy> {
     output: &'a OutputSimple<T>,
     done: bool,
 }
