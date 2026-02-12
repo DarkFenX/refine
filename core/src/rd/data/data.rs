@@ -94,6 +94,16 @@ impl RData {
         let attr_consts = RAttrConsts::new(&attr_aid_rid_map);
         let effect_consts = REffectConsts::new(&effect_aid_rid_map);
         // Fill in data which wasn't filled during instantiation (e.g. depends on slab keys)
+        for (_, r_effect) in effects.iter_mut() {
+            Arc::get_mut(r_effect).unwrap().fill_runtime(
+                &a_data.effects.data,
+                &item_list_aid_rid_map,
+                &attr_aid_rid_map,
+                &effect_aid_rid_map,
+                &buff_aid_rid_map,
+            );
+        }
+        // Item data depends on effect data being filled, so do it after effects
         for r_item in items.values_mut() {
             Arc::get_mut(r_item).unwrap().fill_runtime(
                 &a_data.items.data,
@@ -107,15 +117,6 @@ impl RData {
         }
         for (_, r_attr) in attrs.iter_mut() {
             r_attr.fill_runtime(&a_data.attrs.data, &attr_aid_rid_map);
-        }
-        for (_, r_effect) in effects.iter_mut() {
-            Arc::get_mut(r_effect).unwrap().fill_runtime(
-                &a_data.effects.data,
-                &item_list_aid_rid_map,
-                &attr_aid_rid_map,
-                &effect_aid_rid_map,
-                &buff_aid_rid_map,
-            );
         }
         for (_, r_buff) in buffs.iter_mut() {
             r_buff.fill_runtime(&a_data.buffs.data, &attr_aid_rid_map);

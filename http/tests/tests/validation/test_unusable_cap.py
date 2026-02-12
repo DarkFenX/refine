@@ -105,12 +105,19 @@ def test_asb(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.disabled, charge_type_id=eve_charge_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.disabled, charge_type_id=eve_charge_id)
     # Verification - validation passes even if non-charged cap use is more than ship has
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+    # Action
+    api_module.change_module(charge_type_id=None)
+    # Verification - without charge validation fails
+    api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
+    assert api_val.passed is False
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1320)})
 
 
 def test_known_failures(client, consts):

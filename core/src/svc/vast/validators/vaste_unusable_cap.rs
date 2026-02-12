@@ -63,12 +63,8 @@ impl VastFitData {
             return None;
         }
         // Pass validation if ship is not loaded
-        let max_cap = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-            ctx,
-            ship_uid,
-            ctx.ac().capacitor_capacity,
-            Value::ZERO,
-        )?);
+        let max_cap = calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().capacitor_capacity, Value::ZERO)?;
+        let max_cap = PValue::from_value_clamped(max_cap);
         let mut items = HashMap::new();
         for &item_uid in self.mods_cap_consumers.iter() {
             let u_item = ctx.u_data.items.get(item_uid);
