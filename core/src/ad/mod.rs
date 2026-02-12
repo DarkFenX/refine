@@ -11,10 +11,9 @@ pub use data::{
     ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration,
     AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier,
     AEffectModifiers, AEffectStopIds, AEffects, AEveAttrId, AEveBuffId, AEveItemListId, AItem, AItemAbils, AItemAttr,
-    AItemAttrs, AItemBuffItemLists, AItemCapUseAttrs, AItemCatId, AItemEffect, AItemEffectData, AItemEffects,
-    AItemGrpId, AItemId, AItemList, AItemListId, AItemListItemIds, AItemLists, AItemSkillReq, AItemSkillReqs, AItems,
-    AModifierSrq, AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv, AMutaItemConvs, AMutas, AOp,
-    ASkillLevel, AState, AValue,
+    AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect, AItemEffectData, AItemEffects, AItemGrpId, AItemId,
+    AItemList, AItemListId, AItemListItemIds, AItemLists, AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta,
+    AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv, AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
 };
 pub(crate) use generator::generate_adapted_data;
 pub use result::AResult;

@@ -2,7 +2,9 @@ use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
     misc::EffectMode,
     num::{SkillLevel, Value},
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState, RcItem, Src},
+    rd::{
+        RAttrId, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcItem, Src,
+    },
     ud::{
         ItemId,
         item::{
@@ -120,8 +122,8 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base_get_r_item().and_then(|v| v.val_active_group_id)
     }
-    pub(in crate::ud::item) fn get_cap_use_attr_rids(&self) -> Option<&Vec<RAttrId>> {
-        self.base_get_r_item().map(|v| &v.cap_use_attr_rids)
+    pub(in crate::ud::item) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
+        self.base_get_r_item().map(|v| &v.cap_consumers)
     }
     pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
         self.base_get_r_item().and_then(|v| v.ship_kind)

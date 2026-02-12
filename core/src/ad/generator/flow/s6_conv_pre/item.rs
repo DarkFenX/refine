@@ -2,9 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     ad::{
-        AAbilId, AAttrId, ACount, AEffectId, AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists,
-        AItemCapUseAttrs, AItemCatId, AItemEffect, AItemEffects, AItemGrpId, AItemId, AItemSkillReq, AItemSkillReqs,
-        AItems, ASkillLevel, AState, AValue,
+        AAbilId, AAttrId, ACount, AEffectId, AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId,
+        AItemEffect, AItemEffects, AItemGrpId, AItemId, AItemSkillReq, AItemSkillReqs, AItems, ASkillLevel, AState,
+        AValue,
         generator::{GSupport, get_abil_effect},
     },
     ed::{EData, EEffectId, EItemId},
@@ -45,7 +45,6 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
             val_fitted_group_id: None,
             val_online_group_id: None,
             val_active_group_id: None,
-            cap_use_attr_ids: AItemCapUseAttrs::new(),
             is_ice_harvester: false,
             disallowed_in_wspace: false,
         };

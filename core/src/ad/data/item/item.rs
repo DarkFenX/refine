@@ -1,6 +1,6 @@
 use crate::ad::{
-    AEffectId, AItemAbils, AItemAttrs, AItemBuffItemLists, AItemCapUseAttrs, AItemCatId, AItemEffects, AItemGrpId,
-    AItemId, AItemSkillReqs, AState,
+    AEffectId, AItemAbils, AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffects, AItemGrpId, AItemId,
+    AItemSkillReqs, AState,
 };
 
 pub struct AItem {
@@ -18,7 +18,6 @@ pub struct AItem {
     pub val_fitted_group_id: Option<AItemGrpId>,
     pub val_online_group_id: Option<AItemGrpId>,
     pub val_active_group_id: Option<AItemGrpId>,
-    pub cap_use_attr_ids: AItemCapUseAttrs,
     pub is_ice_harvester: bool,
     pub disallowed_in_wspace: bool,
 }

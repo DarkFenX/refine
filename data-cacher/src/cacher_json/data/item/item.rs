@@ -20,8 +20,6 @@ pub(in crate::cacher_json::data) struct CItem {
     val_fitted_group_id: Option<i32>,
     val_online_group_id: Option<i32>,
     val_active_group_id: Option<i32>,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    cap_use_attr_ids: Vec<rc::ad::AAttrId>,
     is_ice_harvester: bool,
     disallowed_in_wspace: bool,
 }
@@ -60,7 +58,6 @@ impl CItem {
             val_fitted_group_id: a_item.val_fitted_group_id.map(|grp_aid| grp_aid.into_i32()),
             val_online_group_id: a_item.val_online_group_id.map(|grp_aid| grp_aid.into_i32()),
             val_active_group_id: a_item.val_active_group_id.map(|grp_aid| grp_aid.into_i32()),
-            cap_use_attr_ids: a_item.cap_use_attr_ids.iter().copied().collect(),
             is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
         }
@@ -106,7 +103,6 @@ impl CItem {
             val_fitted_group_id: self.val_fitted_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
             val_online_group_id: self.val_online_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
             val_active_group_id: self.val_active_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
-            cap_use_attr_ids: self.cap_use_attr_ids.into_iter().collect(),
             is_ice_harvester: self.is_ice_harvester,
             disallowed_in_wspace: self.disallowed_in_wspace,
         }

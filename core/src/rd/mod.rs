@@ -13,8 +13,8 @@ pub(crate) use data::{
     RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, REffect, REffectBuff, REffectBuffAttrMerge,
     REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectId,
     REffectLocalOpcSpec, REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
-    RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemList, RItemListId, RItemShipLimit, RMuta,
-    RMutaAttrRange, RShipDroneLimit, RShipKind, RState, RcEffect, RcItem, RcMuta,
+    RItem, RItemAXt, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemList, RItemListId,
+    RItemShipLimit, RMuta, RMutaAttrRange, RShipDroneLimit, RShipKind, RState, RcEffect, RcItem, RcMuta,
 };
 pub use src::{Src, SrcInitError};
 

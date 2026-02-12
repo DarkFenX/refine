@@ -102,6 +102,7 @@ impl RData {
                 &effect_aid_rid_map,
                 &attr_consts,
                 &effect_consts,
+                &effects,
             );
         }
         for (_, r_attr) in attrs.iter_mut() {

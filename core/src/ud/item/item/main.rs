@@ -4,7 +4,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     misc::{EffectMode, NpcProp, OptionalReload, RearmMinion, Spool},
     num::{PValue, SkillLevel, Value},
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
+    rd::{RAttrId, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant,
         UItemId, UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
@@ -613,6 +613,12 @@ impl UItem {
         match self {
             Self::Drone(drone) => drone.get_mutation_data(),
             Self::Module(module) => module.get_mutation_data(),
+            _ => None,
+        }
+    }
+    pub(crate) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
+        match self {
+            Self::Module(module) => module.get_cap_consumers(),
             _ => None,
         }
     }

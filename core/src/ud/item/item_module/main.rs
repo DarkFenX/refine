@@ -4,7 +4,7 @@ use crate::{
     err::basic::ItemNotMutatedError,
     misc::{EffectMode, ModRack, OptionalReload, Spool},
     num::{Count, Index, PValue, SkillLevel, Value},
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
+    rd::{RAttrId, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState, Src},
     ud::{
         ItemId, UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
@@ -91,8 +91,8 @@ impl UModule {
     pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_val_active_group_id()
     }
-    pub(crate) fn get_cap_use_attr_rids(&self) -> Option<&Vec<RAttrId>> {
-        self.base.get_cap_use_attr_rids()
+    pub(crate) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
+        self.base.get_cap_consumers()
     }
     pub(crate) fn takes_turret_hardpoint(&self) -> bool {
         self.base.takes_turret_hardpoint()

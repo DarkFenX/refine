@@ -9,7 +9,8 @@ pub(crate) use effect::{
     REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
 };
 pub(crate) use item::{
-    RItem, RItemAXt, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemShipLimit, RShipDroneLimit, RShipKind,
+    RItem, RItemAXt, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemShipLimit,
+    RShipDroneLimit, RShipKind,
 };
 pub(crate) use item_list::{RItemList, RItemListId};
 pub(crate) use muta::{RMuta, RMutaAttrRange};

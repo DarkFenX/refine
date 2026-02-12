@@ -15,9 +15,9 @@ impl UItemBase {
                 effect_rid.consistency_check(u_data)?;
             }
         }
-        if let Some(attr_rids) = self.get_cap_use_attr_rids() {
-            for attr_rid in attr_rids.iter() {
-                attr_rid.consistency_check(u_data)?;
+        if let Some(cap_consumers) = self.get_cap_consumers() {
+            for cap_consumer in cap_consumers.iter() {
+                cap_consumer.consistency_check(u_data)?;
             }
         }
         if let Some(axt) = self.get_axt() {

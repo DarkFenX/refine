@@ -1,7 +1,14 @@
+use std::sync::Arc;
+
+use slab::Slab;
+
 use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     num::{SkillLevel, Value},
-    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState},
+    rd::{
+        RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData,
+        RItemListId, RShipKind, RState,
+    },
     util::{LibGetId, RMap},
 };
 
@@ -25,7 +32,7 @@ pub(crate) struct RItem {
     pub(crate) val_fitted_group_id: Option<AItemGrpId>,
     pub(crate) val_online_group_id: Option<AItemGrpId>,
     pub(crate) val_active_group_id: Option<AItemGrpId>,
-    pub(crate) cap_use_attr_rids: Vec<RAttrId>,
+    pub(crate) cap_consumers: Vec<RItemCapConsumer>,
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
     pub(crate) takes_launcher_hardpoint: bool,
@@ -57,7 +64,7 @@ impl RItem {
             defeff_rid: Default::default(),
             proj_buff_item_list_rids: Default::default(),
             fleet_buff_item_list_rids: Default::default(),
-            cap_use_attr_rids: Default::default(),
+            cap_consumers: Default::default(),
             ship_kind: Default::default(),
             has_online_effect: Default::default(),
             takes_turret_hardpoint: Default::default(),
@@ -73,6 +80,7 @@ impl RItem {
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
+        r_effects: &Slab<Arc<REffect>>,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
         for a_item_attr in a_item.attrs.iter() {
@@ -101,12 +109,14 @@ impl RItem {
                 .iter()
                 .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
         );
-        self.cap_use_attr_rids.extend(
-            a_item
-                .cap_use_attr_ids
-                .iter()
-                .filter_map(|item_list_aid| attr_aid_rid_map.get(item_list_aid).copied()),
-        );
+        for &effect_rid in self.effects.keys() {
+            let r_effect = r_effects.get(effect_rid.into_usize()).unwrap();
+            if r_effect.is_active_with_duration
+                && let Some(opc_spec) = r_effect.cap_consume_opc_spec
+            {
+                self.cap_consumers.push(RItemCapConsumer { effect_rid, opc_spec })
+            }
+        }
         self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
         self.has_online_effect = has_online_effect(&self.effects, effect_aid_rid_map);
         self.takes_turret_hardpoint = has_turret_effect(&self.effects, effect_aid_rid_map);

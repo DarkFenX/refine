@@ -1,7 +1,6 @@
 pub use abil::AItemAbils;
 pub use attr::{AItemAttr, AItemAttrs};
 pub use buff_item_list::AItemBuffItemLists;
-pub use cap_use_attrs::AItemCapUseAttrs;
 pub use cat_id::AItemCatId;
 pub use container::AItems;
 pub use effect::{AItemEffect, AItemEffects};
@@ -15,7 +14,6 @@ pub use skill_req::{AItemSkillReq, AItemSkillReqs};
 mod abil;
 mod attr;
 mod buff_item_list;
-mod cap_use_attrs;
 mod cat_id;
 mod container;
 mod effect;

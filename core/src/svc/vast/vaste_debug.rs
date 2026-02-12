@@ -341,11 +341,8 @@ impl VastFitData {
                 projector_espec.consistency_check(u_data, true)?;
             }
         }
-        for (item_uid, attr_rids) in self.cap_consumers_all.iter() {
+        for item_uid in self.mods_cap_consumers.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for attr_rid in attr_rids {
-                attr_rid.consistency_check(u_data)?;
-            }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - damage output
