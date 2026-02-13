@@ -14,10 +14,10 @@ where
     T: Copy,
 {
     // Duration it takes per cycle in this part
-    pub(super) cycle_duration: PValue,
+    cycle_duration: PValue,
     // After duration part is complete, it takes this duration to finish with output
-    pub(super) cycle_tail_duration: PValue,
-    pub(super) output: Output<T>,
+    cycle_tail_duration: PValue,
+    output: Output<T>,
 }
 
 impl<T> LibConvertExtend<Output<T>, AggrPartData<T>> for CycleDataFull
