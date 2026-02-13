@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
-    precalc::{AggrPartData, aggr_precalc_by_time},
+    shared_time::{AggrPartDataTail, aggr_by_time},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -38,7 +38,7 @@ where
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    aggr_precalc_by_time(cseq_conv, None, &mut accum.instances, time);
+    aggr_by_time(cseq_conv, None, &mut accum.instances, time);
     accum.time += time;
     true
 }
@@ -76,11 +76,11 @@ where
         }
     }
 }
-impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
         let output = get_local_output(
             self.ctx,
             self.calc,
@@ -89,7 +89,7 @@ where
             &self.inv_local,
             input.chargedness,
         );
-        AggrPartData {
+        AggrPartDataTail {
             cycle_duration: input.duration,
             cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
             output,

@@ -5,7 +5,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartData<T>
+pub(super) struct AggrPartDataTail<T>
 where
     T: Copy,
 {
@@ -19,8 +19,8 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn aggr_precalc_by_time<T, A>(
-    precalc: CycleSeq<AggrPartData<T>>,
+pub(super) fn aggr_by_time<T, A>(
+    precalc: CycleSeq<AggrPartDataTail<T>>,
     chance_mult: Option<PValue>,
     accum: &mut A,
     ptime: PValue,
@@ -103,8 +103,12 @@ pub(super) fn aggr_precalc_by_time<T, A>(
     }
 }
 
-fn process_single_regular<T, A>(accum: &mut A, time: &mut Value, data: &AggrPartData<T>, chance_mult: Option<PValue>)
-where
+fn process_single_regular<T, A>(
+    accum: &mut A,
+    time: &mut Value,
+    data: &AggrPartDataTail<T>,
+    chance_mult: Option<PValue>,
+) where
     T: Copy + InstanceDuration,
     A: SeqInstanceAccum<T>,
 {
@@ -126,7 +130,7 @@ where
 fn process_limited_regular<T, A>(
     accum: &mut A,
     time: &mut Value,
-    data: &AggrPartData<T>,
+    data: &AggrPartDataTail<T>,
     chance_mult: Option<PValue>,
     repeat_limit: Count,
 ) where
@@ -155,8 +159,12 @@ fn process_limited_regular<T, A>(
     }
 }
 
-fn process_infinite_regular<T, A>(accum: &mut A, time: &mut Value, data: &AggrPartData<T>, chance_mult: Option<PValue>)
-where
+fn process_infinite_regular<T, A>(
+    accum: &mut A,
+    time: &mut Value,
+    data: &AggrPartDataTail<T>,
+    chance_mult: Option<PValue>,
+) where
     T: Copy + InstanceDuration,
     A: SeqInstanceAccum<T>,
 {

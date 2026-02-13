@@ -1,8 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    precalc::{AggrPartData, aggr_precalc_by_time, get_full_repeats_count, process_incomplete_cycle},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::calc_charge_mult,
+    shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeats_count, process_incomplete_cycle},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -83,7 +83,7 @@ fn aggr_regular<T, A>(
 {
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    aggr_precalc_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
+    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
 }
 
 struct ProjConverter<'u, 'p, 'c, 'o, 'i, T>
@@ -116,11 +116,11 @@ where
         }
     }
 }
-impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
         let output = get_proj_output(
             self.ctx,
             self.calc,
@@ -129,7 +129,7 @@ where
             &self.inv_proj,
             input.chargedness,
         );
-        AggrPartData {
+        AggrPartDataTail {
             cycle_duration: input.duration,
             cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
             output,
@@ -161,7 +161,7 @@ fn aggr_spool<A, T>(
                 true => {
                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
                     let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                    aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                    aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
                 false => {
@@ -189,7 +189,7 @@ fn aggr_spool<A, T>(
                 true => {
                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
                     let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                    aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                    aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
                 false => {
@@ -215,7 +215,7 @@ fn aggr_spool<A, T>(
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -255,7 +255,7 @@ fn aggr_spool<A, T>(
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -304,7 +304,7 @@ fn aggr_spool<A, T>(
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime)
+                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime)
             }
             false => {
                 let mut time = ptime.into_value();
