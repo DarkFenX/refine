@@ -1,7 +1,7 @@
 use crate::{
     nd::NChargeMultGetter,
     num::{PValue, UnitInterval},
-    svc::{SvcCtx, calc::Calc},
+    svc::{SvcCtx, calc::Calc, output::OutputInstanceIter},
     ud::UItemId,
 };
 
@@ -25,4 +25,12 @@ pub(super) fn process_mult(mult: PValue) -> Option<PValue> {
         PValue::ONE => None,
         v => Some(v),
     }
+}
+
+pub(in crate::svc::vast) struct AggrIterItem<'a, T>
+where
+    T: Copy,
+{
+    pub(in crate::svc::vast) instance_iter: OutputInstanceIter<'a, T>,
+    pub(in crate::svc::vast) cycle_duration: PValue,
 }
