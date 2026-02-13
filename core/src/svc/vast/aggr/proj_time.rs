@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    precalc::{aggr_precalc_by_time, get_full_repeats_count, process_incomplete_cycle},
+    precalc::{AggrPartData, aggr_precalc_by_time, get_full_repeats_count, process_incomplete_cycle},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
     shared::calc_charge_mult,
     traits::{InstanceDuration, LimitInstance},
@@ -14,6 +14,7 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Projected effects, aggregates total output by specified time
@@ -80,33 +81,60 @@ fn aggr_regular<T, A>(
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
-    let precalc = match cseq {
-        CycleSeq::Lim(inner) => {
-            let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
-            inner.convert_extend(opc)
+    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    aggr_precalc_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
+}
+
+struct ProjConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    ctx: SvcCtx<'u, 'p>,
+    calc: &'c mut Calc,
+    projector_uid: UItemId,
+    ospec: &'o REffectProjOpcSpec<T>,
+    inv_proj: &'i AggrProjInvData<T>,
+}
+impl<'u, 'p, 'c, 'o, 'i, T> ProjConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    fn new(
+        ctx: SvcCtx<'u, 'p>,
+        calc: &'c mut Calc,
+        projector_uid: UItemId,
+        ospec: &'o REffectProjOpcSpec<T>,
+        inv_proj: &'i AggrProjInvData<T>,
+    ) -> Self {
+        Self {
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            inv_proj,
         }
-        CycleSeq::Inf(inner) => {
-            let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
-            inner.convert_extend(opc)
+    }
+}
+impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+where
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
+        let output = get_proj_output(
+            self.ctx,
+            self.calc,
+            self.projector_uid,
+            self.ospec,
+            &self.inv_proj,
+            input.chargedness,
+        );
+        AggrPartData {
+            cycle_duration: input.duration,
+            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
+            output,
         }
-        CycleSeq::LimInf(inner) => {
-            let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
-            let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
-            inner.convert_extend(p1_opc, p2_opc)
-        }
-        CycleSeq::LimSinInf(inner) => {
-            let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
-            let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
-            let p3_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p3_data.chargedness);
-            inner.convert_extend(p1_opc, p2_opc, p3_opc)
-        }
-        CycleSeq::LoopLimSin(inner) => {
-            let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
-            let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
-            inner.convert_extend(p1_opc, p2_opc)
-        }
-    };
-    aggr_precalc_by_time(precalc, inv_proj.chance_mult, accum, time);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,9 +159,9 @@ fn aggr_spool<A, T>(
             match inner.data.interrupt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
-                    let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
-                    let precalc = inner.convert_extend(opc);
-                    aggr_precalc_by_time(precalc, inv_proj.chance_mult, accum, ptime);
+                    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                    let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                    aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
                 false => {
@@ -159,9 +187,9 @@ fn aggr_spool<A, T>(
             match inner.data.interrupt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
-                    let opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.data.chargedness);
-                    let precalc = inner.convert_extend(opc);
-                    aggr_precalc_by_time(precalc, inv_proj.chance_mult, accum, ptime);
+                    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                    let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                    aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
                 false => {
@@ -185,10 +213,9 @@ fn aggr_spool<A, T>(
         CycleSeq::LimInf(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
-                let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
-                let precalc = inner.convert_extend(p1_opc, p2_opc);
-                aggr_precalc_by_time(precalc, inv_proj.chance_mult, accum, ptime);
+                let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -226,11 +253,9 @@ fn aggr_spool<A, T>(
         {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
-                let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
-                let p3_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p3_data.chargedness);
-                let precalc = inner.convert_extend(p1_opc, p2_opc, p3_opc);
-                aggr_precalc_by_time(precalc, inv_proj.chance_mult, accum, ptime);
+                let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -277,10 +302,9 @@ fn aggr_spool<A, T>(
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let p1_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p1_data.chargedness);
-                let p2_opc = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, inner.p2_data.chargedness);
-                let precalc = inner.convert_extend(p1_opc, p2_opc);
-                aggr_precalc_by_time(precalc, inv_proj.chance_mult, accum, ptime)
+                let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                aggr_precalc_by_time(inner_conv, inv_proj.chance_mult, accum, ptime)
             }
             false => {
                 let mut time = ptime.into_value();

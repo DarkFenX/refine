@@ -1,15 +1,15 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleDataDur, CycleDataFull, CycleSeq, CycleSeqLooped},
-    util::LibConvertExtend,
+    svc::cycle::{CSeqPart, CycleDataDur, CycleSeq, CycleSeqLooped},
+    util::LibConverter,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqLim<T = CycleDataFull> {
+pub(in crate::svc) struct CSeqLim<T> {
     pub(in crate::svc) data: T,
     pub(in crate::svc) repeat_count: Count,
 }
@@ -20,21 +20,21 @@ impl<T> CSeqLim<T> {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         None
     }
-    pub(super) fn convert_optimize<R>(self) -> CycleSeq<R>
+    pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
     where
-        R: From<T>,
+        U: From<T>,
     {
         CycleSeq::Lim(CSeqLim {
             data: self.data.into(),
             repeat_count: self.repeat_count,
         })
     }
-    pub(in crate::svc) fn convert_extend<X, R>(self, xt: X) -> CycleSeq<R>
+    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
     where
-        T: LibConvertExtend<X, R>,
+        C: LibConverter<T, U>,
     {
         CycleSeq::Lim(CSeqLim {
-            data: self.data.lib_convert_extend(xt),
+            data: converter.lib_convert(self.data),
             repeat_count: self.repeat_count,
         })
     }

@@ -1,11 +1,7 @@
 use super::{accum::SeqInstanceAccum, traits::InstanceDuration};
 use crate::{
     num::{Count, PValue, Value},
-    svc::{
-        cycle::{CycleDataFull, CycleSeq},
-        output::Output,
-    },
-    util::LibConvertExtend,
+    svc::{cycle::CycleSeq, output::Output},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -14,23 +10,10 @@ where
     T: Copy,
 {
     // Duration it takes per cycle in this part
-    cycle_duration: PValue,
+    pub(super) cycle_duration: PValue,
     // After duration part is complete, it takes this duration to finish with output
-    cycle_tail_duration: PValue,
-    output: Output<T>,
-}
-
-impl<T> LibConvertExtend<Output<T>, AggrPartData<T>> for CycleDataFull
-where
-    T: Copy + InstanceDuration,
-{
-    fn lib_convert_extend(self, xt: Output<T>) -> AggrPartData<T> {
-        AggrPartData {
-            cycle_duration: self.duration,
-            cycle_tail_duration: PValue::from_value_clamped(xt.get_completion_duration() - self.duration),
-            output: xt,
-        }
-    }
+    pub(super) cycle_tail_duration: PValue,
+    pub(super) output: Output<T>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

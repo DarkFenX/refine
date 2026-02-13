@@ -7,7 +7,7 @@ pub(crate) use float::{
 pub(crate) use func::vec_push_opt;
 pub(crate) use storage::{CMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, RSet, extend_vec_from_map_set_l1};
 pub(crate) use str_err::StrMsgError;
-pub(crate) use traits::{LibConvertExtend, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};
+pub(crate) use traits::{LibConverter, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};
 
 mod float;
 mod func;

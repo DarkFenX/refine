@@ -10,14 +10,14 @@ pub(crate) const trait LibDefault {
     fn lib_default() -> Self;
 }
 
-pub(crate) trait LibConvertExtend<X, R> {
-    fn lib_convert_extend(self, xt: X) -> R;
-}
-
 pub(crate) trait LibMax<Rhs = Self> {
     fn lib_max(self, rhs: Rhs) -> Self;
 }
 
 pub(crate) trait LibIncrement {
     fn lib_increment(&mut self);
+}
+
+pub(crate) trait LibConverter<I, O> {
+    fn lib_convert(&mut self, input: I) -> O;
 }

@@ -78,7 +78,7 @@ impl AggrKey {
     fn new(start_delay: PValue, cseq: &CycleSeq<CycleDataDurCharge>, opc: &Output<Value>) -> Self {
         Self {
             start_delay: start_delay.sig_rounded(SIG_ROUND_DIGITS),
-            cseq: cseq.convert_optimize().copy_rounded(),
+            cseq: cseq.convert_and_optimize().copy_rounded(),
             opc: AggrKeyOutput::from_output(opc),
         }
     }

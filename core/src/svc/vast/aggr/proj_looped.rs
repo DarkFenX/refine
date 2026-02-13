@@ -41,7 +41,7 @@ where
             ctx,
             calc,
             projector_uid,
-            cseq.convert_optimize(),
+            cseq.convert_and_optimize(),
             ospec,
             inv_proj,
             accum,

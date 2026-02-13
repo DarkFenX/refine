@@ -1,10 +1,8 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{
-        CSeqPart, CycleDataDur, CycleDataFull, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf,
-    },
-    util::LibConvertExtend,
+    svc::cycle::{CSeqPart, CycleDataDur, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
+    util::LibConverter,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +11,7 @@ use crate::{
 // Part 3: repeats infinitely
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqLimSinInf<T = CycleDataFull> {
+pub(in crate::svc) struct CSeqLimSinInf<T> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
@@ -23,67 +21,67 @@ impl<T> CSeqLimSinInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn convert_optimize<R>(self) -> CycleSeq<R>
+    pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
     where
-        R: From<T> + Eq,
+        U: From<T> + Eq,
     {
-        let p1_data = R::from(self.p1_data);
-        let p2_data = R::from(self.p2_data);
-        let p3_data = R::from(self.p3_data);
-        match (p1_data == p2_data, p2_data == p3_data) {
+        let p1_data_conv = U::from(self.p1_data);
+        let p2_data_conv = U::from(self.p2_data);
+        let p3_data_conv = U::from(self.p3_data);
+        match (p1_data_conv == p2_data_conv, p2_data_conv == p3_data_conv) {
             // Nothing to merge
             (false, false) => CycleSeq::LimSinInf(CSeqLimSinInf {
-                p1_data,
+                p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
-                p2_data,
-                p3_data,
+                p2_data: p2_data_conv,
+                p3_data: p3_data_conv,
             }),
             // Merge part 2 into tail
             (false, true) => CycleSeq::LimInf(CSeqLimInf {
-                p1_data,
+                p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
-                p2_data: p3_data,
+                p2_data: p3_data_conv,
             }),
             // Merge part 2 into head
             (true, false) => CycleSeq::LimInf(CSeqLimInf {
-                p1_data,
+                p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count + Count::ONE,
-                p2_data: p3_data,
+                p2_data: p3_data_conv,
             }),
             // Whole sequence becomes a simple infinity
-            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data }),
+            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
         }
     }
-    pub(in crate::svc) fn convert_extend<X, R>(self, p1_xt: X, p2_xt: X, p3_xt: X) -> CycleSeq<R>
+    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
     where
-        T: LibConvertExtend<X, R>,
-        R: Eq,
+        C: LibConverter<T, U>,
+        U: Eq,
     {
-        let p1_data = self.p1_data.lib_convert_extend(p1_xt);
-        let p2_data = self.p2_data.lib_convert_extend(p2_xt);
-        let p3_data = self.p3_data.lib_convert_extend(p3_xt);
-        match (p1_data == p2_data, p2_data == p3_data) {
+        let p1_data_conv = converter.lib_convert(self.p1_data);
+        let p2_data_conv = converter.lib_convert(self.p2_data);
+        let p3_data_conv = converter.lib_convert(self.p3_data);
+        match (p1_data_conv == p2_data_conv, p2_data_conv == p3_data_conv) {
             // Nothing to merge
             (false, false) => CycleSeq::LimSinInf(CSeqLimSinInf {
-                p1_data,
+                p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
-                p2_data,
-                p3_data,
+                p2_data: p2_data_conv,
+                p3_data: p3_data_conv,
             }),
             // Merge part 2 into tail
             (false, true) => CycleSeq::LimInf(CSeqLimInf {
-                p1_data,
+                p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
-                p2_data: p3_data,
+                p2_data: p3_data_conv,
             }),
             // Merge part 2 into head
             (true, false) => CycleSeq::LimInf(CSeqLimInf {
-                p1_data,
+                p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count + Count::ONE,
-                p2_data: p3_data,
+                p2_data: p3_data_conv,
             }),
             // Whole sequence becomes a simple infinity
-            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data }),
+            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
         }
     }
 }

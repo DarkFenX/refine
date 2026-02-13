@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
-    precalc::aggr_precalc_by_time,
+    precalc::{AggrPartData, aggr_precalc_by_time},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -13,6 +13,7 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Local effects, aggregates total output by specified time
@@ -35,33 +36,63 @@ where
         Some(inv_local) => inv_local,
         None => return false,
     };
-    let precalc = match cseq {
-        CycleSeq::Lim(inner) => {
-            let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.data.chargedness);
-            inner.convert_extend(opc)
-        }
-        CycleSeq::Inf(inner) => {
-            let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.data.chargedness);
-            inner.convert_extend(opc)
-        }
-        CycleSeq::LimInf(inner) => {
-            let p1_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p1_data.chargedness);
-            let p2_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p2_data.chargedness);
-            inner.convert_extend(p1_opc, p2_opc)
-        }
-        CycleSeq::LimSinInf(inner) => {
-            let p1_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p1_data.chargedness);
-            let p2_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p2_data.chargedness);
-            let p3_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p3_data.chargedness);
-            inner.convert_extend(p1_opc, p2_opc, p3_opc)
-        }
-        CycleSeq::LoopLimSin(inner) => {
-            let p1_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p1_data.chargedness);
-            let p2_opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p2_data.chargedness);
-            inner.convert_extend(p1_opc, p2_opc)
-        }
-    };
-    aggr_precalc_by_time(precalc, None, &mut accum.instances, time);
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    aggr_precalc_by_time(cseq_conv, None, &mut accum.instances, time);
     accum.time += time;
     true
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Converter
+////////////////////////////////////////////////////////////////////////////////////////////////////
+struct LocalConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    ctx: SvcCtx<'u, 'p>,
+    calc: &'c mut Calc,
+    item_uid: UItemId,
+    ospec: &'o REffectLocalOpcSpec<T>,
+    inv_local: &'i AggrLocalInvData<T>,
+}
+impl<'u, 'p, 'c, 'o, 'i, T> LocalConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    fn new(
+        ctx: SvcCtx<'u, 'p>,
+        calc: &'c mut Calc,
+        item_uid: UItemId,
+        ospec: &'o REffectLocalOpcSpec<T>,
+        inv_local: &'i AggrLocalInvData<T>,
+    ) -> Self {
+        Self {
+            ctx,
+            calc,
+            item_uid,
+            ospec,
+            inv_local,
+        }
+    }
+}
+impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
+where
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
+        let output = get_local_output(
+            self.ctx,
+            self.calc,
+            self.item_uid,
+            self.ospec,
+            &self.inv_local,
+            input.chargedness,
+        );
+        AggrPartData {
+            cycle_duration: input.duration,
+            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
+            output,
+        }
+    }
 }

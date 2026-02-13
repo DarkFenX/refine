@@ -2,7 +2,10 @@ use super::{
     seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
     seq_loop_lim_sin::CycleSeqLoopLimSin,
 };
-use crate::svc::cycle::{CycleDataDur, CycleDataDurCharge, CycleDataFull};
+use crate::{
+    svc::cycle::{CycleDataDur, CycleDataDurCharge, CycleDataFull},
+    util::LibConverter,
+};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum CycleSeq<T> {
@@ -34,26 +37,39 @@ where
             Self::LoopLimSin(inner) => inner.try_loop_cseq(),
         }
     }
-    pub(in crate::svc) fn convert_optimize<U>(self) -> CycleSeq<U>
+    pub(in crate::svc) fn convert_and_optimize<U>(self) -> CycleSeq<U>
     where
         U: From<T> + Eq,
     {
         match self {
-            Self::Lim(inner) => inner.convert_optimize(),
-            Self::Inf(inner) => inner.convert_optimize(),
-            Self::LimInf(inner) => inner.convert_optimize(),
-            Self::LimSinInf(inner) => inner.convert_optimize(),
-            Self::LoopLimSin(inner) => inner.convert_optimize(),
+            Self::Lim(inner) => inner.convert_and_optimize(),
+            Self::Inf(inner) => inner.convert_and_optimize(),
+            Self::LimInf(inner) => inner.convert_and_optimize(),
+            Self::LimSinInf(inner) => inner.convert_and_optimize(),
+            Self::LoopLimSin(inner) => inner.convert_and_optimize(),
+        }
+    }
+    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
+    where
+        C: LibConverter<T, U>,
+        U: Eq,
+    {
+        match self {
+            Self::Lim(inner) => inner.convert_with_and_optimize(converter),
+            Self::Inf(inner) => inner.convert_with_and_optimize(converter),
+            Self::LimInf(inner) => inner.convert_with_and_optimize(converter),
+            Self::LimSinInf(inner) => inner.convert_with_and_optimize(converter),
+            Self::LoopLimSin(inner) => inner.convert_with_and_optimize(converter),
         }
     }
 }
 impl CycleSeq<CycleDataFull> {
     // Convenience conversion methods, to avoid type hinting in some cases
     pub(in crate::svc) fn to_duration_charge(&self) -> CycleSeq<CycleDataDurCharge> {
-        self.convert_optimize()
+        self.convert_and_optimize()
     }
     pub(in crate::svc) fn to_duration(&self) -> CycleSeq<CycleDataDur> {
-        self.convert_optimize()
+        self.convert_and_optimize()
     }
 }
 impl CycleSeq<CycleDataDur> {
@@ -68,7 +84,7 @@ impl CycleSeq<CycleDataDur> {
     }
 }
 
-pub(in crate::svc) enum CycleSeqLooped<T = CycleDataFull> {
+pub(in crate::svc) enum CycleSeqLooped<T> {
     Inf(CSeqInf<T>),
     LoopLimSin(CycleSeqLoopLimSin<T>),
 }

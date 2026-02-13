@@ -88,10 +88,10 @@ fn fill_consumers(
             let opc = -opc;
             match stagger.is_staggered(item_uid) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_optimize(), &opc),
-                    (cseq.convert_optimize(), opc),
+                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
+                    (cseq.convert_and_optimize(), opc),
                 ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_optimize(), opc),
+                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
             }
         }
     }
@@ -129,10 +129,10 @@ fn fill_nosfs(
             let opc = opc.into_value();
             match stagger.is_staggered(nosf_item_uid) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_optimize(), &opc),
-                    (cseq.convert_optimize(), opc),
+                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
+                    (cseq.convert_and_optimize(), opc),
                 ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_optimize(), opc),
+                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
             }
         }
     }
@@ -178,10 +178,10 @@ fn fill_incoming_neuts(
             let opc = -opc;
             match stagger.is_staggered(neut_item_uid) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_optimize(), &opc),
-                    (cseq.convert_optimize(), opc),
+                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
+                    (cseq.convert_and_optimize(), opc),
                 ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_optimize(), opc),
+                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
             }
         }
     }
@@ -225,10 +225,10 @@ fn fill_incoming_transfers(
             let opc = opc.into_value();
             match stagger.is_staggered(transfer_item_uid) {
                 true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_optimize(), &opc),
-                    (cseq.convert_optimize(), opc),
+                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
+                    (cseq.convert_and_optimize(), opc),
                 ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_optimize(), opc),
+                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
             }
         }
     }
@@ -267,7 +267,7 @@ fn fill_injectors(
                 });
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: PValue::ZERO,
-                cycle_iter: cseq.convert_optimize().iter_cycles(),
+                cycle_iter: cseq.convert_and_optimize().iter_cycles(),
                 opc: opc.into_value(),
                 immediate_amount: immediate_amount.map(|v| v.into_value()),
             }));

@@ -135,7 +135,7 @@ impl Vast {
             if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
                 && let Some(dmg_opc) = dmg_getter(ctx, calc, item_uid, effect, projectee_uid)
             {
-                breacher_accum.add(dmg_opc, cseq.convert_optimize());
+                breacher_accum.add(dmg_opc, cseq.convert_and_optimize());
             }
         }
         if include_charges {
