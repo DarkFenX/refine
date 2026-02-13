@@ -16,7 +16,7 @@ impl<T> CSeqInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.data
     }
-    pub(super) fn convert<R>(self) -> CycleSeq<R>
+    pub(super) fn convert_optimize<R>(self) -> CycleSeq<R>
     where
         R: From<T>,
     {

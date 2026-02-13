@@ -37,7 +37,15 @@ where
     };
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        None => aggr_regular(ctx, calc, projector_uid, cseq.convert(), ospec, inv_proj, accum),
+        None => aggr_regular(
+            ctx,
+            calc,
+            projector_uid,
+            cseq.convert_optimize(),
+            ospec,
+            inv_proj,
+            accum,
+        ),
     }
 }
 

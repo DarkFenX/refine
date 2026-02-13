@@ -20,7 +20,7 @@ impl<T> CSeqLim<T> {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         None
     }
-    pub(super) fn convert<R>(self) -> CycleSeq<R>
+    pub(super) fn convert_optimize<R>(self) -> CycleSeq<R>
     where
         R: From<T>,
     {

@@ -34,26 +34,26 @@ where
             Self::LoopLimSin(inner) => inner.try_loop_cseq(),
         }
     }
-    pub(in crate::svc) fn convert<U>(self) -> CycleSeq<U>
+    pub(in crate::svc) fn convert_optimize<U>(self) -> CycleSeq<U>
     where
         U: From<T> + Eq,
     {
         match self {
-            Self::Lim(inner) => inner.convert(),
-            Self::Inf(inner) => inner.convert(),
-            Self::LimInf(inner) => inner.convert(),
-            Self::LimSinInf(inner) => inner.convert(),
-            Self::LoopLimSin(inner) => inner.convert(),
+            Self::Lim(inner) => inner.convert_optimize(),
+            Self::Inf(inner) => inner.convert_optimize(),
+            Self::LimInf(inner) => inner.convert_optimize(),
+            Self::LimSinInf(inner) => inner.convert_optimize(),
+            Self::LoopLimSin(inner) => inner.convert_optimize(),
         }
     }
 }
 impl CycleSeq<CycleDataFull> {
     // Convenience conversion methods, to avoid type hinting in some cases
     pub(in crate::svc) fn to_duration_charge(&self) -> CycleSeq<CycleDataDurCharge> {
-        self.convert()
+        self.convert_optimize()
     }
     pub(in crate::svc) fn to_duration(&self) -> CycleSeq<CycleDataDur> {
-        self.convert()
+        self.convert_optimize()
     }
 }
 impl CycleSeq<CycleDataDur> {

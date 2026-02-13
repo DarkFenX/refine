@@ -314,7 +314,7 @@ impl VastFitData {
                     Some(opc) => opc,
                     None => continue,
                 };
-                breacher_accum.add(opc, cseq.convert());
+                breacher_accum.add(opc, cseq.convert_optimize());
             }
         }
     }
