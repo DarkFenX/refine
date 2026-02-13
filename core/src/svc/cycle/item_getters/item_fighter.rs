@@ -2,13 +2,17 @@ use super::shared::CyclingOptions;
 use crate::{
     num::PValue,
     rd::REffectId,
-    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataFull, CycleSeq},
+    },
     ud::{UFighter, UItemId},
     util::RMap,
 };
 
 struct FtrEffectInfo {
-    cseq: CycleSeq,
+    cseq: CycleSeq<CycleDataFull>,
     rearm: Option<FtrEffectRearmInfo>,
 }
 
@@ -26,7 +30,7 @@ pub(super) fn get_fighter_cseq_map(
     fighter: &UFighter,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
     if !fighter.is_loaded() {
         return None;
     };

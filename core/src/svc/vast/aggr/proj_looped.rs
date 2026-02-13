@@ -22,7 +22,7 @@ pub(in crate::svc::vast) fn aggr_proj_looped<T, A>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq,
+    cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
     accum: &mut SeqAccum<A>,

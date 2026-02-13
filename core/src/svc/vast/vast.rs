@@ -3,7 +3,7 @@ use crate::{
     misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::NEffectBreacherDmgGetter,
     num::{Count, PValue, SkillLevel, SlotIndex, Value},
-    rd::{RAttrId, REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
+    rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
         ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
         validators::EffectSecZoneInfo,

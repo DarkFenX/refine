@@ -35,7 +35,7 @@ pub(super) fn get_module_cseq_map(
     module: &UModule,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
     if !module.is_loaded() {
         return None;
     };
@@ -71,7 +71,7 @@ pub(super) fn get_module_cseq_map(
 }
 
 fn fill_module_effect_info(
-    cseq_map: &mut RMap<REffectId, CycleSeq>,
+    cseq_map: &mut RMap<REffectId, CycleSeq<CycleDataFull>>,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -315,7 +315,7 @@ fn part_r(
     cooldown: PValue,
     int_cd: bool,
     chargedness: Option<UnitInterval>,
-) -> CycleSeq {
+) -> CycleSeq<CycleDataFull> {
     CycleSeq::Inf(CSeqInf {
         data: CycleDataFull {
             duration: duration + get_reload_duration(ctx, calc, item_uid).max(cooldown),
@@ -333,7 +333,7 @@ fn full_r(
     cooldown: PValue,
     int_cd: bool,
     full_count: Count,
-) -> CycleSeq {
+) -> CycleSeq<CycleDataFull> {
     match full_count {
         Count::ONE => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
@@ -367,7 +367,7 @@ fn both_r(
     int_cd: bool,
     full_count: Count,
     chargedness: Option<UnitInterval>,
-) -> CycleSeq {
+) -> CycleSeq<CycleDataFull> {
     CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
         p1_data: CycleDataFull {
             duration: duration + cooldown,

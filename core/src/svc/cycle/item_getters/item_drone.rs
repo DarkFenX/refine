@@ -18,7 +18,7 @@ pub(super) fn get_drone_cseq_map(
     item_uid: UItemId,
     drone: &UDrone,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
     if !drone.is_loaded() {
         return None;
     };

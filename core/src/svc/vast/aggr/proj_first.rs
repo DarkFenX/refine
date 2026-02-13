@@ -8,7 +8,12 @@ use crate::{
     misc::Spool,
     num::{PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
-    svc::{SvcCtx, calc::Calc, cycle::CycleSeq, spool::ResolvedSpool},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataFull, CycleSeq},
+        spool::ResolvedSpool,
+    },
     ud::UItemId,
 };
 
@@ -19,7 +24,7 @@ pub(in crate::svc::vast) fn aggr_proj_first<T, A>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq,
+    cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
     spool: Option<Spool>,

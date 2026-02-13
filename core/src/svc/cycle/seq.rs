@@ -5,7 +5,7 @@ use super::{
 use crate::svc::cycle::{CycleDataDur, CycleDataDurCharge, CycleDataFull};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) enum CycleSeq<T = CycleDataFull> {
+pub(in crate::svc) enum CycleSeq<T> {
     Lim(CSeqLim<T>),
     Inf(CSeqInf<T>),
     LimInf(CSeqLimInf<T>),
@@ -47,7 +47,7 @@ where
         }
     }
 }
-impl CycleSeq {
+impl CycleSeq<CycleDataFull> {
     // Convenience conversion methods, to avoid type hinting in some cases
     pub(in crate::svc) fn to_duration_charge(&self) -> CycleSeq<CycleDataDurCharge> {
         self.convert()

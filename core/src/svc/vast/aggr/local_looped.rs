@@ -6,7 +6,11 @@ use super::{
 use crate::{
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
-    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataFull, CycleSeq},
+    },
     ud::UItemId,
 };
 
@@ -17,7 +21,7 @@ pub(in crate::svc::vast) fn aggr_local_looped<T, A>(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq,
+    cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectLocalOpcSpec<T>,
     accum: &mut SeqAccum<A>,
 ) -> bool

@@ -3,7 +3,11 @@ use either::Either;
 use super::{item::get_item_cseq_map, shared::CyclingOptions};
 use crate::{
     rd::REffectId,
-    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataFull, CycleSeq},
+    },
     ud::UCharge,
     util::RMap,
 };
@@ -14,7 +18,7 @@ pub(super) fn get_charge_cseq_map(
     charge: &UCharge,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
     if !charge.is_loaded() {
         return None;
     };

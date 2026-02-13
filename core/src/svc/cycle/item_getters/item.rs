@@ -4,7 +4,11 @@ use super::{
 };
 use crate::{
     rd::REffectId,
-    svc::{SvcCtx, calc::Calc, cycle::CycleSeq},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataFull, CycleSeq},
+    },
     ud::{UItem, UItemId},
     util::RMap,
 };
@@ -15,7 +19,7 @@ pub(in crate::svc) fn get_item_cseq_map(
     item_uid: UItemId,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq>> {
+) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
     let item = ctx.u_data.items.get(item_uid);
     match item {
         UItem::Autocharge(autocharge) => get_autocharge_cseq_map(ctx, calc, autocharge, options, ignore_state),
