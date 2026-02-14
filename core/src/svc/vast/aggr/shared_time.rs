@@ -20,7 +20,7 @@ where
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn aggr_by_time<T, A>(
-    precalc: CycleSeq<AggrPartDataTail<T>>,
+    cseq: CycleSeq<AggrPartDataTail<T>>,
     chance_mult: Option<PValue>,
     accum: &mut A,
     ptime: PValue,
@@ -30,7 +30,7 @@ pub(super) fn aggr_by_time<T, A>(
 {
     // Locally time can go negative
     let mut time = ptime.into_value();
-    match precalc {
+    match cseq {
         CycleSeq::Lim(inner) => {
             process_limited_regular(accum, &mut time, &inner.data, chance_mult, inner.repeat_count);
         }

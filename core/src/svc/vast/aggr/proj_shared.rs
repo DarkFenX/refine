@@ -130,6 +130,40 @@ impl AggrSpoolInvData {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Converter
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) struct ProjConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    pub(super) ctx: SvcCtx<'u, 'p>,
+    pub(super) calc: &'c mut Calc,
+    pub(super) projector_uid: UItemId,
+    pub(super) ospec: &'o REffectProjOpcSpec<T>,
+    pub(super) inv_proj: &'i AggrProjInvData<T>,
+}
+impl<'u, 'p, 'c, 'o, 'i, T> ProjConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    pub(super) fn new(
+        ctx: SvcCtx<'u, 'p>,
+        calc: &'c mut Calc,
+        projector_uid: UItemId,
+        ospec: &'o REffectProjOpcSpec<T>,
+        inv_proj: &'i AggrProjInvData<T>,
+    ) -> Self {
+        Self {
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            inv_proj,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) fn get_proj_output<T>(

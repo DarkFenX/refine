@@ -1,8 +1,7 @@
 use super::{
-    accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output, get_proj_output_spool},
     shared::calc_charge_mult,
-    shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeats_count, process_incomplete_cycle},
+    shared_iter::{AggrIterItem, AggrPartData},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -17,9 +16,8 @@ use crate::{
     util::LibConverter,
 };
 
-// Projected effects, aggregates total output by specified time
-#[must_use]
-pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
+// Projected effects, iterator over cycles (cycle time + instance iter)
+pub(in crate::svc::vast) fn aggr_proj_iter<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -27,42 +25,15 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-    accum: &mut SeqAccum<A>,
-    time: PValue,
-) -> bool
+) -> Option<impl Iterator<Item = AggrIterItem<T>>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqInstanceAccum<T>,
 {
-    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
-        Some(inv_proj) => inv_proj,
-        None => return false,
-    };
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        Some(inv_spool) => aggr_spool(
-            ctx,
-            calc,
-            projector_uid,
-            cseq,
-            ospec,
-            inv_proj,
-            &mut accum.instances,
-            time,
-            inv_spool,
-        ),
-        None => aggr_regular(
-            ctx,
-            calc,
-            projector_uid,
-            cseq,
-            ospec,
-            inv_proj,
-            &mut accum.instances,
-            time,
-        ),
+        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool),
+        None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj),
     }
-    accum.time += time;
-    true
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,22 +46,23 @@ fn aggr_regular<T, A>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
-    accum: &mut A,
-    time: PValue,
-) where
+) -> Option<impl Iterator<Item = AggrIterItem<T>>>
+where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqInstanceAccum<T>,
 {
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
+    let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+    Some(cseq_conv.iter_cycles().map(|v| AggrIterItem {
+        cycle_duration: v.cycle_duration,
+        instance_iter: v.output.into_instance_iter(),
+    }))
 }
 
-impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
         let output = get_proj_output(
             self.ctx,
             self.calc,
@@ -99,9 +71,8 @@ where
             &self.inv_proj,
             input.chargedness,
         );
-        AggrPartDataTail {
+        AggrPartData {
             cycle_duration: input.duration,
-            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
             output,
         }
     }
@@ -110,19 +81,17 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<A, T>(
+fn aggr_spool<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
-    accum: &mut A,
-    ptime: PValue,
     inv_spool: AggrSpoolInvData,
-) where
+) -> Option<impl Iterator<Item = AggrIterItem<T>>>
+where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqInstanceAccum<T>,
 {
     match cseq {
         CycleSeq::Lim(inner) => {
@@ -130,8 +99,8 @@ fn aggr_spool<A, T>(
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                    let cseq_conv = inner.convert_with_and_optimize(&mut converter);
-                    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                    let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                    aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
                 false => {
@@ -158,8 +127,8 @@ fn aggr_spool<A, T>(
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                    let cseq_conv = inner.convert_with_and_optimize(&mut converter);
-                    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                    let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                    aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
                 false => {
@@ -184,8 +153,8 @@ fn aggr_spool<A, T>(
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let cseq_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -224,8 +193,8 @@ fn aggr_spool<A, T>(
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let cseq_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -273,8 +242,8 @@ fn aggr_spool<A, T>(
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let cseq_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime)
+                let inner_conv = inner.convert_with_and_optimize(&mut converter);
+                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime)
             }
             false => {
                 let mut time = ptime.into_value();

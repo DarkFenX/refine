@@ -23,6 +23,7 @@ mod local_shared;
 mod local_time;
 mod proj_clip;
 mod proj_first;
+mod proj_iter;
 mod proj_looped;
 mod proj_shared;
 mod proj_time;
