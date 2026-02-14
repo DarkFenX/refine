@@ -1,11 +1,10 @@
 use super::{
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output, get_proj_output_spool},
-    shared::calc_charge_mult,
-    shared_iter::{AggrIterItem, AggrPartData},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output},
+    shared_iter::{AggrIter, AggrPartData},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
-    num::{Count, PValue, Value},
+    num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -25,7 +24,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-) -> Option<impl Iterator<Item = AggrIterItem<T>>>
+) -> Option<AggrIter<T>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
@@ -47,16 +46,13 @@ fn aggr_regular<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
-) -> Option<impl Iterator<Item = AggrIterItem<T>>>
+) -> Option<AggrIter<T>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-    let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
-    Some(cseq_conv.iter_cycles().map(|v| AggrIterItem {
-        cycle_duration: v.cycle_duration,
-        instance_iter: v.output.into_instance_iter(),
-    }))
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    Some(AggrIter::new(cseq_conv.iter_cycles()))
 }
 
 impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for ProjConverter<'_, '_, '_, '_, '_, T>

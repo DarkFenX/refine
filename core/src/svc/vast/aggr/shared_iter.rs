@@ -1,6 +1,9 @@
 use crate::{
     num::PValue,
-    svc::output::{Output, OutputInstanceIter},
+    svc::{
+        cycle::CycleIter,
+        output::{Output, OutputInstanceIter},
+    },
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -11,6 +14,37 @@ where
     // Duration it takes per cycle in this part
     pub(super) cycle_duration: PValue,
     pub(super) output: Output<T>,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Aggregated iterator and its item
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::vast) struct AggrIter<T>
+where
+    T: Copy,
+{
+    cycle_iter: CycleIter<AggrPartData<T>>,
+}
+impl<T> AggrIter<T>
+where
+    T: Copy,
+{
+    pub(super) fn new(cycle_iter: CycleIter<AggrPartData<T>>) -> Self {
+        Self { cycle_iter }
+    }
+}
+impl<T> Iterator for AggrIter<T>
+where
+    T: Copy,
+{
+    type Item = AggrIterItem<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.cycle_iter.next().map(|v| AggrIterItem {
+            instance_iter: v.output.into_instance_iter(),
+            cycle_duration: v.cycle_duration,
+        })
+    }
 }
 
 pub(in crate::svc::vast) struct AggrIterItem<T>
