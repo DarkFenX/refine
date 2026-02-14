@@ -16,7 +16,7 @@ use crate::{
 };
 
 // Local effects, iterator over cycles (cycle time + instance iter)
-pub(in crate::svc::vast) fn aggr_local_iter<'a, T>(
+pub(in crate::svc::vast) fn aggr_local_iter<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -25,7 +25,7 @@ pub(in crate::svc::vast) fn aggr_local_iter<'a, T>(
     ospec: &REffectLocalOpcSpec<T>,
 ) -> Option<impl Iterator<Item = AggrIterItem<T>>>
 where
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance + 'a,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
