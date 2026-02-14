@@ -1,4 +1,4 @@
-from fw import ANY_VALUE, approx
+from fw import approx
 from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapSim
 
 
