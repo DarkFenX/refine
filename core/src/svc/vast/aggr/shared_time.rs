@@ -207,7 +207,7 @@ pub(super) fn process_incomplete_cycle<T, A>(
 {
     // Time here is supposed to be modified only locally, and should not affect time out-of-cycle
     // time tracking
-    for mut instance_data in output.iter_instances() {
+    for mut instance_data in output.into_instance_iter() {
         time -= instance_data.time_passed;
         let ptime = match time >= Value::ZERO {
             true => PValue::from_value_unchecked(time),

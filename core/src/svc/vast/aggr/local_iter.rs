@@ -1,7 +1,6 @@
 use super::{
-    accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared_time::{AggrPartDataTail, aggr_by_time},
+    shared_iter::{AggrIterItem, AggrPartData},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -16,41 +15,35 @@ use crate::{
     util::LibConverter,
 };
 
-// Local effects, aggregates total output by specified time
-#[must_use]
-pub(in crate::svc::vast) fn aggr_local_time<T, A>(
+// Local effects, iterator over cycles (cycle time + instance iter)
+pub(in crate::svc::vast) fn aggr_local_iter<'a, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectLocalOpcSpec<T>,
-    accum: &mut SeqAccum<A>,
-    time: PValue,
-) -> bool
+) -> Option<impl Iterator<Item = AggrIterItem<T>>>
 where
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-    A: SeqInstanceAccum<T>,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance + 'a,
 {
-    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
-        Some(inv_local) => inv_local,
-        None => return false,
-    };
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    aggr_by_time(cseq_conv, None, &mut accum.instances, time);
-    accum.time += time;
-    true
+    let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+    Some(cseq_conv.iter_cycles().map(|v| AggrIterItem {
+        cycle_duration: v.cycle_duration,
+        instance_iter: v.output.into_instance_iter(),
+    }))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
         let output = get_local_output(
             self.ctx,
             self.calc,
@@ -59,9 +52,8 @@ where
             &self.inv_local,
             input.chargedness,
         );
-        AggrPartDataTail {
+        AggrPartData {
             cycle_duration: input.duration,
-            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
             output,
         }
     }

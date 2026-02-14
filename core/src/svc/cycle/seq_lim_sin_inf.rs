@@ -186,7 +186,7 @@ where
             2 => {
                 self.index = 3;
                 Some(CSeqPart {
-                    data: self.cseq.p2_data,
+                    data: self.cseq.p3_data,
                     repeat_count: InfCount::Infinite,
                 })
             }

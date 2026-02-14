@@ -42,6 +42,40 @@ fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: Opt
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Converter
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    pub(super) ctx: SvcCtx<'u, 'p>,
+    pub(super) calc: &'c mut Calc,
+    pub(super) item_uid: UItemId,
+    pub(super) ospec: &'o REffectLocalOpcSpec<T>,
+    pub(super) inv_local: &'i AggrLocalInvData<T>,
+}
+impl<'u, 'p, 'c, 'o, 'i, T> LocalConverter<'u, 'p, 'c, 'o, 'i, T>
+where
+    T: Copy,
+{
+    pub(super) fn new(
+        ctx: SvcCtx<'u, 'p>,
+        calc: &'c mut Calc,
+        item_uid: UItemId,
+        ospec: &'o REffectLocalOpcSpec<T>,
+        inv_local: &'i AggrLocalInvData<T>,
+    ) -> Self {
+        Self {
+            ctx,
+            calc,
+            item_uid,
+            ospec,
+            inv_local,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) fn get_local_output<T>(

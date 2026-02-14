@@ -65,7 +65,7 @@ impl CapSim {
                     // Check if it can cycle altogether
                     if let Some(cycle_iter_info) = event.cycle_iter.next() {
                         // Add outputs for this cycle
-                        self.schedule_cycle_output(event.time, event.opc.iter_instances());
+                        self.schedule_cycle_output(event.time, event.opc.into_instance_iter());
                         // Schedule next cycle check
                         let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
                             time: event.time + cycle_iter_info.duration,
@@ -199,7 +199,7 @@ impl CapSim {
         // Check if injector can cycle
         if let Some(cycle_iter_info) = injector_event.cycle_iter.next() {
             // If injector has immediate effect, update cap and advance output amount iterator
-            let mut output_iter = injector_event.opc.iter_instances();
+            let mut output_iter = injector_event.opc.into_instance_iter();
             if let Some(immediate_amount) = injector_event.immediate_amount {
                 self.increase_cap(immediate_amount);
                 output_iter.next();

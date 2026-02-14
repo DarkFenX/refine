@@ -18,22 +18,22 @@ impl<T> Output<T>
 where
     T: Copy,
 {
-    pub(in crate::svc) fn iter_instances(&self) -> OutputInstanceIter<'_, T> {
+    pub(in crate::svc) fn into_instance_iter(self) -> OutputInstanceIter<T> {
         match self {
-            Self::Simple(inner) => OutputInstanceIter::Simple(inner.iter_instances()),
-            Self::Complex(inner) => OutputInstanceIter::Complex(inner.iter_instances()),
+            Self::Simple(inner) => OutputInstanceIter::Simple(inner.into_instance_iter()),
+            Self::Complex(inner) => OutputInstanceIter::Complex(inner.into_instance_iter()),
         }
     }
 }
 
-pub(in crate::svc) enum OutputInstanceIter<'a, T>
+pub(in crate::svc) enum OutputInstanceIter<T>
 where
     T: Copy,
 {
-    Simple(OutputInstanceIterSimple<'a, T>),
-    Complex(OutputInstanceIterComplex<'a, T>),
+    Simple(OutputInstanceIterSimple<T>),
+    Complex(OutputInstanceIterComplex<T>),
 }
-impl<'a, T> Iterator for OutputInstanceIter<'a, T>
+impl<'a, T> Iterator for OutputInstanceIter<T>
 where
     T: Copy,
 {

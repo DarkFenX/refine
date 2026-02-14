@@ -14,24 +14,24 @@ pub(crate) struct OutputComplex<T: Copy> {
 // Instance iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T: Copy> OutputComplex<T> {
-    pub(super) fn iter_instances(&self) -> OutputInstanceIterComplex<'_, T> {
+    pub(super) fn into_instance_iter(self) -> OutputInstanceIterComplex<T> {
         OutputInstanceIterComplex::new(self)
     }
 }
 
-pub(in crate::svc) struct OutputInstanceIterComplex<'a, T: Copy> {
-    output: &'a OutputComplex<T>,
+pub(in crate::svc) struct OutputInstanceIterComplex<T: Copy> {
+    output: OutputComplex<T>,
     cycles_done: Count,
 }
-impl<'a, T: Copy> OutputInstanceIterComplex<'a, T> {
-    fn new(output: &'a OutputComplex<T>) -> Self {
+impl<T: Copy> OutputInstanceIterComplex<T> {
+    fn new(output: OutputComplex<T>) -> Self {
         Self {
             output,
             cycles_done: Count::ZERO,
         }
     }
 }
-impl<T: Copy> Iterator for OutputInstanceIterComplex<'_, T> {
+impl<T: Copy> Iterator for OutputInstanceIterComplex<T> {
     type Item = OutputInstanceIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {

@@ -259,7 +259,7 @@ fn fill_injectors(
             };
             let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, None);
             let immediate_amount = opc
-                .iter_instances()
+                .into_instance_iter()
                 .next()
                 .and_then(|v| match v.time_passed == PValue::ZERO {
                     true => Some(v.instance),
