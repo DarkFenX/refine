@@ -89,7 +89,7 @@ fn aggr_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
-) -> Option<impl Iterator<Item = AggrIterItem<T>>>
+) -> impl Iterator<Item = AggrIterItem<T>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
@@ -99,8 +99,11 @@ where
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                    let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                    aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                    let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+                    cseq_conv.iter_cycles().map(|v| AggrIterItem {
+                        cycle_duration: v.cycle_duration,
+                        instance_iter: v.output.into_instance_iter(),
+                    })
                 }
                 // Spool is considered
                 false => {
@@ -127,8 +130,11 @@ where
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                    let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                    aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                    let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+                    cseq_conv.iter_cycles().map(|v| AggrIterItem {
+                        cycle_duration: v.cycle_duration,
+                        instance_iter: v.output.into_instance_iter(),
+                    })
                 }
                 // Spool is considered
                 false => {
@@ -153,8 +159,11 @@ where
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+                cseq_conv.iter_cycles().map(|v| AggrIterItem {
+                    cycle_duration: v.cycle_duration,
+                    instance_iter: v.output.into_instance_iter(),
+                })
             }
             false => {
                 let mut time = ptime.into_value();
@@ -193,8 +202,11 @@ where
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime);
+                let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+                cseq_conv.iter_cycles().map(|v| AggrIterItem {
+                    cycle_duration: v.cycle_duration,
+                    instance_iter: v.output.into_instance_iter(),
+                })
             }
             false => {
                 let mut time = ptime.into_value();
@@ -242,8 +254,11 @@ where
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let inner_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(inner_conv, inv_proj.chance_mult, accum, ptime)
+                let cseq_conv: CycleSeq<AggrPartData<T>> = cseq.convert_with_and_optimize(&mut converter);
+                cseq_conv.iter_cycles().map(|v| AggrIterItem {
+                    cycle_duration: v.cycle_duration,
+                    instance_iter: v.output.into_instance_iter(),
+                })
             }
             false => {
                 let mut time = ptime.into_value();
