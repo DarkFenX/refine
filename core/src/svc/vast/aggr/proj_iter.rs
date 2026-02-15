@@ -2,7 +2,7 @@ use super::{
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_part_str_mult,
     },
-    shared_iter::{AggrIter, AggrPartDataRegular, AggrPartDataSpool},
+    shared_iter::{AggrIter, AggrIterSpool, AggrPartDataRegular, AggrPartDataSpool},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -34,8 +34,7 @@ where
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        // Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool),
-        Some(inv_spool) => return None,
+        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool),
         None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj),
     };
     Some(aggr_iter)
@@ -83,6 +82,23 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fn aggr_spool<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: &CycleSeq<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<T>,
+    inv_proj: AggrProjInvData<T>,
+    inv_spool: AggrSpoolInvData,
+) -> AggrIter<T>
+where
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+{
+    let mut converter = ProjConverterSpool::new(ctx, calc, projector_uid, ospec, &inv_proj, &inv_spool);
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    AggrIter::Spool(AggrIterSpool::new(cseq_conv.iter_cycles(), inv_proj, inv_spool))
+}
+
 struct ProjConverterSpool<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, T>
 where
     T: Copy,
