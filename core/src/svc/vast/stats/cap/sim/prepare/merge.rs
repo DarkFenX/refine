@@ -1,11 +1,11 @@
 use std::collections::BinaryHeap;
 
-use super::shared::SIG_ROUND_DIGITS;
+use super::{output::OutputKey, shared::SIG_ROUND_DIGITS};
 use crate::{
-    num::{Count, PValue, Value},
+    num::{PValue, Value},
     svc::{
         cycle::{CycleDataDur, CycleDataDurCharge, CycleSeq},
-        output::{Output, OutputComplex, OutputSimple},
+        output::Output,
         vast::stats::cap::sim::event::{CapSimEvent, CapSimEventCycleCheck},
     },
     util::RMapVec,
@@ -70,56 +70,14 @@ impl AggrEventInfo {
 struct AggrKey {
     start_delay: PValue,
     cseq: CycleSeq<CycleDataDur>,
-    opc: AggrKeyOutput,
+    opc: OutputKey,
 }
 impl AggrKey {
     fn new(start_delay: PValue, cseq: &CycleSeq<CycleDataDurCharge>, opc: &Output<Value>) -> Self {
         Self {
             start_delay: start_delay.sig_rounded(SIG_ROUND_DIGITS),
             cseq: cseq.convert_and_optimize().copy_rounded(),
-            opc: AggrKeyOutput::from_output(opc),
-        }
-    }
-}
-
-#[derive(Eq, PartialEq, Hash)]
-enum AggrKeyOutput {
-    Simple(AggrKeyOutputSimple),
-    Complex(AggrKeyOutputComplex),
-}
-impl AggrKeyOutput {
-    fn from_output(output: &Output<Value>) -> Self {
-        match output {
-            Output::Simple(inner) => AggrKeyOutput::Simple(AggrKeyOutputSimple::from_output_simple(inner)),
-            Output::Complex(inner) => AggrKeyOutput::Complex(AggrKeyOutputComplex::from_output_complex(inner)),
-        }
-    }
-}
-
-#[derive(Eq, PartialEq, Hash)]
-struct AggrKeyOutputSimple {
-    delay: PValue,
-}
-impl AggrKeyOutputSimple {
-    fn from_output_simple(output_simple: &OutputSimple<Value>) -> Self {
-        Self {
-            delay: output_simple.delay.sig_rounded(SIG_ROUND_DIGITS),
-        }
-    }
-}
-
-#[derive(Eq, PartialEq, Hash)]
-struct AggrKeyOutputComplex {
-    delay: PValue,
-    repeats: Count,
-    interval: PValue,
-}
-impl AggrKeyOutputComplex {
-    fn from_output_complex(output_complex: &OutputComplex<Value>) -> Self {
-        Self {
-            delay: output_complex.delay.sig_rounded(SIG_ROUND_DIGITS),
-            repeats: output_complex.repeats,
-            interval: output_complex.interval.sig_rounded(SIG_ROUND_DIGITS),
+            opc: OutputKey::from_output(opc),
         }
     }
 }

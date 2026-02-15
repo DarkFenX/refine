@@ -3,6 +3,7 @@ pub use stagger::StatCapSimStagger;
 pub(crate) use stagger::StatCapSimStaggerInt;
 
 mod merge;
+mod output;
 mod prepare;
 mod shared;
 mod stagger;
