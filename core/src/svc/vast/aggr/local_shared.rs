@@ -99,7 +99,7 @@ where
     }
     // Limit
     if let Some(limit) = inv_local.instance_limit {
-        output.limit_amount(limit);
+        output.limit_instance(limit);
     }
     output
 }

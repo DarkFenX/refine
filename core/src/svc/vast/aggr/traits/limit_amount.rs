@@ -14,7 +14,7 @@ impl<T> Output<T>
 where
     T: Copy + LimitInstance,
 {
-    pub(in crate::svc::vast::aggr) fn limit_amount(&mut self, limit: Value) {
+    pub(in crate::svc::vast::aggr) fn limit_instance(&mut self, limit: Value) {
         match self {
             Self::Simple(inner) => inner.limit_instance(limit),
             Self::Complex(inner) => inner.limit_instance(limit),

@@ -204,7 +204,7 @@ where
     }
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
-        output.limit_amount(limit);
+        output.limit_instance(limit);
     }
     output
 }
@@ -246,8 +246,8 @@ where
         output *= str_mult;
     }
     // Limit
-    if let Some(limit) = inv_proj.instance_limit {
-        output.limit_amount(limit);
+    if let Some(instance_limit) = inv_proj.instance_limit {
+        output.limit_instance(instance_limit);
     }
     output
 }
