@@ -21,7 +21,7 @@ where
 }
 impl<T> AggrProjInvData<T>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T>,
+    T: Copy + std::ops::MulAssign<PValue>,
 {
     pub(in crate::svc::vast) fn try_make(
         ctx: SvcCtx,
@@ -84,9 +84,10 @@ where
             chance_mult: process_mult(chance_mult),
         })
     }
-    fn make_nulled(base_output: Output<T>, instance_limit: Option<Value>) -> Self {
+    fn make_nulled(mut base_output: Output<T>, instance_limit: Option<Value>) -> Self {
+        base_output *= PValue::ZERO;
         Self {
-            base_output: base_output * PValue::ZERO,
+            base_output,
             is_nulled: true,
             str_mult: PValue::ONE,
             instance_limit,
@@ -187,17 +188,22 @@ pub(in crate::svc::vast) fn get_proj_regular_output<T>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
-    let mut str_mult = inv_proj.str_mult;
-    // Chargedness
-    if let Some(charge_mult_getter) = ospec.charge_mult
-        && let Some(chargedness) = chargedness
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
-    {
-        str_mult *= charge_mult;
+    let mut output = inv_proj.base_output;
+    if !inv_proj.is_nulled {
+        let mut str_mult = inv_proj.str_mult;
+        // Chargedness
+        if let Some(charge_mult_getter) = ospec.charge_mult
+            && let Some(chargedness) = chargedness
+            && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
+        {
+            str_mult *= charge_mult;
+        }
+        if str_mult != PValue::ONE {
+            output *= str_mult;
+        }
     }
-    let mut output = inv_proj.base_output * str_mult;
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
@@ -231,14 +237,19 @@ pub(super) fn get_proj_spool_cycle_output<T>(
     spool_extra_mult: Value,
 ) -> Output<T>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
-    let mut str_mult = inv_proj.str_mult;
-    // Part mult (chargedness)
-    str_mult *= part_str_mult;
-    // Spool
-    str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
-    let mut output = inv_proj.base_output * str_mult;
+    let mut output = inv_proj.base_output;
+    if !inv_proj.is_nulled {
+        let mut str_mult = inv_proj.str_mult;
+        // Part mult (chargedness)
+        str_mult *= part_str_mult;
+        // Spool
+        str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
+        if str_mult != PValue::ONE {
+            output *= str_mult;
+        }
+    }
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);

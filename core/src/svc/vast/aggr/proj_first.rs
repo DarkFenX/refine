@@ -32,7 +32,7 @@ pub(in crate::svc::vast) fn aggr_proj_first<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
