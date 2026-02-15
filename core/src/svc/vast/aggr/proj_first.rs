@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    proj_shared::{AggrProjInvData, get_proj_output, get_proj_output_spool},
+    proj_shared::{AggrProjInvData, get_proj_output_regular, get_proj_output_spool},
     shared::calc_charge_mult,
     traits::LimitInstance,
 };
@@ -46,7 +46,7 @@ where
         let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
         get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - Value::ONE)
     } else {
-        get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness)
+        get_proj_output_regular(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness)
     };
     accum.add_instance(
         cycle_output.get_instance(),

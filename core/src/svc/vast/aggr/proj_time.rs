@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output, get_proj_output_spool},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output_regular, get_proj_output_spool},
     shared::calc_charge_mult,
     shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeats_count, process_incomplete_cycle},
     traits::{InstanceDuration, LimitInstance},
@@ -91,7 +91,7 @@ where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
-        let output = get_proj_output(
+        let output = get_proj_output_regular(
             self.ctx,
             self.calc,
             self.projector_uid,

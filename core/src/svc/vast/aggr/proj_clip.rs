@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output_regular, get_proj_output_spool},
     shared::calc_charge_mult,
     traits::LimitInstance,
 };
@@ -132,7 +132,8 @@ where
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
+        let cycle_output =
+            get_proj_output_regular(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         // Update total values
         match cycle_part.data.interrupt {
             // Add first cycle after which there is a reload

@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output, get_proj_output_spool},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output_regular, get_proj_output_spool},
     shared::calc_charge_mult,
     traits::LimitInstance,
 };
@@ -67,7 +67,8 @@ where
         None => return false,
     };
     for cycle_part in cseq.iter_cseq_parts() {
-        let cycle_output = get_proj_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
+        let cycle_output =
+            get_proj_output_regular(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         accum.add_instance(
             cycle_output.get_instance(),
             inv_proj.chance_mult,

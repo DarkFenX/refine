@@ -7,7 +7,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartData<T>
+pub(super) struct AggrPartDataRegular<T>
 where
     T: Copy,
 {
@@ -16,20 +16,32 @@ where
     pub(super) output: Output<T>,
 }
 
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub(super) struct AggrPartDataSpool<T>
+where
+    T: Copy,
+{
+    // Duration it takes per cycle in this part
+    pub(super) cycle_duration: PValue,
+    // Are there interrupts of any kind every cycle in this part
+    pub(super) interrupt: bool,
+    pub(super) base_output: Output<T>,
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Aggregated iterator and its item
+// Aggregated iterator and its yielded item
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct AggrIter<T>
 where
     T: Copy,
 {
-    cycle_iter: CycleIter<AggrPartData<T>>,
+    cycle_iter: CycleIter<AggrPartDataRegular<T>>,
 }
 impl<T> AggrIter<T>
 where
     T: Copy,
 {
-    pub(super) fn new(cycle_iter: CycleIter<AggrPartData<T>>) -> Self {
+    pub(super) fn new(cycle_iter: CycleIter<AggrPartDataRegular<T>>) -> Self {
         Self { cycle_iter }
     }
 }

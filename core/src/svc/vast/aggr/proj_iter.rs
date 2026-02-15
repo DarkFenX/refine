@@ -1,6 +1,6 @@
 use super::{
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output},
-    shared_iter::{AggrIter, AggrPartData},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_output_regular},
+    shared_iter::{AggrIter, AggrPartDataRegular, AggrPartDataSpool},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -29,11 +29,12 @@ where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
-    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
+    let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         // Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool),
-        Some(inv_spool) => None,
+        Some(inv_spool) => return None,
         None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj),
-    }
+    };
+    Some(aggr_iter)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,21 +47,21 @@ fn aggr_regular<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
-) -> Option<AggrIter<T>>
+) -> AggrIter<T>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    Some(AggrIter::new(cseq_conv.iter_cycles()))
+    AggrIter::new(cseq_conv.iter_cycles())
 }
 
-impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
-        let output = get_proj_output(
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<T> {
+        let output = get_proj_output_regular(
             self.ctx,
             self.calc,
             self.projector_uid,
@@ -68,7 +69,7 @@ where
             &self.inv_proj,
             input.chargedness,
         );
-        AggrPartData {
+        AggrPartDataRegular {
             cycle_duration: input.duration,
             output,
         }
@@ -78,241 +79,27 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// fn aggr_spool<T>(
-//     ctx: SvcCtx,
-//     calc: &mut Calc,
-//     projector_uid: UItemId,
-//     cseq: &CycleSeq<CycleDataFull>,
-//     ospec: &REffectProjOpcSpec<T>,
-//     inv_proj: AggrProjInvData<T>,
-//     inv_spool: AggrSpoolInvData,
-// ) -> impl Iterator<Item = AggrIterItem<T>>
-// where
-//     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
-// {
-//     match cseq {
-//         CycleSeq::Lim(inner) => {
-//             match inner.data.interrupt.is_some() {
-//                 // Non-spool handling for case when interruptions happen every cycle
-//                 true => {
-//                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec,
-// &inv_proj);                     let cseq_conv: CycleSeq<AggrPartData<T>> =
-// cseq.convert_with_and_optimize(&mut converter);
-// cseq_conv.iter_cycles().map(|v| AggrIterItem {                         cycle_duration:
-// v.cycle_duration,                         instance_iter: v.output.into_instance_iter(),
-//                     })
-//                 }
-//                 // Spool is considered
-//                 false => {
-//                     let mut time = ptime.into_value();
-//                     let mut uninterrupted_cycles = Count::ZERO;
-//                     process_limited_spool(
-//                         ctx,
-//                         calc,
-//                         projector_uid,
-//                         ospec,
-//                         &inv_proj,
-//                         &inv_spool,
-//                         inner.data,
-//                         accum,
-//                         &mut time,
-//                         &mut uninterrupted_cycles,
-//                         inner.repeat_count,
-//                     );
-//                 }
-//             }
-//         }
-//         CycleSeq::Inf(inner) => {
-//             match inner.data.interrupt.is_some() {
-//                 // Non-spool handling for case when interruptions happen every cycle
-//                 true => {
-//                     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec,
-// &inv_proj);                     let cseq_conv: CycleSeq<AggrPartData<T>> =
-// cseq.convert_with_and_optimize(&mut converter);
-// cseq_conv.iter_cycles().map(|v| AggrIterItem {                         cycle_duration:
-// v.cycle_duration,                         instance_iter: v.output.into_instance_iter(),
-//                     })
-//                 }
-//                 // Spool is considered
-//                 false => {
-//                     let mut time = ptime.into_value();
-//                     let mut uninterrupted_cycles = Count::ZERO;
-//                     process_infinite_spool(
-//                         ctx,
-//                         calc,
-//                         projector_uid,
-//                         ospec,
-//                         &inv_proj,
-//                         &inv_spool,
-//                         inner.data,
-//                         accum,
-//                         &mut time,
-//                         &mut uninterrupted_cycles,
-//                     );
-//                 }
-//             }
-//         }
-//         CycleSeq::LimInf(inner) => match inner.p1_data.interrupt.is_some() &&
-// inner.p2_data.interrupt.is_some() {             // Non-spool handling for case when interruptions
-// happen every cycle             true => {
-//                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec,
-// &inv_proj);                 let cseq_conv: CycleSeq<AggrPartData<T>> =
-// cseq.convert_with_and_optimize(&mut converter);                 cseq_conv.iter_cycles().map(|v|
-// AggrIterItem {                     cycle_duration: v.cycle_duration,
-//                     instance_iter: v.output.into_instance_iter(),
-//                 })
-//             }
-//             false => {
-//                 let mut time = ptime.into_value();
-//                 let mut uninterrupted_cycles = Count::ZERO;
-//                 process_limited_spool(
-//                     ctx,
-//                     calc,
-//                     projector_uid,
-//                     ospec,
-//                     &inv_proj,
-//                     &inv_spool,
-//                     inner.p1_data,
-//                     accum,
-//                     &mut time,
-//                     &mut uninterrupted_cycles,
-//                     inner.p1_repeat_count,
-//                 );
-//                 process_infinite_spool(
-//                     ctx,
-//                     calc,
-//                     projector_uid,
-//                     ospec,
-//                     &inv_proj,
-//                     &inv_spool,
-//                     inner.p2_data,
-//                     accum,
-//                     &mut time,
-//                     &mut uninterrupted_cycles,
-//                 );
-//             }
-//         },
-//         CycleSeq::LimSinInf(inner) => match inner.p1_data.interrupt.is_some()
-//             && inner.p2_data.interrupt.is_some()
-//             && inner.p3_data.interrupt.is_some()
-//         {
-//             // Non-spool handling for case when interruptions happen every cycle
-//             true => {
-//                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec,
-// &inv_proj);                 let cseq_conv: CycleSeq<AggrPartData<T>> =
-// cseq.convert_with_and_optimize(&mut converter);                 cseq_conv.iter_cycles().map(|v|
-// AggrIterItem {                     cycle_duration: v.cycle_duration,
-//                     instance_iter: v.output.into_instance_iter(),
-//                 })
-//             }
-//             false => {
-//                 let mut time = ptime.into_value();
-//                 let mut uninterrupted_cycles = Count::ZERO;
-//                 process_limited_spool(
-//                     ctx,
-//                     calc,
-//                     projector_uid,
-//                     ospec,
-//                     &inv_proj,
-//                     &inv_spool,
-//                     inner.p1_data,
-//                     accum,
-//                     &mut time,
-//                     &mut uninterrupted_cycles,
-//                     inner.p1_repeat_count,
-//                 );
-//                 process_single_spool(
-//                     ctx,
-//                     calc,
-//                     projector_uid,
-//                     ospec,
-//                     &inv_proj,
-//                     &inv_spool,
-//                     inner.p2_data,
-//                     accum,
-//                     &mut time,
-//                     &mut uninterrupted_cycles,
-//                 );
-//                 process_infinite_spool(
-//                     ctx,
-//                     calc,
-//                     projector_uid,
-//                     ospec,
-//                     &inv_proj,
-//                     &inv_spool,
-//                     inner.p3_data,
-//                     accum,
-//                     &mut time,
-//                     &mut uninterrupted_cycles,
-//                 );
-//             }
-//         },
-//         CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() &&
-// inner.p2_data.interrupt.is_some() {             // Non-spool handling for case when interruptions
-// happen every cycle             true => {
-//                 let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec,
-// &inv_proj);                 let cseq_conv: CycleSeq<AggrPartData<T>> =
-// cseq.convert_with_and_optimize(&mut converter);                 cseq_conv.iter_cycles().map(|v|
-// AggrIterItem {                     cycle_duration: v.cycle_duration,
-//                     instance_iter: v.output.into_instance_iter(),
-//                 })
-//             }
-//             false => {
-//                 let mut time = ptime.into_value();
-//                 let mut uninterrupted_cycles = Count::ZERO;
-//                 while time >= Value::ZERO {
-//                     let mut loop_accum = accum.copy_blank();
-//                     let saved_interrupted_cycles = uninterrupted_cycles;
-//                     process_limited_spool(
-//                         ctx,
-//                         calc,
-//                         projector_uid,
-//                         ospec,
-//                         &inv_proj,
-//                         &inv_spool,
-//                         inner.p1_data,
-//                         &mut loop_accum,
-//                         &mut time,
-//                         &mut uninterrupted_cycles,
-//                         inner.p1_repeat_count,
-//                     );
-//                     process_single_spool(
-//                         ctx,
-//                         calc,
-//                         projector_uid,
-//                         ospec,
-//                         &inv_proj,
-//                         &inv_spool,
-//                         inner.p2_data,
-//                         &mut loop_accum,
-//                         &mut time,
-//                         &mut uninterrupted_cycles,
-//                     );
-//                     accum.merge(&loop_accum, Count::ONE);
-//                     // We detect if next loop result is going to be the same as previous one by
-//                     // tracking uninterrupted cycle count. If they are the same, then output
-// added                     // by next loop should be the same, provided there is enough time for
-// full loop                     if uninterrupted_cycles == saved_interrupted_cycles && time >=
-// Value::ZERO {                         let loop_duration = inner
-//                             .p1_data
-//                             .duration
-//                             .mul_add(inner.p1_repeat_count.into_pvalue(),
-// inner.p2_data.duration);                         let loop_tail_duration =
-// PValue::from_value_clamped(                             inv_proj.output.get_completion_duration()
-// - inner.p2_data.duration,                         ); let loop_full_repeat_count =
-//   get_full_repeats_count(time, loop_duration,
-// loop_tail_duration);                         // Fast-forward by count of full repeating loops
-// remaining time can fit                         if loop_full_repeat_count > Count::ZERO {
-//                             let loop_full_repeat_count = loop_full_repeat_count;
-//                             accum.merge(&loop_accum, loop_full_repeat_count);
-//                             time -= loop_duration * loop_full_repeat_count.into_pvalue();
-//                         }
-//                     }
-//                 }
-//             }
-//         },
-//     }
-// }
+
+impl<T> LibConverter<CycleDataFull, AggrPartDataSpool<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+where
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool<T> {
+        let output = get_proj_output_regular(
+            self.ctx,
+            self.calc,
+            self.projector_uid,
+            self.ospec,
+            &self.inv_proj,
+            input.chargedness,
+        );
+        AggrPartDataSpool {
+            cycle_duration: input.duration,
+            interrupt: input.interrupt.is_some(),
+            base_output: output,
+        }
+    }
+}
 
 // fn process_single_spool<T>(
 //     ctx: SvcCtx,

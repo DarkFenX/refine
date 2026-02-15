@@ -14,7 +14,7 @@ use crate::{
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         vast::{
             Vast, VastFitData,
-            aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output},
+            aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_output_regular},
         },
     },
     ud::UItemId,
@@ -122,7 +122,7 @@ fn fill_nosfs(
                 Some(inv_proj) => inv_proj,
                 None => continue,
             };
-            let opc = get_proj_output(ctx, calc, nosf_item_uid, ospec, &inv_proj, None);
+            let opc = get_proj_output_regular(ctx, calc, nosf_item_uid, ospec, &inv_proj, None);
             if !opc.has_impact() {
                 continue;
             }
@@ -169,7 +169,7 @@ fn fill_incoming_neuts(
                 Some(inv_proj) => inv_proj,
                 None => continue,
             };
-            let opc = get_proj_output(ctx, calc, neut_item_uid, ospec, &inv_proj, None);
+            let opc = get_proj_output_regular(ctx, calc, neut_item_uid, ospec, &inv_proj, None);
             if !opc.has_impact() {
                 continue;
             }
@@ -218,7 +218,7 @@ fn fill_incoming_transfers(
                     Some(inv_proj) => inv_proj,
                     None => continue,
                 };
-            let opc = get_proj_output(ctx, calc, transfer_item_uid, ospec, &inv_proj, None);
+            let opc = get_proj_output_regular(ctx, calc, transfer_item_uid, ospec, &inv_proj, None);
             if !opc.has_impact() {
                 continue;
             }

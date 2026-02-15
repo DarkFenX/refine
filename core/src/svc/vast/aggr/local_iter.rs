@@ -1,6 +1,6 @@
 use super::{
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared_iter::{AggrIter, AggrPartData},
+    shared_iter::{AggrIter, AggrPartDataRegular},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -36,11 +36,11 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> LibConverter<CycleDataFull, AggrPartData<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<T> {
         let output = get_local_output(
             self.ctx,
             self.calc,
@@ -49,7 +49,7 @@ where
             &self.inv_local,
             input.chargedness,
         );
-        AggrPartData {
+        AggrPartDataRegular {
             cycle_duration: input.duration,
             output,
         }
