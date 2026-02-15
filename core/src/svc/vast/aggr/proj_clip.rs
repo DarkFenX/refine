@@ -76,7 +76,8 @@ where
             },
         };
         // Part-specific strength mult
-        let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_part.data.chargedness);
+        let part_str_mult =
+            get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         for i in Count::ZERO..part_cycle_count {
             // Case when the rest of cycle part is at full spool
             if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {

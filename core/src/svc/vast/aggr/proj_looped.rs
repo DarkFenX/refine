@@ -103,7 +103,8 @@ where
     let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     'part: for cycle_part in cseq.iter_cseq_parts() {
         // Part-specific strength mult
-        let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_part.data.chargedness);
+        let part_str_mult =
+            get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         for i in Count::ZERO..cycle_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {

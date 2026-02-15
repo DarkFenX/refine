@@ -81,23 +81,22 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> LibConverter<CycleDataFull, AggrPartDataSpool<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartDataSpool> for ProjConverter<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool<T> {
-        let output = get_proj_regular_output(
-            self.ctx,
-            self.calc,
-            self.projector_uid,
-            self.ospec,
-            &self.inv_proj,
-            input.chargedness,
-        );
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool {
         AggrPartDataSpool {
             cycle_duration: input.duration,
             interrupt: input.interrupt.is_some(),
-            base_output: output,
+            str_mult: get_proj_spool_part_str_mult(
+                self.ctx,
+                self.calc,
+                self.projector_uid,
+                self.ospec,
+                self.inv_proj,
+                input.chargedness,
+            ),
         }
     }
 }

@@ -357,7 +357,7 @@ fn process_single_spool<T, A>(
         .duration
         .max(inv_proj.base_output.get_completion_duration())
         .into_value();
-    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_data.chargedness);
+    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, inv_proj, cycle_data.chargedness);
     let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
     let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, cycle_spool);
     match *time >= cycle_completion_duration {
@@ -394,7 +394,7 @@ fn process_limited_spool<T, A>(
     let cycle_tail_duration =
         PValue::from_value_clamped(inv_proj.base_output.get_completion_duration() - cycle_data.duration);
     let cycle_completion_duration = (cycle_data.duration + cycle_tail_duration).into_value();
-    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_data.chargedness);
+    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, inv_proj, cycle_data.chargedness);
     while *time >= Value::ZERO && repeat_limit > Count::ZERO {
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == Count::ZERO {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
@@ -484,7 +484,7 @@ fn process_infinite_spool<T, A>(
     let cycle_tail_duration =
         PValue::from_value_clamped(inv_proj.base_output.get_completion_duration() - cycle_data.duration);
     let cycle_completion_duration = (cycle_data.duration + cycle_tail_duration).into_value();
-    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_data.chargedness);
+    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, inv_proj, cycle_data.chargedness);
     while *time >= Value::ZERO {
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == Count::ZERO {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence

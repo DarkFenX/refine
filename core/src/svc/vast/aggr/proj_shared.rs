@@ -15,7 +15,7 @@ where
 {
     pub(super) base_output: Output<T>,
     is_nulled: bool,
-    str_mult: PValue,
+    pub(super) str_mult: PValue,
     instance_limit: Option<Value>,
     pub(super) chance_mult: Option<PValue>,
 }
@@ -89,7 +89,7 @@ where
         Self {
             base_output,
             is_nulled: true,
-            str_mult: PValue::ONE,
+            str_mult: PValue::ZERO,
             instance_limit,
             chance_mult: None,
         }
@@ -191,18 +191,16 @@ where
     T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
     let mut output = inv_proj.base_output;
-    if !inv_proj.is_nulled {
-        let mut str_mult = inv_proj.str_mult;
-        // Chargedness
-        if let Some(charge_mult_getter) = ospec.charge_mult
-            && let Some(chargedness) = chargedness
-            && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
-        {
-            str_mult *= charge_mult;
-        }
-        if str_mult != PValue::ONE {
-            output *= str_mult;
-        }
+    let mut str_mult = inv_proj.str_mult;
+    // Chargedness
+    if let Some(charge_mult_getter) = ospec.charge_mult
+        && let Some(chargedness) = chargedness
+        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
+    {
+        str_mult *= charge_mult;
+    }
+    if str_mult != PValue::ONE {
+        output *= str_mult;
     }
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
@@ -216,39 +214,36 @@ pub(super) fn get_proj_spool_part_str_mult<T>(
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectProjOpcSpec<T>,
+    inv_proj: &AggrProjInvData<T>,
     chargedness: Option<UnitInterval>,
 ) -> PValue
 where
     T: Copy,
 {
+    let mut str_mult = inv_proj.str_mult;
     // Chargedness
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = chargedness
         && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
     {
-        return charge_mult;
+        str_mult *= charge_mult;
     }
-    PValue::ONE
+    str_mult
 }
 
 pub(super) fn get_proj_spool_cycle_output<T>(
     inv_proj: &AggrProjInvData<T>,
-    part_str_mult: PValue,
+    mut str_mult: PValue,
     spool_extra_mult: Value,
 ) -> Output<T>
 where
     T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
 {
     let mut output = inv_proj.base_output;
-    if !inv_proj.is_nulled {
-        let mut str_mult = inv_proj.str_mult;
-        // Part mult (chargedness)
-        str_mult *= part_str_mult;
-        // Spool
-        str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
-        if str_mult != PValue::ONE {
-            output *= str_mult;
-        }
+    // Spool
+    str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
+    if str_mult != PValue::ONE {
+        output *= str_mult;
     }
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
