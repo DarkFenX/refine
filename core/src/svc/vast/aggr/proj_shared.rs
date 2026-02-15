@@ -21,7 +21,7 @@ where
 }
 impl<T> AggrProjInvData<T>
 where
-    T: Copy + std::ops::MulAssign<PValue>,
+    T: Copy + std::ops::Mul<PValue, Output = T>,
 {
     pub(in crate::svc::vast) fn try_make(
         ctx: SvcCtx,
@@ -84,10 +84,9 @@ where
             chance_mult: process_mult(chance_mult),
         })
     }
-    fn make_nulled(mut base_output: Output<T>, instance_limit: Option<Value>) -> Self {
-        base_output *= PValue::ZERO;
+    fn make_nulled(base_output: Output<T>, instance_limit: Option<Value>) -> Self {
         Self {
-            base_output,
+            base_output: base_output * PValue::ZERO,
             is_nulled: true,
             str_mult: PValue::ONE,
             instance_limit,

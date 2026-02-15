@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_proj_clip<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
@@ -58,7 +58,7 @@ fn aggr_spool<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let mut uninterrupted_cycles = Count::ZERO;

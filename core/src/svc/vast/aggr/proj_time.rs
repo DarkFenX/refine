@@ -33,7 +33,7 @@ pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
     time: PValue,
 ) -> bool
 where
-    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
@@ -80,7 +80,7 @@ fn aggr_regular<T, A>(
     accum: &mut A,
     time: PValue,
 ) where
-    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
@@ -90,7 +90,7 @@ fn aggr_regular<T, A>(
 
 impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
         let output = get_proj_regular_output(
@@ -123,7 +123,7 @@ fn aggr_spool<A, T>(
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
 ) where
-    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     match cseq {
@@ -347,7 +347,7 @@ fn process_single_spool<T, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     if *time < Value::ZERO {
@@ -388,7 +388,7 @@ fn process_limited_spool<T, A>(
     uninterrupted_cycles: &mut Count,
     mut repeat_limit: Count,
 ) where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let cycle_tail_duration =
@@ -475,7 +475,7 @@ fn process_infinite_spool<T, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     if *time < Value::ZERO {

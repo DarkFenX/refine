@@ -26,7 +26,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<T>(
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrIter<T>>
 where
-    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid)?;
     let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
@@ -49,7 +49,7 @@ fn aggr_regular<T>(
     inv_proj: AggrProjInvData<T>,
 ) -> AggrIter<T>
 where
-    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
 {
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
@@ -82,7 +82,7 @@ where
 
 impl<T> LibConverter<CycleDataFull, AggrPartDataSpool<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
 where
-    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + InstanceDuration + LimitInstance,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool<T> {
         let output = get_proj_regular_output(
@@ -111,7 +111,7 @@ where
 //     cycle_data: CycleDataFull,
 //     uninterrupted_cycles: &mut Count,
 // ) where
-//     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+//     T: Copy + InstanceDuration + LimitInstance,
 // {
 //     if *time < Value::ZERO {
 //         return;
@@ -149,7 +149,7 @@ where
 //     uninterrupted_cycles: &mut Count,
 //     mut repeat_limit: Count,
 // ) where
-//     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+//     T: Copy + InstanceDuration + LimitInstance,
 // {
 //     let cycle_tail_duration =
 //         PValue::from_value_clamped(inv_proj.output.get_completion_duration() -
@@ -233,7 +233,7 @@ where
 //     cycle_data: CycleDataFull,
 //     uninterrupted_cycles: &mut Count,
 // ) where
-//     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+//     T: Copy + InstanceDuration + LimitInstance,
 // {
 //     if *time < Value::ZERO {
 //         return;
