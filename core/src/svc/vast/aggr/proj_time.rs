@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_regular_output, get_proj_spool_cycle_output,
+        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
     shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeats_count, process_incomplete_cycle},
@@ -83,12 +83,12 @@ fn aggr_regular<T, A>(
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
-    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
 }
 
-impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverter<'_, '_, '_, '_, '_, T>
+impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, T>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
@@ -131,7 +131,7 @@ fn aggr_spool<A, T>(
             match inner.data.interrupt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
-                    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                     let cseq_conv = inner.convert_with_and_optimize(&mut converter);
                     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
                 }
@@ -159,7 +159,7 @@ fn aggr_spool<A, T>(
             match inner.data.interrupt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
-                    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                     let cseq_conv = inner.convert_with_and_optimize(&mut converter);
                     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
                 }
@@ -185,7 +185,7 @@ fn aggr_spool<A, T>(
         CycleSeq::LimInf(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let cseq_conv = inner.convert_with_and_optimize(&mut converter);
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
             }
@@ -225,7 +225,7 @@ fn aggr_spool<A, T>(
         {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let cseq_conv = inner.convert_with_and_optimize(&mut converter);
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
             }
@@ -274,7 +274,7 @@ fn aggr_spool<A, T>(
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
-                let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let cseq_conv = inner.convert_with_and_optimize(&mut converter);
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime)
             }

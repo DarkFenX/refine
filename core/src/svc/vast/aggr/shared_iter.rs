@@ -17,13 +17,18 @@ where
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartDataSpool {
+pub(super) struct AggrPartDataSpool<T>
+where
+    T: Copy,
+{
     // Duration it takes per cycle in this part
     pub(super) cycle_duration: PValue,
     // Are there interrupts of any kind every cycle in this part
     pub(super) interrupt: bool,
-    // Part-specific strength multiplier
+    // Part-specific strength multiplier, which does not include spool factor
     pub(super) str_mult: PValue,
+    pub(super) output_zero_spool: Output<T>,
+    pub(super) output_max_spool: Output<T>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

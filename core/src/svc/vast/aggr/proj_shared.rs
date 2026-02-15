@@ -145,26 +145,26 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjConverter<'u, 'p, 'c, 'o, 'i, T>
+pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T>
 where
     T: Copy,
 {
-    pub(super) ctx: SvcCtx<'u, 'p>,
-    pub(super) calc: &'c mut Calc,
+    pub(super) ctx: SvcCtx<'sc1, 'sc2>,
+    pub(super) calc: &'calc mut Calc,
     pub(super) projector_uid: UItemId,
-    pub(super) ospec: &'o REffectProjOpcSpec<T>,
-    pub(super) inv_proj: &'i AggrProjInvData<T>,
+    pub(super) ospec: &'ospec REffectProjOpcSpec<T>,
+    pub(super) inv_proj: &'ip AggrProjInvData<T>,
 }
-impl<'u, 'p, 'c, 'o, 'i, T> ProjConverter<'u, 'p, 'c, 'o, 'i, T>
+impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, T> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T>
 where
     T: Copy,
 {
     pub(super) fn new(
-        ctx: SvcCtx<'u, 'p>,
-        calc: &'c mut Calc,
+        ctx: SvcCtx<'sc1, 'sc2>,
+        calc: &'calc mut Calc,
         projector_uid: UItemId,
-        ospec: &'o REffectProjOpcSpec<T>,
-        inv_proj: &'i AggrProjInvData<T>,
+        ospec: &'ospec REffectProjOpcSpec<T>,
+        inv_proj: &'ip AggrProjInvData<T>,
     ) -> Self {
         Self {
             ctx,
