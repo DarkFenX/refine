@@ -1,7 +1,9 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_output_regular, get_proj_output_spool},
-    shared::calc_charge_mult,
+    proj_shared::{
+        AggrProjInvData, AggrSpoolInvData, get_proj_regular_output, get_proj_spool_cycle_output,
+        get_proj_spool_part_str_mult,
+    },
     traits::LimitInstance,
 };
 use crate::{
@@ -28,7 +30,7 @@ pub(in crate::svc::vast) fn aggr_proj_looped<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
@@ -59,7 +61,7 @@ fn aggr_regular<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let cseq = match cseq.try_loop_cseq() {
@@ -68,7 +70,7 @@ where
     };
     for cycle_part in cseq.iter_cseq_parts() {
         let cycle_output =
-            get_proj_output_regular(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
+            get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         accum.add_instance(
             cycle_output.get_instance(),
             inv_proj.chance_mult,
@@ -90,7 +92,7 @@ fn aggr_spool<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let cseq = match cseq.try_loop_cseq() {
@@ -100,8 +102,8 @@ where
     // Do a dry run to set amount of interrupted cycles before we begin
     let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     'part: for cycle_part in cseq.iter_cseq_parts() {
-        // Calculate chargedness mult once for every part, no need to do it for every cycle
-        let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_part.data.chargedness);
+        // Part-specific strength mult
+        let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_part.data.chargedness);
         for i in Count::ZERO..cycle_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cycle_part.data.interrupt {
@@ -117,7 +119,7 @@ where
                 _ => None,
             };
             if let Some(stable_spool) = stable_spool {
-                let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, stable_spool);
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, stable_spool);
                 // Update total values
                 let remaining_cycles = cycle_part.repeat_count - i;
                 accum.add_instance(
@@ -130,7 +132,7 @@ where
                 continue 'part;
             }
             let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
-            let cycle_output = get_proj_output_spool(&inv_proj, charge_mult, cycle_spool);
+            let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, cycle_spool);
             // Update total values
             accum.add_instance(
                 cycle_output.get_instance(),

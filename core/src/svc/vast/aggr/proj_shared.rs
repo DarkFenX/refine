@@ -1,4 +1,3 @@
-use super::shared::process_mult;
 use crate::{
     misc::{AttrSpec, EffectSpec},
     num::{Count, PValue, UnitInterval, Value},
@@ -14,7 +13,9 @@ pub(in crate::svc::vast) struct AggrProjInvData<T>
 where
     T: Copy,
 {
-    pub(super) output: Output<T>,
+    pub(super) base_output: Output<T>,
+    is_nulled: bool,
+    str_mult: PValue,
     instance_limit: Option<Value>,
     pub(super) chance_mult: Option<PValue>,
 }
@@ -30,56 +31,68 @@ where
         ospec: &REffectProjOpcSpec<T>,
         projectee_uid: Option<UItemId>,
     ) -> Option<Self> {
-        let mut output = (ospec.base)(ctx, calc, projector_uid, effect)?;
+        let base_output = (ospec.base)(ctx, calc, projector_uid, effect)?;
+        let mut str_mult = PValue::ONE;
+        let mut chance_mult = PValue::ONE;
         let mut instance_limit = None;
-        let mut chance_mult = None;
         if let Some(projectee_uid) = projectee_uid {
             let proj_data = ctx.eff_projs.get_or_make_proj_data(
                 ctx.u_data,
                 EffectSpec::new(projector_uid, effect.rid),
                 projectee_uid,
             );
-            let mut mult_pre = PValue::ONE;
+            // Amount limit
+            instance_limit = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid);
+            // Strength-modifying projection
+            if let Some(proj_mult_getter) = ospec.proj_mult_str {
+                str_mult *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+            }
+            if str_mult == PValue::ZERO {
+                return Some(Self::make_nulled(base_output, instance_limit));
+            }
+            // Chance-modifying projection
+            if let Some(proj_mult_getter) = ospec.proj_mult_chance {
+                chance_mult *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+            }
+            if chance_mult == PValue::ZERO {
+                return Some(Self::make_nulled(base_output, instance_limit));
+            }
             // Resists
-            match ospec.resist {
-                Some(REffectResist::Standard)
-                    if let Some(resist_mult) =
-                        funcs::get_effect_resist_mult(ctx, calc, projector_uid, effect, projectee_uid) =>
-                {
-                    mult_pre *= resist_mult;
-                }
-                Some(REffectResist::Attr(resist_attr_rid))
-                    if let Some(resist_mult) = funcs::get_resist_mult_by_projectee_aspec(
+            if let Some(resist) = ospec.resist {
+                let resist_mult = match resist {
+                    REffectResist::Standard => {
+                        funcs::get_effect_resist_mult(ctx, calc, projector_uid, effect, projectee_uid)
+                    }
+                    REffectResist::Attr(resist_attr_rid) => funcs::get_resist_mult_by_projectee_aspec(
                         ctx,
                         calc,
                         &AttrSpec::new(projectee_uid, resist_attr_rid),
-                    ) =>
-                {
-                    mult_pre *= resist_mult;
+                    ),
+                };
+                match resist_mult {
+                    Some(PValue::ZERO) => return Some(Self::make_nulled(base_output, instance_limit)),
+                    Some(resist_mult) => str_mult *= resist_mult,
+                    None => (),
                 }
-                _ => (),
-            }
-            // Strength-modifying projection
-            if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                mult_pre *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
-            }
-            // Bake all pre-limit resists into output value
-            if let Some(mult_pre) = process_mult(mult_pre) {
-                output *= mult_pre;
-            }
-            // Amount limit
-            instance_limit = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid);
-            // Chance-modifying projection
-            if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                let mult = proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
-                chance_mult = process_mult(mult);
             }
         }
         Some(Self {
-            output,
+            base_output,
+            is_nulled: false,
+            str_mult,
             instance_limit,
-            chance_mult,
+            chance_mult: process_mult(chance_mult),
         })
+    }
+    fn make_nulled(mut base_output: Output<T>, instance_limit: Option<Value>) -> Self {
+        base_output *= PValue::ZERO;
+        Self {
+            base_output,
+            is_nulled: true,
+            str_mult: PValue::ONE,
+            instance_limit,
+            chance_mult: None,
+        }
     }
 }
 
@@ -166,7 +179,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) fn get_proj_output_regular<T>(
+pub(in crate::svc::vast) fn get_proj_regular_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -175,16 +188,17 @@ pub(in crate::svc::vast) fn get_proj_output_regular<T>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
 {
-    let mut output = inv_proj.output;
+    let mut str_mult = inv_proj.str_mult;
     // Chargedness
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = chargedness
         && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
     {
-        output *= charge_mult;
+        str_mult *= charge_mult;
     }
+    let mut output = inv_proj.base_output * str_mult;
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
@@ -192,24 +206,50 @@ where
     output
 }
 
-pub(super) fn get_proj_output_spool<T>(
+pub(super) fn get_proj_spool_part_str_mult<T>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    ospec: &REffectProjOpcSpec<T>,
+    chargedness: Option<UnitInterval>,
+) -> PValue
+where
+    T: Copy,
+{
+    // Chargedness
+    if let Some(charge_mult_getter) = ospec.charge_mult
+        && let Some(chargedness) = chargedness
+        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
+    {
+        return charge_mult;
+    }
+    PValue::ONE
+}
+
+pub(super) fn get_proj_spool_cycle_output<T>(
     inv_proj: &AggrProjInvData<T>,
-    charge_mult: Option<PValue>,
+    part_str_mult: PValue,
     spool_extra_mult: Value,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + LimitInstance,
 {
-    let mut output = inv_proj.output;
-    // Chargedness
-    if let Some(charge_mult) = charge_mult {
-        output *= charge_mult;
-    }
+    let mut str_mult = inv_proj.str_mult;
+    // Part mult (chargedness)
+    str_mult *= part_str_mult;
     // Spool
-    output *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
+    str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
+    let mut output = inv_proj.base_output * str_mult;
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
         output.limit_amount(limit);
     }
     output
+}
+
+fn process_mult(mult: PValue) -> Option<PValue> {
+    match mult {
+        PValue::ONE => None,
+        v => Some(v),
+    }
 }

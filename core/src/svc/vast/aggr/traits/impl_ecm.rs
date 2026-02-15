@@ -23,6 +23,18 @@ impl LimitInstance for Ecm {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Arithmetic operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl std::ops::Mul<PValue> for Ecm {
+    type Output = Self;
+    fn mul(self, rhs: PValue) -> Self::Output {
+        Self {
+            radar: self.radar * rhs,
+            magnetometric: self.magnetometric * rhs,
+            gravimetric: self.gravimetric * rhs,
+            ladar: self.ladar * rhs,
+            duration: self.duration,
+        }
+    }
+}
 impl std::ops::MulAssign<PValue> for Ecm {
     fn mul_assign(&mut self, rhs: PValue) {
         self.radar *= rhs;

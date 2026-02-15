@@ -1,7 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    proj_shared::{AggrProjInvData, get_proj_output_regular, get_proj_output_spool},
-    shared::calc_charge_mult,
+    proj_shared::{
+        AggrProjInvData, get_proj_regular_output, get_proj_spool_cycle_output, get_proj_spool_part_str_mult,
+    },
     traits::LimitInstance,
 };
 use crate::{
@@ -31,7 +32,7 @@ pub(in crate::svc::vast) fn aggr_proj_first<T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::Mul<PValue, Output = T> + std::ops::MulAssign<PValue> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
@@ -43,10 +44,10 @@ where
         && let Some(spool_attrs) = effect.spool_attr_rids
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_uid, effect, spool, spool_attrs)
     {
-        let charge_mult = calc_charge_mult(ctx, calc, projector_uid, ospec.charge_mult, cycle_data.chargedness);
-        get_proj_output_spool(&inv_proj, charge_mult, resolved.mult - Value::ONE)
+        let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, cycle_data.chargedness);
+        get_proj_spool_cycle_output(&inv_proj, part_str_mult, resolved.mult - Value::ONE)
     } else {
-        get_proj_output_regular(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness)
+        get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness)
     };
     accum.add_instance(
         cycle_output.get_instance(),

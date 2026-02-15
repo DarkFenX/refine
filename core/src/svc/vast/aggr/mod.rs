@@ -12,7 +12,7 @@ pub(in crate::svc::vast) use proj_clip::aggr_proj_clip;
 pub(in crate::svc::vast) use proj_first::aggr_proj_first;
 pub(in crate::svc::vast) use proj_iter::aggr_proj_iter;
 pub(in crate::svc::vast) use proj_looped::aggr_proj_looped;
-pub(in crate::svc::vast) use proj_shared::{AggrProjInvData, get_proj_output_regular};
+pub(in crate::svc::vast) use proj_shared::{AggrProjInvData, get_proj_regular_output};
 pub(in crate::svc::vast) use proj_time::aggr_proj_time;
 pub(in crate::svc::vast) use shared_iter::AggrIter;
 
@@ -29,7 +29,6 @@ mod proj_iter;
 mod proj_looped;
 mod proj_shared;
 mod proj_time;
-mod shared;
 mod shared_iter;
 mod shared_time;
 mod traits;
