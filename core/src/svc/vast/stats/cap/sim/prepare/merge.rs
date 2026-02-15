@@ -1,14 +1,12 @@
 use std::collections::BinaryHeap;
 
-use super::{
-    event::{CapSimEvent, CapSimEventCycleCheck},
-    shared::SIG_ROUND_DIGITS,
-};
+use super::shared::SIG_ROUND_DIGITS;
 use crate::{
     num::{Count, PValue, Value},
     svc::{
         cycle::{CycleDataDur, CycleDataDurCharge, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
+        vast::stats::cap::sim::event::{CapSimEvent, CapSimEventCycleCheck},
     },
     util::RMapVec,
 };

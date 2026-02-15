@@ -9,9 +9,8 @@ use crate::{
             Vast,
             stats::{
                 cap::sim::{
-                    prepare::prepare_events,
+                    prepare::{StatCapSimStaggerInt, prepare_events},
                     sim::{CapSim, StatCapSim},
-                    stagger::StatCapSimStaggerInt,
                 },
                 item_checks::check_ship,
             },

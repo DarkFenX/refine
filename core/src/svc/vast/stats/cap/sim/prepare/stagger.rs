@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use super::{aggregate::Aggregator, shared::SIG_ROUND_DIGITS};
+use super::{merge::Aggregator, shared::SIG_ROUND_DIGITS};
 use crate::{
     num::{PValue, Value},
     sol::SolarSystem,

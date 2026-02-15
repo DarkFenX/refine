@@ -1,8 +1,7 @@
 use std::collections::BinaryHeap;
 
 use super::{
-    aggregate::Aggregator,
-    event::{CapSimEvent, CapSimEventInjector},
+    merge::Aggregator,
     stagger::{StaggerKey, StatCapSimStaggerInt, process_staggers},
 };
 use crate::{
@@ -15,13 +14,14 @@ use crate::{
         vast::{
             Vast, VastFitData,
             aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_regular_output},
+            stats::cap::sim::event::{CapSimEvent, CapSimEventInjector},
         },
     },
     ud::UItemId,
     util::RMapVec,
 };
 
-pub(super) fn prepare_events(
+pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     ctx: SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
