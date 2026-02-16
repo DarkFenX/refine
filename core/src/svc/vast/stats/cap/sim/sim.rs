@@ -82,7 +82,7 @@ impl CapSim {
                         self.events.push(next_event);
                     }
                 }
-                CapSimEvent::InjectorReady(mut event) => {
+                CapSimEvent::InjectorReady(event) => {
                     // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
                         self.advance_time(TIME_LIMIT);
@@ -90,7 +90,8 @@ impl CapSim {
                     }
                     self.advance_time(event.time);
                     // Use injector right away if it does not overshoot cap, or postpone if it does
-                    match self.cap + event.get_immediate_amount().unwrap_or(PValue::ZERO).into_value() > self.max_cap {
+                    match self.cap + event.get_immediate_instance().unwrap_or(PValue::ZERO).into_value() > self.max_cap
+                    {
                         true => self.injectors.push(event),
                         false => self.use_injector(event),
                     }
@@ -232,8 +233,8 @@ impl CapSim {
                 .injectors
                 .iter()
                 .enumerate()
-                .filter(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO) >= needed_cap_extra)
-                .min_by_key(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO))
+                .filter(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO) >= needed_cap_extra)
+                .min_by_key(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO))
                 .map(|(i, _)| i)
             {
                 Some(idx) => idx,
@@ -242,7 +243,7 @@ impl CapSim {
                     .injectors
                     .iter()
                     .enumerate()
-                    .max_by_key(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO))
+                    .max_by_key(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO))
                     .map(|(i, _)| i)
                     .unwrap(),
             };
@@ -258,8 +259,8 @@ impl CapSim {
                 .injectors
                 .iter()
                 .enumerate()
-                .filter(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO) <= max_injection)
-                .max_by_key(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO))
+                .filter(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO) <= max_injection)
+                .max_by_key(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO))
                 .map(|(i, _)| i)
             {
                 Some(idx) => idx,

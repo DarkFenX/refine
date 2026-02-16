@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleDataDur, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
+    svc::cycle::{CSeqPart, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
     util::LibConverter,
 };
 
@@ -97,16 +97,6 @@ where
     }
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(CSeqInf { data: self.p3_data }))
-    }
-}
-impl CSeqLimSinInf<CycleDataDur> {
-    pub(super) fn copy_rounded(&self) -> Self {
-        Self {
-            p1_data: self.p1_data.copy_rounded(),
-            p1_repeat_count: self.p1_repeat_count,
-            p2_data: self.p2_data.copy_rounded(),
-            p3_data: self.p3_data.copy_rounded(),
-        }
     }
 }
 

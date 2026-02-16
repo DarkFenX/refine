@@ -2,10 +2,7 @@ use super::{
     seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
     seq_loop_lim_sin::CycleSeqLoopLimSin,
 };
-use crate::{
-    svc::cycle::{CycleDataDur, CycleDataDurCharge, CycleDataFull},
-    util::LibConverter,
-};
+use crate::util::LibConverter;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum CycleSeq<T> {
@@ -60,26 +57,6 @@ where
             Self::LimInf(inner) => inner.convert_with_and_optimize(converter),
             Self::LimSinInf(inner) => inner.convert_with_and_optimize(converter),
             Self::LoopLimSin(inner) => inner.convert_with_and_optimize(converter),
-        }
-    }
-}
-impl CycleSeq<CycleDataFull> {
-    // Convenience conversion methods, to avoid type hinting in some cases
-    pub(in crate::svc) fn to_duration_charge(&self) -> CycleSeq<CycleDataDurCharge> {
-        self.convert_and_optimize()
-    }
-    pub(in crate::svc) fn to_duration(&self) -> CycleSeq<CycleDataDur> {
-        self.convert_and_optimize()
-    }
-}
-impl CycleSeq<CycleDataDur> {
-    pub(in crate::svc) fn copy_rounded(&self) -> Self {
-        match self {
-            Self::Lim(inner) => Self::Lim(inner.copy_rounded()),
-            Self::Inf(inner) => Self::Inf(inner.copy_rounded()),
-            Self::LimInf(inner) => Self::LimInf(inner.copy_rounded()),
-            Self::LimSinInf(inner) => Self::LimSinInf(inner.copy_rounded()),
-            Self::LoopLimSin(inner) => Self::LoopLimSin(inner.copy_rounded()),
         }
     }
 }

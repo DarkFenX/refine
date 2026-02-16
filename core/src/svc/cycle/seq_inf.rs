@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDataDur, CycleSeq, CycleSeqLooped},
+    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleSeq, CycleSeqLooped},
     util::LibConverter,
 };
 
@@ -46,13 +46,6 @@ where
     }
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(*self))
-    }
-}
-impl CSeqInf<CycleDataDur> {
-    pub(super) fn copy_rounded(&self) -> Self {
-        Self {
-            data: self.data.copy_rounded(),
-        }
     }
 }
 

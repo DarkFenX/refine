@@ -80,7 +80,7 @@ pub(super) struct CapSimEventInjector {
     pub(super) cycle_iter: PrefetchPeekable<AggrIter<PValue>>,
 }
 impl CapSimEventInjector {
-    pub(super) fn get_immediate_amount(&self) -> Option<PValue> {
+    pub(super) fn get_immediate_instance(&self) -> Option<PValue> {
         self.cycle_iter
             .peek()
             .and_then(|cycle_iter_item| cycle_iter_item.output.get_immediate_instance())

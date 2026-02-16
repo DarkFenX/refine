@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleDataDur, CycleSeq, CycleSeqLooped},
+    svc::cycle::{CSeqPart, CycleSeq, CycleSeqLooped},
     util::LibConverter,
 };
 
@@ -48,14 +48,6 @@ where
     }
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
         CSeqLimPartIter::new(self)
-    }
-}
-impl CSeqLim<CycleDataDur> {
-    pub(super) fn copy_rounded(&self) -> Self {
-        Self {
-            data: self.data.copy_rounded(),
-            repeat_count: self.repeat_count,
-        }
     }
 }
 
