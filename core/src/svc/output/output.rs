@@ -3,7 +3,7 @@ use super::{
     output_simple::{OutputInstanceIterSimple, OutputSimple},
     shared::OutputInstanceIterItem,
 };
-use crate::num::{Count, PValue, Value};
+use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) enum Output<T: Copy> {
@@ -70,28 +70,10 @@ impl<T: Copy> Output<T> {
         }
     }
 }
-impl Output<Value> {
-    pub(in crate::svc) fn get_absolute_impact(&self) -> PValue {
-        match self {
-            Output::Simple(inner) => inner.get_absolute_impact(),
-            Output::Complex(inner) => inner.get_absolute_impact(),
-        }
-    }
-    pub(in crate::svc) fn add_instance(&mut self, instance: Value) {
-        match self {
-            Output::Simple(inner) => inner.add_instance(instance),
-            Output::Complex(inner) => inner.add_instance(instance),
-        }
-    }
-}
-impl Output<PValue> {
-    pub(in crate::svc) fn has_impact(&self) -> bool {
-        match self {
-            Output::Simple(inner) => inner.has_impact(),
-            Output::Complex(inner) => inner.has_impact(),
-        }
-    }
-}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Math
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> std::ops::Mul<PValue> for Output<T>
 where
     T: Copy + std::ops::Mul<PValue, Output = T>,
@@ -113,18 +95,6 @@ where
         match self {
             Self::Simple(inner) => inner.mul_assign(rhs),
             Self::Complex(inner) => inner.mul_assign(rhs),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions of inner type
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Output<PValue> {
-    pub(in crate::svc) fn into_value(self) -> Output<Value> {
-        match self {
-            Self::Simple(inner) => Output::Simple(inner.into_value()),
-            Self::Complex(inner) => Output::Complex(inner.into_value()),
         }
     }
 }

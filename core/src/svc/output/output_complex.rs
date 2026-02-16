@@ -1,5 +1,5 @@
 use super::shared::OutputInstanceIterItem;
-use crate::num::{Count, PValue, Value};
+use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputComplex<T: Copy> {
@@ -63,19 +63,10 @@ impl<T: Copy> OutputComplex<T> {
         }
     }
 }
-impl OutputComplex<Value> {
-    pub(super) fn get_absolute_impact(&self) -> PValue {
-        self.instance.abs() * PValue::from_f64_unchecked(self.repeats.into_u32() as f64)
-    }
-    pub(super) fn add_instance(&mut self, instance: Value) {
-        self.instance += instance;
-    }
-}
-impl OutputComplex<PValue> {
-    pub(super) fn has_impact(&self) -> bool {
-        self.instance > PValue::FLOAT_TOLERANCE
-    }
-}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Math
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> std::ops::Mul<PValue> for OutputComplex<T>
 where
     T: Copy + std::ops::Mul<PValue, Output = T>,
@@ -97,20 +88,6 @@ where
 {
     fn mul_assign(&mut self, rhs: PValue) {
         self.instance.mul_assign(rhs);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions of inner type
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl OutputComplex<PValue> {
-    pub(super) fn into_value(self) -> OutputComplex<Value> {
-        OutputComplex {
-            instance: self.instance.into_value(),
-            delay: self.delay,
-            repeats: self.repeats,
-            interval: self.interval,
-        }
     }
 }
 impl<T, U> std::ops::Neg for OutputComplex<T>
