@@ -56,6 +56,12 @@ impl<T: Copy> OutputComplex<T> {
     pub(super) fn get_instance_count(&self) -> Count {
         self.repeats
     }
+    pub(super) fn get_immediate_instance(&self) -> Option<T> {
+        match self.delay {
+            PValue::ZERO => Some(self.instance),
+            _ => None,
+        }
+    }
 }
 impl OutputComplex<Value> {
     pub(super) fn get_absolute_impact(&self) -> PValue {

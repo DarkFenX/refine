@@ -1,10 +1,13 @@
 use itertools::Itertools;
 
-use super::{key::CSeqPartKey, merge::Merger, shared::Direction};
+use super::{key::CSeqPartKey, merge::Merger};
 use crate::{
     num::PValue,
     sol::SolarSystem,
-    svc::{cycle::CycleSeq, vast::aggr::AggrIterData},
+    svc::{
+        cycle::CycleSeq,
+        vast::{aggr::AggrIterData, stats::cap::sim::shared::Direction},
+    },
     ud::{ItemId, UItemId},
     util::RMapVec,
 };
@@ -75,7 +78,7 @@ pub(super) fn process_staggers(
                 cseq_iter_data
                     .iter()
                     .next()
-                    .and_then(|mut cseq_iter_item| cseq_iter_item.instance_iter.next())
+                    .and_then(|cseq_iter_item| cseq_iter_item.output.into_instance_iter().next())
                     .map(|instance_iter_item| instance_iter_item.instance)
                     .unwrap_or(PValue::ZERO)
             })

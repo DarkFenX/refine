@@ -1,9 +1,12 @@
 use std::collections::BinaryHeap;
 
-use super::event::{CapSimEvent, CapSimEventCapGain, CapSimEventCycleCheck, CapSimEventInjector};
+use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventCycleCheck, CapSimEventInjector};
 use crate::{
     num::{PValue, UnitInterval, Value},
-    svc::{output::OutputInstanceIterItem, vast::stats::shared::regenerate},
+    svc::{
+        output::OutputInstanceIter,
+        vast::stats::{cap::sim::shared::Direction, shared::regenerate},
+    },
 };
 
 const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);
@@ -63,19 +66,23 @@ impl CapSim {
             match event {
                 CapSimEvent::CycleCheck(mut event) => {
                     // Check if it can cycle altogether
-                    if let Some(cycle_iter_info) = event.cycle_iter.next() {
+                    if let Some(cycle_iter_item) = event.cycle_iter.next() {
                         // Add outputs for this cycle
-                        self.schedule_cycle_output(event.time, event.opc.into_instance_iter());
+                        self.schedule_cycle_output(
+                            event.time,
+                            cycle_iter_item.output.into_instance_iter(),
+                            event.direction,
+                        );
                         // Schedule next cycle check
                         let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                            time: event.time + cycle_iter_info.duration,
+                            time: event.time + cycle_iter_item.cycle_duration,
                             cycle_iter: event.cycle_iter,
-                            opc: event.opc,
+                            direction: event.direction,
                         });
                         self.events.push(next_event);
                     }
                 }
-                CapSimEvent::InjectorReady(event) => {
+                CapSimEvent::InjectorReady(mut event) => {
                     // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
                         self.advance_time(TIME_LIMIT);
@@ -83,12 +90,12 @@ impl CapSim {
                     }
                     self.advance_time(event.time);
                     // Use injector right away if it does not overshoot cap, or postpone if it does
-                    match self.cap + event.immediate_amount.unwrap_or(Value::ZERO) > self.max_cap {
+                    match self.cap + event.get_immediate_amount().unwrap_or(PValue::ZERO).into_value() > self.max_cap {
                         true => self.injectors.push(event),
                         false => self.use_injector(event),
                     }
                 }
-                CapSimEvent::CapGain(event) => {
+                CapSimEvent::CapChange(event) => {
                     // Update basic sim state according to time progression
                     if event.time > TIME_LIMIT {
                         self.advance_time(TIME_LIMIT);
@@ -96,13 +103,11 @@ impl CapSim {
                     }
                     self.advance_time(event.time);
                     // Process cap change from event
-                    match event.amount >= Value::ZERO {
-                        // Cap amount is increased
-                        true => self.increase_cap(event.amount),
-                        // Cap amount is decreased
-                        false => {
-                            if -event.amount > self.cap {
-                                self.inject_emergency(-event.amount);
+                    match event.direction {
+                        Direction::Gain if event.amount > PValue::ZERO => self.increase_cap(event.amount),
+                        Direction::Loss if event.amount > PValue::ZERO => {
+                            if event.amount.into_value() > self.cap {
+                                self.inject_emergency(event.amount);
                             }
                             self.decrease_cap(event.amount);
                             if self.cap < Value::ZERO {
@@ -111,6 +116,7 @@ impl CapSim {
                             // After some cap was removed, check if we can top up using injector
                             self.inject_topup();
                         }
+                        _ => (),
                     }
                 }
             }
@@ -148,13 +154,13 @@ impl CapSim {
             self.process_high_watermark();
         }
     }
-    fn increase_cap(&mut self, amount: Value) {
+    fn increase_cap(&mut self, amount: PValue) {
         self.cap += amount;
         self.cap = Value::min(self.cap, self.max_cap);
         self.process_high_watermark();
     }
-    fn decrease_cap(&mut self, amount: Value) {
-        self.cap += amount;
+    fn decrease_cap(&mut self, amount: PValue) {
+        self.cap -= amount;
         self.only_gains = false;
         self.process_low_watermark();
     }
@@ -183,45 +189,51 @@ impl CapSim {
     fn schedule_cycle_output(
         &mut self,
         base_time: PValue,
-        output_iter: impl Iterator<Item = OutputInstanceIterItem<Value>>,
+        output_iter: OutputInstanceIter<PValue>,
+        direction: Direction,
     ) {
         let mut extra_delay = PValue::ZERO;
         for output_event in output_iter {
             extra_delay += output_event.time_passed;
-            let new_event = CapSimEvent::CapGain(CapSimEventCapGain {
+            let new_event = CapSimEvent::CapChange(CapSimEventCapChange {
                 time: base_time + extra_delay,
                 amount: output_event.instance,
+                direction,
             });
             self.events.push(new_event);
         }
     }
     fn use_injector(&mut self, mut injector_event: CapSimEventInjector) {
         // Check if injector can cycle
-        if let Some(cycle_iter_info) = injector_event.cycle_iter.next() {
-            // If injector has immediate effect, update cap and advance output amount iterator
-            let mut output_iter = injector_event.opc.into_instance_iter();
-            if let Some(immediate_amount) = injector_event.immediate_amount {
+        if let Some(cycle_iter_item) = injector_event.cycle_iter.next() {
+            // If injector has immediate effect, update cap and advance output instance iterator
+            let immediate_amount = cycle_iter_item.output.get_immediate_instance();
+            let mut instance_iter = cycle_iter_item.output.into_instance_iter();
+            if let Some(immediate_amount) = immediate_amount {
                 self.increase_cap(immediate_amount);
-                output_iter.next();
+                instance_iter.next();
             }
             // Schedule non-immediate cap change events (EVE injectors don't have that, but data
             // format used in the lib makes it possible)
-            self.schedule_cycle_output(self.time, output_iter);
+            self.schedule_cycle_output(self.time, instance_iter, Direction::Gain);
             // Schedule next cycle
-            injector_event.time = self.time + cycle_iter_info.duration;
+            injector_event.time = self.time + cycle_iter_item.cycle_duration;
             self.events.push(CapSimEvent::InjectorReady(injector_event));
         }
     }
-    fn inject_emergency(&mut self, needed_cap_total: Value) {
-        while !self.injectors.is_empty() && needed_cap_total > self.cap && self.max_cap > self.cap {
-            let needed_cap_extra = Value::min(needed_cap_total - self.cap, self.max_cap - self.cap);
+    fn inject_emergency(&mut self, needed_cap_total: PValue) {
+        while !self.injectors.is_empty() && needed_cap_total.into_value() > self.cap && self.max_cap > self.cap {
+            let needed_cap_extra = PValue::from_value_clamped(Value::min(
+                needed_cap_total.into_value() - self.cap,
+                self.max_cap - self.cap,
+            ));
             // Take injector which either provides just enough or more cap than needed
             let idx = match self
                 .injectors
                 .iter()
                 .enumerate()
-                .filter(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO) >= needed_cap_extra)
-                .min_by_key(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO))
+                .filter(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO) >= needed_cap_extra)
+                .min_by_key(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO))
                 .map(|(i, _)| i)
             {
                 Some(idx) => idx,
@@ -230,7 +242,7 @@ impl CapSim {
                     .injectors
                     .iter()
                     .enumerate()
-                    .max_by_key(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO))
+                    .max_by_key(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO))
                     .map(|(i, _)| i)
                     .unwrap(),
             };
@@ -240,14 +252,14 @@ impl CapSim {
     }
     fn inject_topup(&mut self) {
         while !self.injectors.is_empty() && self.cap < self.max_cap {
-            let max_injection = self.max_cap - self.cap;
+            let max_injection = PValue::from_value_clamped(self.max_cap - self.cap);
             // Find an injector which does not overshoot and has the highest injection value
             let idx = match self
                 .injectors
                 .iter()
                 .enumerate()
-                .filter(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO) <= max_injection)
-                .max_by_key(|(_, v)| v.immediate_amount.unwrap_or(Value::ZERO))
+                .filter(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO) <= max_injection)
+                .max_by_key(|(_, v)| v.get_immediate_amount().unwrap_or(PValue::ZERO))
                 .map(|(i, _)| i)
             {
                 Some(idx) => idx,

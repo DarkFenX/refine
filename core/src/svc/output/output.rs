@@ -63,6 +63,12 @@ impl<T: Copy> Output<T> {
             Output::Complex(inner) => inner.get_instance_count(),
         }
     }
+    pub(in crate::svc) fn get_immediate_instance(&self) -> Option<T> {
+        match self {
+            Output::Simple(inner) => inner.get_immediate_instance(),
+            Output::Complex(inner) => inner.get_immediate_instance(),
+        }
+    }
 }
 impl Output<Value> {
     pub(in crate::svc) fn get_absolute_impact(&self) -> PValue {

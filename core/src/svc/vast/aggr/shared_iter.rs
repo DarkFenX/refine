@@ -3,7 +3,7 @@ use crate::{
     num::{Count, PValue},
     svc::{
         cycle::{CycleIter, CycleSeq},
-        output::{Output, OutputInstanceIter},
+        output::Output,
         vast::aggr::traits::LimitInstance,
     },
 };
@@ -63,7 +63,7 @@ impl<T: Copy> AggrIterDataSpool<T> {
 // Iterator interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct AggrIterItem<T: Copy> {
-    pub(in crate::svc::vast) instance_iter: OutputInstanceIter<T>,
+    pub(in crate::svc::vast) output: Output<T>,
     pub(in crate::svc::vast) cycle_duration: PValue,
 }
 
@@ -101,7 +101,7 @@ impl<T: Copy> Iterator for AggrIterRegular<T> {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.cycle_iter.next().map(|v| AggrIterItem {
-            instance_iter: v.output.into_instance_iter(),
+            output: v.output,
             cycle_duration: v.cycle_duration,
         })
     }
@@ -158,7 +158,7 @@ where
             false => self.uninterrupted_cycles += Count::ONE,
         }
         self.cycle_iter.next().map(|v| AggrIterItem {
-            instance_iter: output.into_instance_iter(),
+            output,
             cycle_duration: v.cycle_duration,
         })
     }

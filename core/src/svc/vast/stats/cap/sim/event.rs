@@ -1,24 +1,22 @@
 use std::cmp::Ordering;
 
 use crate::{
-    num::{PValue, Value},
-    svc::{
-        cycle::{CycleDataDurCharge, CycleIter},
-        output::Output,
-    },
+    num::PValue,
+    svc::vast::{aggr::AggrIter, stats::cap::sim::shared::Direction},
+    util::PrefetchPeekable,
 };
 
 pub(super) enum CapSimEvent {
     CycleCheck(CapSimEventCycleCheck),
     InjectorReady(CapSimEventInjector),
-    CapGain(CapSimEventCapGain),
+    CapChange(CapSimEventCapChange),
 }
 impl CapSimEvent {
     pub(super) fn get_time(&self) -> PValue {
         match self {
             Self::CycleCheck(event) => event.time,
             Self::InjectorReady(event) => event.time,
-            Self::CapGain(event) => event.time,
+            Self::CapChange(event) => event.time,
         }
     }
 }
@@ -41,8 +39,13 @@ impl Ord for CapSimEvent {
                 (Self::CycleCheck(_), _) => Ordering::Greater,
                 (Self::InjectorReady(_), Self::InjectorReady(_)) => Ordering::Equal,
                 (Self::InjectorReady(_), _) => Ordering::Greater,
-                (Self::CapGain(e1), Self::CapGain(e2)) => e1.amount.cmp(&e2.amount),
-                (Self::CapGain(_), _) => Ordering::Less,
+                (Self::CapChange(e1), Self::CapChange(e2)) => match (e1.direction, e2.direction) {
+                    (Direction::Gain, Direction::Gain) => e1.amount.cmp(&e2.amount),
+                    (Direction::Loss, Direction::Loss) => e2.amount.cmp(&e1.amount),
+                    (Direction::Gain, Direction::Loss) => Ordering::Greater,
+                    (Direction::Loss, Direction::Gain) => Ordering::Less,
+                },
+                (Self::CapChange(_), _) => Ordering::Less,
             },
             result => result,
         }
@@ -53,7 +56,7 @@ impl PartialEq<Self> for CapSimEvent {
         match (self, other) {
             (Self::CycleCheck(e1), Self::CycleCheck(e2)) => e1.time.eq(&e2.time),
             (Self::InjectorReady(e1), Self::InjectorReady(e2)) => e1.time.eq(&e2.time),
-            (Self::CapGain(e1), Self::CapGain(e2)) => e1.time.eq(&e2.time) && e1.amount.eq(&e2.amount),
+            (Self::CapChange(e1), Self::CapChange(e2)) => e1.time.eq(&e2.time) && e1.amount.eq(&e2.amount),
             _ => false,
         }
     }
@@ -62,18 +65,24 @@ impl Eq for CapSimEvent {}
 
 pub(super) struct CapSimEventCycleCheck {
     pub(super) time: PValue,
-    pub(super) cycle_iter: CycleIter<CycleDataDurCharge>,
-    pub(super) opc: Output<Value>,
+    pub(super) cycle_iter: AggrIter<PValue>,
+    pub(super) direction: Direction,
 }
 
-pub(super) struct CapSimEventCapGain {
+pub(super) struct CapSimEventCapChange {
     pub(super) time: PValue,
-    pub(super) amount: Value,
+    pub(super) amount: PValue,
+    pub(super) direction: Direction,
 }
 
 pub(super) struct CapSimEventInjector {
     pub(super) time: PValue,
-    pub(super) cycle_iter: CycleIter<CycleDataDurCharge>,
-    pub(super) opc: Output<Value>,
-    pub(super) immediate_amount: Option<Value>,
+    pub(super) cycle_iter: PrefetchPeekable<AggrIter<PValue>>,
+}
+impl CapSimEventInjector {
+    pub(super) fn get_immediate_amount(&self) -> Option<PValue> {
+        self.cycle_iter
+            .peek()
+            .and_then(|cycle_iter_item| cycle_iter_item.output.get_immediate_instance())
+    }
 }

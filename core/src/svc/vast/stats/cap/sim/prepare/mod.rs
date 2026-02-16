@@ -5,5 +5,4 @@ pub(crate) use stagger::StatCapSimStaggerInt;
 mod key;
 mod merge;
 mod prepare;
-mod shared;
 mod stagger;

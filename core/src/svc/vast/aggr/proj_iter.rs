@@ -13,7 +13,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleDataFull, CycleSeq},
-        vast::aggr::{proj_shared::get_proj_spool_cycle_output, shared_iter::AggrIterRegular},
+        vast::aggr::proj_shared::get_proj_spool_cycle_output,
     },
     ud::UItemId,
     util::LibConverter,

@@ -2,7 +2,6 @@ use std::collections::BinaryHeap;
 
 use super::{
     merge::Merger,
-    shared::Direction,
     stagger::{StaggerKey, StatCapSimStaggerInt, process_staggers},
 };
 use crate::{
@@ -14,15 +13,15 @@ use crate::{
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         vast::{
             Vast, VastFitData,
-            aggr::{
-                AggrLocalInvData, AggrProjInvData, aggr_local_iter, aggr_proj_iter, get_local_output,
-                get_proj_regular_output,
+            aggr::{aggr_local_iter, aggr_proj_iter},
+            stats::cap::sim::{
+                event::{CapSimEvent, CapSimEventInjector},
+                shared::Direction,
             },
-            stats::cap::sim::event::{CapSimEvent, CapSimEventInjector},
         },
     },
     ud::UItemId,
-    util::RMapVec,
+    util::{PrefetchPeekable, RMapVec},
 };
 
 pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
@@ -211,23 +210,13 @@ fn fill_injectors(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
-                Some(inv_local) => inv_local,
+            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec) {
+                Some(iter_data) => iter_data,
                 None => continue,
             };
-            let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, None);
-            let immediate_amount = opc
-                .into_instance_iter()
-                .next()
-                .and_then(|v| match v.time_passed == PValue::ZERO {
-                    true => Some(v.instance),
-                    false => None,
-                });
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: PValue::ZERO,
-                cycle_iter: cseq.convert_and_optimize().iter_cycles(),
-                opc: opc.into_value(),
-                immediate_amount: immediate_amount.map(|v| v.into_value()),
+                cycle_iter: PrefetchPeekable::new(iter_data.iter()),
             }));
         }
     }

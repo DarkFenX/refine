@@ -1,9 +1,14 @@
 use std::collections::BinaryHeap;
 
-use super::shared::Direction;
 use crate::{
     num::PValue,
-    svc::vast::{aggr::AggrIterData, stats::cap::sim::event::CapSimEvent},
+    svc::vast::{
+        aggr::AggrIterData,
+        stats::cap::sim::{
+            event::{CapSimEvent, CapSimEventCycleCheck},
+            shared::Direction,
+        },
+    },
 };
 
 struct MergeEntry {
@@ -30,9 +35,16 @@ impl Merger {
         container.push(MergeEntry { start_delay, iter_data })
     }
     pub(super) fn into_sim_events(self, events: &mut BinaryHeap<CapSimEvent>) {
-        for mut aggr_group in self.data.into_values() {
-            Aggregator::process_aggr_group(&mut aggr_group, events, |l, r| l > r);
-            Aggregator::process_aggr_group(&mut aggr_group, events, |l, r| l < r);
+        Merger::process_merge_group(self.gains, Direction::Gain, events);
+        Merger::process_merge_group(self.losses, Direction::Loss, events);
+    }
+    fn process_merge_group(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut BinaryHeap<CapSimEvent>) {
+        for entry in merge_group {
+            events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
+                time: entry.start_delay,
+                cycle_iter: entry.iter_data.iter(),
+                direction,
+            }))
         }
     }
 }
