@@ -1,6 +1,6 @@
 use super::{
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared_iter::{AggrIter, AggrIterRegular, AggrPartDataRegular},
+    shared_iter::{AggrIterData, AggrIterDataRegular, AggrPartDataRegular},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -23,14 +23,14 @@ pub(in crate::svc::vast) fn aggr_local_iter<T>(
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectLocalOpcSpec<T>,
-) -> Option<AggrIter<T>>
+) -> Option<AggrIterData<T>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    Some(AggrIter::Regular(AggrIterRegular::new(cseq_conv.iter_cycles())))
+    Some(AggrIterData::Regular(AggrIterDataRegular::new(cseq_conv)))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

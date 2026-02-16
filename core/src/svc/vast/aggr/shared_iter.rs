@@ -2,27 +2,72 @@ use super::proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_spool_cycle
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::CycleIter,
+        cycle::{CycleIter, CycleSeq},
         output::{Output, OutputInstanceIter},
         vast::aggr::traits::LimitInstance,
     },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Data entities - iter functions do not expose iterators right away to allow optimizations in
+// aggregators of higher kinds
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::vast) enum AggrIterData<T: Copy> {
+    Regular(AggrIterDataRegular<T>),
+    Spool(AggrIterDataSpool<T>),
+}
+impl<T: Copy> AggrIterData<T> {
+    pub(in crate::svc::vast) fn iter(&self) -> AggrIter<T> {
+        match self {
+            Self::Regular(inner) => AggrIter::Regular(inner.iter()),
+            Self::Spool(inner) => AggrIter::Spool(inner.iter()),
+        }
+    }
+}
+
+pub(in crate::svc::vast) struct AggrIterDataRegular<T: Copy> {
+    cseq: CycleSeq<AggrPartDataRegular<T>>,
+}
+impl<T: Copy> AggrIterDataRegular<T> {
+    pub(super) fn new(cseq: CycleSeq<AggrPartDataRegular<T>>) -> Self {
+        Self { cseq }
+    }
+    fn iter(&self) -> AggrIterRegular<T> {
+        AggrIterRegular::new(self.cseq.iter_cycles())
+    }
+}
+
+pub(in crate::svc::vast) struct AggrIterDataSpool<T: Copy> {
+    cseq: CycleSeq<AggrPartDataSpool<T>>,
+    inv_proj: AggrProjInvData<T>,
+    inv_spool: AggrSpoolInvData,
+}
+impl<T: Copy> AggrIterDataSpool<T> {
+    pub(super) fn new(
+        cseq: CycleSeq<AggrPartDataSpool<T>>,
+        inv_proj: AggrProjInvData<T>,
+        inv_spool: AggrSpoolInvData,
+    ) -> Self {
+        Self {
+            cseq,
+            inv_proj,
+            inv_spool,
+        }
+    }
+    fn iter(&self) -> AggrIterSpool<T> {
+        AggrIterSpool::new(self.cseq.iter_cycles(), self.inv_proj, self.inv_spool)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Iterator interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct AggrIterItem<T>
-where
-    T: Copy,
-{
+pub(in crate::svc::vast) struct AggrIterItem<T: Copy> {
     pub(in crate::svc::vast) instance_iter: OutputInstanceIter<T>,
     pub(in crate::svc::vast) cycle_duration: PValue,
 }
 
-pub(in crate::svc::vast) enum AggrIter<T>
-where
-    T: Copy,
-{
+pub(in crate::svc::vast) enum AggrIter<T: Copy> {
     Regular(AggrIterRegular<T>),
     Spool(AggrIterSpool<T>),
 }
@@ -43,24 +88,15 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-spool variant of iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct AggrIterRegular<T>
-where
-    T: Copy,
-{
+pub(in crate::svc::vast) struct AggrIterRegular<T: Copy> {
     cycle_iter: CycleIter<AggrPartDataRegular<T>>,
 }
-impl<T> AggrIterRegular<T>
-where
-    T: Copy,
-{
-    pub(super) fn new(cycle_iter: CycleIter<AggrPartDataRegular<T>>) -> Self {
+impl<T: Copy> AggrIterRegular<T> {
+    fn new(cycle_iter: CycleIter<AggrPartDataRegular<T>>) -> Self {
         Self { cycle_iter }
     }
 }
-impl<T> Iterator for AggrIterRegular<T>
-where
-    T: Copy,
-{
+impl<T: Copy> Iterator for AggrIterRegular<T> {
     type Item = AggrIterItem<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -72,10 +108,7 @@ where
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc::vast) struct AggrPartDataRegular<T>
-where
-    T: Copy,
-{
+pub(in crate::svc::vast) struct AggrPartDataRegular<T: Copy> {
     // Duration it takes per cycle in this part
     pub(in crate::svc::vast) cycle_duration: PValue,
     pub(in crate::svc::vast) output: Output<T>,
@@ -84,20 +117,14 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool variant of iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct AggrIterSpool<T>
-where
-    T: Copy,
-{
+pub(in crate::svc::vast) struct AggrIterSpool<T: Copy> {
     cycle_iter: CycleIter<AggrPartDataSpool<T>>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
     uninterrupted_cycles: Count,
 }
-impl<T> AggrIterSpool<T>
-where
-    T: Copy,
-{
-    pub(super) fn new(
+impl<T: Copy> AggrIterSpool<T> {
+    fn new(
         cycle_iter: CycleIter<AggrPartDataSpool<T>>,
         inv_proj: AggrProjInvData<T>,
         inv_spool: AggrSpoolInvData,
@@ -138,10 +165,7 @@ where
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc::vast) struct AggrPartDataSpool<T>
-where
-    T: Copy,
-{
+pub(in crate::svc::vast) struct AggrPartDataSpool<T: Copy> {
     // Duration it takes per cycle in this part
     pub(in crate::svc::vast) cycle_duration: PValue,
     // Are there interrupts of any kind every cycle in this part

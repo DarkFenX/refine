@@ -2,7 +2,7 @@ use super::{
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_part_str_mult,
     },
-    shared_iter::{AggrIter, AggrIterSpool, AggrPartDataRegular, AggrPartDataSpool},
+    shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataRegular, AggrPartDataSpool},
     traits::{InstanceDuration, LimitInstance},
 };
 use crate::{
@@ -28,7 +28,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     projectee_uid: Option<UItemId>,
-) -> Option<AggrIter<T>>
+) -> Option<AggrIterData<T>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
@@ -50,13 +50,13 @@ fn aggr_regular<T>(
     cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
-) -> AggrIter<T>
+) -> AggrIterData<T>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    AggrIter::Regular(AggrIterRegular::new(cseq_conv.iter_cycles()))
+    AggrIterData::Regular(AggrIterDataRegular::new(cseq_conv))
 }
 
 impl<T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, T>
@@ -90,13 +90,13 @@ fn aggr_spool<T>(
     ospec: &REffectProjOpcSpec<T>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
-) -> AggrIter<T>
+) -> AggrIterData<T>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
     let mut converter = ProjConverterSpool::new(ctx, calc, projector_uid, ospec, &inv_proj, &inv_spool);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    AggrIter::Spool(AggrIterSpool::new(cseq_conv.iter_cycles(), inv_proj, inv_spool))
+    AggrIterData::Spool(AggrIterDataSpool::new(cseq_conv, inv_proj, inv_spool))
 }
 
 struct ProjConverterSpool<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, T>
