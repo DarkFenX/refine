@@ -16,20 +16,6 @@ pub(in crate::svc) struct CycleDataFull {
 // Simplified cycle data types, they are useful mostly because they allow cycle optimizations during
 // cycle conversion
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc) struct CycleDataDurInt {
-    pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) interrupt: bool,
-}
-impl From<CycleDataFull> for CycleDataDurInt {
-    fn from(details_full: CycleDataFull) -> Self {
-        Self {
-            duration: details_full.duration,
-            interrupt: details_full.interrupt.is_some(),
-        }
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc) struct CycleDataDurCharge {
     pub(in crate::svc) duration: PValue,
     pub(in crate::svc) chargedness: Option<UnitInterval>,
@@ -46,13 +32,6 @@ impl From<CycleDataFull> for CycleDataDurCharge {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleDataDur {
     pub(in crate::svc) duration: PValue,
-}
-impl CycleDataDur {
-    pub(super) fn copy_rounded(&self) -> Self {
-        Self {
-            duration: self.duration.sig_rounded(10),
-        }
-    }
 }
 impl From<CycleDataFull> for CycleDataDur {
     fn from(data_full: CycleDataFull) -> Self {

@@ -84,17 +84,3 @@ where
         self.instance.mul_assign(rhs);
     }
 }
-impl<T, U> std::ops::Neg for OutputSimple<T>
-where
-    T: Copy + std::ops::Neg<Output = U>,
-    U: Copy,
-{
-    type Output = OutputSimple<U>;
-
-    fn neg(self) -> Self::Output {
-        OutputSimple {
-            instance: -self.instance,
-            delay: self.delay,
-        }
-    }
-}

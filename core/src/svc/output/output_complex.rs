@@ -90,19 +90,3 @@ where
         self.instance.mul_assign(rhs);
     }
 }
-impl<T, U> std::ops::Neg for OutputComplex<T>
-where
-    T: Copy + std::ops::Neg<Output = U>,
-    U: Copy,
-{
-    type Output = OutputComplex<U>;
-
-    fn neg(self) -> Self::Output {
-        OutputComplex {
-            instance: -self.instance,
-            delay: self.delay,
-            repeats: self.repeats,
-            interval: self.interval,
-        }
-    }
-}

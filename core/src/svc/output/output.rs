@@ -98,17 +98,3 @@ where
         }
     }
 }
-impl<T, U> std::ops::Neg for Output<T>
-where
-    T: Copy + std::ops::Neg<Output = U>,
-    U: Copy,
-{
-    type Output = Output<U>;
-
-    fn neg(self) -> Output<U> {
-        match self {
-            Self::Simple(inner) => Output::Simple(-inner),
-            Self::Complex(inner) => Output::Complex(-inner),
-        }
-    }
-}
