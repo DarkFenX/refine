@@ -26,7 +26,7 @@ impl<T: Copy> AggrIterData<T> {
 }
 
 pub(in crate::svc::vast) struct AggrIterDataRegular<T: Copy> {
-    cseq: CycleSeq<AggrPartDataRegular<T>>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataRegular<T>>,
 }
 impl<T: Copy> AggrIterDataRegular<T> {
     pub(super) fn new(cseq: CycleSeq<AggrPartDataRegular<T>>) -> Self {
@@ -38,7 +38,7 @@ impl<T: Copy> AggrIterDataRegular<T> {
 }
 
 pub(in crate::svc::vast) struct AggrIterDataSpool<T: Copy> {
-    cseq: CycleSeq<AggrPartDataSpool<T>>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpool<T>>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
 }

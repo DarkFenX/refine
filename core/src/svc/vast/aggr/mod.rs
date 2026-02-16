@@ -14,7 +14,7 @@ pub(in crate::svc::vast) use proj_iter::aggr_proj_iter;
 pub(in crate::svc::vast) use proj_looped::aggr_proj_looped;
 pub(in crate::svc::vast) use proj_shared::{AggrProjInvData, get_proj_regular_output};
 pub(in crate::svc::vast) use proj_time::aggr_proj_time;
-pub(in crate::svc::vast) use shared_iter::{AggrIter, AggrPartDataRegular, AggrPartDataSpool};
+pub(in crate::svc::vast) use shared_iter::{AggrIter, AggrIterData, AggrPartDataRegular, AggrPartDataSpool};
 
 mod accum;
 mod local_clip;

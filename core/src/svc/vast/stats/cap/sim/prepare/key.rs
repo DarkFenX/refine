@@ -1,18 +1,29 @@
-use super::shared::SIG_ROUND_DIGITS;
 use crate::{
     num::{Count, PValue},
     svc::{
+        cycle::CycleSeq,
         output::{Output, OutputComplex, OutputSimple},
-        vast::aggr::{AggrPartDataRegular, AggrPartDataSpool},
+        vast::aggr::{AggrIterData, AggrPartDataRegular, AggrPartDataSpool},
     },
 };
+
+const SIG_ROUND_DIGITS: u32 = 10;
+
+impl AggrIterData<PValue> {
+    pub(super) fn extract_cseq(&self) -> CycleSeq<CSeqPartKey> {
+        match self {
+            Self::Regular(inner) => inner.cseq.convert_and_optimize(),
+            Self::Spool(inner) => inner.cseq.convert_and_optimize(),
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cycle sequence
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-struct CSeqPartKey {
-    duration: PValue,
+pub(super) struct CSeqPartKey {
+    pub(super) duration: PValue,
     output: OutputKey,
 }
 impl<T: Copy> From<AggrPartDataRegular<T>> for CSeqPartKey {
@@ -37,12 +48,12 @@ impl<T: Copy> From<AggrPartDataSpool<T>> for CSeqPartKey {
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) enum OutputKey {
+enum OutputKey {
     Simple(OutputKeySimple),
     Complex(OutputKeyComplex),
 }
 impl OutputKey {
-    pub(super) fn from_output<T: Copy>(output: &Output<T>) -> Self {
+    fn from_output<T: Copy>(output: &Output<T>) -> Self {
         match output {
             Output::Simple(inner) => OutputKey::Simple(OutputKeySimple::from_output(inner)),
             Output::Complex(inner) => OutputKey::Complex(OutputKeyComplex::from_output(inner)),

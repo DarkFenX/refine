@@ -1,1 +1,5 @@
-pub(super) const SIG_ROUND_DIGITS: u32 = 10;
+#[derive(Copy, Clone)]
+pub(super) enum Direction {
+    Gain,
+    Loss,
+}

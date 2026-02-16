@@ -1,7 +1,8 @@
 use std::collections::BinaryHeap;
 
 use super::{
-    merge::Aggregator,
+    merge::Merger,
+    shared::Direction,
     stagger::{StaggerKey, StatCapSimStaggerInt, process_staggers},
 };
 use crate::{
@@ -13,7 +14,10 @@ use crate::{
         cycle::{CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         vast::{
             Vast, VastFitData,
-            aggr::{AggrLocalInvData, AggrProjInvData, get_local_output, get_proj_regular_output},
+            aggr::{
+                AggrLocalInvData, AggrProjInvData, aggr_local_iter, aggr_proj_iter, get_local_output,
+                get_proj_regular_output,
+            },
             stats::cap::sim::event::{CapSimEvent, CapSimEventInjector},
         },
     },
@@ -31,29 +35,13 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     cap_item_uid: UItemId,
 ) -> BinaryHeap<CapSimEvent> {
     let cycling_options = CyclingOptions::Sim(CycleOptionsSim { optional_reloads, .. });
-    let mut aggregator = Aggregator::new();
-    fill_consumers(ctx, calc, &mut aggregator, cycling_options, &stagger, fit_data);
-    fill_nosfs(ctx, calc, &mut aggregator, cycling_options, &stagger, fit_data);
-    fill_incoming_neuts(
-        ctx,
-        calc,
-        &mut aggregator,
-        cycling_options,
-        &stagger,
-        vast,
-        cap_item_uid,
-    );
-    fill_incoming_transfers(
-        ctx,
-        calc,
-        &mut aggregator,
-        cycling_options,
-        &stagger,
-        vast,
-        cap_item_uid,
-    );
+    let mut merger = Merger::new();
+    fill_consumers(ctx, calc, &mut merger, cycling_options, &stagger, fit_data);
+    fill_nosfs(ctx, calc, &mut merger, cycling_options, &stagger, fit_data);
+    fill_incoming_neuts(ctx, calc, &mut merger, cycling_options, &stagger, vast, cap_item_uid);
+    fill_incoming_transfers(ctx, calc, &mut merger, cycling_options, &stagger, vast, cap_item_uid);
     let mut events = BinaryHeap::new();
-    aggregator.into_sim_events(&mut events);
+    merger.into_sim_events(&mut events);
     fill_injectors(ctx, calc, &mut events, cycling_options, fit_data);
     events
 }
@@ -61,11 +49,12 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
 fn fill_consumers(
     ctx: SvcCtx,
     calc: &mut Calc,
-    aggregator: &mut Aggregator,
+    merger: &mut Merger,
     cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
 ) {
+    let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
     for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
@@ -78,34 +67,28 @@ fn fill_consumers(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
-                Some(inv_local) => inv_local,
+            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec) {
+                Some(iter_data) => iter_data,
                 None => continue,
             };
-            let opc = get_local_output(ctx, calc, item_uid, ospec, &inv_local, None);
-            // Negate output, since consumers negatively impact cap, but output of consumption
-            // getter function is positive
-            let opc = -opc;
             match stagger.is_staggered(item_uid) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
-                    (cseq.convert_and_optimize(), opc),
-                ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
+                false => merger.add_entry(PValue::ZERO, iter_data, direction),
             }
         }
     }
-    process_staggers(stagger_map, aggregator);
+    process_staggers(stagger_map, merger, direction);
 }
 
 fn fill_nosfs(
     ctx: SvcCtx,
     calc: &mut Calc,
-    aggregator: &mut Aggregator,
+    merger: &mut Merger,
     cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
 ) {
+    let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
     for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, nosf_item_uid, cycling_options, false) {
@@ -118,31 +101,23 @@ fn fill_nosfs(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let inv_proj = match AggrProjInvData::try_make(ctx, calc, nosf_item_uid, effect, ospec, None) {
-                Some(inv_proj) => inv_proj,
+            let iter_data = match aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, None) {
+                Some(iter_data) => iter_data,
                 None => continue,
             };
-            let opc = get_proj_regular_output(ctx, calc, nosf_item_uid, ospec, &inv_proj, None);
-            if !opc.has_impact() {
-                continue;
-            }
-            let opc = opc.into_value();
             match stagger.is_staggered(nosf_item_uid) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
-                    (cseq.convert_and_optimize(), opc),
-                ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
+                false => merger.add_entry(PValue::ZERO, iter_data, direction),
             }
         }
     }
-    process_staggers(stagger_map, aggregator);
+    process_staggers(stagger_map, merger, direction);
 }
 
 fn fill_incoming_neuts(
     ctx: SvcCtx,
     calc: &mut Calc,
-    aggregator: &mut Aggregator,
+    merger: &mut Merger,
     cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
@@ -152,6 +127,7 @@ fn fill_incoming_neuts(
         Some(neut_data) => neut_data,
         None => return,
     };
+    let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
     for (&neut_item_uid, item_data) in neut_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, neut_item_uid, cycling_options, false) {
@@ -164,34 +140,23 @@ fn fill_incoming_neuts(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let inv_proj = match AggrProjInvData::try_make(ctx, calc, neut_item_uid, effect, ospec, Some(cap_item_uid))
-            {
-                Some(inv_proj) => inv_proj,
+            let iter_data = match aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, Some(cap_item_uid)) {
+                Some(iter_data) => iter_data,
                 None => continue,
             };
-            let opc = get_proj_regular_output(ctx, calc, neut_item_uid, ospec, &inv_proj, None);
-            if !opc.has_impact() {
-                continue;
-            }
-            // Negate output, since neuts negatively impact cap, but output of neut getter function
-            // is positive
-            let opc = -opc;
             match stagger.is_staggered(neut_item_uid) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
-                    (cseq.convert_and_optimize(), opc),
-                ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
+                false => merger.add_entry(PValue::ZERO, iter_data, direction),
             }
         }
     }
-    process_staggers(stagger_map, aggregator);
+    process_staggers(stagger_map, merger, direction);
 }
 
 fn fill_incoming_transfers(
     ctx: SvcCtx,
     calc: &mut Calc,
-    aggregator: &mut Aggregator,
+    merger: &mut Merger,
     cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
     vast: &Vast,
@@ -201,6 +166,7 @@ fn fill_incoming_transfers(
         Some(transfer_data) => transfer_data,
         None => return,
     };
+    let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
         let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_uid, cycling_options, false) {
@@ -213,26 +179,18 @@ fn fill_incoming_transfers(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let inv_proj =
-                match AggrProjInvData::try_make(ctx, calc, transfer_item_uid, effect, ospec, Some(cap_item_uid)) {
-                    Some(inv_proj) => inv_proj,
-                    None => continue,
-                };
-            let opc = get_proj_regular_output(ctx, calc, transfer_item_uid, ospec, &inv_proj, None);
-            if !opc.has_impact() {
-                continue;
-            }
-            let opc = opc.into_value();
+            let iter_data = match aggr_proj_iter(ctx, calc, transfer_item_uid, effect, cseq, ospec, Some(cap_item_uid))
+            {
+                Some(iter_data) => iter_data,
+                None => continue,
+            };
             match stagger.is_staggered(transfer_item_uid) {
-                true => stagger_map.add_entry(
-                    StaggerKey::new(&cseq.convert_and_optimize(), &opc),
-                    (cseq.convert_and_optimize(), opc),
-                ),
-                false => aggregator.add_entry(PValue::ZERO, cseq.convert_and_optimize(), opc),
+                true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
+                false => merger.add_entry(PValue::ZERO, iter_data, direction),
             }
         }
     }
-    process_staggers(stagger_map, aggregator);
+    process_staggers(stagger_map, merger, direction);
 }
 
 fn fill_injectors(
