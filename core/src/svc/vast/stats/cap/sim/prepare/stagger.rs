@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use super::{key::CSeqPartTimingKey, merge::Merger};
+use super::{merge::Merger, timing_key::CSeqPartTimingKey};
 use crate::{
     num::PValue,
     sol::SolarSystem,

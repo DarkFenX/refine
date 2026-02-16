@@ -7,7 +7,7 @@ use crate::{
     },
 };
 
-const SIG_ROUND_DIGITS: u32 = 10;
+pub(super) const TIME_ROUND_DIGITS: u32 = 10;
 
 impl AggrIterData<PValue> {
     pub(super) fn extract_cseq_timing_key(&self) -> CycleSeq<CSeqPartTimingKey> {
@@ -29,7 +29,7 @@ pub(super) struct CSeqPartTimingKey {
 impl<T: Copy> From<AggrPartDataRegular<T>> for CSeqPartTimingKey {
     fn from(part_data: AggrPartDataRegular<T>) -> Self {
         Self {
-            duration: part_data.cycle_duration.sig_rounded(SIG_ROUND_DIGITS),
+            duration: part_data.cycle_duration.sig_rounded(TIME_ROUND_DIGITS),
             output: OutputTimingKey::from_output(&part_data.output),
         }
     }
@@ -37,7 +37,7 @@ impl<T: Copy> From<AggrPartDataRegular<T>> for CSeqPartTimingKey {
 impl<T: Copy> From<AggrPartDataSpool<T>> for CSeqPartTimingKey {
     fn from(part_data: AggrPartDataSpool<T>) -> Self {
         Self {
-            duration: part_data.cycle_duration.sig_rounded(SIG_ROUND_DIGITS),
+            duration: part_data.cycle_duration.sig_rounded(TIME_ROUND_DIGITS),
             // This one is based on base output and will yield the same output key
             output: OutputTimingKey::from_output(&part_data.output_zero_spool),
         }
@@ -68,7 +68,7 @@ struct OutputTimingKeySimple {
 impl OutputTimingKeySimple {
     fn from_output<T: Copy>(output: &OutputSimple<T>) -> Self {
         Self {
-            delay: output.delay.sig_rounded(SIG_ROUND_DIGITS),
+            delay: output.delay.sig_rounded(TIME_ROUND_DIGITS),
         }
     }
 }
@@ -82,9 +82,9 @@ struct OutputTimingKeyComplex {
 impl OutputTimingKeyComplex {
     fn from_output<T: Copy>(output: &OutputComplex<T>) -> Self {
         Self {
-            delay: output.delay.sig_rounded(SIG_ROUND_DIGITS),
+            delay: output.delay.sig_rounded(TIME_ROUND_DIGITS),
             repeats: output.repeats,
-            interval: output.interval.sig_rounded(SIG_ROUND_DIGITS),
+            interval: output.interval.sig_rounded(TIME_ROUND_DIGITS),
         }
     }
 }
