@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use super::{key::CSeqPartKey, merge::Merger};
+use super::{key::CSeqPartTimingKey, merge::Merger};
 use crate::{
     num::PValue,
     sol::SolarSystem,
@@ -48,12 +48,12 @@ impl StatCapSimStaggerInt {
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct StaggerKey {
-    cseq: CycleSeq<CSeqPartKey>,
+    cseq: CycleSeq<CSeqPartTimingKey>,
 }
 impl StaggerKey {
     pub(super) fn new(iter_data: &AggrIterData<PValue>) -> Self {
         Self {
-            cseq: iter_data.extract_cseq(),
+            cseq: iter_data.extract_cseq_timing_key(),
         }
     }
 }

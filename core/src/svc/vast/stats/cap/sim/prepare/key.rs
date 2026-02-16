@@ -10,7 +10,7 @@ use crate::{
 const SIG_ROUND_DIGITS: u32 = 10;
 
 impl AggrIterData<PValue> {
-    pub(super) fn extract_cseq(&self) -> CycleSeq<CSeqPartKey> {
+    pub(super) fn extract_cseq_timing_key(&self) -> CycleSeq<CSeqPartTimingKey> {
         match self {
             Self::Regular(inner) => inner.cseq.convert_and_optimize(),
             Self::Spool(inner) => inner.cseq.convert_and_optimize(),
@@ -22,24 +22,24 @@ impl AggrIterData<PValue> {
 // Cycle sequence
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct CSeqPartKey {
+pub(super) struct CSeqPartTimingKey {
     pub(super) duration: PValue,
-    output: OutputKey,
+    output: OutputTimingKey,
 }
-impl<T: Copy> From<AggrPartDataRegular<T>> for CSeqPartKey {
+impl<T: Copy> From<AggrPartDataRegular<T>> for CSeqPartTimingKey {
     fn from(part_data: AggrPartDataRegular<T>) -> Self {
         Self {
             duration: part_data.cycle_duration.sig_rounded(SIG_ROUND_DIGITS),
-            output: OutputKey::from_output(&part_data.output),
+            output: OutputTimingKey::from_output(&part_data.output),
         }
     }
 }
-impl<T: Copy> From<AggrPartDataSpool<T>> for CSeqPartKey {
+impl<T: Copy> From<AggrPartDataSpool<T>> for CSeqPartTimingKey {
     fn from(part_data: AggrPartDataSpool<T>) -> Self {
         Self {
             duration: part_data.cycle_duration.sig_rounded(SIG_ROUND_DIGITS),
             // This one is based on base output and will yield the same output key
-            output: OutputKey::from_output(&part_data.output_zero_spool),
+            output: OutputTimingKey::from_output(&part_data.output_zero_spool),
         }
     }
 }
@@ -48,24 +48,24 @@ impl<T: Copy> From<AggrPartDataSpool<T>> for CSeqPartKey {
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-enum OutputKey {
-    Simple(OutputKeySimple),
-    Complex(OutputKeyComplex),
+enum OutputTimingKey {
+    Simple(OutputTimingKeySimple),
+    Complex(OutputTimingKeyComplex),
 }
-impl OutputKey {
+impl OutputTimingKey {
     fn from_output<T: Copy>(output: &Output<T>) -> Self {
         match output {
-            Output::Simple(inner) => OutputKey::Simple(OutputKeySimple::from_output(inner)),
-            Output::Complex(inner) => OutputKey::Complex(OutputKeyComplex::from_output(inner)),
+            Output::Simple(inner) => OutputTimingKey::Simple(OutputTimingKeySimple::from_output(inner)),
+            Output::Complex(inner) => OutputTimingKey::Complex(OutputTimingKeyComplex::from_output(inner)),
         }
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-struct OutputKeySimple {
+struct OutputTimingKeySimple {
     delay: PValue,
 }
-impl OutputKeySimple {
+impl OutputTimingKeySimple {
     fn from_output<T: Copy>(output: &OutputSimple<T>) -> Self {
         Self {
             delay: output.delay.sig_rounded(SIG_ROUND_DIGITS),
@@ -74,12 +74,12 @@ impl OutputKeySimple {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-struct OutputKeyComplex {
+struct OutputTimingKeyComplex {
     delay: PValue,
     repeats: Count,
     interval: PValue,
 }
-impl OutputKeyComplex {
+impl OutputTimingKeyComplex {
     fn from_output<T: Copy>(output: &OutputComplex<T>) -> Self {
         Self {
             delay: output.delay.sig_rounded(SIG_ROUND_DIGITS),
