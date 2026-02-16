@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Data which stays the same through local effect cycles
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct AggrLocalInvData<T>
+pub(super) struct AggrLocalInvData<T>
 where
     T: Copy,
 {
@@ -20,7 +20,7 @@ impl<T> AggrLocalInvData<T>
 where
     T: Copy,
 {
-    pub(in crate::svc::vast) fn try_make(
+    pub(super) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -78,7 +78,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) fn get_local_output<T>(
+pub(super) fn get_local_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,

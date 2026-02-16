@@ -10,7 +10,7 @@ use crate::{
 // General data which stays the same through projected effect cycling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub(in crate::svc::vast) struct AggrProjInvData<T>
+pub(super) struct AggrProjInvData<T>
 where
     T: Copy,
 {
@@ -24,7 +24,7 @@ impl<T> AggrProjInvData<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    pub(in crate::svc::vast) fn try_make(
+    pub(super) fn try_make(
         ctx: SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
@@ -181,7 +181,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) fn get_proj_regular_output<T>(
+pub(super) fn get_proj_regular_output<T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
