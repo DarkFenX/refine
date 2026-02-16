@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use super::{output::OutputKey, shared::SIG_ROUND_DIGITS};
+use super::{key::OutputKey, shared::SIG_ROUND_DIGITS};
 use crate::{
     num::{PValue, Value},
     svc::{

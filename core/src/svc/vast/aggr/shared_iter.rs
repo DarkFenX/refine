@@ -72,13 +72,13 @@ where
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartDataRegular<T>
+pub(in crate::svc::vast) struct AggrPartDataRegular<T>
 where
     T: Copy,
 {
     // Duration it takes per cycle in this part
-    pub(super) cycle_duration: PValue,
-    pub(super) output: Output<T>,
+    pub(in crate::svc::vast) cycle_duration: PValue,
+    pub(in crate::svc::vast) output: Output<T>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,16 +138,16 @@ where
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartDataSpool<T>
+pub(in crate::svc::vast) struct AggrPartDataSpool<T>
 where
     T: Copy,
 {
     // Duration it takes per cycle in this part
-    pub(super) cycle_duration: PValue,
+    pub(in crate::svc::vast) cycle_duration: PValue,
     // Are there interrupts of any kind every cycle in this part
     pub(super) interrupt: bool,
     // Part-specific strength multiplier, which does not include spool factor
     pub(super) str_mult: PValue,
-    pub(super) output_zero_spool: Output<T>,
+    pub(in crate::svc::vast) output_zero_spool: Output<T>,
     pub(super) output_max_spool: Output<T>,
 }
