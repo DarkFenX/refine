@@ -7,7 +7,7 @@ use crate::{
     svc::{
         cycle::{CycleDataDur, CycleSeq},
         output::OutputDmgBreacher,
-        vast::StatDmgBreacher,
+        vast::StatDmgEntryBreacher,
     },
     util::RMap,
 };
@@ -50,7 +50,7 @@ impl BreacherAccum {
             }
         }
     }
-    pub(in crate::svc::vast) fn get_dps(&self) -> Option<StatDmgBreacher> {
+    pub(in crate::svc::vast) fn get_dps(&self) -> Option<StatDmgEntryBreacher> {
         if self.data.is_empty() {
             return None;
         };
@@ -60,7 +60,7 @@ impl BreacherAccum {
         if matches!(best_breacher_abs.ticks, AggrBreacherTicksLooped::Is(_)) {
             let best_breacher_rel = self.data.keys().max_by_key(|v| v.relative_max).unwrap();
             if matches!(best_breacher_rel.ticks, AggrBreacherTicksLooped::Is(_)) {
-                return StatDmgBreacher {
+                return StatDmgEntryBreacher {
                     absolute_max: best_breacher_abs.absolute_max * PValue::SERVER_TICK_HZ,
                     relative_max: best_breacher_rel.relative_max.into_pvalue() * PValue::SERVER_TICK_HZ,
                 }
@@ -100,7 +100,7 @@ impl BreacherAccum {
             .map(|((abs, rel), mul)| (abs * mul.into_pvalue(), rel * mul.into_pvalue()))
             .reduce(|(l_abs, l_rel), (r_abs, r_rel)| (l_abs + r_abs, l_rel + r_rel))
             .unwrap();
-        StatDmgBreacher {
+        StatDmgEntryBreacher {
             absolute_max: total_abs / total_ticks.into_pvalue() * PValue::SERVER_TICK_HZ,
             relative_max: total_rel / total_ticks.into_pvalue() * PValue::SERVER_TICK_HZ,
         }

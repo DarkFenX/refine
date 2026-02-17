@@ -14,8 +14,8 @@ use crate::{
     svc::{
         calc::Modification,
         vast::{
-            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatEhp, StatErps, StatHp,
-            StatInJam, StatMining, StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
+            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmgEntry, StatDmgEntryApplied, StatEhp, StatErps,
+            StatHp, StatInJam, StatMining, StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
         },
     },
     ud::{ItemId, UEffectUpdates, UItemId},
@@ -141,7 +141,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, ItemStatError> {
+    ) -> Result<StatDmgEntry, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
@@ -155,7 +155,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, ItemStatAppliedError> {
+    ) -> Result<StatDmgEntryApplied, ItemStatAppliedError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = get_stat_applied_projectee_uid(sol, projectee_item_id)?;
@@ -176,7 +176,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, ItemStatError> {
+    ) -> Result<StatDmgEntry, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
@@ -189,7 +189,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, ItemStatAppliedError> {
+    ) -> Result<StatDmgEntryApplied, ItemStatAppliedError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = get_stat_applied_projectee_uid(sol, projectee_item_id)?;

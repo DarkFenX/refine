@@ -13,8 +13,8 @@ use crate::{
     info::{
         HItemStats,
         stats::{
-            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
-            HStatRps, HStatSensors,
+            HStatCapSim, HStatDmgEntry, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps,
+            HStatResists, HStatRps, HStatSensors,
         },
     },
     util::{HExecError, default_true},
@@ -246,7 +246,7 @@ impl HGetItemStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<Option<HStatDmg>>> {
+fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<Option<HStatDmgEntry>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(|v| v.into_core()).into();
@@ -259,7 +259,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -268,7 +268,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
             }
             None => {
                 match core_item.get_stat_dps(option.reload, core_spool, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(HStatDmg::from_core(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -279,7 +279,10 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
     }
     Some(results)
 }
-fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVolley>) -> Option<Vec<Option<HStatDmg>>> {
+fn get_volley_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<HStatOptionItemVolley>,
+) -> Option<Vec<Option<HStatDmgEntry>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_spool = option.spool.map(|v| v.into_core()).into();
@@ -291,7 +294,7 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -300,7 +303,7 @@ fn get_volley_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemVol
             }
             None => {
                 match core_item.get_stat_volley(core_spool, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(HStatDmg::from_core(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),

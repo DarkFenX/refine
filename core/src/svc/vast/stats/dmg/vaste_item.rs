@@ -11,7 +11,7 @@ use crate::{
         cycle::get_item_cseq_map,
         err::StatItemCheckError,
         vast::{
-            StatDmg, StatDmgApplied, StatDmgBreacher, Vast,
+            StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, Vast,
             aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped},
             stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
@@ -28,10 +28,10 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, StatItemCheckError> {
+    ) -> Result<StatDmgEntry, StatItemCheckError> {
         let (dps_normal, breacher_accum) =
             Vast::internal_get_stat_item_dps(ctx, calc, item_uid, reload, spool, include_charges, ignore_state, None)?;
-        Ok(StatDmg::from_dmgs(dps_normal, breacher_accum.get_dps()))
+        Ok(StatDmgEntry::from_dmgs(dps_normal, breacher_accum.get_dps()))
     }
     pub(in crate::svc) fn get_stat_item_dps_applied(
         ctx: SvcCtx,
@@ -42,7 +42,7 @@ impl Vast {
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, StatItemCheckError> {
+    ) -> Result<StatDmgEntryApplied, StatItemCheckError> {
         let (dps_normal, breacher_accum) = Vast::internal_get_stat_item_dps(
             ctx,
             calc,
@@ -53,7 +53,7 @@ impl Vast {
             ignore_state,
             Some(projectee_uid),
         )?;
-        Ok(StatDmgApplied::from_dmgs(
+        Ok(StatDmgEntryApplied::from_dmgs(
             dps_normal,
             breacher_accum
                 .get_dps()
@@ -163,10 +163,10 @@ impl Vast {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, StatItemCheckError> {
+    ) -> Result<StatDmgEntry, StatItemCheckError> {
         let (volley_normal, volley_breacher) =
             Vast::internal_get_stat_item_volley(ctx, calc, item_uid, spool, include_charges, ignore_state, None)?;
-        Ok(StatDmg::from_dmgs(volley_normal, Some(volley_breacher)))
+        Ok(StatDmgEntry::from_dmgs(volley_normal, Some(volley_breacher)))
     }
     pub(in crate::svc) fn get_stat_item_volley_applied(
         ctx: SvcCtx,
@@ -176,7 +176,7 @@ impl Vast {
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, StatItemCheckError> {
+    ) -> Result<StatDmgEntryApplied, StatItemCheckError> {
         let (volley_normal, volley_breacher) = Vast::internal_get_stat_item_volley(
             ctx,
             calc,
@@ -186,7 +186,7 @@ impl Vast {
             ignore_state,
             Some(projectee_uid),
         )?;
-        Ok(StatDmgApplied::from_dmgs(
+        Ok(StatDmgEntryApplied::from_dmgs(
             volley_normal,
             volley_breacher
                 .nullified()
@@ -201,9 +201,9 @@ impl Vast {
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: Option<UItemId>,
-    ) -> Result<(DmgKinds<PValue>, StatDmgBreacher), StatItemCheckError> {
+    ) -> Result<(DmgKinds<PValue>, StatDmgEntryBreacher), StatItemCheckError> {
         let mut volley_normal = DmgKinds::default();
-        let mut volley_breacher = StatDmgBreacher::new();
+        let mut volley_breacher = StatDmgEntryBreacher::new();
         Vast::internal_get_stat_item_volley_checked(
             ctx,
             calc,
@@ -221,7 +221,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         volley_normal: &mut DmgKinds<PValue>,
-        volley_breacher: &mut StatDmgBreacher,
+        volley_breacher: &mut StatDmgEntryBreacher,
         item_uid: UItemId,
         spool: Option<Spool>,
         include_charges: bool,

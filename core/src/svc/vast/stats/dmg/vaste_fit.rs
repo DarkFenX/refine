@@ -10,7 +10,7 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{
-            StatDmg, StatDmgApplied, StatDmgBreacher, StatDmgItemKinds, Vast, VastFitData,
+            StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, Vast, VastFitData,
             aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped},
         },
     },
@@ -26,10 +26,10 @@ impl Vast {
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fits_dps(ctx, calc, fit_uids, item_kinds, reload, spool, None);
-        StatDmg::from_dmgs(dps_normal, breacher_accum.get_dps())
+        StatDmgEntry::from_dmgs(dps_normal, breacher_accum.get_dps())
     }
     pub(in crate::svc) fn get_stat_fits_dps_applied(
         &self,
@@ -40,10 +40,10 @@ impl Vast {
         reload: bool,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fits_dps(ctx, calc, fit_uids, item_kinds, reload, spool, Some(projectee_uid));
-        StatDmgApplied::from_dmgs(
+        StatDmgEntryApplied::from_dmgs(
             dps_normal,
             breacher_accum
                 .get_dps()
@@ -85,10 +85,10 @@ impl Vast {
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fit_dps(ctx, calc, fit_uid, item_kinds, reload, spool, None);
-        StatDmg::from_dmgs(dps_normal, breacher_accum.get_dps())
+        StatDmgEntry::from_dmgs(dps_normal, breacher_accum.get_dps())
     }
     pub(in crate::svc) fn get_stat_fit_dps_applied(
         &self,
@@ -99,10 +99,10 @@ impl Vast {
         reload: bool,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         let (dps_normal, breacher_accum) =
             self.internal_get_stat_fit_dps(ctx, calc, fit_uid, item_kinds, reload, spool, Some(projectee_uid));
-        StatDmgApplied::from_dmgs(
+        StatDmgEntryApplied::from_dmgs(
             dps_normal,
             breacher_accum
                 .get_dps()
@@ -141,10 +141,10 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fits_volley(ctx, calc, fit_uids, item_kinds, spool, None);
-        StatDmg::from_dmgs(volley_normal, Some(volley_breacher))
+        StatDmgEntry::from_dmgs(volley_normal, Some(volley_breacher))
     }
     pub(in crate::svc) fn get_stat_fits_volley_applied(
         &self,
@@ -154,10 +154,10 @@ impl Vast {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fits_volley(ctx, calc, fit_uids, item_kinds, spool, Some(projectee_uid));
-        StatDmgApplied::from_dmgs(
+        StatDmgEntryApplied::from_dmgs(
             volley_normal,
             volley_breacher
                 .nullified()
@@ -172,9 +172,9 @@ impl Vast {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
-    ) -> (DmgKinds<PValue>, StatDmgBreacher) {
+    ) -> (DmgKinds<PValue>, StatDmgEntryBreacher) {
         let mut volley_normal = DmgKinds::default();
-        let mut volley_breacher = StatDmgBreacher::new();
+        let mut volley_breacher = StatDmgEntryBreacher::new();
         for fit_uid in fit_uids {
             self.get_fit_data(&fit_uid).fill_stat_volley(
                 ctx,
@@ -195,10 +195,10 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fit_volley(ctx, calc, fit_uid, item_kinds, spool, None);
-        StatDmg::from_dmgs(volley_normal, Some(volley_breacher))
+        StatDmgEntry::from_dmgs(volley_normal, Some(volley_breacher))
     }
     pub(in crate::svc) fn get_stat_fit_volley_applied(
         &self,
@@ -208,10 +208,10 @@ impl Vast {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         let (volley_normal, volley_breacher) =
             self.internal_get_stat_fit_volley(ctx, calc, fit_uid, item_kinds, spool, Some(projectee_uid));
-        StatDmgApplied::from_dmgs(
+        StatDmgEntryApplied::from_dmgs(
             volley_normal,
             volley_breacher
                 .nullified()
@@ -226,9 +226,9 @@ impl Vast {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: Option<UItemId>,
-    ) -> (DmgKinds<PValue>, StatDmgBreacher) {
+    ) -> (DmgKinds<PValue>, StatDmgEntryBreacher) {
         let mut volley_normal = DmgKinds::default();
-        let mut volley_breacher = StatDmgBreacher::new();
+        let mut volley_breacher = StatDmgEntryBreacher::new();
         self.get_fit_data(&fit_uid).fill_stat_volley(
             ctx,
             calc,
@@ -323,7 +323,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
         volley_normal: &mut DmgKinds<PValue>,
-        volley_breacher: &mut StatDmgBreacher,
+        volley_breacher: &mut StatDmgEntryBreacher,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: Option<UItemId>,

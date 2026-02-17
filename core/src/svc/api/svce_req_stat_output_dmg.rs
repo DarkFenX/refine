@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         err::StatItemCheckError,
-        vast::{StatDmg, StatDmgApplied, StatDmgItemKinds, Vast},
+        vast::{StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, Vast},
     },
     ud::{UData, UFitId, UItemId},
 };
@@ -16,7 +16,7 @@ impl Svc {
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         self.vast.get_stat_fits_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -34,7 +34,7 @@ impl Svc {
         reload: bool,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         self.vast.get_stat_fits_dps_applied(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -52,7 +52,7 @@ impl Svc {
         item_kinds: StatDmgItemKinds,
         reload: bool,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         self.vast.get_stat_fit_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -70,7 +70,7 @@ impl Svc {
         reload: bool,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         self.vast.get_stat_fit_dps_applied(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -89,7 +89,7 @@ impl Svc {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, StatItemCheckError> {
+    ) -> Result<StatDmgEntry, StatItemCheckError> {
         Vast::get_stat_item_dps_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -109,7 +109,7 @@ impl Svc {
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, StatItemCheckError> {
+    ) -> Result<StatDmgEntryApplied, StatItemCheckError> {
         Vast::get_stat_item_dps_applied(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -127,7 +127,7 @@ impl Svc {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         self.vast.get_stat_fits_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -143,7 +143,7 @@ impl Svc {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         self.vast.get_stat_fits_volley_applied(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -159,7 +159,7 @@ impl Svc {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
-    ) -> StatDmg {
+    ) -> StatDmgEntry {
         self.vast.get_stat_fit_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -175,7 +175,7 @@ impl Svc {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_uid: UItemId,
-    ) -> StatDmgApplied {
+    ) -> StatDmgEntryApplied {
         self.vast.get_stat_fit_volley_applied(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -192,7 +192,7 @@ impl Svc {
         spool: Option<Spool>,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, StatItemCheckError> {
+    ) -> Result<StatDmgEntry, StatItemCheckError> {
         Vast::get_stat_item_volley_raw(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
@@ -210,7 +210,7 @@ impl Svc {
         include_charges: bool,
         ignore_state: bool,
         projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, StatItemCheckError> {
+    ) -> Result<StatDmgEntryApplied, StatItemCheckError> {
         Vast::get_stat_item_volley_applied(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,

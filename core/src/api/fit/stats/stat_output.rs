@@ -3,14 +3,14 @@ use crate::{
     misc::Spool,
     num::PValue,
     svc::vast::{
-        StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
+        StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
         StatOutRepItemKinds, StatOutReps, StatTimeOptions,
     },
     ud::ItemId,
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_dps(&mut self, item_kinds: StatDmgItemKinds, reload: bool, spool: Option<Spool>) -> StatDmg {
+    pub fn get_stat_dps(&mut self, item_kinds: StatDmgItemKinds, reload: bool, spool: Option<Spool>) -> StatDmgEntry {
         self.sol
             .svc
             .get_stat_fit_dps_raw(&self.sol.u_data, self.uid, item_kinds, reload, spool)
@@ -21,14 +21,14 @@ impl<'a> FitMut<'a> {
         reload: bool,
         spool: Option<Spool>,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, FitStatAppliedError> {
+    ) -> Result<StatDmgEntryApplied, FitStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         Ok(self
             .sol
             .svc
             .get_stat_fit_dps_applied(&self.sol.u_data, self.uid, item_kinds, reload, spool, projectee_uid))
     }
-    pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: Option<Spool>) -> StatDmg {
+    pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: Option<Spool>) -> StatDmgEntry {
         self.sol
             .svc
             .get_stat_fit_volley_raw(&self.sol.u_data, self.uid, item_kinds, spool)
@@ -38,7 +38,7 @@ impl<'a> FitMut<'a> {
         item_kinds: StatDmgItemKinds,
         spool: Option<Spool>,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, FitStatAppliedError> {
+    ) -> Result<StatDmgEntryApplied, FitStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         Ok(self
             .sol

@@ -1,14 +1,24 @@
 use crate::{misc::DmgKinds, num::PValue, svc::output::OutputDmgBreacher};
 
 pub struct StatDmg {
+    pub dps: StatDmgEntry,
+    pub volley: StatDmgEntry,
+}
+
+pub struct StatDmgApplied {
+    pub dps: StatDmgEntryApplied,
+    pub volley: StatDmgEntryApplied,
+}
+
+pub struct StatDmgEntry {
     pub em: PValue,
     pub thermal: PValue,
     pub kinetic: PValue,
     pub explosive: PValue,
-    pub breacher: Option<StatDmgBreacher>,
+    pub breacher: Option<StatDmgEntryBreacher>,
 }
 
-pub struct StatDmgApplied {
+pub struct StatDmgEntryApplied {
     pub em: PValue,
     pub thermal: PValue,
     pub kinetic: PValue,
@@ -16,13 +26,13 @@ pub struct StatDmgApplied {
     pub breacher: Option<PValue>,
 }
 
-pub struct StatDmgBreacher {
+pub struct StatDmgEntryBreacher {
     pub absolute_max: PValue,
     // This field is not unit interval since it is supposed to store breacher DPS as well, and DPS
     // can exceed value of 1 if server has more than 1 ticks per second
     pub relative_max: PValue,
 }
-impl StatDmgBreacher {
+impl StatDmgEntryBreacher {
     pub(in crate::svc::vast) fn new() -> Self {
         Self {
             absolute_max: PValue::ZERO,
@@ -44,8 +54,8 @@ impl StatDmgBreacher {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatDmg {
-    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: Option<StatDmgBreacher>) -> Self {
+impl StatDmgEntry {
+    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: Option<StatDmgEntryBreacher>) -> Self {
         Self {
             em: normal.em,
             thermal: normal.thermal,
@@ -59,7 +69,7 @@ impl StatDmg {
     }
 }
 
-impl StatDmgApplied {
+impl StatDmgEntryApplied {
     pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: Option<PValue>) -> Self {
         Self {
             em: normal.em,
@@ -71,7 +81,7 @@ impl StatDmgApplied {
     }
 }
 
-impl StatDmgBreacher {
+impl StatDmgEntryBreacher {
     pub(in crate::svc::vast) fn from_output(output: OutputDmgBreacher) -> Self {
         Self {
             absolute_max: output.absolute_max,

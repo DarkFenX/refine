@@ -1,13 +1,13 @@
 use crate::{
     num::{PValue, Value},
-    svc::{SvcCtx, calc::Calc, vast::StatDmgBreacher},
+    svc::{SvcCtx, calc::Calc, vast::StatDmgEntryBreacher},
     ud::UItemId,
 };
 
 pub(in crate::svc::vast::stats::dmg) fn apply_breacher(
     ctx: SvcCtx,
     calc: &mut Calc,
-    breacher_raw: StatDmgBreacher,
+    breacher_raw: StatDmgEntryBreacher,
     projectee_uid: UItemId,
 ) -> PValue {
     let hp_shield = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(

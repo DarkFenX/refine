@@ -12,8 +12,8 @@ use crate::{
     info::{
         HFitStats,
         stats::{
-            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
-            HStatResource, HStatRps, HStatSensors, HStatSlot,
+            HStatCapSim, HStatDmgEntry, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps,
+            HStatResists, HStatResource, HStatRps, HStatSensors, HStatSlot,
         },
     },
     util::{HExecError, default_true},
@@ -340,7 +340,7 @@ impl HGetFitStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit output stats
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> Vec<Option<HStatDmg>> {
+fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> Vec<Option<HStatDmgEntry>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
@@ -348,19 +348,19 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_dps_applied(core_item_kinds, option.reload, core_spool, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fit.get_stat_dps(core_item_kinds, option.reload, core_spool);
-                results.push(Some(HStatDmg::from_core(core_stat)));
+                results.push(Some(HStatDmgEntry::from_core(core_stat)));
             }
         }
     }
     results
 }
-fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmg>> {
+fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmgEntry>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
@@ -368,13 +368,13 @@ fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_volley_applied(core_item_kinds, core_spool, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fit.get_stat_volley(core_item_kinds, core_spool);
-                results.push(Some(HStatDmg::from_core(core_stat)));
+                results.push(Some(HStatDmgEntry::from_core(core_stat)));
             }
         }
     }

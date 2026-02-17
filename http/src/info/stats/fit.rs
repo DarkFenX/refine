@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
+        HStatCapSim, HStatDmgEntry, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
         HStatResource, HStatRps, HStatSensors, HStatSlot,
     },
     util::TriStateField,
@@ -12,9 +12,9 @@ use crate::{
 pub(crate) struct HFitStats {
     // Fit output stats
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) dps: Option<Vec<Option<HStatDmg>>>,
+    pub(crate) dps: Option<Vec<Option<HStatDmgEntry>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) volley: Option<Vec<Option<HStatDmg>>>,
+    pub(crate) volley: Option<Vec<Option<HStatDmgEntry>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) mps: Option<Vec<HStatMining>>,
     #[serde(skip_serializing_if = "Option::is_none")]
