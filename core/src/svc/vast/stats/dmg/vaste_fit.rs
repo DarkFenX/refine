@@ -50,6 +50,37 @@ impl Vast {
             volley: StatDmgEntryApplied::from_dmgs(volley_normal, None),
         }
     }
+    pub(in crate::svc) fn get_stat_fit_dmg_raw(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_uid: UFitId,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+    ) -> StatDmg {
+        let (dps_normal, volley_normal, breacher_accum) =
+            self.internal_get_stat_fit_dmg(ctx, calc, fit_uid, item_kinds, time_options, None);
+        StatDmg {
+            dps: StatDmgEntry::from_dmgs(dps_normal, None),
+            volley: StatDmgEntry::from_dmgs(volley_normal, None),
+        }
+    }
+    pub(in crate::svc) fn get_stat_fit_dmg_applied(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_uid: UFitId,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        projectee_uid: UItemId,
+    ) -> StatDmgApplied {
+        let (dps_normal, volley_normal, breacher_accum) =
+            self.internal_get_stat_fit_dmg(ctx, calc, fit_uid, item_kinds, time_options, Some(projectee_uid));
+        StatDmgApplied {
+            dps: StatDmgEntryApplied::from_dmgs(dps_normal, None),
+            volley: StatDmgEntryApplied::from_dmgs(volley_normal, None),
+        }
+    }
     fn internal_get_stat_fits_dmg(
         &self,
         ctx: SvcCtx,
@@ -76,6 +107,32 @@ impl Vast {
                 projectee_uid,
             );
         }
+        (dps_normal, volley_normal, breacher_accum)
+    }
+    fn internal_get_stat_fit_dmg(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_uid: UFitId,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        projectee_uid: Option<UItemId>,
+    ) -> (DmgKinds<PValue>, DmgKinds<PValue>, BreacherAccum) {
+        let cycling_options = CyclingOptions::from_time_options(time_options);
+        let mut dps_normal = DmgKinds::default();
+        let mut volley_normal = DmgKinds::default();
+        let mut breacher_accum = BreacherAccum::new();
+        self.get_fit_data(&fit_uid).fill_stat_dmg(
+            ctx,
+            calc,
+            &mut dps_normal,
+            &mut volley_normal,
+            &mut breacher_accum,
+            item_kinds,
+            time_options,
+            cycling_options,
+            projectee_uid,
+        );
         (dps_normal, volley_normal, breacher_accum)
     }
 }
