@@ -8,16 +8,160 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::get_item_cseq_map,
+        cycle::{CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
-            StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, Vast,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped},
+            StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatTimeOptions, Vast,
+            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
             stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },
     ud::UItemId,
 };
+
+impl Vast {
+    pub(in crate::svc) fn get_stat_item_dmg_raw(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+    ) -> Result<StatDmg, StatItemCheckError> {
+        let (dps_normal, volley_normal, breacher_accum) =
+            Vast::internal_get_stat_item_dmg(ctx, calc, item_uid, time_options, include_charges, ignore_state, None)?;
+        Ok(StatDmg {
+            dps: StatDmgEntry::from_dmgs(dps_normal, None),
+            volley: StatDmgEntry::from_dmgs(volley_normal, None),
+        })
+    }
+    pub(in crate::svc) fn get_stat_item_dmg_applied(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_uid: UItemId,
+    ) -> Result<StatDmgApplied, StatItemCheckError> {
+        let (dps_normal, volley_normal, breacher_accum) = Vast::internal_get_stat_item_dmg(
+            ctx,
+            calc,
+            item_uid,
+            time_options,
+            include_charges,
+            ignore_state,
+            Some(projectee_uid),
+        )?;
+        Ok(StatDmgApplied {
+            dps: StatDmgEntryApplied::from_dmgs(dps_normal, None),
+            volley: StatDmgEntryApplied::from_dmgs(volley_normal, None),
+        })
+    }
+    fn internal_get_stat_item_dmg(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_uid: Option<UItemId>,
+    ) -> Result<(DmgKinds<PValue>, DmgKinds<PValue>, BreacherAccum), StatItemCheckError> {
+        let mut dps_normal = DmgKinds::default();
+        let mut volley_normal = DmgKinds::default();
+        let mut breacher_accum = BreacherAccum::new();
+        Vast::internal_get_stat_item_dmg_checked(
+            ctx,
+            calc,
+            &mut dps_normal,
+            &mut volley_normal,
+            &mut breacher_accum,
+            item_uid,
+            time_options,
+            include_charges,
+            ignore_state,
+            projectee_uid,
+        )?;
+        Ok((dps_normal, volley_normal, breacher_accum))
+    }
+    fn internal_get_stat_item_dmg_checked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        dps_normal: &mut DmgKinds<PValue>,
+        volley_normal: &mut DmgKinds<PValue>,
+        breacher_accum: &mut BreacherAccum,
+        item_uid: UItemId,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_uid: Option<UItemId>,
+    ) -> Result<(), StatItemCheckError> {
+        check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
+        let cycling_options = CyclingOptions::from_time_options(time_options);
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
+            Some(cseq_map) => cseq_map,
+            None => return Ok(()),
+        };
+        for (effect_rid, cseq) in cseq_map {
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            if let Some(ospec) = &effect.normal_dmg_opc_spec {
+                let mut accum = SeqAccum::new_stack_max();
+                if match time_options {
+                    StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                        ctx,
+                        calc,
+                        item_uid,
+                        effect,
+                        &cseq,
+                        ospec,
+                        projectee_uid,
+                        burst_opts.spool,
+                        &mut accum,
+                    ),
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                        Some(time) if time > PValue::ZERO => aggr_proj_time(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            &cseq,
+                            ospec,
+                            projectee_uid,
+                            &mut accum,
+                            time,
+                        ),
+                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid, &mut accum),
+                    },
+                } {
+                    *volley_normal += accum.instances.max;
+                    *dps_normal += accum.get_per_second();
+                }
+            }
+            if let Some(dmg_getter) = effect.breacher_dmg_opc_getter
+                && let Some(dmg_opc) = dmg_getter(ctx, calc, item_uid, effect, projectee_uid)
+            {
+                breacher_accum.add(dmg_opc, cseq.convert_and_optimize());
+            }
+        }
+        if include_charges {
+            for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
+                let _ = Vast::internal_get_stat_item_dmg_checked(
+                    ctx,
+                    calc,
+                    dps_normal,
+                    volley_normal,
+                    breacher_accum,
+                    charge_uid,
+                    time_options,
+                    false,
+                    ignore_state,
+                    projectee_uid,
+                );
+            }
+        }
+        Ok(())
+    }
+}
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_dps_raw(

@@ -10,12 +10,139 @@ use crate::{
         calc::Calc,
         cycle::{CyclingOptions, get_item_cseq_map},
         vast::{
-            StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, Vast, VastFitData,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped},
+            StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds,
+            StatTimeOptions, Vast, VastFitData,
+            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
         },
     },
     ud::{UFitId, UItemId},
 };
+
+impl Vast {
+    pub(in crate::svc) fn get_stat_fits_dmg_raw(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_uids: impl ExactSizeIterator<Item = UFitId>,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+    ) -> StatDmg {
+        let (dps_normal, volley_normal, breacher_accum) =
+            self.internal_get_stat_fits_dmg(ctx, calc, fit_uids, item_kinds, time_options, None);
+        StatDmg {
+            dps: StatDmgEntry::from_dmgs(dps_normal, None),
+            volley: StatDmgEntry::from_dmgs(volley_normal, None),
+        }
+    }
+    pub(in crate::svc) fn get_stat_fits_dmg_applied(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_uids: impl ExactSizeIterator<Item = UFitId>,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        projectee_uid: UItemId,
+    ) -> StatDmgApplied {
+        let (dps_normal, volley_normal, breacher_accum) =
+            self.internal_get_stat_fits_dmg(ctx, calc, fit_uids, item_kinds, time_options, Some(projectee_uid));
+        StatDmgApplied {
+            dps: StatDmgEntryApplied::from_dmgs(dps_normal, None),
+            volley: StatDmgEntryApplied::from_dmgs(volley_normal, None),
+        }
+    }
+    fn internal_get_stat_fits_dmg(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        fit_uids: impl ExactSizeIterator<Item = UFitId>,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        projectee_uid: Option<UItemId>,
+    ) -> (DmgKinds<PValue>, DmgKinds<PValue>, BreacherAccum) {
+        let cycling_options = CyclingOptions::from_time_options(time_options);
+        let mut dps_normal = DmgKinds::default();
+        let mut volley_normal = DmgKinds::default();
+        let mut breacher_accum = BreacherAccum::new();
+        for fit_uid in fit_uids {
+            self.get_fit_data(&fit_uid).fill_stat_dmg(
+                ctx,
+                calc,
+                &mut dps_normal,
+                &mut volley_normal,
+                &mut breacher_accum,
+                item_kinds,
+                time_options,
+                cycling_options,
+                projectee_uid,
+            );
+        }
+        (dps_normal, volley_normal, breacher_accum)
+    }
+}
+
+impl VastFitData {
+    fn fill_stat_dmg(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        dps_normal: &mut DmgKinds<PValue>,
+        volley_normal: &mut DmgKinds<PValue>,
+        breacher_accum: &mut BreacherAccum,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        cycling_options: CyclingOptions,
+        projectee_uid: Option<UItemId>,
+    ) {
+        for (&item_uid, item_data) in self.dmg_normal.iter() {
+            let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
+                Some(cseq_map) => cseq_map,
+                None => continue,
+            };
+            let item = ctx.u_data.items.get(item_uid);
+            for (&effect_rid, ospec) in item_data.iter() {
+                let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+                if !item_kinds.resolve(ctx, item, effect) {
+                    continue;
+                }
+                let cseq = match cseq_map.get(&effect_rid) {
+                    Some(cseq) => cseq,
+                    None => continue,
+                };
+                let mut accum = SeqAccum::new_stack_max();
+                if match time_options {
+                    StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                        ctx,
+                        calc,
+                        item_uid,
+                        effect,
+                        cseq,
+                        ospec,
+                        projectee_uid,
+                        burst_opts.spool,
+                        &mut accum,
+                    ),
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                        Some(time) if time > PValue::ZERO => aggr_proj_time(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            projectee_uid,
+                            &mut accum,
+                            time,
+                        ),
+                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid, &mut accum),
+                    },
+                } {
+                    *volley_normal += accum.instances.max;
+                    *dps_normal += accum.get_per_second();
+                }
+            }
+        }
+    }
+}
 
 impl Vast {
     pub(in crate::svc) fn get_stat_fits_dps_raw(
