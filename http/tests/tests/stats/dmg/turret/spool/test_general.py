@@ -8,6 +8,8 @@ from fw.api import (
     StatsOptionFitVolley,
     StatsOptionItemDps,
     StatsOptionItemVolley,
+    StatTimeBurst,
+    StatTimeSim,
 )
 from tests.stats.dmg import make_eve_charge_normal, make_eve_turret_spool, setup_dmg_basics
 
@@ -173,13 +175,13 @@ def test_spool(client, consts):
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitDps(),
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=1))]),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]),
         volley=(True, [
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitVolley(),
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=1))])))
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitVolley(time_options=StatTimeBurst()),
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     api_fleet_dps_pre, api_fleet_dps_default, api_fleet_dps_full = api_fleet_stats.dps
     assert api_fleet_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
     assert api_fleet_dps_default == [0, approx(262.218716), 0, approx(137.352661)]
@@ -190,13 +192,13 @@ def test_spool(client, consts):
     assert api_fleet_volley_full == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitDps(),
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=1))]),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]),
         volley=(True, [
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitVolley(),
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=1))])))
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitVolley(time_options=StatTimeBurst()),
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     api_fit_dps_pre, api_fit_dps_default, api_fit_dps_full = api_fit_stats.dps
     assert api_fit_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
     assert api_fit_dps_default == [0, approx(262.218716), 0, approx(137.352661)]
@@ -207,13 +209,13 @@ def test_spool(client, consts):
     assert api_fit_volley_full == [0, approx(842.625), 0, approx(441.375)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         dps=(True, [
-            StatsOptionItemDps(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionItemDps(),
-            StatsOptionItemDps(spool=Spool.spool_scale_to_api(val=1))]),
+            StatsOptionItemDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionItemDps(time_options=StatTimeBurst()),
+            StatsOptionItemDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]),
         volley=(True, [
-            StatsOptionItemVolley(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionItemVolley(),
-            StatsOptionItemVolley(spool=Spool.spool_scale_to_api(val=1))])))
+            StatsOptionItemVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionItemVolley(time_options=StatTimeBurst()),
+            StatsOptionItemVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     api_module_dps_pre, api_module_dps_default, api_module_dps_full = api_module_stats.dps
     assert api_module_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
     assert api_module_dps_default == [0, approx(262.218716), 0, approx(137.352661)]
@@ -227,13 +229,13 @@ def test_spool(client, consts):
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitDps(),
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=1))]),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]),
         volley=(True, [
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitVolley(),
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=1))])))
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitVolley(time_options=StatTimeBurst()),
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     api_fleet_dps_pre, api_fleet_dps_default, api_fleet_dps_full = api_fleet_stats.dps
     assert api_fleet_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
     assert api_fleet_dps_default == [0, approx(314.167706), 0, approx(164.564037)]
@@ -244,13 +246,13 @@ def test_spool(client, consts):
     assert api_fleet_volley_full == [0, approx(842.625), 0, approx(441.375)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitDps(),
-            StatsOptionFitDps(spool=Spool.spool_scale_to_api(val=1))]),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+            StatsOptionFitDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]),
         volley=(True, [
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionFitVolley(),
-            StatsOptionFitVolley(spool=Spool.spool_scale_to_api(val=1))])))
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionFitVolley(time_options=StatTimeBurst()),
+            StatsOptionFitVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     api_fit_dps_pre, api_fit_dps_default, api_fit_dps_full = api_fit_stats.dps
     assert api_fit_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
     assert api_fit_dps_default == [0, approx(314.167706), 0, approx(164.564037)]
@@ -261,13 +263,13 @@ def test_spool(client, consts):
     assert api_fit_volley_full == [0, approx(842.625), 0, approx(441.375)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         dps=(True, [
-            StatsOptionItemDps(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionItemDps(),
-            StatsOptionItemDps(spool=Spool.spool_scale_to_api(val=1))]),
+            StatsOptionItemDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionItemDps(time_options=StatTimeBurst()),
+            StatsOptionItemDps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]),
         volley=(True, [
-            StatsOptionItemVolley(spool=Spool.spool_scale_to_api(val=0)),
-            StatsOptionItemVolley(),
-            StatsOptionItemVolley(spool=Spool.spool_scale_to_api(val=1))])))
+            StatsOptionItemVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+            StatsOptionItemVolley(time_options=StatTimeBurst()),
+            StatsOptionItemVolley(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))])))
     api_module_dps_pre, api_module_dps_default, api_module_dps_full = api_module_stats.dps
     assert api_module_dps_pre == [0, approx(123.688073), 0, approx(64.788991)]
     assert api_module_dps_default == [0, approx(314.167706), 0, approx(164.564037)]
@@ -278,7 +280,7 @@ def test_spool(client, consts):
     assert api_module_volley_full == [0, approx(842.625), 0, approx(441.375)]
 
 
-def test_reload(client, consts):
+def test_time_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_spool(
         client=client, basic_info=eve_basic_info,
@@ -295,37 +297,43 @@ def test_reload(client, consts):
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification - reload averages dps over whole reload cycle
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    # Verification - sim stats average dps over whole reload cycle
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
     assert api_fleet_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
     assert api_fit_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=(True, [
+        StatsOptionItemDps(time_options=StatTimeBurst()),
+        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
     api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
     assert api_module_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
     assert api_module_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
     # Action
     api_sol.change(default_spool=Spool.spool_scale_to_api(val=0.5))
-    # Verification - reload does not rely on spool parameters in any way, unlike burst dps
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    # Verification - sim stats do not rely on spool parameters in any way, unlike burst stats
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
     assert api_fleet_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
     assert api_fit_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=(True, [
+        StatsOptionItemDps(time_options=StatTimeBurst()),
+        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
     api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
     assert api_module_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
     assert api_module_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]

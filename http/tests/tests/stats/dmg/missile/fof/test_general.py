@@ -8,6 +8,8 @@ from fw.api import (
     StatsOptionFitVolley,
     StatsOptionItemDps,
     StatsOptionItemVolley,
+    StatTimeBurst,
+    StatTimeSim,
 )
 from tests.stats.dmg import make_eve_launcher, make_eve_missile_fof, setup_dmg_basics
 
@@ -180,7 +182,7 @@ def test_include_charges(client, consts):
     assert api_charge_volley_with == [0, 0, 0, approx(830)]
 
 
-def test_reload(client, consts):
+def test_time_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.78, cycle_time=2500, reload_time=35000)
@@ -196,18 +198,21 @@ def test_reload(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst == [0, 0, 0, approx(332)]
     assert api_fleet_dps_reload == [0, 0, 0, approx(215.8)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst == [0, 0, 0, approx(332)]
     assert api_fit_dps_reload == [0, 0, 0, approx(215.8)]
-    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=(True, [
+        StatsOptionItemDps(time_options=StatTimeBurst()),
+        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
     api_charge_dps_burst, api_charge_dps_reload = api_charge_stats.dps
     assert api_charge_dps_burst == [0, 0, 0, approx(332)]
     assert api_charge_dps_reload == [0, 0, 0, approx(215.8)]

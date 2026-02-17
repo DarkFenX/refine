@@ -8,6 +8,8 @@ from fw.api import (
     StatsOptionFitVolley,
     StatsOptionItemDps,
     StatsOptionItemVolley,
+    StatTimeBurst,
+    StatTimeSim,
 )
 from tests.stats.dmg import make_eve_charge_crystal, make_eve_turret_laser, setup_dmg_basics
 
@@ -151,7 +153,7 @@ def test_item_kind(client, consts):
     assert api_fit_volley_enabled == [approx(135), approx(30), 0, 0]
 
 
-def test_reload(client, consts):
+def test_time_reload(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_laser(
         client=client, basic_info=eve_basic_info, dmg_mult=15, capacity=1, cycle_time=2050, reload_time=0.01)
@@ -176,23 +178,27 @@ def test_reload(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification - impact of reload is significant despite reload time being super low due to
     # library enforcing 1 second reload time
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst == [approx(131.707317), approx(29.268293), 0, 0]
     assert api_fleet_dps_reload == [approx(131.675209), approx(29.261158), 0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
+        StatsOptionFitDps(time_options=StatTimeBurst()),
+        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst == [approx(131.707317), approx(29.268293), 0, 0]
     assert api_fit_dps_reload == [approx(131.675209), approx(29.261158), 0, 0]
-    api_module1_stats = api_module1.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_module1_stats = api_module1.get_stats(options=ItemStatsOptions(dps=(True, [
+        StatsOptionItemDps(time_options=StatTimeBurst()),
+        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
     api_module1_dps_burst, api_module1_dps_reload = api_module1_stats.dps
     assert api_module1_dps_burst == [approx(65.853659), approx(14.634146), 0, 0]
     assert api_module1_dps_reload == [approx(65.82155), approx(14.627011), 0, 0]
-    api_module2_stats = api_module2.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(reload=True)])))
+    api_module2_stats = api_module2.get_stats(options=ItemStatsOptions(dps=(True, [
+        StatsOptionItemDps(time_options=StatTimeBurst()),
+        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
     api_module2_dps_burst, api_module2_dps_reload = api_module2_stats.dps
     assert api_module2_dps_burst == [approx(65.853659), approx(14.634146), 0, 0]
     assert api_module2_dps_reload == [approx(65.853659), approx(14.634146), 0, 0]

@@ -1,14 +1,17 @@
 import dataclasses
+import typing
 
 from fw.util import Absent
+
+if typing.TYPE_CHECKING:
+    from .opt_shared import StatTimeBurst, StatTimeSim
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitDps:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
-    reload: bool | type[Absent] = Absent
-    spool: str | type[Absent] = Absent
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
 
@@ -16,15 +19,14 @@ class StatsOptionFitDps:
 class StatsOptionFitVolley:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
-    spool: str | type[Absent] = Absent
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemDps:
 
-    reload: bool | type[Absent] = Absent
-    spool: str | type[Absent] = Absent
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
@@ -33,7 +35,7 @@ class StatsOptionItemDps:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemVolley:
 
-    spool: str | type[Absent] = Absent
+    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     include_charges: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
