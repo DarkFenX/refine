@@ -147,7 +147,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_dmg_raw(&sol.u_data, item_uid, time_options, include_charges, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_dps_applied(
+    fn get_stat_dmg_applied(
         &mut self,
         time_options: StatTimeOptions,
         include_charges: bool,

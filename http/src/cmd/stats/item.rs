@@ -249,17 +249,16 @@ impl HGetItemStatsCmd {
 fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<Option<HStatDmgEntry>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_spool = option.spool.map(|v| v.into_core()).into();
+        let core_time_options = option.time_options.into_core();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_item.get_stat_dps_applied(
-                    option.reload,
-                    core_spool,
+                match core_item.get_stat_dmg_applied(
+                    core_time_options,
                     option.include_charges,
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat.dps))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -267,8 +266,8 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
                 };
             }
             None => {
-                match core_item.get_stat_dps(option.reload, core_spool, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat))),
+                match core_item.get_stat_dmg(core_time_options, option.include_charges, option.ignore_state) {
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat.dps))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -285,16 +284,16 @@ fn get_volley_stats(
 ) -> Option<Vec<Option<HStatDmgEntry>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
-        let core_spool = option.spool.map(|v| v.into_core()).into();
+        let core_time_options = option.time_options.into_core();
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_item.get_stat_volley_applied(
-                    core_spool,
+                match core_item.get_stat_dmg_applied(
+                    core_time_options,
                     option.include_charges,
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat))),
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat.volley))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -302,8 +301,8 @@ fn get_volley_stats(
                 };
             }
             None => {
-                match core_item.get_stat_volley(core_spool, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat))),
+                match core_item.get_stat_dmg(core_time_options, option.include_charges, option.ignore_state) {
+                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat.volley))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),
