@@ -18,16 +18,16 @@ use crate::{
 };
 
 pub(super) struct Merger {
-    mergeable_regular_gains: RMapVec<MergeKey, MergeEntry>,
-    mergeable_regular_losses: RMapVec<MergeKey, MergeEntry>,
+    mergeable_gains: RMapVec<MergeKey, MergeEntry>,
+    mergeable_losses: RMapVec<MergeKey, MergeEntry>,
     gains: Vec<MergeEntry>,
     losses: Vec<MergeEntry>,
 }
 impl Merger {
     pub(super) fn new() -> Self {
         Self {
-            mergeable_regular_gains: RMapVec::new(),
-            mergeable_regular_losses: RMapVec::new(),
+            mergeable_gains: RMapVec::new(),
+            mergeable_losses: RMapVec::new(),
             gains: Vec::new(),
             losses: Vec::new(),
         }
@@ -36,8 +36,8 @@ impl Merger {
         // Mergeable
         if let Some(regular_key) = MergeKey::try_new(start_delay, &iter_data) {
             let container = match direction {
-                Direction::Gain => &mut self.mergeable_regular_gains,
-                Direction::Loss => &mut self.mergeable_regular_losses,
+                Direction::Gain => &mut self.mergeable_gains,
+                Direction::Loss => &mut self.mergeable_losses,
             };
             container.add_entry(regular_key, MergeEntry { start_delay, iter_data });
             return;
@@ -50,12 +50,12 @@ impl Merger {
         container.push(MergeEntry { start_delay, iter_data })
     }
     pub(super) fn into_sim_events(mut self, events: &mut BinaryHeap<CapSimEvent>) {
-        Merger::merge_regular(self.mergeable_regular_gains, &mut self.gains);
-        Merger::merge_regular(self.mergeable_regular_losses, &mut self.losses);
-        Merger::process_entries(self.gains, Direction::Gain, events);
-        Merger::process_entries(self.losses, Direction::Loss, events);
+        Merger::merge(self.mergeable_gains, &mut self.gains);
+        Merger::merge(self.mergeable_losses, &mut self.losses);
+        Merger::convert(self.gains, Direction::Gain, events);
+        Merger::convert(self.losses, Direction::Loss, events);
     }
-    fn merge_regular(mergeable: RMapVec<MergeKey, MergeEntry>, entries: &mut Vec<MergeEntry>) {
+    fn merge(mergeable: RMapVec<MergeKey, MergeEntry>, entries: &mut Vec<MergeEntry>) {
         for group_entries in mergeable.into_values() {
             if group_entries.len() < 2 {
                 entries.extend(group_entries);
@@ -73,7 +73,7 @@ impl Merger {
             entries.push(main_entry);
         }
     }
-    fn process_entries(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut BinaryHeap<CapSimEvent>) {
+    fn convert(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut BinaryHeap<CapSimEvent>) {
         for entry in merge_group {
             events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
                 time: entry.start_delay,
