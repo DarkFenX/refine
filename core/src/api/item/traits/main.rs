@@ -14,8 +14,8 @@ use crate::{
     svc::{
         calc::Modification,
         vast::{
-            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmgEntry, StatDmgEntryApplied, StatEhp, StatErps,
-            StatHp, StatInJam, StatMining, StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
+            StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg, StatDmgApplied, StatEhp, StatErps, StatHp,
+            StatInJam, StatMining, StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
         },
     },
     ud::{ItemId, UEffectUpdates, UItemId},
@@ -135,69 +135,33 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - output
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_dps(
+    fn get_stat_dmg(
         &mut self,
-        reload: bool,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmgEntry, ItemStatError> {
+    ) -> Result<StatDmg, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_dps_raw(&sol.u_data, item_uid, reload, spool, include_charges, ignore_state)
+            .get_stat_item_dmg_raw(&sol.u_data, item_uid, time_options, include_charges, ignore_state)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_dps_applied(
         &mut self,
-        reload: bool,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgEntryApplied, ItemStatAppliedError> {
+    ) -> Result<StatDmgApplied, ItemStatAppliedError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = get_stat_applied_projectee_uid(sol, projectee_item_id)?;
         sol.svc
-            .get_stat_item_dps_applied(
+            .get_stat_item_dmg_applied(
                 &sol.u_data,
                 item_uid,
-                reload,
-                spool,
-                include_charges,
-                ignore_state,
-                projectee_uid,
-            )
-            .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_volley(
-        &mut self,
-        spool: Option<Spool>,
-        include_charges: bool,
-        ignore_state: bool,
-    ) -> Result<StatDmgEntry, ItemStatError> {
-        let item_uid = self.get_uid();
-        let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_volley_raw(&sol.u_data, item_uid, spool, include_charges, ignore_state)
-            .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
-    }
-    fn get_stat_volley_applied(
-        &mut self,
-        spool: Option<Spool>,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_item_id: &ItemId,
-    ) -> Result<StatDmgEntryApplied, ItemStatAppliedError> {
-        let item_uid = self.get_uid();
-        let sol = self.get_sol_mut();
-        let projectee_uid = get_stat_applied_projectee_uid(sol, projectee_item_id)?;
-        sol.svc
-            .get_stat_item_volley_applied(
-                &sol.u_data,
-                item_uid,
-                spool,
+                time_options,
                 include_charges,
                 ignore_state,
                 projectee_uid,

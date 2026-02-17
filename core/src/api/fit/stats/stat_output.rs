@@ -3,47 +3,29 @@ use crate::{
     misc::Spool,
     num::PValue,
     svc::vast::{
-        StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
+        StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
         StatOutRepItemKinds, StatOutReps, StatTimeOptions,
     },
     ud::ItemId,
 };
 
 impl<'a> FitMut<'a> {
-    pub fn get_stat_dps(&mut self, item_kinds: StatDmgItemKinds, reload: bool, spool: Option<Spool>) -> StatDmgEntry {
+    pub fn get_stat_dmg(&mut self, item_kinds: StatDmgItemKinds, time_options: StatTimeOptions) -> StatDmg {
         self.sol
             .svc
-            .get_stat_fit_dps_raw(&self.sol.u_data, self.uid, item_kinds, reload, spool)
+            .get_stat_fit_dmg_raw(&self.sol.u_data, self.uid, item_kinds, time_options)
     }
-    pub fn get_stat_dps_applied(
+    pub fn get_stat_dmg_applied(
         &mut self,
         item_kinds: StatDmgItemKinds,
-        reload: bool,
-        spool: Option<Spool>,
+        time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgEntryApplied, FitStatAppliedError> {
+    ) -> Result<StatDmgApplied, FitStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         Ok(self
             .sol
             .svc
-            .get_stat_fit_dps_applied(&self.sol.u_data, self.uid, item_kinds, reload, spool, projectee_uid))
-    }
-    pub fn get_stat_volley(&mut self, item_kinds: StatDmgItemKinds, spool: Option<Spool>) -> StatDmgEntry {
-        self.sol
-            .svc
-            .get_stat_fit_volley_raw(&self.sol.u_data, self.uid, item_kinds, spool)
-    }
-    pub fn get_stat_volley_applied(
-        &mut self,
-        item_kinds: StatDmgItemKinds,
-        spool: Option<Spool>,
-        projectee_item_id: &ItemId,
-    ) -> Result<StatDmgEntryApplied, FitStatAppliedError> {
-        let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
-        Ok(self
-            .sol
-            .svc
-            .get_stat_fit_volley_applied(&self.sol.u_data, self.uid, item_kinds, spool, projectee_uid))
+            .get_stat_fit_dmg_applied(&self.sol.u_data, self.uid, item_kinds, time_options, projectee_uid))
     }
     pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds, time_options: StatTimeOptions) -> StatMining {
         self.sol
