@@ -1,6 +1,6 @@
 use crate::{
     err::basic::DmgError,
-    misc::Breacher,
+    misc::BreacherProfile,
     num::{PValue, UnitInterval, Value},
 };
 
@@ -10,10 +10,16 @@ pub struct DpsProfile {
     thermal: PValue,
     kinetic: PValue,
     explosive: PValue,
-    breacher: Option<Breacher>,
+    breacher: Option<BreacherProfile>,
 }
 impl DpsProfile {
-    pub fn new(em: PValue, thermal: PValue, kinetic: PValue, explosive: PValue, breacher: Option<Breacher>) -> Self {
+    pub fn new(
+        em: PValue,
+        thermal: PValue,
+        kinetic: PValue,
+        explosive: PValue,
+        breacher: Option<BreacherProfile>,
+    ) -> Self {
         Self {
             em,
             thermal,
@@ -27,7 +33,7 @@ impl DpsProfile {
         thermal: Value,
         kinetic: Value,
         explosive: Value,
-        breacher: Option<Breacher>,
+        breacher: Option<BreacherProfile>,
     ) -> Self {
         Self::new(
             PValue::from_value_clamped(em),
@@ -42,7 +48,7 @@ impl DpsProfile {
         thermal: Value,
         kinetic: Value,
         explosive: Value,
-        breacher: Option<Breacher>,
+        breacher: Option<BreacherProfile>,
     ) -> Result<Self, DpsProfileError> {
         let em = match em >= Value::ZERO {
             true => PValue::from_value_unchecked(em),
@@ -74,7 +80,7 @@ impl DpsProfile {
     pub fn get_explosive(&self) -> PValue {
         self.explosive
     }
-    pub fn get_breacher(&self) -> Option<Breacher> {
+    pub fn get_breacher(&self) -> Option<BreacherProfile> {
         self.breacher
     }
     pub(crate) fn deals_breacher_dps(&self) -> bool {

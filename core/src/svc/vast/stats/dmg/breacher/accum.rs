@@ -6,7 +6,6 @@ use crate::{
     num::{Count, PValue, UnitInterval},
     svc::{
         cycle::{CycleDataDur, CycleSeq},
-        output::OutputDmgBreacher,
         vast::StatDmgEntryBreacher,
     },
     util::RMap,
@@ -28,28 +27,28 @@ impl BreacherAccum {
     pub(in crate::svc::vast) fn new() -> Self {
         Self { data: RMap::new() }
     }
-    pub(in crate::svc::vast) fn add(&mut self, opc: OutputDmgBreacher, cseq: CycleSeq<CycleDataDur>) {
-        let ticks = match cseq_to_ticks(cseq, opc.tick_count) {
-            Some(ticks) => ticks,
-            None => return,
-        };
-        // Discard all finite effects here, since for now accumulator is used just for dps calcs
-        let ticks_loop = match ticks.get_loop() {
-            Some(ticks_loop) => ticks_loop,
-            None => return,
-        };
-        let aggr = AggrBreacher {
-            absolute_max: opc.absolute_max,
-            relative_max: opc.relative_max,
-            ticks: ticks_loop,
-        };
-        match self.data.entry(aggr) {
-            Entry::Occupied(_) => (),
-            Entry::Vacant(entry) => {
-                entry.insert(aggr.ticks.get_loop_len());
-            }
-        }
-    }
+    // pub(in crate::svc::vast) fn add(&mut self, opc: OutputDmgBreacher, cseq: CycleSeq<CycleDataDur>)
+    // {     let ticks = match cseq_to_ticks(cseq, opc.tick_count) {
+    //         Some(ticks) => ticks,
+    //         None => return,
+    //     };
+    //     // Discard all finite effects here, since for now accumulator is used just for dps calcs
+    //     let ticks_loop = match ticks.get_loop() {
+    //         Some(ticks_loop) => ticks_loop,
+    //         None => return,
+    //     };
+    //     let aggr = AggrBreacher {
+    //         absolute_max: opc.absolute_max,
+    //         relative_max: opc.relative_max,
+    //         ticks: ticks_loop,
+    //     };
+    //     match self.data.entry(aggr) {
+    //         Entry::Occupied(_) => (),
+    //         Entry::Vacant(entry) => {
+    //             entry.insert(aggr.ticks.get_loop_len());
+    //         }
+    //     }
+    // }
     pub(in crate::svc::vast) fn get_dps(&self) -> Option<StatDmgEntryBreacher> {
         if self.data.is_empty() {
             return None;

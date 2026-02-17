@@ -1,4 +1,4 @@
-use crate::{misc::DmgKinds, num::PValue, svc::output::OutputDmgBreacher};
+use crate::{misc::DmgKinds, num::PValue};
 
 pub struct StatDmg {
     pub dps: StatDmgEntry,
@@ -39,10 +39,6 @@ impl StatDmgEntryBreacher {
             relative_max: PValue::ZERO,
         }
     }
-    pub(in crate::svc::vast) fn stack_instance_output(&mut self, other: OutputDmgBreacher) {
-        self.absolute_max = self.absolute_max.max(other.absolute_max);
-        self.relative_max = self.relative_max.max(other.relative_max.into_pvalue());
-    }
     pub(in crate::svc::vast) fn nullified(self) -> Option<Self> {
         match self.absolute_max > PValue::FLOAT_TOLERANCE && self.relative_max > PValue::FLOAT_TOLERANCE {
             true => Some(self),
@@ -77,15 +73,6 @@ impl StatDmgEntryApplied {
             kinetic: normal.kinetic,
             explosive: normal.explosive,
             breacher,
-        }
-    }
-}
-
-impl StatDmgEntryBreacher {
-    pub(in crate::svc::vast) fn from_output(output: OutputDmgBreacher) -> Self {
-        Self {
-            absolute_max: output.absolute_max,
-            relative_max: output.relative_max.into_pvalue(),
         }
     }
 }

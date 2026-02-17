@@ -1,7 +1,6 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
-    misc::{AttrSpec, DmgKinds, Ecm, EffectSpec, MiningAmount},
-    nd::NEffectBreacherDmgGetter,
+    misc::{AttrSpec, Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
     num::{Count, PValue, SkillLevel, SlotIndex, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
@@ -122,7 +121,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mods_cap_consumers: RSet<UItemId>,
     // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<DmgKinds<PValue>>>,
-    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, NEffectBreacherDmgGetter>,
+    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<Breacher>>,
     // Stats-related - mining output
     pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
     pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,

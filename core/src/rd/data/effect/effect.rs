@@ -1,10 +1,7 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
-    misc::{DmgKinds, Ecm, MiningAmount},
-    nd::{
-        N_EFFECT_MAP, NEffectBreacherDmgGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter,
-        get_cap_consumer_base_opc,
-    },
+    misc::{Breacher, DmgKinds, Ecm, MiningAmount},
+    nd::{N_EFFECT_MAP, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter, get_cap_consumer_base_opc},
     num::PValue,
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
@@ -50,7 +47,7 @@ pub(crate) struct REffect {
     // Output getters/specs
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter>,
     pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<PValue>>>,
-    pub(crate) breacher_dmg_opc_getter: Option<NEffectBreacherDmgGetter>,
+    pub(crate) breacher_dmg_opc_spec: Option<REffectProjOpcSpec<Breacher>>,
     pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
     pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
@@ -85,7 +82,6 @@ impl REffect {
             calc_customizer: n_effect.and_then(|n| n.calc_customizer),
             modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
             dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
-            breacher_dmg_opc_getter: n_effect.and_then(|n| n.breacher_dmg_opc_getter),
             // Fields which depend on data not available during instantiation
             modifiers: Default::default(),
             stopped_effect_rids: Default::default(),
@@ -103,6 +99,7 @@ impl REffect {
             resist_attr_rid: Default::default(),
             is_active_with_duration: Default::default(),
             normal_dmg_opc_spec: Default::default(),
+            breacher_dmg_opc_spec: Default::default(),
             mining_ore_opc_spec: Default::default(),
             mining_ice_opc_spec: Default::default(),
             mining_gas_opc_spec: Default::default(),
@@ -193,6 +190,10 @@ impl REffect {
             }
             self.normal_dmg_opc_spec = n_effect
                 .normal_dmg_opc_spec
+                .as_ref()
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+            self.breacher_dmg_opc_spec = n_effect
+                .breacher_dmg_opc_spec
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
             self.mining_ore_opc_spec = n_effect

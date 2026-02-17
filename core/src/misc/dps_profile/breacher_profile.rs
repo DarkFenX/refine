@@ -4,11 +4,11 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub struct Breacher {
+pub struct BreacherProfile {
     absolute_max: PValue,
     relative_max: UnitInterval,
 }
-impl Breacher {
+impl BreacherProfile {
     pub fn new(absolute_max: PValue, relative_max: UnitInterval) -> Self {
         Self {
             absolute_max,
@@ -21,7 +21,7 @@ impl Breacher {
             UnitInterval::from_value_clamped(relative_max),
         )
     }
-    pub fn try_new(absolute_max: Value, relative_max: Value) -> Result<Self, BreacherError> {
+    pub fn try_new(absolute_max: Value, relative_max: Value) -> Result<Self, BreacherProfileError> {
         let absolute_max = match absolute_max >= Value::ZERO {
             true => PValue::from_value_unchecked(absolute_max),
             false => return Err(BreacherDmgError::Absolute(absolute_max).into()),
@@ -41,7 +41,7 @@ impl Breacher {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum BreacherError {
+pub enum BreacherProfileError {
     #[error("{0}")]
     InvalidValue(#[from] BreacherDmgError),
 }

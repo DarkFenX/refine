@@ -42,7 +42,7 @@ impl HDpsProfile {
     }
     pub(crate) fn into_core(self) -> rc::DpsProfile {
         let core_breacher = self.get_breacher().map(|(br_abs, br_rel)| {
-            rc::Breacher::new(
+            rc::BreacherProfile::new(
                 rc::PValue::from_f64_clamped(br_abs),
                 rc::UnitInterval::from_f64_clamped(br_rel),
             )

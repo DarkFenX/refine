@@ -4,9 +4,7 @@ pub(crate) use charge::{
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use data::get_cap_consumer_base_opc;
 pub(crate) use dmg_kind::NEffectDmgKind;
-pub(crate) use effect::{
-    NEffect, NEffectBreacherDmgGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter,
-};
+pub(crate) use effect::{NEffect, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter};
 pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use resist::NEffectResist;

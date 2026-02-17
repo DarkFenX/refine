@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
-    misc::{DmgKinds, Ecm, EffectSpec, MiningAmount},
+    misc::{Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::{
         NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter,
         NEffectSpoolAttrs,
@@ -11,7 +11,6 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
-        output::OutputDmgBreacher,
     },
     ud::{UItem, UItemId, UProjData},
     util::RMap,
@@ -29,8 +28,6 @@ pub(crate) type NEffectModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
 pub(crate) type NEffectProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> PValue;
 // Getters - damage output
 pub(crate) type NEffectDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
-pub(crate) type NEffectBreacherDmgGetter =
-    fn(SvcCtx, &mut Calc, UItemId, &REffect, Option<UItemId>) -> Option<OutputDmgBreacher>;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -56,7 +53,7 @@ pub(crate) struct NEffect {
     // Getters/specs - damage output
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter> = None,
     pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<PValue>>> = None,
-    pub(crate) breacher_dmg_opc_getter: Option<NEffectBreacherDmgGetter> = None,
+    pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<Breacher>> = None,
     // Getters/specs - mining
     pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
     pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,

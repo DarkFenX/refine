@@ -11,7 +11,7 @@ pub use crate::{
         IterItemModifiersError, RemoveFitRahIncomingDpsError, RemoveItemError, SetFitFleetError, SetSkillTypeIdError,
         UnsetFitFleetError,
     },
-    misc::{BreacherError, DpsProfileError},
+    misc::{BreacherProfileError, DpsProfileError},
     num::{FighterCountError, FitSecStatusError, SkillLevelError, UnitIntervalError},
     rd::SrcInitError,
 };

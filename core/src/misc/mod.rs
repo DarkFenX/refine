@@ -1,6 +1,7 @@
 pub(crate) use attr_spec::AttrSpec;
+pub(crate) use breacher::Breacher;
 pub(crate) use dmg_kinds::DmgKinds;
-pub use dps_profile::{Breacher, BreacherError, DpsProfile, DpsProfileError};
+pub use dps_profile::{BreacherProfile, BreacherProfileError, DpsProfile, DpsProfileError};
 pub(crate) use ecm::Ecm;
 pub use effect_mode::EffectMode;
 pub(crate) use effect_spec::EffectSpec;
@@ -17,6 +18,7 @@ pub use spool::{ItemSpoolInfo, Spool};
 pub(crate) use xyz::Xyz;
 
 mod attr_spec;
+mod breacher;
 mod dmg_kinds;
 mod dps_profile;
 mod ecm;

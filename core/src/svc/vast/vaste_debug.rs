@@ -356,8 +356,9 @@ impl VastFitData {
         }
         for (item_uid, item_data) in self.dmg_breacher.iter() {
             item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
+            for (effect_rid, ospec) in item_data.iter() {
                 effect_rid.consistency_check(u_data)?;
+                ospec.consistency_check(u_data)?;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////

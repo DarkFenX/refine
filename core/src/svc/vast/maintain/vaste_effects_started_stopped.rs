@@ -214,9 +214,9 @@ impl Vast {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.dmg_normal.add_entry(item_uid, effect.rid, dmg_ospec);
         }
-        if let Some(dmg_getter) = effect.breacher_dmg_opc_getter {
+        if let Some(dmg_ospec) = effect.breacher_dmg_opc_spec {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.dmg_breacher.add_entry(item_uid, effect.rid, dmg_getter);
+            fit_data.dmg_breacher.add_entry(item_uid, effect.rid, dmg_ospec);
         }
     }
     fn handle_dmg_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
@@ -224,7 +224,7 @@ impl Vast {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.dmg_normal.remove_l2(item_uid, &effect.rid);
         }
-        if effect.breacher_dmg_opc_getter.is_some() {
+        if effect.breacher_dmg_opc_spec.is_some() {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.dmg_breacher.remove_l2(item_uid, &effect.rid);
         }
