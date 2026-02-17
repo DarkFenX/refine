@@ -4,9 +4,10 @@ use super::timing_key::{CSeqPartTimingKey, TIME_ROUND_DIGITS};
 use crate::{
     num::PValue,
     svc::{
-        cycle::CycleSeq,
+        cycle::{CSeqInf, CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CycleSeq},
+        output::{Output, OutputComplex, OutputSimple},
         vast::{
-            aggr::AggrIterData,
+            aggr::{AggrIterData, AggrPartDataRegular},
             stats::cap::sim::{
                 event::{CapSimEvent, CapSimEventCycleCheck},
                 shared::Direction,
@@ -78,7 +79,24 @@ impl Merger {
     }
     fn merge_regular(mergeable: RMapVec<MergeKeyRegular, MergeEntry>, entries: &mut Vec<MergeEntry>) {
         for group_entries in mergeable.into_values() {
-            entries.extend(group_entries);
+            if group_entries.len() < 2 {
+                entries.extend(group_entries);
+                continue;
+            }
+            let mut group_iter = group_entries.into_iter();
+            let mut main_entry = group_iter.next().unwrap();
+            for secondary_entry in group_iter {
+                let success = match (&mut main_entry.iter_data, &secondary_entry.iter_data) {
+                    (AggrIterData::Regular(inner1), AggrIterData::Regular(inner2)) => {
+                        inner1.cseq.try_merge_instances(inner2.cseq)
+                    }
+                    _ => false,
+                };
+                if !success {
+                    entries.push(secondary_entry);
+                }
+            }
+            entries.push(main_entry);
         }
     }
     fn process_entries(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut BinaryHeap<CapSimEvent>) {
@@ -89,5 +107,101 @@ impl Merger {
                 direction,
             }))
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Necessary output impls
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Output<PValue> {
+    fn increase_instance(&mut self, increase: PValue) {
+        match self {
+            Output::Simple(inner) => inner.increase_instance(increase),
+            Output::Complex(inner) => inner.increase_instance(increase),
+        }
+    }
+}
+impl OutputSimple<PValue> {
+    fn increase_instance(&mut self, increase: PValue) {
+        self.instance += increase;
+    }
+}
+impl OutputComplex<PValue> {
+    fn increase_instance(&mut self, increase: PValue) {
+        self.instance += increase;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Necessary cycle sequence impls
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CycleSeq<AggrPartDataRegular<PValue>> {
+    fn try_merge_instances(&mut self, other: Self) -> bool {
+        match (self, other) {
+            (CycleSeq::Lim(inner1), CycleSeq::Lim(inner2)) => {
+                inner1.merge_instances(inner2);
+                true
+            }
+            (CycleSeq::Inf(inner1), CycleSeq::Inf(inner2)) => {
+                inner1.merge_instances(inner2);
+                true
+            }
+            (CycleSeq::LimInf(inner1), CycleSeq::LimInf(inner2)) => {
+                inner1.merge_instances(inner2);
+                true
+            }
+            (CycleSeq::LimSinInf(inner1), CycleSeq::LimSinInf(inner2)) => {
+                inner1.merge_instances(inner2);
+                true
+            }
+            (CycleSeq::LoopLimSin(inner1), CycleSeq::LoopLimSin(inner2)) => {
+                inner1.merge_instances(inner2);
+                true
+            }
+            _ => false,
+        }
+    }
+}
+impl CSeqLim<AggrPartDataRegular<PValue>> {
+    fn merge_instances(&mut self, other: Self) {
+        self.data.output.increase_instance(other.data.output.get_instance());
+    }
+}
+impl CSeqInf<AggrPartDataRegular<PValue>> {
+    fn merge_instances(&mut self, other: Self) {
+        self.data.output.increase_instance(other.data.output.get_instance());
+    }
+}
+impl CSeqLimInf<AggrPartDataRegular<PValue>> {
+    fn merge_instances(&mut self, other: Self) {
+        self.p1_data
+            .output
+            .increase_instance(other.p1_data.output.get_instance());
+        self.p2_data
+            .output
+            .increase_instance(other.p2_data.output.get_instance());
+    }
+}
+impl CSeqLimSinInf<AggrPartDataRegular<PValue>> {
+    fn merge_instances(&mut self, other: Self) {
+        self.p1_data
+            .output
+            .increase_instance(other.p1_data.output.get_instance());
+        self.p2_data
+            .output
+            .increase_instance(other.p2_data.output.get_instance());
+        self.p3_data
+            .output
+            .increase_instance(other.p3_data.output.get_instance());
+    }
+}
+impl CSeqLoopLimSin<AggrPartDataRegular<PValue>> {
+    fn merge_instances(&mut self, other: Self) {
+        self.p1_data
+            .output
+            .increase_instance(other.p1_data.output.get_instance());
+        self.p2_data
+            .output
+            .increase_instance(other.p2_data.output.get_instance());
     }
 }

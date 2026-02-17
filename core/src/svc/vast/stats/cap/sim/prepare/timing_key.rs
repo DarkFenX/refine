@@ -26,16 +26,16 @@ pub(super) struct CSeqPartTimingKey {
     pub(super) duration: PValue,
     output: OutputTimingKey,
 }
-impl<T: Copy> From<AggrPartDataRegular<T>> for CSeqPartTimingKey {
-    fn from(part_data: AggrPartDataRegular<T>) -> Self {
+impl From<AggrPartDataRegular<PValue>> for CSeqPartTimingKey {
+    fn from(part_data: AggrPartDataRegular<PValue>) -> Self {
         Self {
             duration: part_data.cycle_duration.sig_rounded(TIME_ROUND_DIGITS),
             output: OutputTimingKey::from_output(&part_data.output),
         }
     }
 }
-impl<T: Copy> From<AggrPartDataSpool<T>> for CSeqPartTimingKey {
-    fn from(part_data: AggrPartDataSpool<T>) -> Self {
+impl From<AggrPartDataSpool<PValue>> for CSeqPartTimingKey {
+    fn from(part_data: AggrPartDataSpool<PValue>) -> Self {
         Self {
             duration: part_data.cycle_duration.sig_rounded(TIME_ROUND_DIGITS),
             // This one is based on base output and will yield the same output key
@@ -53,7 +53,7 @@ enum OutputTimingKey {
     Complex(OutputTimingKeyComplex),
 }
 impl OutputTimingKey {
-    fn from_output<T: Copy>(output: &Output<T>) -> Self {
+    fn from_output(output: &Output<PValue>) -> Self {
         match output {
             Output::Simple(inner) => OutputTimingKey::Simple(OutputTimingKeySimple::from_output(inner)),
             Output::Complex(inner) => OutputTimingKey::Complex(OutputTimingKeyComplex::from_output(inner)),
@@ -66,7 +66,7 @@ struct OutputTimingKeySimple {
     delay: PValue,
 }
 impl OutputTimingKeySimple {
-    fn from_output<T: Copy>(output: &OutputSimple<T>) -> Self {
+    fn from_output(output: &OutputSimple<PValue>) -> Self {
         Self {
             delay: output.delay.sig_rounded(TIME_ROUND_DIGITS),
         }
@@ -80,7 +80,7 @@ struct OutputTimingKeyComplex {
     interval: PValue,
 }
 impl OutputTimingKeyComplex {
-    fn from_output<T: Copy>(output: &OutputComplex<T>) -> Self {
+    fn from_output(output: &OutputComplex<PValue>) -> Self {
         Self {
             delay: output.delay.sig_rounded(TIME_ROUND_DIGITS),
             repeats: output.repeats,

@@ -11,12 +11,12 @@ use crate::{
 // Part 2: runs once
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleSeqLoopLimSin<T> {
+pub(in crate::svc) struct CSeqLoopLimSin<T> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
 }
-impl<T> CycleSeqLoopLimSin<T> {
+impl<T> CSeqLoopLimSin<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
@@ -28,7 +28,7 @@ impl<T> CycleSeqLoopLimSin<T> {
         let p2_data_conv = U::from(self.p2_data);
         match p1_data_conv == p2_data_conv {
             true => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
-            false => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
+            false => CycleSeq::LoopLimSin(CSeqLoopLimSin {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
                 p2_data: p2_data_conv,
@@ -44,7 +44,7 @@ impl<T> CycleSeqLoopLimSin<T> {
         let p2_data_conv = converter.lib_convert(self.p2_data);
         match p1_data_conv == p2_data_conv {
             true => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
-            false => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
+            false => CycleSeq::LoopLimSin(CSeqLoopLimSin {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
                 p2_data: p2_data_conv,
@@ -52,7 +52,7 @@ impl<T> CycleSeqLoopLimSin<T> {
         }
     }
 }
-impl<T> CycleSeqLoopLimSin<T>
+impl<T> CSeqLoopLimSin<T>
 where
     T: Copy,
 {
@@ -74,11 +74,11 @@ where
 // Cycle iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CSeqLoopLimSinCycleIter<T> {
-    cseq: CycleSeqLoopLimSin<T>,
+    cseq: CSeqLoopLimSin<T>,
     p1_repeats_done: Count,
 }
 impl<T> CSeqLoopLimSinCycleIter<T> {
-    fn new(cseq: CycleSeqLoopLimSin<T>) -> Self {
+    fn new(cseq: CSeqLoopLimSin<T>) -> Self {
         Self {
             cseq,
             p1_repeats_done: Count::ZERO,
@@ -105,11 +105,11 @@ where
 // Sequence part iterators
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc) struct CSeqLoopLimSinPartIter<'a, T> {
-    cseq: &'a CycleSeqLoopLimSin<T>,
+    cseq: &'a CSeqLoopLimSin<T>,
     index: usize,
 }
 impl<'a, T> CSeqLoopLimSinPartIter<'a, T> {
-    fn new(cseq: &'a CycleSeqLoopLimSin<T>) -> Self {
+    fn new(cseq: &'a CSeqLoopLimSin<T>) -> Self {
         Self { cseq, index: 0 }
     }
 }
@@ -142,11 +142,11 @@ where
 }
 
 pub(in crate::svc) struct CSeqLoopedLoopLimSinPartIter<'a, T> {
-    cseq: &'a CycleSeqLoopLimSin<T>,
+    cseq: &'a CSeqLoopLimSin<T>,
     index: usize,
 }
 impl<'a, T> CSeqLoopedLoopLimSinPartIter<'a, T> {
-    fn new(cseq: &'a CycleSeqLoopLimSin<T>) -> Self {
+    fn new(cseq: &'a CSeqLoopLimSin<T>) -> Self {
         Self { cseq, index: 0 }
     }
 }

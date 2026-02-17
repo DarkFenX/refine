@@ -1,6 +1,6 @@
 use super::{
     seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
-    seq_loop_lim_sin::CycleSeqLoopLimSin,
+    seq_loop_lim_sin::CSeqLoopLimSin,
 };
 use crate::util::LibConverter;
 
@@ -10,7 +10,7 @@ pub(in crate::svc) enum CycleSeq<T> {
     Inf(CSeqInf<T>),
     LimInf(CSeqLimInf<T>),
     LimSinInf(CSeqLimSinInf<T>),
-    LoopLimSin(CycleSeqLoopLimSin<T>),
+    LoopLimSin(CSeqLoopLimSin<T>),
 }
 impl<T> CycleSeq<T>
 where
@@ -63,7 +63,7 @@ where
 
 pub(in crate::svc) enum CycleSeqLooped<T> {
     Inf(CSeqInf<T>),
-    LoopLimSin(CycleSeqLoopLimSin<T>),
+    LoopLimSin(CSeqLoopLimSin<T>),
 }
 impl<T> CycleSeqLooped<T> {
     pub(in crate::svc) fn get_first_cycle(&self) -> &T {

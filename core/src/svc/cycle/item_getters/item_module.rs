@@ -19,7 +19,7 @@ use crate::{
             seq_lim::CSeqLim,
             seq_lim_inf::CSeqLimInf,
             seq_lim_sin_inf::CSeqLimSinInf,
-            seq_loop_lim_sin::CycleSeqLoopLimSin,
+            seq_loop_lim_sin::CSeqLoopLimSin,
         },
         funcs,
     },
@@ -342,7 +342,7 @@ fn full_r(
                 chargedness: Some(UnitInterval::ONE),
             },
         }),
-        _ => CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
+        _ => CycleSeq::LoopLimSin(CSeqLoopLimSin {
             p1_data: CycleDataFull {
                 duration: duration + cooldown,
                 interrupt: CycleInterrupt::try_new(int_cd, false),
@@ -368,7 +368,7 @@ fn both_r(
     full_count: Count,
     chargedness: Option<UnitInterval>,
 ) -> CycleSeq<CycleDataFull> {
-    CycleSeq::LoopLimSin(CycleSeqLoopLimSin {
+    CycleSeq::LoopLimSin(CSeqLoopLimSin {
         p1_data: CycleDataFull {
             duration: duration + cooldown,
             interrupt: CycleInterrupt::try_new(int_cd, false),

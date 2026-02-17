@@ -3,6 +3,11 @@ pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_
 pub(in crate::svc) use iter_cycle::CycleIter;
 pub(in crate::svc) use iter_part::{CSeqLoopedPart, CSeqPart, CSeqPartIter, CSeqParts};
 pub(in crate::svc) use seq::{CycleSeq, CycleSeqLooped};
+pub(in crate::svc) use seq_inf::CSeqInf;
+pub(in crate::svc) use seq_lim::CSeqLim;
+pub(in crate::svc) use seq_lim_inf::CSeqLimInf;
+pub(in crate::svc) use seq_lim_sin_inf::CSeqLimSinInf;
+pub(in crate::svc) use seq_loop_lim_sin::CSeqLoopLimSin;
 
 mod data;
 mod effect_charge_info;
