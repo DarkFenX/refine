@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use crate::{
     ad::AAbilId,
@@ -28,6 +28,8 @@ impl<'iter, 'lend> Lending<'lend> for AbilityIter<'iter> {
     type Lend = AbilityMut<'lend>;
 }
 impl<'iter> Lender for AbilityIter<'iter> {
+    check_covariance!();
+
     fn next(&mut self) -> Option<AbilityMut<'_>> {
         let abil_aid = *self.abil_aids.get(self.index)?;
         self.index += 1;

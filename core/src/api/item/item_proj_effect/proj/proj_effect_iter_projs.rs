@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use crate::{
     api::{Proj, ProjEffect, ProjEffectMut, ProjMut, iter_projectee_uids},
@@ -27,6 +27,8 @@ impl<'iter, 'lend> Lending<'lend> for ProjIter<'iter> {
     type Lend = ProjMut<'lend>;
 }
 impl<'iter> Lender for ProjIter<'iter> {
+    check_covariance!();
+
     fn next(&mut self) -> Option<ProjMut<'_>> {
         let projectee_uid = *self.projectee_uids.get(self.index)?;
         self.index += 1;

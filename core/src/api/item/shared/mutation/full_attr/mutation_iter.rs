@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use crate::{
     ad::AAttrId,
@@ -47,6 +47,8 @@ impl<'iter, 'lend> Lending<'lend> for FullMAttrIter<'iter> {
     type Lend = FullMAttrMut<'lend>;
 }
 impl<'iter> Lender for FullMAttrIter<'iter> {
+    check_covariance!();
+
     fn next(&mut self) -> Option<FullMAttrMut<'_>> {
         let attr_aid = *self.attr_aids.get(self.index)?;
         self.index += 1;

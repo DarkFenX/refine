@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use super::shared::get_se_chance_attr_aid_by_effect_rid;
 use crate::{
@@ -29,6 +29,8 @@ impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
     type Lend = FullSideEffectMut<'lend>;
 }
 impl<'iter> Lender for SideEffectIter<'iter> {
+    check_covariance!();
+
     fn next(&mut self) -> Option<FullSideEffectMut<'_>> {
         let (effect_id, attr_id) = *self.effects_with_chances.get(self.index)?;
         self.index += 1;

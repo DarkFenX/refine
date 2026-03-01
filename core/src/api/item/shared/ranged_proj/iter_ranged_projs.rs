@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use crate::{
     api::{RangedProj, RangedProjMut, iter_projectee_uids},
@@ -28,6 +28,8 @@ impl<'iter, 'lend> Lending<'lend> for RangedProjIter<'iter> {
     type Lend = RangedProjMut<'lend>;
 }
 impl<'iter> Lender for RangedProjIter<'iter> {
+    check_covariance!();
+
     fn next(&mut self) -> Option<RangedProjMut<'_>> {
         let projectee_uid = *self.projectee_uids.get(self.index)?;
         self.index += 1;

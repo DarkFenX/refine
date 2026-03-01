@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use super::{
     rah_data_sim::RahDataSim,
@@ -52,6 +52,8 @@ impl<'lend> Lending<'lend> for RahSimTickIter {
     type Lend = RahSimTickData<'lend>;
 }
 impl Lender for RahSimTickIter {
+    check_covariance!();
+
     fn next(&mut self) -> Option<RahSimTickData<'_>> {
         if self.tick >= TICK_LIMIT {
             return None;

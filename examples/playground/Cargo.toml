@@ -8,7 +8,7 @@ edition = "2024"
 rc = { package = "refine-core", path = "../../core" }
 redh = { package = "refine-edh", path = "../../data-handler", features = ["phb-file"] }
 radc = { package = "refine-adc", path = "../../data-cacher", features = ["json-zfile"] }
-chrono = ">=0.4.43"
+chrono = ">=0.4.44"
 itertools = ">=0.14.0"
 time = { version = ">=0.3.47", features = ["macros"] }
 tracing = ">=0.1.44"

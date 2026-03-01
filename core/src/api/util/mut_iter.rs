@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use crate::{
     api::{
@@ -41,6 +41,8 @@ impl<'iter, T> Lender for MutIter<'iter, T>
 where
     T: New,
 {
+    check_covariance!();
+
     fn next(&mut self) -> Option<<T as RefFamily>::Ref<'_>> {
         let uid = *self.uids.get(self.index)?;
         self.index += 1;

@@ -1,4 +1,4 @@
-use lender::{Lender, Lending};
+use lender::{Lender, Lending, check_covariance};
 
 use super::shared::get_fit_rack;
 use crate::{
@@ -26,6 +26,8 @@ impl<'iter, 'lend> Lending<'lend> for ModuleIter<'iter> {
     type Lend = Option<ModuleMut<'lend>>;
 }
 impl<'iter> Lender for ModuleIter<'iter> {
+    check_covariance!();
+
     fn next(&mut self) -> Option<Option<ModuleMut<'_>>> {
         let module_uid = *self.module_uids.get(self.index)?;
         self.index += 1;
