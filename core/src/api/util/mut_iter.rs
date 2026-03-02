@@ -1,4 +1,4 @@
-use lender::{Lender, Lending, check_covariance};
+use lender::{Lender, Lending, unsafe_assume_covariance};
 
 use crate::{
     api::{
@@ -25,7 +25,7 @@ where
     pub(in crate::api) fn new(sol: &'this mut SolarSystem, uids: Vec<T::UId>) -> Self {
         Self {
             sol,
-            uids: uids,
+            uids,
             index: 0,
             phantom: std::marker::PhantomData,
         }
@@ -41,7 +41,7 @@ impl<'iter, T> Lender for MutIter<'iter, T>
 where
     T: New,
 {
-    check_covariance!();
+    unsafe_assume_covariance!();
 
     fn next(&mut self) -> Option<<T as RefFamily>::Ref<'_>> {
         let uid = *self.uids.get(self.index)?;
@@ -52,6 +52,7 @@ where
 
 pub trait RefFamily {
     type Ref<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short>;
 }
 pub(crate) trait New: RefFamily {
     type UId: Copy;
@@ -61,6 +62,9 @@ pub(crate) trait New: RefFamily {
 // Implementations for non-item entities
 impl RefFamily for FleetMut<'_> {
     type Ref<'a> = FleetMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for FleetMut<'_> {
     type UId = UFleetId;
@@ -70,6 +74,9 @@ impl New for FleetMut<'_> {
 }
 impl RefFamily for FitMut<'_> {
     type Ref<'a> = FitMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for FitMut<'_> {
     type UId = UFitId;
@@ -80,6 +87,9 @@ impl New for FitMut<'_> {
 // Implementations for items
 impl RefFamily for AutochargeMut<'_> {
     type Ref<'a> = AutochargeMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for AutochargeMut<'_> {
     type UId = UItemId;
@@ -89,6 +99,9 @@ impl New for AutochargeMut<'_> {
 }
 impl RefFamily for BoosterMut<'_> {
     type Ref<'a> = BoosterMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for BoosterMut<'_> {
     type UId = UItemId;
@@ -98,6 +111,9 @@ impl New for BoosterMut<'_> {
 }
 impl RefFamily for DroneMut<'_> {
     type Ref<'a> = DroneMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for DroneMut<'_> {
     type UId = UItemId;
@@ -107,6 +123,9 @@ impl New for DroneMut<'_> {
 }
 impl RefFamily for FighterMut<'_> {
     type Ref<'a> = FighterMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for FighterMut<'_> {
     type UId = UItemId;
@@ -116,6 +135,9 @@ impl New for FighterMut<'_> {
 }
 impl RefFamily for FwEffectMut<'_> {
     type Ref<'a> = FwEffectMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for FwEffectMut<'_> {
     type UId = UItemId;
@@ -125,6 +147,9 @@ impl New for FwEffectMut<'_> {
 }
 impl RefFamily for ImplantMut<'_> {
     type Ref<'a> = ImplantMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for ImplantMut<'_> {
     type UId = UItemId;
@@ -134,6 +159,9 @@ impl New for ImplantMut<'_> {
 }
 impl RefFamily for ProjEffectMut<'_> {
     type Ref<'a> = ProjEffectMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for ProjEffectMut<'_> {
     type UId = UItemId;
@@ -143,6 +171,9 @@ impl New for ProjEffectMut<'_> {
 }
 impl RefFamily for RigMut<'_> {
     type Ref<'a> = RigMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for RigMut<'_> {
     type UId = UItemId;
@@ -152,6 +183,9 @@ impl New for RigMut<'_> {
 }
 impl RefFamily for ServiceMut<'_> {
     type Ref<'a> = ServiceMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for ServiceMut<'_> {
     type UId = UItemId;
@@ -161,6 +195,9 @@ impl New for ServiceMut<'_> {
 }
 impl RefFamily for SkillMut<'_> {
     type Ref<'a> = SkillMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for SkillMut<'_> {
     type UId = UItemId;
@@ -170,6 +207,9 @@ impl New for SkillMut<'_> {
 }
 impl RefFamily for SubsystemMut<'_> {
     type Ref<'a> = SubsystemMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for SubsystemMut<'_> {
     type UId = UItemId;
@@ -179,6 +219,9 @@ impl New for SubsystemMut<'_> {
 }
 impl RefFamily for SwEffectMut<'_> {
     type Ref<'a> = SwEffectMut<'a>;
+    fn __covariance_check<'long: 'short, 'short>(p: *const Self::Ref<'long>) -> *const Self::Ref<'short> {
+        p
+    }
 }
 impl New for SwEffectMut<'_> {
     type UId = UItemId;
