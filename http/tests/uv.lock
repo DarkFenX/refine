@@ -161,7 +161,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest-httpserver", specifier = ">=1.1.4" },
+    { name = "pytest-httpserver", specifier = ">=1.1.5" },
     { name = "requests", specifier = ">=2.32.5" },
 ]
 
