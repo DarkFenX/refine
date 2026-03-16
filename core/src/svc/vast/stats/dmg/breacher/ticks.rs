@@ -1,231 +1,86 @@
 use crate::num::Count;
 
-// In designations, first letter:
-// - L - limited
-// - I - infinite
-// Second letter:
-// - S - simple - single damage tick
-// - C - complex - set count of damage ticks + set count of ticks without damage
-
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) enum AggrBreacherTicks {
-    Ls(AbtLs),
-    Lc(AbtLc),
-    Is(AbtIs),
-    Ic(AbtIc),
-    LcIc(AbtLcIc),
-    LcLcIc(AbtLcLcIc),
-    LoopLcLc(AbtLoopLcLc),
+    Infinite(AbtInfinite),
+    CycleSimple(AbtCycleSimple),
+    CycleComplex(AbtCycleComplex),
 }
 impl AggrBreacherTicks {
-    pub(super) fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        match &self {
-            Self::Ls(inner) => inner.get_loop(),
-            Self::Lc(inner) => inner.get_loop(),
-            Self::Is(inner) => inner.get_loop(),
-            Self::Ic(inner) => inner.get_loop(),
-            Self::LcIc(inner) => inner.get_loop(),
-            Self::LcLcIc(inner) => inner.get_loop(),
-            Self::LoopLcLc(inner) => inner.get_loop(),
+    pub(super) fn get_initial_delay(&self) -> Count {
+        match self {
+            Self::Infinite(inner) => inner.get_initial_delay(),
+            Self::CycleSimple(inner) => inner.get_initial_delay(),
+            Self::CycleComplex(inner) => inner.get_initial_delay(),
         }
     }
-    pub(super) fn is_applied_on_tick(&self, tick: Count) -> bool {
-        match &self {
-            Self::Ls(inner) => inner.is_applied_on_tick(tick),
-            Self::Lc(inner) => inner.is_applied_on_tick(tick),
-            Self::Is(inner) => inner.is_applied_on_tick(tick),
-            Self::Ic(inner) => inner.is_applied_on_tick(tick),
-            Self::LcIc(inner) => inner.is_applied_on_tick(tick),
-            Self::LcLcIc(inner) => inner.is_applied_on_tick(tick),
-            Self::LoopLcLc(inner) => inner.is_applied_on_tick(tick),
-        }
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) enum AggrBreacherTicksLooped {
-    Is(AbtIs),
-    Ic(AbtIc),
-    LoopLcLc(AbtLoopLcLc),
-}
-impl AggrBreacherTicksLooped {
     pub(super) fn get_loop_len(&self) -> Count {
-        match &self {
-            Self::Is(inner) => inner.get_loop_len(),
-            Self::Ic(inner) => inner.get_loop_len(),
-            Self::LoopLcLc(inner) => inner.get_loop_len(),
-        }
-    }
-    pub(super) fn is_applied_on_tick(&self, tick: Count) -> bool {
-        match &self {
-            Self::Is(inner) => inner.is_applied_on_tick(tick),
-            Self::Ic(inner) => inner.is_applied_on_tick(tick),
-            Self::LoopLcLc(inner) => inner.is_applied_on_tick(tick),
+        match self {
+            Self::Infinite(inner) => inner.get_loop_len(),
+            Self::CycleSimple(inner) => inner.get_loop_len(),
+            Self::CycleComplex(inner) => inner.get_loop_len(),
         }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Enum element definitions
+// Cycle: infinite damage ticks
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtLs {
-    pub(super) count: Count,
+pub(super) struct AbtInfinite {
+    pub(super) initial_delay: Count,
 }
-impl AbtLs {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        None
-    }
-    fn is_applied_on_tick(&self, tick: Count) -> bool {
-        tick < self.count
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtLc {
-    pub(super) dmg_tick_count: Count,
-    pub(super) tick_count: Count,
-    pub(super) repeat_count: Count,
-}
-impl AbtLc {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        None
-    }
-    fn is_applied_on_tick(&self, tick: Count) -> bool {
-        if tick / self.tick_count >= self.repeat_count {
-            return false;
-        };
-        let tick = tick % self.tick_count;
-        tick < self.dmg_tick_count
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtIs {}
-impl AbtIs {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        Some(AggrBreacherTicksLooped::Is(*self))
+impl AbtInfinite {
+    fn get_initial_delay(&self) -> Count {
+        self.initial_delay
     }
     fn get_loop_len(&self) -> Count {
         Count::ONE
     }
-    fn is_applied_on_tick(&self, _tick: Count) -> bool {
-        true
-    }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cycle:
+// - damage ticks
+// - gap ticks
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtIc {
-    pub(super) dmg_tick_count: Count,
-    pub(super) tick_count: Count,
+pub(super) struct AbtCycleSimple {
+    pub(super) initial_delay: Count,
+    pub(super) cycle_dmg: Count,
+    pub(super) cycle_total: Count,
 }
-impl AbtIc {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        Some(AggrBreacherTicksLooped::Ic(*self))
+impl AbtCycleSimple {
+    fn get_initial_delay(&self) -> Count {
+        self.initial_delay
     }
     fn get_loop_len(&self) -> Count {
-        self.tick_count
-    }
-    fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let tick = tick % self.tick_count;
-        tick < self.dmg_tick_count
+        self.cycle_total
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cycle:
+// - repeated N times:
+//   - damage ticks
+//   - gap ticks
+// - damage ticks
+// - gap ticks
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtLcIc {
-    pub(super) p1_dmg_tick_count: Count,
-    pub(super) p1_tick_count: Count,
-    pub(super) p1_repeat_count: Count,
-    pub(super) p2_dmg_tick_count: Count,
-    pub(super) p2_tick_count: Count,
+pub(super) struct AbtCycleComplex {
+    pub(super) initial_delay: Count,
+    pub(super) cycle_p1_dmg: Count,
+    pub(super) cycle_p1_total: Count,
+    pub(super) cycle_p1_repeats: Count,
+    pub(super) cycle_p2_dmg: Count,
+    pub(super) cycle_p2_total: Count,
 }
-impl AbtLcIc {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        match self.p2_dmg_tick_count >= self.p2_tick_count {
-            true => Some(AggrBreacherTicksLooped::Is(AbtIs {})),
-            false => Some(AggrBreacherTicksLooped::Ic(AbtIc {
-                dmg_tick_count: self.p2_dmg_tick_count,
-                tick_count: self.p2_tick_count,
-            })),
-        }
-    }
-    fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let p1_total_ticks = self.p1_tick_count * self.p1_repeat_count;
-        if tick < p1_total_ticks {
-            let tick = tick % self.p1_tick_count;
-            return tick < self.p1_dmg_tick_count;
-        }
-        let tick = tick - p1_total_ticks;
-        let tick = tick % self.p2_tick_count;
-        tick < self.p2_dmg_tick_count
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtLcLcIc {
-    pub(super) p1_dmg_tick_count: Count,
-    pub(super) p1_tick_count: Count,
-    pub(super) p1_repeat_count: Count,
-    pub(super) p2_dmg_tick_count: Count,
-    pub(super) p2_tick_count: Count,
-    pub(super) p2_repeat_count: Count,
-    pub(super) p3_dmg_tick_count: Count,
-    pub(super) p3_tick_count: Count,
-}
-impl AbtLcLcIc {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        match self.p3_dmg_tick_count >= self.p3_tick_count {
-            true => Some(AggrBreacherTicksLooped::Is(AbtIs {})),
-            false => Some(AggrBreacherTicksLooped::Ic(AbtIc {
-                dmg_tick_count: self.p3_dmg_tick_count,
-                tick_count: self.p3_tick_count,
-            })),
-        }
-    }
-    fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let p1_total_ticks = self.p1_tick_count * self.p1_repeat_count;
-        if tick < p1_total_ticks {
-            let tick = tick % self.p1_tick_count;
-            return tick < self.p1_dmg_tick_count;
-        }
-        let tick = tick - p1_total_ticks;
-        let p2_total_ticks = self.p2_tick_count * self.p2_repeat_count;
-        if tick < p2_total_ticks {
-            let tick = tick % self.p2_tick_count;
-            return tick < self.p2_dmg_tick_count;
-        }
-        let tick = tick - p2_total_ticks;
-        let tick = tick % self.p3_tick_count;
-        tick < self.p3_dmg_tick_count
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) struct AbtLoopLcLc {
-    pub(super) p1_dmg_tick_count: Count,
-    pub(super) p1_tick_count: Count,
-    pub(super) p1_repeat_count: Count,
-    pub(super) p2_dmg_tick_count: Count,
-    pub(super) p2_tick_count: Count,
-    pub(super) p2_repeat_count: Count,
-}
-impl AbtLoopLcLc {
-    fn get_loop(&self) -> Option<AggrBreacherTicksLooped> {
-        Some(AggrBreacherTicksLooped::LoopLcLc(*self))
+impl AbtCycleComplex {
+    fn get_initial_delay(&self) -> Count {
+        self.initial_delay
     }
     fn get_loop_len(&self) -> Count {
-        self.p1_tick_count * self.p1_repeat_count + self.p2_tick_count * self.p2_repeat_count
-    }
-    fn is_applied_on_tick(&self, tick: Count) -> bool {
-        let p1_total_ticks = self.p1_tick_count * self.p1_repeat_count;
-        let p2_total_ticks = self.p2_tick_count * self.p2_repeat_count;
-        let total_ticks = p1_total_ticks + p2_total_ticks;
-        let tick = tick % total_ticks;
-        if tick < p1_total_ticks {
-            let tick = tick % self.p1_tick_count;
-            return tick < self.p1_dmg_tick_count;
-        }
-        let tick = (tick - p1_total_ticks) % self.p2_tick_count;
-        tick < self.p2_dmg_tick_count
+        self.cycle_p1_total * self.cycle_p1_repeats + self.cycle_p2_total
     }
 }
