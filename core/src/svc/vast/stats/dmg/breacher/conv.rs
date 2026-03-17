@@ -1,7 +1,10 @@
-use super::ticks::{AbtCycleComplex, AbtCycleSimple, AbtInfinite, AggrBreacherTicks};
+use super::{
+    shared::duration_to_ticks_ceil,
+    ticks::{AbtCycleComplex, AbtCycleSimple, AbtInfinite, AggrBreacherTicks},
+};
 use crate::{
     misc::Breacher,
-    num::{Count, PValue},
+    num::Count,
     svc::{
         cycle::{CycleDataDur, CycleSeq},
         output::Output,
@@ -25,9 +28,9 @@ pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataDur>, output: Output<Breache
     // (which is degenerate case of looped limited-single cycle sequence)
     match cseq {
         CycleSeq::LoopLimSin(inner) => {
-            let delay_ticks = duration_to_ticks(output.delay);
-            let cycle_p1_ticks = duration_to_ticks(inner.p1_data.duration);
-            let cycle_p2_ticks = duration_to_ticks(inner.p2_data.duration);
+            let delay_ticks = duration_to_ticks_ceil(output.delay);
+            let cycle_p1_ticks = duration_to_ticks_ceil(inner.p1_data.duration);
+            let cycle_p2_ticks = duration_to_ticks_ceil(inner.p2_data.duration);
             match (output_ticks >= cycle_p1_ticks, output_ticks >= cycle_p2_ticks) {
                 (true, true) => Some(AggrBreacherTicks::Infinite(AbtInfinite {
                     initial_delay: delay_ticks,
@@ -48,8 +51,8 @@ pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataDur>, output: Output<Breache
             }
         }
         CycleSeq::Inf(inner) => {
-            let delay_ticks = duration_to_ticks(output.delay);
-            let cycle_ticks = duration_to_ticks(inner.data.duration);
+            let delay_ticks = duration_to_ticks_ceil(output.delay);
+            let cycle_ticks = duration_to_ticks_ceil(inner.data.duration);
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::Infinite(AbtInfinite {
                     initial_delay: delay_ticks,
@@ -63,8 +66,4 @@ pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataDur>, output: Output<Breache
         }
         _ => None,
     }
-}
-
-fn duration_to_ticks(duration: PValue) -> Count {
-    Count::from_pvalue_ceiled(duration * PValue::SERVER_TICK_HZ)
 }

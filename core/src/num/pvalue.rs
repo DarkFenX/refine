@@ -3,7 +3,7 @@ use ordered_float::OrderedFloat;
 use crate::{
     ad::AValue,
     dbg::{DebugError, DebugResult},
-    def::SERVER_TICK_HZ,
+    def::{SERVER_TICK_HZ, SERVER_TICK_S},
     num::{Count, Value},
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
 };
@@ -32,6 +32,7 @@ impl PValue {
     pub(crate) const TEN: Self = Self(10.0);
     pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
     pub(crate) const SERVER_TICK_HZ: Self = Self::from_f64_clamped(SERVER_TICK_HZ as f64);
+    pub(crate) const SERVER_TICK_S: Self = Self::from_f64_clamped(SERVER_TICK_S);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
