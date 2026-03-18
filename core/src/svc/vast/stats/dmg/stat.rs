@@ -15,7 +15,7 @@ pub struct StatDmgEntry {
     pub thermal: PValue,
     pub kinetic: PValue,
     pub explosive: PValue,
-    pub breacher: Option<StatDmgEntryBreacher>,
+    pub breacher: StatDmgEntryBreacher,
 }
 
 pub struct StatDmgEntryApplied {
@@ -23,7 +23,7 @@ pub struct StatDmgEntryApplied {
     pub thermal: PValue,
     pub kinetic: PValue,
     pub explosive: PValue,
-    pub breacher: Option<PValue>,
+    pub breacher: PValue,
 }
 
 pub struct StatDmgEntryBreacher {
@@ -39,34 +39,25 @@ impl StatDmgEntryBreacher {
             relative_max: PValue::ZERO,
         }
     }
-    pub(in crate::svc::vast) fn nullified(self) -> Option<Self> {
-        match self.absolute_max > PValue::FLOAT_TOLERANCE && self.relative_max > PValue::FLOAT_TOLERANCE {
-            true => Some(self),
-            false => None,
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatDmgEntry {
-    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: Option<StatDmgEntryBreacher>) -> Self {
+    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: StatDmgEntryBreacher) -> Self {
         Self {
             em: normal.em,
             thermal: normal.thermal,
             kinetic: normal.kinetic,
             explosive: normal.explosive,
-            breacher: match breacher {
-                Some(breacher) => breacher.nullified(),
-                _ => None,
-            },
+            breacher,
         }
     }
 }
 
 impl StatDmgEntryApplied {
-    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: Option<PValue>) -> Self {
+    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: PValue) -> Self {
         Self {
             em: normal.em,
             thermal: normal.thermal,

@@ -7,7 +7,7 @@ pub(crate) struct HStatDmgEntry {
     thermal: f64,
     kinetic: f64,
     explosive: f64,
-    breacher: Option<HStatDmgEntryBreacher>,
+    breacher: HStatDmgEntryBreacher,
 }
 
 #[derive(Serialize)]
@@ -33,7 +33,7 @@ impl HStatDmgEntry {
             thermal: core_stat.thermal.into_f64(),
             kinetic: core_stat.kinetic.into_f64(),
             explosive: core_stat.explosive.into_f64(),
-            breacher: core_stat.breacher.map(HStatDmgEntryBreacher::from_core),
+            breacher: HStatDmgEntryBreacher::from_core(core_stat.breacher),
         }
     }
     pub(crate) fn from_core_applied(core_stat: rc::stats::StatDmgEntryApplied) -> Self {
@@ -42,7 +42,7 @@ impl HStatDmgEntry {
             thermal: core_stat.thermal.into_f64(),
             kinetic: core_stat.kinetic.into_f64(),
             explosive: core_stat.explosive.into_f64(),
-            breacher: core_stat.breacher.map(HStatDmgEntryBreacher::from_core_applied),
+            breacher: HStatDmgEntryBreacher::from_core_applied(core_stat.breacher),
         }
     }
 }
