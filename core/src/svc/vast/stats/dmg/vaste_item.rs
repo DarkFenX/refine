@@ -219,9 +219,9 @@ impl Vast {
                     *volley_normal += accum.instances.max;
                     *dps_normal += accum.get_per_second();
                 }
-                if let Some(ospec) = &effect.breacher_dmg_opc_spec {
-                    breacher_accum.add(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid);
-                }
+            }
+            if let Some(ospec) = &effect.breacher_dmg_opc_spec {
+                breacher_accum.add(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid);
             }
         }
         if include_charges {
