@@ -118,7 +118,8 @@ def test_stacking_complex_realistic(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [StatsOptionFitDps(reload=True)])))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     assert api_fleet_stats.dps.one().breacher == [approx(199.838384), approx(0.007493939)]
 
 
@@ -147,12 +148,12 @@ def test_stacking_complex_different_multiple_downtimes(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst.breacher == [approx(500), approx(0.0025)]
     assert api_fleet_dps_reload.breacher == [approx(476.190476), approx(0.002380952)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst.breacher == [approx(500), approx(0.0025)]
     assert api_fit_dps_reload.breacher == [approx(476.190476), approx(0.002380952)]
@@ -160,12 +161,12 @@ def test_stacking_complex_different_multiple_downtimes(client, consts):
     api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst.breacher == [approx(625), approx(0.00625)]
     assert api_fleet_dps_reload.breacher == [approx(599.206349), approx(0.005992063)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst.breacher == [approx(625), approx(0.00625)]
     assert api_fit_dps_reload.breacher == [approx(599.206349), approx(0.005992063)]
@@ -173,12 +174,12 @@ def test_stacking_complex_different_multiple_downtimes(client, consts):
     api_module1.remove()
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
     assert api_fleet_dps_burst.breacher == [approx(250), approx(0.005)]
     assert api_fleet_dps_reload.breacher == [approx(238.095238), approx(0.004761905)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(reload=True)])))
+        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
     api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
     assert api_fit_dps_burst.breacher == [approx(250), approx(0.005)]
     assert api_fit_dps_reload.breacher == [approx(238.095238), approx(0.004761905)]
