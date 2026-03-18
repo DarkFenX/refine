@@ -43,19 +43,19 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
-    assert api_fleet_stats.dps.one().breacher is None
-    assert api_fleet_stats.volley.one().breacher is None
+    assert api_fleet_stats.dps.one().breacher == [0, 0]
+    assert api_fleet_stats.volley.one().breacher == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one().breacher is None
-    assert api_fit_stats.volley.one().breacher is None
+    assert api_fit_stats.dps.one().breacher == [0, 0]
+    assert api_fit_stats.volley.one().breacher == [0, 0]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(ignore_state=True)]),
         volley=(True, [StatsOptionItemVolley(), StatsOptionItemVolley(ignore_state=True)])))
     api_charge_dps_normal, api_charge_dps_ignored = api_charge_stats.dps
-    assert api_charge_dps_normal.breacher is None
+    assert api_charge_dps_normal.breacher == [0, 0]
     assert api_charge_dps_ignored.breacher == [approx(1000), approx(0.01)]
     api_charge_volley_normal, api_charge_volley_ignored = api_charge_stats.volley
-    assert api_charge_volley_normal.breacher is None
+    assert api_charge_volley_normal.breacher == [0, 0]
     assert api_charge_volley_ignored.breacher == [approx(1000), approx(0.01)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
@@ -209,11 +209,11 @@ def test_item_kind(client, consts):
             StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
     api_fleet_dps_default, api_fleet_dps_disabled, api_fleet_dps_enabled = api_fleet_stats.dps
     assert api_fleet_dps_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fleet_dps_disabled.breacher is None
+    assert api_fleet_dps_disabled.breacher == [0, 0]
     assert api_fleet_dps_enabled.breacher == [approx(1000), approx(0.01)]
     api_fleet_volley_default, api_fleet_volley_disabled, api_fleet_volley_enabled = api_fleet_stats.volley
     assert api_fleet_volley_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fleet_volley_disabled.breacher is None
+    assert api_fleet_volley_disabled.breacher == [0, 0]
     assert api_fleet_volley_enabled.breacher == [approx(1000), approx(0.01)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
@@ -226,11 +226,11 @@ def test_item_kind(client, consts):
             StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
     api_fit_dps_default, api_fit_dps_disabled, api_fit_dps_enabled = api_fit_stats.dps
     assert api_fit_dps_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fit_dps_disabled.breacher is None
+    assert api_fit_dps_disabled.breacher == [0, 0]
     assert api_fit_dps_enabled.breacher == [approx(1000), approx(0.01)]
     api_fit_volley_default, api_fit_volley_disabled, api_fit_volley_enabled = api_fit_stats.volley
     assert api_fit_volley_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fit_volley_disabled.breacher is None
+    assert api_fit_volley_disabled.breacher == [0, 0]
     assert api_fit_volley_enabled.breacher == [approx(1000), approx(0.01)]
 
 
@@ -253,10 +253,10 @@ def test_include_charges(client, consts):
         dps=(True, [StatsOptionItemDps(include_charges=False), StatsOptionItemDps(include_charges=True)]),
         volley=(True, [StatsOptionItemVolley(include_charges=False), StatsOptionItemVolley(include_charges=True)])))
     api_module_dps_without, api_module_dps_with = api_module_stats.dps
-    assert api_module_dps_without.breacher is None
+    assert api_module_dps_without.breacher == [0, 0]
     assert api_module_dps_with.breacher == [approx(1000), approx(0.01)]
     api_module_volley_without, api_module_volley_with = api_module_stats.volley
-    assert api_module_volley_without.breacher is None
+    assert api_module_volley_without.breacher == [0, 0]
     assert api_module_volley_with.breacher == [approx(1000), approx(0.01)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(include_charges=False), StatsOptionItemDps(include_charges=True)]),

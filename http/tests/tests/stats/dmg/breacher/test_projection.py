@@ -156,23 +156,23 @@ def test_range(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one().breacher is None
-    assert api_fleet_stats.volley.one().breacher is None
+    assert api_fleet_stats.dps.one().breacher == 0
+    assert api_fleet_stats.volley.one().breacher == 0
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.dps.one().breacher is None
-    assert api_src_fit_stats.volley.one().breacher is None
+    assert api_src_fit_stats.dps.one().breacher == 0
+    assert api_src_fit_stats.volley.one().breacher == 0
     api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher is None
-    assert api_charge_proj_stats.volley.one().breacher is None
+    assert api_charge_proj_stats.dps.one().breacher == 0
+    assert api_charge_proj_stats.volley.one().breacher == 0
     api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher is None
-    assert api_charge_nonproj_stats.volley.one().breacher is None
+    assert api_charge_nonproj_stats.dps.one().breacher == 0
+    assert api_charge_nonproj_stats.volley.one().breacher == 0
 
 
 def test_breacher_attr_speed_absent(client, consts):
@@ -213,13 +213,13 @@ def test_breacher_attr_speed_absent(client, consts):
     api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher is None
-    assert api_charge_proj_stats.volley.one().breacher is None
+    assert api_charge_proj_stats.dps.one().breacher == 0
+    assert api_charge_proj_stats.volley.one().breacher == 0
     api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher is None
-    assert api_charge_nonproj_stats.volley.one().breacher is None
+    assert api_charge_nonproj_stats.dps.one().breacher == 0
+    assert api_charge_nonproj_stats.volley.one().breacher == 0
 
 
 def test_breacher_attr_flight_time_absent(client, consts):
@@ -273,13 +273,13 @@ def test_breacher_attr_flight_time_absent(client, consts):
     api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher is None
-    assert api_charge_proj_stats.volley.one().breacher is None
+    assert api_charge_proj_stats.dps.one().breacher == 0
+    assert api_charge_proj_stats.volley.one().breacher == 0
     api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher is None
-    assert api_charge_nonproj_stats.volley.one().breacher is None
+    assert api_charge_nonproj_stats.dps.one().breacher == 0
+    assert api_charge_nonproj_stats.volley.one().breacher == 0
 
 
 def test_breacher_attr_mass_absent(client, consts):
@@ -334,13 +334,13 @@ def test_breacher_attr_mass_absent(client, consts):
     api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher is None
-    assert api_charge_proj_stats.volley.one().breacher is None
+    assert api_charge_proj_stats.dps.one().breacher == 0
+    assert api_charge_proj_stats.volley.one().breacher == 0
     api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher is None
-    assert api_charge_nonproj_stats.volley.one().breacher is None
+    assert api_charge_nonproj_stats.dps.one().breacher == 0
+    assert api_charge_nonproj_stats.volley.one().breacher == 0
 
 
 def test_breacher_attr_agility_absent(client, consts):
@@ -395,13 +395,13 @@ def test_breacher_attr_agility_absent(client, consts):
     api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher is None
-    assert api_charge_proj_stats.volley.one().breacher is None
+    assert api_charge_proj_stats.dps.one().breacher == 0
+    assert api_charge_proj_stats.volley.one().breacher == 0
     api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
         volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher is None
-    assert api_charge_nonproj_stats.volley.one().breacher is None
+    assert api_charge_nonproj_stats.dps.one().breacher == 0
+    assert api_charge_nonproj_stats.volley.one().breacher == 0
 
 
 def test_breacher_ship_not_loaded(client, consts):
