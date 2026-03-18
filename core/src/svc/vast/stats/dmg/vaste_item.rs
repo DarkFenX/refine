@@ -1,4 +1,4 @@
-use super::breacher::BreacherAccum;
+use super::breacher::{AppliedBreacherAccum, BreacherAccum};
 use crate::{
     misc::DmgKinds,
     num::PValue,
@@ -25,45 +25,6 @@ impl Vast {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
-        let (dps_normal, volley_normal, breacher_accum) =
-            Vast::internal_get_stat_item_dmg(ctx, calc, item_uid, time_options, include_charges, ignore_state, None)?;
-        Ok(StatDmg {
-            dps: StatDmgEntry::from_dmgs(dps_normal, None),
-            volley: StatDmgEntry::from_dmgs(volley_normal, None),
-        })
-    }
-    pub(in crate::svc) fn get_stat_item_dmg_applied(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_uid: UItemId,
-        time_options: StatTimeOptions,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, StatItemCheckError> {
-        let (dps_normal, volley_normal, breacher_accum) = Vast::internal_get_stat_item_dmg(
-            ctx,
-            calc,
-            item_uid,
-            time_options,
-            include_charges,
-            ignore_state,
-            Some(projectee_uid),
-        )?;
-        Ok(StatDmgApplied {
-            dps: StatDmgEntryApplied::from_dmgs(dps_normal, None),
-            volley: StatDmgEntryApplied::from_dmgs(volley_normal, None),
-        })
-    }
-    fn internal_get_stat_item_dmg(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_uid: UItemId,
-        time_options: StatTimeOptions,
-        include_charges: bool,
-        ignore_state: bool,
-        projectee_uid: Option<UItemId>,
-    ) -> Result<(DmgKinds<PValue>, DmgKinds<PValue>, BreacherAccum), StatItemCheckError> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
@@ -77,9 +38,60 @@ impl Vast {
             time_options,
             include_charges,
             ignore_state,
+        )?;
+        let (dps_breacher, volley_breacher) = match time_options {
+            StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                Some(time) if time > PValue::ZERO => (
+                    breacher_accum.get_dps_by_time(time),
+                    breacher_accum.get_volley_by_time(time),
+                ),
+                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            },
+        };
+        Ok(StatDmg {
+            dps: StatDmgEntry::from_dmgs(dps_normal, dps_breacher),
+            volley: StatDmgEntry::from_dmgs(volley_normal, volley_breacher),
+        })
+    }
+    pub(in crate::svc) fn get_stat_item_dmg_applied(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_uid: UItemId,
+    ) -> Result<StatDmgApplied, StatItemCheckError> {
+        let mut dps_normal = DmgKinds::default();
+        let mut volley_normal = DmgKinds::default();
+        let mut breacher_accum = AppliedBreacherAccum::new();
+        Vast::internal_get_stat_item_dmg_applied_checked(
+            ctx,
+            calc,
+            &mut dps_normal,
+            &mut volley_normal,
+            &mut breacher_accum,
+            item_uid,
+            time_options,
+            include_charges,
+            ignore_state,
             projectee_uid,
         )?;
-        Ok((dps_normal, volley_normal, breacher_accum))
+        let (dps_breacher, volley_breacher) = match time_options {
+            StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                Some(time) if time > PValue::ZERO => (
+                    breacher_accum.get_dps_by_time(time),
+                    breacher_accum.get_volley_by_time(time),
+                ),
+                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            },
+        };
+        Ok(StatDmgApplied {
+            dps: StatDmgEntryApplied::from_dmgs(dps_normal, dps_breacher),
+            volley: StatDmgEntryApplied::from_dmgs(volley_normal, volley_breacher),
+        })
     }
     fn internal_get_stat_item_dmg_checked(
         ctx: SvcCtx,
@@ -91,7 +103,6 @@ impl Vast {
         time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
-        projectee_uid: Option<UItemId>,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -111,7 +122,73 @@ impl Vast {
                         effect,
                         &cseq,
                         ospec,
-                        projectee_uid,
+                        None,
+                        burst_opts.spool,
+                        &mut accum,
+                    ),
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                        Some(time) if time > PValue::ZERO => {
+                            aggr_proj_time(ctx, calc, item_uid, effect, &cseq, ospec, None, &mut accum, time)
+                        }
+                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, ospec, None, &mut accum),
+                    },
+                } {
+                    *volley_normal += accum.instances.max;
+                    *dps_normal += accum.get_per_second();
+                }
+            }
+            if let Some(ospec) = &effect.breacher_dmg_opc_spec {
+                breacher_accum.add(ctx, calc, item_uid, effect, &cseq, ospec);
+            }
+        }
+        if include_charges {
+            for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
+                let _ = Vast::internal_get_stat_item_dmg_checked(
+                    ctx,
+                    calc,
+                    dps_normal,
+                    volley_normal,
+                    breacher_accum,
+                    charge_uid,
+                    time_options,
+                    false,
+                    ignore_state,
+                );
+            }
+        }
+        Ok(())
+    }
+    fn internal_get_stat_item_dmg_applied_checked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        dps_normal: &mut DmgKinds<PValue>,
+        volley_normal: &mut DmgKinds<PValue>,
+        breacher_accum: &mut AppliedBreacherAccum,
+        item_uid: UItemId,
+        time_options: StatTimeOptions,
+        include_charges: bool,
+        ignore_state: bool,
+        projectee_uid: UItemId,
+    ) -> Result<(), StatItemCheckError> {
+        check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
+        let cycling_options = CyclingOptions::from_time_options(time_options);
+        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
+            Some(cseq_map) => cseq_map,
+            None => return Ok(()),
+        };
+        for (effect_rid, cseq) in cseq_map {
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            if let Some(ospec) = &effect.normal_dmg_opc_spec {
+                let mut accum = SeqAccum::new_stack_max();
+                if match time_options {
+                    StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                        ctx,
+                        calc,
+                        item_uid,
+                        effect,
+                        &cseq,
+                        ospec,
+                        Some(projectee_uid),
                         burst_opts.spool,
                         &mut accum,
                     ),
@@ -123,21 +200,33 @@ impl Vast {
                             effect,
                             &cseq,
                             ospec,
-                            projectee_uid,
+                            Some(projectee_uid),
                             &mut accum,
                             time,
                         ),
-                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid, &mut accum),
+                        _ => aggr_proj_looped(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            &cseq,
+                            ospec,
+                            Some(projectee_uid),
+                            &mut accum,
+                        ),
                     },
                 } {
                     *volley_normal += accum.instances.max;
                     *dps_normal += accum.get_per_second();
                 }
+                if let Some(ospec) = &effect.breacher_dmg_opc_spec {
+                    breacher_accum.add(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid);
+                }
             }
         }
         if include_charges {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
-                let _ = Vast::internal_get_stat_item_dmg_checked(
+                let _ = Vast::internal_get_stat_item_dmg_applied_checked(
                     ctx,
                     calc,
                     dps_normal,
