@@ -186,7 +186,7 @@ def test_include_charges(client, consts):
     assert api_charge_volley_with == [approx(7250), 0, 0, 0]
 
 
-def test_time_reload(client, consts):
+def test_time(client, consts):
     # Bomb launchers have reactivation delay which is longer than reload time, so burst/sustained
     # DPS is the same
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
@@ -204,22 +204,118 @@ def test_time_reload(client, consts):
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst == [approx(93.548387), 0, 0, 0]
-    assert api_fleet_dps_reload == [approx(93.548387), 0, 0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst == [approx(93.548387), 0, 0, 0]
-    assert api_fit_dps_reload == [approx(93.548387), 0, 0, 0]
-    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=(True, [
-        StatsOptionItemDps(time_options=StatTimeBurst()),
-        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
-    api_charge_dps_burst, api_charge_dps_reload = api_charge_stats.dps
-    assert api_charge_dps_burst == [approx(93.548387), 0, 0, 0]
-    assert api_charge_dps_reload == [approx(93.548387), 0, 0, 0]
+    # Verification - burst stats (reload is ignored)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.dps.one() == [approx(93.548387), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeBurst())])))
+    assert api_fit_stats.dps.one() == [approx(93.548387), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeBurst())])))
+    assert api_charge_stats.dps.one() == [approx(93.548387), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
+    # Verification - sim without time means stats with reload time are considered. Since bomb
+    # launchers have reactivation delay which is longer than reload time, so burst/sustained DPS is
+    # the same
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.dps.one() == [approx(93.548387), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.dps.one() == [approx(93.548387), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=None))])))
+    assert api_charge_stats.dps.one() == [approx(93.548387), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
+    # Verification - just after first hit landed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=1))])))
+    assert api_fleet_stats.dps.one() == [approx(7250), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=1))])))
+    assert api_fit_stats.dps.one() == [approx(7250), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=1))])))
+    assert api_charge_stats.dps.one() == [approx(7250), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
+    # Verification - just before second hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=77))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=77))])))
+    assert api_fleet_stats.dps.one() == [approx(94.155844), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=77))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=77))])))
+    assert api_fit_stats.dps.one() == [approx(94.155844), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=77))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=77))])))
+    assert api_charge_stats.dps.one() == [approx(94.155844), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
+    # Verification - just after second hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=78))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=78))])))
+    assert api_fleet_stats.dps.one() == [approx(185.897436), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=78))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=78))])))
+    assert api_fit_stats.dps.one() == [approx(185.897436), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=78))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=78))])))
+    assert api_charge_stats.dps.one() == [approx(185.897436), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
+    # Verification - before 5th hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=309))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=309))])))
+    assert api_fleet_stats.dps.one() == [approx(93.851133), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=309))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=309))])))
+    assert api_fit_stats.dps.one() == [approx(93.851133), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=309))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=309))])))
+    assert api_charge_stats.dps.one() == [approx(93.851133), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
+    # Verification - after 5th hit. Here we check that reload happens during reactivation, not on
+    # top of it.
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=311))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=311))])))
+    assert api_fleet_stats.dps.one() == [approx(116.559486), 0, 0, 0]
+    assert api_fleet_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=311))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=311))])))
+    assert api_fit_stats.dps.one() == [approx(116.559486), 0, 0, 0]
+    assert api_fit_stats.volley.one() == [approx(7250), 0, 0, 0]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=311))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=311))])))
+    assert api_charge_stats.dps.one() == [approx(116.559486), 0, 0, 0]
+    assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
