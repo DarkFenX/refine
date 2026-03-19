@@ -221,8 +221,8 @@ def test_time(client, consts):
     assert api_charge_stats.dps.one() == [approx(93.548387), 0, 0, 0]
     assert api_charge_stats.volley.one() == [approx(7250), 0, 0, 0]
     # Verification - sim without time means stats with reload time are considered. Since bomb
-    # launchers have reactivation delay which is longer than reload time, so burst/sustained DPS is
-    # the same
+    # launchers have reactivation delay which is longer than reload time, burst and sustained DPS
+    # are the same
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
         volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))

@@ -8,6 +8,8 @@ from fw.api import (
     StatsOptionFitVolley,
     StatsOptionItemDps,
     StatsOptionItemVolley,
+    StatTimeBurst,
+    StatTimeSim,
 )
 from tests.stats.dmg import make_eve_drone, setup_dmg_basics
 
@@ -141,3 +143,95 @@ def test_item_kind(client, consts):
     assert api_fit_volley_default == [approx(396.8), approx(533), approx(779), 0]
     assert api_fit_volley_mobile == [0, approx(533), approx(779), 0]
     assert api_fit_volley_sentry == [approx(396.8), 0, 0, 0]
+
+
+def test_time(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_drone(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification - burst stats
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
+    assert api_fleet_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeBurst())])))
+    assert api_fit_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
+    assert api_fit_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeBurst())])))
+    assert api_drone_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
+    assert api_drone_stats.volley.one() == [0, approx(533), approx(779), 0]
+    # Verification - sim without time
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
+    assert api_fleet_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
+    assert api_fit_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=None))])))
+    assert api_drone_stats.dps.one() == [0, approx(133.25), approx(194.75), 0]
+    assert api_drone_stats.volley.one() == [0, approx(533), approx(779), 0]
+    # Verification - sim with time after first hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=1))])))
+    assert api_fleet_stats.dps.one() == [0, approx(533), approx(779), 0]
+    assert api_fleet_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=1))])))
+    assert api_fit_stats.dps.one() == [0, approx(533), approx(779), 0]
+    assert api_fit_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=1))])))
+    assert api_drone_stats.dps.one() == [0, approx(533), approx(779), 0]
+    assert api_drone_stats.volley.one() == [0, approx(533), approx(779), 0]
+    # Verification - sim with time before second hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=3))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=3))])))
+    assert api_fleet_stats.dps.one() == [0, approx(177.666667), approx(259.666667), 0]
+    assert api_fleet_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=3))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=3))])))
+    assert api_fit_stats.dps.one() == [0, approx(177.666667), approx(259.666667), 0]
+    assert api_fit_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=3))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=3))])))
+    assert api_drone_stats.dps.one() == [0, approx(177.666667), approx(259.666667), 0]
+    assert api_drone_stats.volley.one() == [0, approx(533), approx(779), 0]
+    # Verification - sim with time after second hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=5))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=5))])))
+    assert api_fleet_stats.dps.one() == [0, approx(213.2), approx(311.6), 0]
+    assert api_fleet_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=5))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=5))])))
+    assert api_fit_stats.dps.one() == [0, approx(213.2), approx(311.6), 0]
+    assert api_fit_stats.volley.one() == [0, approx(533), approx(779), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=5))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=5))])))
+    assert api_drone_stats.dps.one() == [0, approx(213.2), approx(311.6), 0]
+    assert api_drone_stats.volley.one() == [0, approx(533), approx(779), 0]
