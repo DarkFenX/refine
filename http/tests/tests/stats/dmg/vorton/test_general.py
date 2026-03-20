@@ -17,7 +17,7 @@ from tests.stats.dmg import make_eve_charge_normal, make_eve_vorton, setup_dmg_b
 def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     client.create_sources()
@@ -74,7 +74,7 @@ def test_state(client, consts):
 def test_stacking(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000)
     eve_charge1_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     eve_charge2_id = make_eve_charge_normal(
@@ -103,7 +103,7 @@ def test_stacking(client, consts):
 def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     client.create_sources()
@@ -149,10 +149,10 @@ def test_item_kind(client, consts):
     assert api_fit_volley_enabled == [approx(1053.24), 0, approx(992.98), 0]
 
 
-def test_time_reload(client, consts):
+def test_time(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
     client.create_sources()
@@ -164,31 +164,140 @@ def test_time_reload(client, consts):
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst == [approx(175.54), 0, approx(165.496667), 0]
-    assert api_fleet_dps_reload == [approx(175.466889), 0, approx(165.427738), 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst == [approx(175.54), 0, approx(165.496667), 0]
-    assert api_fit_dps_reload == [approx(175.466889), 0, approx(165.427738), 0]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=(True, [
-        StatsOptionItemDps(time_options=StatTimeBurst()),
-        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
-    api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
-    assert api_module_dps_burst == [approx(175.54), 0, approx(165.496667), 0]
-    assert api_module_dps_reload == [approx(175.466889), 0, approx(165.427738), 0]
+    # Verification - burst stats (reload is ignored)
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeBurst())])))
+    assert api_fleet_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeBurst())])))
+    assert api_fit_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeBurst())]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeBurst())])))
+    assert api_module_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - sim without time means stats with reload time are considered
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))
+    assert api_fleet_stats.dps.one() == [approx(173.730309), 0, approx(163.790515), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.dps.one() == [approx(173.730309), 0, approx(163.790515), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=None))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=None))])))
+    assert api_module_stats.dps.one() == [approx(173.730309), 0, approx(163.790515), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - just after first hit landed
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=1))])))
+    assert api_fleet_stats.dps.one() == [approx(1053.24), 0, approx(992.98), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=1))])))
+    assert api_fit_stats.dps.one() == [approx(1053.24), 0, approx(992.98), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=1))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=1))])))
+    assert api_module_stats.dps.one() == [approx(1053.24), 0, approx(992.98), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - just before second hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=5))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=5))])))
+    assert api_fleet_stats.dps.one() == [approx(210.648), 0, approx(198.596), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=5))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=5))])))
+    assert api_fit_stats.dps.one() == [approx(210.648), 0, approx(198.596), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=5))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=5))])))
+    assert api_module_stats.dps.one() == [approx(210.648), 0, approx(198.596), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - just after second hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=7))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=7))])))
+    assert api_fleet_stats.dps.one() == [approx(300.925714), 0, approx(283.708571), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=7))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=7))])))
+    assert api_fit_stats.dps.one() == [approx(300.925714), 0, approx(283.708571), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=7))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=7))])))
+    assert api_module_stats.dps.one() == [approx(300.925714), 0, approx(283.708571), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - just before reload starts
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=479))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=479))])))
+    assert api_fleet_stats.dps.one() == [approx(175.906472), 0, approx(165.842171), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=479))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=479))])))
+    assert api_fit_stats.dps.one() == [approx(175.906472), 0, approx(165.842171), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=479))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=479))])))
+    assert api_module_stats.dps.one() == [approx(175.906472), 0, approx(165.842171), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - just before reload completes
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=484))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=484))])))
+    assert api_fleet_stats.dps.one() == [approx(174.089256), 0, approx(164.128926), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=484))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=484))])))
+    assert api_fit_stats.dps.one() == [approx(174.089256), 0, approx(164.128926), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=484))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=484))])))
+    assert api_module_stats.dps.one() == [approx(174.089256), 0, approx(164.128926), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    # Verification - after reload is done and another vorton hit
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=486))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=486))])))
+    assert api_fleet_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_fleet_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [StatsOptionFitDps(time_options=StatTimeSim(time=486))]),
+        volley=(True, [StatsOptionFitVolley(time_options=StatTimeSim(time=486))])))
+    assert api_fit_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_fit_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        dps=(True, [StatsOptionItemDps(time_options=StatTimeSim(time=486))]),
+        volley=(True, [StatsOptionItemVolley(time_options=StatTimeSim(time=486))])))
+    assert api_module_stats.dps.one() == [approx(175.54), 0, approx(165.496667), 0]
+    assert api_module_stats.volley.one() == [approx(1053.24), 0, approx(992.98), 0]
 
 
 def test_charge_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -210,7 +319,7 @@ def test_charge_absent(client, consts):
 def test_charge_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000)
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000)
     eve_charge_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

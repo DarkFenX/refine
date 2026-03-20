@@ -20,7 +20,7 @@ from tests.stats.dmg import (
 def test_range(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -92,7 +92,7 @@ def test_range(client, consts):
 def test_application(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -187,7 +187,7 @@ def test_application(client, consts):
 def test_npc_prop_mode(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -256,7 +256,7 @@ def test_npc_prop_mode(client, consts):
 def test_vorton_effect_range_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -306,7 +306,7 @@ def test_vorton_effect_range_absent(client, consts):
 def test_vorton_attr_range_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -356,7 +356,7 @@ def test_vorton_attr_range_absent(client, consts):
 def test_vorton_attr_exp_radius_zero(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=0, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -406,7 +406,7 @@ def test_vorton_attr_exp_radius_zero(client, consts):
 def test_vorton_attr_exp_radius_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -456,7 +456,7 @@ def test_vorton_attr_exp_radius_absent(client, consts):
 def test_vorton_attr_exp_speed_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -506,7 +506,7 @@ def test_vorton_attr_exp_speed_absent(client, consts):
 def test_vorton_attr_drf_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -556,7 +556,7 @@ def test_vorton_attr_drf_absent(client, consts):
 def test_vorton_ship_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -593,7 +593,7 @@ def test_vorton_ship_not_loaded(client, consts):
 def test_tgt_attr_speed_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -643,7 +643,7 @@ def test_tgt_attr_speed_absent(client, consts):
 def test_tgt_attr_sig_radius_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
@@ -693,7 +693,7 @@ def test_tgt_attr_sig_radius_absent(client, consts):
 def test_tgt_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_vorton(
-        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=25, cycle_time=6000, reload_time=5000,
+        client=client, basic_info=eve_basic_info, dmg_mult=2.62, capacity=1, cycle_time=6000, reload_time=5000,
         range_optimal=36300, exp_radius=107.25, exp_speed=118.125, drf=0.5)
     eve_charge_id = make_eve_charge_normal(
         client=client, basic_info=eve_basic_info, dmgs=(402, 0, 379, 0), volume=0.0125)
