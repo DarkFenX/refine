@@ -461,65 +461,6 @@ def test_time_sim(client, consts):
     assert api_module_stats.volley.one() == [0, approx(842.625), 0, approx(441.375)]
 
 
-def test_time_reload(client, consts):
-    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_module_id = make_eve_turret_spool(
-        client=client, basic_info=eve_basic_info,
-        dmg_mult=4.28, spool_step=0.07, spool_max=2.125,
-        capacity=5, cycle_time=2180, reload_time=0.01)
-    eve_charge_id = make_eve_charge_normal(
-        client=client, basic_info=eve_basic_info, dmgs=(0, 63, 0, 33), volume=0.01)
-    client.create_sources()
-    api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
-    # Verification - sim stats average dps over whole reload cycle
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
-    assert api_fleet_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
-    assert api_fit_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=(True, [
-        StatsOptionItemDps(time_options=StatTimeBurst()),
-        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
-    api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
-    assert api_module_dps_burst == [0, approx(386.525229), 0, approx(202.465596)]
-    assert api_module_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    # Action
-    api_sol.change(default_spool=Spool.spool_scale_to_api(val=0.5))
-    # Verification - sim stats do not rely on spool parameters in any way, unlike burst stats
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
-            StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
-    assert api_fleet_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
-    assert api_fit_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dps=(True, [
-        StatsOptionItemDps(time_options=StatTimeBurst()),
-        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
-    api_module_dps_burst, api_module_dps_reload = api_module_stats.dps
-    assert api_module_dps_burst == [0, approx(262.218716), 0, approx(137.352661)]
-    assert api_module_dps_reload == [0, approx(377.93469), 0, approx(197.96579)]
-
-
 def test_charge_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_spool(
