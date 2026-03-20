@@ -38,6 +38,13 @@ impl<T: Copy> Iterator for OutputInstanceIterComplex<T> {
         if self.cycles_done >= self.output.repeats {
             return None;
         }
+        if self.cycles_done == Count::ZERO {
+            self.cycles_done += Count::ONE;
+            return Some(OutputInstanceIterItem {
+                time_passed: self.output.delay,
+                instance: self.output.instance,
+            });
+        }
         self.cycles_done += Count::ONE;
         Some(OutputInstanceIterItem {
             time_passed: self.output.interval,

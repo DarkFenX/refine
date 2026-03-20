@@ -4,6 +4,7 @@ use super::{
     traits::LimitInstance,
 };
 use crate::{
+    Count,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -38,6 +39,9 @@ where
         None => return false,
     };
     for cycle_part in cseq.iter_cseq_parts() {
+        if cycle_part.repeat_count == Count::ZERO {
+            continue;
+        }
         let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_part.data.chargedness);
         accum.add_instance(
             cycle_output.get_instance(),

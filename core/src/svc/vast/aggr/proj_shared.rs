@@ -33,6 +33,9 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self> {
         let base_output = (ospec.base)(ctx, calc, projector_uid, effect)?;
+        if base_output.get_instance_count() == Count::ZERO {
+            return None;
+        }
         let mut str_mult = PValue::ONE;
         let mut chance_mult = PValue::ONE;
         let mut instance_limit = None;

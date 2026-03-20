@@ -491,12 +491,14 @@ fn process_infinite_spool<T, A>(
             let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, Value::ZERO);
             let full_repeats = get_full_repeats_count(*time, cycle_data.duration, cycle_tail_duration);
             // Full repeats
-            accum.add_instance(
-                cycle_output.get_instance(),
-                inv_proj.chance_mult,
-                cycle_output.get_instance_count() * full_repeats,
-            );
-            *time -= cycle_data.duration * full_repeats.into_pvalue();
+            if full_repeats > Count::ZERO {
+                accum.add_instance(
+                    cycle_output.get_instance(),
+                    inv_proj.chance_mult,
+                    cycle_output.get_instance_count() * full_repeats,
+                );
+                *time -= cycle_data.duration * full_repeats.into_pvalue();
+            }
             // Partial repeats
             while *time >= Value::ZERO {
                 process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult);
@@ -508,13 +510,15 @@ fn process_infinite_spool<T, A>(
             let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, inv_spool.max);
             let full_repeats = get_full_repeats_count(*time, cycle_data.duration, cycle_tail_duration);
             // Full repeats
-            *uninterrupted_cycles += full_repeats;
-            accum.add_instance(
-                cycle_output.get_instance(),
-                inv_proj.chance_mult,
-                cycle_output.get_instance_count() * full_repeats,
-            );
-            *time -= cycle_data.duration * full_repeats.into_pvalue();
+            if full_repeats > Count::ZERO {
+                *uninterrupted_cycles += full_repeats;
+                accum.add_instance(
+                    cycle_output.get_instance(),
+                    inv_proj.chance_mult,
+                    cycle_output.get_instance_count() * full_repeats,
+                );
+                *time -= cycle_data.duration * full_repeats.into_pvalue();
+            }
             // Partial repeats
             while *time >= Value::ZERO {
                 *uninterrupted_cycles += Count::ONE;

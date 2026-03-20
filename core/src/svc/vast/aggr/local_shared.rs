@@ -1,5 +1,6 @@
 use super::traits::LimitInstance;
 use crate::{
+    Count,
     num::{PValue, UnitInterval, Value},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -27,8 +28,12 @@ where
         effect: &REffect,
         ospec: &REffectLocalOpcSpec<T>,
     ) -> Option<Self> {
+        let output = (ospec.base)(ctx, calc, item_uid, effect)?;
+        if output.get_instance_count() == Count::ZERO {
+            return None;
+        }
         Some(AggrLocalInvData {
-            output: (ospec.base)(ctx, calc, item_uid, effect)?,
+            output,
             instance_limit: get_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
         })
     }

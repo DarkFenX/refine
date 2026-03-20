@@ -59,17 +59,19 @@ pub(super) fn aggr_by_time<T, A>(
                     inner.p1_data.cycle_duration * inner.p1_repeat_count.into_pvalue() + inner.p2_data.cycle_duration;
                 // Process full loop repeats
                 let full_repeats = get_full_repeats_count(time, full_duration, full_tail_duration);
-                accum.add_instance(
-                    inner.p1_data.output.get_instance(),
-                    chance_mult,
-                    inner.p1_data.output.get_instance_count() * inner.p1_repeat_count * full_repeats,
-                );
-                accum.add_instance(
-                    inner.p2_data.output.get_instance(),
-                    chance_mult,
-                    inner.p2_data.output.get_instance_count() * full_repeats,
-                );
-                time -= full_duration * full_repeats.into_pvalue();
+                if full_repeats > Count::ZERO {
+                    accum.add_instance(
+                        inner.p1_data.output.get_instance(),
+                        chance_mult,
+                        inner.p1_data.output.get_instance_count() * inner.p1_repeat_count * full_repeats,
+                    );
+                    accum.add_instance(
+                        inner.p2_data.output.get_instance(),
+                        chance_mult,
+                        inner.p2_data.output.get_instance_count() * full_repeats,
+                    );
+                    time -= full_duration * full_repeats.into_pvalue();
+                }
                 while time >= Value::ZERO {
                     let mut p1_remaining_repeats = inner.p1_repeat_count;
                     // Process as many full part 1 repeats as time can fit
@@ -78,13 +80,15 @@ pub(super) fn aggr_by_time<T, A>(
                         inner.p1_data.cycle_duration,
                         inner.p1_data.cycle_tail_duration,
                     ));
-                    accum.add_instance(
-                        inner.p1_data.output.get_instance(),
-                        chance_mult,
-                        inner.p1_data.output.get_instance_count() * p1_repeats,
-                    );
-                    time -= inner.p1_data.cycle_duration * p1_repeats.into_pvalue();
-                    p1_remaining_repeats -= p1_repeats;
+                    if p1_repeats > Count::ZERO {
+                        accum.add_instance(
+                            inner.p1_data.output.get_instance(),
+                            chance_mult,
+                            inner.p1_data.output.get_instance_count() * p1_repeats,
+                        );
+                        time -= inner.p1_data.cycle_duration * p1_repeats.into_pvalue();
+                        p1_remaining_repeats -= p1_repeats;
+                    }
                     // Process partial part 1 repeats
                     while time >= Value::ZERO && p1_remaining_repeats > Count::ZERO {
                         process_incomplete_cycle(accum, time, &inner.p1_data.output, chance_mult);
@@ -145,12 +149,14 @@ fn process_limited_regular<T, A>(
         data.cycle_duration,
         data.cycle_tail_duration,
     ));
-    accum.add_instance(
-        data.output.get_instance(),
-        chance_mult,
-        data.output.get_instance_count() * full_repeats,
-    );
-    *time -= data.cycle_duration * full_repeats.into_pvalue();
+    if full_repeats > Count::ZERO {
+        accum.add_instance(
+            data.output.get_instance(),
+            chance_mult,
+            data.output.get_instance_count() * full_repeats,
+        );
+        *time -= data.cycle_duration * full_repeats.into_pvalue();
+    }
     let mut remaining_repeats = repeat_limit - full_repeats;
     while *time >= Value::ZERO && remaining_repeats > Count::ZERO {
         process_incomplete_cycle(accum, *time, &data.output, chance_mult);
@@ -172,12 +178,14 @@ fn process_infinite_regular<T, A>(
         return;
     }
     let full_repeats = get_full_repeats_count(*time, data.cycle_duration, data.cycle_tail_duration);
-    accum.add_instance(
-        data.output.get_instance(),
-        chance_mult,
-        data.output.get_instance_count() * full_repeats,
-    );
-    *time -= data.cycle_duration * full_repeats.into_pvalue();
+    if full_repeats > Count::ZERO {
+        accum.add_instance(
+            data.output.get_instance(),
+            chance_mult,
+            data.output.get_instance_count() * full_repeats,
+        );
+        *time -= data.cycle_duration * full_repeats.into_pvalue();
+    }
     while *time >= Value::ZERO {
         process_incomplete_cycle(accum, *time, &data.output, chance_mult);
         *time -= data.cycle_duration;

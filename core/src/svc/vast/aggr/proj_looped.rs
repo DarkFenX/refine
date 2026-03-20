@@ -69,6 +69,9 @@ where
         None => return false,
     };
     for cycle_part in cseq.iter_cseq_parts() {
+        if cycle_part.repeat_count == Count::ZERO {
+            continue;
+        }
         let cycle_output =
             get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
         accum.add_instance(

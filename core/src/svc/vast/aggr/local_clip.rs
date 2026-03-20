@@ -4,6 +4,7 @@ use super::{
     traits::LimitInstance,
 };
 use crate::{
+    Count,
     misc::InfCount,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
@@ -53,12 +54,14 @@ where
                     // of "clip", no clip - no data
                     InfCount::Infinite => return false,
                 };
-                accum.add_instance(
-                    cycle_output.get_instance(),
-                    None,
-                    cycle_output.get_instance_count() * part_cycle_count,
-                );
-                accum.time += cycle_part.data.duration * part_cycle_count.into_pvalue();
+                if part_cycle_count > Count::ZERO {
+                    accum.add_instance(
+                        cycle_output.get_instance(),
+                        None,
+                        cycle_output.get_instance_count() * part_cycle_count,
+                    );
+                    accum.time += cycle_part.data.duration * part_cycle_count.into_pvalue();
+                }
             }
         }
     }
