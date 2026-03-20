@@ -18,6 +18,6 @@ pub(in crate::ad::generator::flow::s7_custom) fn add_wdfg_bubble_strength(a_data
         applied = true;
     }
     if !applied {
-        tracing::info!("attribute {BUBBLE_ATTR_ID}: fix for t3c subsystem count wasn't applied");
+        tracing::info!("attribute {BUBBLE_ATTR_ID}: WDFG bubble warp disruption strength fix wasn't applied");
     }
 }
