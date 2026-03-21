@@ -92,21 +92,24 @@ impl BreacherAccum {
         let max_dmg_rel = self.data.keys().map(|v| v.relative_max).max().unwrap();
         // Shortcut - if breacher with max damage is applying its damage without downtime, no
         // complex calcs needed
-        for accum_entry in self.data.keys() {
-            if accum_entry.absolute_max >= max_dmg_abs
-                && accum_entry.relative_max >= max_dmg_rel
-                && matches!(accum_entry.ticks, AggrBreacherTicks::Infinite(_))
-            {
-                return StatDmgEntryBreacher {
-                    absolute_max: accum_entry.absolute_max * PValue::SERVER_TICK_HZ,
-                    relative_max: accum_entry.relative_max.into_pvalue() * PValue::SERVER_TICK_HZ,
-                };
-            }
+        if self
+            .data
+            .keys()
+            .any(|v| v.absolute_max >= max_dmg_abs && matches!(v.ticks, AggrBreacherTicks::Infinite(_)))
+            && self
+                .data
+                .keys()
+                .any(|v| v.relative_max >= max_dmg_rel && matches!(v.ticks, AggrBreacherTicks::Infinite(_)))
+        {
+            return StatDmgEntryBreacher {
+                absolute_max: max_dmg_abs * PValue::SERVER_TICK_HZ,
+                relative_max: max_dmg_rel.into_pvalue() * PValue::SERVER_TICK_HZ,
+            };
         }
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
         // then calculate average. Total count of ticks we consider is limited by 1 day to avoid
         // excessively cpu-heavy configurations
-        let loop_ticks = Count::from_u32(
+        let loop_tick_count = Count::from_u32(
             self.data
                 .values()
                 .map(|v| v.into_u32())
@@ -114,12 +117,12 @@ impl BreacherAccum {
                 .unwrap(),
         )
         .min(DAY_TICKS);
-        let max_initial_delay = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
+        let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         let (loop_dmg_abs, loop_dmg_rel) =
-            self.get_dmg_for_tick_range(max_initial_delay, max_initial_delay + loop_ticks);
+            self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
         StatDmgEntryBreacher {
-            absolute_max: loop_dmg_abs / loop_ticks.into_pvalue() * PValue::SERVER_TICK_HZ,
-            relative_max: loop_dmg_rel / loop_ticks.into_pvalue() * PValue::SERVER_TICK_HZ,
+            absolute_max: loop_dmg_abs / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ,
+            relative_max: loop_dmg_rel / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ,
         }
     }
     pub(in crate::svc::vast) fn get_dps_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
@@ -130,38 +133,37 @@ impl BreacherAccum {
         if self.data.is_empty() {
             return dmg;
         };
-        // Last tick which should be included in stats
-        let time_ticks = duration_to_ticks_floor(time);
+        // The tick after the last tick which should be included in stats
+        let stop_tick = duration_to_ticks_floor(time) + Count::ONE;
         // How many ticks does a loop take
-        let loop_ticks = Count::from_u32(
+        let loop_tick_count = Count::from_u32(
             self.data
                 .values()
                 .map(|v| v.into_u32())
                 .reduce(num_integer::lcm)
                 .unwrap(),
         );
-        let max_initial_delay = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
+        let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         // Loops start only after longest starting delay is done
-        let full_loops = match time_ticks >= max_initial_delay {
-            true => (time_ticks - max_initial_delay) / loop_ticks,
+        let full_loops = match stop_tick > max_delay_tick {
+            true => (stop_tick - max_delay_tick) / loop_tick_count,
             false => Count::ZERO,
         };
         // Record damage done before loops start
-        let (early_dmg_abs, early_dmg_rel) =
-            self.get_dmg_for_tick_range(Count::ZERO, time_ticks.min(max_initial_delay));
+        let (early_dmg_abs, early_dmg_rel) = self.get_dmg_for_tick_range(Count::ZERO, max_delay_tick.min(stop_tick));
         dmg.absolute_max += early_dmg_abs;
         dmg.relative_max += early_dmg_rel;
         // Record damage done during loops
         if full_loops > Count::ZERO {
             let (loop_dmg_abs, loop_dmg_rel) =
-                self.get_dmg_for_tick_range(max_initial_delay, max_initial_delay + loop_ticks);
+                self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
             dmg.absolute_max += loop_dmg_abs * full_loops.into_pvalue();
             dmg.relative_max += loop_dmg_rel * full_loops.into_pvalue();
         }
         // Record damage done after loops
-        let loops_done_tick = max_initial_delay + loop_ticks * full_loops;
-        if time_ticks > loops_done_tick {
-            let (late_dmg_abs, late_dmg_rel) = self.get_dmg_for_tick_range(loops_done_tick, time_ticks + Count::ONE);
+        let loops_done_tick = max_delay_tick + loop_tick_count * full_loops;
+        if stop_tick > loops_done_tick {
+            let (late_dmg_abs, late_dmg_rel) = self.get_dmg_for_tick_range(loops_done_tick, stop_tick);
             dmg.absolute_max += late_dmg_abs;
             dmg.relative_max += late_dmg_rel;
         }
@@ -313,7 +315,7 @@ impl AppliedBreacherAccum {
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
         // then calculate average. Total count of ticks we consider is limited by 1 day to avoid
         // excessively cpu-heavy configurations
-        let loop_ticks = Count::from_u32(
+        let loop_tick_count = Count::from_u32(
             self.data
                 .values()
                 .map(|v| v.into_u32())
@@ -321,42 +323,42 @@ impl AppliedBreacherAccum {
                 .unwrap(),
         )
         .min(DAY_TICKS);
-        let max_initial_delay = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
-        let loop_dmg = self.get_dmg_for_tick_range(max_initial_delay, max_initial_delay + loop_ticks);
-        loop_dmg / loop_ticks.into_pvalue() * PValue::SERVER_TICK_HZ
+        let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
+        let loop_dmg = self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
+        loop_dmg / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ
     }
     pub(in crate::svc::vast) fn get_dps_by_time(&self, time: PValue) -> PValue {
         let mut total_dmg = PValue::ZERO;
         if self.data.is_empty() {
             return total_dmg;
         };
-        // Last tick which should be included in stats
-        let time_ticks = duration_to_ticks_floor(time);
+        // The tick after the last tick which should be included in stats
+        let stop_tick = duration_to_ticks_floor(time) + Count::ONE;
         // How many ticks does a loop take
-        let loop_ticks = Count::from_u32(
+        let loop_tick_count = Count::from_u32(
             self.data
                 .values()
                 .map(|v| v.into_u32())
                 .reduce(num_integer::lcm)
                 .unwrap(),
         );
-        let max_initial_delay = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
+        let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         // Loops start only after longest starting delay is done
-        let full_loops = match time_ticks >= max_initial_delay {
-            true => (time_ticks - max_initial_delay) / loop_ticks,
+        let full_loops = match stop_tick > max_delay_tick {
+            true => (stop_tick - max_delay_tick) / loop_tick_count,
             false => Count::ZERO,
         };
         // Record damage done before loops start
-        total_dmg += self.get_dmg_for_tick_range(Count::ZERO, time_ticks.min(max_initial_delay));
+        total_dmg += self.get_dmg_for_tick_range(Count::ZERO, max_delay_tick.min(stop_tick));
         // Record damage done during loops
         if full_loops > Count::ZERO {
-            let loop_dmg = self.get_dmg_for_tick_range(max_initial_delay, max_initial_delay + loop_ticks);
+            let loop_dmg = self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
             total_dmg += loop_dmg * full_loops.into_pvalue();
         }
         // Record damage done after loops
-        let loops_done_tick = max_initial_delay + loop_ticks * full_loops;
-        if time_ticks > loops_done_tick {
-            total_dmg += self.get_dmg_for_tick_range(loops_done_tick, time_ticks + Count::ONE);
+        let loops_done_tick = max_delay_tick + loop_tick_count * full_loops;
+        if stop_tick > loops_done_tick {
+            total_dmg += self.get_dmg_for_tick_range(loops_done_tick, stop_tick);
         }
         total_dmg / time
     }
