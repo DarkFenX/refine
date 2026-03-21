@@ -48,8 +48,8 @@ def test_simple(client, consts):
     api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
     assert api_fleet_stats_dps_raw == [approx(750), approx(0.01)]
     assert api_fleet_stats_volley_raw == [approx(750), approx(0.01)]
-    assert api_fleet_stats_dps_applied == 600
-    assert api_fleet_stats_volley_applied == 600
+    assert api_fleet_stats_dps_applied == approx(600)
+    assert api_fleet_stats_volley_applied == approx(600)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
             StatsOptionFitDps(time_options=StatTimeSim(time=None)),
@@ -61,8 +61,8 @@ def test_simple(client, consts):
     api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
     assert api_src_fit_stats_dps_raw == [approx(750), approx(0.01)]
     assert api_src_fit_stats_volley_raw == [approx(750), approx(0.01)]
-    assert api_src_fit_stats_dps_applied == 600
-    assert api_src_fit_stats_volley_applied == 600
+    assert api_src_fit_stats_dps_applied == approx(600)
+    assert api_src_fit_stats_volley_applied == approx(600)
 
 
 def test_reload_gap_realistic(client, consts):
@@ -103,8 +103,8 @@ def test_reload_gap_realistic(client, consts):
     api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
     assert api_fleet_stats_dps_raw == [approx(250), approx(0.0075)]
     assert api_fleet_stats_volley_raw == [approx(250), approx(0.0075)]
-    assert api_fleet_stats_dps_applied == 250
-    assert api_fleet_stats_volley_applied == 250
+    assert api_fleet_stats_dps_applied == approx(250)
+    assert api_fleet_stats_volley_applied == approx(250)
     # Verification - sim stats over infinite period with gaps during reload
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [
@@ -118,7 +118,7 @@ def test_reload_gap_realistic(client, consts):
     assert api_fleet_stats_dps_raw == [approx(249.292929), approx(0.007491515)]
     assert api_fleet_stats_volley_raw == [approx(250), approx(0.0075)]
     assert api_fleet_stats_dps_applied == approx(249.292929)
-    assert api_fleet_stats_volley_applied == 250
+    assert api_fleet_stats_volley_applied == approx(250)
     # Verification - sim stats just after first damage tick
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [
@@ -207,7 +207,7 @@ def test_reload_gap_realistic(client, consts):
     assert api_fleet_stats_volley_applied == approx(250)
 
 
-def test_complex_different_multiple_downtimes(client, consts):
+def test_cycle_and_reload_gaps(client, consts):
     # Both breachers in this case have different downtime - shorter on every module cycle, longer
     # during reload. They partially cover each other's downtime, so when both are on, they deal more
     # damage. Also, this test checks that stacking rules are applied if there are multiple breachers
@@ -215,55 +215,193 @@ def test_complex_different_multiple_downtimes(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module1_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=10, cycle_time=30000, reload_time=15000)
-    eve_charge1_id = make_eve_breacher(
-        client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=0.5, dmg_duration=15000, volume=1)
     eve_module2_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=10, cycle_time=20000, reload_time=10000)
+    eve_charge1_id = make_eve_breacher(
+        client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=0.5, dmg_duration=15000, volume=1,
+        speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_charge2_id = make_eve_breacher(
-        client=client, basic_info=eve_basic_info, dmg_abs=500, dmg_rel=1, dmg_duration=10000, volume=1)
+        client=client, basic_info=eve_basic_info, dmg_abs=500, dmg_rel=1, dmg_duration=10000, volume=1,
+        speed=3000, flight_time=4000, mass=1000, agility=8)
+    eve_tgt_ship_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info, hps=(0, 0, 100000), radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.add_module(
         type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge1_id)
+    api_src_fit.add_module(
+        type_id=eve_module2_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge2_id)
     api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
-    # Verification
+    api_fleet.change(add_fits=[api_src_fit.id])
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
+    # Verification - burst stats, no reload - only cycle gaps. Each breacher individually covers
+    # only half of time, but both are 3/4, due to how their cycles are laid out
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst.breacher == [approx(500), approx(0.0025)]
-    assert api_fleet_dps_reload.breacher == [approx(476.190476), approx(0.002380952)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst.breacher == [approx(500), approx(0.0025)]
-    assert api_fit_dps_reload.breacher == [approx(476.190476), approx(0.002380952)]
-    # Action
-    api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
-    # Verification
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+            StatsOptionFitDps(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeBurst()),
+            StatsOptionFitVolley(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)])))
+    api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
+    api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
+    assert api_fleet_stats_dps_raw == [approx(625), approx(0.00625)]
+    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_fleet_stats_dps_applied == approx(375)
+    assert api_fleet_stats_volley_applied == approx(500)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeBurst()),
+            StatsOptionFitDps(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeBurst()),
+            StatsOptionFitVolley(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)])))
+    api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
+    api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
+    assert api_src_fit_stats_dps_raw == [approx(625), approx(0.00625)]
+    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == approx(375)
+    assert api_src_fit_stats_volley_applied == approx(500)
+    # Verification - sim stats over infinite period with both gaps considered
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst.breacher == [approx(625), approx(0.00625)]
-    assert api_fleet_dps_reload.breacher == [approx(599.206349), approx(0.005992063)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst.breacher == [approx(625), approx(0.00625)]
-    assert api_fit_dps_reload.breacher == [approx(599.206349), approx(0.005992063)]
-    # Action
-    api_module1.remove()
-    # Verification
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=None)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=None)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+    api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
+    api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
+    assert api_fleet_stats_dps_raw == [approx(599.206349), approx(0.005992063)]
+    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_fleet_stats_dps_applied == approx(361.111111)
+    assert api_fleet_stats_volley_applied == approx(500)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=None)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=None)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+    api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
+    api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
+    assert api_src_fit_stats_dps_raw == [approx(599.206349), approx(0.005992063)]
+    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == approx(361.111111)
+    assert api_src_fit_stats_volley_applied == approx(500)
+    # Verification - sim stats with time which is the least common multiple of both full cycle times
+    # (but does not get next tick into scope) yields the same result as full loop
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst.breacher == [approx(250), approx(0.005)]
-    assert api_fleet_dps_reload.breacher == [approx(238.095238), approx(0.004761905)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(), StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst.breacher == [approx(250), approx(0.005)]
-    assert api_fit_dps_reload.breacher == [approx(238.095238), approx(0.004761905)]
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=629.999999999)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=629.999999999)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)])))
+    api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
+    api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
+    assert api_fleet_stats_dps_raw == [approx(599.206349), approx(0.005992063)]
+    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_fleet_stats_dps_applied == approx(361.111111)
+    assert api_fleet_stats_volley_applied == approx(500)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=629.999999999)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=629.999999999)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)])))
+    api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
+    api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
+    assert api_src_fit_stats_dps_raw == [approx(599.206349), approx(0.005992063)]
+    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == approx(361.111111)
+    assert api_src_fit_stats_volley_applied == approx(500)
+    # Verification - multiple LCMs to see if various optimizations do not break expected result
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=1889.999999999)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=1889.999999999)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)])))
+    api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
+    api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
+    assert api_fleet_stats_dps_raw == [approx(599.206349), approx(0.005992063)]
+    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_fleet_stats_dps_applied == approx(361.111111)
+    assert api_fleet_stats_volley_applied == approx(500)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=1889.999999999)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=1889.999999999)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)])))
+    api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
+    api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
+    assert api_src_fit_stats_dps_raw == [approx(599.206349), approx(0.005992063)]
+    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == approx(361.111111)
+    assert api_src_fit_stats_volley_applied == approx(500)
+    # Verification - some random time into second "loop"
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=852.2)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=852.2)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)])))
+    api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
+    api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
+    assert api_fleet_stats_dps_raw == [approx(607.838536), approx(0.006031448)]
+    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_fleet_stats_dps_applied == approx(362.590941)
+    assert api_fleet_stats_volley_applied == approx(500)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=852.2)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=852.2)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)])))
+    api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
+    api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
+    assert api_src_fit_stats_dps_raw == [approx(607.838536), approx(0.006031448)]
+    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == approx(362.590941)
+    assert api_src_fit_stats_volley_applied == approx(500)
+    # Verification - some random time as in last step, but into 4th loop, result should be
+    # different (closer to average) in this case
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=2112.2)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=2112.2)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)])))
+    api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
+    api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
+    assert api_fleet_stats_dps_raw == [approx(602.689139), approx(0.006007954)]
+    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_fleet_stats_dps_applied == approx(361.708172)
+    assert api_fleet_stats_volley_applied == approx(500)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dps=(True, [
+            StatsOptionFitDps(time_options=StatTimeSim(time=2112.2)),
+            StatsOptionFitDps(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)]),
+        volley=(True, [
+            StatsOptionFitVolley(time_options=StatTimeSim(time=2112.2)),
+            StatsOptionFitVolley(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)])))
+    api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
+    api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
+    assert api_src_fit_stats_dps_raw == [approx(602.689139), approx(0.006007954)]
+    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == approx(361.708172)
+    assert api_src_fit_stats_volley_applied == approx(500)
