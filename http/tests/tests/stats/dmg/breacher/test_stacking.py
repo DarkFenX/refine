@@ -17,13 +17,13 @@ def test_simple(client, consts):
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=25, cycle_time=10000, reload_time=30000)
     eve_charge1_id = make_eve_breacher(
-        client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=0.8, dmg_duration=75000, volume=0.5,
+        client=client, basic_info=eve_basic_info, dmg_abs=750, dmg_rel=0.8, dmg_duration=60000, volume=0.5,
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_charge2_id = make_eve_breacher(
-        client=client, basic_info=eve_basic_info, dmg_abs=800, dmg_rel=1, dmg_duration=75000, volume=0.5,
+        client=client, basic_info=eve_basic_info, dmg_abs=600, dmg_rel=1, dmg_duration=60000, volume=0.5,
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(0, 0, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info, hps=(0, 0, 75000), radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -35,8 +35,8 @@ def test_simple(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     # Verification - in this case we also fetch applied stats, which show mismatch between
     # approximate (non-applied) stats and accurate (applied) stats. Non-applied stats just take max
-    # of absolute and relative values (which, if applied to a 100k HP ship, would apply 1000 dps),
-    # while applied stats see that neither breacher applies more than 800, and expose that.
+    # of absolute and relative values (which, if applied to a 75k HP ship, would result in 750 dps),
+    # while applied stats see that neither breacher applies more than 600, and expose that.
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dps=(True, [
             StatsOptionFitDps(time_options=StatTimeSim(time=None)),
@@ -46,10 +46,10 @@ def test_simple(client, consts):
             StatsOptionFitVolley(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
     api_fleet_stats_dps_raw, api_fleet_stats_dps_applied = api_fleet_stats.dps.map(lambda i: i.breacher)
     api_fleet_stats_volley_raw, api_fleet_stats_volley_applied = api_fleet_stats.volley.map(lambda i: i.breacher)
-    assert api_fleet_stats_dps_raw == [approx(1000), approx(0.01)]
-    assert api_fleet_stats_volley_raw == [approx(1000), approx(0.01)]
-    assert api_fleet_stats_dps_applied == 800
-    assert api_fleet_stats_volley_applied == 800
+    assert api_fleet_stats_dps_raw == [approx(750), approx(0.01)]
+    assert api_fleet_stats_volley_raw == [approx(750), approx(0.01)]
+    assert api_fleet_stats_dps_applied == 600
+    assert api_fleet_stats_volley_applied == 600
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dps=(True, [
             StatsOptionFitDps(time_options=StatTimeSim(time=None)),
@@ -59,10 +59,10 @@ def test_simple(client, consts):
             StatsOptionFitVolley(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
     api_src_fit_stats_dps_raw, api_src_fit_stats_dps_applied = api_src_fit_stats.dps.map(lambda i: i.breacher)
     api_src_fit_stats_volley_raw, api_src_fit_stats_volley_applied = api_src_fit_stats.volley.map(lambda i: i.breacher)
-    assert api_src_fit_stats_dps_raw == [approx(1000), approx(0.01)]
-    assert api_src_fit_stats_volley_raw == [approx(1000), approx(0.01)]
-    assert api_src_fit_stats_dps_applied == 800
-    assert api_src_fit_stats_volley_applied == 800
+    assert api_src_fit_stats_dps_raw == [approx(750), approx(0.01)]
+    assert api_src_fit_stats_volley_raw == [approx(750), approx(0.01)]
+    assert api_src_fit_stats_dps_applied == 600
+    assert api_src_fit_stats_volley_applied == 600
 
 
 def test_reload_gap_realistic(client, consts):
