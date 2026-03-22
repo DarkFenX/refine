@@ -1,7 +1,7 @@
 """
-Hybrid drones are special, because they have 2 active effects which run concurrently, even if only
-one of them is default. In the lib, this mechanic is specific to drones, other items execute only
-default active effect upon activation.
+Hybrid (combat + ewar) drones are special, because they have 2 active effects which run
+concurrently, even if only one of them is default. In the lib, this mechanic is specific to drones,
+other items execute only default active effect upon activation.
 """
 
 from fw import approx

@@ -81,9 +81,9 @@ impl SolarSystem {
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, new_charge_uid, reuse_eupdates);
         // Reapply module projections to charge
         if !module_projs.is_empty() {
-            let u_charge = self.u_data.items.get_mut(new_charge_uid).dc_charge_mut().unwrap();
+            let new_u_charge = self.u_data.items.get_mut(new_charge_uid).dc_charge_mut().unwrap();
             for (projectee_uid, range) in module_projs.into_iter() {
-                u_charge.get_projs_mut().add(projectee_uid, range);
+                new_u_charge.get_projs_mut().add(projectee_uid, range);
                 self.rev_projs.reg_projectee(new_charge_uid, projectee_uid);
             }
             let new_u_charge = self.u_data.items.get(new_charge_uid).dc_charge().unwrap();
