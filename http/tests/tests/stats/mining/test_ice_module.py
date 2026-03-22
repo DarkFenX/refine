@@ -111,6 +111,56 @@ def test_stacking(client, consts):
     assert api_fit2_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
 
 
+def test_mission(client, consts):
+    eve_yield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_amount)
+    eve_crit_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_crit_chance)
+    eve_crit_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_crit_bonus_yield)
+    eve_waste_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_waste_probability)
+    eve_waste_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_wasted_volume_mult)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mining_laser,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_skill_id = client.mk_eve_attr(id_=consts.EveItem.ice_harvesting)
+    eve_module_id = client.mk_eve_item(
+        attrs={
+            eve_yield_attr_id: 1000,
+            eve_cycle_time_attr_id: 67500,
+            eve_crit_chance_attr_id: 0.015,
+            eve_crit_bonus_attr_id: 2.5,
+            eve_waste_chance_attr_id: 34,
+            eve_waste_mult_attr_id: 1},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id,
+        srqs={eve_skill_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification - default is non-mission ore, for mission ore crit and waste are disabled
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
+        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)])))
+    assert api_fleet_stats.mps.map(lambda i: i.ice) == [
+        [approx(15.37037), approx(19.851852)],
+        [approx(14.814815), approx(14.814815)],
+        [approx(15.37037), approx(19.851852)]]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
+        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)])))
+    assert api_fit_stats.mps.map(lambda i: i.ice) == [
+        [approx(15.37037), approx(19.851852)],
+        [approx(14.814815), approx(14.814815)],
+        [approx(15.37037), approx(19.851852)]]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=(True, [
+        StatsOptionItemMining(), StatsOptionItemMining(mission=True), StatsOptionItemMining(mission=False)])))
+    assert api_module_stats.mps.map(lambda i: i.ice) == [
+        [approx(15.37037), approx(19.851852)],
+        [approx(14.814815), approx(14.814815)],
+        [approx(15.37037), approx(19.851852)]]
+
+
 def test_crit_chance(client, consts):
     # Test that crit chance of >100% is properly processed
     eve_yield_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mining_amount)
