@@ -55,8 +55,8 @@ impl Svc {
             &mut self.calc,
             item_uid,
             time_options,
-            ignore_state,
             mission_ore,
+            ignore_state,
         )
     }
 }
