@@ -47,13 +47,13 @@ def test_state(client, consts):
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_drone_mps_normal, api_drone_mps_ignored = api_drone_stats.mps
-    assert api_drone_mps_normal.ice is None
+    assert api_drone_mps_normal.ice == [0, 0]
     assert api_drone_mps_ignored.ice == [approx(45.514024), approx(72.822438)]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.engaging)
@@ -219,7 +219,7 @@ def test_item_kind(client, consts):
         [approx(45.514024), approx(72.822438)],
         [approx(45.514024), approx(72.822438)],
         [approx(45.514024), approx(72.822438)],
-        None]
+        [0, 0]]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds()),
@@ -229,7 +229,7 @@ def test_item_kind(client, consts):
         [approx(45.514024), approx(72.822438)],
         [approx(45.514024), approx(72.822438)],
         [approx(45.514024), approx(72.822438)],
-        None]
+        [0, 0]]
 
 
 def test_time(client, consts):
@@ -280,13 +280,13 @@ def test_time(client, consts):
     # Sim with time at the end of first cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=21))])))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=21))])))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
         mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=21))])))
-    assert api_drone_stats.mps.one().ice is None
+    assert api_drone_stats.mps.one().ice == [0, 0]
     # Sim with time just after first cycle was completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=22))])))
@@ -326,14 +326,14 @@ def test_other_mining_kinds(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore is None
-    assert api_fleet_stats.mps.one().gas is None
+    assert api_fleet_stats.mps.one().ore == [0, 0]
+    assert api_fleet_stats.mps.one().gas == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ore is None
-    assert api_fit_stats.mps.one().gas is None
+    assert api_fit_stats.mps.one().ore == [0, 0]
+    assert api_fit_stats.mps.one().gas == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ore is None
-    assert api_drone_stats.mps.one().gas is None
+    assert api_drone_stats.mps.one().ore == [0, 0]
+    assert api_drone_stats.mps.one().gas == [0, 0]
 
 
 def test_cycle_time_zero(client, consts):
@@ -363,11 +363,11 @@ def test_cycle_time_zero(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ice is None
+    assert api_drone_stats.mps.one().ice == [0, 0]
 
 
 def test_cycle_time_absent(client, consts):
@@ -394,8 +394,8 @@ def test_cycle_time_absent(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_drone_stats.mps.one().ice is None
+    assert api_drone_stats.mps.one().ice == [0, 0]

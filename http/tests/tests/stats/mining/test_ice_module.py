@@ -51,13 +51,13 @@ def test_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
     api_module_mps_normal, api_module_mps_ignored = api_module_stats.mps
-    assert api_module_mps_normal.ice is None
+    assert api_module_mps_normal.ice == [0, 0]
     assert api_module_mps_ignored.ice == [approx(15.37037), approx(19.851852)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
@@ -280,7 +280,7 @@ def test_item_kind(client, consts):
         [approx(15.37037), approx(19.851852)],
         [approx(15.37037), approx(19.851852)],
         [approx(15.37037), approx(19.851852)],
-        None]
+        [0, 0]]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
         StatsOptionFitMining(),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds()),
@@ -290,7 +290,7 @@ def test_item_kind(client, consts):
         [approx(15.37037), approx(19.851852)],
         [approx(15.37037), approx(19.851852)],
         [approx(15.37037), approx(19.851852)],
-        None]
+        [0, 0]]
 
 
 def test_time(client, consts):
@@ -345,13 +345,13 @@ def test_time(client, consts):
     # Sim with time at the end of first cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=67))])))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=67))])))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=67))])))
-    assert api_module_stats.mps.one().ice is None
+    assert api_module_stats.mps.one().ice == [0, 0]
     # Sim with time just after first cycle was completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=68))])))
@@ -395,14 +395,14 @@ def test_other_mining_kinds(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ore is None
-    assert api_fleet_stats.mps.one().gas is None
+    assert api_fleet_stats.mps.one().ore == [0, 0]
+    assert api_fleet_stats.mps.one().gas == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ore is None
-    assert api_fit_stats.mps.one().gas is None
+    assert api_fit_stats.mps.one().ore == [0, 0]
+    assert api_fit_stats.mps.one().gas == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ore is None
-    assert api_module_stats.mps.one().gas is None
+    assert api_module_stats.mps.one().ore == [0, 0]
+    assert api_module_stats.mps.one().gas == [0, 0]
 
 
 def test_cycle_time_zero(client, consts):
@@ -436,11 +436,11 @@ def test_cycle_time_zero(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ice is None
+    assert api_module_stats.mps.one().ice == [0, 0]
 
 
 def test_cycle_time_absent(client, consts):
@@ -471,11 +471,11 @@ def test_cycle_time_absent(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
-    assert api_module_stats.mps.one().ice is None
+    assert api_module_stats.mps.one().ice == [0, 0]
 
 
 def test_item_not_loaded(client, consts):
@@ -488,8 +488,8 @@ def test_item_not_loaded(client, consts):
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
-    assert api_fleet_stats.mps.one().ice is None
+    assert api_fleet_stats.mps.one().ice == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
-    assert api_fit_stats.mps.one().ice is None
+    assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=True))
     assert api_module_stats.mps is None

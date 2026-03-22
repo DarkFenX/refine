@@ -5,14 +5,15 @@ import typing
 @dataclasses.dataclass
 class StatMining:
 
-    ore: StatMiningAmount | None
-    ice: StatMiningAmount | None
-    gas: StatMiningAmount | None
+    ore: StatMiningAmount
+    ice: StatMiningAmount
+    gas: StatMiningAmount
 
-    def __init__(self, *, data: dict) -> None:
-        self.ore = StatMiningAmount(data=data.get('ore')) if data.get('ore') is not None else None
-        self.ice = StatMiningAmount(data=data.get('ice')) if data.get('ice') is not None else None
-        self.gas = StatMiningAmount(data=data.get('gas')) if data.get('gas') is not None else None
+    def __init__(self, *, data: list | tuple) -> None:
+        ore, ice, gas = data
+        self.ore = StatMiningAmount(data=ore)
+        self.ice = StatMiningAmount(data=ice)
+        self.gas = StatMiningAmount(data=gas)
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
