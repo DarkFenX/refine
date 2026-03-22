@@ -9,15 +9,17 @@ pub(in crate::cmd) struct HStatOptionFitMining {
     pub(in crate::cmd) item_kinds: HStatMiningItemKinds,
     #[serde(default)]
     pub(in crate::cmd) time_options: HStatTimeOptions,
+    #[serde(default)]
+    pub(in crate::cmd) mission: bool,
 }
 
-#[derive(Copy, Clone, educe::Educe, Deserialize)]
-#[educe(Default)]
+#[derive(Copy, Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatOptionItemMining {
     #[serde(default)]
     pub(in crate::cmd) time_options: HStatTimeOptions,
     #[serde(default)]
-    #[educe(Default = false)]
+    pub(in crate::cmd) mission: bool,
+    #[serde(default)]
     pub(in crate::cmd) ignore_state: bool,
 }
 

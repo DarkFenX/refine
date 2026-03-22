@@ -23,13 +23,38 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        mission_ore: bool,
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_uid)?;
         let mps = StatMining {
-            ore: get_mps_item_uid(ctx, calc, item_uid, time_options, ignore_state, get_getter_ore),
-            ice: get_mps_item_uid(ctx, calc, item_uid, time_options, ignore_state, get_getter_ice),
-            gas: get_mps_item_uid(ctx, calc, item_uid, time_options, ignore_state, get_getter_gas),
+            ore: get_mps_item_uid(
+                ctx,
+                calc,
+                item_uid,
+                time_options,
+                mission_ore,
+                ignore_state,
+                get_getter_ore,
+            ),
+            ice: get_mps_item_uid(
+                ctx,
+                calc,
+                item_uid,
+                time_options,
+                mission_ore,
+                ignore_state,
+                get_getter_ice,
+            ),
+            gas: get_mps_item_uid(
+                ctx,
+                calc,
+                item_uid,
+                time_options,
+                mission_ore,
+                ignore_state,
+                get_getter_gas,
+            ),
         };
         Ok(mps)
     }
@@ -40,6 +65,7 @@ fn get_mps_item_uid(
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,
+    mission_ore: bool,
     ignore_state: bool,
     mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {

@@ -7,7 +7,7 @@ use super::err::{
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
     err::basic::{AttrFoundError, ItemLoadedError, ItemReceiveProjError},
-    misc::{DpsProfile, EffectMode, OptionalReload, Spool},
+    misc::{DpsProfile, EffectMode, OptionalReload},
     num::{Count, PValue, UnitInterval, Value},
     sol::SolarSystem,
     stats::StatCapSrcKinds,
@@ -168,11 +168,16 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             )
             .map_err(|e| ItemStatAppliedError::from_svc_err(&sol.u_data.items, e))
     }
-    fn get_stat_mps(&mut self, time_options: StatTimeOptions, ignore_state: bool) -> Result<StatMining, ItemStatError> {
+    fn get_stat_mps(
+        &mut self,
+        time_options: StatTimeOptions,
+        mission_ore: bool,
+        ignore_state: bool,
+    ) -> Result<StatMining, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
-            .get_stat_item_mps(&sol.u_data, item_uid, time_options, ignore_state)
+            .get_stat_item_mps(&sol.u_data, item_uid, time_options, ignore_state, mission_ore)
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
     fn get_stat_outgoing_nps(

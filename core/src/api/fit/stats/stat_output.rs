@@ -26,10 +26,15 @@ impl<'a> FitMut<'a> {
             .svc
             .get_stat_fit_dmg_applied(&self.sol.u_data, self.uid, item_kinds, time_options, projectee_uid))
     }
-    pub fn get_stat_mps(&mut self, item_kinds: StatMiningItemKinds, time_options: StatTimeOptions) -> StatMining {
+    pub fn get_stat_mps(
+        &mut self,
+        item_kinds: StatMiningItemKinds,
+        time_options: StatTimeOptions,
+        mission_ore: bool,
+    ) -> StatMining {
         self.sol
             .svc
-            .get_stat_fit_mps(&self.sol.u_data, self.uid, item_kinds, time_options)
+            .get_stat_fit_mps(&self.sol.u_data, self.uid, item_kinds, time_options, mission_ore)
     }
     pub fn get_stat_outgoing_rps(
         &mut self,

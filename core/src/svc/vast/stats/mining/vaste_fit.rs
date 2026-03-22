@@ -24,6 +24,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
+        mission_ore: bool,
     ) -> StatMining {
         fit_uids
             .map(|fit_uid| StatMining {
@@ -32,6 +33,7 @@ impl Vast {
                     calc,
                     item_kinds,
                     time_options,
+                    mission_ore,
                     &self.get_fit_data(&fit_uid).mining_ore,
                 ),
                 ice: get_mps(
@@ -39,6 +41,7 @@ impl Vast {
                     calc,
                     item_kinds,
                     time_options,
+                    mission_ore,
                     &self.get_fit_data(&fit_uid).mining_ice,
                 ),
                 gas: get_mps(
@@ -46,6 +49,7 @@ impl Vast {
                     calc,
                     item_kinds,
                     time_options,
+                    mission_ore,
                     &self.get_fit_data(&fit_uid).mining_gas,
                 ),
             })
@@ -58,12 +62,13 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
+        mission_ore: bool,
     ) -> StatMining {
         let fit_data = self.get_fit_data(&fit_uid);
         StatMining {
-            ore: get_mps(ctx, calc, item_kinds, time_options, &fit_data.mining_ore),
-            ice: get_mps(ctx, calc, item_kinds, time_options, &fit_data.mining_ice),
-            gas: get_mps(ctx, calc, item_kinds, time_options, &fit_data.mining_gas),
+            ore: get_mps(ctx, calc, item_kinds, time_options, mission_ore, &fit_data.mining_ore),
+            ice: get_mps(ctx, calc, item_kinds, time_options, mission_ore, &fit_data.mining_ice),
+            gas: get_mps(ctx, calc, item_kinds, time_options, mission_ore, &fit_data.mining_gas),
         }
     }
 }
@@ -73,6 +78,7 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,
+    mission_ore: bool,
     fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();

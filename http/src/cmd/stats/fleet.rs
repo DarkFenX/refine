@@ -109,7 +109,7 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitMinin
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
         let core_time_options = option.time_options.into_core();
-        let core_stat = core_fleet.get_stat_mps(core_item_kinds, core_time_options);
+        let core_stat = core_fleet.get_stat_mps(core_item_kinds, core_time_options, option.mission);
         results.push(HStatMining::from_core(core_stat));
     }
     results
