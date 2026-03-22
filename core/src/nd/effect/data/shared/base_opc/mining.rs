@@ -17,9 +17,9 @@ pub(in crate::nd::effect::data) fn get_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    _base_xargs: NMiningXargs,
+    base_xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
-    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect)?;
+    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, base_xargs)?;
     Some(Output::Simple(OutputSimple {
         instance: MiningAmount { yield_, drain },
         delay,
@@ -31,10 +31,15 @@ pub(in crate::nd::effect::data) fn get_crit_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
-    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect)?;
+    let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, xargs)?;
     let attr_consts = ctx.ac();
-    let crit_chance = calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.mining_crit_chance, Value::ZERO)?;
+    // Mission ore is immune to crits
+    let crit_chance = match xargs.mission_ore {
+        true => Value::ZERO,
+        false => calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.mining_crit_chance, Value::ZERO)?,
+    };
     let yield_ = match crit_chance > Value::FLOAT_TOLERANCE {
         true => {
             let crit_bonus =
@@ -55,6 +60,7 @@ fn get_mining_values(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    xargs: NMiningXargs,
 ) -> Option<(PValue, PValue, PValue)> {
     let delay = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let yield_ = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
@@ -63,8 +69,11 @@ fn get_mining_values(
         ctx.ac().mining_amount,
         Value::ZERO,
     )?);
-    let waste_chance_perc =
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mining_waste_probability, Value::ZERO)?;
+    // Mission ore is immune to waste
+    let waste_chance_perc = match xargs.mission_ore {
+        true => Value::ZERO,
+        false => calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mining_waste_probability, Value::ZERO)?,
+    };
     let waste = match waste_chance_perc > Value::FLOAT_TOLERANCE {
         true => {
             let waste_mult = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(

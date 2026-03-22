@@ -44,13 +44,13 @@ fn internal_get_ore_crit_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    _base_xargs: NMiningXargs,
+    base_xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if item.is_ice_harvester() {
         return None;
     }
-    get_crit_mining_base_opc(ctx, calc, item_uid, effect)
+    get_crit_mining_base_opc(ctx, calc, item_uid, effect, base_xargs)
 }
 
 fn internal_get_ice_crit_mining_base_opc(
@@ -58,11 +58,11 @@ fn internal_get_ice_crit_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    _base_xargs: NMiningXargs,
+    base_xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if !item.is_ice_harvester() {
         return None;
     }
-    get_crit_mining_base_opc(ctx, calc, item_uid, effect)
+    get_crit_mining_base_opc(ctx, calc, item_uid, effect, base_xargs)
 }
