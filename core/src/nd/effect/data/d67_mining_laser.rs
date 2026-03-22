@@ -4,6 +4,7 @@ use crate::{
     misc::MiningAmount,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectProjOpcSpec,
+        NMiningXargs,
         effect::data::shared::{base_opc::get_crit_mining_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
     },
     rd::REffect,
@@ -43,7 +44,7 @@ fn internal_get_ore_crit_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    _base_xargs: (),
+    _base_xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if item.is_ice_harvester() {
@@ -57,7 +58,7 @@ fn internal_get_ice_crit_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    _base_xargs: (),
+    _base_xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if !item.is_ice_harvester() {

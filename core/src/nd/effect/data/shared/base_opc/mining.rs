@@ -1,5 +1,6 @@
 use crate::{
     misc::MiningAmount,
+    nd::NMiningXargs,
     num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -16,7 +17,7 @@ pub(in crate::nd::effect::data) fn get_mining_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    _base_xargs: (),
+    _base_xargs: NMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect)?;
     Some(Output::Simple(OutputSimple {

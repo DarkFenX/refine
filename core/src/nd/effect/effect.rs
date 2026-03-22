@@ -4,7 +4,7 @@ use crate::{
     misc::{Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::{
         NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter,
-        NEffectSpoolAttrs,
+        NEffectSpoolAttrs, NMiningXargs,
     },
     num::PValue,
     rd::{RAttrConsts, REffect},
@@ -55,9 +55,9 @@ pub(crate) struct NEffect {
     pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<PValue>>> = None,
     pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<Breacher>> = None,
     // Getters/specs - mining
-    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
-    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
-    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<MiningAmount>> = None,
+    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount, NMiningXargs>> = None,
+    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount, NMiningXargs>> = None,
+    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<MiningAmount, NMiningXargs>> = None,
     // Getters/specs - rep output
     pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,

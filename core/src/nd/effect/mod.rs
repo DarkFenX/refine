@@ -9,6 +9,7 @@ pub(crate) use opc_spec::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcS
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use resist::NEffectResist;
 pub(crate) use spool::NEffectSpoolAttrs;
+pub(crate) use xargs::NMiningXargs;
 
 mod charge;
 mod container;
@@ -19,3 +20,4 @@ mod opc_spec;
 mod projectee_filter;
 mod resist;
 mod spool;
+mod xargs;

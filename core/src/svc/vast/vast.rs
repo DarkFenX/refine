@@ -1,6 +1,7 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
     misc::{AttrSpec, Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
+    nd::NMiningXargs,
     num::{Count, PValue, SkillLevel, SlotIndex, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
@@ -123,9 +124,9 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<DmgKinds<PValue>>>,
     pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<Breacher>>,
     // Stats-related - mining output
-    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
-    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
-    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
+    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
     // Stats-related - RR output
     pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
     pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,

@@ -1,7 +1,7 @@
 use super::main::REffectProjOpcSpec;
 use crate::{dbg::DebugResult, ud::UData};
 
-impl<T> REffectProjOpcSpec<T>
+impl<T, BX> REffectProjOpcSpec<T, BX>
 where
     T: Copy,
 {

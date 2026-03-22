@@ -1,6 +1,7 @@
 use super::{option::StatMiningItemKinds, stat::StatMining};
 use crate::{
     misc::MiningAmount,
+    nd::NMiningXargs,
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -26,6 +27,7 @@ impl Vast {
         time_options: StatTimeOptions,
         mission_ore: bool,
     ) -> StatMining {
+        let base_xargs = NMiningXargs { mission_ore };
         fit_uids
             .map(|fit_uid| StatMining {
                 ore: get_mps(
@@ -33,7 +35,7 @@ impl Vast {
                     calc,
                     item_kinds,
                     time_options,
-                    mission_ore,
+                    base_xargs,
                     &self.get_fit_data(&fit_uid).mining_ore,
                 ),
                 ice: get_mps(
@@ -41,7 +43,7 @@ impl Vast {
                     calc,
                     item_kinds,
                     time_options,
-                    mission_ore,
+                    base_xargs,
                     &self.get_fit_data(&fit_uid).mining_ice,
                 ),
                 gas: get_mps(
@@ -49,7 +51,7 @@ impl Vast {
                     calc,
                     item_kinds,
                     time_options,
-                    mission_ore,
+                    base_xargs,
                     &self.get_fit_data(&fit_uid).mining_gas,
                 ),
             })
@@ -65,10 +67,11 @@ impl Vast {
         mission_ore: bool,
     ) -> StatMining {
         let fit_data = self.get_fit_data(&fit_uid);
+        let base_xargs = NMiningXargs { mission_ore };
         StatMining {
-            ore: get_mps(ctx, calc, item_kinds, time_options, mission_ore, &fit_data.mining_ore),
-            ice: get_mps(ctx, calc, item_kinds, time_options, mission_ore, &fit_data.mining_ice),
-            gas: get_mps(ctx, calc, item_kinds, time_options, mission_ore, &fit_data.mining_gas),
+            ore: get_mps(ctx, calc, item_kinds, time_options, base_xargs, &fit_data.mining_ore),
+            ice: get_mps(ctx, calc, item_kinds, time_options, base_xargs, &fit_data.mining_ice),
+            gas: get_mps(ctx, calc, item_kinds, time_options, base_xargs, &fit_data.mining_gas),
         }
     }
 }
@@ -78,8 +81,8 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,
-    mission_ore: bool,
-    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount>>,
+    base_xargs: NMiningXargs,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -107,16 +110,16 @@ fn get_mps(
                     effect,
                     cseq,
                     ospec,
-                    (),
+                    base_xargs,
                     None,
                     burst_opts.spool,
                     &mut accum,
                 ),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
-                    Some(time) if time > PValue::ZERO => {
-                        aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum, time)
-                    }
-                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum),
+                    Some(time) if time > PValue::ZERO => aggr_proj_time(
+                        ctx, calc, item_uid, effect, cseq, ospec, base_xargs, None, &mut accum, time,
+                    ),
+                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, base_xargs, None, &mut accum),
                 },
             } {
                 mps += accum.get_per_second();

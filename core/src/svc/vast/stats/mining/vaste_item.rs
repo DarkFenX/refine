@@ -1,6 +1,7 @@
 use super::stat::StatMining;
 use crate::{
     misc::MiningAmount,
+    nd::NMiningXargs,
     num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -27,13 +28,14 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_uid)?;
+        let base_xargs = NMiningXargs { mission_ore };
         let mps = StatMining {
             ore: get_mps_item_uid(
                 ctx,
                 calc,
                 item_uid,
                 time_options,
-                mission_ore,
+                base_xargs,
                 ignore_state,
                 get_getter_ore,
             ),
@@ -42,7 +44,7 @@ impl Vast {
                 calc,
                 item_uid,
                 time_options,
-                mission_ore,
+                base_xargs,
                 ignore_state,
                 get_getter_ice,
             ),
@@ -51,7 +53,7 @@ impl Vast {
                 calc,
                 item_uid,
                 time_options,
-                mission_ore,
+                base_xargs,
                 ignore_state,
                 get_getter_gas,
             ),
@@ -65,9 +67,9 @@ fn get_mps_item_uid(
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,
-    mission_ore: bool,
+    base_xargs: NMiningXargs,
     ignore_state: bool,
-    mining_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<MiningAmount>>,
+    mining_ospec_getter: fn(&REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -89,17 +91,17 @@ fn get_mps_item_uid(
                 item_uid,
                 effect,
                 &cseq,
-                &ospec,
-                (),
+                ospec,
+                base_xargs,
                 None,
                 burst_opts.spool,
                 &mut accum,
             ),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
-                Some(time) if time > PValue::ZERO => {
-                    aggr_proj_time(ctx, calc, item_uid, effect, &cseq, &ospec, (), None, &mut accum, time)
-                }
-                _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, &ospec, (), None, &mut accum),
+                Some(time) if time > PValue::ZERO => aggr_proj_time(
+                    ctx, calc, item_uid, effect, &cseq, ospec, base_xargs, None, &mut accum, time,
+                ),
+                _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, ospec, base_xargs, None, &mut accum),
             },
         } {
             mps += accum.get_per_second();
@@ -108,14 +110,14 @@ fn get_mps_item_uid(
     mps
 }
 
-fn get_getter_ore(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {
-    effect.mining_ore_opc_spec
+fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>> {
+    effect.mining_ore_opc_spec.as_ref()
 }
 
-fn get_getter_ice(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {
-    effect.mining_ice_opc_spec
+fn get_getter_ice(effect: &REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>> {
+    effect.mining_ice_opc_spec.as_ref()
 }
 
-fn get_getter_gas(effect: &REffect) -> Option<REffectProjOpcSpec<MiningAmount>> {
-    effect.mining_gas_opc_spec
+fn get_getter_gas(effect: &REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>> {
+    effect.mining_gas_opc_spec.as_ref()
 }

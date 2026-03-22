@@ -1,7 +1,10 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     misc::{Breacher, DmgKinds, Ecm, MiningAmount},
-    nd::{N_EFFECT_MAP, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter, get_cap_consumer_base_opc},
+    nd::{
+        N_EFFECT_MAP, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter, NMiningXargs,
+        get_cap_consumer_base_opc,
+    },
     num::PValue,
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
@@ -48,9 +51,9 @@ pub(crate) struct REffect {
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter>,
     pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<PValue>>>,
     pub(crate) breacher_dmg_opc_spec: Option<REffectProjOpcSpec<Breacher>>,
-    pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
-    pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
-    pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount>>,
+    pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
     pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
     pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
     pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
