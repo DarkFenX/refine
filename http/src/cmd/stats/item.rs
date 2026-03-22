@@ -6,8 +6,8 @@ use crate::{
         shared::get_primary_item,
         stats::options::{
             HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps,
-            HStatOptionIncomingJam, HStatOptionItemDps, HStatOptionItemMining, HStatOptionItemOutCps,
-            HStatOptionItemOutNps, HStatOptionItemOutRps, HStatOptionItemVolley, HStatOptionRps, HStatResolvedOption,
+            HStatOptionIncomingJam, HStatOptionItemDmg, HStatOptionItemMining, HStatOptionItemOutCps,
+            HStatOptionItemOutNps, HStatOptionItemOutRps, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -27,8 +27,8 @@ pub(crate) struct HGetItemStatsCmd {
     #[educe(Default = true)]
     default: bool,
     // Output
-    dps: Option<HStatOption<HStatOptionItemDps>>,
-    volley: Option<HStatOption<HStatOptionItemVolley>>,
+    dps: Option<HStatOption<HStatOptionItemDmg>>,
+    volley: Option<HStatOption<HStatOptionItemDmg>>,
     mps: Option<HStatOption<HStatOptionItemMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionItemOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionItemOutRps>>,
@@ -246,7 +246,7 @@ impl HGetItemStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) -> Option<Vec<Option<HStatDmgEntry>>> {
+fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDmg>) -> Option<Vec<Option<HStatDmgEntry>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into_core();
@@ -280,7 +280,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDps>) 
 }
 fn get_volley_stats(
     core_item: &mut rc::ItemMut,
-    options: Vec<HStatOptionItemVolley>,
+    options: Vec<HStatOptionItemDmg>,
 ) -> Option<Vec<Option<HStatDmgEntry>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {

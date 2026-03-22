@@ -4,8 +4,8 @@ use crate::{
     cmd::{
         shared::get_primary_fleet,
         stats::options::{
-            HStatOption, HStatOptionFitDps, HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps,
-            HStatOptionFitOutRps, HStatOptionFitVolley, HStatResolvedOption,
+            HStatOption, HStatOptionFitDmg, HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps,
+            HStatOptionFitOutRps, HStatResolvedOption,
         },
     },
     info::{
@@ -21,8 +21,8 @@ pub(crate) struct HGetFleetStatsCmd {
     #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
-    dps: Option<HStatOption<HStatOptionFitDps>>,
-    volley: Option<HStatOption<HStatOptionFitVolley>>,
+    dps: Option<HStatOption<HStatOptionFitDmg>>,
+    volley: Option<HStatOption<HStatOptionFitDmg>>,
     mps: Option<HStatOption<HStatOptionFitMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
@@ -64,7 +64,7 @@ impl HGetFleetStatsCmd {
     }
 }
 
-fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>) -> Vec<Option<HStatDmgEntry>> {
+fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmgEntry>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
@@ -84,7 +84,7 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDps>)
     }
     results
 }
-fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmgEntry>> {
+fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmgEntry>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();

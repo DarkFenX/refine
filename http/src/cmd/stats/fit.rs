@@ -4,9 +4,9 @@ use crate::{
     cmd::{
         shared::get_primary_fit,
         stats::options::{
-            HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDps,
+            HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDmg,
             HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps, HStatOptionFitOutRps,
-            HStatOptionFitVolley, HStatOptionIncomingJam, HStatOptionRps, HStatResolvedOption,
+            HStatOptionIncomingJam, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -26,8 +26,8 @@ pub(crate) struct HGetFitStatsCmd {
     #[educe(Default = true)]
     default: bool,
     // Fit output stats
-    dps: Option<HStatOption<HStatOptionFitDps>>,
-    volley: Option<HStatOption<HStatOptionFitVolley>>,
+    dps: Option<HStatOption<HStatOptionFitDmg>>,
+    volley: Option<HStatOption<HStatOptionFitDmg>>,
     mps: Option<HStatOption<HStatOptionFitMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
@@ -340,7 +340,7 @@ impl HGetFitStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit output stats
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> Vec<Option<HStatDmgEntry>> {
+fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmgEntry>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
@@ -360,7 +360,7 @@ fn get_dps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDps>) -> 
     }
     results
 }
-fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitVolley>) -> Vec<Option<HStatDmgEntry>> {
+fn get_volley_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmgEntry>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
