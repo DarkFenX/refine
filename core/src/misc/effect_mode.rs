@@ -6,7 +6,8 @@ pub enum EffectMode {
     ///   do not have fitting usage chance specified
     /// - Online: effects from this category are run when item is in online+ state, and when item
     ///   has runnable 'online' effect
-    /// - Active: effects from this category are run when item is in active+ state, and only when
+    /// - Active: effects from this category are run when item is in active+ state, and if item is
+    /// drone, or if it is default effect of item
     ///   effect is default item effect
     /// - Overload: effects from this category
     FullCompliance,
