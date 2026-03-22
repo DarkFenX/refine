@@ -24,15 +24,16 @@ impl<T> AggrProjInvData<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    pub(super) fn try_make(
+    pub(super) fn try_make<BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
         effect: &REffect,
-        ospec: &REffectProjOpcSpec<T>,
+        ospec: &REffectProjOpcSpec<T, BX>,
+        base_xargs: BX,
         projectee_uid: Option<UItemId>,
     ) -> Option<Self> {
-        let base_output = (ospec.base)(ctx, calc, projector_uid, effect)?;
+        let base_output = (ospec.base)(ctx, calc, projector_uid, effect, base_xargs)?;
         if base_output.get_instance_count() == Count::ZERO {
             return None;
         }
@@ -110,12 +111,12 @@ pub(super) struct AggrSpoolInvData {
     pub(super) cycles_to_max: Count,
 }
 impl AggrSpoolInvData {
-    pub(super) fn try_make<T>(
+    pub(super) fn try_make<T, BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        ospec: &REffectProjOpcSpec<T>,
+        ospec: &REffectProjOpcSpec<T, BX>,
     ) -> Option<Self>
     where
         T: Copy,
@@ -150,17 +151,17 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T>
+pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T, BX>
 where
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'sc1, 'sc2>,
     pub(super) calc: &'calc mut Calc,
     pub(super) projector_uid: UItemId,
-    pub(super) ospec: &'ospec REffectProjOpcSpec<T>,
+    pub(super) ospec: &'ospec REffectProjOpcSpec<T, BX>,
     pub(super) inv_proj: &'ip AggrProjInvData<T>,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, T> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T>
+impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, T, BX> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T, BX>
 where
     T: Copy,
 {
@@ -168,7 +169,7 @@ where
         ctx: SvcCtx<'sc1, 'sc2>,
         calc: &'calc mut Calc,
         projector_uid: UItemId,
-        ospec: &'ospec REffectProjOpcSpec<T>,
+        ospec: &'ospec REffectProjOpcSpec<T, BX>,
         inv_proj: &'ip AggrProjInvData<T>,
     ) -> Self {
         Self {
@@ -184,11 +185,11 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_proj_regular_output<T>(
+pub(super) fn get_proj_regular_output<T, BX>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: &AggrProjInvData<T>,
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
@@ -214,11 +215,11 @@ where
     output
 }
 
-pub(super) fn get_proj_spool_part_str_mult<T>(
+pub(super) fn get_proj_spool_part_str_mult<T, BX>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: &AggrProjInvData<T>,
     chargedness: Option<UnitInterval>,
 ) -> PValue

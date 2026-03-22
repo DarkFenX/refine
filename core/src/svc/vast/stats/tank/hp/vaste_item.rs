@@ -105,7 +105,7 @@ fn get_local_ancil_hp(
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
-            if aggr_local_clip(ctx, calc, item_uid, effect, cseq, ospec, &mut accum) {
+            if aggr_local_clip(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum) {
                 total_ancil_hp += accum.instances.stacked;
             }
         }
@@ -143,6 +143,7 @@ fn get_remote_ancil_hp(
                 effect,
                 cseq,
                 ospec,
+                (),
                 Some(projectee_item_uid),
                 &mut accum,
             ) {

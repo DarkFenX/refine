@@ -63,6 +63,7 @@ fn internal_get_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     let instance = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
     let instance = match instance > Value::ZERO {
@@ -84,6 +85,7 @@ fn internal_get_ecm_base_opc(
     calc: &mut Calc,
     projector_uid: UItemId,
     _projector_effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<Ecm>> {
     let str_radar = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,

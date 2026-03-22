@@ -192,31 +192,6 @@ impl Vast {
             volley: StatDmgEntryApplied::from_dmgs(volley_normal, volley_breacher),
         }
     }
-    fn internal_get_stat_fit_dmg(
-        &self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        fit_uid: UFitId,
-        item_kinds: StatDmgItemKinds,
-        time_options: StatTimeOptions,
-        projectee_uid: Option<UItemId>,
-    ) -> (DmgKinds<PValue>, DmgKinds<PValue>, BreacherAccum) {
-        let cycling_options = CyclingOptions::from_time_options(time_options);
-        let mut dps_normal = DmgKinds::default();
-        let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = BreacherAccum::new();
-        self.get_fit_data(&fit_uid).fill_stat_dmg_normal(
-            ctx,
-            calc,
-            &mut dps_normal,
-            &mut volley_normal,
-            item_kinds,
-            time_options,
-            cycling_options,
-            projectee_uid,
-        );
-        (dps_normal, volley_normal, breacher_accum)
-    }
 }
 
 impl VastFitData {
@@ -255,6 +230,7 @@ impl VastFitData {
                         effect,
                         cseq,
                         ospec,
+                        (),
                         projectee_uid,
                         burst_opts.spool,
                         &mut accum,
@@ -267,11 +243,12 @@ impl VastFitData {
                             effect,
                             cseq,
                             ospec,
+                            (),
                             projectee_uid,
                             &mut accum,
                             time,
                         ),
-                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid, &mut accum),
+                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), projectee_uid, &mut accum),
                     },
                 } {
                     *volley_normal += accum.instances.max;

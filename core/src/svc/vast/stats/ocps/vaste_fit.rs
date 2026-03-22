@@ -90,6 +90,7 @@ fn get_ocps(
                     effect,
                     cseq,
                     ospec,
+                    (),
                     projectee_uid,
                     burst_opts.spool,
                     &mut accum,
@@ -102,11 +103,12 @@ fn get_ocps(
                         effect,
                         cseq,
                         ospec,
+                        (),
                         projectee_uid,
                         &mut accum,
                         time,
                     ),
-                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid, &mut accum),
+                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), projectee_uid, &mut accum),
                 },
             } {
                 orps += accum.get_per_second();

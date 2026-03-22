@@ -6,20 +6,20 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) struct REffectLocalOpcSpec<T>
+pub(crate) struct REffectLocalOpcSpec<T, BX = ()>
 where
     T: Copy,
 {
-    pub(crate) base: NBaseOutputGetter<T>,
+    pub(crate) base: NBaseOutputGetter<T, BX>,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
     pub(crate) limit_attr_rid: Option<RAttrId>,
 }
-impl<T> REffectLocalOpcSpec<T>
+impl<T, BX> REffectLocalOpcSpec<T, BX>
 where
     T: Copy,
 {
     pub(in crate::rd::data::effect) fn from_n_local_opc_spec(
-        n_local_opc_spec: &NEffectLocalOpcSpec<T>,
+        n_local_opc_spec: &NEffectLocalOpcSpec<T, BX>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {

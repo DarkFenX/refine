@@ -20,6 +20,7 @@ pub(in crate::nd::effect::data) fn get_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().energy_neut_amount, true)
 }
@@ -29,6 +30,7 @@ pub(in crate::nd::effect::data) fn get_nosf_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     // Not a blood raider ship - not considered as a neut
     if calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().nos_override)?.abs() < PValue::FLOAT_TOLERANCE {
@@ -42,6 +44,7 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     let instance = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(
         ctx,
@@ -74,6 +77,7 @@ fn get_aoe_dd_side_neut_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true)
 }
@@ -86,6 +90,7 @@ pub(in crate::nd::effect::data) fn get_nosf_nosf_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
 }
@@ -98,6 +103,7 @@ pub(crate) fn get_cap_consumer_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     let attr_rid = effect.discharge_attr_rid?;
     let instance = PValue::from_value_clamped(calc.get_item_attr_oextra(ctx, item_uid, attr_rid)?);

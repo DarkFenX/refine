@@ -49,6 +49,7 @@ fn internal_get_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<DmgKinds<PValue>>> {
     // Unlike other AoE doomsdays, reapers hit every ship only once, despite having damage ticks
     // spread over time. We also assume target is hit by first damage tick.

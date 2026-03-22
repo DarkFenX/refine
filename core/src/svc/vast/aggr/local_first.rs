@@ -16,20 +16,21 @@ use crate::{
 
 // Local effects, considers only first cycle (for "burst" stats)
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_first<T, A>(
+pub(in crate::svc::vast) fn aggr_local_first<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectLocalOpcSpec<T>,
+    ospec: &REffectLocalOpcSpec<T, BX>,
+    base_xargs: BX,
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
     T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
-    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
+    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
         Some(inv_local) => inv_local,
         None => return false,
     };

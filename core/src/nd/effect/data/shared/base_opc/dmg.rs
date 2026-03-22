@@ -16,6 +16,7 @@ pub(in crate::nd::effect::data) fn get_instant_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         instance: DmgKinds {
@@ -53,6 +54,7 @@ pub(in crate::nd::effect::data) fn get_instant_charge_mult_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<DmgKinds<PValue>>> {
     let charge_uid = ctx.u_data.items.get(item_uid).get_charge_uid()?;
     let dmg_mult =
@@ -91,6 +93,7 @@ fn get_direct_dd_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         instance: DmgKinds {
@@ -138,6 +141,7 @@ fn get_aoe_dd_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<DmgKinds<PValue>>> {
     let dmg_em =
         PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?);

@@ -60,7 +60,7 @@ impl BreacherAccum {
         ospec: &REffectProjOpcSpec<Breacher>,
     ) {
         // Base output
-        let output = match (ospec.base)(ctx, calc, item_uid, effect) {
+        let output = match (ospec.base)(ctx, calc, item_uid, effect, ()) {
             Some(output) => output,
             None => return,
         };
@@ -249,7 +249,7 @@ impl AppliedBreacherAccum {
         projectee_uid: UItemId,
     ) {
         // Base output
-        let output = match (ospec.base)(ctx, calc, item_uid, effect) {
+        let output = match (ospec.base)(ctx, calc, item_uid, effect, ()) {
             Some(output) => output,
             None => return,
         };

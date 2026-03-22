@@ -100,12 +100,12 @@ fn get_local_rps(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time)
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum, time)
                     }
-                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 },
             } {
                 total_rps += accum.get_per_second();
@@ -154,6 +154,7 @@ fn get_irr_data(
                         effect,
                         cseq,
                         ospec,
+                        (),
                         Some(projectee_item_uid),
                         burst_opts.spool,
                         &mut accum,
@@ -173,6 +174,7 @@ fn get_irr_data(
                             effect,
                             cseq,
                             ospec,
+                            (),
                             Some(projectee_item_uid),
                             &mut accum,
                             time,
@@ -195,6 +197,7 @@ fn get_irr_data(
                             effect,
                             cseq,
                             ospec,
+                            (),
                             Some(projectee_item_uid),
                             &mut accum,
                         ) {

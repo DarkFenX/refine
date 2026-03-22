@@ -51,6 +51,7 @@ fn internal_get_dmg_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<DmgKinds<PValue>>> {
     let item = ctx.u_data.items.get(item_uid);
     let dmg_dealer_uid = match item.get_axt().unwrap().capacity > PValue::ZERO {

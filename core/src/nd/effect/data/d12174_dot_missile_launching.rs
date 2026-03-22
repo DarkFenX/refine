@@ -35,7 +35,13 @@ fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Breacher
 }
 
-fn get_dmg_opc(ctx: SvcCtx, calc: &mut Calc, projector_uid: UItemId, _effect: &REffect) -> Option<Output<Breacher>> {
+fn get_dmg_opc(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    _effect: &REffect,
+    _base_xargs: (),
+) -> Option<Output<Breacher>> {
     let abs_max = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
         ctx,
         projector_uid,

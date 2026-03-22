@@ -107,15 +107,16 @@ fn get_mps(
                     effect,
                     cseq,
                     ospec,
+                    (),
                     None,
                     burst_opts.spool,
                     &mut accum,
                 ),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, None, &mut accum, time)
+                        aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum, time)
                     }
-                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, None, &mut accum),
+                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum),
                 },
             } {
                 mps += accum.get_per_second();

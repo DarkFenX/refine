@@ -21,13 +21,14 @@ use crate::{
 
 // Projected effects, aggregates total output by specified time
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_time<T, A>(
+pub(in crate::svc::vast) fn aggr_proj_time<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
+    base_xargs: BX,
     projectee_uid: Option<UItemId>,
     accum: &mut SeqAccum<A>,
     time: PValue,
@@ -36,7 +37,7 @@ where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
-    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, projectee_uid) {
+    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
         Some(inv_proj) => inv_proj,
         None => return false,
     };
@@ -70,12 +71,12 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-spool
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_regular<T, A>(
+fn aggr_regular<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut A,
     time: PValue,
@@ -88,7 +89,7 @@ fn aggr_regular<T, A>(
     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
 }
 
-impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, T>
+impl<T, BX> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, T, BX>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
@@ -112,12 +113,12 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<A, T>(
+fn aggr_spool<A, BX, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut A,
     ptime: PValue,
@@ -335,11 +336,11 @@ fn aggr_spool<A, T>(
     }
 }
 
-fn process_single_spool<T, A>(
+fn process_single_spool<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
@@ -375,11 +376,11 @@ fn process_single_spool<T, A>(
     }
 }
 
-fn process_limited_spool<T, A>(
+fn process_limited_spool<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
@@ -463,11 +464,11 @@ fn process_limited_spool<T, A>(
     }
 }
 
-fn process_infinite_spool<T, A>(
+fn process_infinite_spool<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T>,
+    ospec: &REffectProjOpcSpec<T, BX>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,

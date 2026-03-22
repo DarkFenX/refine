@@ -16,18 +16,19 @@ use crate::{
 };
 
 // Local effects, iterator over cycles (cycle time + instance iter)
-pub(in crate::svc::vast) fn aggr_local_iter<T>(
+pub(in crate::svc::vast) fn aggr_local_iter<T, BX>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectLocalOpcSpec<T>,
+    ospec: &REffectLocalOpcSpec<T, BX>,
+    base_xargs: BX,
 ) -> Option<AggrIterData<T>>
 where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {
-    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec)?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     Some(AggrIterData::Regular(AggrIterDataRegular::new(cseq_conv)))
@@ -36,7 +37,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
+impl<T, BX> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for LocalConverter<'_, '_, '_, '_, '_, T, BX>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {

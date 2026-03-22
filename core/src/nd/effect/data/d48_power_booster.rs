@@ -39,6 +39,7 @@ fn internal_get_cap_inject(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<PValue>> {
     let item = ctx.u_data.items.get(item_uid);
     let charge_uid = item.get_charge_uid()?;

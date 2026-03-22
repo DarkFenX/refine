@@ -74,12 +74,12 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time)
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum, time)
                     }
-                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 },
             } {
                 cps += accum.get_per_second();
@@ -105,12 +105,12 @@ fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions,
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
-                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, &mut accum, time)
+                        aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum, time)
                     }
-                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, &mut accum),
+                    _ => aggr_local_looped(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 },
             } {
                 cps += accum.get_per_second();
@@ -143,15 +143,25 @@ fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_da
                     effect,
                     cseq,
                     ospec,
+                    (),
                     None,
                     burst_opts.spool,
                     &mut accum,
                 ),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
-                    Some(time) if time > PValue::ZERO => {
-                        aggr_proj_time(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum, time)
-                    }
-                    _ => aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, None, &mut accum),
+                    Some(time) if time > PValue::ZERO => aggr_proj_time(
+                        ctx,
+                        calc,
+                        nosf_item_uid,
+                        effect,
+                        cseq,
+                        ospec,
+                        (),
+                        None,
+                        &mut accum,
+                        time,
+                    ),
+                    _ => aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), None, &mut accum),
                 },
             } {
                 cps += accum.get_per_second();
@@ -194,6 +204,7 @@ fn get_incoming_cap_transfers(
                     effect,
                     cseq,
                     ospec,
+                    (),
                     Some(cap_item_uid),
                     burst_opts.spool,
                     &mut accum,
@@ -206,6 +217,7 @@ fn get_incoming_cap_transfers(
                         effect,
                         cseq,
                         ospec,
+                        (),
                         Some(cap_item_uid),
                         &mut accum,
                         time,
@@ -217,6 +229,7 @@ fn get_incoming_cap_transfers(
                         effect,
                         cseq,
                         ospec,
+                        (),
                         Some(cap_item_uid),
                         &mut accum,
                     ),
@@ -262,6 +275,7 @@ fn get_incoming_neuts(
                     effect,
                     cseq,
                     ospec,
+                    (),
                     Some(cap_item_uid),
                     burst_opts.spool,
                     &mut accum,
@@ -274,6 +288,7 @@ fn get_incoming_neuts(
                         effect,
                         cseq,
                         ospec,
+                        (),
                         Some(cap_item_uid),
                         &mut accum,
                         time,
@@ -285,6 +300,7 @@ fn get_incoming_neuts(
                         effect,
                         cseq,
                         ospec,
+                        (),
                         Some(cap_item_uid),
                         &mut accum,
                     ),

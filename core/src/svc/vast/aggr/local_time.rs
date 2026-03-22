@@ -18,13 +18,14 @@ use crate::{
 
 // Local effects, aggregates total output by specified time
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_time<T, A>(
+pub(in crate::svc::vast) fn aggr_local_time<T, BX, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectLocalOpcSpec<T>,
+    ospec: &REffectLocalOpcSpec<T, BX>,
+    base_xargs: BX,
     accum: &mut SeqAccum<A>,
     time: PValue,
 ) -> bool
@@ -32,7 +33,7 @@ where
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
     A: SeqInstanceAccum<T>,
 {
-    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec) {
+    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
         Some(inv_local) => inv_local,
         None => return false,
     };
@@ -46,7 +47,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, T>
+impl<T, BX> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, T, BX>
 where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
 {

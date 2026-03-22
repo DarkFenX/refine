@@ -15,6 +15,7 @@ pub(in crate::nd::effect::data) fn get_direct_ecm_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(
@@ -37,6 +38,7 @@ pub(in crate::nd::effect::data) fn get_ecm_burst_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
     Some(Output::Simple(OutputSimple {
@@ -56,6 +58,7 @@ pub(in crate::nd::effect::data) fn get_aoe_ecm_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(
@@ -82,6 +85,7 @@ pub(in crate::nd::effect::data) fn get_ecm_drone_base_opc(
     calc: &mut Calc,
     item_uid: UItemId,
     _effect: &REffect,
+    _base_xargs: (),
 ) -> Option<Output<Ecm>> {
     let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(

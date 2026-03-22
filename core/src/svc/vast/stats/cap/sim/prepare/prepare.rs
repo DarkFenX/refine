@@ -66,7 +66,7 @@ fn fill_consumers(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec) {
+            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) {
                 Some(iter_data) => iter_data,
                 None => continue,
             };
@@ -100,7 +100,7 @@ fn fill_nosfs(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, None) {
+            let iter_data = match aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), None) {
                 Some(iter_data) => iter_data,
                 None => continue,
             };
@@ -139,7 +139,8 @@ fn fill_incoming_neuts(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, Some(cap_item_uid)) {
+            let iter_data = match aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, (), Some(cap_item_uid))
+            {
                 Some(iter_data) => iter_data,
                 None => continue,
             };
@@ -178,8 +179,16 @@ fn fill_incoming_transfers(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(ctx, calc, transfer_item_uid, effect, cseq, ospec, Some(cap_item_uid))
-            {
+            let iter_data = match aggr_proj_iter(
+                ctx,
+                calc,
+                transfer_item_uid,
+                effect,
+                cseq,
+                ospec,
+                (),
+                Some(cap_item_uid),
+            ) {
                 Some(iter_data) => iter_data,
                 None => continue,
             };
@@ -210,7 +219,7 @@ fn fill_injectors(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec) {
+            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) {
                 Some(iter_data) => iter_data,
                 None => continue,
             };

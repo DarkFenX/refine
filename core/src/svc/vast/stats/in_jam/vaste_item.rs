@@ -58,6 +58,7 @@ impl Vast {
                             effect,
                             cseq,
                             ospec,
+                            (),
                             Some(projectee_item_uid),
                             burst_opts.spool,
                             &mut accum,
@@ -76,6 +77,7 @@ impl Vast {
                                 effect,
                                 cseq,
                                 ospec,
+                                (),
                                 Some(projectee_item_uid),
                                 &mut accum,
                                 time,
@@ -93,6 +95,7 @@ impl Vast {
                                 effect,
                                 cseq,
                                 ospec,
+                                (),
                                 Some(projectee_item_uid),
                                 &mut accum,
                             ) {

@@ -1,7 +1,7 @@
 use super::traits::LimitInstance;
 use crate::{
-    Count,
-    num::{PValue, UnitInterval, Value},
+    nd::NChargeMultGetter,
+    num::{Count, PValue, UnitInterval, Value},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
@@ -21,14 +21,15 @@ impl<T> AggrLocalInvData<T>
 where
     T: Copy,
 {
-    pub(super) fn try_make(
+    pub(super) fn try_make<BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        ospec: &REffectLocalOpcSpec<T>,
+        ospec: &REffectLocalOpcSpec<T, BX>,
+        base_xargs: BX,
     ) -> Option<Self> {
-        let output = (ospec.base)(ctx, calc, item_uid, effect)?;
+        let output = (ospec.base)(ctx, calc, item_uid, effect, base_xargs)?;
         if output.get_instance_count() == Count::ZERO {
             return None;
         }
@@ -49,17 +50,17 @@ fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: Opt
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, T>
+pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, T, BX>
 where
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'u, 'p>,
     pub(super) calc: &'c mut Calc,
     pub(super) item_uid: UItemId,
-    pub(super) ospec: &'o REffectLocalOpcSpec<T>,
+    pub(super) ospec: &'o REffectLocalOpcSpec<T, BX>,
     pub(super) inv_local: &'i AggrLocalInvData<T>,
 }
-impl<'u, 'p, 'c, 'o, 'i, T> LocalConverter<'u, 'p, 'c, 'o, 'i, T>
+impl<'u, 'p, 'c, 'o, 'i, T, BX> LocalConverter<'u, 'p, 'c, 'o, 'i, T, BX>
 where
     T: Copy,
 {
@@ -67,7 +68,7 @@ where
         ctx: SvcCtx<'u, 'p>,
         calc: &'c mut Calc,
         item_uid: UItemId,
-        ospec: &'o REffectLocalOpcSpec<T>,
+        ospec: &'o REffectLocalOpcSpec<T, BX>,
         inv_local: &'i AggrLocalInvData<T>,
     ) -> Self {
         Self {
@@ -83,11 +84,11 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_local_output<T>(
+pub(super) fn get_local_output<T, BX>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    ospec: &REffectLocalOpcSpec<T>,
+    ospec: &REffectLocalOpcSpec<T, BX>,
     inv_local: &AggrLocalInvData<T>,
     chargeness: Option<UnitInterval>,
 ) -> Output<T>
