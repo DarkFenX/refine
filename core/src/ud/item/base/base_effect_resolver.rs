@@ -6,8 +6,6 @@ use crate::{
     util::RSet,
 };
 
-const ONLINE_EFFECT_ID: AEffectId = AEffectId::ONLINE;
-
 pub(crate) struct UAutochargeActivation {
     pub(crate) effect_rid: REffectId,
     pub(crate) active: bool,
@@ -44,10 +42,19 @@ pub(super) fn process_effects(
     item: &RItem,
     item_state: RState,
     item_effect_modes: &UEffectModes,
+    force_active_nondefeff: bool,
 ) {
     match item_state {
         RState::Ghost => stop_all_effects(reuse_eupdates, reffs, src, item),
-        _ => update_running_effects(reuse_eupdates, reffs, src, item, item_state, item_effect_modes),
+        _ => update_running_effects(
+            reuse_eupdates,
+            reffs,
+            src,
+            item,
+            item_state,
+            item_effect_modes,
+            force_active_nondefeff,
+        ),
     }
 }
 
@@ -82,6 +89,7 @@ fn update_running_effects(
     item: &RItem,
     item_state: RState,
     item_effect_modes: &UEffectModes,
+    force_active_nondefeff: bool,
 ) {
     // Separate handling for the online effect
     let online_should_run = resolve_online_effect_status(item, item_effect_modes, item_state);
@@ -106,8 +114,9 @@ fn update_running_effects(
             item_effect_modes,
             item.defeff_rid,
             item_state,
-            online_should_run,
             effect,
+            force_active_nondefeff,
+            online_should_run,
         );
         let running = reffs.contains(&effect_rid);
         if running && !should_run {
@@ -144,7 +153,7 @@ fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, 
     if !item.has_online_effect {
         return false;
     }
-    match item_effect_modes.get_by_aid(&ONLINE_EFFECT_ID) {
+    match item_effect_modes.get_by_aid(&AEffectId::ONLINE) {
         // Since other effects from online category depend on the online effect in full compliance
         // mode, use simplified resolution for the online effect itself
         EffectMode::FullCompliance | EffectMode::StateCompliance => item_state >= RState::Online,
@@ -158,15 +167,20 @@ fn resolve_regular_effect_status(
     item_effect_modes: &UEffectModes,
     item_defeff_rid: Option<REffectId>,
     item_state: RState,
-    online_running: bool,
     effect: &REffect,
+    force_active_nondefeff: bool,
+    online_running: bool,
 ) -> bool {
     // Ghosted items should never affect anything regardless of effect mode, so check it first
     // wherever applicable
     match item_effect_modes.get_by_rid(&effect.rid) {
-        EffectMode::FullCompliance => {
-            resolve_regular_effect_status_full(item_defeff_rid, item_state, effect, online_running)
-        }
+        EffectMode::FullCompliance => resolve_regular_effect_status_full(
+            item_defeff_rid,
+            item_state,
+            effect,
+            online_running,
+            force_active_nondefeff,
+        ),
         EffectMode::StateCompliance => item_state >= effect.state,
         EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,
@@ -177,6 +191,7 @@ fn resolve_regular_effect_status_full(
     item_defeff_rid: Option<REffectId>,
     item_state: RState,
     effect: &REffect,
+    force_active_nondefeff: bool,
     online_running: bool,
 ) -> bool {
     match effect.state {
@@ -192,9 +207,12 @@ fn resolve_regular_effect_status_full(
             if effect.state > item_state {
                 return false;
             };
-            match item_defeff_rid {
-                Some(defeff_rid) => defeff_rid == effect.rid,
-                _ => false,
+            match force_active_nondefeff {
+                true => true,
+                false => match item_defeff_rid {
+                    Some(defeff_rid) => defeff_rid == effect.rid,
+                    _ => false,
+                },
             }
         }
         // No additional restrictions for overload effects except for item being overloaded

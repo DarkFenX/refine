@@ -198,11 +198,21 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
     }
-    pub(in crate::ud::item) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.update_reffs(reuse_eupdates, src);
+    pub(in crate::ud::item) fn update_reffs(
+        &mut self,
+        reuse_eupdates: &mut UEffectUpdates,
+        src: &Src,
+        force_active_nondefeff: bool,
+    ) {
+        self.base.update_reffs(reuse_eupdates, src, force_active_nondefeff);
     }
-    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.stop_all_reffs(reuse_eupdates, src);
+    pub(in crate::ud::item) fn stop_all_reffs(
+        &mut self,
+        reuse_eupdates: &mut UEffectUpdates,
+        src: &Src,
+        force_active_nondefeff: bool,
+    ) {
+        self.base.stop_all_reffs(reuse_eupdates, src, force_active_nondefeff);
     }
     pub(in crate::ud::item) fn get_state(&self) -> RState {
         self.base.get_state()

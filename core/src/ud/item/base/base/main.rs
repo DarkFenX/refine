@@ -216,7 +216,12 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.cache.as_ref().map(|v| &v.reffs)
     }
-    pub(in crate::ud::item) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(in crate::ud::item) fn update_reffs(
+        &mut self,
+        reuse_eupdates: &mut UEffectUpdates,
+        src: &Src,
+        force_active_nondefeff: bool,
+    ) {
         // Always clear, regardless of item being loaded or not
         reuse_eupdates.clear();
         if let Some(cache) = &mut self.cache {
@@ -227,10 +232,16 @@ impl UItemBase {
                 &cache.r_item,
                 self.state,
                 &self.effect_modes,
+                force_active_nondefeff,
             )
         }
     }
-    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
+    pub(in crate::ud::item) fn stop_all_reffs(
+        &mut self,
+        reuse_eupdates: &mut UEffectUpdates,
+        src: &Src,
+        force_active_nondefeff: bool,
+    ) {
         reuse_eupdates.clear();
         if let Some(cache) = &mut self.cache {
             process_effects(
@@ -240,6 +251,7 @@ impl UItemBase {
                 &cache.r_item,
                 RState::Ghost,
                 &self.effect_modes,
+                force_active_nondefeff,
             )
         }
     }
