@@ -1,6 +1,6 @@
 """
-Ancillary armor reps are special in the way they handle charges - they are the only modules which
-can operate while having insufficient charges loaded. In this case, extra reps scale with count of
+Ancillary reps are special in the way they handle charges - they are the only modules which can
+operate while having insufficient charges loaded. In this case, extra reps scale with count of
 loaded charges. Here, we test this, as well as a few other things.
 """
 
@@ -141,13 +141,46 @@ def test_local_chargedness(client, consts):
         type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_basic_info.paste_id)
-    # Verification
+    # Verification - rep has 7 full cycles, and 3/4-charged 8th
     api_stats = api_fit.get_stats(options=FitStatsOptions(hp=True, rps=True))
     assert api_stats.hp.armor.ancil_local == approx(4864.5)
     assert api_stats.rps.one().armor.local == approx(69)
     # Action
     api_module.change_module(type_id=eve_module2_id)
-    # Verification
+    # Verification - rep has only one 3/4 charged cycle
     api_stats = api_fit.get_stats(options=FitStatsOptions(hp=True, rps=True))
     assert api_stats.hp.armor.ancil_local == approx(517.5)
     assert api_stats.rps.one().armor.local == approx(57.5)
+
+
+def test_remote_chargedness(client, consts):
+    eve_basic_info = setup_aar_basics(client=client, consts=consts)
+    eve_module1_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=290, cycle_time=6000, capacity=0.63, charge_rate=8)
+    eve_module2_id = make_eve_remote_aar(
+        client=client, basic_info=eve_basic_info, rep_amount=290, cycle_time=6000, capacity=0.05, charge_rate=8)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basic_info.armor_hp_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_module1_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_basic_info.paste_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    # Verification - rep has 7 full cycles, and 7/8-charged 8th
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_rps=True))
+    assert api_src_stats.outgoing_rps.one().armor == approx(145)
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True, rps=True))
+    assert api_tgt_stats.hp.armor.ancil_remote == approx(6887.5)
+    assert api_tgt_stats.rps.one().armor.remote == approx(145)
+    # Action
+    api_src_module.change_module(type_id=eve_module2_id)
+    # Verification - rep has only one 5/8 charged cycle
+    api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_rps=True))
+    assert api_src_stats.outgoing_rps.one().armor == approx(108.75)
+    api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True, rps=True))
+    assert api_tgt_stats.hp.armor.ancil_remote == approx(652.5)
+    assert api_tgt_stats.rps.one().armor.remote == approx(108.75)
