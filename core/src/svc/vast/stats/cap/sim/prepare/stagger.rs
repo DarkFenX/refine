@@ -12,6 +12,7 @@ use crate::{
     util::RMapVec,
 };
 
+#[derive(Clone)]
 pub struct StatCapSimStagger {
     pub default: bool,
     pub exception_item_ids: Vec<ItemId>,
@@ -25,6 +26,7 @@ impl StatCapSimStagger {
     }
 }
 
+#[derive(Clone)]
 pub(crate) struct StatCapSimStaggerInt {
     default: bool,
     exception_item_uids: Vec<UItemId>,

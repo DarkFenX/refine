@@ -9,6 +9,7 @@ use crate::cmd::shared::{HSolCloner, HValOptions};
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HBenchmarkCmd {
     AttrCalc(HBenchmarkAttrCalcCmd),
+    Stats(HBenchmarkStatsCmd),
     TryFitItems(Box<HBenchmarkTryFitItemsCmd>),
 }
 
@@ -25,6 +26,22 @@ impl HBenchmarkAttrCalcCmd {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id).unwrap();
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         core_fit.benchmark_attr_calc(core_type_id, self.iterations);
+    }
+}
+
+#[serde_as]
+#[derive(Deserialize)]
+pub(crate) struct HBenchmarkStatsCmd {
+    #[serde_as(as = "DisplayFromStr")]
+    fit_id: rc::FitId,
+    #[serde_as(as = "DisplayFromStr")]
+    projectee_item_id: rc::ItemId,
+    iterations: usize,
+}
+impl HBenchmarkStatsCmd {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id).unwrap();
+        core_fit.benchmark_stats(self.projectee_item_id, self.iterations);
     }
 }
 

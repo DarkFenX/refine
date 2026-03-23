@@ -1,3 +1,3 @@
-pub(crate) use benchmark::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkTryFitItemsCmd};
+pub(crate) use benchmark::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd};
 
 mod benchmark;

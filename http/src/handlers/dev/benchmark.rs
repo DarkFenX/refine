@@ -23,6 +23,7 @@ pub(crate) async fn dev_benchmark_sol(
     };
     let resp = match match payload {
         HBenchmarkCmd::AttrCalc(cmd) => guarded_sol.lock().await.dev_benchmark_attrs(&state.tpool, cmd).await,
+        HBenchmarkCmd::Stats(cmd) => guarded_sol.lock().await.dev_benchmark_stats(&state.tpool, cmd).await,
         HBenchmarkCmd::TryFitItems(cmd) => {
             guarded_sol
                 .lock()

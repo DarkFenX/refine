@@ -3,10 +3,10 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkTryFitItemsCmd, HChangeFitCommand,
-        HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd, HGetFleetStatsCmd,
-        HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd, get_primary_fit,
-        get_primary_fleet,
+        HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd,
+        HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd,
+        HGetFleetStatsCmd, HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
+        get_primary_fit, get_primary_fleet,
     },
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
@@ -647,6 +647,26 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         command: HBenchmarkAttrCalcCmd,
+    ) -> Result<(), HBrError> {
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let core_sol = tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                command.execute(&mut core_sol);
+                core_sol
+            })
+            .await;
+        self.put_sol_back(core_sol);
+        Ok(())
+    }
+    /// Non-fallible
+    #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
+    pub(crate) async fn dev_benchmark_stats(
+        &mut self,
+        tpool: &HThreadPool,
+        command: HBenchmarkStatsCmd,
     ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
