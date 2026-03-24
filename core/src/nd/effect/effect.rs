@@ -3,16 +3,13 @@ use crate::{
     ed::EEffectId,
     misc::{Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::{
-        NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjOpcSpec, NEffectProjecteeFilter,
-        NEffectSpoolAttrs, NMiningXargs,
+        NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffectProjecteeFilter, NEffectSpoolAttrs, NMiningXargs,
     },
     num::PValue,
-    rd::{RAttrConsts, REffect},
-    svc::{
-        SvcCtx,
-        calc::{Calc, RawModifier},
-    },
-    ud::{UItem, UItemId, UProjData},
+    rd::RAttrConsts,
+    svc::calc::RawModifier,
+    ud::UItem,
     util::RMap,
 };
 
@@ -25,7 +22,6 @@ pub(crate) type NEffectCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, 
 // Getters - projection
 // TODO: consider if proj attr getter should be a function or an enum like resists (standard/attrs)
 pub(crate) type NEffectModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-pub(crate) type NEffectProjMultGetter = fn(SvcCtx, &mut Calc, UItemId, &REffect, UItemId, UProjData) -> PValue;
 // Getters - damage output
 pub(crate) type NEffectDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 

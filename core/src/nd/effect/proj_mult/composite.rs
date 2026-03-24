@@ -2,7 +2,7 @@ use super::{
     application::{get_missile_application_mult, get_radius_ratio_mult, get_turret_application_mult},
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_dd_neut_range_mult, get_full_restricted_range_mult,
-        get_full_unrestricted_range_mult, get_simple_c2s_range_mult, get_simple_s2s_range_mult,
+        get_full_unrestricted_range_mult, get_simple_s2s_range_mult,
     },
 };
 use crate::{
@@ -63,17 +63,6 @@ pub(super) fn get_vorton_proj_mult(
         return PValue::ZERO;
     }
     mult * get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
-}
-
-pub(super) fn get_bubble_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    _projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    get_simple_c2s_range_mult(ctx, calc, projector_uid, effect, proj_data)
 }
 
 pub(super) fn get_aoe_burst_proj_mult(
@@ -150,51 +139,6 @@ pub(super) fn get_neut_proj_mult(
         projectee_uid,
         ctx.ac().energy_neut_sig_resolution,
     )
-}
-
-// Just range projection, application factor is excluded
-pub(super) fn get_simple_s2s_noapp_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    _projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    get_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data)
-}
-
-pub(super) fn get_full_noapp_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    _projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    get_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data)
-}
-
-pub(super) fn get_aoe_burst_noapp_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    effect: &REffect,
-    _projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    get_aoe_burst_range_mult(ctx, calc, projector_uid, effect, proj_data)
-}
-
-pub(super) fn get_aoe_dd_noapp_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    _effect: &REffect,
-    _projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    get_aoe_dd_range_mult(ctx, calc, projector_uid, proj_data)
 }
 
 // Utility

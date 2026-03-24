@@ -4,10 +4,7 @@ use crate::{
         AEffectId, AItemListId,
     },
     ed::EEffectId,
-    nd::{
-        NEffect,
-        effect::data::shared::proj_mult::{get_aoe_burst_mod_proj_attrs, get_aoe_burst_noapp_proj_mult},
-    },
+    nd::{NEffect, NEffectProjMultGetter, effect::data::shared::mod_proj_attrs::get_aoe_burst_mod_proj_attrs},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_WEB;
@@ -27,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         modifier_proj_attrs_getter: Some(get_aoe_burst_mod_proj_attrs),
-        modifier_proj_mult_getter: Some(get_aoe_burst_noapp_proj_mult),
+        modifier_proj_mult_getter: Some(NEffectProjMultGetter::AoeBurstRange),
         ..
     }
 }

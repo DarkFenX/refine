@@ -3,7 +3,6 @@ pub use stat::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatD
 
 mod breacher;
 mod option;
-mod shared;
 mod stat;
 mod vaste_fit;
 mod vaste_item;

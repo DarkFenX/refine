@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     misc::DmgKinds,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjMultGetterX, NEffectProjOpcSpec,
+        NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc_spec, mods::make_dd_self_debuffs},
     },
     num::{PValue, Value},
@@ -30,7 +30,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_dmg_base_opc,
-            proj_mult_str: Some(NEffectProjMultGetterX::AoeDdDmg),
+            proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
             ..
         }),
         neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),

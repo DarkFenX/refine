@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKind,
-        NEffectProjMultGetterX, NEffectProjOpcSpec,
+        NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::base_opc::get_instant_charge_mult_dmg_base_opc,
     },
     ud::UItem,
@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_charge_mult_dmg_base_opc,
-            proj_mult_str: Some(NEffectProjMultGetterX::Turret),
+            proj_mult_str: Some(NEffectProjMultGetter::Turret),
             ..
         }),
         ..

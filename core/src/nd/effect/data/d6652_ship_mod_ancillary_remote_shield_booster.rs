@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        NEffectProjMultGetterX, NEffectProjOpcSpec, NEffectResist,
+        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::base_opc::{get_ancillary_cap_mult, get_cap_consumer_base_opc, get_shield_rep_base_opc},
     },
 };
@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         outgoing_shield_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_shield_rep_base_opc,
-            proj_mult_str: Some(NEffectProjMultGetterX::RangeFullStsRestricted),
+            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::SHIELD_CAPACITY),
             ..

@@ -2,11 +2,8 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect,
-        effect::data::shared::{
-            mods::add_damp_mods,
-            proj_mult::{get_simple_mod_proj_attrs, get_simple_s2s_noapp_proj_mult},
-        },
+        NEffect, NEffectProjMultGetter,
+        effect::data::shared::{mod_proj_attrs::get_simple_mod_proj_attrs, mods::add_damp_mods},
     },
 };
 
@@ -19,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(|a_effect| add_damp_mods(EFFECT_AID, a_effect)),
         modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
-        modifier_proj_mult_getter: Some(get_simple_s2s_noapp_proj_mult),
+        modifier_proj_mult_getter: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
         ..
     }
 }

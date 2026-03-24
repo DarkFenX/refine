@@ -1,7 +1,7 @@
 use super::generic::get_generic_base_opc;
 use crate::{
     ad::{AAttrId, AItemGrpId},
-    nd::{NEffectProjMultGetterX, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
     num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -65,7 +65,7 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
 pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<PValue> {
     NEffectProjOpcSpec {
         base: get_aoe_dd_side_neut_base_opc,
-        proj_mult_str: Some(NEffectProjMultGetterX::AoeDdSideNeut),
+        proj_mult_str: Some(NEffectProjMultGetter::AoeDdSideNeut),
         resist: Some(NEffectResist::Attr(AAttrId::DOOMSDAY_ENERGY_NEUT_RESIST_ID)),
         limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
         ..

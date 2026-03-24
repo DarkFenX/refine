@@ -1,6 +1,6 @@
 use crate::{
     misc::DmgKinds,
-    nd::{NEffectProjMultGetterX, NEffectProjOpcSpec},
+    nd::{NEffectProjMultGetter, NEffectProjOpcSpec},
     num::{Count, PValue, Value},
     rd::REffect,
     svc::{
@@ -132,7 +132,7 @@ pub(in crate::nd::effect::data) fn get_aoe_dd_dmg_opc_spec() -> NEffectProjOpcSp
     // Direct DDs have no range limitations
     NEffectProjOpcSpec {
         base: get_aoe_dd_dmg_base_opc,
-        proj_mult_str: Some(NEffectProjMultGetterX::AoeDdDmg),
+        proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
         ..
     }
 }

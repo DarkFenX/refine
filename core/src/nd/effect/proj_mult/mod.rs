@@ -1,4 +1,4 @@
-pub(crate) use proj_mult::NEffectProjMultGetterX;
+pub(crate) use proj_mult::NEffectProjMultGetter;
 
 mod application;
 mod composite;

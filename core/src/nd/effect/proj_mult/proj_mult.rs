@@ -5,8 +5,8 @@ use super::{
         get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
     },
     range::{
-        get_aoe_burst_range_mult, get_bomb_range_mult, get_fof_missile_range_mult, get_full_restricted_range_mult,
-        get_missile_range_mult, get_simple_s2s_range_mult,
+        get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_bomb_range_mult, get_fof_missile_range_mult,
+        get_full_restricted_range_mult, get_missile_range_mult, get_simple_c2s_range_mult, get_simple_s2s_range_mult,
     },
 };
 use crate::{
@@ -17,10 +17,11 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NEffectProjMultGetterX {
+pub(crate) enum NEffectProjMultGetter {
     Null,
-    RangeSimpleSts,
-    RangeFullStsRestricted,
+    GenericRangeSimpleCts,
+    GenericRangeSimpleSts,
+    GenericRangeFullStsRestricted,
     Turret,
     Disintegrator,
     Vorton,
@@ -31,12 +32,13 @@ pub(crate) enum NEffectProjMultGetterX {
     BombApplication,
     MissileOrBombApplication,
     Neut,
-    AoeDdDmg,
+    AoeDd,
+    AoeDdRange,
     AoeDdSideNeut,
     AoeBurst,
     AoeBurstRange,
 }
-impl NEffectProjMultGetterX {
+impl NEffectProjMultGetter {
     pub(crate) fn get(
         &self,
         ctx: SvcCtx,
@@ -48,8 +50,11 @@ impl NEffectProjMultGetterX {
     ) -> PValue {
         match self {
             Self::Null => PValue::ZERO,
-            Self::RangeSimpleSts => get_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
-            Self::RangeFullStsRestricted => get_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data),
+            Self::GenericRangeSimpleCts => get_simple_c2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
+            Self::GenericRangeSimpleSts => get_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
+            Self::GenericRangeFullStsRestricted => {
+                get_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data)
+            }
             Self::Turret => get_turret_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::Disintegrator => {
                 get_disintegrator_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data)
@@ -66,7 +71,8 @@ impl NEffectProjMultGetterX {
                 get_missile_or_bomb_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
             }
             Self::Neut => get_neut_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
-            Self::AoeDdDmg => get_aoe_dd_dmg_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
+            Self::AoeDd => get_aoe_dd_dmg_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
+            Self::AoeDdRange => get_aoe_dd_range_mult(ctx, calc, projector_uid, proj_data),
             Self::AoeDdSideNeut => get_aoe_dd_side_neut_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
             Self::AoeBurst => get_aoe_burst_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::AoeBurstRange => get_aoe_burst_range_mult(ctx, calc, projector_uid, effect, proj_data),

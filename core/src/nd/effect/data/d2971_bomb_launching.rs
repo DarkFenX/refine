@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     misc::Ecm,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjMultGetterX, NEffectProjOpcSpec, NEffectResist,
+        NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::base_opc::get_instant_dmg_base_opc,
     },
     num::{PValue, Value},
@@ -26,21 +26,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(NEffectProjMultGetterX::BombApplication),
-            proj_mult_chance: Some(NEffectProjMultGetterX::BombRange),
+            proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
+            proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             ..
         }),
         neut_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_neut_base_opc,
-            proj_mult_str: Some(NEffectProjMultGetterX::BombApplication),
-            proj_mult_chance: Some(NEffectProjMultGetterX::BombRange),
+            proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
+            proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),
         ecm_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_ecm_base_opc,
-            proj_mult_chance: Some(NEffectProjMultGetterX::BombRange),
+            proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             resist: Some(NEffectResist::Standard),
             ..
         }),

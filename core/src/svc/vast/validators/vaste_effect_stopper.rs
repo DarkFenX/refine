@@ -89,7 +89,7 @@ fn get_espec_proj_mult(
     let projector_effect = ctx.u_data.src.get_effect_by_rid(projector_espec.effect_rid);
     let proj_mult_getter = projector_effect.modifier_proj_mult_getter?;
     let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_uid)?;
-    Some(proj_mult_getter(
+    Some(proj_mult_getter.get(
         ctx,
         calc,
         projector_espec.item_uid,
