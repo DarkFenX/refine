@@ -79,6 +79,13 @@ impl<'a> FitMut<'a> {
                 time_sim_inf,
                 projectee_item_uid,
             );
+            self.sol.svc.get_stat_fit_dmg_applied(
+                &self.sol.u_data,
+                self.uid,
+                dmg_item_kinds,
+                time_sim_1200,
+                projectee_item_uid,
+            );
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Mining
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
