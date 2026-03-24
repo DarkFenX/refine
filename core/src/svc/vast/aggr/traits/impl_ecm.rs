@@ -1,8 +1,5 @@
 use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
-use crate::{
-    misc::Ecm,
-    num::{PValue, Value},
-};
+use crate::{misc::Ecm, num::PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
@@ -17,7 +14,7 @@ impl InstanceDuration for Ecm {
 }
 impl LimitInstance for Ecm {
     // No-op, since there is no logic to limit ECM depending on target attrs
-    fn limit_instance(&mut self, _limit: Value) {}
+    fn limit_instance(&mut self, _limit: PValue) {}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

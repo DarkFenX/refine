@@ -17,7 +17,7 @@ where
     pub(super) base_output: Output<T>,
     is_nulled: bool,
     pub(super) str_mult: PValue,
-    instance_limit: Option<Value>,
+    instance_limit: Option<PValue>,
     pub(super) chance_mult: Option<PValue>,
 }
 impl<T> AggrProjInvData<T>
@@ -47,7 +47,9 @@ where
                 projectee_uid,
             );
             // Amount limit
-            instance_limit = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid);
+            instance_limit = calc
+                .get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid)
+                .map(PValue::from_value_clamped);
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
                 str_mult *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
@@ -89,7 +91,7 @@ where
             chance_mult: process_mult(chance_mult),
         })
     }
-    fn make_nulled(mut base_output: Output<T>, instance_limit: Option<Value>) -> Self {
+    fn make_nulled(mut base_output: Output<T>, instance_limit: Option<PValue>) -> Self {
         base_output *= PValue::ZERO;
         Self {
             base_output,
