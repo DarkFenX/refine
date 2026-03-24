@@ -127,11 +127,8 @@ impl Calc {
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
         {
-            let cval = match &attr_entry.postprocs {
-                Some(postprocs) => {
-                    let pp_fn = postprocs.fast;
-                    pp_fn(self, ctx, item_uid, cval)
-                }
+            let cval = match attr_entry.postproc {
+                Some(postproc) => postproc.fast(self, ctx, item_uid, cval),
                 None => cval,
             };
             return Ok(cval);
@@ -139,9 +136,8 @@ impl Calc {
         // If it is not cached, calculate and cache it
         let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
         let item_attr_data = self.attrs.get_item_attr_data_mut(&item_uid).unwrap();
-        if let Some(postprocs) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
-            let pp_fn = postprocs.fast;
-            cval = pp_fn(self, ctx, item_uid, cval);
+        if let Some(postproc) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
+            cval = postproc.fast(self, ctx, item_uid, cval);
         }
         Ok(cval)
     }
@@ -160,11 +156,8 @@ impl Calc {
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
         {
-            let cval = match &attr_entry.postprocs {
-                Some(postprocs) => {
-                    let pp_fn = postprocs.fast;
-                    pp_fn(self, ctx, item_uid, cval)
-                }
+            let cval = match attr_entry.postproc {
+                Some(postproc) => postproc.fast(self, ctx, item_uid, cval),
                 None => cval,
             };
             return Ok(cval);
@@ -172,9 +165,8 @@ impl Calc {
         // If it is not cached, calculate and cache it
         let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
         let item_attr_data = self.attrs.get_item_attr_data_mut(&item_uid).unwrap();
-        if let Some(postprocs) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
-            let pp_fn = postprocs.fast;
-            cval = pp_fn(self, ctx, item_uid, cval);
+        if let Some(postproc) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
+            cval = postproc.fast(self, ctx, item_uid, cval);
         }
         Ok(cval)
     }
@@ -214,15 +206,15 @@ impl Calc {
         for (&attr_rid, attr_entry) in item_attr_data.iter() {
             if let Some(cval) = attr_entry.value {
                 cval_map.insert(attr_rid, cval);
-                if let Some(postprocs) = &attr_entry.postprocs {
-                    attrs_with_pps.push((attr_rid, postprocs.fast));
+                if let Some(postproc) = attr_entry.postproc {
+                    attrs_with_pps.push((attr_rid, postproc));
                 }
             }
         }
-        for (attr_rid, pp_fn) in attrs_with_pps {
+        for (attr_rid, postproc) in attrs_with_pps {
             if let Entry::Occupied(mut entry) = cval_map.entry(attr_rid) {
                 let cval = *entry.get();
-                let cval = pp_fn(self, ctx, item_uid, cval);
+                let cval = postproc.fast(self, ctx, item_uid, cval);
                 entry.insert(cval);
             }
         }

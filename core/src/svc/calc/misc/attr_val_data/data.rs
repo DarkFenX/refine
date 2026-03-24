@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use super::attr::AttrEntry;
 use crate::{
     rd::RAttrId,
-    svc::calc::{CalcAttrVals, ItemAttrPostprocs},
+    svc::calc::{CalcAttrVals, ItemAttrPostproc},
     util::RMap,
 };
 
@@ -28,17 +28,17 @@ impl ItemAttrData {
         &mut self,
         attr_rid: RAttrId,
         value: CalcAttrVals,
-    ) -> Option<&ItemAttrPostprocs> {
+    ) -> Option<ItemAttrPostproc> {
         match self.data.entry(attr_rid) {
             Entry::Occupied(entry) => {
                 let attr_entry = entry.into_mut();
                 attr_entry.value = Some(value);
-                attr_entry.postprocs.as_ref()
+                attr_entry.postproc
             }
             Entry::Vacant(entry) => {
                 entry.insert(AttrEntry {
                     value: Some(value),
-                    postprocs: None,
+                    postproc: None,
                 });
                 None
             }
@@ -56,20 +56,20 @@ impl ItemAttrData {
             None => false,
         }
     }
-    pub(in crate::svc::calc) fn reg_postproc(&mut self, attr_rid: RAttrId, postprocs: ItemAttrPostprocs) {
+    pub(in crate::svc::calc) fn reg_postproc(&mut self, attr_rid: RAttrId, postprocs: ItemAttrPostproc) {
         match self.data.entry(attr_rid) {
-            Entry::Occupied(mut entry) => entry.get_mut().postprocs = Some(postprocs),
+            Entry::Occupied(mut entry) => entry.get_mut().postproc = Some(postprocs),
             Entry::Vacant(entry) => {
                 entry.insert(AttrEntry {
                     value: None,
-                    postprocs: Some(postprocs),
+                    postproc: Some(postprocs),
                 });
             }
         }
     }
     pub(in crate::svc::calc) fn unreg_postproc(&mut self, attr_rid: RAttrId) -> bool {
         match self.data.entry(attr_rid) {
-            Entry::Occupied(mut entry) => entry.get_mut().postprocs.take().is_some(),
+            Entry::Occupied(mut entry) => entry.get_mut().postproc.take().is_some(),
             Entry::Vacant(_) => false,
         }
     }

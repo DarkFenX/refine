@@ -34,7 +34,7 @@ use accum::{AttrValInfo, ModAccumFast, ModAccumInfo};
 pub(crate) use calc::Calc;
 pub use info::{Affector, Modification};
 pub(crate) use misc::CalcAttrVals;
-use misc::{CalcModification, CalcModificationKey, ItemAttrPostprocs, LocationKind};
+use misc::{CalcModification, CalcModificationKey, ItemAttrPostproc, LocationKind};
 pub(crate) use modifier::{
     AffecteeFilter, AffectorValue, AggrKey, AggrMode, CalcOp, CustomAffectorValue, CustomAffectorValueKind,
     ItemAddReviser, ItemRemoveReviser, Location, ModifierKind, RawModifier,

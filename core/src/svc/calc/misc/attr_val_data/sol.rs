@@ -1,11 +1,6 @@
-use super::{
-    data::ItemAttrData,
-    pp_fighter_count::{fighter_count_postproc_fast, fighter_count_postproc_info},
-    pp_sec_status::{sec_status_postproc_fast, sec_status_postproc_info},
-    pp_skill_level::{skill_level_postproc_fast, skill_level_postproc_info},
-};
+use super::data::ItemAttrData;
 use crate::{
-    svc::calc::ItemAttrPostprocs,
+    svc::calc::ItemAttrPostproc,
     ud::{UData, UItem, UItemId},
     util::RMap,
 };
@@ -30,31 +25,13 @@ impl AttrValData {
         let mut item_data = ItemAttrData::new();
         match item {
             UItem::Fighter(_) if let Some(count_attr_rid) = u_data.src.get_attr_consts().ftr_sq_size => {
-                item_data.reg_postproc(
-                    count_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: fighter_count_postproc_fast,
-                        info: fighter_count_postproc_info,
-                    },
-                );
+                item_data.reg_postproc(count_attr_rid, ItemAttrPostproc::FighterCount);
             }
             UItem::Ship(_) if let Some(ss_attr_rid) = u_data.src.get_attr_consts().pilot_security_status => {
-                item_data.reg_postproc(
-                    ss_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: sec_status_postproc_fast,
-                        info: sec_status_postproc_info,
-                    },
-                );
+                item_data.reg_postproc(ss_attr_rid, ItemAttrPostproc::SecStatus);
             }
             UItem::Skill(_) if let Some(lvl_attr_rid) = u_data.src.get_attr_consts().skill_level => {
-                item_data.reg_postproc(
-                    lvl_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: skill_level_postproc_fast,
-                        info: skill_level_postproc_info,
-                    },
-                );
+                item_data.reg_postproc(lvl_attr_rid, ItemAttrPostproc::SkillLevel);
             }
             _ => (),
         }

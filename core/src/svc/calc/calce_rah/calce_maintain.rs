@@ -6,7 +6,7 @@ use crate::{
     rd::RcEffect,
     svc::{
         SvcCtx,
-        calc::{AttrValInfo, Calc, CalcAttrVals, ItemAttrPostprocs},
+        calc::{AttrValInfo, Calc, CalcAttrVals, ItemAttrPostproc},
     },
     ud::{UFitId, UItem, UItemId},
 };
@@ -52,40 +52,16 @@ impl Calc {
             let attr_consts = ctx.ac();
             let item_attr_data = self.attrs.get_item_attr_data_mut(&item_uid).unwrap();
             if let Some(em_attr_rid) = attr_consts.armor_em_dmg_resonance {
-                item_attr_data.reg_postproc(
-                    em_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: rah_em_resonance_postproc_fast,
-                        info: rah_em_resonance_postproc_info,
-                    },
-                );
+                item_attr_data.reg_postproc(em_attr_rid, ItemAttrPostproc::RahEm);
             }
             if let Some(therm_attr_rid) = attr_consts.armor_therm_dmg_resonance {
-                item_attr_data.reg_postproc(
-                    therm_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: rah_therm_resonance_postproc_fast,
-                        info: rah_therm_resonance_postproc_info,
-                    },
-                );
+                item_attr_data.reg_postproc(therm_attr_rid, ItemAttrPostproc::RahThermal);
             }
             if let Some(kin_attr_rid) = attr_consts.armor_kin_dmg_resonance {
-                item_attr_data.reg_postproc(
-                    kin_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: rah_kin_resonance_postproc_fast,
-                        info: rah_kin_resonance_postproc_info,
-                    },
-                );
+                item_attr_data.reg_postproc(kin_attr_rid, ItemAttrPostproc::RahKinetic);
             }
             if let Some(expl_attr_rid) = attr_consts.armor_expl_dmg_resonance {
-                item_attr_data.reg_postproc(
-                    expl_attr_rid,
-                    ItemAttrPostprocs {
-                        fast: rah_expl_resonance_postproc_fast,
-                        info: rah_expl_resonance_postproc_info,
-                    },
-                );
+                item_attr_data.reg_postproc(expl_attr_rid, ItemAttrPostproc::RahExplosive);
             }
         }
     }
@@ -203,88 +179,4 @@ impl Calc {
             self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_expl_dmg_resonance);
         }
     }
-    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_uid: UItemId) -> DmgKinds<CalcAttrVals> {
-        // Unwrap item, since method is supposed to be called only for registered RAHs
-        if let Some(val) = self.rah.resonances.get(&item_uid).unwrap() {
-            return *val;
-        }
-        // Unwrap fit ID, since registered RAHs are supposed to be modules, which have fit ID
-        let fit_uid = ctx.u_data.items.get(item_uid).get_fit_uid().unwrap();
-        self.rah.sim_running = true;
-        self.rah_run_simulation(ctx, fit_uid);
-        self.rah.sim_running = false;
-        // Unwrap value, since simulation is supposed to always set results for RAHs of requested
-        // fit
-        self.rah.resonances.get(&item_uid).unwrap().unwrap()
-    }
-}
-
-fn rah_em_resonance_postproc_fast(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    _cval: CalcAttrVals,
-) -> CalcAttrVals {
-    calc.get_rah_resonances(ctx, item_uid).em
-}
-fn rah_therm_resonance_postproc_fast(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    _cval: CalcAttrVals,
-) -> CalcAttrVals {
-    calc.get_rah_resonances(ctx, item_uid).thermal
-}
-fn rah_kin_resonance_postproc_fast(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    _cval: CalcAttrVals,
-) -> CalcAttrVals {
-    calc.get_rah_resonances(ctx, item_uid).kinetic
-}
-fn rah_expl_resonance_postproc_fast(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    _cval: CalcAttrVals,
-) -> CalcAttrVals {
-    calc.get_rah_resonances(ctx, item_uid).explosive
-}
-
-fn rah_em_resonance_postproc_info(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    mut info: AttrValInfo,
-) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(ctx, item_uid).em.extra;
-    info
-}
-fn rah_therm_resonance_postproc_info(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    mut info: AttrValInfo,
-) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(ctx, item_uid).thermal.extra;
-    info
-}
-fn rah_kin_resonance_postproc_info(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    mut info: AttrValInfo,
-) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(ctx, item_uid).kinetic.extra;
-    info
-}
-fn rah_expl_resonance_postproc_info(
-    calc: &mut Calc,
-    ctx: SvcCtx,
-    item_uid: UItemId,
-    mut info: AttrValInfo,
-) -> AttrValInfo {
-    info.value = calc.get_rah_resonances(ctx, item_uid).explosive.extra;
-    info
 }

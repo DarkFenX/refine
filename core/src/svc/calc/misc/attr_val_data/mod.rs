@@ -1,5 +1,5 @@
 pub(in crate::svc::calc) use data::ItemAttrData;
-pub(in crate::svc::calc) use postproc::ItemAttrPostprocs;
+pub(in crate::svc::calc) use postproc::ItemAttrPostproc;
 pub(in crate::svc::calc) use sol::AttrValData;
 
 mod attr;
