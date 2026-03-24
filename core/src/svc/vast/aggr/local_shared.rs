@@ -1,7 +1,6 @@
-use super::traits::LimitInstance;
+use super::traits::InstanceLimit;
 use crate::{
-    nd::NChargeMultGetter,
-    num::{Count, PValue, UnitInterval, Value},
+    num::{Count, PValue, UnitInterval},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
@@ -94,7 +93,7 @@ pub(super) fn get_local_output<T, BX>(
     chargeness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_local.output;
     // Chargedness
@@ -102,11 +101,11 @@ where
         && let Some(chargedness) = chargeness
         && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
     {
-        output *= charge_mult;
+        output.instance_mul_assign(charge_mult);
     }
     // Limit
     if let Some(limit) = inv_local.instance_limit {
-        output.limit_instance(limit);
+        output.instance_limit(limit);
     }
     output
 }

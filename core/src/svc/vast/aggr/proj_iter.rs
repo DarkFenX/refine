@@ -3,7 +3,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_part_str_mult,
     },
     shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataRegular, AggrPartDataSpool},
-    traits::{InstanceDuration, LimitInstance},
+    traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
     Value,
@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<T, BX>(
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrIterData<T>>
 where
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
     let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
@@ -53,7 +53,7 @@ fn aggr_regular<T, BX>(
     inv_proj: AggrProjInvData<T>,
 ) -> AggrIterData<T>
 where
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
@@ -62,7 +62,7 @@ where
 
 impl<T, BX> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, T, BX>
 where
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<T> {
         let output = get_proj_regular_output(
@@ -93,7 +93,7 @@ fn aggr_spool<T, BX>(
     inv_spool: AggrSpoolInvData,
 ) -> AggrIterData<T>
 where
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let mut converter = ProjConverterSpool::new(ctx, calc, projector_uid, ospec, &inv_proj, &inv_spool);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
@@ -135,7 +135,7 @@ where
 }
 impl<T, BX> LibConverter<CycleDataFull, AggrPartDataSpool<T>> for ProjConverterSpool<'_, '_, '_, '_, '_, '_, T, BX>
 where
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool<T> {
         let part_str_mult = get_proj_spool_part_str_mult(

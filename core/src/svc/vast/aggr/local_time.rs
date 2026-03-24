@@ -2,7 +2,7 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
     shared_time::{AggrPartDataTail, aggr_by_time},
-    traits::{InstanceDuration, LimitInstance},
+    traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
     num::PValue,
@@ -30,7 +30,7 @@ pub(in crate::svc::vast) fn aggr_local_time<T, BX, A>(
     time: PValue,
 ) -> bool
 where
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
@@ -49,7 +49,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T, BX> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, T, BX>
 where
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
         let output = get_local_output(

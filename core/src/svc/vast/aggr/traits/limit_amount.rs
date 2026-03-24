@@ -3,8 +3,8 @@ use crate::{
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-pub(crate) trait LimitInstance {
-    fn limit_instance(&mut self, limit: PValue);
+pub(crate) trait InstanceLimit {
+    fn instance_limit(&mut self, limit: PValue);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,28 +12,28 @@ pub(crate) trait LimitInstance {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Output<T>
 where
-    T: Copy + LimitInstance,
+    T: Copy + InstanceLimit,
 {
-    pub(in crate::svc::vast::aggr) fn limit_instance(&mut self, limit: PValue) {
+    pub(in crate::svc::vast::aggr) fn instance_limit(&mut self, limit: PValue) {
         match self {
-            Self::Simple(inner) => inner.limit_instance(limit),
-            Self::Complex(inner) => inner.limit_instance(limit),
+            Self::Simple(inner) => inner.instance_limit(limit),
+            Self::Complex(inner) => inner.instance_limit(limit),
         }
     }
 }
 impl<T> OutputSimple<T>
 where
-    T: Copy + LimitInstance,
+    T: Copy + InstanceLimit,
 {
-    fn limit_instance(&mut self, limit: PValue) {
-        self.instance.limit_instance(limit);
+    fn instance_limit(&mut self, limit: PValue) {
+        self.instance.instance_limit(limit);
     }
 }
 impl<T> OutputComplex<T>
 where
-    T: Copy + LimitInstance,
+    T: Copy + InstanceLimit,
 {
-    fn limit_instance(&mut self, limit: PValue) {
-        self.instance.limit_instance(limit);
+    fn instance_limit(&mut self, limit: PValue) {
+        self.instance.instance_limit(limit);
     }
 }

@@ -63,24 +63,11 @@ impl<T: Copy> OutputSimple<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Math
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> std::ops::Mul<PValue> for OutputSimple<T>
-where
-    T: Copy + std::ops::Mul<PValue, Output = T>,
-{
-    type Output = Self;
-
-    fn mul(self, rhs: PValue) -> Self::Output {
-        Self {
-            instance: self.instance * rhs,
-            delay: self.delay,
-        }
-    }
-}
-impl<T> std::ops::MulAssign<PValue> for OutputSimple<T>
+impl<T> OutputSimple<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    fn mul_assign(&mut self, rhs: PValue) {
+    pub(super) fn instance_mul_assign(&mut self, rhs: PValue) {
         self.instance.mul_assign(rhs);
     }
 }

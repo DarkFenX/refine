@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
-    traits::LimitInstance,
+    traits::InstanceLimit,
 };
 use crate::{
     num::PValue,
@@ -27,7 +27,7 @@ pub(in crate::svc::vast) fn aggr_local_first<T, BX, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {

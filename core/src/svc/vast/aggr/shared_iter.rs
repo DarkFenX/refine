@@ -4,7 +4,7 @@ use crate::{
     svc::{
         cycle::{CycleIter, CycleSeq},
         output::Output,
-        vast::aggr::traits::LimitInstance,
+        vast::aggr::traits::InstanceLimit,
     },
 };
 
@@ -73,7 +73,7 @@ pub(in crate::svc::vast) enum AggrIter<T: Copy> {
 }
 impl<T> Iterator for AggrIter<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     type Item = AggrIterItem<T>;
 
@@ -139,7 +139,7 @@ impl<T: Copy> AggrIterSpool<T> {
 }
 impl<T> Iterator for AggrIterSpool<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     type Item = AggrIterItem<T>;
 

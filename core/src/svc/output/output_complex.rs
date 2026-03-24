@@ -74,26 +74,11 @@ impl<T: Copy> OutputComplex<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Math
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> std::ops::Mul<PValue> for OutputComplex<T>
-where
-    T: Copy + std::ops::Mul<PValue, Output = T>,
-{
-    type Output = Self;
-
-    fn mul(self, rhs: PValue) -> Self::Output {
-        Self {
-            instance: self.instance * rhs,
-            delay: self.delay,
-            repeats: self.repeats,
-            interval: self.interval,
-        }
-    }
-}
-impl<T> std::ops::MulAssign<PValue> for OutputComplex<T>
+impl<T> OutputComplex<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    fn mul_assign(&mut self, rhs: PValue) {
+    pub(super) fn instance_mul_assign(&mut self, rhs: PValue) {
         self.instance.mul_assign(rhs);
     }
 }

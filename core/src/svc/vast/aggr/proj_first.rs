@@ -3,7 +3,7 @@ use super::{
     proj_shared::{
         AggrProjInvData, get_proj_regular_output, get_proj_spool_cycle_output, get_proj_spool_part_str_mult,
     },
-    traits::LimitInstance,
+    traits::InstanceLimit,
 };
 use crate::{
     misc::Spool,
@@ -33,7 +33,7 @@ pub(in crate::svc::vast) fn aggr_proj_first<T, BX, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {

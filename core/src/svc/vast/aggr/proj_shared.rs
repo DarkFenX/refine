@@ -2,7 +2,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::LimitInstance},
+    svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::InstanceLimit},
     ud::UItemId,
 };
 
@@ -92,7 +92,7 @@ where
         })
     }
     fn make_nulled(mut base_output: Output<T>, instance_limit: Option<PValue>) -> Self {
-        base_output *= PValue::ZERO;
+        base_output.instance_mul_assign(PValue::ZERO);
         Self {
             base_output,
             is_nulled: true,
@@ -196,7 +196,7 @@ pub(super) fn get_proj_regular_output<T, BX>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
     let mut str_mult = inv_proj.str_mult;
@@ -208,11 +208,11 @@ where
         str_mult *= charge_mult;
     }
     if str_mult != PValue::ONE {
-        output *= str_mult;
+        output.instance_mul_assign(str_mult);
     }
     // Limit
     if let Some(limit) = inv_proj.instance_limit {
-        output.limit_instance(limit);
+        output.instance_limit(limit);
     }
     output
 }
@@ -245,17 +245,17 @@ pub(super) fn get_proj_spool_cycle_output<T>(
     spool_extra_mult: Value,
 ) -> Output<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + LimitInstance,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
     // Spool
     str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
     if str_mult != PValue::ONE {
-        output *= str_mult;
+        output.instance_mul_assign(str_mult);
     }
     // Limit
     if let Some(instance_limit) = inv_proj.instance_limit {
-        output.limit_instance(instance_limit);
+        output.instance_limit(instance_limit);
     }
     output
 }

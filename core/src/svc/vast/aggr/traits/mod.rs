@@ -1,5 +1,5 @@
 pub(in crate::svc::vast) use instance_duration::InstanceDuration;
-pub(in crate::svc::vast) use limit_amount::LimitInstance;
+pub(in crate::svc::vast) use limit_amount::InstanceLimit;
 
 mod impl_dmg_kinds;
 mod impl_ecm;

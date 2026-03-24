@@ -1,4 +1,4 @@
-use super::{instance_duration::InstanceDuration, limit_amount::LimitInstance};
+use super::{instance_duration::InstanceDuration, limit_amount::InstanceLimit};
 use crate::{
     misc::DmgKinds,
     num::PValue,
@@ -14,9 +14,9 @@ impl InstanceDuration for DmgKinds<PValue> {
     }
     fn limit_duration(&mut self, _limit: PValue) {}
 }
-impl LimitInstance for DmgKinds<PValue> {
+impl InstanceLimit for DmgKinds<PValue> {
     // No-op, since there is no logic to limit damage depending on target attrs
-    fn limit_instance(&mut self, _limit: PValue) {}
+    fn instance_limit(&mut self, _limit: PValue) {}
 }
 impl LibDefault for DmgKinds<PValue> {
     fn lib_default() -> Self {

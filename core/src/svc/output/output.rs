@@ -74,27 +74,14 @@ impl<T: Copy> Output<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Math
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> std::ops::Mul<PValue> for Output<T>
-where
-    T: Copy + std::ops::Mul<PValue, Output = T>,
-{
-    type Output = Self;
-
-    fn mul(self, rhs: PValue) -> Self::Output {
-        match self {
-            Self::Simple(inner) => Self::Simple(inner * rhs),
-            Self::Complex(inner) => Self::Complex(inner * rhs),
-        }
-    }
-}
-impl<T> std::ops::MulAssign<PValue> for Output<T>
+impl<T> Output<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    fn mul_assign(&mut self, rhs: PValue) {
+    pub(crate) fn instance_mul_assign(&mut self, rhs: PValue) {
         match self {
-            Self::Simple(inner) => inner.mul_assign(rhs),
-            Self::Complex(inner) => inner.mul_assign(rhs),
+            Self::Simple(inner) => inner.instance_mul_assign(rhs),
+            Self::Complex(inner) => inner.instance_mul_assign(rhs),
         }
     }
 }
