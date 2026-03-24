@@ -2,10 +2,9 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::base_opc::get_instant_dmg_base_opc,
     },
-    ud::UItem,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::FOF_MISSILE_LAUNCHING;
@@ -15,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Missile),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
             proj_mult_str: Some(NEffectProjMultGetter::MissileApplication),
@@ -24,8 +23,4 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Missile
 }

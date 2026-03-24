@@ -2,11 +2,10 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKind,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKindGetter,
         NEffectProjMultGetter, NEffectProjOpcSpec, NEffectSpoolAttrs,
         effect::data::shared::base_opc::get_instant_charge_mult_dmg_base_opc,
     },
-    ud::UItem,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::TGT_DISINTEGRATOR_ATTACK;
@@ -24,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             step_attr_id: AAttrId::DMG_MULT_BONUS_PER_CYCLE,
             max_attr_id: AAttrId::DMG_MULT_BONUS_MAX,
         }),
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Turret),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_charge_mult_dmg_base_opc,
             spoolable: true,
@@ -33,8 +32,4 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Turret
 }

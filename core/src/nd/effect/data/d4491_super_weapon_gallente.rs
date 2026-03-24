@@ -2,10 +2,9 @@ use crate::{
     ad::{AEffectBuff, AEffectId, AItemListId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjecteeFilter,
+        NEffect, NEffectDmgKindGetter, NEffectProjecteeFilter,
         effect::data::shared::{base_opc::get_direct_dd_dmg_opc_spec, mods::make_dd_self_debuffs},
     },
-    ud::UItem,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::SUPER_WEAPON_GALLENTE;
@@ -20,12 +19,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         projectee_filter: Some(NEffectProjecteeFilter::ItemList(AItemListId::CAPITALS_FREIGHTERS)),
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg_opc_spec: Some(get_direct_dd_dmg_opc_spec()),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Superweapon
 }

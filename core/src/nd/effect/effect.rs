@@ -3,13 +3,12 @@ use crate::{
     ed::EEffectId,
     misc::{Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
     nd::{
-        NEffectCharge, NEffectDmgKind, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffectCharge, NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec,
         NEffectProjecteeFilter, NEffectSpoolAttrs, NMiningXargs,
     },
     num::PValue,
     rd::RAttrConsts,
     svc::calc::RawModifier,
-    ud::UItem,
     util::RMap,
 };
 
@@ -19,11 +18,8 @@ pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
 // General
 pub(crate) type NEffectCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
-// Getters - projection
-// TODO: consider if proj attr getter should be a function or an enum like resists (standard/attrs)
+// Getters
 pub(crate) type NEffectModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
-// Getters - damage output
-pub(crate) type NEffectDmgKindGetter = fn(&UItem) -> NEffectDmgKind;
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means

@@ -58,20 +58,6 @@ pub(super) fn get_bomb_application_mult(
     get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().aoe_cloud_size)
 }
 
-pub(super) fn get_missile_or_bomb_application_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    let u_item = ctx.u_data.items.get(projector_uid);
-    match u_item.is_guided_bomb() {
-        true => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
-        false => get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////

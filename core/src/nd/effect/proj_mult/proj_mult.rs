@@ -1,5 +1,5 @@
 use super::{
-    application::{get_bomb_application_mult, get_missile_application_mult, get_missile_or_bomb_application_mult},
+    application::{get_bomb_application_mult, get_missile_application_mult},
     composite::{
         get_aoe_burst_proj_mult, get_aoe_dd_dmg_proj_mult, get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult,
         get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
@@ -30,13 +30,14 @@ pub(crate) enum NEffectProjMultGetter {
     MissileApplication,
     BombRange,
     BombApplication,
-    MissileOrBombApplication,
     Neut,
     AoeDd,
     AoeDdRange,
     AoeDdSideNeut,
     AoeBurst,
     AoeBurstRange,
+    // Variants specific to a single effect
+    MissileLaunchingApplication,
 }
 impl NEffectProjMultGetter {
     pub(crate) fn get(
@@ -67,15 +68,20 @@ impl NEffectProjMultGetter {
             }
             Self::BombRange => get_bomb_range_mult(ctx, calc, projector_uid, proj_data),
             Self::BombApplication => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
-            Self::MissileOrBombApplication => {
-                get_missile_or_bomb_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
-            }
             Self::Neut => get_neut_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::AoeDd => get_aoe_dd_dmg_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
             Self::AoeDdRange => get_aoe_dd_range_mult(ctx, calc, projector_uid, proj_data),
             Self::AoeDdSideNeut => get_aoe_dd_side_neut_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
             Self::AoeBurst => get_aoe_burst_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::AoeBurstRange => get_aoe_burst_range_mult(ctx, calc, projector_uid, effect, proj_data),
+            // Variants specific to a single effect
+            Self::MissileLaunchingApplication => {
+                let u_item = ctx.u_data.items.get(projector_uid);
+                match u_item.is_guided_bomb() {
+                    true => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
+                    false => get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
+                }
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ use crate::{
     def::SERVER_TICK_S,
     ed::EEffectId,
     misc::Breacher,
-    nd::{NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
     num::{Count, PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -11,7 +11,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemId},
+    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOT_MISSILE_LAUNCHING;
@@ -21,7 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Breacher),
         breacher_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_dmg_opc,
             proj_mult_chance: Some(NEffectProjMultGetter::MissileRange),
@@ -29,10 +29,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Breacher
 }
 
 fn get_dmg_opc(

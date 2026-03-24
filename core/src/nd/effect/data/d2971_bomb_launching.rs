@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     misc::Ecm,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
+        NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
         effect::data::shared::base_opc::get_instant_dmg_base_opc,
     },
     num::{PValue, Value},
@@ -13,7 +13,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemId},
+    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::BOMB_LAUNCHING;
@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Bomb),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
             proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
@@ -46,10 +46,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Bomb
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

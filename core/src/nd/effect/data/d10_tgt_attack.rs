@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     misc::DmgKinds,
-    nd::{NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
     num::{PValue, Value},
     rd::REffect,
     svc::{
@@ -10,7 +10,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemId},
+    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::TGT_ATTACK;
@@ -29,7 +29,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             location: NEffectChargeLoc::TargetAttack(AAttrId::AMMO_LOADED),
             activates_charge: false,
         }),
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Turret),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_dmg_base_opc,
             proj_mult_str: Some(NEffectProjMultGetter::Turret),
@@ -37,10 +37,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Turret
 }
 
 fn internal_get_dmg_base_opc(

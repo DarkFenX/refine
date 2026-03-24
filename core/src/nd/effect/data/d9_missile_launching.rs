@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemGrpId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::base_opc::get_instant_dmg_base_opc,
     },
     ud::UItem,
@@ -15,21 +15,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::MissileLaunching),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(NEffectProjMultGetter::MissileOrBombApplication),
+            proj_mult_str: Some(NEffectProjMultGetter::MissileLaunchingApplication),
             proj_mult_chance: Some(NEffectProjMultGetter::MissileRange),
             ..
         }),
         ..
-    }
-}
-
-fn internal_get_dmg_kind(u_item: &UItem) -> NEffectDmgKind {
-    match u_item.is_guided_bomb() {
-        true => NEffectDmgKind::Bomb,
-        false => NEffectDmgKind::Missile,
     }
 }
 

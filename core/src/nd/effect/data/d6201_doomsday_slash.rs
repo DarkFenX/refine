@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     misc::DmgKinds,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc_spec, mods::make_dd_self_debuffs},
     },
     num::{PValue, Value},
@@ -13,7 +13,7 @@ use crate::{
         calc::Calc,
         output::{Output, OutputSimple},
     },
-    ud::{UItem, UItemId},
+    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_SLASH;
@@ -27,7 +27,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             full: make_dd_self_debuffs().collect(),
             ..
         }),
-        dmg_kind_getter: Some(internal_get_dmg_kind),
+        dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_dmg_base_opc,
             proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
@@ -36,10 +36,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),
         ..
     }
-}
-
-fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
-    NEffectDmgKind::Superweapon
 }
 
 fn internal_get_dmg_base_opc(
