@@ -2,12 +2,9 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectProjOpcSpec,
-        NEffectResist,
-        effect::data::shared::{
-            base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
-            proj_mult::get_full_noapp_proj_mult,
-        },
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffectProjMultGetterX, NEffectProjOpcSpec, NEffectResist,
+        effect::data::shared::base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
     },
 };
 
@@ -27,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
             base: get_armor_rep_base_opc,
             charge_mult: Some(get_ancillary_armor_mult),
-            proj_mult_str: Some(get_full_noapp_proj_mult),
+            proj_mult_str: Some(NEffectProjMultGetterX::RangeFullStsRestricted),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..

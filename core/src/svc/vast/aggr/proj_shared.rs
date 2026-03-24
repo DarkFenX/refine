@@ -52,14 +52,14 @@ where
                 .map(PValue::from_value_clamped);
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                str_mult *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                str_mult *= proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
             }
             if str_mult == PValue::ZERO {
                 return Some(Self::make_nulled(base_output, instance_limit));
             }
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                chance_mult *= proj_mult_getter(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                chance_mult *= proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
             }
             if chance_mult == PValue::ZERO {
                 return Some(Self::make_nulled(base_output, instance_limit));

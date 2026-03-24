@@ -2,8 +2,8 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjOpcSpec,
-        effect::data::shared::{base_opc::get_instant_dmg_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
+        NEffect, NEffectDmgKind, NEffectProjMultGetterX, NEffectProjOpcSpec,
+        effect::data::shared::base_opc::get_instant_dmg_base_opc,
     },
     ud::UItem,
 };
@@ -18,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(NEffectProjMultGetterX::RangeSimpleSts),
             ..
         }),
         ..

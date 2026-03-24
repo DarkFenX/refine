@@ -3,7 +3,7 @@ use crate::{
     def::SERVER_TICK_S,
     ed::EEffectId,
     misc::Breacher,
-    nd::{NEffect, NEffectDmgKind, NEffectProjOpcSpec, effect::data::shared::proj_mult::get_missile_range_mult},
+    nd::{NEffect, NEffectDmgKind, NEffectProjMultGetterX, NEffectProjOpcSpec},
     num::{Count, PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         breacher_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_dmg_opc,
-            proj_mult_chance: Some(get_missile_range_mult),
+            proj_mult_chance: Some(NEffectProjMultGetterX::MissileRange),
             ..
         }),
         ..

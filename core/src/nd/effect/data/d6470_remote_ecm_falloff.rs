@@ -2,8 +2,8 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectProjOpcSpec, NEffectResist,
-        effect::data::shared::{base_opc::get_direct_ecm_base_opc, proj_mult::get_full_noapp_proj_mult},
+        NEffect, NEffectProjMultGetterX, NEffectProjOpcSpec, NEffectResist,
+        effect::data::shared::base_opc::get_direct_ecm_base_opc,
     },
 };
 
@@ -16,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         ecm_opc_spec: Some(NEffectProjOpcSpec {
             base: get_direct_ecm_base_opc,
-            proj_mult_str: Some(get_full_noapp_proj_mult),
+            proj_mult_str: Some(NEffectProjMultGetterX::RangeFullStsRestricted),
             resist: Some(NEffectResist::Standard),
             ..
         }),

@@ -9,8 +9,8 @@ pub(crate) use buff::{N_BUFF_MAP, NBuff};
 pub(crate) use effect::{
     N_EFFECT_MAP, NBaseOutputGetter, NChargeMultGetter, NEffect, NEffectCalcCustomizer, NEffectCharge,
     NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectDmgKind,
-    NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
-    NEffectResist, NEffectSpoolAttrs, NMiningXargs, get_cap_consumer_base_opc,
+    NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjMultGetterX, NEffectProjOpcSpec,
+    NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs, NMiningXargs, get_cap_consumer_base_opc,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 

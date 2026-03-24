@@ -3,9 +3,8 @@ use crate::{
     ed::EEffectId,
     misc::MiningAmount,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectProjOpcSpec,
-        NMiningXargs,
-        effect::data::shared::{base_opc::get_crit_mining_base_opc, proj_mult::get_simple_s2s_noapp_proj_mult},
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectProjMultGetterX,
+        NEffectProjOpcSpec, NMiningXargs, effect::data::shared::base_opc::get_crit_mining_base_opc,
     },
     rd::REffect,
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -27,12 +26,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         mining_ore_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_ore_crit_mining_base_opc,
-            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(NEffectProjMultGetterX::RangeSimpleSts),
             ..
         }),
         mining_ice_opc_spec: Some(NEffectProjOpcSpec {
             base: internal_get_ice_crit_mining_base_opc,
-            proj_mult_str: Some(get_simple_s2s_noapp_proj_mult),
+            proj_mult_str: Some(NEffectProjMultGetterX::RangeSimpleSts),
             ..
         }),
         ..

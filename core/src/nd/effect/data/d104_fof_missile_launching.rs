@@ -2,16 +2,10 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKind, NEffectProjOpcSpec,
-        effect::data::shared::{
-            base_opc::get_instant_dmg_base_opc,
-            proj_mult::{get_missile_application_mult, get_missile_range_mult},
-        },
+        NEffect, NEffectDmgKind, NEffectProjMultGetterX, NEffectProjOpcSpec,
+        effect::data::shared::base_opc::get_instant_dmg_base_opc,
     },
-    num::PValue,
-    rd::REffect,
-    svc::{SvcCtx, calc::Calc},
-    ud::{UItem, UItemId, UProjData},
+    ud::UItem,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::FOF_MISSILE_LAUNCHING;
@@ -24,8 +18,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind_getter: Some(internal_get_dmg_kind),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
             base: get_instant_dmg_base_opc,
-            proj_mult_str: Some(get_missile_application_mult),
-            proj_mult_chance: Some(internal_get_fof_missile_range_mult),
+            proj_mult_str: Some(NEffectProjMultGetterX::MissileApplication),
+            proj_mult_chance: Some(NEffectProjMultGetterX::MissileRangeFof),
             ..
         }),
         ..
@@ -34,21 +28,4 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 
 fn internal_get_dmg_kind(_u_item: &UItem) -> NEffectDmgKind {
     NEffectDmgKind::Missile
-}
-
-fn internal_get_fof_missile_range_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    projector_effect: &REffect,
-    projectee_uid: UItemId,
-    proj_data: UProjData,
-) -> PValue {
-    // FoF missiles are limited by c2s range
-    if let Some(range_limit) = calc.get_item_oattr_oextra(ctx, projector_uid, ctx.ac().max_fof_tgt_range)
-        && proj_data.get_range_c2s() > PValue::from_value_clamped(range_limit)
-    {
-        return PValue::ZERO;
-    }
-    get_missile_range_mult(ctx, calc, projector_uid, projector_effect, projectee_uid, proj_data)
 }
