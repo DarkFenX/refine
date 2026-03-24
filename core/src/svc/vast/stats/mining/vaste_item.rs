@@ -62,15 +62,18 @@ impl Vast {
     }
 }
 
-fn get_mps_item_uid(
+fn get_mps_item_uid<F>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,
     base_xargs: NMiningXargs,
     ignore_state: bool,
-    mining_ospec_getter: fn(&REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
-) -> MiningAmount {
+    mining_ospec_getter: F,
+) -> MiningAmount
+where
+    F: Fn(&REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+{
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);
     let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {

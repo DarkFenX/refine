@@ -59,15 +59,18 @@ impl Vast {
     }
 }
 
-fn get_orps(
+fn get_orps<F>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,
     ignore_state: bool,
     projectee_uid: Option<UItemId>,
-    rep_ospec_getter: fn(&REffect) -> Option<REffectProjOpcSpec<PValue>>,
-) -> PValue {
+    rep_ospec_getter: F,
+) -> PValue
+where
+    F: Fn(&REffect) -> Option<REffectProjOpcSpec<PValue>>,
+{
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
