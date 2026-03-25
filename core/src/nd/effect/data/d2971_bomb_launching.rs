@@ -3,8 +3,7 @@ use crate::{
     ed::EEffectId,
     misc::Ecm,
     nd::{
-        NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
-        effect::data::shared::base_opc::get_instant_dmg_base_opc,
+        NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
     },
     num::{PValue, Value},
     rd::REffect,
@@ -25,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         dmg_kind_getter: Some(NEffectDmgKindGetter::Bomb),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: get_instant_dmg_base_opc,
+            base: NBaseNormalDmgGetter::Regular,
             proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
             proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             ..

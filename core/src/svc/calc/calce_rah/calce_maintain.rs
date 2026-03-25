@@ -2,11 +2,11 @@ use itertools::Itertools;
 
 use crate::{
     ad::AAttrId,
-    misc::{AttrSpec, DmgKinds},
+    misc::AttrSpec,
     rd::RcEffect,
     svc::{
         SvcCtx,
-        calc::{AttrValInfo, Calc, CalcAttrVals, ItemAttrPostproc},
+        calc::{Calc, ItemAttrPostproc},
     },
     ud::{UFitId, UItem, UItemId},
 };

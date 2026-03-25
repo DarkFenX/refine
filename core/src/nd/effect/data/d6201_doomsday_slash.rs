@@ -1,19 +1,10 @@
 use crate::{
     ad::{AEffectBuff, AEffectId},
     ed::EEffectId,
-    misc::DmgKinds,
     nd::{
-        NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc_spec, mods::make_dd_self_debuffs},
     },
-    num::{PValue, Value},
-    rd::REffect,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
-    },
-    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_SLASH;
@@ -29,54 +20,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: internal_get_dmg_base_opc,
+            // Unlike other AoE doomsdays, reapers hit every ship only once, despite having damage
+            // ticks spread over time. We also assume target is hit by first damage tick.
+            base: NBaseNormalDmgGetter::Delay2,
             proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
             ..
         }),
         neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),
         ..
     }
-}
-
-fn internal_get_dmg_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    _effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<DmgKinds<PValue>>> {
-    // Unlike other AoE doomsdays, reapers hit every ship only once, despite having damage ticks
-    // spread over time. We also assume target is hit by first damage tick.
-    Some(Output::Simple(OutputSimple {
-        instance: DmgKinds {
-            em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-                ctx,
-                item_uid,
-                ctx.ac().em_dmg,
-                Value::ZERO,
-            )?),
-            thermal: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-                ctx,
-                item_uid,
-                ctx.ac().therm_dmg,
-                Value::ZERO,
-            )?),
-            kinetic: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-                ctx,
-                item_uid,
-                ctx.ac().kin_dmg,
-                Value::ZERO,
-            )?),
-            explosive: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-                ctx,
-                item_uid,
-                ctx.ac().expl_dmg,
-                Value::ZERO,
-            )?),
-        },
-        delay: PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
-                / Value::THOUSAND,
-        ),
-    }))
 }

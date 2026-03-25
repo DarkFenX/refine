@@ -1,16 +1,10 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    misc::DmgKinds,
-    nd::{NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
-    num::{PValue, Value},
-    rd::REffect,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
+    nd::{
+        NBaseNormalDmgGetter, NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKindGetter, NEffectProjMultGetter,
+        NEffectProjOpcSpec,
     },
-    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::TGT_ATTACK;
@@ -31,60 +25,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Turret),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: internal_get_dmg_base_opc,
+            base: NBaseNormalDmgGetter::TargetAttack,
             proj_mult_str: Some(NEffectProjMultGetter::Turret),
             ..
         }),
         ..
     }
-}
-
-fn internal_get_dmg_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    _effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<DmgKinds<PValue>>> {
-    let item = ctx.u_data.items.get(item_uid);
-    let dmg_dealer_uid = match item.get_axt().unwrap().capacity > PValue::ZERO {
-        // If item has capacity but no charge - it is not dealing damage
-        true => item.get_charge_uid()?,
-        false => item_uid,
-    };
-    let dmg_mult =
-        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_mult, Value::ONE)?);
-    let dmg_em = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        dmg_dealer_uid,
-        ctx.ac().em_dmg,
-        Value::ZERO,
-    )?);
-    let dmg_therm = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        dmg_dealer_uid,
-        ctx.ac().therm_dmg,
-        Value::ZERO,
-    )?);
-    let dmg_kin = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        dmg_dealer_uid,
-        ctx.ac().kin_dmg,
-        Value::ZERO,
-    )?);
-    let dmg_expl = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        dmg_dealer_uid,
-        ctx.ac().expl_dmg,
-        Value::ZERO,
-    )?);
-    Some(Output::Simple(OutputSimple {
-        instance: DmgKinds {
-            em: dmg_em * dmg_mult,
-            thermal: dmg_therm * dmg_mult,
-            kinetic: dmg_kin * dmg_mult,
-            explosive: dmg_expl * dmg_mult,
-        },
-        delay: PValue::ZERO,
-    }))
 }

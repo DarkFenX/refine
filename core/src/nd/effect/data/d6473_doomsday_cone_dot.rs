@@ -2,11 +2,8 @@ use crate::{
     ad::{AEffectBuff, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKindGetter,
-        effect::data::shared::{
-            base_opc::{get_aoe_dd_dmg_opc_spec, get_aoe_dd_side_neut_opc_spec},
-            mods::make_dd_self_debuffs,
-        },
+        NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
+        effect::data::shared::{base_opc::get_aoe_dd_side_neut_opc_spec, mods::make_dd_self_debuffs},
     },
 };
 
@@ -22,7 +19,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
-        normal_dmg_opc_spec: Some(get_aoe_dd_dmg_opc_spec()),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: NBaseNormalDmgGetter::DotDelay,
+            proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
+            ..
+        }),
         neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),
         ..
     }

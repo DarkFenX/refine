@@ -2,8 +2,8 @@ use crate::{
     ad::{AEffectBuff, AEffectId, AItemListId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectDmgKindGetter, NEffectProjecteeFilter,
-        effect::data::shared::{base_opc::get_direct_dd_dmg_opc_spec, mods::make_dd_self_debuffs},
+        NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
+        effect::data::shared::mods::make_dd_self_debuffs,
     },
 };
 
@@ -20,7 +20,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         projectee_filter: Some(NEffectProjecteeFilter::ItemList(AItemListId::CAPITALS_FREIGHTERS)),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
-        normal_dmg_opc_spec: Some(get_direct_dd_dmg_opc_spec()),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: NBaseNormalDmgGetter::Delay1,
+            ..
+        }),
         ..
     }
 }

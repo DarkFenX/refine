@@ -1,10 +1,11 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
-    misc::{Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
+    misc::{Breacher, Ecm, EffectSpec},
     nd::{
-        NEffectCharge, NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec,
-        NEffectProjecteeFilter, NEffectSpoolAttrs, NMiningXargs,
+        NBaseBreacherDmgGetter, NBaseMiningGetter, NBaseNormalDmgGetter, NBaseRemoteCapGetter, NEffectCharge,
+        NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
+        NEffectSpoolAttrs,
     },
     num::PValue,
     rd::RAttrConsts,
@@ -44,12 +45,12 @@ pub(crate) struct NEffect {
     pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter> = None,
     // Getters/specs - damage output
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter> = None,
-    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<DmgKinds<PValue>>> = None,
-    pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<Breacher>> = None,
+    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<NBaseNormalDmgGetter>> = None,
+    pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<NBaseBreacherDmgGetter>> = None,
     // Getters/specs - mining
-    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<MiningAmount, NMiningXargs>> = None,
-    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<MiningAmount, NMiningXargs>> = None,
-    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<MiningAmount, NMiningXargs>> = None,
+    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<NBaseMiningGetter>> = None,
+    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<NBaseMiningGetter>> = None,
+    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<NBaseMiningGetter>> = None,
     // Getters/specs - rep output
     pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
@@ -63,7 +64,7 @@ pub(crate) struct NEffect {
     pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
     // Nosf spec is used only for purposes of cap balance/sim calcs
     pub(crate) nosf_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
-    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<NBaseRemoteCapGetter>> = None,
     pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
     // Getters/specs - misc
     pub(crate) ecm_opc_spec: Option<NEffectProjOpcSpec<Ecm>> = None,

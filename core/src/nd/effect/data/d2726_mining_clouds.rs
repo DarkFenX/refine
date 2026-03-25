@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, effect::data::shared::base_opc::get_mining_base_opc},
+    nd::{NBaseMiningGetter, NEffect, NEffectProjMultGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::MINING_CLOUDS;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         mining_gas_opc_spec: Some(NEffectProjOpcSpec {
-            base: get_mining_base_opc,
+            base: NBaseMiningGetter::Regular,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),

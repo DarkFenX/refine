@@ -1,10 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectDmgKindGetter, NEffectProjecteeFilter,
-        effect::data::shared::base_opc::get_direct_dd_dmg_opc_spec,
-    },
+    nd::{NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjOpcSpec, NEffectProjecteeFilter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::LIGHTNING_WEAPON;
@@ -16,8 +13,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(AAttrId::TGT_FILTER_TYPELIST_ID)),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
-        // Standup vorton seems to work similarly to direct DDs - same attributes, no range limits
-        normal_dmg_opc_spec: Some(get_direct_dd_dmg_opc_spec()),
+        normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
+            base: NBaseNormalDmgGetter::Delay1,
+            ..
+        }),
         ..
     }
 }
