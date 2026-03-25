@@ -1,13 +1,12 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
-    misc::{Breacher, Ecm, EffectSpec},
+    misc::EffectSpec,
     nd::{
-        NBaseBreacherDmgGetter, NBaseMiningGetter, NBaseNormalDmgGetter, NBaseRemoteCapGetter, NEffectCharge,
-        NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
-        NEffectSpoolAttrs,
+        NBreacherOutputGetter, NDmgOutputGetter, NEcmOutputGetter, NEffectCharge, NEffectDmgKindGetter,
+        NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
+        NGeneralOutputGetter, NMiningOutputGetter,
     },
-    num::PValue,
     rd::RAttrConsts,
     svc::calc::RawModifier,
     util::RMap,
@@ -45,27 +44,27 @@ pub(crate) struct NEffect {
     pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter> = None,
     // Getters/specs - damage output
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter> = None,
-    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<NBaseNormalDmgGetter>> = None,
-    pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<NBaseBreacherDmgGetter>> = None,
+    pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<NDmgOutputGetter>> = None,
+    pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<NBreacherOutputGetter>> = None,
     // Getters/specs - mining
-    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<NBaseMiningGetter>> = None,
-    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<NBaseMiningGetter>> = None,
-    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<NBaseMiningGetter>> = None,
+    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<NMiningOutputGetter>> = None,
+    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<NMiningOutputGetter>> = None,
+    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<NMiningOutputGetter>> = None,
     // Getters/specs - rep output
-    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<NEffectProjOpcSpec<NGeneralOutputGetter>> = None,
     // Getters/specs - local reps
-    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
-    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
-    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
+    pub(crate) local_shield_rep_opc_spec: Option<NEffectLocalOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) local_armor_rep_opc_spec: Option<NEffectLocalOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<NGeneralOutputGetter>> = None,
     // Getters/specs - cap
-    pub(crate) cap_consume_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
-    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
+    pub(crate) cap_consume_opc_spec: Option<NEffectLocalOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<NGeneralOutputGetter>> = None,
     // Nosf spec is used only for purposes of cap balance/sim calcs
-    pub(crate) nosf_opc_spec: Option<NEffectProjOpcSpec<PValue>> = None,
-    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<NBaseRemoteCapGetter>> = None,
-    pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<PValue>> = None,
+    pub(crate) nosf_opc_spec: Option<NEffectProjOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<NGeneralOutputGetter>> = None,
+    pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<NGeneralOutputGetter>> = None,
     // Getters/specs - misc
-    pub(crate) ecm_opc_spec: Option<NEffectProjOpcSpec<Ecm>> = None,
+    pub(crate) ecm_opc_spec: Option<NEffectProjOpcSpec<NEcmOutputGetter>> = None,
 }

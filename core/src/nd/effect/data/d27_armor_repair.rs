@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{NEffect, NEffectLocalOpcSpec, effect::data::shared::base_opc::get_armor_rep_base_opc},
+    nd::{NEffect, NEffectLocalOpcSpec, NGeneralOutputGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::ARMOR_REPAIR;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         local_armor_rep_opc_spec: Some(NEffectLocalOpcSpec {
-            base: get_armor_rep_base_opc,
+            base: NGeneralOutputGetter::RepArmor,
             limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..
         }),

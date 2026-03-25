@@ -3,15 +3,8 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
+        NGeneralOutputGetter,
     },
-    num::{PValue, Value},
-    rd::REffect,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
-    },
-    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::POWER_BOOSTER;
@@ -26,32 +19,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         cap_inject_opc_spec: Some(NEffectLocalOpcSpec {
-            base: internal_get_cap_inject,
+            base: NGeneralOutputGetter::PowerBooster,
             limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),
         ..
     }
-}
-
-fn internal_get_cap_inject(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    _effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<PValue>> {
-    let item = ctx.u_data.items.get(item_uid);
-    let charge_uid = item.get_charge_uid()?;
-    let attr_consts = ctx.ac();
-    let instance = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        charge_uid,
-        attr_consts.capacitor_bonus,
-        Value::ZERO,
-    )?);
-    Some(Output::Simple(OutputSimple {
-        instance,
-        delay: PValue::ZERO,
-    }))
 }

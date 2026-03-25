@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        effect::data::shared::base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
+        NGeneralOutputGetter, effect::data::shared::base_opc::get_ancillary_armor_mult,
     },
 };
 
@@ -21,7 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         local_armor_rep_opc_spec: Some(NEffectLocalOpcSpec {
-            base: get_armor_rep_base_opc,
+            base: NGeneralOutputGetter::RepArmor,
             charge_mult: Some(get_ancillary_armor_mult),
             limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..

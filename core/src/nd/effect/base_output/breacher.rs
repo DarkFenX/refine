@@ -1,6 +1,6 @@
 use crate::{
     misc::Breacher,
-    nd::NBaseOutputGetter,
+    nd::NOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -11,10 +11,10 @@ use crate::{
     ud::UItemId,
 };
 
-pub(crate) enum NBaseBreacherDmgGetter {
+pub(crate) enum NBreacherOutputGetter {
     Regular,
 }
-impl NBaseOutputGetter for NBaseBreacherDmgGetter {
+impl NOutputGetter for NBreacherOutputGetter {
     type Instance = Breacher;
     type Xargs = ();
 

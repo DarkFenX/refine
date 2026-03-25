@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{NBaseRemoteCapGetter, NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         outgoing_cap_opc_spec: Some(NEffectProjOpcSpec {
-            base: NBaseRemoteCapGetter::Regular,
+            base: NGeneralOutputGetter::PowerTransfer,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),

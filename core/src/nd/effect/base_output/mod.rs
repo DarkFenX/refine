@@ -1,12 +1,13 @@
-pub(crate) use base_output::NBaseOutputGetter;
-pub(crate) use dmg_breacher::NBaseBreacherDmgGetter;
-pub(crate) use dmg_normal::NBaseNormalDmgGetter;
-pub(crate) use mining::{NBaseMiningGetter, NMiningXargs};
-pub(crate) use remote_cap::NBaseRemoteCapGetter;
+pub(crate) use breacher::NBreacherOutputGetter;
+pub(crate) use dmg::NDmgOutputGetter;
+pub(crate) use ecm::NEcmOutputGetter;
+pub(crate) use general::NGeneralOutputGetter;
+pub(crate) use mining::{NMiningOutputGetter, NMiningXargs};
+pub(crate) use output_getter::NOutputGetter;
 
-mod base_output;
-mod dmg_breacher;
-mod dmg_normal;
+mod breacher;
+mod dmg;
+mod ecm;
+mod general;
 mod mining;
-mod remote_cap;
-mod shared;
+mod output_getter;

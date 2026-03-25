@@ -1,10 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NEffectSpoolAttrs,
-        effect::data::shared::base_opc::get_armor_rep_base_opc,
-    },
+    nd::{NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NEffectSpoolAttrs, NGeneralOutputGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
@@ -19,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             max_attr_id: AAttrId::REP_MULT_BONUS_MAX,
         }),
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
-            base: get_armor_rep_base_opc,
+            base: NGeneralOutputGetter::RepArmor,
             spoolable: true,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             resist: Some(NEffectResist::Standard),

@@ -1,6 +1,6 @@
 pub(crate) use base_output::{
-    NBaseBreacherDmgGetter, NBaseMiningGetter, NBaseNormalDmgGetter, NBaseOutputGetter, NBaseRemoteCapGetter,
-    NMiningXargs,
+    NBreacherOutputGetter, NDmgOutputGetter, NEcmOutputGetter, NGeneralOutputGetter, NMiningOutputGetter, NMiningXargs,
+    NOutputGetter,
 };
 pub(crate) use charge::{
     NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,

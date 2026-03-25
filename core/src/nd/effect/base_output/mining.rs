@@ -1,6 +1,6 @@
 use crate::{
     misc::MiningAmount,
-    nd::NBaseOutputGetter,
+    nd::NOutputGetter,
     num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -17,14 +17,15 @@ pub(crate) struct NMiningXargs {
     pub(crate) mission_ore: bool,
 }
 
-pub(crate) enum NBaseMiningGetter {
+pub(crate) enum NMiningOutputGetter {
     Regular,
-    RegularHybridOre,
-    RegularHybridIce,
-    CritHybridOre,
-    CritHybridIce,
+    // Variants specific to a single effect
+    MiningOre,
+    MiningIce,
+    MiningLaserOre,
+    MiningLaserIce,
 }
-impl NBaseOutputGetter for NBaseMiningGetter {
+impl NOutputGetter for NMiningOutputGetter {
     type Instance = MiningAmount;
     type Xargs = NMiningXargs;
 
@@ -38,10 +39,11 @@ impl NBaseOutputGetter for NBaseMiningGetter {
     ) -> Option<Output<Self::Instance>> {
         match self {
             Self::Regular => get_regular(ctx, calc, item_uid, effect, xargs),
-            Self::RegularHybridOre => get_regular_hybrid_ore(ctx, calc, item_uid, effect, xargs),
-            Self::RegularHybridIce => get_regular_hybrid_ice(ctx, calc, item_uid, effect, xargs),
-            Self::CritHybridOre => get_crit_hybrid_ore(ctx, calc, item_uid, effect, xargs),
-            Self::CritHybridIce => get_crit_hybrid_ice(ctx, calc, item_uid, effect, xargs),
+            // Variants specific to a single effect
+            Self::MiningOre => get_mining_ore(ctx, calc, item_uid, effect, xargs),
+            Self::MiningIce => get_mining_ice(ctx, calc, item_uid, effect, xargs),
+            Self::MiningLaserOre => get_crit_hybrid_ore(ctx, calc, item_uid, effect, xargs),
+            Self::MiningLaserIce => get_crit_hybrid_ice(ctx, calc, item_uid, effect, xargs),
         }
     }
 }
@@ -49,34 +51,6 @@ impl NBaseOutputGetter for NBaseMiningGetter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Getter implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_regular_hybrid_ore(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    xargs: NMiningXargs,
-) -> Option<Output<MiningAmount>> {
-    let item = ctx.u_data.items.get(item_uid);
-    if item.is_ice_harvester() {
-        return None;
-    }
-    get_regular(ctx, calc, item_uid, effect, xargs)
-}
-
-fn get_regular_hybrid_ice(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    xargs: NMiningXargs,
-) -> Option<Output<MiningAmount>> {
-    let item = ctx.u_data.items.get(item_uid);
-    if !item.is_ice_harvester() {
-        return None;
-    }
-    get_regular(ctx, calc, item_uid, effect, xargs)
-}
-
 fn get_regular(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -89,34 +63,6 @@ fn get_regular(
         instance: MiningAmount { yield_, drain },
         delay,
     }))
-}
-
-fn get_crit_hybrid_ore(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    base_xargs: NMiningXargs,
-) -> Option<Output<MiningAmount>> {
-    let item = ctx.u_data.items.get(item_uid);
-    if item.is_ice_harvester() {
-        return None;
-    }
-    get_crit(ctx, calc, item_uid, effect, base_xargs)
-}
-
-fn get_crit_hybrid_ice(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    base_xargs: NMiningXargs,
-) -> Option<Output<MiningAmount>> {
-    let item = ctx.u_data.items.get(item_uid);
-    if !item.is_ice_harvester() {
-        return None;
-    }
-    get_crit(ctx, calc, item_uid, effect, base_xargs)
 }
 
 fn get_crit(
@@ -146,6 +92,62 @@ fn get_crit(
         instance: MiningAmount { yield_, drain },
         delay,
     }))
+}
+
+fn get_mining_ore(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+    xargs: NMiningXargs,
+) -> Option<Output<MiningAmount>> {
+    let item = ctx.u_data.items.get(item_uid);
+    if item.is_ice_harvester() {
+        return None;
+    }
+    get_regular(ctx, calc, item_uid, effect, xargs)
+}
+
+fn get_mining_ice(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+    xargs: NMiningXargs,
+) -> Option<Output<MiningAmount>> {
+    let item = ctx.u_data.items.get(item_uid);
+    if !item.is_ice_harvester() {
+        return None;
+    }
+    get_regular(ctx, calc, item_uid, effect, xargs)
+}
+
+fn get_crit_hybrid_ore(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+    base_xargs: NMiningXargs,
+) -> Option<Output<MiningAmount>> {
+    let item = ctx.u_data.items.get(item_uid);
+    if item.is_ice_harvester() {
+        return None;
+    }
+    get_crit(ctx, calc, item_uid, effect, base_xargs)
+}
+
+fn get_crit_hybrid_ice(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+    base_xargs: NMiningXargs,
+) -> Option<Output<MiningAmount>> {
+    let item = ctx.u_data.items.get(item_uid);
+    if !item.is_ice_harvester() {
+        return None;
+    }
+    get_crit(ctx, calc, item_uid, effect, base_xargs)
 }
 
 fn get_mining_values(

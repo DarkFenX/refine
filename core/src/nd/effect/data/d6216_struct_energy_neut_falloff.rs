@@ -1,10 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
-        effect::data::shared::base_opc::get_neut_base_opc,
-    },
+    nd::{NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::STRUCT_ENERGY_NEUT_FALLOFF;
@@ -15,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         neut_opc_spec: Some(NEffectProjOpcSpec {
-            base: get_neut_base_opc,
+            base: NGeneralOutputGetter::Neut,
             proj_mult_str: Some(NEffectProjMultGetter::Neut),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),

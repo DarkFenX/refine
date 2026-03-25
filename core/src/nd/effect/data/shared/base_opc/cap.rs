@@ -1,7 +1,7 @@
 use super::generic::get_generic_base_opc;
 use crate::{
     ad::{AAttrId, AItemGrpId},
-    nd::{NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter},
     num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -62,9 +62,9 @@ pub(in crate::nd::effect::data) fn get_aoe_neut_base_opc(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AoE doomsday side-effect neuting
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<PValue> {
+pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<NGeneralOutputGetter> {
     NEffectProjOpcSpec {
-        base: get_aoe_dd_side_neut_base_opc,
+        base: NGeneralOutputGetter::NeutDdSideEffect,
         proj_mult_str: Some(NEffectProjMultGetter::AoeDdSideNeut),
         resist: Some(NEffectResist::Attr(AAttrId::DOOMSDAY_ENERGY_NEUT_RESIST_ID)),
         limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),

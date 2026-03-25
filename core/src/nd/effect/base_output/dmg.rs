@@ -1,6 +1,6 @@
 use crate::{
     misc::DmgKinds,
-    nd::NBaseOutputGetter,
+    nd::NOutputGetter,
     num::{Count, PValue, Value},
     rd::REffect,
     svc::{
@@ -11,7 +11,7 @@ use crate::{
     ud::UItemId,
 };
 
-pub(crate) enum NBaseNormalDmgGetter {
+pub(crate) enum NDmgOutputGetter {
     Regular,
     MultCharge,
     Delay1,
@@ -20,7 +20,7 @@ pub(crate) enum NBaseNormalDmgGetter {
     // Variants specific to a single effect
     TargetAttack,
 }
-impl NBaseOutputGetter for NBaseNormalDmgGetter {
+impl NOutputGetter for NDmgOutputGetter {
     type Instance = DmgKinds<PValue>;
     type Xargs = ();
 

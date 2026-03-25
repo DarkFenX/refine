@@ -3,8 +3,8 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
-        effect::data::shared::base_opc::{get_ancillary_armor_mult, get_armor_rep_base_opc},
+        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter,
+        effect::data::shared::base_opc::get_ancillary_armor_mult,
     },
 };
 
@@ -22,7 +22,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
-            base: get_armor_rep_base_opc,
+            base: NGeneralOutputGetter::RepArmor,
             charge_mult: Some(get_ancillary_armor_mult),
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
             resist: Some(NEffectResist::Standard),

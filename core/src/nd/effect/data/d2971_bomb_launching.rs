@@ -1,18 +1,10 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    misc::Ecm,
     nd::{
-        NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
+        NDmgOutputGetter, NEcmOutputGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffectResist, NGeneralOutputGetter,
     },
-    num::{PValue, Value},
-    rd::REffect,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        output::{Output, OutputSimple},
-    },
-    ud::UItemId,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::BOMB_LAUNCHING;
@@ -24,13 +16,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         dmg_kind_getter: Some(NEffectDmgKindGetter::Bomb),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: NBaseNormalDmgGetter::Regular,
+            base: NDmgOutputGetter::Regular,
             proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
             proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             ..
         }),
         neut_opc_spec: Some(NEffectProjOpcSpec {
-            base: internal_get_neut_base_opc,
+            base: NGeneralOutputGetter::NeutBomb,
             proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
             proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             resist: Some(NEffectResist::Standard),
@@ -38,84 +30,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         ecm_opc_spec: Some(NEffectProjOpcSpec {
-            base: internal_get_ecm_base_opc,
+            base: NEcmOutputGetter::Bomb,
             proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             resist: Some(NEffectResist::Standard),
             ..
         }),
         ..
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Neut
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn internal_get_neut_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    _effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<PValue>> {
-    let instance = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
-    let instance = match instance > Value::ZERO {
-        true => PValue::from_value_unchecked(instance),
-        // Do not return neut stats for non-neut bombs
-        false => return None,
-    };
-    Some(Output::Simple(OutputSimple {
-        instance,
-        delay: PValue::ZERO,
-    }))
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// ECM
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn internal_get_ecm_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    _projector_effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<Ecm>> {
-    let str_radar = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        projector_uid,
-        ctx.ac().scan_radar_strength_bonus,
-        Value::ZERO,
-    )?);
-    let str_magnet = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        projector_uid,
-        ctx.ac().scan_magnetometric_strength_bonus,
-        Value::ZERO,
-    )?);
-    let str_grav = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        projector_uid,
-        ctx.ac().scan_gravimetric_strength_bonus,
-        Value::ZERO,
-    )?);
-    let str_ladar = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-        ctx,
-        projector_uid,
-        ctx.ac().scan_ladar_strength_bonus,
-        Value::ZERO,
-    )?);
-    // Do not return ECM stats for non-ecm bombs
-    if str_radar <= PValue::ZERO && str_magnet <= PValue::ZERO && str_grav <= PValue::ZERO && str_ladar <= PValue::ZERO
-    {
-        return None;
-    }
-    Some(Output::Simple(OutputSimple {
-        instance: Ecm {
-            radar: str_radar,
-            magnetometric: str_magnet,
-            gravimetric: str_grav,
-            ladar: str_ladar,
-            duration: PValue::ZERO,
-        },
-        delay: PValue::ZERO,
-    }))
 }

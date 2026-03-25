@@ -2,8 +2,8 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NBaseMiningGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc,
-        NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectProjMultGetter,
+        NEffectProjOpcSpec, NMiningOutputGetter,
     },
 };
 
@@ -21,12 +21,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         mining_ore_opc_spec: Some(NEffectProjOpcSpec {
-            base: NBaseMiningGetter::CritHybridOre,
+            base: NMiningOutputGetter::MiningLaserOre,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),
         mining_ice_opc_spec: Some(NEffectProjOpcSpec {
-            base: NBaseMiningGetter::CritHybridIce,
+            base: NMiningOutputGetter::MiningLaserIce,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),

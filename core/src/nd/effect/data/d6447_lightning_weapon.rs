@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{NBaseNormalDmgGetter, NEffect, NEffectDmgKindGetter, NEffectProjOpcSpec, NEffectProjecteeFilter},
+    nd::{NDmgOutputGetter, NEffect, NEffectDmgKindGetter, NEffectProjOpcSpec, NEffectProjecteeFilter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::LIGHTNING_WEAPON;
@@ -14,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         projectee_filter: Some(NEffectProjecteeFilter::ItemListAttr(AAttrId::TGT_FILTER_TYPELIST_ID)),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: NBaseNormalDmgGetter::Delay1,
+            base: NDmgOutputGetter::Delay1,
             ..
         }),
         ..

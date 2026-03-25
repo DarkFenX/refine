@@ -1,16 +1,16 @@
 use crate::{
     ad::AAttrId,
-    nd::{NBaseOutputGetter, NChargeMultGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{NChargeMultGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NOutputGetter},
     rd::{RAttrId, REffectResist},
     util::RMap,
 };
 
 #[derive(Copy, Clone)]
-pub(crate) struct REffectProjOpcSpec<T, BX = ()>
+pub(crate) struct REffectProjOpcSpec<GB>
 where
-    T: Copy,
+    GB: NOutputGetter,
 {
-    pub(crate) base: NBaseOutputGetter<T, BX>,
+    pub(crate) base: GB,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
     pub(crate) spoolable: bool,
     pub(crate) proj_mult_str: Option<NEffectProjMultGetter>,
@@ -18,12 +18,12 @@ where
     pub(crate) resist: Option<REffectResist>,
     pub(crate) limit_attr_rid: Option<RAttrId>,
 }
-impl<T, BX> REffectProjOpcSpec<T, BX>
+impl<GB> REffectProjOpcSpec<GB>
 where
-    T: Copy,
+    GB: NOutputGetter + Copy,
 {
     pub(in crate::rd::data::effect) fn from_n_proj_opc_spec(
-        n_proj_opc_spec: &NEffectProjOpcSpec<T, BX>,
+        n_proj_opc_spec: &NEffectProjOpcSpec<GB>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {

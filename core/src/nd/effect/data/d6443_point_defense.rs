@@ -2,7 +2,7 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NBaseNormalDmgGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NDmgOutputGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
         NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
     },
 };
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Smartbomb),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: NBaseNormalDmgGetter::MultCharge,
+            base: NDmgOutputGetter::MultCharge,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),

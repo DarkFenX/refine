@@ -1,25 +1,25 @@
 use crate::{
     ad::AAttrId,
-    nd::{NBaseOutputGetter, NChargeMultGetter, NEffectLocalOpcSpec},
+    nd::{NChargeMultGetter, NEffectLocalOpcSpec, NOutputGetter},
     rd::RAttrId,
     util::RMap,
 };
 
 #[derive(Copy, Clone)]
-pub(crate) struct REffectLocalOpcSpec<T, BX = ()>
+pub(crate) struct REffectLocalOpcSpec<GB>
 where
-    T: Copy,
+    GB: NOutputGetter,
 {
-    pub(crate) base: NBaseOutputGetter<T, BX>,
+    pub(crate) base: GB,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
     pub(crate) limit_attr_rid: Option<RAttrId>,
 }
-impl<T, BX> REffectLocalOpcSpec<T, BX>
+impl<GB> REffectLocalOpcSpec<GB>
 where
-    T: Copy,
+    GB: NOutputGetter + Copy,
 {
     pub(in crate::rd::data::effect) fn from_n_local_opc_spec(
-        n_local_opc_spec: &NEffectLocalOpcSpec<T, BX>,
+        n_local_opc_spec: &NEffectLocalOpcSpec<GB>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
