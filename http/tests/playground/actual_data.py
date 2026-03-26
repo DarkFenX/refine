@@ -110,7 +110,7 @@ def test_benchmark_stats(client, consts):  # noqa: ANN001, ANN201
     api_tgt_ship = api_tgt_fit.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(180, 0, 1))  # Nightmare
     api_tgt_fit.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 AB
 
-    iterations = 10000
+    iterations = 1000000
     print('starting stats benchmark')  # noqa: T201
     before = time()
     api_sol.benchmark(command={

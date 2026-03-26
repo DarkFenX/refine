@@ -3,9 +3,8 @@ use crate::{
     misc::DpsProfile,
     num::{PValue, UnitInterval},
     svc::vast::{
-        StatCapRegenOptions, StatCapSimStagger, StatCapSimStaggerInt, StatCapSrcKinds, StatDmgItemKinds,
-        StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst,
-        StatTimeOptionsSim,
+        StatCapRegenOptions, StatCapSrcKinds, StatDmgItemKinds, StatMiningItemKinds, StatNeutItemKinds,
+        StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
     ud::ItemId,
 };
@@ -30,7 +29,6 @@ impl<'a> FitMut<'a> {
         let dmg_pattern_uniform = DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ONE, PValue::ONE, None);
         let dmg_pattern_laser = DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ZERO, PValue::ZERO, None);
         let shield_perc_peak = UnitInterval::from_f64_clamped(0.25);
-        let cap_sim_stagger = StatCapSimStaggerInt::from_pub(&self.sol, &StatCapSimStagger::new(false));
         let dmg_item_kinds = StatDmgItemKinds::all_enabled();
         let mining_item_kinds = StatMiningItemKinds::all_enabled();
         let neut_item_kinds = StatNeutItemKinds::all_enabled();
@@ -347,16 +345,6 @@ impl<'a> FitMut<'a> {
             self.sol
                 .svc
                 .get_stat_item_cap_balance(&self.sol.u_data, ship_uid, cap_src_kinds_negative, time_sim_inf)
-                .unwrap();
-            self.sol
-                .svc
-                .get_stat_item_cap_sim(
-                    &self.sol.u_data,
-                    ship_uid,
-                    UnitInterval::ONE,
-                    None,
-                    cap_sim_stagger.clone(),
-                )
                 .unwrap();
             self.sol
                 .svc
