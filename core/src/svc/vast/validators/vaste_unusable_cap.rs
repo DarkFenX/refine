@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
+    nd::NOutputGetter,
     num::{PValue, UnitInterval, Value},
     rd::RItemCapConsumer,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
@@ -97,7 +98,7 @@ fn get_cap_consumption_instance(
     cap_consumer: &RItemCapConsumer,
 ) -> Option<PValue> {
     let r_effect = ctx.u_data.src.get_effect_by_rid(cap_consumer.effect_rid);
-    let mut cap_consumed = match (cap_consumer.opc_spec.base)(ctx, calc, item_uid, r_effect, ()) {
+    let mut cap_consumed = match cap_consumer.opc_spec.base.get(ctx, calc, item_uid, r_effect, ()) {
         Some(output) => output.get_instance(),
         None => return None,
     };

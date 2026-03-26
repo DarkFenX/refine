@@ -1,5 +1,6 @@
 use super::stat::{StatRps, StatRpsLayer, StatRpsLayerRegen};
 use crate::{
+    nd::NGeneralOutputGetter,
     num::{PValue, UnitInterval, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
@@ -83,7 +84,7 @@ fn get_local_rps(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
-    lrr_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    lrr_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
 ) -> PValue {
     let mut total_rps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -125,7 +126,7 @@ fn get_irr_data(
     calc: &mut Calc,
     projectee_item_uid: UItemId,
     time_options: StatTimeOptions,
-    irr_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    irr_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
 ) -> Vec<IrrEntry> {
     let mut result = Vec::new();
     let incoming_reps = match irr_data.get_l1(&projectee_item_uid) {

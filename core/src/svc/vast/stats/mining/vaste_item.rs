@@ -1,7 +1,7 @@
 use super::stat::StatMining;
 use crate::{
     misc::MiningAmount,
-    nd::NMiningXargs,
+    nd::{NMiningOutputGetter, NMiningXargs},
     num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -72,7 +72,7 @@ fn get_mps_item_uid<F>(
     mining_ospec_getter: F,
 ) -> MiningAmount
 where
-    F: Fn(&REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    F: Fn(&REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>>,
 {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -113,14 +113,14 @@ where
     mps
 }
 
-fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>> {
+fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>> {
     effect.mining_ore_opc_spec.as_ref()
 }
 
-fn get_getter_ice(effect: &REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>> {
+fn get_getter_ice(effect: &REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>> {
     effect.mining_ice_opc_spec.as_ref()
 }
 
-fn get_getter_gas(effect: &REffect) -> Option<&REffectProjOpcSpec<MiningAmount, NMiningXargs>> {
+fn get_getter_gas(effect: &REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>> {
     effect.mining_gas_opc_spec.as_ref()
 }

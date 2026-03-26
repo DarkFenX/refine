@@ -1,6 +1,7 @@
 use super::stat::{StatHp, StatHpLayer};
 use crate::{
     misc::OptionalReload,
+    nd::NGeneralOutputGetter,
     num::{PValue, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
@@ -90,7 +91,7 @@ const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 fn get_local_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
-    ancil_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    ancil_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
 ) -> PValue {
     let mut total_ancil_hp = PValue::ZERO;
     for (&item_uid, item_data) in ancil_data.iter() {
@@ -117,7 +118,7 @@ fn get_remote_ancil_hp(
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_uid: UItemId,
-    ancil_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    ancil_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
 ) -> PValue {
     let mut total_ancil_hp = PValue::ZERO;
     let incoming_ancils = match ancil_data.get_l1(&projectee_item_uid) {

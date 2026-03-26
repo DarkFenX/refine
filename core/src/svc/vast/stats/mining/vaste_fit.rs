@@ -1,7 +1,7 @@
 use super::{option::StatMiningItemKinds, stat::StatMining};
 use crate::{
     misc::MiningAmount,
-    nd::NMiningXargs,
+    nd::{NMiningOutputGetter, NMiningXargs},
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -82,7 +82,7 @@ fn get_mps(
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,
     base_xargs: NMiningXargs,
-    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NMiningOutputGetter>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);

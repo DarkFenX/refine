@@ -20,7 +20,7 @@ use crate::{
 };
 
 // Projected effects, iterator over cycles (cycle time + instance iter)
-pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

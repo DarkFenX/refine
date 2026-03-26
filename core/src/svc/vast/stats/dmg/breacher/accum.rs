@@ -18,7 +18,8 @@ use super::{
 };
 use crate::{
     def::SERVER_TICK_HZ,
-    misc::{Breacher, EffectSpec},
+    misc::EffectSpec,
+    nd::{NBreacherOutputGetter, NOutputGetter},
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -57,10 +58,10 @@ impl BreacherAccum {
         item_uid: UItemId,
         effect: &REffect,
         cseq: &CycleSeq<CycleDataFull>,
-        ospec: &REffectProjOpcSpec<Breacher>,
+        ospec: &REffectProjOpcSpec<NBreacherOutputGetter>,
     ) {
         // Base output
-        let output = match (ospec.base)(ctx, calc, item_uid, effect, ()) {
+        let output = match ospec.base.get(ctx, calc, item_uid, effect, ()) {
             Some(output) => output,
             None => return,
         };
@@ -245,11 +246,11 @@ impl AppliedBreacherAccum {
         item_uid: UItemId,
         effect: &REffect,
         cseq: &CycleSeq<CycleDataFull>,
-        ospec: &REffectProjOpcSpec<Breacher>,
+        ospec: &REffectProjOpcSpec<NBreacherOutputGetter>,
         projectee_uid: UItemId,
     ) {
         // Base output
-        let output = match (ospec.base)(ctx, calc, item_uid, effect, ()) {
+        let output = match ospec.base.get(ctx, calc, item_uid, effect, ()) {
             Some(output) => output,
             None => return,
         };

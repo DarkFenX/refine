@@ -1,5 +1,6 @@
 use super::stat::StatOutReps;
 use crate::{
+    nd::NGeneralOutputGetter,
     num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -69,7 +70,7 @@ fn get_orps<F>(
     rep_ospec_getter: F,
 ) -> PValue
 where
-    F: Fn(&REffect) -> Option<REffectProjOpcSpec<PValue>>,
+    F: Fn(&REffect) -> Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
 {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -129,14 +130,14 @@ where
     orps
 }
 
-fn get_getter_shield(effect: &REffect) -> Option<REffectProjOpcSpec<PValue>> {
+fn get_getter_shield(effect: &REffect) -> Option<REffectProjOpcSpec<NGeneralOutputGetter>> {
     effect.outgoing_shield_rep_opc_spec
 }
 
-fn get_getter_armor(effect: &REffect) -> Option<REffectProjOpcSpec<PValue>> {
+fn get_getter_armor(effect: &REffect) -> Option<REffectProjOpcSpec<NGeneralOutputGetter>> {
     effect.outgoing_armor_rep_opc_spec
 }
 
-fn get_getter_hull(effect: &REffect) -> Option<REffectProjOpcSpec<PValue>> {
+fn get_getter_hull(effect: &REffect) -> Option<REffectProjOpcSpec<NGeneralOutputGetter>> {
     effect.outgoing_hull_rep_opc_spec
 }

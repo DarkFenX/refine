@@ -1,4 +1,5 @@
 use crate::{
+    nd::NGeneralOutputGetter,
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -62,7 +63,7 @@ fn get_ocps(
     item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,
     projectee_uid: Option<UItemId>,
-    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
 ) -> PValue {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
