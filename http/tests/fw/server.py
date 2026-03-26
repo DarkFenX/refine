@@ -3,6 +3,8 @@ import subprocess
 import typing
 from dataclasses import dataclass
 
+import psutil
+
 if typing.TYPE_CHECKING:
     from pathlib import Path
 
@@ -45,12 +47,12 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
     return ConfigInfo(config_path=config_path, port=port)
 
 
-def run_server(*, proj_root: Path, config_path: Path, optimized: bool) -> ServerInfo:
+def run_server(*, proj_root: Path, config_path: Path, optimized: bool, cpu_affinity: list[int]) -> ServerInfo:
     binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'refine-http'
-    return ServerInfo(popen=subprocess.Popen(
-        [binary_path, config_path],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL))
+    popen = subprocess.Popen([binary_path, config_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if cpu_affinity:
+        psutil.Process(pid=popen.pid).cpu_affinity(cpus=cpu_affinity)
+    return ServerInfo(popen=popen)
 
 
 def kill_server(*, server_info: ServerInfo) -> None:

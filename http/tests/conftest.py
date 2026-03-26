@@ -1,3 +1,4 @@
+import re
 import typing
 
 import pytest
@@ -20,13 +21,18 @@ if typing.TYPE_CHECKING:
 
 def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption(
-        '--fast-cleanup-check',
-        action='store_true',
-        help='make log check during source creation faster, but unreliable')
-    parser.addoption(
         '--optimized',
         action='store_true',
         help='build server using the release-opt profile')
+    parser.addoption(
+        '--cpu-affinity',
+        type=str,
+        default='',
+        help='pin server process to passed CPU IDs')
+    parser.addoption(
+        '--fast-cleanup-check',
+        action='store_true',
+        help='make log check during source creation faster, but unreliable')
 
 
 @pytest.fixture(scope='session')
@@ -48,9 +54,14 @@ def refine_server(
         log_reader: LogReader,
 ) -> Generator[ServerInfo]:
     optimized = pytestconfig.getoption('optimized')
+    cpu_affinity = [int(i) for i in re.split(', ?', pytestconfig.getoption('cpu_affinity')) if i]
     build_server(proj_root=PROJECT_ROOT, optimized=optimized)
     with log_reader.get_collector() as log_collector:
-        server_info = run_server(proj_root=PROJECT_ROOT, config_path=run_config.config_path, optimized=optimized)
+        server_info = run_server(
+            proj_root=PROJECT_ROOT,
+            config_path=run_config.config_path,
+            optimized=optimized,
+            cpu_affinity=cpu_affinity)
         try:
             # Wait for server to confirm it's up before yielding
             log_collector.wait_log_entry(msg='re:listening on.+', timeout=10)
