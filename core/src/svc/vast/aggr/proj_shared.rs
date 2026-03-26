@@ -210,7 +210,7 @@ where
     // Chargedness
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = chargedness
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
+        && let Some(charge_mult) = charge_mult_getter.get(ctx, calc, item_uid, chargedness)
     {
         str_mult *= charge_mult;
     }
@@ -240,7 +240,7 @@ where
     // Chargedness
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = chargedness
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
+        && let Some(charge_mult) = charge_mult_getter.get(ctx, calc, item_uid, chargedness)
     {
         str_mult *= charge_mult;
     }

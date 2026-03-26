@@ -106,7 +106,7 @@ fn get_cap_consumption_instance(
     // needed in this case (ASBs) chargedness is ignored anyway.
     if let Some(charge_mult_getter) = cap_consumer.opc_spec.charge_mult
         && u_item.get_charge_uid().is_some()
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, UnitInterval::ONE)
+        && let Some(charge_mult) = charge_mult_getter.get(ctx, calc, item_uid, UnitInterval::ONE)
     {
         cap_consumed *= charge_mult;
     }

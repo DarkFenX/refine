@@ -106,7 +106,7 @@ where
     // Chargedness
     if let Some(charge_mult_getter) = ospec.charge_mult
         && let Some(chargedness) = chargeness
-        && let Some(charge_mult) = charge_mult_getter(ctx, calc, item_uid, chargedness)
+        && let Some(charge_mult) = charge_mult_getter.get(ctx, calc, item_uid, chargedness)
     {
         output.instance_mul_assign(charge_mult);
     }

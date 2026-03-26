@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        NGeneralOutputGetter, effect::data::shared::base_opc::get_ancillary_armor_mult,
+        NChargeMultGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffectLocalOpcSpec, NGeneralOutputGetter,
     },
 };
 
@@ -22,7 +22,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         local_armor_rep_opc_spec: Some(NEffectLocalOpcSpec {
             base: NGeneralOutputGetter::RepArmor,
-            charge_mult: Some(get_ancillary_armor_mult),
+            charge_mult: Some(NChargeMultGetter::AarRep),
             limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..
         }),

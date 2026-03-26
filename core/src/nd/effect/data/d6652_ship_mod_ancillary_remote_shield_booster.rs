@@ -2,9 +2,8 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter,
-        effect::data::shared::base_opc::get_ancillary_cap_mult,
+        NChargeMultGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter,
     },
 };
 
@@ -30,7 +29,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         cap_consume_opc_spec: Some(NEffectLocalOpcSpec {
             base: NGeneralOutputGetter::CapConsumer,
-            charge_mult: Some(get_ancillary_cap_mult),
+            charge_mult: Some(NChargeMultGetter::AsbCap),
             ..
         }),
         ..

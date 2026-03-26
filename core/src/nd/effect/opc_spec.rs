@@ -1,12 +1,7 @@
 use crate::{
     ad::AAttrId,
-    nd::{NEffectProjMultGetter, NEffectResist, NOutputGetter},
-    num::{PValue, UnitInterval},
-    svc::{SvcCtx, calc::Calc},
-    ud::UItemId,
+    nd::{NChargeMultGetter, NEffectProjMultGetter, NEffectResist, NOutputGetter},
 };
-
-pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemId, UnitInterval) -> Option<PValue>;
 
 pub(crate) struct NEffectLocalOpcSpec<BG>
 where
