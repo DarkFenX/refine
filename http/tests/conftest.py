@@ -54,7 +54,7 @@ def refine_server(
         log_reader: LogReader,
 ) -> Generator[ServerInfo]:
     optimized = pytestconfig.getoption('optimized')
-    cpu_affinity = [int(i) for i in re.split(', ?', pytestconfig.getoption('cpu_affinity')) if i]
+    cpu_affinity = [int(i) for i in re.split(r', ?', pytestconfig.getoption('cpu_affinity')) if i]
     build_server(proj_root=PROJECT_ROOT, optimized=optimized)
     with log_reader.get_collector() as log_collector:
         server_info = run_server(
