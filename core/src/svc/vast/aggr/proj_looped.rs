@@ -7,6 +7,7 @@ use super::{
     traits::InstanceLimit,
 };
 use crate::{
+    nd::NOutputGetter,
     num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -19,18 +20,19 @@ use crate::{
 
 // Projected effects, considers only infinite parts of cycles
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_looped<T, BX, A>(
+pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -52,16 +54,17 @@ where
     }
 }
 
-fn aggr_regular<T, BX, A>(
+fn aggr_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: CycleSeq<CycleDataDurCharge>,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -85,17 +88,18 @@ where
     true
 }
 
-fn aggr_spool<T, BX, A>(
+fn aggr_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

@@ -8,20 +8,20 @@ use crate::{
 
 pub(crate) type NChargeMultGetter = fn(SvcCtx, &mut Calc, UItemId, UnitInterval) -> Option<PValue>;
 
-pub(crate) struct NEffectLocalOpcSpec<GB>
+pub(crate) struct NEffectLocalOpcSpec<BG>
 where
-    GB: NOutputGetter,
+    BG: NOutputGetter,
 {
-    pub(crate) base: GB,
+    pub(crate) base: BG,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
     pub(crate) limit_attr_id: Option<AAttrId> = None,
 }
 
-pub(crate) struct NEffectProjOpcSpec<GB>
+pub(crate) struct NEffectProjOpcSpec<BG>
 where
-    GB: NOutputGetter,
+    BG: NOutputGetter,
 {
-    pub(crate) base: GB,
+    pub(crate) base: BG,
     pub(crate) charge_mult: Option<NChargeMultGetter> = None,
     pub(crate) spoolable: bool = false,
     pub(crate) proj_mult_str: Option<NEffectProjMultGetter> = None,

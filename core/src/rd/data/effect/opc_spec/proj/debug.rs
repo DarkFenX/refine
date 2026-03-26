@@ -1,9 +1,9 @@
 use super::main::REffectProjOpcSpec;
-use crate::{dbg::DebugResult, ud::UData};
+use crate::{dbg::DebugResult, nd::NOutputGetter, ud::UData};
 
-impl<T, BX> REffectProjOpcSpec<T, BX>
+impl<BG> REffectProjOpcSpec<BG>
 where
-    T: Copy,
+    BG: NOutputGetter,
 {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         if let Some(resist) = &self.resist {

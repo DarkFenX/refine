@@ -1,5 +1,6 @@
 use crate::{
     misc::{AttrSpec, EffectSpec},
+    nd::NOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::InstanceLimit},
@@ -24,16 +25,19 @@ impl<T> AggrProjInvData<T>
 where
     T: Copy + std::ops::MulAssign<PValue>,
 {
-    pub(super) fn try_make<BX>(
+    pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
         effect: &REffect,
-        ospec: &REffectProjOpcSpec<T, BX>,
+        ospec: &REffectProjOpcSpec<BG>,
         base_xargs: BX,
         projectee_uid: Option<UItemId>,
-    ) -> Option<Self> {
-        let base_output = (ospec.base)(ctx, calc, projector_uid, effect, base_xargs)?;
+    ) -> Option<Self>
+    where
+        BG: NOutputGetter<Instance = T, Xargs = BX>,
+    {
+        let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
         if base_output.get_instance_count() == Count::ZERO {
             return None;
         }
@@ -113,15 +117,15 @@ pub(super) struct AggrSpoolInvData {
     pub(super) cycles_to_max: Count,
 }
 impl AggrSpoolInvData {
-    pub(super) fn try_make<T, BX>(
+    pub(super) fn try_make<BG>(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        ospec: &REffectProjOpcSpec<T, BX>,
+        ospec: &REffectProjOpcSpec<BG>,
     ) -> Option<Self>
     where
-        T: Copy,
+        BG: NOutputGetter,
     {
         if !ospec.spoolable {
             return None;
@@ -153,25 +157,27 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T, BX>
+pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'sc1, 'sc2>,
     pub(super) calc: &'calc mut Calc,
     pub(super) projector_uid: UItemId,
-    pub(super) ospec: &'ospec REffectProjOpcSpec<T, BX>,
+    pub(super) ospec: &'ospec REffectProjOpcSpec<BG>,
     pub(super) inv_proj: &'ip AggrProjInvData<T>,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, T, BX> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, T, BX>
+impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) fn new(
         ctx: SvcCtx<'sc1, 'sc2>,
         calc: &'calc mut Calc,
         projector_uid: UItemId,
-        ospec: &'ospec REffectProjOpcSpec<T, BX>,
+        ospec: &'ospec REffectProjOpcSpec<BG>,
         inv_proj: &'ip AggrProjInvData<T>,
     ) -> Self {
         Self {
@@ -187,15 +193,16 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_proj_regular_output<T, BX>(
+pub(super) fn get_proj_regular_output<BG, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: &AggrProjInvData<T>,
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
@@ -217,15 +224,16 @@ where
     output
 }
 
-pub(super) fn get_proj_spool_part_str_mult<T, BX>(
+pub(super) fn get_proj_spool_part_str_mult<BG, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: &AggrProjInvData<T>,
     chargedness: Option<UnitInterval>,
 ) -> PValue
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy,
 {
     let mut str_mult = inv_proj.str_mult;

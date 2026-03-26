@@ -1,7 +1,7 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
-    misc::{AttrSpec, Breacher, DmgKinds, Ecm, EffectSpec, MiningAmount},
-    nd::NMiningXargs,
+    misc::{AttrSpec, Ecm, EffectSpec},
+    nd::{NBreacherOutputGetter, NDmgOutputGetter, NEcmOutputGetter, NGeneralOutputGetter, NMiningOutputGetter},
     num::{Count, PValue, SkillLevel, SlotIndex, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
@@ -18,17 +18,23 @@ pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Incoming remote reps
-    pub(in crate::svc::vast) irr_shield: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) irr_shield:
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
     pub(in crate::svc::vast) irr_shield_limitable:
-        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) irr_armor: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) irr_armor_limitable: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) irr_hull: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) irr_armor:
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) irr_armor_limitable:
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) irr_hull:
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
     // Cap
-    pub(in crate::svc::vast) in_cap: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) in_neuts: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) in_cap:
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) in_neuts:
+        RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
     // Ewar
-    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<Ecm>>,
+    pub(in crate::svc::vast) in_ecm: RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEcmOutputGetter>>,
 }
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
@@ -121,29 +127,31 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemId, RItemListId>,
     pub(in crate::svc::vast) mods_cap_consumers: RSet<UItemId>,
     // Stats-related - damage output
-    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<DmgKinds<PValue>>>,
-    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<Breacher>>,
+    pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NDmgOutputGetter>>,
+    pub(in crate::svc::vast) dmg_breacher: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NBreacherOutputGetter>>,
     // Stats-related - mining output
-    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
-    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
-    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<MiningAmount, NMiningXargs>>,
+    pub(in crate::svc::vast) mining_ore: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NMiningOutputGetter>>,
+    pub(in crate::svc::vast) mining_ice: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NMiningOutputGetter>>,
+    pub(in crate::svc::vast) mining_gas: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NMiningOutputGetter>>,
     // Stats-related - RR output
-    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) orr_shield: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) orr_armor: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) orr_hull: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
     // Stats-related - misc output
-    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) out_cap: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
+    pub(in crate::svc::vast) out_neuts: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) out_cap: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
     // Stats-related - local active tank
-    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
-    pub(in crate::svc::vast) lr_shield_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
-    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
-    pub(in crate::svc::vast) lr_armor_limitable: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
-    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    pub(in crate::svc::vast) lr_shield: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) lr_shield_limitable:
+        RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) lr_armor: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) lr_armor_limitable:
+        RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) lr_hull: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
     // Stats-related - cap
-    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
-    pub(in crate::svc::vast) cap_nosfs: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<PValue>>,
-    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<PValue>>,
+    pub(in crate::svc::vast) cap_consumers: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) cap_nosfs: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NGeneralOutputGetter>>,
     // Stats-related - misc
     pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
 }

@@ -6,7 +6,6 @@ pub(crate) use charge::{
     NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,
 };
 pub(crate) use container::N_EFFECT_MAP;
-pub(crate) use data::get_cap_consumer_base_opc;
 pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
 pub(crate) use effect::{NEffect, NEffectCalcCustomizer};
 pub(crate) use opc_spec::{NChargeMultGetter, NEffectLocalOpcSpec, NEffectProjOpcSpec};

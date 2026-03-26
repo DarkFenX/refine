@@ -11,6 +11,7 @@ use crate::{
     ud::UItemId,
 };
 
+#[derive(Copy, Clone)]
 pub(crate) enum NDmgOutputGetter {
     Regular,
     MultCharge,

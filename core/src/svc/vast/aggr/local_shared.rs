@@ -1,5 +1,6 @@
 use super::traits::InstanceLimit;
 use crate::{
+    nd::NOutputGetter,
     num::{Count, PValue, UnitInterval},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -20,15 +21,18 @@ impl<T> AggrLocalInvData<T>
 where
     T: Copy,
 {
-    pub(super) fn try_make<BX>(
+    pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        ospec: &REffectLocalOpcSpec<T, BX>,
+        ospec: &REffectLocalOpcSpec<BG>,
         base_xargs: BX,
-    ) -> Option<Self> {
-        let output = (ospec.base)(ctx, calc, item_uid, effect, base_xargs)?;
+    ) -> Option<Self>
+    where
+        BG: NOutputGetter<Instance = T, Xargs = BX>,
+    {
+        let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
         if output.get_instance_count() == Count::ZERO {
             return None;
         }
@@ -50,25 +54,27 @@ fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: Opt
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, T, BX>
+pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'u, 'p>,
     pub(super) calc: &'c mut Calc,
     pub(super) item_uid: UItemId,
-    pub(super) ospec: &'o REffectLocalOpcSpec<T, BX>,
+    pub(super) ospec: &'o REffectLocalOpcSpec<BG>,
     pub(super) inv_local: &'i AggrLocalInvData<T>,
 }
-impl<'u, 'p, 'c, 'o, 'i, T, BX> LocalConverter<'u, 'p, 'c, 'o, 'i, T, BX>
+impl<'u, 'p, 'c, 'o, 'i, BG, T> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) fn new(
         ctx: SvcCtx<'u, 'p>,
         calc: &'c mut Calc,
         item_uid: UItemId,
-        ospec: &'o REffectLocalOpcSpec<T, BX>,
+        ospec: &'o REffectLocalOpcSpec<BG>,
         inv_local: &'i AggrLocalInvData<T>,
     ) -> Self {
         Self {
@@ -84,15 +90,16 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_local_output<T, BX>(
+pub(super) fn get_local_output<BG, T>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    ospec: &REffectLocalOpcSpec<T, BX>,
+    ospec: &REffectLocalOpcSpec<BG>,
     inv_local: &AggrLocalInvData<T>,
     chargeness: Option<UnitInterval>,
 ) -> Output<T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_local.output;

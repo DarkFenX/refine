@@ -17,6 +17,7 @@ pub(crate) struct NMiningXargs {
     pub(crate) mission_ore: bool,
 }
 
+#[derive(Copy, Clone)]
 pub(crate) enum NMiningOutputGetter {
     Regular,
     // Variants specific to a single effect

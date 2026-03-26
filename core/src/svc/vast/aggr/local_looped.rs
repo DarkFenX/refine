@@ -4,8 +4,8 @@ use super::{
     traits::InstanceLimit,
 };
 use crate::{
-    Count,
-    num::PValue,
+    nd::NOutputGetter,
+    num::{Count, PValue},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
         SvcCtx,
@@ -17,17 +17,18 @@ use crate::{
 
 // Local effects, considers only infinite parts of cycles
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_looped<T, BX, A>(
+pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectLocalOpcSpec<T, BX>,
+    ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

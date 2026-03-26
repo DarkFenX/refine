@@ -1,11 +1,9 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
-    misc::{Breacher, DmgKinds, Ecm, MiningAmount},
     nd::{
-        N_EFFECT_MAP, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectProjMultGetter, NMiningOutputGetter,
-        get_cap_consumer_base_opc,
+        N_EFFECT_MAP, NBreacherOutputGetter, NDmgOutputGetter, NEcmOutputGetter, NEffectCalcCustomizer,
+        NEffectDmgKindGetter, NEffectProjMultGetter, NGeneralOutputGetter, NMiningOutputGetter,
     },
-    num::PValue,
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
         REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
@@ -49,23 +47,23 @@ pub(crate) struct REffect {
     pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter>,
     // Output getters/specs
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter>,
-    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<DmgKinds<PValue>>>,
-    pub(crate) breacher_dmg_opc_spec: Option<REffectProjOpcSpec<Breacher>>,
-    pub(crate) mining_ore_opc_spec: Option<NMiningOutputGetter>,
-    pub(crate) mining_ice_opc_spec: Option<NMiningOutputGetter>,
-    pub(crate) mining_gas_opc_spec: Option<NMiningOutputGetter>,
-    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
-    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
-    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
-    pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
-    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<PValue>>,
-    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<PValue>>,
-    pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<Ecm>>,
+    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<NDmgOutputGetter>>,
+    pub(crate) breacher_dmg_opc_spec: Option<REffectProjOpcSpec<NBreacherOutputGetter>>,
+    pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<NMiningOutputGetter>>,
+    pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<NMiningOutputGetter>>,
+    pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<NMiningOutputGetter>>,
+    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<NGeneralOutputGetter>>,
+    pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<NEcmOutputGetter>>,
 }
 impl REffect {
     pub(in crate::rd) fn from_a_effect(effect_rid: REffectId, a_effect: &AEffect) -> Self {
@@ -264,7 +262,7 @@ impl REffect {
         // all effects which need it.
         if self.cap_consume_opc_spec.is_none() && self.discharge_attr_rid.is_some() {
             self.cap_consume_opc_spec = Some(REffectLocalOpcSpec {
-                base: get_cap_consumer_base_opc,
+                base: NGeneralOutputGetter::CapConsumer,
                 charge_mult: None,
                 limit_attr_rid: None,
             })

@@ -11,7 +11,7 @@ pub(crate) use effect::{
     NEffectCalcCustomizer, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal,
     NEffectChargeLoc, NEffectDmgKind, NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter,
     NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs, NGeneralOutputGetter,
-    NMiningOutputGetter, NMiningXargs, NOutputGetter, get_cap_consumer_base_opc,
+    NMiningOutputGetter, NMiningXargs, NOutputGetter,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 

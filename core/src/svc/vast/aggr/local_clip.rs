@@ -6,6 +6,7 @@ use super::{
 use crate::{
     Count,
     misc::InfCount,
+    nd::NOutputGetter,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -18,17 +19,18 @@ use crate::{
 
 // Local effects, considers only part of sequence until charges are out
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_clip<T, BX, A>(
+pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectLocalOpcSpec<T, BX>,
+    ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

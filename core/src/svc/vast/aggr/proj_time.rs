@@ -8,6 +8,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
+    nd::NOutputGetter,
     num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -21,19 +22,20 @@ use crate::{
 
 // Projected effects, aggregates total output by specified time
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_time<T, BX, A>(
+pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
     accum: &mut SeqAccum<A>,
     time: PValue,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -71,16 +73,17 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-spool
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_regular<T, BX, A>(
+fn aggr_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut A,
     time: PValue,
 ) where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -89,8 +92,9 @@ fn aggr_regular<T, BX, A>(
     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
 }
 
-impl<T, BX> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, T, BX>
+impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
@@ -113,17 +117,18 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<A, BX, T>(
+fn aggr_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut A,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
 ) where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -336,11 +341,11 @@ fn aggr_spool<A, BX, T>(
     }
 }
 
-fn process_single_spool<T, BX, A>(
+fn process_single_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
@@ -348,6 +353,7 @@ fn process_single_spool<T, BX, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -376,11 +382,11 @@ fn process_single_spool<T, BX, A>(
     }
 }
 
-fn process_limited_spool<T, BX, A>(
+fn process_limited_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
@@ -389,6 +395,7 @@ fn process_limited_spool<T, BX, A>(
     uninterrupted_cycles: &mut Count,
     mut repeat_limit: Count,
 ) where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -464,11 +471,11 @@ fn process_limited_spool<T, BX, A>(
     }
 }
 
-fn process_infinite_spool<T, BX, A>(
+fn process_infinite_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    ospec: &REffectProjOpcSpec<T, BX>,
+    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
@@ -476,6 +483,7 @@ fn process_infinite_spool<T, BX, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

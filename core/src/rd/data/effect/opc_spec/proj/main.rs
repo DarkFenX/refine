@@ -6,11 +6,11 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) struct REffectProjOpcSpec<GB>
+pub(crate) struct REffectProjOpcSpec<BG>
 where
-    GB: NOutputGetter,
+    BG: NOutputGetter,
 {
-    pub(crate) base: GB,
+    pub(crate) base: BG,
     pub(crate) charge_mult: Option<NChargeMultGetter>,
     pub(crate) spoolable: bool,
     pub(crate) proj_mult_str: Option<NEffectProjMultGetter>,
@@ -18,12 +18,12 @@ where
     pub(crate) resist: Option<REffectResist>,
     pub(crate) limit_attr_rid: Option<RAttrId>,
 }
-impl<GB> REffectProjOpcSpec<GB>
+impl<BG> REffectProjOpcSpec<BG>
 where
-    GB: NOutputGetter + Copy,
+    BG: NOutputGetter + Copy,
 {
     pub(in crate::rd::data::effect) fn from_n_proj_opc_spec(
-        n_proj_opc_spec: &NEffectProjOpcSpec<GB>,
+        n_proj_opc_spec: &NEffectProjOpcSpec<BG>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {

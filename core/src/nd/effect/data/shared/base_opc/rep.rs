@@ -1,55 +1,10 @@
-use super::generic::get_generic_base_opc;
 use crate::{
     ad::AItemId,
     num::{PValue, UnitInterval, Value},
-    rd::REffect,
-    svc::{SvcCtx, calc::Calc, output::Output},
+    svc::{SvcCtx, calc::Calc},
     ud::UItemId,
 };
 
-pub(in crate::nd::effect::data) fn get_shield_rep_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<PValue>> {
-    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().shield_bonus, true)
-}
-
-pub(in crate::nd::effect::data) fn get_armor_rep_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<PValue>> {
-    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().armor_dmg_amount, false)
-}
-
-pub(in crate::nd::effect::data) fn get_hull_rep_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<PValue>> {
-    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().struct_dmg_amount, false)
-}
-
-pub(in crate::nd::effect::data) fn get_cap_trans_base_opc(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-    _base_xargs: (),
-) -> Option<Output<PValue>> {
-    get_generic_base_opc(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Misc
-////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::data) fn get_ancillary_armor_mult(
     ctx: SvcCtx,
     calc: &mut Calc,

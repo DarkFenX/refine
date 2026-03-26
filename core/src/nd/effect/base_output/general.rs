@@ -13,6 +13,7 @@ use crate::{
 
 // To avoid excessive monomorphization, all the getters which produce PValue are aggregated into
 // single enum
+#[derive(Copy, Clone)]
 pub(crate) enum NGeneralOutputGetter {
     CapConsumer,
     RepShield,

@@ -5,6 +5,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
+    nd::NOutputGetter,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -18,18 +19,19 @@ use crate::{
 
 // Local effects, aggregates total output by specified time
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_time<T, BX, A>(
+pub(in crate::svc::vast) fn aggr_local_time<BG, BX, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
     cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectLocalOpcSpec<T, BX>,
+    ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
     accum: &mut SeqAccum<A>,
     time: PValue,
 ) -> bool
 where
+    BG: NOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -47,8 +49,9 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T, BX> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, T, BX>
+impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
 where
+    BG: NOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
