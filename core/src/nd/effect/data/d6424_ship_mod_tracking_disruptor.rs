@@ -1,7 +1,8 @@
+use super::shared::add_td_mods;
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter, effect::data::shared::mods::add_td_mods},
+    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_TRACKING_DISRUPTOR;

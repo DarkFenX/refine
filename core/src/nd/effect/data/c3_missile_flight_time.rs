@@ -5,11 +5,12 @@
 
 use smallvec::SmallVec;
 
+use super::shared::get_item_fit_ship_uid;
 use crate::{
     ad::{AEffect, AEffectCatId, AEffectId, AItem, AItemEffect, AItemId, AState},
     api::AttrId,
     misc::EffectSpec,
-    nd::{NEffect, effect::data::shared::util::get_item_fit_ship_uid},
+    nd::NEffect,
     num::Value,
     rd::RAttrConsts,
     svc::{

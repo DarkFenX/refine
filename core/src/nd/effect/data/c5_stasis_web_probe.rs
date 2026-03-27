@@ -2,15 +2,16 @@
 // across multiple items (survey probes, regular bubbles), I decided to split wubble functionality
 // into separate custom effect specific to it.
 
+use super::shared::assign_defeff_to_item;
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffect, AItemId, AItemListId, AState,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItemId, AItemListId, AState,
     },
     nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
-    util::RMap,
 };
 
+const ITEM_AID: AItemId = AItemId::STASIS_WEBIFICATION_PROBE;
 const EFFECT_AID: AEffectId = AEffectId::STASIS_WEB_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
@@ -18,7 +19,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: None,
         aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
-        adg_assign_effect_fn: Some(assign_effect),
+        adg_assign_effect_fn: Some(|a_items| assign_defeff_to_item(a_items, ITEM_AID, EFFECT_AID)),
         modifier_proj_attrs_getter: Some(NEffectModProjAttrsGetter::Simple),
         modifier_proj_mult_getter: Some(NEffectProjMultGetter::GenericRangeSimpleCts),
         ..
@@ -42,16 +43,5 @@ fn make_effect() -> AEffect {
             ..
         }),
         ..
-    }
-}
-
-fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
-    match a_items.get_mut(&AItemId::STASIS_WEBIFICATION_PROBE) {
-        Some(a_item) => {
-            a_item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
-            a_item.defeff_id = Some(EFFECT_AID);
-            true
-        }
-        None => false,
     }
 }

@@ -1,10 +1,8 @@
+use super::shared::{add_prop_speed_mod, mk_prop_mass_mod};
 use crate::{
     ad::{AEffect, AEffectId},
     ed::EEffectId,
-    nd::{
-        NEffect,
-        effect::data::shared::mods::{add_prop_speed_mod, mk_prop_mass_mod},
-    },
+    nd::NEffect,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::MOD_BONUS_AFTERBURNER;

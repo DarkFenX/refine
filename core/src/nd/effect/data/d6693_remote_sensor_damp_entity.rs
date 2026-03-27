@@ -1,7 +1,8 @@
+use super::shared::add_damp_mods;
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter, effect::data::shared::mods::add_damp_mods},
+    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::REMOTE_SENSOR_DAMP_ENTITY;

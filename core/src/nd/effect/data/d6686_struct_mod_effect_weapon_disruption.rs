@@ -1,7 +1,8 @@
+use super::shared::add_wd_mods;
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter, effect::data::shared::mods::add_wd_mods},
+    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::STRUCT_MOD_EFFECT_WEAPON_DISRUPTION;

@@ -1,7 +1,8 @@
+use super::shared::add_tp_mods;
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter, effect::data::shared::mods::add_tp_mods},
+    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::REMOTE_TARGET_PAINT_FALLOFF;

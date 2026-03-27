@@ -1,7 +1,8 @@
+use super::shared::mk_subsystem_mod;
 use crate::{
     ad::{AAttrId, AEffect, AEffectId},
     ed::EEffectId,
-    nd::{NEffect, effect::data::shared::mods::mk_subsystem_mod},
+    nd::NEffect,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::HARDPOINT_MODIFIER_EFFECT;

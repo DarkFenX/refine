@@ -3,7 +3,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::nd::effect::data) fn assign_effect(
+pub(in crate::nd::effect::data) fn assign_defeff_to_item(
     a_items: &mut RMap<AItemId, AItem>,
     item_aid: AItemId,
     effect_aid: AEffectId,

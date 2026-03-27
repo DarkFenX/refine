@@ -1,6 +1,10 @@
 use crate::ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModifier, AModifierSrq, AOp};
 
-pub(in crate::nd::effect::data) fn update_effect(effect_aid: AEffectId, a_effect: &mut AEffect, attr_aid: AAttrId) {
+pub(in crate::nd::effect::data) fn missile_dmg_self_srq_update_effect(
+    effect_aid: AEffectId,
+    a_effect: &mut AEffect,
+    attr_aid: AAttrId,
+) {
     if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {effect_aid}: self-skillreq missile dmg effect has modifiers, overwriting them");
         a_effect.modifiers.clear();

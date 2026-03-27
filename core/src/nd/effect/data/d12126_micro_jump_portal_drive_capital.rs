@@ -1,7 +1,8 @@
+use super::shared::mk_mjd_sig_mod;
 use crate::{
     ad::{AEffect, AEffectId},
     ed::EEffectId,
-    nd::{NEffect, effect::data::shared::mods::mk_mjd_sig_mod},
+    nd::NEffect,
 };
 
 const EFFECT_EID: EEffectId = EEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL;

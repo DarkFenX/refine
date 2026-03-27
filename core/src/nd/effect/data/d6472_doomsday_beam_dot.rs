@@ -1,10 +1,8 @@
+use super::shared::{get_aoe_dd_side_neut_ospec, make_dd_self_debuffs};
 use crate::{
     ad::{AEffectBuff, AEffectId},
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
-        effect::data::shared::{get_aoe_dd_side_neut_ospec, mods::make_dd_self_debuffs},
-    },
+    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_BEAM_DOT;

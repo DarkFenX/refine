@@ -1,12 +1,13 @@
 // There is nothing in static data which maps between stability generator items and buffs, so it's
 // hardcoded here
 
+use super::shared::assign_defeff_to_item;
 use crate::{
     ad::{
         ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
         AEffectCatId, AEffectId, AItemId, AItemListId, AState, AValue,
     },
-    nd::{NEffect, effect::data::shared::sov_stability_generators::assign_effect},
+    nd::NEffect,
 };
 
 const ITEM_AID: AItemId = AItemId::PLASMA_STABILITY_GENERATOR;
@@ -17,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: None,
         aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
-        adg_assign_effect_fn: Some(|a_items| assign_effect(a_items, ITEM_AID, EFFECT_AID)),
+        adg_assign_effect_fn: Some(|a_items| assign_defeff_to_item(a_items, ITEM_AID, EFFECT_AID)),
         ..
     }
 }

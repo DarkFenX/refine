@@ -1,10 +1,8 @@
+use super::shared::make_dd_self_debuffs;
 use crate::{
     ad::{AEffectBuff, AEffectId, AItemListId},
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
-        effect::data::shared::mods::make_dd_self_debuffs,
-    },
+    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjOpcSpec, NEffectProjecteeFilter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::SUPER_WEAPON_GALLENTE;

@@ -2,10 +2,11 @@
 // across multiple items (survey probes, web bubbles), I decided to split warp bubble functionality
 // into separate custom effect specific to it.
 
+use super::shared::assign_defeff_to_item;
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemEffect, AItemId, AItemListId, AState, AValue,
+        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemId, AItemListId, AState, AValue,
     },
     nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
     util::RMap,
@@ -59,9 +60,7 @@ fn make_effect() -> AEffect {
 fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
     let mut assigned = false;
     for item_aid in [AItemId::WARP_DISRUPT_PROBE, AItemId::SURGICAL_WARP_DISRUPT_PROBE] {
-        if let Some(a_item) = a_items.get_mut(&item_aid) {
-            a_item.effects.insert(AItemEffect { id: EFFECT_AID, .. });
-            a_item.defeff_id = Some(EFFECT_AID);
+        if assign_defeff_to_item(a_items, item_aid, EFFECT_AID) {
             assigned = true;
         }
     }
