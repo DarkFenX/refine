@@ -23,10 +23,7 @@ use crate::{
         AOp,
     },
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectProjMultGetter,
-        effect::data::shared::mod_proj_attrs::get_simple_mod_proj_attrs,
-    },
+    nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectProjMultGetter, NModProjAttrsGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::WARP_DISRUPT_SPHERE;
@@ -55,7 +52,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         adg_update_effect_fn: Some(update_effect),
-        modifier_proj_attrs_getter: Some(get_simple_mod_proj_attrs),
+        modifier_proj_attrs_getter: Some(NModProjAttrsGetter::Simple),
         modifier_proj_mult_getter: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::Undepletable),

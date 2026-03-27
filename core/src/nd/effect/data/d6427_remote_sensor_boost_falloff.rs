@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
     ed::EEffectId,
-    nd::{NEffect, NEffectProjMultGetter, effect::data::shared::mod_proj_attrs::get_full_mod_proj_attrs},
+    nd::{NEffect, NEffectProjMultGetter, NModProjAttrsGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::REMOTE_SENSOR_BOOST_FALLOFF;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
-        modifier_proj_attrs_getter: Some(get_full_mod_proj_attrs),
+        modifier_proj_attrs_getter: Some(NModProjAttrsGetter::Full),
         modifier_proj_mult_getter: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
         ..
     }

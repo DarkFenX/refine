@@ -184,8 +184,8 @@ impl REffect {
                 .spool_attrs
                 .as_ref()
                 .and_then(|n_spool_attrs| REffectSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_aid_rid_map));
-            if let Some(modifier_proj_attrs_getter) = n_effect.modifier_proj_attrs_getter {
-                let proj_attr_aids = modifier_proj_attrs_getter(a_effect);
+            if let Some(modifier_proj_attrs_getter) = &n_effect.modifier_proj_attrs_getter {
+                let proj_attr_aids = modifier_proj_attrs_getter.get(a_effect);
                 self.modifier_proj_attr_rids = proj_attr_aids
                     .map(|attr_aid| attr_aid.and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()));
             }

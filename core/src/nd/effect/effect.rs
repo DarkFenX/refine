@@ -1,11 +1,11 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectBuff, AEffectId, AItem, AItemId},
+    ad::{AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
     misc::EffectSpec,
     nd::{
         NBreacherOutputGetter, NDmgOutputGetter, NEcmOutputGetter, NEffectCharge, NEffectDmgKindGetter,
         NEffectLocalOpcSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
-        NGeneralOutputGetter, NMiningOutputGetter,
+        NGeneralOutputGetter, NMiningOutputGetter, NModProjAttrsGetter,
     },
     rd::RAttrConsts,
     svc::calc::RawModifier,
@@ -18,8 +18,6 @@ pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
 // General
 pub(crate) type NEffectCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
-// Getters
-pub(crate) type NEffectModProjAttrGetter = fn(&AEffect) -> [Option<AAttrId>; 2];
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -40,7 +38,7 @@ pub(crate) struct NEffect {
     // Effect modifier customization function ran during runtime in calculator service
     pub(crate) calc_customizer: Option<NEffectCalcCustomizer> = None,
     // Getters/specs - modifier projection
-    pub(crate) modifier_proj_attrs_getter: Option<NEffectModProjAttrGetter> = None,
+    pub(crate) modifier_proj_attrs_getter: Option<NModProjAttrsGetter> = None,
     pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter> = None,
     // Getters/specs - damage output
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter> = None,

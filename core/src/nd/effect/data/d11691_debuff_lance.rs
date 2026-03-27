@@ -8,9 +8,8 @@ use crate::{
     ed::EEffectId,
     nd::{
         NDmgOutputGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
-        effect::data::shared::{
-            get_aoe_dd_side_neut_ospec, mod_proj_attrs::get_aoe_dd_mod_proj_attrs, mods::make_dd_self_debuffs,
-        },
+        NModProjAttrsGetter,
+        effect::data::shared::{get_aoe_dd_side_neut_ospec, mods::make_dd_self_debuffs},
     },
 };
 
@@ -56,7 +55,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             .collect(),
             ..
         }),
-        modifier_proj_attrs_getter: Some(get_aoe_dd_mod_proj_attrs),
+        modifier_proj_attrs_getter: Some(NModProjAttrsGetter::AoeDd),
         modifier_proj_mult_getter: Some(NEffectProjMultGetter::AoeDdRange),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
