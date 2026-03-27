@@ -84,12 +84,11 @@ impl Calc {
             }
         }
         // Custom modifiers
-        if let Some(custom_mod) = effect.calc_custom_mod {
-            custom_mod.add(
-                reuse_rmods,
-                ctx.u_data.src.get_attr_consts(),
-                EffectSpec::new(item_uid, effect.rid),
-            );
+        if let Some(custom_mod) = effect.calc_custom_mod
+            && let Some(rmod) =
+                custom_mod.make_rmod(ctx.u_data.src.get_attr_consts(), EffectSpec::new(item_uid, effect.rid))
+        {
+            reuse_rmods.push(rmod);
         }
     }
     pub(super) fn generate_dependent_buff_mods<'a>(

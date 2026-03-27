@@ -8,7 +8,7 @@ use crate::{
     rd::RAttrId,
     svc::{
         SvcCtx,
-        calc::{Affector, Calc, CustomModReviser},
+        calc::{Affector, Calc, ItemAddRemoveReviser},
     },
     ud::UItemId,
 };
@@ -41,29 +41,22 @@ impl AffectorValue {
                 item_id: ctx.u_data.items.xid_by_iid(item_uid),
                 attr_id: None
             }],
-            Self::Custom(custom) => (custom.affector_info_getter)(ctx, item_uid),
+            Self::Custom(custom) => custom.get_affector_info(ctx, item_uid),
         }
     }
     pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
         match self {
             Self::Attr(attr_rid) => Some(calc.get_item_attr_rfull(ctx, espec.item_uid, *attr_rid).ok()?.dogma),
             Self::Hardcoded(a_val) => Some(*a_val),
-            Self::Custom(custom) => (custom.mod_val_getter)(calc, ctx, espec),
+            Self::Custom(custom) => custom.get_mod_val(calc, ctx, espec),
         }
     }
     // Revision methods - define if modification value can change upon some action
-    pub(super) fn get_item_add_reviser(&self) -> Option<CustomModReviser> {
+    pub(super) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
         match self {
             Self::Attr(_) => None,
             Self::Hardcoded(_) => None,
-            Self::Custom(custom) => custom.item_add_reviser,
-        }
-    }
-    pub(super) fn get_item_remove_reviser(&self) -> Option<CustomModReviser> {
-        match self {
-            Self::Attr(_) => None,
-            Self::Hardcoded(_) => None,
-            Self::Custom(custom) => custom.item_remove_reviser,
+            Self::Custom(custom) => custom.get_item_add_remove_reviser(),
         }
     }
 }

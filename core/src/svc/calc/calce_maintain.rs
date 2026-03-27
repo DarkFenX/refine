@@ -39,8 +39,8 @@ impl Calc {
         // Custom modifiers
         let cmods = self
             .revs
-            .iter_revs_on_item_add()
-            .filter(|(cmod, reviser)| reviser(ctx, cmod.raw.affector_espec.item_uid, item_uid, item))
+            .iter_revs_on_item_add_remove()
+            .filter(|(cmod, reviser)| reviser.revise(ctx, cmod.raw.affector_espec.item_uid, item_uid, item))
             .map(|(cmod, _reviser)| *cmod)
             .collect_vec();
         if !cmods.is_empty() {
@@ -54,8 +54,8 @@ impl Calc {
         // Custom modifiers
         let cmods = self
             .revs
-            .iter_revs_on_item_remove()
-            .filter(|(cmod, reviser)| reviser(ctx, cmod.raw.affector_espec.item_uid, item_uid, item))
+            .iter_revs_on_item_add_remove()
+            .filter(|(cmod, reviser)| reviser.revise(ctx, cmod.raw.affector_espec.item_uid, item_uid, item))
             .map(|(cmod, _reviser)| *cmod)
             .collect_vec();
         if !cmods.is_empty() {

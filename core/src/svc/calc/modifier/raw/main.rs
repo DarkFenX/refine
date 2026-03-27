@@ -11,8 +11,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser, Location,
-            ModifierKind, modifier::AffectorValue,
+            AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddRemoveReviser, Location, ModifierKind,
+            modifier::AffectorValue,
         },
         funcs,
     },
@@ -209,11 +209,8 @@ impl RawModifier {
         self.affector_value.get_mod_val(calc, ctx, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action
-    pub(in crate::svc::calc) fn get_item_add_reviser(&self) -> Option<ItemAddReviser> {
-        self.affector_value.get_item_add_reviser()
-    }
-    pub(in crate::svc::calc) fn get_item_remove_reviser(&self) -> Option<ItemRemoveReviser> {
-        self.affector_value.get_item_remove_reviser()
+    pub(in crate::svc::calc) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
+        self.affector_value.get_item_add_remove_reviser()
     }
 }
 

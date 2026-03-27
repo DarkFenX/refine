@@ -1,6 +1,6 @@
 pub(in crate::svc::calc::modifier) use custom::CalcCustomAffectorValue;
 pub(crate) use custom::CalcCustomModifier;
-pub(in crate::svc::calc) use reviser::CustomModReviser;
+pub(in crate::svc::calc) use reviser::ItemAddRemoveReviser;
 
 mod aar_paste;
 mod custom;

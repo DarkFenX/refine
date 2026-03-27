@@ -4,7 +4,7 @@ pub(in crate::svc::calc) use aggr_mode::{AggrKey, AggrMode};
 pub(in crate::svc::calc) use context::ModContext;
 pub(in crate::svc::calc) use ctx::CtxModifier;
 pub(crate) use custom::CalcCustomModifier;
-pub(in crate::svc::calc) use custom::CustomModReviser;
+pub(in crate::svc::calc) use custom::ItemAddRemoveReviser;
 pub(in crate::svc::calc) use kind::ModifierKind;
 pub(in crate::svc::calc) use location::Location;
 pub(crate) use op::CalcOp;

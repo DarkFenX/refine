@@ -1,12 +1,17 @@
 use std::hash::{Hash, Hasher};
 
-use super::{
-    aar_paste::add_aar_paste_mod, missile_flight_time::add_missile_flight_time_mod, prop_speed::add_prop_speed_mod,
-};
+use smallvec::SmallVec;
+
+use super::{aar_paste, missile_flight_time, prop_speed, reviser::ItemAddRemoveReviser};
 use crate::{
     misc::EffectSpec,
+    num::Value,
     rd::{RAttrConsts, RAttrId},
-    svc::calc::RawModifier,
+    svc::{
+        SvcCtx,
+        calc::{Affector, Calc, RawModifier},
+    },
+    ud::UItemId,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -16,16 +21,11 @@ pub(crate) enum CalcCustomModifier {
     MissileFlightTime,
 }
 impl CalcCustomModifier {
-    pub(in crate::svc::calc) fn add(
-        &self,
-        rmods: &mut Vec<RawModifier>,
-        attr_consts: &RAttrConsts,
-        affector_espec: EffectSpec,
-    ) {
+    pub(in crate::svc::calc) fn make_rmod(&self, attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
         match self {
-            Self::PropSpeed => add_prop_speed_mod(rmods, attr_consts, affector_espec),
-            Self::AarPaste => add_aar_paste_mod(rmods, attr_consts, affector_espec),
-            Self::MissileFlightTime => add_missile_flight_time_mod(rmods, attr_consts, affector_espec),
+            Self::PropSpeed => prop_speed::make_rmod(attr_consts, espec),
+            Self::AarPaste => aar_paste::make_rmod(attr_consts, espec),
+            Self::MissileFlightTime => missile_flight_time::make_rmod(attr_consts, espec),
         }
     }
 }
@@ -50,5 +50,37 @@ impl Eq for CalcCustomAffectorValue {}
 impl Hash for CalcCustomAffectorValue {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.kind.hash(state);
+    }
+}
+impl CalcCustomAffectorValue {
+    pub(in crate::svc::calc::modifier) fn get_affector_info(
+        &self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+    ) -> SmallVec<Affector, 1> {
+        match &self.kind {
+            CalcCustomModifier::PropSpeed => prop_speed::get_affector_info(ctx, item_uid),
+            CalcCustomModifier::AarPaste => aar_paste::get_affector_info(ctx, item_uid),
+            CalcCustomModifier::MissileFlightTime => missile_flight_time::get_affector_info(ctx, item_uid),
+        }
+    }
+    pub(in crate::svc::calc::modifier) fn get_mod_val(
+        &self,
+        calc: &mut Calc,
+        ctx: SvcCtx,
+        espec: EffectSpec,
+    ) -> Option<Value> {
+        match &self.kind {
+            CalcCustomModifier::PropSpeed => prop_speed::get_mod_val(calc, ctx, espec),
+            CalcCustomModifier::AarPaste => aar_paste::get_mod_val(calc, ctx, espec),
+            CalcCustomModifier::MissileFlightTime => missile_flight_time::get_mod_val(calc, ctx, espec),
+        }
+    }
+    pub(in crate::svc::calc::modifier) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
+        match &self.kind {
+            CalcCustomModifier::PropSpeed => None,
+            CalcCustomModifier::AarPaste => Some(ItemAddRemoveReviser::AarPaste),
+            CalcCustomModifier::MissileFlightTime => Some(ItemAddRemoveReviser::MissileFlightTime),
+        }
     }
 }

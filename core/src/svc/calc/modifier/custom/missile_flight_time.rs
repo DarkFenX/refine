@@ -16,29 +16,26 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-pub(super) fn add_missile_flight_time_mod(rmods: &mut Vec<RawModifier>, attr_consts: &RAttrConsts, espec: EffectSpec) {
-    if let Some(max_velocity_rid) = attr_consts.max_velocity
-        && let Some(explosion_delay_rid) = attr_consts.explosion_delay
-        && attr_consts.radius.is_some()
-    {
-        let rmod = RawModifier {
-            kind: ModifierKind::Local,
-            affector_espec: espec,
-            affector_value: AffectorValue::Custom(CalcCustomAffectorValue {
-                kind: CalcCustomModifier::MissileFlightTime,
-                affector_attr_rid: Some(max_velocity_rid),
-            }),
-            op: CalcOp::ExtraAdd,
-            aggr_mode: AggrMode::Stack,
-            affectee_filter: AffecteeFilter::Direct(Location::Item),
-            affectee_attr_rid: explosion_delay_rid,
-            ..
-        };
-        rmods.push(rmod);
+pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
+    if attr_consts.radius.is_none() {
+        return None;
     }
+    Some(RawModifier {
+        kind: ModifierKind::Local,
+        affector_espec: espec,
+        affector_value: AffectorValue::Custom(CalcCustomAffectorValue {
+            kind: CalcCustomModifier::MissileFlightTime,
+            affector_attr_rid: Some(attr_consts.max_velocity?),
+        }),
+        op: CalcOp::ExtraAdd,
+        aggr_mode: AggrMode::Stack,
+        affectee_filter: AffecteeFilter::Direct(Location::Item),
+        affectee_attr_rid: attr_consts.explosion_delay?,
+        ..
+    })
 }
 
-fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
     let ship_uid = ctx.u_data.get_item_fit_ship_uid(espec.item_uid)?;
     let missile_velocity = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().max_velocity)?;
     let ship_radius = ctx.u_data.items.get(ship_uid).get_direct_radius();
@@ -54,7 +51,7 @@ fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value>
     Some(val)
 }
 
-fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
+pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     let mut info = SmallVec::new();
     if let Some(ship_uid) = ctx.u_data.get_item_fit_ship_uid(item_uid)
         && let Some(max_velocity_rid) = ctx.ac().max_velocity
@@ -76,7 +73,7 @@ fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
     info
 }
 
-fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, _changed_uid: UItemId, changed_item: &UItem) -> bool {
+pub(super) fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, changed_item: &UItem) -> bool {
     match changed_item {
         UItem::Ship(changed_ship) => {
             Some(changed_ship.get_fit_uid()) == ctx.u_data.items.get(affector_uid).get_fit_uid()

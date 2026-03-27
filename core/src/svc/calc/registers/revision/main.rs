@@ -1,47 +1,34 @@
 use crate::{
-    svc::calc::{CtxModifier, ItemAddReviser, ItemRemoveReviser},
+    svc::calc::{CtxModifier, ItemAddRemoveReviser},
     util::RMap,
 };
 
-// Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
+// Intended to hold modifiers which need special handling, e.g. custom AAR modifiers
 #[derive(Clone)]
 pub(in crate::svc::calc) struct RevisionRegister {
-    pub(super) item_add: RMap<CtxModifier, ItemAddReviser>,
-    pub(super) item_remove: RMap<CtxModifier, ItemRemoveReviser>,
+    pub(super) item_add_remove: RMap<CtxModifier, ItemAddRemoveReviser>,
 }
 impl RevisionRegister {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            item_add: RMap::new(),
-            item_remove: RMap::new(),
+            item_add_remove: RMap::new(),
         }
     }
     // Query methods
-    pub(in crate::svc::calc) fn iter_revs_on_item_add(
+    pub(in crate::svc::calc) fn iter_revs_on_item_add_remove(
         &self,
-    ) -> impl ExactSizeIterator<Item = (&CtxModifier, &ItemAddReviser)> {
-        self.item_add.iter()
-    }
-    pub(in crate::svc::calc) fn iter_revs_on_item_remove(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (&CtxModifier, &ItemRemoveReviser)> {
-        self.item_remove.iter()
+    ) -> impl ExactSizeIterator<Item = (&CtxModifier, &ItemAddRemoveReviser)> {
+        self.item_add_remove.iter()
     }
     // Modification methods
     pub(in crate::svc::calc) fn reg_mod(&mut self, cmod: &CtxModifier) {
-        if let Some(item_add_reviser) = cmod.raw.get_item_add_reviser() {
-            self.item_add.insert(*cmod, item_add_reviser);
-        }
-        if let Some(item_remove_reviser) = cmod.raw.get_item_remove_reviser() {
-            self.item_remove.insert(*cmod, item_remove_reviser);
+        if let Some(item_add_reviser) = cmod.raw.get_item_add_remove_reviser() {
+            self.item_add_remove.insert(*cmod, item_add_reviser);
         }
     }
     pub(in crate::svc::calc) fn unreg_mod(&mut self, cmod: &CtxModifier) {
-        if cmod.raw.get_item_add_reviser().is_some() {
-            self.item_add.remove(cmod);
-        }
-        if cmod.raw.get_item_remove_reviser().is_some() {
-            self.item_remove.remove(cmod);
+        if cmod.raw.get_item_add_remove_reviser().is_some() {
+            self.item_add_remove.remove(cmod);
         }
     }
 }

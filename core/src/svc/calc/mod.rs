@@ -36,7 +36,8 @@ pub use info::{Affector, Modification};
 pub(crate) use misc::CalcAttrVals;
 use misc::{CalcModification, CalcModificationKey, ItemAttrPostproc, LocationKind};
 use modifier::{
-    AffecteeFilter, AggrKey, AggrMode, CtxModifier, CustomModReviser, Location, ModContext, ModifierKind, RawModifier,
+    AffecteeFilter, AggrKey, AggrMode, CtxModifier, ItemAddRemoveReviser, Location, ModContext, ModifierKind,
+    RawModifier,
 };
 pub(crate) use modifier::{CalcCustomModifier, CalcOp};
 
