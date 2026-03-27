@@ -15,7 +15,6 @@ opt-level = 0
 opt-level = 3
 
 [profile.release-opt]
-debug = true
 inherits = "release"
 codegen-units = 1
 lto = "fat"
