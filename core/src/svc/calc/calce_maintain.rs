@@ -40,8 +40,12 @@ impl Calc {
         let cmods = self
             .revs
             .iter_revs_on_item_add_remove()
-            .filter(|(cmod, reviser)| reviser.revise(ctx, cmod.raw.affector_espec.item_uid, item_uid, item))
-            .map(|(cmod, _reviser)| *cmod)
+            .filter_map(
+                |(cmod, reviser)| match reviser.revise(ctx, cmod.raw.affector_espec.item_uid, item_uid, item) {
+                    true => Some(*cmod),
+                    false => None,
+                },
+            )
             .collect_vec();
         if !cmods.is_empty() {
             let mut reuse_items = Vec::new();
@@ -55,8 +59,12 @@ impl Calc {
         let cmods = self
             .revs
             .iter_revs_on_item_add_remove()
-            .filter(|(cmod, reviser)| reviser.revise(ctx, cmod.raw.affector_espec.item_uid, item_uid, item))
-            .map(|(cmod, _reviser)| *cmod)
+            .filter_map(
+                |(cmod, reviser)| match reviser.revise(ctx, cmod.raw.affector_espec.item_uid, item_uid, item) {
+                    true => Some(*cmod),
+                    false => None,
+                },
+            )
             .collect_vec();
         if !cmods.is_empty() {
             let mut reuse_items = Vec::new();
