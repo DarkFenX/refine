@@ -3,7 +3,7 @@ use crate::{
     nd::{NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter},
 };
 
-pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_opc_spec() -> NEffectProjOpcSpec<NGeneralOutputGetter> {
+pub(in crate::nd::effect::data) fn get_aoe_dd_side_neut_ospec() -> NEffectProjOpcSpec<NGeneralOutputGetter> {
     NEffectProjOpcSpec {
         base: NGeneralOutputGetter::NeutDdSideEffect,
         proj_mult_str: Some(NEffectProjMultGetter::AoeDdSideNeut),

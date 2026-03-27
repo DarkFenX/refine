@@ -9,8 +9,7 @@ use crate::{
     nd::{
         NDmgOutputGetter, NEffect, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
         effect::data::shared::{
-            base_opc::get_aoe_dd_side_neut_opc_spec, mod_proj_attrs::get_aoe_dd_mod_proj_attrs,
-            mods::make_dd_self_debuffs,
+            get_aoe_dd_side_neut_ospec, mod_proj_attrs::get_aoe_dd_mod_proj_attrs, mods::make_dd_self_debuffs,
         },
     },
 };
@@ -65,7 +64,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
             ..
         }),
-        neut_opc_spec: Some(get_aoe_dd_side_neut_opc_spec()),
+        neut_opc_spec: Some(get_aoe_dd_side_neut_ospec()),
         ..
     }
 }
