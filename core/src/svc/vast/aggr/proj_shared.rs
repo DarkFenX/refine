@@ -17,7 +17,6 @@ where
     T: Copy,
 {
     pub(super) base_output: Output<T>,
-    is_nulled: bool,
     pub(super) str_mult: PValue,
     instance_limit: Option<PValue>,
     pub(super) chance_mult: Option<PValue>,
@@ -57,17 +56,19 @@ where
                 .map(PValue::from_value_clamped);
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                str_mult *= proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
-            }
-            if str_mult == PValue::ZERO {
-                return Some(Self::make_nulled(base_output, instance_limit));
+                let proj_mult = proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                if proj_mult == PValue::ZERO {
+                    return None;
+                }
+                str_mult *= proj_mult;
             }
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                chance_mult *= proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
-            }
-            if chance_mult == PValue::ZERO {
-                return Some(Self::make_nulled(base_output, instance_limit));
+                let proj_mult = proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                if proj_mult == PValue::ZERO {
+                    return None;
+                }
+                chance_mult *= proj_mult;
             }
             // Resists
             if let Some(resist) = ospec.resist {
@@ -82,7 +83,7 @@ where
                     ),
                 };
                 match resist_mult {
-                    Some(PValue::ZERO) => return Some(Self::make_nulled(base_output, instance_limit)),
+                    Some(PValue::ZERO) => return None,
                     Some(resist_mult) => str_mult *= resist_mult,
                     None => (),
                 }
@@ -90,21 +91,10 @@ where
         }
         Some(Self {
             base_output,
-            is_nulled: false,
             str_mult,
             instance_limit,
             chance_mult: process_mult(chance_mult),
         })
-    }
-    fn make_nulled(mut base_output: Output<T>, instance_limit: Option<PValue>) -> Self {
-        base_output.instance_mul_assign(PValue::ZERO);
-        Self {
-            base_output,
-            is_nulled: true,
-            str_mult: PValue::ZERO,
-            instance_limit,
-            chance_mult: None,
-        }
     }
 }
 
