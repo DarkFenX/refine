@@ -3,7 +3,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_part_str_mult,
     },
     shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataRegular, AggrPartDataSpool},
-    traits::{InstanceDuration, InstanceLimit},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -32,7 +32,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, T>(
 ) -> Option<AggrIterData<T>>
 where
     BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
     let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {

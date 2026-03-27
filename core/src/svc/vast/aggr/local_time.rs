@@ -2,7 +2,7 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
     shared_time::{AggrPartDataTail, aggr_by_time},
-    traits::{InstanceDuration, InstanceLimit},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -32,7 +32,7 @@ pub(in crate::svc::vast) fn aggr_local_time<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {

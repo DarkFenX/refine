@@ -49,15 +49,15 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
 
 def run_server(*, proj_root: Path, config_path: Path, optimized: bool, cpu_affinity: list[int]) -> ServerInfo:
     binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'refine-http'
-    popen = subprocess.Popen([binary_path, config_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    popen = subprocess.Popen(['taskset', '-c', '0,1,2,3,4,5,6,7,8,9,10,11', 'perf', 'record', '--call-graph=dwarf', binary_path, config_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     if cpu_affinity:
-        psutil.Process(pid=popen.pid).cpu_affinity(cpus=cpu_affinity)
+        pass
     return ServerInfo(popen=popen)
 
 
 def kill_server(*, server_info: ServerInfo) -> None:
     server_info.popen.terminate()
-    server_info.popen.wait(timeout=2)
+    server_info.popen.wait(timeout=120)
 
 
 def get_profile_name(*, optimized: bool) -> str:

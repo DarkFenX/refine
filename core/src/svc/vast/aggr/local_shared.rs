@@ -1,4 +1,4 @@
-use super::traits::InstanceLimit;
+use super::traits::{HasImpact, InstanceLimit};
 use crate::{
     nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval},
@@ -19,7 +19,7 @@ where
 }
 impl<T> AggrLocalInvData<T>
 where
-    T: Copy,
+    T: Copy + HasImpact,
 {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
@@ -33,7 +33,7 @@ where
         BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     {
         let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
-        if output.get_instance_count() == Count::ZERO {
+        if !output.has_impact() || output.get_instance_count() == Count::ZERO {
             return None;
         }
         Some(AggrLocalInvData {

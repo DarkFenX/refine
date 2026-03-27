@@ -1,9 +1,10 @@
+use super::traits::{HasImpact, InstanceLimit};
 use crate::{
     misc::{AttrSpec, EffectSpec},
     nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::InstanceLimit},
+    svc::{SvcCtx, calc::Calc, funcs, output::Output},
     ud::UItemId,
 };
 
@@ -23,7 +24,7 @@ where
 }
 impl<T> AggrProjInvData<T>
 where
-    T: Copy + std::ops::MulAssign<PValue>,
+    T: Copy + std::ops::MulAssign<PValue> + HasImpact,
 {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
@@ -38,7 +39,7 @@ where
         BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     {
         let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
-        if base_output.get_instance_count() == Count::ZERO {
+        if !base_output.has_impact() || base_output.get_instance_count() == Count::ZERO {
             return None;
         }
         let mut str_mult = PValue::ONE;

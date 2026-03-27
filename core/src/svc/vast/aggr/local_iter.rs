@@ -1,7 +1,7 @@
 use super::{
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
     shared_iter::{AggrIterData, AggrIterDataRegular, AggrPartDataRegular},
-    traits::{InstanceDuration, InstanceLimit},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -28,7 +28,7 @@ pub(in crate::svc::vast) fn aggr_local_iter<BG, BX, T>(
 ) -> Option<AggrIterData<T>>
 where
     BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);

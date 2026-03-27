@@ -5,7 +5,7 @@ use super::{
         get_proj_spool_part_str_mult,
     },
     shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeats_count, process_incomplete_cycle},
-    traits::{InstanceDuration, InstanceLimit},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -36,7 +36,7 @@ pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {

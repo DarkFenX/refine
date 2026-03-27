@@ -1,4 +1,4 @@
-use super::{instance_duration::InstanceDuration, limit_amount::InstanceLimit};
+use super::{has_impact::HasImpact, instance_duration::InstanceDuration, limit_amount::InstanceLimit};
 use crate::{
     misc::DmgKinds,
     num::PValue,
@@ -8,6 +8,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HasImpact for DmgKinds<PValue> {
+    fn has_impact(&self) -> bool {
+        self.em != PValue::ZERO
+            || self.thermal != PValue::ZERO
+            || self.kinetic != PValue::ZERO
+            || self.explosive != PValue::ZERO
+    }
+}
 impl InstanceDuration for DmgKinds<PValue> {
     fn get_duration(&self) -> PValue {
         PValue::ZERO

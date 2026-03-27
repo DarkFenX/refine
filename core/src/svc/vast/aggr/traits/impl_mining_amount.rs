@@ -1,9 +1,14 @@
-use super::{instance_duration::InstanceDuration, limit_amount::InstanceLimit};
+use super::{has_impact::HasImpact, instance_duration::InstanceDuration, limit_amount::InstanceLimit};
 use crate::{misc::MiningAmount, num::PValue, util::LibDefault};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HasImpact for MiningAmount {
+    fn has_impact(&self) -> bool {
+        self.yield_ != PValue::ZERO || self.drain != PValue::ZERO
+    }
+}
 impl InstanceDuration for MiningAmount {
     fn get_duration(&self) -> PValue {
         PValue::ZERO

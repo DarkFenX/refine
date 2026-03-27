@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, get_local_output},
-    traits::InstanceLimit,
+    traits::{HasImpact, InstanceLimit},
 };
 use crate::{
     Count,
@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {

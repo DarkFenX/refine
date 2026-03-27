@@ -1,9 +1,17 @@
-use super::{instance_duration::InstanceDuration, limit_amount::InstanceLimit};
+use super::{has_impact::HasImpact, instance_duration::InstanceDuration, limit_amount::InstanceLimit};
 use crate::{misc::Ecm, num::PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HasImpact for Ecm {
+    fn has_impact(&self) -> bool {
+        self.radar != PValue::ZERO
+            || self.magnetometric != PValue::ZERO
+            || self.gravimetric != PValue::ZERO
+            || self.ladar != PValue::ZERO
+    }
+}
 impl InstanceDuration for Ecm {
     fn get_duration(&self) -> PValue {
         self.duration

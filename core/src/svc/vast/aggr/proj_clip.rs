@@ -4,7 +4,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, get_proj_regular_output, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
-    traits::InstanceLimit,
+    traits::{HasImpact, InstanceLimit},
 };
 use crate::{
     misc::InfCount,
@@ -34,7 +34,7 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {

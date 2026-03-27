@@ -1,9 +1,14 @@
-use super::{instance_duration::InstanceDuration, limit_amount::InstanceLimit};
+use super::{has_impact::HasImpact, instance_duration::InstanceDuration, limit_amount::InstanceLimit};
 use crate::{num::PValue, util::LibDefault};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HasImpact for PValue {
+    fn has_impact(&self) -> bool {
+        *self != PValue::ZERO
+    }
+}
 impl InstanceDuration for PValue {
     fn get_duration(&self) -> PValue {
         PValue::ZERO

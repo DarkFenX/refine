@@ -1,6 +1,8 @@
+pub(in crate::svc::vast) use has_impact::HasImpact;
 pub(in crate::svc::vast) use instance_duration::InstanceDuration;
 pub(in crate::svc::vast) use limit_amount::InstanceLimit;
 
+mod has_impact;
 mod impl_dmg_kinds;
 mod impl_ecm;
 mod impl_mining_amount;
