@@ -1,6 +1,6 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
-    misc::{AttrSpec, Ecm, EffectSpec},
+    misc::{AttrSpec, EffectSpec},
     nd::{
         NEffectBreacherOutputGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter, NEffectGeneralOutputGetter,
         NEffectMiningOutputGetter,
