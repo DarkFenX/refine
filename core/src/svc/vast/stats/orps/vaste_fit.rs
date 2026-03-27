@@ -1,6 +1,6 @@
 use super::stat::StatOutReps;
 use crate::{
-    nd::NGeneralOutputGetter,
+    nd::NEffectGeneralOutputGetter,
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -61,7 +61,7 @@ fn get_orps(
     item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,
     projectee_uid: Option<UItemId>,
-    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
 ) -> PValue {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);

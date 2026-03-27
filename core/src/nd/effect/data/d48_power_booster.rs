@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectLocalOpcSpec,
-        NGeneralOutputGetter,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffectGeneralOutputGetter, NEffectLocalOpcSpec,
     },
 };
 
@@ -19,7 +19,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         cap_inject_opc_spec: Some(NEffectLocalOpcSpec {
-            base: NGeneralOutputGetter::PowerBooster,
+            base: NEffectGeneralOutputGetter::PowerBooster,
             limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),

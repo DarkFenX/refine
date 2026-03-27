@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{PValue, UnitInterval, Value},
     rd::RItemCapConsumer,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},

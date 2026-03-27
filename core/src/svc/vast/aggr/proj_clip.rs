@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{
     misc::InfCount,
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{Count, PValue},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -33,7 +33,7 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -61,7 +61,7 @@ fn aggr_spool<BG, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -133,7 +133,7 @@ fn aggr_regular<BG, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

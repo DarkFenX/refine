@@ -1,7 +1,7 @@
 use super::stat::StatMining;
 use crate::{
     misc::MiningAmount,
-    nd::{NMiningOutputGetter, NMiningXargs},
+    nd::{NEffectMiningOutputGetter, NEffectMiningXargs},
     num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -28,7 +28,7 @@ impl Vast {
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_uid)?;
-        let base_xargs = NMiningXargs { mission_ore };
+        let base_xargs = NEffectMiningXargs { mission_ore };
         let mps = StatMining {
             ore: get_mps_item_uid(
                 ctx,
@@ -67,12 +67,12 @@ fn get_mps_item_uid<F>(
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,
-    base_xargs: NMiningXargs,
+    base_xargs: NEffectMiningXargs,
     ignore_state: bool,
     mining_ospec_getter: F,
 ) -> MiningAmount
 where
-    F: Fn(&REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>>,
+    F: Fn(&REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>>,
 {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -113,14 +113,14 @@ where
     mps
 }
 
-fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>> {
+fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {
     effect.mining_ore_opc_spec.as_ref()
 }
 
-fn get_getter_ice(effect: &REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>> {
+fn get_getter_ice(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {
     effect.mining_ice_opc_spec.as_ref()
 }
 
-fn get_getter_gas(effect: &REffect) -> Option<&REffectProjOpcSpec<NMiningOutputGetter>> {
+fn get_getter_gas(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {
     effect.mining_gas_opc_spec.as_ref()
 }

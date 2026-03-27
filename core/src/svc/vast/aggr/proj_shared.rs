@@ -1,6 +1,6 @@
 use crate::{
     misc::{AttrSpec, EffectSpec},
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
     svc::{SvcCtx, calc::Calc, funcs, output::Output, vast::aggr::traits::InstanceLimit},
@@ -35,7 +35,7 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
-        BG: NOutputGetter<Instance = T, Xargs = BX>,
+        BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     {
         let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
         if base_output.get_instance_count() == Count::ZERO {
@@ -125,7 +125,7 @@ impl AggrSpoolInvData {
         ospec: &REffectProjOpcSpec<BG>,
     ) -> Option<Self>
     where
-        BG: NOutputGetter,
+        BG: NEffectOutputGetter,
     {
         if !ospec.spoolable {
             return None;
@@ -159,7 +159,7 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'sc1, 'sc2>,
@@ -170,7 +170,7 @@ where
 }
 impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) fn new(
@@ -202,7 +202,7 @@ pub(super) fn get_proj_regular_output<BG, T>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
@@ -233,7 +233,7 @@ pub(super) fn get_proj_spool_part_str_mult<BG, T>(
     chargedness: Option<UnitInterval>,
 ) -> PValue
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     let mut str_mult = inv_proj.str_mult;

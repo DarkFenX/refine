@@ -1,7 +1,7 @@
 use super::{option::StatMiningItemKinds, stat::StatMining};
 use crate::{
     misc::MiningAmount,
-    nd::{NMiningOutputGetter, NMiningXargs},
+    nd::{NEffectMiningOutputGetter, NEffectMiningXargs},
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -27,7 +27,7 @@ impl Vast {
         time_options: StatTimeOptions,
         mission_ore: bool,
     ) -> StatMining {
-        let base_xargs = NMiningXargs { mission_ore };
+        let base_xargs = NEffectMiningXargs { mission_ore };
         fit_uids
             .map(|fit_uid| StatMining {
                 ore: get_mps(
@@ -67,7 +67,7 @@ impl Vast {
         mission_ore: bool,
     ) -> StatMining {
         let fit_data = self.get_fit_data(&fit_uid);
-        let base_xargs = NMiningXargs { mission_ore };
+        let base_xargs = NEffectMiningXargs { mission_ore };
         StatMining {
             ore: get_mps(ctx, calc, item_kinds, time_options, base_xargs, &fit_data.mining_ore),
             ice: get_mps(ctx, calc, item_kinds, time_options, base_xargs, &fit_data.mining_ice),
@@ -81,8 +81,8 @@ fn get_mps(
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,
-    base_xargs: NMiningXargs,
-    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NMiningOutputGetter>>,
+    base_xargs: NEffectMiningXargs,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectMiningOutputGetter>>,
 ) -> MiningAmount {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);

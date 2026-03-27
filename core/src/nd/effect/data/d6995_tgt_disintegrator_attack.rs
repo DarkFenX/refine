@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NDmgOutputGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectSpoolAttrs,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKindGetter,
+        NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectSpoolAttrs,
     },
 };
 
@@ -24,7 +24,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Turret),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: NDmgOutputGetter::MultCharge,
+            base: NEffectDmgOutputGetter::MultCharge,
             spoolable: true,
             proj_mult_str: Some(NEffectProjMultGetter::Disintegrator),
             ..

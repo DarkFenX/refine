@@ -5,7 +5,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_local_time<BG, BX, T, A>(
     time: PValue,
 ) -> bool
 where
-    BG: NOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -51,7 +51,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {

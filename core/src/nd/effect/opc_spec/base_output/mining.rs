@@ -1,6 +1,6 @@
 use crate::{
     misc::MiningAmount,
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -13,12 +13,12 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) struct NMiningXargs {
+pub(crate) struct NEffectMiningXargs {
     pub(crate) mission_ore: bool,
 }
 
 #[derive(Copy, Clone)]
-pub(crate) enum NMiningOutputGetter {
+pub(crate) enum NEffectMiningOutputGetter {
     Regular,
     // Variants specific to a single effect
     MiningOre,
@@ -26,9 +26,9 @@ pub(crate) enum NMiningOutputGetter {
     MiningLaserOre,
     MiningLaserIce,
 }
-impl NOutputGetter for NMiningOutputGetter {
+impl NEffectOutputGetter for NEffectMiningOutputGetter {
     type Instance = MiningAmount;
-    type Xargs = NMiningXargs;
+    type Xargs = NEffectMiningXargs;
 
     fn get(
         &self,
@@ -57,7 +57,7 @@ fn get_regular(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    xargs: NMiningXargs,
+    xargs: NEffectMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, xargs)?;
     Some(Output::Simple(OutputSimple {
@@ -71,7 +71,7 @@ fn get_crit(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    xargs: NMiningXargs,
+    xargs: NEffectMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, xargs)?;
     let attr_consts = ctx.ac();
@@ -100,7 +100,7 @@ fn get_mining_ore(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    xargs: NMiningXargs,
+    xargs: NEffectMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if item.is_ice_harvester() {
@@ -114,7 +114,7 @@ fn get_mining_ice(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    xargs: NMiningXargs,
+    xargs: NEffectMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if !item.is_ice_harvester() {
@@ -128,7 +128,7 @@ fn get_crit_hybrid_ore(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    base_xargs: NMiningXargs,
+    base_xargs: NEffectMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if item.is_ice_harvester() {
@@ -142,7 +142,7 @@ fn get_crit_hybrid_ice(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    base_xargs: NMiningXargs,
+    base_xargs: NEffectMiningXargs,
 ) -> Option<Output<MiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if !item.is_ice_harvester() {
@@ -156,7 +156,7 @@ fn get_mining_values(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    xargs: NMiningXargs,
+    xargs: NEffectMiningXargs,
 ) -> Option<(PValue, PValue, PValue)> {
     let delay = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let yield_ = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(

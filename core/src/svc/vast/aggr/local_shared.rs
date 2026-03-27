@@ -1,6 +1,6 @@
 use super::traits::InstanceLimit;
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval},
     rd::{RAttrId, REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
@@ -30,7 +30,7 @@ where
         base_xargs: BX,
     ) -> Option<Self>
     where
-        BG: NOutputGetter<Instance = T, Xargs = BX>,
+        BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     {
         let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
         if output.get_instance_count() == Count::ZERO {
@@ -56,7 +56,7 @@ fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: Opt
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'u, 'p>,
@@ -67,7 +67,7 @@ where
 }
 impl<'u, 'p, 'c, 'o, 'i, BG, T> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) fn new(
@@ -99,7 +99,7 @@ pub(super) fn get_local_output<BG, T>(
     chargeness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_local.output;

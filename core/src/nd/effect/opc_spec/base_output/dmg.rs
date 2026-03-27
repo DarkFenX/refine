@@ -1,6 +1,6 @@
 use crate::{
     misc::DmgKinds,
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{Count, PValue, Value},
     rd::REffect,
     svc::{
@@ -12,7 +12,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NDmgOutputGetter {
+pub(crate) enum NEffectDmgOutputGetter {
     Regular,
     MultCharge,
     Delay1,
@@ -21,7 +21,7 @@ pub(crate) enum NDmgOutputGetter {
     // Variants specific to a single effect
     TargetAttack,
 }
-impl NOutputGetter for NDmgOutputGetter {
+impl NEffectOutputGetter for NEffectDmgOutputGetter {
     type Instance = DmgKinds<PValue>;
     type Xargs = ();
 

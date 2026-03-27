@@ -1,12 +1,12 @@
 use crate::ad::{AAttrId, AEffect};
 
-pub(crate) enum NModProjAttrsGetter {
+pub(crate) enum NEffectModProjAttrsGetter {
     Simple,
     Full,
     AoeDd,
     AoeBurst,
 }
-impl NModProjAttrsGetter {
+impl NEffectModProjAttrsGetter {
     pub(crate) fn get(&self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
         match self {
             Self::Simple => [a_effect.range_attr_id, None],

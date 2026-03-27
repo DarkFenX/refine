@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NDmgOutputGetter, NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKindGetter, NEffectProjMultGetter,
+        NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjMultGetter,
         NEffectProjOpcSpec,
     },
 };
@@ -25,7 +25,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         dmg_kind_getter: Some(NEffectDmgKindGetter::Turret),
         normal_dmg_opc_spec: Some(NEffectProjOpcSpec {
-            base: NDmgOutputGetter::TargetAttack,
+            base: NEffectDmgOutputGetter::TargetAttack,
             proj_mult_str: Some(NEffectProjMultGetter::Turret),
             ..
         }),

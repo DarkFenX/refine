@@ -1,6 +1,6 @@
 use crate::{
     misc::Breacher,
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
@@ -12,10 +12,10 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NBreacherOutputGetter {
+pub(crate) enum NEffectBreacherOutputGetter {
     Regular,
 }
-impl NOutputGetter for NBreacherOutputGetter {
+impl NEffectOutputGetter for NEffectBreacherOutputGetter {
     type Instance = Breacher;
     type Xargs = ();
 

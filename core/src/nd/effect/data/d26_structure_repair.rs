@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{NEffect, NEffectLocalOpcSpec, NGeneralOutputGetter},
+    nd::{NEffect, NEffectGeneralOutputGetter, NEffectLocalOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::STRUCTURE_REPAIR;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         local_hull_rep_opc_spec: Some(NEffectLocalOpcSpec {
-            base: NGeneralOutputGetter::RepHull,
+            base: NEffectGeneralOutputGetter::RepHull,
             limit_attr_id: Some(AAttrId::HP),
             ..
         }),

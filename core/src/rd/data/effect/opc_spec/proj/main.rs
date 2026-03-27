@@ -1,6 +1,6 @@
 use crate::{
     ad::AAttrId,
-    nd::{NChargeMultGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NOutputGetter},
+    nd::{NEffectChargeMultGetter, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
     rd::{RAttrId, REffectResist},
     util::RMap,
 };
@@ -8,10 +8,10 @@ use crate::{
 #[derive(Copy, Clone)]
 pub(crate) struct REffectProjOpcSpec<BG>
 where
-    BG: NOutputGetter,
+    BG: NEffectOutputGetter,
 {
     pub(crate) base: BG,
-    pub(crate) charge_mult: Option<NChargeMultGetter>,
+    pub(crate) charge_mult: Option<NEffectChargeMultGetter>,
     pub(crate) spoolable: bool,
     pub(crate) proj_mult_str: Option<NEffectProjMultGetter>,
     pub(crate) proj_mult_chance: Option<NEffectProjMultGetter>,
@@ -20,7 +20,7 @@ where
 }
 impl<BG> REffectProjOpcSpec<BG>
 where
-    BG: NOutputGetter + Copy,
+    BG: NEffectOutputGetter + Copy,
 {
     pub(in crate::rd::data::effect) fn from_n_proj_opc_spec(
         n_proj_opc_spec: &NEffectProjOpcSpec<BG>,

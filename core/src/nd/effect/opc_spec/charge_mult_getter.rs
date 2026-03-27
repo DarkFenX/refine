@@ -6,11 +6,11 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NChargeMultGetter {
+pub(crate) enum NEffectChargeMultGetter {
     AsbCap,
     AarRep,
 }
-impl NChargeMultGetter {
+impl NEffectChargeMultGetter {
     pub(crate) fn get(
         &self,
         ctx: SvcCtx,

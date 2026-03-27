@@ -4,7 +4,7 @@ use crate::{
         AOp,
     },
     ed::EEffectId,
-    nd::{NEffect, NEffectProjMultGetter, NModProjAttrsGetter},
+    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_TRACKING_COMPUTER;
@@ -15,7 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
-        modifier_proj_attrs_getter: Some(NModProjAttrsGetter::Full),
+        modifier_proj_attrs_getter: Some(NEffectModProjAttrsGetter::Full),
         modifier_proj_mult_getter: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
         ..
     }

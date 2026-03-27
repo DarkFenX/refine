@@ -4,7 +4,7 @@ use crate::{
     ud::UItemId,
 };
 
-pub(crate) trait NOutputGetter {
+pub(crate) trait NEffectOutputGetter {
     type Instance: Copy;
     type Xargs;
 

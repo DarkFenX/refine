@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NChargeMultGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NGeneralOutputGetter,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffectChargeMultGetter, NEffectGeneralOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
     },
 };
 
@@ -21,8 +21,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         outgoing_armor_rep_opc_spec: Some(NEffectProjOpcSpec {
-            base: NGeneralOutputGetter::RepArmor,
-            charge_mult: Some(NChargeMultGetter::AarRep),
+            base: NEffectGeneralOutputGetter::RepArmor,
+            charge_mult: Some(NEffectChargeMultGetter::AarRep),
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
             resist: Some(NEffectResist::Standard),
             limit_attr_id: Some(AAttrId::ARMOR_HP),

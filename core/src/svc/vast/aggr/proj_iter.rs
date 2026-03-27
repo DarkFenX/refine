@@ -6,7 +6,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, T>(
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrIterData<T>>
 where
-    BG: NOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
@@ -54,7 +54,7 @@ fn aggr_regular<BG, T>(
     inv_proj: AggrProjInvData<T>,
 ) -> AggrIterData<T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
@@ -64,7 +64,7 @@ where
 
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<T> {
@@ -96,7 +96,7 @@ fn aggr_spool<BG, T>(
     inv_spool: AggrSpoolInvData,
 ) -> AggrIterData<T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let mut converter = ProjConverterSpool::new(ctx, calc, projector_uid, ospec, &inv_proj, &inv_spool);
@@ -106,7 +106,7 @@ where
 
 struct ProjConverterSpool<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     ctx: SvcCtx<'sc1, 'sc2>,
@@ -118,7 +118,7 @@ where
 }
 impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, T> ProjConverterSpool<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy,
 {
     pub(super) fn new(
@@ -141,7 +141,7 @@ where
 }
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataSpool<T>> for ProjConverterSpool<'_, '_, '_, '_, '_, '_, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool<T> {

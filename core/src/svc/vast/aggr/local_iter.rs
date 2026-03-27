@@ -4,7 +4,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -27,7 +27,7 @@ pub(in crate::svc::vast) fn aggr_local_iter<BG, BX, T>(
     base_xargs: BX,
 ) -> Option<AggrIterData<T>>
 where
-    BG: NOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;
@@ -41,7 +41,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<T> {

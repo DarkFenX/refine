@@ -7,11 +7,11 @@
 pub(crate) use attr::{N_ATTR_MAP, NAttr};
 pub(crate) use buff::{N_BUFF_MAP, NBuff};
 pub(crate) use effect::{
-    N_EFFECT_MAP, NBreacherOutputGetter, NChargeMultGetter, NDmgOutputGetter, NEcmOutputGetter, NEffect,
-    NEffectCalcCustomizer, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal,
-    NEffectChargeLoc, NEffectDmgKind, NEffectDmgKindGetter, NEffectLocalOpcSpec, NEffectProjMultGetter,
-    NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs, NGeneralOutputGetter,
-    NMiningOutputGetter, NMiningXargs, NModProjAttrsGetter, NOutputGetter,
+    N_EFFECT_MAP, NEffect, NEffectBreacherOutputGetter, NEffectCalcCustomizer, NEffectCharge, NEffectChargeDepl,
+    NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectChargeMultGetter, NEffectDmgKind,
+    NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter, NEffectGeneralOutputGetter,
+    NEffectLocalOpcSpec, NEffectMiningOutputGetter, NEffectMiningXargs, NEffectModProjAttrsGetter, NEffectOutputGetter,
+    NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 

@@ -2,8 +2,8 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NChargeMultGetter, NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
-        NEffectLocalOpcSpec, NGeneralOutputGetter,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
+        NEffectChargeMultGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec,
     },
 };
 
@@ -21,13 +21,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             activates_charge: false,
         }),
         local_shield_rep_opc_spec: Some(NEffectLocalOpcSpec {
-            base: NGeneralOutputGetter::RepShield,
+            base: NEffectGeneralOutputGetter::RepShield,
             limit_attr_id: Some(AAttrId::SHIELD_CAPACITY),
             ..
         }),
         cap_consume_opc_spec: Some(NEffectLocalOpcSpec {
-            base: NGeneralOutputGetter::CapConsumer,
-            charge_mult: Some(NChargeMultGetter::AsbCap),
+            base: NEffectGeneralOutputGetter::CapConsumer,
+            charge_mult: Some(NEffectChargeMultGetter::AsbCap),
             ..
         }),
         ..

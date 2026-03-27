@@ -6,7 +6,7 @@ use super::{
 use crate::{
     Count,
     misc::InfCount,
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
@@ -30,7 +30,7 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

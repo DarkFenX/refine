@@ -1,6 +1,6 @@
 use crate::{
     misc::Ecm,
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{PValue, Value},
     rd::REffect,
     svc::{
@@ -12,14 +12,14 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NEcmOutputGetter {
+pub(crate) enum NEffectEcmOutputGetter {
     Direct,
     Burst,
     Aoe,
     Bomb,
     Entity,
 }
-impl NOutputGetter for NEcmOutputGetter {
+impl NEffectOutputGetter for NEffectEcmOutputGetter {
     type Instance = Ecm;
     type Xargs = ();
 

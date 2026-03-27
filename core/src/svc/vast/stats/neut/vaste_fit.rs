@@ -1,5 +1,5 @@
 use crate::{
-    nd::NGeneralOutputGetter,
+    nd::NEffectGeneralOutputGetter,
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -58,7 +58,7 @@ fn get_nps(
     item_kinds: StatNeutItemKinds,
     time_options: StatTimeOptions,
     projectee_item_uid: Option<UItemId>,
-    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NGeneralOutputGetter>>,
+    fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
 ) -> PValue {
     let mut nps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);

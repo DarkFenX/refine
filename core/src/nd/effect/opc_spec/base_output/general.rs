@@ -1,5 +1,5 @@
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{PValue, Value},
     rd::{RAttrId, REffect},
     svc::{
@@ -14,7 +14,7 @@ use crate::{
 // To avoid excessive monomorphization, all the getters which produce PValue are aggregated into
 // single enum
 #[derive(Copy, Clone)]
-pub(crate) enum NGeneralOutputGetter {
+pub(crate) enum NEffectGeneralOutputGetter {
     CapConsumer,
     RepShield,
     RepArmor,
@@ -28,7 +28,7 @@ pub(crate) enum NGeneralOutputGetter {
     // Variants specific to a single effect
     PowerBooster,
 }
-impl NOutputGetter for NGeneralOutputGetter {
+impl NEffectOutputGetter for NEffectGeneralOutputGetter {
     type Instance = PValue;
     type Xargs = ();
 

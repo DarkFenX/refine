@@ -8,7 +8,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
-    nd::NOutputGetter,
+    nd::NEffectOutputGetter,
     num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -35,7 +35,7 @@ pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, T, A>(
     time: PValue,
 ) -> bool
 where
-    BG: NOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -83,7 +83,7 @@ fn aggr_regular<BG, T, A>(
     accum: &mut A,
     time: PValue,
 ) where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -94,7 +94,7 @@ fn aggr_regular<BG, T, A>(
 
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
@@ -128,7 +128,7 @@ fn aggr_spool<BG, T, A>(
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
 ) where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -353,7 +353,7 @@ fn process_single_spool<BG, T, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -395,7 +395,7 @@ fn process_limited_spool<BG, T, A>(
     uninterrupted_cycles: &mut Count,
     mut repeat_limit: Count,
 ) where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -483,7 +483,7 @@ fn process_infinite_spool<BG, T, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
-    BG: NOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter<Instance = T>,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

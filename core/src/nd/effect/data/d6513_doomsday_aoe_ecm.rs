@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEcmOutputGetter, NEffect, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffect, NEffectEcmOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_ECM;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         ecm_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEcmOutputGetter::Aoe,
+            base: NEffectEcmOutputGetter::Aoe,
             proj_mult_str: Some(NEffectProjMultGetter::AoeBurstRange),
             resist: Some(NEffectResist::Standard),
             ..

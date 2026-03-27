@@ -1,6 +1,6 @@
 use crate::{
     ad::AAttrId,
-    nd::{NChargeMultGetter, NEffectLocalOpcSpec, NOutputGetter},
+    nd::{NEffectChargeMultGetter, NEffectLocalOpcSpec, NEffectOutputGetter},
     rd::RAttrId,
     util::RMap,
 };
@@ -8,15 +8,15 @@ use crate::{
 #[derive(Copy, Clone)]
 pub(crate) struct REffectLocalOpcSpec<BG>
 where
-    BG: NOutputGetter,
+    BG: NEffectOutputGetter,
 {
     pub(crate) base: BG,
-    pub(crate) charge_mult: Option<NChargeMultGetter>,
+    pub(crate) charge_mult: Option<NEffectChargeMultGetter>,
     pub(crate) limit_attr_rid: Option<RAttrId>,
 }
 impl<BG> REffectLocalOpcSpec<BG>
 where
-    BG: NOutputGetter + Copy,
+    BG: NEffectOutputGetter + Copy,
 {
     pub(in crate::rd::data::effect) fn from_n_local_opc_spec(
         n_local_opc_spec: &NEffectLocalOpcSpec<BG>,
