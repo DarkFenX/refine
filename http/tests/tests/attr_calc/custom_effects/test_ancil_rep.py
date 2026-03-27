@@ -151,18 +151,15 @@ def test_mult_change(client, consts):
         rack=consts.ApiRack.low,
         charge_type_id=eve_paste_item_id)
     # Verification
-    api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].modified == approx(300)
+    assert api_aar_item.update().attrs[eve_aar_affectee_attr_id].modified == approx(300)
     # Action
     api_mod_item = api_fit.add_rig(type_id=eve_mod_item_id)
     # Verification
-    api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].modified == approx(375)
+    assert api_aar_item.update().attrs[eve_aar_affectee_attr_id].modified == approx(375)
     # Action
     api_mod_item.remove()
     # Verification
-    api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr_id].modified == approx(300)
+    assert api_aar_item.update().attrs[eve_aar_affectee_attr_id].modified == approx(300)
 
 
 def test_penalties(client, consts):

@@ -3,11 +3,11 @@ use crate::{
     rd::RBuff,
 };
 
-pub(crate) type AggrKey = ABuffId;
+pub(in crate::svc::calc) type AggrKey = ABuffId;
 
 // Defines how a modification will be aggregated.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum AggrMode {
+pub(in crate::svc::calc) enum AggrMode {
     // All modifications are applied.
     Stack,
     // Min value will be used, from values with provided key.

@@ -1,13 +1,14 @@
-pub(crate) use affectee_filter::AffecteeFilter;
-pub(crate) use affector_val::AffectorValue;
-pub(crate) use aggr_mode::{AggrKey, AggrMode};
+pub(in crate::svc::calc) use affectee_filter::AffecteeFilter;
+use affector_val::AffectorValue;
+pub(in crate::svc::calc) use aggr_mode::{AggrKey, AggrMode};
 pub(in crate::svc::calc) use context::ModContext;
 pub(in crate::svc::calc) use ctx::CtxModifier;
-pub(crate) use custom::{CustomAffectorValue, CustomAffectorValueKind, ItemAddReviser, ItemRemoveReviser};
-pub(crate) use kind::ModifierKind;
-pub(crate) use location::Location;
+pub(crate) use custom::CalcCustomModifier;
+pub(in crate::svc::calc) use custom::CustomModReviser;
+pub(in crate::svc::calc) use kind::ModifierKind;
+pub(in crate::svc::calc) use location::Location;
 pub(crate) use op::CalcOp;
-pub(crate) use raw::RawModifier;
+pub(in crate::svc::calc) use raw::RawModifier;
 
 mod affectee_filter;
 mod affector_val;

@@ -9,7 +9,7 @@ pub(crate) struct Calc {
     pub(in crate::svc::calc) attrs: AttrValData,
     pub(in crate::svc::calc) std: StandardRegister,
     pub(in crate::svc::calc) buffs: BuffRegister,
-    pub(crate) deps: DependencyRegister,
+    pub(in crate::svc::calc) deps: DependencyRegister,
     pub(in crate::svc::calc) revs: RevisionRegister,
     pub(in crate::svc::calc) rah: RahSim,
 }

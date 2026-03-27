@@ -3,7 +3,7 @@ pub(crate) use charge::{
 };
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
-pub(crate) use effect::{NEffect, NEffectCalcCustomizer};
+pub(crate) use effect::NEffect;
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
 pub(crate) use opc_spec::{
     NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter,

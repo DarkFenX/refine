@@ -1,15 +1,13 @@
 use crate::{
     ad::{AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
-    misc::EffectSpec,
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter,
         NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningOutputGetter,
         NEffectModProjAttrsGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
         NEffectSpoolAttrs,
     },
-    rd::RAttrConsts,
-    svc::calc::RawModifier,
+    svc::calc::CalcCustomModifier,
     util::RMap,
 };
 
@@ -17,8 +15,6 @@ use crate::{
 pub(crate) type NEffectMaker = fn() -> AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
-// General
-pub(crate) type NEffectCalcCustomizer = fn(&mut Vec<RawModifier>, &RAttrConsts, EffectSpec);
 
 pub(crate) struct NEffect {
     // EVE data effect ID. Not all effects have it, since some are added via other means
@@ -36,8 +32,8 @@ pub(crate) struct NEffect {
     pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) kills_item: bool = false,
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
-    // Effect modifier customization function ran during runtime in calculator service
-    pub(crate) calc_customizer: Option<NEffectCalcCustomizer> = None,
+    // Effect modifier customization ran during runtime in calculator service
+    pub(crate) calc_custom_mod: Option<CalcCustomModifier> = None,
     // Getters/specs - modifier projection
     pub(crate) modifier_proj_attrs_getter: Option<NEffectModProjAttrsGetter> = None,
     pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter> = None,

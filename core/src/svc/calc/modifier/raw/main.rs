@@ -11,8 +11,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, Affector, AffectorValue, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser,
-            Location, ModifierKind,
+            AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddReviser, ItemRemoveReviser, Location,
+            ModifierKind, modifier::AffectorValue,
         },
         funcs,
     },
@@ -20,20 +20,20 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) struct RawModifier {
-    pub(crate) kind: ModifierKind,
-    pub(crate) affector_espec: EffectSpec,
-    pub(crate) affector_value: AffectorValue,
-    pub(crate) op: CalcOp,
-    pub(crate) aggr_mode: AggrMode,
-    pub(crate) affectee_filter: AffecteeFilter,
-    pub(crate) affectee_attr_rid: RAttrId,
+pub(in crate::svc::calc) struct RawModifier {
+    pub(in crate::svc::calc) kind: ModifierKind,
+    pub(in crate::svc::calc) affector_espec: EffectSpec,
+    pub(in crate::svc::calc::modifier) affector_value: AffectorValue,
+    pub(in crate::svc::calc) op: CalcOp,
+    pub(in crate::svc::calc) aggr_mode: AggrMode,
+    pub(in crate::svc::calc) affectee_filter: AffecteeFilter,
+    pub(in crate::svc::calc) affectee_attr_rid: RAttrId,
     // Buff-related
-    pub(crate) buff_type_attr_rid: Option<RAttrId> = None,
+    pub(in crate::svc::calc) buff_type_attr_rid: Option<RAttrId> = None,
     // Projection-related
-    pub(crate) proj_mult_getter: Option<NEffectProjMultGetter> = None,
-    pub(crate) proj_attr_rids: [Option<RAttrId>; 2] = [None, None],
-    pub(crate) resist_attr_rid: Option<RAttrId> = None,
+    pub(in crate::svc::calc) proj_mult_getter: Option<NEffectProjMultGetter> = None,
+    pub(in crate::svc::calc) proj_attr_rids: [Option<RAttrId>; 2] = [None, None],
+    pub(in crate::svc::calc) resist_attr_rid: Option<RAttrId> = None,
 }
 impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {

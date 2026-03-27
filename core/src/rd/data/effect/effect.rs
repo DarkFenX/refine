@@ -1,13 +1,14 @@
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
-        N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectCalcCustomizer, NEffectDmgKindGetter, NEffectDmgOutputGetter,
+        N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
         NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectMiningOutputGetter, NEffectProjMultGetter,
     },
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
         REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
     },
+    svc::calc::CalcCustomModifier,
     util::RMap,
 };
 
@@ -33,7 +34,7 @@ pub(crate) struct REffect {
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
-    pub(crate) calc_customizer: Option<NEffectCalcCustomizer>,
+    pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
     // References to attributes which are used to describe some effect properties
     pub(crate) discharge_attr_rid: Option<RAttrId>,
     pub(crate) duration_attr_rid: Option<RAttrId>,
@@ -80,7 +81,7 @@ impl REffect {
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
-            calc_customizer: n_effect.and_then(|n| n.calc_customizer),
+            calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
             modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
             dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
             // Fields which depend on data not available during instantiation

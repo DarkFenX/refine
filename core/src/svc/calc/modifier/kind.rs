@@ -1,5 +1,5 @@
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum ModifierKind {
+pub(in crate::svc::calc) enum ModifierKind {
     Local,
     Buff,
     FleetBuff,

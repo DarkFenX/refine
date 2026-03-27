@@ -1,5 +1,6 @@
 use smallvec::{SmallVec, smallvec};
 
+use super::custom::CalcCustomAffectorValue;
 use crate::{
     api::AttrId,
     misc::EffectSpec,
@@ -7,16 +8,16 @@ use crate::{
     rd::RAttrId,
     svc::{
         SvcCtx,
-        calc::{Affector, Calc, CustomAffectorValue, ItemAddReviser, ItemRemoveReviser},
+        calc::{Affector, Calc, CustomModReviser},
     },
     ud::UItemId,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum AffectorValue {
+pub(super) enum AffectorValue {
     Attr(RAttrId),
     Hardcoded(Value),
-    Custom(CustomAffectorValue),
+    Custom(CalcCustomAffectorValue),
 }
 impl AffectorValue {
     // Simple and fast way to get affector attribute. Variants which have actual affector attributes
@@ -51,14 +52,14 @@ impl AffectorValue {
         }
     }
     // Revision methods - define if modification value can change upon some action
-    pub(super) fn get_item_add_reviser(&self) -> Option<ItemAddReviser> {
+    pub(super) fn get_item_add_reviser(&self) -> Option<CustomModReviser> {
         match self {
             Self::Attr(_) => None,
             Self::Hardcoded(_) => None,
             Self::Custom(custom) => custom.item_add_reviser,
         }
     }
-    pub(super) fn get_item_remove_reviser(&self) -> Option<ItemRemoveReviser> {
+    pub(super) fn get_item_remove_reviser(&self) -> Option<CustomModReviser> {
         match self {
             Self::Attr(_) => None,
             Self::Hardcoded(_) => None,

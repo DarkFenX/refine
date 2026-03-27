@@ -5,6 +5,12 @@ use crate::{
 };
 
 impl UData {
+    pub(crate) fn get_item_fit_ship_uid(&self, item_uid: UItemId) -> Option<UItemId> {
+        let item = self.items.get(item_uid);
+        let fit_uid = item.get_fit_uid()?;
+        let fit = self.fits.get(fit_uid);
+        fit.ship
+    }
     pub(crate) fn get_fit_uid_rah_incoming_dps(&self, fit_uid: UFitId) -> DpsProfile {
         let fit = self.fits.get(fit_uid);
         self.get_fit_rah_incoming_dps(fit)

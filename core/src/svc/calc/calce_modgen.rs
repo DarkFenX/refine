@@ -84,8 +84,8 @@ impl Calc {
             }
         }
         // Custom modifiers
-        if let Some(customizer) = effect.calc_customizer {
-            customizer(
+        if let Some(custom_mod) = effect.calc_custom_mod {
+            custom_mod.add(
                 reuse_rmods,
                 ctx.u_data.src.get_attr_consts(),
                 EffectSpec::new(item_uid, effect.rid),

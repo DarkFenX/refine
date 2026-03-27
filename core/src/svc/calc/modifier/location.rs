@@ -1,7 +1,7 @@
 use crate::{ad::AEffectLocation, rd::RItemListId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum Location {
+pub(in crate::svc::calc) enum Location {
     Ship,
     Structure,
     Char,
