@@ -427,6 +427,9 @@ class EveAttr(IntEnum):
     ftr_sq_is_support = 2213
     ftr_sq_is_heavy = 2214
     ftr_sq_max_size = 2215
+    doomsday_energy_neut_radius = 2259
+    doomsday_energy_neut_amount = 2260
+    doomsday_energy_neut_sig_radius = 2261
     doomsday_warning_duration = 2262
     doomsday_dmg_duration = 2264
     doomsday_dmg_cycle_time = 2265
@@ -467,6 +470,7 @@ class EveAttr(IntEnum):
     warfare_buff_4_id = 2536
     warfare_buff_4_value = 2537
     online_max_security_class = 2581
+    doomsday_energy_neut_resist_id = 2609
     pilot_security_status = 2610
     max_fof_target_range = 2700
     dmg_mult_bonus_per_cycle = 2733
