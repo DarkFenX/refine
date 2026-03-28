@@ -13,8 +13,7 @@ from fw.api import (
     StatCapSrcKinds,
     StatsOptionCapBalance,
     StatsOptionCapSim,
-    StatsOptionFitDps,
-    StatsOptionFitVolley,
+    StatsOptionFitDmg,
     ValOptions,
 )
 
@@ -362,15 +361,13 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
     api_tgt_fit.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 AB
 
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)]),
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]),
         cap_balance=(True, [
             StatsOptionCapBalance(),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_injectors=True)),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))]),
         cap_sim=(True, [StatsOptionCapSim(cap_perc=1)])))
-    print(api_src_fit_stats.dps.one())  # noqa: T201
-    print(api_src_fit_stats.volley.one())  # noqa: T201
+    print(api_src_fit_stats.dmg.one())  # noqa: T201
     print(api_src_fit_stats.cap_balance)  # noqa: T201
     print(api_src_fit_stats.cap_sim.one())  # noqa: T201
 
