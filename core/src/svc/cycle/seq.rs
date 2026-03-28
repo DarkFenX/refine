@@ -5,7 +5,7 @@ use super::{
 use crate::util::LibConverter;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum CycleSeq<T> {
+pub(in crate::svc) enum CycleSeq<T> {
     Lim(CSeqLim<T>),
     Inf(CSeqInf<T>),
     LimInf(CSeqLimInf<T>),

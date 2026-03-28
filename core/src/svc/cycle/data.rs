@@ -4,7 +4,7 @@ use crate::{UnitInterval, num::PValue};
 // Details
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub(crate) struct CycleDataFull {
+pub(in crate::svc) struct CycleDataFull {
     // Full duration (active duration with downtime duration combined)
     pub(in crate::svc) duration: PValue,
     // What kind of interruptions happen after current cycle

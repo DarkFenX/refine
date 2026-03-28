@@ -1,6 +1,6 @@
 use either::Either;
 
-use super::shared::CseqMap;
+use super::map::CseqMap;
 use crate::{
     svc::{
         SvcCtx,

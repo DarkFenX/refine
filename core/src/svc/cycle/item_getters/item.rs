@@ -1,10 +1,6 @@
 use super::{
-    item_autocharge::get_autocharge_cseq_map,
-    item_charge::get_charge_cseq_map,
-    item_drone::get_drone_cseq_map,
-    item_fighter::get_fighter_cseq_map,
-    item_module::get_module_cseq_map,
-    shared::{CseqMap, CyclingOptions},
+    item_autocharge::get_autocharge_cseq_map, item_charge::get_charge_cseq_map, item_drone::get_drone_cseq_map,
+    item_fighter::get_fighter_cseq_map, item_module::get_module_cseq_map, map::CseqMap, shared::CyclingOptions,
 };
 use crate::{
     svc::{SvcCtx, calc::Calc},

@@ -1,6 +1,9 @@
 use either::Either;
 
-use super::shared::{CseqMap, CyclingOptions, SelfKillerInfo};
+use super::{
+    map::CseqMap,
+    shared::{CyclingOptions, SelfKillerInfo},
+};
 use crate::{
     def::SERVER_TICK_S,
     misc::{InfCount, OptionalReload},

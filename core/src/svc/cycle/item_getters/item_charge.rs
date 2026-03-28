@@ -1,9 +1,6 @@
 use either::Either;
 
-use super::{
-    item::get_item_cseq_map,
-    shared::{CseqMap, CyclingOptions},
-};
+use super::{item::get_item_cseq_map, map::CseqMap, shared::CyclingOptions};
 use crate::{
     svc::{SvcCtx, calc::Calc},
     ud::UCharge,

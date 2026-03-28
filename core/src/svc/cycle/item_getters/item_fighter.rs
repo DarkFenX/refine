@@ -1,4 +1,4 @@
-use super::shared::{CseqMap, CyclingOptions};
+use super::{map::CseqMap, shared::CyclingOptions};
 use crate::{
     num::PValue,
     svc::{
