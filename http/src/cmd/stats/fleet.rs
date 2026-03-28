@@ -10,7 +10,7 @@ use crate::{
     },
     info::{
         HFleetStats,
-        stats::{HStatDmgEntry, HStatMining, HStatOutReps},
+        stats::{HStatDmg, HStatMining, HStatOutReps},
     },
     util::{HExecError, default_true},
 };
@@ -21,8 +21,7 @@ pub(crate) struct HGetFleetStatsCmd {
     #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
-    dps: Option<HStatOption<HStatOptionFitDmg>>,
-    volley: Option<HStatOption<HStatOptionFitDmg>>,
+    dmg: Option<HStatOption<HStatOptionFitDmg>>,
     mps: Option<HStatOption<HStatOptionFitMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
@@ -36,13 +35,9 @@ impl HGetFleetStatsCmd {
     ) -> Result<HFleetStats, HExecError> {
         let mut core_fleet = get_primary_fleet(core_sol, fleet_id)?;
         let mut stats = HFleetStats::new();
-        let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
-        if dps_opt.enabled {
-            stats.dps = Some(get_dps_stats(&mut core_fleet, dps_opt.options));
-        }
-        let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
-        if volley_opt.enabled {
-            stats.volley = Some(get_volley_stats(&mut core_fleet, volley_opt.options));
+        let dmg_opt = HStatResolvedOption::new(&self.dmg, self.default);
+        if dmg_opt.enabled {
+            stats.dmg = Some(get_dmg_stats(&mut core_fleet, dmg_opt.options));
         }
         let mps_opt = HStatResolvedOption::new(&self.mps, self.default);
         if mps_opt.enabled {
@@ -64,7 +59,7 @@ impl HGetFleetStatsCmd {
     }
 }
 
-fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmgEntry>> {
+fn get_dmg_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmg>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_item_kinds = option.item_kinds.into_core();
@@ -72,33 +67,13 @@ fn get_dps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDmg>)
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_dmg_applied(core_item_kinds, core_time_options, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat.dps))),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(_) => results.push(None),
                 };
             }
             None => {
                 let core_stat = core_fleet.get_stat_dmg(core_item_kinds, core_time_options);
-                results.push(Some(HStatDmgEntry::from_core(core_stat.dps)));
-            }
-        }
-    }
-    results
-}
-fn get_volley_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionFitDmg>) -> Vec<Option<HStatDmgEntry>> {
-    let mut results = Vec::with_capacity(options.len());
-    for option in options {
-        let core_item_kinds = option.item_kinds.into_core();
-        let core_time_options = option.time_options.into_core();
-        match &option.projectee_item_id {
-            Some(projectee_item_id) => {
-                match core_fleet.get_stat_dmg_applied(core_item_kinds, core_time_options, projectee_item_id) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat.volley))),
-                    Err(_) => results.push(None),
-                };
-            }
-            None => {
-                let core_stat = core_fleet.get_stat_dmg(core_item_kinds, core_time_options);
-                results.push(Some(HStatDmgEntry::from_core(core_stat.volley)));
+                results.push(Some(HStatDmg::from_core(core_stat)));
             }
         }
     }

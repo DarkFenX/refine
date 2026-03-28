@@ -8,7 +8,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionFitDps:
+class StatsOptionFitDmg:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
     time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
@@ -16,24 +16,7 @@ class StatsOptionFitDps:
 
 
 @dataclasses.dataclass(kw_only=True)
-class StatsOptionFitVolley:
-
-    item_kinds: StatDmgItemKinds | type[Absent] = Absent
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
-    projectee_item_id: str | type[Absent] = Absent
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemDps:
-
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
-    include_charges: bool | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
-    projectee_item_id: str | type[Absent] = Absent
-
-
-@dataclasses.dataclass(kw_only=True)
-class StatsOptionItemVolley:
+class StatsOptionItemDmg:
 
     time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     include_charges: bool | type[Absent] = Absent

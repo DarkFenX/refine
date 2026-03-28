@@ -13,8 +13,8 @@ use crate::{
     info::{
         HItemStats,
         stats::{
-            HStatCapSim, HStatDmgEntry, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps,
-            HStatResists, HStatRps, HStatSensors,
+            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
+            HStatRps, HStatSensors,
         },
     },
     util::{HExecError, default_true},
@@ -27,8 +27,7 @@ pub(crate) struct HGetItemStatsCmd {
     #[educe(Default = true)]
     default: bool,
     // Output
-    dps: Option<HStatOption<HStatOptionItemDmg>>,
-    volley: Option<HStatOption<HStatOptionItemDmg>>,
+    dmg: Option<HStatOption<HStatOptionItemDmg>>,
     mps: Option<HStatOption<HStatOptionItemMining>>,
     outgoing_nps: Option<HStatOption<HStatOptionItemOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionItemOutRps>>,
@@ -81,13 +80,9 @@ impl HGetItemStatsCmd {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Output
         ////////////////////////////////////////////////////////////////////////////////////////////
-        let dps_opt = HStatResolvedOption::new(&self.dps, self.default);
-        if dps_opt.enabled {
-            stats.dps = get_dps_stats(&mut core_item, dps_opt.options).into()
-        }
-        let volley_opt = HStatResolvedOption::new(&self.volley, self.default);
-        if volley_opt.enabled {
-            stats.volley = get_volley_stats(&mut core_item, volley_opt.options).into()
+        let dmg_opt = HStatResolvedOption::new(&self.dmg, self.default);
+        if dmg_opt.enabled {
+            stats.dmg = get_dmg_stats(&mut core_item, dmg_opt.options).into()
         }
         let mps_opt = HStatResolvedOption::new(&self.mps, self.default);
         if mps_opt.enabled {
@@ -246,7 +241,7 @@ impl HGetItemStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDmg>) -> Option<Vec<Option<HStatDmgEntry>>> {
+fn get_dmg_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDmg>) -> Option<Vec<Option<HStatDmg>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into_core();
@@ -258,7 +253,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDmg>) 
                     option.ignore_state,
                     projectee_item_id,
                 ) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat.dps))),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core_applied(core_stat))),
                     Err(core_err) => match is_fatal_app(core_err) {
                         true => return None,
                         false => results.push(None),
@@ -267,42 +262,7 @@ fn get_dps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemDmg>) 
             }
             None => {
                 match core_item.get_stat_dmg(core_time_options, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat.dps))),
-                    Err(core_err) => match is_fatal(core_err) {
-                        true => return None,
-                        false => results.push(None),
-                    },
-                };
-            }
-        }
-    }
-    Some(results)
-}
-fn get_volley_stats(
-    core_item: &mut rc::ItemMut,
-    options: Vec<HStatOptionItemDmg>,
-) -> Option<Vec<Option<HStatDmgEntry>>> {
-    let mut results = Vec::with_capacity(options.len());
-    for option in options {
-        let core_time_options = option.time_options.into_core();
-        match &option.projectee_item_id {
-            Some(projectee_item_id) => {
-                match core_item.get_stat_dmg_applied(
-                    core_time_options,
-                    option.include_charges,
-                    option.ignore_state,
-                    projectee_item_id,
-                ) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core_applied(core_stat.volley))),
-                    Err(core_err) => match is_fatal_app(core_err) {
-                        true => return None,
-                        false => results.push(None),
-                    },
-                };
-            }
-            None => {
-                match core_item.get_stat_dmg(core_time_options, option.include_charges, option.ignore_state) {
-                    Ok(core_stat) => results.push(Some(HStatDmgEntry::from_core(core_stat.volley))),
+                    Ok(core_stat) => results.push(Some(HStatDmg::from_core(core_stat))),
                     Err(core_err) => match is_fatal(core_err) {
                         true => return None,
                         false => results.push(None),

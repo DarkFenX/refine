@@ -6,10 +6,8 @@ from .opt_cap import (
 )
 from .opt_dmg import (
     StatDmgItemKinds,
-    StatsOptionFitDps,
-    StatsOptionFitVolley,
-    StatsOptionItemDps,
-    StatsOptionItemVolley,
+    StatsOptionFitDmg,
+    StatsOptionItemDmg,
 )
 from .opt_ehp import StatsOptionEhp
 from .opt_fit import FitStatsOptions

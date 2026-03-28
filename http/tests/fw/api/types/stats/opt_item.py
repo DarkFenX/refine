@@ -5,7 +5,7 @@ from fw.util import Absent, dc_to_dict
 
 if typing.TYPE_CHECKING:
     from .opt_cap import StatsOptionCapBalance, StatsOptionCapSim
-    from .opt_dmg import StatsOptionItemDps, StatsOptionItemVolley
+    from .opt_dmg import StatsOptionItemDmg
     from .opt_ehp import StatsOptionEhp
     from .opt_incoming_jam import StatsOptionInJam
     from .opt_mining import StatsOptionItemMining
@@ -20,8 +20,7 @@ class ItemStatsOptions:
 
     default: bool | type[Absent] = False
     # Output
-    dps: bool | tuple[bool, list[StatsOptionItemDps]] | type[Absent] = Absent
-    volley: bool | tuple[bool, list[StatsOptionItemVolley]] | type[Absent] = Absent
+    dmg: bool | tuple[bool, list[StatsOptionItemDmg]] | type[Absent] = Absent
     mps: bool | tuple[bool, list[StatsOptionItemMining]] | type[Absent] = Absent
     outgoing_nps: bool | tuple[bool, list[StatsOptionItemOutNps]] | type[Absent] = Absent
     outgoing_rps: bool | tuple[bool, list[StatsOptionItemOutRps]] | type[Absent] = Absent

@@ -18,10 +18,7 @@ class FitStats(AttrDict):
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
             # Fit output stats
-            'dps': AttrHookDef(func=lambda d: (
-                NttList(StatDmg(data=e) if e is not None else None for e in d)
-                if d is not None else None)),
-            'volley': AttrHookDef(func=lambda d: (
+            'dmg': AttrHookDef(func=lambda d: (
                 NttList(StatDmg(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
             'mps': AttrHookDef(func=lambda d: NttList(StatMining(data=e) for e in d)),

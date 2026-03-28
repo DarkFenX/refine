@@ -1,13 +1,5 @@
 from fw import approx
-from fw.api import (
-    FitStatsOptions,
-    FleetStatsOptions,
-    ItemStatsOptions,
-    StatsOptionFitDps,
-    StatsOptionFitVolley,
-    StatsOptionItemDps,
-    StatsOptionItemVolley,
-)
+from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionFitDmg, StatsOptionItemDmg
 from tests.stats.dmg import make_eve_dd_vorton, make_eve_ship, setup_dmg_basics
 
 
@@ -32,57 +24,49 @@ def test_range(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one() == [
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fleet_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [
+    assert api_fleet_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fit_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fit_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_proj_stats.dps.one() == [
+    assert api_fit_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_proj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_proj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
-    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_nonproj_stats.dps.one() == [
+    assert api_module_proj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_nonproj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_nonproj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    assert api_module_nonproj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 1000000, 0))
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one() == [
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fleet_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [
+    assert api_fleet_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fit_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fit_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_proj_stats.dps.one() == [
+    assert api_fit_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_proj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_proj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
-    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_nonproj_stats.dps.one() == [
+    assert api_module_proj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_nonproj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_nonproj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    assert api_module_nonproj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
 
 
 def test_application(client, consts):
@@ -106,30 +90,26 @@ def test_application(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
     # Verification - always perfect application
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one() == [
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fleet_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [
+    assert api_fleet_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fit_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fit_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_proj_stats.dps.one() == [
+    assert api_fit_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_proj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_proj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
-    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_nonproj_stats.dps.one() == [
+    assert api_module_proj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_nonproj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_nonproj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    assert api_module_nonproj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
 
 
 def test_tgt_not_loaded(client, consts):
@@ -153,27 +133,23 @@ def test_tgt_not_loaded(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
     # Verification - vorton DD effect does not rely on target properties whatsoever
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one() == [
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fleet_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fit_stats.dps.one() == [
+    assert api_fleet_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fit_dmg_stats.dps == [
         approx(3703.703704), approx(3703.703704), approx(3703.703704), approx(3703.703704)]
-    assert api_fit_stats.volley.one() == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
-    api_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_proj_stats.dps.one() == [
+    assert api_fit_dmg_stats.volley == [approx(2000000), approx(2000000), approx(2000000), approx(2000000)]
+    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_proj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_proj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
-    api_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_module_nonproj_stats.dps.one() == [
+    assert api_module_proj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_module_nonproj_dmg_stats.dps == [
         approx(1851.851852), approx(1851.851852), approx(1851.851852), approx(1851.851852)]
-    assert api_module_nonproj_stats.volley.one() == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]
+    assert api_module_nonproj_dmg_stats.volley == [approx(1000000), approx(1000000), approx(1000000), approx(1000000)]

@@ -7,6 +7,27 @@ from fw import ANY_VALUE
 @dataclasses.dataclass
 class StatDmg:
 
+    dps: StatDmgEntry
+    volley: StatDmgEntry
+
+    def __init__(self, *, data: list | tuple) -> None:
+        dps, volley = data
+        self.dps = StatDmgEntry(data=dps)
+        self.volley = StatDmgEntry(data=volley)
+
+    def __getitem__(self, item: int) -> typing.Any:
+        field = dataclasses.fields(self)[item]
+        return getattr(self, field.name)
+
+    def __eq__(self, other: list | tuple) -> bool:
+        if isinstance(other, tuple):
+            other = list(other)
+        return [self.dps, self.volley] == other
+
+
+@dataclasses.dataclass
+class StatDmgEntry:
+
     em: float
     thermal: float
     kinetic: float

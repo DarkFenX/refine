@@ -4,10 +4,8 @@ from fw.api import (
     FleetStatsOptions,
     ItemStatsOptions,
     StatDmgItemKinds,
-    StatsOptionFitDps,
-    StatsOptionFitVolley,
-    StatsOptionItemDps,
-    StatsOptionItemVolley,
+    StatsOptionFitDmg,
+    StatsOptionItemDmg,
     StatTimeBurst,
     StatTimeSim,
 )
@@ -30,45 +28,43 @@ def test_state(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
-    assert api_fleet_stats.dps.one().breacher == [approx(1000), approx(0.01)]
-    assert api_fleet_stats.volley.one().breacher == [approx(1000), approx(0.01)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one().breacher == [approx(1000), approx(0.01)]
-    assert api_fit_stats.volley.one().breacher == [approx(1000), approx(0.01)]
-    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=True, volley=True))
-    assert api_charge_stats.dps.one().breacher == [approx(1000), approx(0.01)]
-    assert api_charge_stats.volley.one().breacher == [approx(1000), approx(0.01)]
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fleet_dmg_stats.volley.breacher == [approx(1000), approx(0.01)]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_dmg_stats.volley.breacher == [approx(1000), approx(0.01)]
+    api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
+    assert api_charge_dmg_stats.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_charge_dmg_stats.volley.breacher == [approx(1000), approx(0.01)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
-    assert api_fleet_stats.dps.one().breacher == [0, 0]
-    assert api_fleet_stats.volley.one().breacher == [0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one().breacher == [0, 0]
-    assert api_fit_stats.volley.one().breacher == [0, 0]
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == [0, 0]
+    assert api_fleet_dmg_stats.volley.breacher == [0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps.breacher == [0, 0]
+    assert api_fit_dmg_stats.volley.breacher == [0, 0]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(), StatsOptionItemDps(ignore_state=True)]),
-        volley=(True, [StatsOptionItemVolley(), StatsOptionItemVolley(ignore_state=True)])))
-    api_charge_dps_normal, api_charge_dps_ignored = api_charge_stats.dps
-    assert api_charge_dps_normal.breacher == [0, 0]
-    assert api_charge_dps_ignored.breacher == [approx(1000), approx(0.01)]
-    api_charge_volley_normal, api_charge_volley_ignored = api_charge_stats.volley
-    assert api_charge_volley_normal.breacher == [0, 0]
-    assert api_charge_volley_ignored.breacher == [approx(1000), approx(0.01)]
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
+    assert api_charge_dmg_normal.dps.breacher == [0, 0]
+    assert api_charge_dmg_normal.volley.breacher == [0, 0]
+    assert api_charge_dmg_ignored.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_charge_dmg_ignored.volley.breacher == [approx(1000), approx(0.01)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=True, volley=True))
-    assert api_fleet_stats.dps.one().breacher == [approx(1000), approx(0.01)]
-    assert api_fleet_stats.volley.one().breacher == [approx(1000), approx(0.01)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, volley=True))
-    assert api_fit_stats.dps.one().breacher == [approx(1000), approx(0.01)]
-    assert api_fit_stats.volley.one().breacher == [approx(1000), approx(0.01)]
-    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=True, volley=True))
-    assert api_charge_stats.dps.one().breacher == [approx(1000), approx(0.01)]
-    assert api_charge_stats.volley.one().breacher == [approx(1000), approx(0.01)]
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fleet_dmg_stats.volley.breacher == [approx(1000), approx(0.01)]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_dmg_stats.volley.breacher == [approx(1000), approx(0.01)]
+    api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
+    assert api_charge_dmg_stats.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_charge_dmg_stats.volley.breacher == [approx(1000), approx(0.01)]
 
 
 def test_item_kind(client, consts):
@@ -84,40 +80,28 @@ def test_item_kind(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [
-            StatsOptionFitDps(),
-            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
-            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, breacher=True))]),
-        volley=(True, [
-            StatsOptionFitVolley(),
-            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
-            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
-    api_fleet_dps_default, api_fleet_dps_disabled, api_fleet_dps_enabled = api_fleet_stats.dps
-    assert api_fleet_dps_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fleet_dps_disabled.breacher == [0, 0]
-    assert api_fleet_dps_enabled.breacher == [approx(1000), approx(0.01)]
-    api_fleet_volley_default, api_fleet_volley_disabled, api_fleet_volley_enabled = api_fleet_stats.volley
-    assert api_fleet_volley_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fleet_volley_disabled.breacher == [0, 0]
-    assert api_fleet_volley_enabled.breacher == [approx(1000), approx(0.01)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [
-            StatsOptionFitDps(),
-            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
-            StatsOptionFitDps(item_kinds=StatDmgItemKinds(default=False, breacher=True))]),
-        volley=(True, [
-            StatsOptionFitVolley(),
-            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
-            StatsOptionFitVolley(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
-    api_fit_dps_default, api_fit_dps_disabled, api_fit_dps_enabled = api_fit_stats.dps
-    assert api_fit_dps_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fit_dps_disabled.breacher == [0, 0]
-    assert api_fit_dps_enabled.breacher == [approx(1000), approx(0.01)]
-    api_fit_volley_default, api_fit_volley_disabled, api_fit_volley_enabled = api_fit_stats.volley
-    assert api_fit_volley_default.breacher == [approx(1000), approx(0.01)]
-    assert api_fit_volley_disabled.breacher == [0, 0]
-    assert api_fit_volley_enabled.breacher == [approx(1000), approx(0.01)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+        StatsOptionFitDmg(),
+        StatsOptionFitDmg(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
+        StatsOptionFitDmg(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
+    api_fleet_dmg_default, api_fleet_dmg_disabled, api_fleet_dmg_enabled = api_fleet_stats.dmg
+    assert api_fleet_dmg_default.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fleet_dmg_default.volley.breacher == [approx(1000), approx(0.01)]
+    assert api_fleet_dmg_disabled.dps.breacher == [0, 0]
+    assert api_fleet_dmg_disabled.volley.breacher == [0, 0]
+    assert api_fleet_dmg_enabled.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fleet_dmg_enabled.volley.breacher == [approx(1000), approx(0.01)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+        StatsOptionFitDmg(),
+        StatsOptionFitDmg(item_kinds=StatDmgItemKinds(default=True, breacher=False)),
+        StatsOptionFitDmg(item_kinds=StatDmgItemKinds(default=False, breacher=True))])))
+    api_fit_dmg_default, api_fit_dmg_disabled, api_fit_dmg_enabled = api_fit_stats.dmg
+    assert api_fit_dmg_default.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_dmg_default.volley.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_dmg_disabled.dps.breacher == [0, 0]
+    assert api_fit_dmg_disabled.volley.breacher == [0, 0]
+    assert api_fit_dmg_enabled.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_fit_dmg_enabled.volley.breacher == [approx(1000), approx(0.01)]
 
 
 def test_include_charges(client, consts):
@@ -136,23 +120,19 @@ def test_include_charges(client, consts):
     # Verification - need to include charges for module to show dps, since it's on-charge effect
     # which deals damage. For charges, this option doesn't do anything
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(include_charges=False), StatsOptionItemDps(include_charges=True)]),
-        volley=(True, [StatsOptionItemVolley(include_charges=False), StatsOptionItemVolley(include_charges=True)])))
-    api_module_dps_without, api_module_dps_with = api_module_stats.dps
-    assert api_module_dps_without.breacher == [0, 0]
-    assert api_module_dps_with.breacher == [approx(1000), approx(0.01)]
-    api_module_volley_without, api_module_volley_with = api_module_stats.volley
-    assert api_module_volley_without.breacher == [0, 0]
-    assert api_module_volley_with.breacher == [approx(1000), approx(0.01)]
+        dmg=(True, [StatsOptionItemDmg(include_charges=False), StatsOptionItemDmg(include_charges=True)])))
+    api_module_dmg_without, api_module_dmg_with = api_module_stats.dmg
+    assert api_module_dmg_without.dps.breacher == [0, 0]
+    assert api_module_dmg_without.volley.breacher == [0, 0]
+    assert api_module_dmg_with.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_module_dmg_with.volley.breacher == [approx(1000), approx(0.01)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(include_charges=False), StatsOptionItemDps(include_charges=True)]),
-        volley=(True, [StatsOptionItemVolley(include_charges=False), StatsOptionItemVolley(include_charges=True)])))
-    api_charge_dps_without, api_charge_dps_with = api_charge_stats.dps
-    assert api_charge_dps_without.breacher == [approx(1000), approx(0.01)]
-    assert api_charge_dps_with.breacher == [approx(1000), approx(0.01)]
-    api_charge_volley_without, api_charge_volley_with = api_charge_stats.volley
-    assert api_charge_volley_without.breacher == [approx(1000), approx(0.01)]
-    assert api_charge_volley_with.breacher == [approx(1000), approx(0.01)]
+        dmg=(True, [StatsOptionItemDmg(include_charges=False), StatsOptionItemDmg(include_charges=True)])))
+    api_charge_dmg_without, api_charge_dmg_with = api_charge_stats.dmg
+    assert api_charge_dmg_without.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_charge_dmg_without.volley.breacher == [approx(1000), approx(0.01)]
+    assert api_charge_dmg_with.dps.breacher == [approx(1000), approx(0.01)]
+    assert api_charge_dmg_with.volley.breacher == [approx(1000), approx(0.01)]
 
 
 def test_time_reload(client, consts):
@@ -173,21 +153,21 @@ def test_time_reload(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fleet_dps_burst, api_fleet_dps_reload = api_fleet_stats.dps
-    assert api_fleet_dps_burst.breacher == [approx(200), approx(0.0075)]
-    assert api_fleet_dps_reload.breacher == [approx(199.191919), approx(0.007469697)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=(True, [
-        StatsOptionFitDps(time_options=StatTimeBurst()),
-        StatsOptionFitDps(time_options=StatTimeSim(time=None))])))
-    api_fit_dps_burst, api_fit_dps_reload = api_fit_stats.dps
-    assert api_fit_dps_burst.breacher == [approx(200), approx(0.0075)]
-    assert api_fit_dps_reload.breacher == [approx(199.191919), approx(0.007469697)]
-    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dps=(True, [
-        StatsOptionItemDps(time_options=StatTimeBurst()),
-        StatsOptionItemDps(time_options=StatTimeSim(time=None))])))
-    api_charge_dps_burst, api_charge_dps_reload = api_charge_stats.dps
-    assert api_charge_dps_burst.breacher == [approx(200), approx(0.0075)]
-    assert api_charge_dps_reload.breacher == [approx(199.191919), approx(0.007469697)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+        StatsOptionFitDmg(time_options=StatTimeBurst()),
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None))])))
+    api_fleet_dmg_burst, api_fleet_dmg_reload = api_fleet_stats.dmg
+    assert api_fleet_dmg_burst.dps.breacher == [approx(200), approx(0.0075)]
+    assert api_fleet_dmg_reload.dps.breacher == [approx(199.191919), approx(0.007469697)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+        StatsOptionFitDmg(time_options=StatTimeBurst()),
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None))])))
+    api_fit_dmg_burst, api_fit_dmg_reload = api_fit_stats.dmg
+    assert api_fit_dmg_burst.dps.breacher == [approx(200), approx(0.0075)]
+    assert api_fit_dmg_reload.dps.breacher == [approx(199.191919), approx(0.007469697)]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=(True, [
+        StatsOptionItemDmg(time_options=StatTimeBurst()),
+        StatsOptionItemDmg(time_options=StatTimeSim(time=None))])))
+    api_charge_dmg_burst, api_charge_dmg_reload = api_charge_stats.dmg
+    assert api_charge_dmg_burst.dps.breacher == [approx(200), approx(0.0075)]
+    assert api_charge_dmg_reload.dps.breacher == [approx(199.191919), approx(0.007469697)]

@@ -38,8 +38,8 @@ def test_neut(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, outgoing_nps=True))
-    assert api_fit_stats.dps.one() == [approx(28.125), approx(14.0625), 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True, outgoing_nps=True))
+    assert api_fit_stats.dmg.one().dps == [approx(28.125), approx(14.0625), 0, 0]
     assert api_fit_stats.outgoing_nps.one() == approx(4.166667)
     api_drone.update()
     assert api_drone.effects[eve_dmg_effect_id].running is True
@@ -49,8 +49,8 @@ def test_neut(client, consts):
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, outgoing_nps=True))
-    assert api_fit_stats.dps.one() == [0, 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True, outgoing_nps=True))
+    assert api_fit_stats.dmg.one().dps == [0, 0, 0, 0]
     assert api_fit_stats.outgoing_nps.one() == 0
     api_drone.update()
     assert api_drone.effects[eve_dmg_effect_id].running is False
@@ -60,8 +60,8 @@ def test_neut(client, consts):
     # Action
     api_drone.change_drone(effect_modes={eve_neut_effect_id: consts.ApiEffMode.force_run})
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, outgoing_nps=True))
-    assert api_fit_stats.dps.one() == [0, 0, 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True, outgoing_nps=True))
+    assert api_fit_stats.dmg.one().dps == [0, 0, 0, 0]
     assert api_fit_stats.outgoing_nps.one() == approx(4.166667)
     api_drone.update()
     assert api_drone.effects[eve_dmg_effect_id].running is False
@@ -71,8 +71,8 @@ def test_neut(client, consts):
     # Action
     api_drone.change_drone(effect_modes={eve_dmg_effect_id: consts.ApiEffMode.force_run})
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dps=True, outgoing_nps=True))
-    assert api_fit_stats.dps.one() == [approx(28.125), approx(14.0625), 0, 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True, outgoing_nps=True))
+    assert api_fit_stats.dmg.one().dps == [approx(28.125), approx(14.0625), 0, 0]
     assert api_fit_stats.outgoing_nps.one() == approx(4.166667)
     api_drone.update()
     assert api_drone.effects[eve_dmg_effect_id].running is True

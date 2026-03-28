@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmgEntry, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
+        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
         HStatRps, HStatSensors,
     },
     util::TriStateField,
@@ -12,9 +12,7 @@ use crate::{
 pub(crate) struct HItemStats {
     // Output
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) dps: TriStateField<Vec<Option<HStatDmgEntry>>>,
-    #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) volley: TriStateField<Vec<Option<HStatDmgEntry>>>,
+    pub(crate) dmg: TriStateField<Vec<Option<HStatDmg>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) mps: TriStateField<Vec<HStatMining>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
@@ -95,8 +93,7 @@ impl HItemStats {
     pub(crate) fn new() -> Self {
         Self {
             // Output
-            dps: TriStateField::default(),
-            volley: TriStateField::default(),
+            dmg: TriStateField::default(),
             mps: TriStateField::default(),
             outgoing_nps: TriStateField::default(),
             outgoing_rps: TriStateField::default(),

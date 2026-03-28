@@ -1,13 +1,5 @@
 from fw import approx
-from fw.api import (
-    FitStatsOptions,
-    FleetStatsOptions,
-    ItemStatsOptions,
-    StatsOptionFitDps,
-    StatsOptionFitVolley,
-    StatsOptionItemDps,
-    StatsOptionItemVolley,
-)
+from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionFitDmg, StatsOptionItemDmg
 from tests.stats.dmg import make_eve_breacher, make_eve_launcher, make_eve_ship, setup_dmg_basics
 
 
@@ -38,49 +30,41 @@ def test_hp(client, consts):
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - target is close enough for breacher to reach in 100% of cases, and has high
     # enough HP for absolute limit to work
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one().breacher == approx(1000)
-    assert api_fleet_stats.volley.one().breacher == approx(1000)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.dps.one().breacher == approx(1000)
-    assert api_src_fit_stats.volley.one().breacher == approx(1000)
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_proj_stats.volley.one().breacher == approx(1000)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(1000)
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(1000)
+    assert api_fleet_dmg_stats.volley.breacher == approx(1000)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(1000)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(1000)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(1000)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(1000)
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - this target has less HP, so relative limit is used
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one().breacher == approx(500)
-    assert api_fleet_stats.volley.one().breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.dps.one().breacher == approx(500)
-    assert api_src_fit_stats.volley.one().breacher == approx(500)
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(500)
-    assert api_charge_proj_stats.volley.one().breacher == approx(500)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(500)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(500)
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(500)
+    assert api_fleet_dmg_stats.volley.breacher == approx(500)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(500)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(500)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(500)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(500)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(500)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(500)
 
 
 def test_range(client, consts):
@@ -107,72 +91,60 @@ def test_range(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14975, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - in full dps range
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one().breacher == approx(500)
-    assert api_fleet_stats.volley.one().breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.dps.one().breacher == approx(500)
-    assert api_src_fit_stats.volley.one().breacher == approx(500)
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(500)
-    assert api_charge_proj_stats.volley.one().breacher == approx(500)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(500)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(500)
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(500)
+    assert api_fleet_dmg_stats.volley.breacher == approx(500)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(500)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(500)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(500)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(500)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(500)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(500)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 14980, 0))
     # Verification - slightly out of full dps range
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one().breacher == approx(41)
-    assert api_fleet_stats.volley.one().breacher == approx(41)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.dps.one().breacher == approx(41)
-    assert api_src_fit_stats.volley.one().breacher == approx(41)
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(41)
-    assert api_charge_proj_stats.volley.one().breacher == approx(41)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(41)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(41)
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(41)
+    assert api_fleet_dmg_stats.volley.breacher == approx(41)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(41)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(41)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(41)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(41)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(41)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(41)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 17980, 0))
     # Verification - range is out of reach altogether
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_fleet_stats.dps.one().breacher == 0
-    assert api_fleet_stats.volley.one().breacher == 0
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dps=(True, [StatsOptionFitDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionFitVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.dps.one().breacher == 0
-    assert api_src_fit_stats.volley.one().breacher == 0
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == 0
+    assert api_fleet_dmg_stats.volley.breacher == 0
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == 0
+    assert api_src_fit_dmg_stats.volley.breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
 def test_breacher_attr_speed_absent(client, consts):
@@ -197,29 +169,25 @@ def test_breacher_attr_speed_absent(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - in full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_proj_stats.volley.one().breacher == approx(1000)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(1000)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(1000)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(1000)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 3001, 0))
     # Verification - slightly out of full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
 def test_breacher_attr_flight_time_absent(client, consts):
@@ -244,42 +212,36 @@ def test_breacher_attr_flight_time_absent(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - in full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_proj_stats.volley.one().breacher == approx(1000)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(1000)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(1000)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(1000)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 3001, 0))
     # Verification - base flight time is assumed 0, hidden bonus is added to it
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(82)
-    assert api_charge_proj_stats.volley.one().breacher == approx(82)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(82)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(82)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(82)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(82)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(82)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(82)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 5990, 0))
     # Verification - missile can fly up to 1 second, so everything past it is out of reach
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
 def test_breacher_attr_mass_absent(client, consts):
@@ -305,42 +267,36 @@ def test_breacher_attr_mass_absent(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14999, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - in full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_proj_stats.volley.one().breacher == approx(1000)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(1000)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(1000)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(1000)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 15001, 0))
     # Verification - slightly out of full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(82)
-    assert api_charge_proj_stats.volley.one().breacher == approx(82)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(82)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(82)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(82)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(82)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(82)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(82)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 18001, 0))
     # Verification
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
 def test_breacher_attr_agility_absent(client, consts):
@@ -366,42 +322,36 @@ def test_breacher_attr_agility_absent(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14999, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - in full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_proj_stats.volley.one().breacher == approx(1000)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(1000)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(1000)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(1000)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 15001, 0))
     # Verification - slightly out of full dps range
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(82)
-    assert api_charge_proj_stats.volley.one().breacher == approx(82)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(82)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(82)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(82)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(82)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(82)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(82)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 18001, 0))
     # Verification
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
 def test_breacher_ship_not_loaded(client, consts):
@@ -426,16 +376,14 @@ def test_breacher_ship_not_loaded(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_proj_stats.volley.one().breacher == approx(1000)
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == approx(1000)
-    assert api_charge_nonproj_stats.volley.one().breacher == approx(1000)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(1000)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(1000)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(1000)
 
 
 def test_tgt_attr_hp_absent(client, consts):
@@ -460,16 +408,14 @@ def test_tgt_attr_hp_absent(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14985, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
 def test_tgt_not_loaded(client, consts):
@@ -493,13 +439,11 @@ def test_tgt_not_loaded(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
-    api_charge_proj_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_proj_stats.dps.one().breacher == 0
-    assert api_charge_proj_stats.volley.one().breacher == 0
-    api_charge_nonproj_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dps=(True, [StatsOptionItemDps(projectee_item_id=api_tgt_ship.id)]),
-        volley=(True, [StatsOptionItemVolley(projectee_item_id=api_tgt_ship.id)])))
-    assert api_charge_nonproj_stats.dps.one().breacher == 0
-    assert api_charge_nonproj_stats.volley.one().breacher == 0
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == 0
+    assert api_charge_proj_dmg_stats.volley.breacher == 0
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == 0
+    assert api_charge_nonproj_dmg_stats.volley.breacher == 0

@@ -1,5 +1,5 @@
 pub(crate) use details::{
-    HStatCapSim, HStatDmgEntry, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
+    HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
     HStatResource, HStatRps, HStatSensors, HStatSlot,
 };
 pub(crate) use fit::HFitStats;

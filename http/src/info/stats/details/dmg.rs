@@ -2,7 +2,13 @@ use serde::Serialize;
 use serde_tuple::Serialize_tuple;
 
 #[derive(Serialize_tuple)]
-pub(crate) struct HStatDmgEntry {
+pub(crate) struct HStatDmg {
+    dps: HStatDmgEntry,
+    volley: HStatDmgEntry,
+}
+
+#[derive(Serialize_tuple)]
+struct HStatDmgEntry {
     em: f64,
     thermal: f64,
     kinetic: f64,
@@ -26,8 +32,23 @@ struct HStatDmgBreacherRaw {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HStatDmg {
+    pub(crate) fn from_core(core_stat: rc::stats::StatDmg) -> Self {
+        Self {
+            dps: HStatDmgEntry::from_core(core_stat.dps),
+            volley: HStatDmgEntry::from_core(core_stat.volley),
+        }
+    }
+    pub(crate) fn from_core_applied(core_stat: rc::stats::StatDmgApplied) -> Self {
+        Self {
+            dps: HStatDmgEntry::from_core_applied(core_stat.dps),
+            volley: HStatDmgEntry::from_core_applied(core_stat.volley),
+        }
+    }
+}
+
 impl HStatDmgEntry {
-    pub(crate) fn from_core(core_stat: rc::stats::StatDmgEntry) -> Self {
+    fn from_core(core_stat: rc::stats::StatDmgEntry) -> Self {
         Self {
             em: core_stat.em.into_f64(),
             thermal: core_stat.thermal.into_f64(),
@@ -36,7 +57,7 @@ impl HStatDmgEntry {
             breacher: HStatDmgEntryBreacher::from_core(core_stat.breacher),
         }
     }
-    pub(crate) fn from_core_applied(core_stat: rc::stats::StatDmgEntryApplied) -> Self {
+    fn from_core_applied(core_stat: rc::stats::StatDmgEntryApplied) -> Self {
         Self {
             em: core_stat.em.into_f64(),
             thermal: core_stat.thermal.into_f64(),
