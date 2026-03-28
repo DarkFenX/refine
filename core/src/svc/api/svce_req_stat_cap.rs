@@ -3,6 +3,7 @@ use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
         Svc, SvcCtx,
+        cycle::CseqMap,
         err::StatItemCheckError,
         vast::{StatCapSim, StatCapSimStaggerInt, StatCapSrcKinds, StatTimeOptions, Vast},
     },
@@ -19,12 +20,14 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_cap_balance(
         &mut self,
+        reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         item_uid: UItemId,
         src_kinds: StatCapSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, StatItemCheckError> {
         self.vast.get_stat_item_cap_balance(
+            reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -34,6 +37,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_cap_sim(
         &mut self,
+        reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         item_uid: UItemId,
         cap_perc: UnitInterval,
@@ -41,6 +45,7 @@ impl Svc {
         stagger: StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast.get_stat_item_cap_sim(
+            reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,

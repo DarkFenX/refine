@@ -5,6 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
+        cycle::CseqMap,
         err::StatItemCheckError,
         vast::{
             StatHp, StatResistsLayer, Vast,
@@ -17,13 +18,14 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_ehp(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatEhp, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_uid, item);
+        let hp = self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(resists.shield, incoming_dps);
@@ -34,12 +36,13 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_item_wc_ehp(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<StatEhp, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        let hp = self.get_stat_item_hp_unchecked(ctx, calc, item_uid, item);
+        let hp = self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid);
         let shield_mult = get_worst_case_tanking_efficiency(resists.shield);
         let armor_mult = get_worst_case_tanking_efficiency(resists.armor);

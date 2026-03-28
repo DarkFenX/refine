@@ -1,6 +1,6 @@
 use either::Either;
 
-use super::shared::{CyclingOptions, SelfKillerInfo};
+use super::shared::{CseqMap, CyclingOptions, SelfKillerInfo};
 use crate::{
     def::SERVER_TICK_S,
     misc::{InfCount, OptionalReload},
@@ -24,10 +24,11 @@ use crate::{
         funcs,
     },
     ud::{UItem, UItemId, UModule},
-    util::RMap,
 };
 
+#[must_use]
 pub(super) fn get_module_cseq_map(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -35,11 +36,11 @@ pub(super) fn get_module_cseq_map(
     module: &UModule,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
+) -> bool {
     if !module.is_loaded() {
-        return None;
+        return false;
     };
-    let mut cseq_map = RMap::new();
+    reuse_cseq_map.clear();
     let mut self_killers = Vec::new();
     let effect_rids = match ignore_state {
         true => Either::Left(module.get_effects().unwrap().keys().copied()),
@@ -47,7 +48,7 @@ pub(super) fn get_module_cseq_map(
     };
     for effect_rid in effect_rids {
         fill_module_effect_info(
-            &mut cseq_map,
+            reuse_cseq_map,
             &mut self_killers,
             ctx,
             calc,
@@ -65,13 +66,13 @@ pub(super) fn get_module_cseq_map(
             .min_by_key(|sk_info| sk_info.duration)
             .unwrap()
             .effect_rid;
-        cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
+        reuse_cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
     }
-    Some(cseq_map)
+    true
 }
 
 fn fill_module_effect_info(
-    cseq_map: &mut RMap<REffectId, CycleSeq<CycleDataFull>>,
+    reuse_cseq_map: &mut CseqMap,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -117,7 +118,7 @@ fn fill_module_effect_info(
     // Record info about self-killers and bail, those do not depend on cycling options
     if effect.kills_item {
         self_killers.push(SelfKillerInfo { effect_rid, duration });
-        cseq_map.insert(
+        reuse_cseq_map.insert(
             effect_rid,
             CycleSeq::Lim(CSeqLim {
                 data: CycleDataFull {
@@ -142,7 +143,7 @@ fn fill_module_effect_info(
         // If burst cycle mode was requested, just assume first cycle is the "most charged", and
         // infinitely repeat it
         CyclingOptions::Burst => {
-            cseq_map.insert(
+            reuse_cseq_map.insert(
                 effect_rid,
                 CycleSeq::Inf(CSeqInf {
                     data: CycleDataFull {
@@ -158,7 +159,7 @@ fn fill_module_effect_info(
     let full_count = match charge_info.fully_charged {
         InfCount::Count(full_count) => full_count,
         InfCount::Infinite => {
-            cseq_map.insert(
+            reuse_cseq_map.insert(
                 effect_rid,
                 CycleSeq::Inf(CSeqInf {
                     data: CycleDataFull {
@@ -294,7 +295,7 @@ fn fill_module_effect_info(
             }
         }
     };
-    cseq_map.insert(effect_rid, cseq);
+    reuse_cseq_map.insert(effect_rid, cseq);
 }
 
 fn get_reload_duration(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {

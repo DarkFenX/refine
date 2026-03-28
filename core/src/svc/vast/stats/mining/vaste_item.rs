@@ -7,7 +7,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
@@ -20,6 +20,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_mps(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -31,6 +32,7 @@ impl Vast {
         let base_xargs = NEffectMiningXargs { mission_ore };
         let mps = StatMining {
             ore: get_mps_item_uid(
+                reuse_cseq_map,
                 ctx,
                 calc,
                 item_uid,
@@ -40,6 +42,7 @@ impl Vast {
                 get_getter_ore,
             ),
             ice: get_mps_item_uid(
+                reuse_cseq_map,
                 ctx,
                 calc,
                 item_uid,
@@ -49,6 +52,7 @@ impl Vast {
                 get_getter_ice,
             ),
             gas: get_mps_item_uid(
+                reuse_cseq_map,
                 ctx,
                 calc,
                 item_uid,
@@ -63,6 +67,7 @@ impl Vast {
 }
 
 fn get_mps_item_uid<F>(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -76,11 +81,10 @@ where
 {
     let mut mps = MiningAmount::default();
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
-        Some(cseq_map) => cseq_map,
-        None => return mps,
-    };
-    for (effect_rid, cseq) in cseq_map {
+    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+        return mps;
+    }
+    for (&effect_rid, cseq) in reuse_cseq_map.iter() {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
         let ospec = match mining_ospec_getter(&effect) {
             Some(ospec) => ospec,
@@ -93,7 +97,7 @@ where
                 calc,
                 item_uid,
                 effect,
-                &cseq,
+                cseq,
                 ospec,
                 base_xargs,
                 None,
@@ -102,9 +106,9 @@ where
             ),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => aggr_proj_time(
-                    ctx, calc, item_uid, effect, &cseq, ospec, base_xargs, None, &mut accum, time,
+                    ctx, calc, item_uid, effect, cseq, ospec, base_xargs, None, &mut accum, time,
                 ),
-                _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, ospec, base_xargs, None, &mut accum),
+                _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, base_xargs, None, &mut accum),
             },
         } {
             mps += accum.get_per_second();

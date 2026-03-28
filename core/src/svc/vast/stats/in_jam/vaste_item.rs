@@ -4,7 +4,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
@@ -18,6 +18,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_incoming_jam(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         projectee_item_uid: UItemId,
@@ -38,12 +39,11 @@ impl Vast {
         let mut projectee_unjam_chance = Value::ONE;
         let mut projectee_unjam_uptime = Value::ONE;
         for (&projector_item_uid, projector_data) in incoming_ecms.iter() {
-            let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_uid, cycling_options, false) {
-                Some(cseq_map) => cseq_map,
-                None => continue,
-            };
+            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, cycling_options, false) {
+                continue;
+            }
             for (&effect_rid, ospec) in projector_data.iter() {
-                let cseq = match cseq_map.get(&effect_rid) {
+                let cseq = match reuse_cseq_map.get(&effect_rid) {
                     Some(cseq) => cseq,
                     None => continue,
                 };

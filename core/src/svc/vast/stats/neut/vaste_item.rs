@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
@@ -16,6 +16,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_outgoing_nps(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -27,11 +28,10 @@ impl Vast {
         check_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let mut nps = PValue::ZERO;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
-            Some(cseq_map) => cseq_map,
-            None => return Ok(nps),
-        };
-        for (effect_rid, cseq) in cseq_map {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+            return Ok(nps);
+        }
+        for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let ospec = match effect.neut_opc_spec {
                 Some(ospec) => ospec,
@@ -44,7 +44,7 @@ impl Vast {
                     calc,
                     item_uid,
                     effect,
-                    &cseq,
+                    cseq,
                     &ospec,
                     (),
                     projectee_uid,
@@ -57,24 +57,14 @@ impl Vast {
                         calc,
                         item_uid,
                         effect,
-                        &cseq,
+                        cseq,
                         &ospec,
                         (),
                         projectee_uid,
                         &mut accum,
                         time,
                     ),
-                    _ => aggr_proj_looped(
-                        ctx,
-                        calc,
-                        item_uid,
-                        effect,
-                        &cseq,
-                        &ospec,
-                        (),
-                        projectee_uid,
-                        &mut accum,
-                    ),
+                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, &ospec, (), projectee_uid, &mut accum),
                 },
             } {
                 nps += accum.get_per_second();
@@ -83,6 +73,7 @@ impl Vast {
         if include_charges {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 if let Ok(charge_nps) = Vast::get_stat_item_outgoing_nps(
+                    reuse_cseq_map,
                     ctx,
                     calc,
                     charge_uid,

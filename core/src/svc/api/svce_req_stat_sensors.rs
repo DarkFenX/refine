@@ -2,6 +2,7 @@ use crate::{
     num::{Count, PValue},
     svc::{
         Svc, SvcCtx,
+        cycle::CseqMap,
         err::StatItemCheckError,
         vast::{StatInJam, StatSensors, StatTimeOptions, Vast},
     },
@@ -53,11 +54,13 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_incoming_jam(
         &mut self,
+        reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
     ) -> Result<StatInJam, StatItemCheckError> {
         self.vast.get_stat_item_incoming_jam(
+            reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,

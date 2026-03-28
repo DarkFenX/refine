@@ -4,6 +4,7 @@ use crate::{
     num::{Count, Index},
     sol::SolarSystem,
     ud::{UItemId, UModule},
+    util::RMap,
 };
 
 pub struct Module<'a> {
@@ -85,7 +86,12 @@ impl<'a> ModuleMut<'a> {
         get_optional_reload(self.sol, self.uid)
     }
     pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
-        match self.sol.svc.get_item_cycles_until_empty(&self.sol.u_data, self.uid) {
+        let mut reuse_cseq_map = RMap::new();
+        match self
+            .sol
+            .svc
+            .get_item_cycles_until_empty(&mut reuse_cseq_map, &self.sol.u_data, self.uid)
+        {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         }

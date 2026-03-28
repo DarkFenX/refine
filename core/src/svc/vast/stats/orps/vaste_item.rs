@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
@@ -19,6 +19,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_outgoing_rps(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -29,6 +30,7 @@ impl Vast {
         check_drone_fighter_module(ctx.u_data, item_uid)?;
         let orps = StatOutReps {
             shield: get_orps(
+                reuse_cseq_map,
                 ctx,
                 calc,
                 item_uid,
@@ -38,6 +40,7 @@ impl Vast {
                 get_getter_shield,
             ),
             armor: get_orps(
+                reuse_cseq_map,
                 ctx,
                 calc,
                 item_uid,
@@ -47,6 +50,7 @@ impl Vast {
                 get_getter_armor,
             ),
             hull: get_orps(
+                reuse_cseq_map,
                 ctx,
                 calc,
                 item_uid,
@@ -61,6 +65,7 @@ impl Vast {
 }
 
 fn get_orps<F>(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -74,11 +79,10 @@ where
 {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
-        Some(cseq_map) => cseq_map,
-        None => return orps,
-    };
-    for (effect_rid, cseq) in cseq_map {
+    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+        return orps;
+    }
+    for (&effect_rid, cseq) in reuse_cseq_map.iter() {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
         let ospec = match rep_ospec_getter(&effect) {
             Some(ospec) => ospec,
@@ -91,7 +95,7 @@ where
                 calc,
                 item_uid,
                 effect,
-                &cseq,
+                cseq,
                 &ospec,
                 (),
                 projectee_uid,
@@ -104,24 +108,14 @@ where
                     calc,
                     item_uid,
                     effect,
-                    &cseq,
+                    cseq,
                     &ospec,
                     (),
                     projectee_uid,
                     &mut accum,
                     time,
                 ),
-                _ => aggr_proj_looped(
-                    ctx,
-                    calc,
-                    item_uid,
-                    effect,
-                    &cseq,
-                    &ospec,
-                    (),
-                    projectee_uid,
-                    &mut accum,
-                ),
+                _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, &ospec, (), projectee_uid, &mut accum),
             },
         } {
             orps += accum.get_per_second();

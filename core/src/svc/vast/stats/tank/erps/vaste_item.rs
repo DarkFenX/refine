@@ -5,6 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
+        cycle::CseqMap,
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
@@ -17,6 +18,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_erps(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -25,7 +27,8 @@ impl Vast {
         shield_perc: UnitInterval,
     ) -> Result<StatErps, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        let rps = self.get_stat_item_rps_unchecked(ctx, calc, item_uid, item, time_options, shield_perc);
+        let rps =
+            self.get_stat_item_rps_unchecked(reuse_cseq_map, ctx, calc, item_uid, item, time_options, shield_perc);
         let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(resists.shield, incoming_dps);

@@ -1,6 +1,7 @@
 use crate::{
     svc::{
         Svc, SvcCtx,
+        cycle::CseqMap,
         err::StatItemCheckError,
         vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
     },
@@ -10,6 +11,7 @@ use crate::{
 impl Svc {
     pub(crate) fn get_stat_fits_mps(
         &mut self,
+        reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
@@ -17,6 +19,7 @@ impl Svc {
         mission_ore: bool,
     ) -> StatMining {
         self.vast.get_stat_fits_mps(
+            reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
@@ -27,6 +30,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_fit_mps(
         &mut self,
+        reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         fit_uid: UFitId,
         item_kinds: StatMiningItemKinds,
@@ -34,6 +38,7 @@ impl Svc {
         mission_ore: bool,
     ) -> StatMining {
         self.vast.get_stat_fit_mps(
+            reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
@@ -44,6 +49,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_mps(
         &mut self,
+        reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
@@ -51,6 +57,7 @@ impl Svc {
         ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         Vast::get_stat_item_mps(
+            reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,

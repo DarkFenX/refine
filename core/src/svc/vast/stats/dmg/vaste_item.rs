@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions, Vast,
@@ -18,6 +18,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_dmg_raw(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -29,6 +30,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
         Vast::internal_get_stat_item_dmg_checked(
+            reuse_cseq_map,
             ctx,
             calc,
             &mut dps_normal,
@@ -55,6 +57,7 @@ impl Vast {
         })
     }
     pub(in crate::svc) fn get_stat_item_dmg_applied(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -67,6 +70,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new();
         Vast::internal_get_stat_item_dmg_applied_checked(
+            reuse_cseq_map,
             ctx,
             calc,
             &mut dps_normal,
@@ -94,6 +98,7 @@ impl Vast {
         })
     }
     fn internal_get_stat_item_dmg_checked(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
@@ -106,11 +111,10 @@ impl Vast {
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
-            Some(cseq_map) => cseq_map,
-            None => return Ok(()),
-        };
-        for (effect_rid, cseq) in cseq_map {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+            return Ok(());
+        }
+        for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg_opc_spec {
                 let mut accum = SeqAccum::new_stack_max();
@@ -120,7 +124,7 @@ impl Vast {
                         calc,
                         item_uid,
                         effect,
-                        &cseq,
+                        cseq,
                         ospec,
                         (),
                         None,
@@ -129,9 +133,9 @@ impl Vast {
                     ),
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
                         Some(time) if time > PValue::ZERO => {
-                            aggr_proj_time(ctx, calc, item_uid, effect, &cseq, ospec, (), None, &mut accum, time)
+                            aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum, time)
                         }
-                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, &cseq, ospec, (), None, &mut accum),
+                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum),
                     },
                 } {
                     *volley_normal += accum.instances.max;
@@ -139,12 +143,13 @@ impl Vast {
                 }
             }
             if let Some(ospec) = &effect.breacher_dmg_opc_spec {
-                breacher_accum.add(ctx, calc, item_uid, effect, &cseq, ospec);
+                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);
             }
         }
         if include_charges {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 let _ = Vast::internal_get_stat_item_dmg_checked(
+                    reuse_cseq_map,
                     ctx,
                     calc,
                     dps_normal,
@@ -160,6 +165,7 @@ impl Vast {
         Ok(())
     }
     fn internal_get_stat_item_dmg_applied_checked(
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
@@ -173,11 +179,10 @@ impl Vast {
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, ignore_state) {
-            Some(cseq_map) => cseq_map,
-            None => return Ok(()),
-        };
-        for (effect_rid, cseq) in cseq_map {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+            return Ok(());
+        }
+        for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg_opc_spec {
                 let mut accum = SeqAccum::new_stack_max();
@@ -187,7 +192,7 @@ impl Vast {
                         calc,
                         item_uid,
                         effect,
-                        &cseq,
+                        cseq,
                         ospec,
                         (),
                         Some(projectee_uid),
@@ -200,7 +205,7 @@ impl Vast {
                             calc,
                             item_uid,
                             effect,
-                            &cseq,
+                            cseq,
                             ospec,
                             (),
                             Some(projectee_uid),
@@ -212,7 +217,7 @@ impl Vast {
                             calc,
                             item_uid,
                             effect,
-                            &cseq,
+                            cseq,
                             ospec,
                             (),
                             Some(projectee_uid),
@@ -225,12 +230,13 @@ impl Vast {
                 }
             }
             if let Some(ospec) = &effect.breacher_dmg_opc_spec {
-                breacher_accum.add(ctx, calc, item_uid, effect, &cseq, ospec, projectee_uid);
+                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid);
             }
         }
         if include_charges {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 let _ = Vast::internal_get_stat_item_dmg_applied_checked(
+                    reuse_cseq_map,
                     ctx,
                     calc,
                     dps_normal,

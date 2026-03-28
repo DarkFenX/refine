@@ -1,14 +1,12 @@
-use super::shared::CyclingOptions;
+use super::shared::{CseqMap, CyclingOptions};
 use crate::{
     num::PValue,
-    rd::REffectId,
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::{UFighter, UItemId},
-    util::RMap,
 };
 
 struct FtrEffectInfo {
@@ -23,16 +21,18 @@ struct FtrEffectRearmInfo {
     charge_rearm_duration: PValue,
 }
 
+#[must_use]
 pub(super) fn get_fighter_cseq_map(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
+) -> bool {
     if !fighter.is_loaded() {
-        return None;
+        return false;
     };
-    None
+    false
 }

@@ -4,7 +4,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast, VastFitData,
@@ -21,6 +21,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_balance(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -34,19 +35,19 @@ impl Vast {
             balance += get_cap_regen(ctx, calc, item_uid, src_kinds.regen.cap_perc);
         }
         if src_kinds.cap_injectors {
-            balance += get_cap_injects(ctx, calc, time_options, fit_data);
+            balance += get_cap_injects(reuse_cseq_map, ctx, calc, time_options, fit_data);
         }
         if src_kinds.nosfs {
-            balance += get_nosfs(ctx, calc, time_options, fit_data);
+            balance += get_nosfs(reuse_cseq_map, ctx, calc, time_options, fit_data);
         }
         if src_kinds.consumers {
-            balance -= get_cap_consumed(ctx, calc, time_options, fit_data);
+            balance -= get_cap_consumed(reuse_cseq_map, ctx, calc, time_options, fit_data);
         }
         if src_kinds.incoming_transfers {
-            balance += get_incoming_cap_transfers(ctx, calc, time_options, item_uid, self);
+            balance += get_incoming_cap_transfers(reuse_cseq_map, ctx, calc, time_options, item_uid, self);
         }
         if src_kinds.incoming_neuts {
-            balance -= get_incoming_neuts(ctx, calc, time_options, item_uid, self);
+            balance -= get_incoming_neuts(reuse_cseq_map, ctx, calc, time_options, item_uid, self);
         }
         Ok(balance)
     }
@@ -58,16 +59,21 @@ fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: Unit
     calc_regen(max_amount, cap_recharge_duration, cap_perc)
 }
 
-fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_data: &VastFitData) -> PValue {
+fn get_cap_injects(
+    reuse_cseq_map: &mut CseqMap,
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    time_options: StatTimeOptions,
+    fit_data: &VastFitData,
+) -> PValue {
     let mut cps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.cap_injects.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
@@ -89,16 +95,21 @@ fn get_cap_injects(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, 
     cps
 }
 
-fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_data: &VastFitData) -> Value {
+fn get_cap_consumed(
+    reuse_cseq_map: &mut CseqMap,
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    time_options: StatTimeOptions,
+    fit_data: &VastFitData,
+) -> Value {
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
@@ -120,16 +131,21 @@ fn get_cap_consumed(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions,
     cps
 }
 
-fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_data: &VastFitData) -> Value {
+fn get_nosfs(
+    reuse_cseq_map: &mut CseqMap,
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    time_options: StatTimeOptions,
+    fit_data: &VastFitData,
+) -> Value {
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, nosf_item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, nosf_item_uid, cycling_options, false) {
+            continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
@@ -172,6 +188,7 @@ fn get_nosfs(ctx: SvcCtx, calc: &mut Calc, time_options: StatTimeOptions, fit_da
 }
 
 fn get_incoming_cap_transfers(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
@@ -185,12 +202,11 @@ fn get_incoming_cap_transfers(
         None => return cps,
     };
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, transfer_item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
-        };
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, transfer_item_uid, cycling_options, false) {
+            continue;
+        }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
@@ -243,6 +259,7 @@ fn get_incoming_cap_transfers(
 }
 
 fn get_incoming_neuts(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
@@ -256,12 +273,11 @@ fn get_incoming_neuts(
         None => return nps,
     };
     for (&neut_item_uid, item_data) in neut_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, neut_item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
-        };
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, neut_item_uid, cycling_options, false) {
+            continue;
+        }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };

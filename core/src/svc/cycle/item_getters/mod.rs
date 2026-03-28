@@ -1,4 +1,5 @@
 pub(in crate::svc) use item::get_item_cseq_map;
+pub(crate) use shared::CseqMap;
 pub(in crate::svc) use shared::{CycleOptionsSim, CyclingOptions};
 
 mod item;

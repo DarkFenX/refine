@@ -4,6 +4,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
+        cycle::CseqMap,
         err::StatItemCheckError,
         vast::{
             Vast,
@@ -22,6 +23,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_sim(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -34,7 +36,16 @@ impl Vast {
         let recharge_time = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
         let start_cap = max_cap * cap_perc.into_pvalue();
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
-        let events = prepare_events(ctx, calc, self, optional_reloads, stagger, fit_data, item_uid);
+        let events = prepare_events(
+            reuse_cseq_map,
+            ctx,
+            calc,
+            self,
+            optional_reloads,
+            stagger,
+            fit_data,
+            item_uid,
+        );
         let mut sim = CapSim::new(start_cap, max_cap, recharge_time, events);
         Ok(sim.run())
     }

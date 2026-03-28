@@ -2,8 +2,14 @@ use crate::{
     misc::{OptionalReload, RearmMinion},
     num::PValue,
     rd::REffectId,
-    svc::vast::{StatTimeOptions, StatTimeOptionsSim},
+    svc::{
+        cycle::{CycleDataFull, CycleSeq},
+        vast::{StatTimeOptions, StatTimeOptionsSim},
+    },
+    util::RMap,
 };
+
+pub(crate) type CseqMap = RMap<REffectId, CycleSeq<CycleDataFull>>;
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) enum CyclingOptions {

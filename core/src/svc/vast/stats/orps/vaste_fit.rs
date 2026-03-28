@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         vast::{
             StatOutRepItemKinds, StatTimeOptions, Vast,
             aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
@@ -19,6 +19,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_fits_outgoing_rps(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
@@ -31,14 +32,39 @@ impl Vast {
         let mut hull = PValue::ZERO;
         for fit_uid in fit_uids {
             let fit_data = self.get_fit_data(&fit_uid);
-            shield += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_shield);
-            armor += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_armor);
-            hull += get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_hull);
+            shield += get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_shield,
+            );
+            armor += get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_armor,
+            );
+            hull += get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_hull,
+            );
         }
         StatOutReps { shield, armor, hull }
     }
     pub(in crate::svc) fn get_stat_fit_outgoing_rps(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
@@ -48,14 +74,39 @@ impl Vast {
     ) -> StatOutReps {
         let fit_data = self.get_fit_data(&fit_uid);
         StatOutReps {
-            shield: get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_shield),
-            armor: get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_armor),
-            hull: get_orps(ctx, calc, item_kinds, time_options, projectee_uid, &fit_data.orr_hull),
+            shield: get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_shield,
+            ),
+            armor: get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_armor,
+            ),
+            hull: get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_hull,
+            ),
         }
     }
 }
 
 fn get_orps(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
@@ -66,16 +117,15 @@ fn get_orps(
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
-        };
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            continue;
+        }
         let u_item = ctx.u_data.items.get(item_uid);
         if !item_kinds.resolve(u_item) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };

@@ -1,7 +1,7 @@
 use either::Either;
 
+use super::shared::CseqMap;
 use crate::{
-    rd::REffectId,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -9,20 +9,21 @@ use crate::{
         funcs,
     },
     ud::{UDrone, UItemId},
-    util::RMap,
 };
 
+#[must_use]
 pub(super) fn get_drone_cseq_map(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     drone: &UDrone,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
+) -> bool {
     if !drone.is_loaded() {
-        return None;
+        return false;
     };
-    let mut cseq_map = RMap::new();
+    reuse_cseq_map.clear();
     let effect_rids = match ignore_state {
         true => Either::Left(drone.get_effects().unwrap().keys().copied()),
         false => Either::Right(drone.get_reffs().unwrap().iter().copied()),
@@ -38,7 +39,7 @@ pub(super) fn get_drone_cseq_map(
         };
         // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
         // flags, limited charges & reloads
-        cseq_map.insert(
+        reuse_cseq_map.insert(
             effect_rid,
             CycleSeq::Inf(CSeqInf {
                 data: CycleDataFull {
@@ -49,5 +50,5 @@ pub(super) fn get_drone_cseq_map(
             }),
         );
     }
-    Some(cseq_map)
+    true
 }

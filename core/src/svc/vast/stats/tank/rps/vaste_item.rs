@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
@@ -24,6 +24,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_rps(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -31,10 +32,11 @@ impl Vast {
         shield_perc: UnitInterval,
     ) -> Result<StatRps, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        Ok(self.get_stat_item_rps_unchecked(ctx, calc, item_uid, item, time_options, shield_perc))
+        Ok(self.get_stat_item_rps_unchecked(reuse_cseq_map, ctx, calc, item_uid, item, time_options, shield_perc))
     }
     pub(in crate::svc::vast::stats::tank) fn get_stat_item_rps_unchecked(
         &self,
+        reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -46,9 +48,9 @@ impl Vast {
         let (local_shield, local_armor, local_hull) = match item {
             UItem::Ship(u_ship) => {
                 let fit_data = self.get_fit_data(&u_ship.get_fit_uid());
-                let local_shield = get_local_rps(ctx, calc, time_options, &fit_data.lr_shield);
-                let local_armor = get_local_rps(ctx, calc, time_options, &fit_data.lr_armor);
-                let local_hull = get_local_rps(ctx, calc, time_options, &fit_data.lr_hull);
+                let local_shield = get_local_rps(reuse_cseq_map, ctx, calc, time_options, &fit_data.lr_shield);
+                let local_armor = get_local_rps(reuse_cseq_map, ctx, calc, time_options, &fit_data.lr_armor);
+                let local_hull = get_local_rps(reuse_cseq_map, ctx, calc, time_options, &fit_data.lr_hull);
                 (local_shield, local_armor, local_hull)
             }
             _ => (PValue::ZERO, PValue::ZERO, PValue::ZERO),
@@ -56,6 +58,7 @@ impl Vast {
         // Incoming remote reps - shield
         let mut reuse_irr_entries = Vec::new();
         get_irr_data(
+            reuse_cseq_map,
             &mut reuse_irr_entries,
             ctx,
             calc,
@@ -68,6 +71,7 @@ impl Vast {
         // Incoming remote reps - armor
         reuse_irr_entries.clear();
         get_irr_data(
+            reuse_cseq_map,
             &mut reuse_irr_entries,
             ctx,
             calc,
@@ -80,6 +84,7 @@ impl Vast {
         // Incoming remote reps - hull
         reuse_irr_entries.clear();
         get_irr_data(
+            reuse_cseq_map,
             &mut reuse_irr_entries,
             ctx,
             calc,
@@ -113,6 +118,7 @@ impl Vast {
 }
 
 fn get_local_rps(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
@@ -121,12 +127,11 @@ fn get_local_rps(
     let mut total_rps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in lrr_data.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
@@ -154,6 +159,7 @@ struct IrrEntry {
 }
 
 fn get_irr_data(
+    reuse_cseq_map: &mut CseqMap,
     reuse_result: &mut Vec<IrrEntry>,
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -167,12 +173,11 @@ fn get_irr_data(
     };
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&projector_item_uid, projector_data) in incoming_reps.iter() {
-        let cseq_map = match get_item_cseq_map(ctx, calc, projector_item_uid, cycling_options, false) {
-            Some(cseq_map) => cseq_map,
-            None => continue,
-        };
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, cycling_options, false) {
+            continue;
+        }
         for (&effect_rid, ospec) in projector_data.iter() {
-            let cseq = match cseq_map.get(&effect_rid) {
+            let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };

@@ -1,42 +1,59 @@
 use either::Either;
 
-use super::{item::get_item_cseq_map, shared::CyclingOptions};
+use super::{
+    item::get_item_cseq_map,
+    shared::{CseqMap, CyclingOptions},
+};
 use crate::{
-    rd::REffectId,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        cycle::{CycleDataFull, CycleSeq},
-    },
+    svc::{SvcCtx, calc::Calc},
     ud::UCharge,
-    util::RMap,
 };
 
+#[must_use]
 pub(super) fn get_charge_cseq_map(
+    reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
     charge: &UCharge,
     options: CyclingOptions,
     ignore_state: bool,
-) -> Option<RMap<REffectId, CycleSeq<CycleDataFull>>> {
+) -> bool {
     if !charge.is_loaded() {
-        return None;
+        return false;
     };
     // Default effect of parent item is assumed to control the charge. If there is none, charge is
     // not cycling
-    let cont_effect_rid = ctx.u_data.items.get(charge.get_cont_item_uid()).get_defeff_rid()??;
+    let cont_effect_rid = match ctx.u_data.items.get(charge.get_cont_item_uid()).get_defeff_rid() {
+        Some(Some(cont_effect_rid)) => cont_effect_rid,
+        _ => return false,
+    };
     // If cycle info for parent item is not available, charge is not cycling
-    let mut cseq_map = get_item_cseq_map(ctx, calc, charge.get_cont_item_uid(), options, ignore_state)?;
+    if !get_item_cseq_map(
+        reuse_cseq_map,
+        ctx,
+        calc,
+        charge.get_cont_item_uid(),
+        options,
+        ignore_state,
+    ) {
+        return false;
+    }
     // If controlling effect is not cycling, charge is not cycling either
-    let cont_effect_cycle = cseq_map.remove(&cont_effect_rid)?;
-    cseq_map.clear();
+    let cont_effect_cycle = match reuse_cseq_map.remove(&cont_effect_rid) {
+        Some(cont_effect_cycle) => cont_effect_cycle,
+        None => return false,
+    };
+    reuse_cseq_map.clear();
     let effect_rids = match ignore_state {
         true => Either::Left(charge.get_effects().unwrap().keys().copied()),
         false => Either::Right(charge.get_reffs().unwrap().iter().copied()),
     };
-    cseq_map.reserve(effect_rids.len());
+    reuse_cseq_map.reserve(effect_rids.len());
     for effect_rid in effect_rids {
-        cseq_map.insert(effect_rid, cont_effect_cycle);
+        let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+        if effect.is_active() {
+            reuse_cseq_map.insert(effect_rid, cont_effect_cycle);
+        }
     }
-    Some(cseq_map)
+    true
 }
