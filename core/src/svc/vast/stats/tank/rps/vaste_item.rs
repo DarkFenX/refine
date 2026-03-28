@@ -53,28 +53,60 @@ impl Vast {
             }
             _ => (PValue::ZERO, PValue::ZERO, PValue::ZERO),
         };
-        // Incoming remote reps
-        let shield_irr_data = get_irr_data(ctx, calc, item_uid, time_options, &self.irr_shield);
-        let armor_irr_data = get_irr_data(ctx, calc, item_uid, time_options, &self.irr_armor);
-        let hull_irr_data = get_irr_data(ctx, calc, item_uid, time_options, &self.irr_hull);
+        // Incoming remote reps - shield
+        let mut reuse_irr_entries = Vec::new();
+        get_irr_data(
+            &mut reuse_irr_entries,
+            ctx,
+            calc,
+            item_uid,
+            time_options,
+            &self.irr_shield,
+        );
+        let remote_shield = irr_data_to_raw(&reuse_irr_entries);
+        let remote_shield_penalized = irr_data_to_penalized(&reuse_irr_entries);
+        // Incoming remote reps - armor
+        reuse_irr_entries.clear();
+        get_irr_data(
+            &mut reuse_irr_entries,
+            ctx,
+            calc,
+            item_uid,
+            time_options,
+            &self.irr_armor,
+        );
+        let remote_armor = irr_data_to_raw(&reuse_irr_entries);
+        let remote_armor_penalized = irr_data_to_penalized(&reuse_irr_entries);
+        // Incoming remote reps - hull
+        reuse_irr_entries.clear();
+        get_irr_data(
+            &mut reuse_irr_entries,
+            ctx,
+            calc,
+            item_uid,
+            time_options,
+            &self.irr_hull,
+        );
+        let remote_hull = irr_data_to_raw(&reuse_irr_entries);
+        let remote_hull_penalized = irr_data_to_penalized(&reuse_irr_entries);
         // Regen
         let shield_regen = get_shield_regen(ctx, calc, item_uid, shield_perc);
         StatRps {
             shield: StatRpsLayerRegen {
                 local: local_shield,
-                remote: irr_data_to_raw(&shield_irr_data),
-                remote_penalized: irr_data_to_penalized(shield_irr_data),
+                remote: remote_shield,
+                remote_penalized: remote_shield_penalized,
                 regen: shield_regen,
             },
             armor: StatRpsLayer {
                 local: local_armor,
-                remote: irr_data_to_raw(&armor_irr_data),
-                remote_penalized: irr_data_to_penalized(armor_irr_data),
+                remote: remote_armor,
+                remote_penalized: remote_armor_penalized,
             },
             hull: StatRpsLayer {
                 local: local_hull,
-                remote: irr_data_to_raw(&hull_irr_data),
-                remote_penalized: irr_data_to_penalized(hull_irr_data),
+                remote: remote_hull,
+                remote_penalized: remote_hull_penalized,
             },
         }
     }
@@ -122,16 +154,16 @@ struct IrrEntry {
 }
 
 fn get_irr_data(
+    reuse_result: &mut Vec<IrrEntry>,
     ctx: SvcCtx,
     calc: &mut Calc,
     projectee_item_uid: UItemId,
     time_options: StatTimeOptions,
     irr_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-) -> Vec<IrrEntry> {
-    let mut result = Vec::new();
+) {
     let incoming_reps = match irr_data.get_l1(&projectee_item_uid) {
         Some(incoming_reps) => incoming_reps,
-        None => return result,
+        None => return,
     };
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&projector_item_uid, projector_data) in incoming_reps.iter() {
@@ -160,7 +192,7 @@ fn get_irr_data(
                         burst_opts.spool,
                         &mut accum,
                     ) {
-                        result.push(IrrEntry {
+                        reuse_result.push(IrrEntry {
                             amount: accum.instances.stacked,
                             cycle_duration: accum.time,
                         });
@@ -184,7 +216,7 @@ fn get_irr_data(
                             // purposes of RR stacking penalty calculation. This does not provide
                             // accurate result, but is likely to be a good enough approximation.
                             let first_cycle_duration = cseq.get_first_cycle().duration;
-                            result.push(IrrEntry {
+                            reuse_result.push(IrrEntry {
                                 amount: accum.get_per_second() * first_cycle_duration,
                                 cycle_duration: first_cycle_duration,
                             });
@@ -209,7 +241,7 @@ fn get_irr_data(
                                 Some(cseq_looped) => cseq_looped.get_first_cycle().duration,
                                 None => cseq.get_first_cycle().duration,
                             };
-                            result.push(IrrEntry {
+                            reuse_result.push(IrrEntry {
                                 amount: accum.get_per_second() * first_cycle_duration,
                                 cycle_duration: first_cycle_duration,
                             });
@@ -219,7 +251,6 @@ fn get_irr_data(
             }
         }
     }
-    result
 }
 
 fn irr_data_to_raw(irr_data: &[IrrEntry]) -> PValue {
@@ -229,7 +260,7 @@ fn irr_data_to_raw(irr_data: &[IrrEntry]) -> PValue {
 const RR_PEN_ADDITION: PValue = PValue::from_f64_clamped(7000.0);
 const RR_PEN_MULTIPLIER: PValue = PValue::from_f64_clamped(20.0);
 
-fn irr_data_to_penalized(irr_data: Vec<IrrEntry>) -> PValue {
+fn irr_data_to_penalized(irr_data: &Vec<IrrEntry>) -> PValue {
     let total_adjusted_rps: PValue = irr_data.iter().filter_map(|v| get_adjusted_rps(v)).sum();
     let mut result = PValue::ZERO;
     for entry in irr_data.iter() {
