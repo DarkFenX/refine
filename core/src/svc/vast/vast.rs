@@ -20,7 +20,7 @@ use crate::{
 pub(in crate::svc) struct Vast {
     pub(in crate::svc::vast) fit_datas: RMap<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
-    // Incoming remote reps
+    // Stats-related - incoming remote reps
     pub(in crate::svc::vast) irr_shield:
         RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(in crate::svc::vast) irr_shield_limitable:
@@ -31,12 +31,12 @@ pub(in crate::svc) struct Vast {
         RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(in crate::svc::vast) irr_hull:
         RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    // Cap
+    // Stats-related - cap
     pub(in crate::svc::vast) in_cap:
         RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(in crate::svc::vast) in_neuts:
         RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    // Ewar
+    // Stats-related - ewar
     pub(in crate::svc::vast) in_ecm:
         RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectEcmOutputGetter>>,
 }
@@ -63,17 +63,18 @@ impl Vast {
     }
 }
 
-// TODO: check if some of data containers can be merged to save time and memory (e.g. drone
-// TODO: bandwidth, active drone count), reorder validations
 #[derive(Clone)]
 pub(in crate::svc) struct VastFitData {
-    // Validation-related
+    // Validation-related - resources
     pub(in crate::svc::vast) mods_svcs_online: RSet<UItemId>,
     pub(in crate::svc::vast) rigs_offline_calibration: RMap<UItemId, Value>,
     pub(in crate::svc::vast) drones_volume: RMap<UItemId, PValue>,
     pub(in crate::svc::vast) drones_bandwidth: RMap<UItemId, Value>,
     pub(in crate::svc::vast) drones_online_bandwidth: RMap<UItemId, Value>,
     pub(in crate::svc::vast) fighters_volume: RMap<UItemId, PValue>,
+    // Validation-related - slots
+    pub(in crate::svc::vast) mods_turret: RSet<UItemId>,
+    pub(in crate::svc::vast) mods_launcher: RSet<UItemId>,
     pub(in crate::svc::vast) fighters_online: RSet<UItemId>,
     pub(in crate::svc::vast) light_fighters: RSet<UItemId>,
     pub(in crate::svc::vast) light_fighters_online: RSet<UItemId>,
@@ -87,34 +88,41 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) st_heavy_fighters_online: RSet<UItemId>,
     pub(in crate::svc::vast) st_support_fighters: RSet<UItemId>,
     pub(in crate::svc::vast) st_support_fighters_online: RSet<UItemId>,
-    pub(in crate::svc::vast) mods_turret: RSet<UItemId>,
-    pub(in crate::svc::vast) mods_launcher: RSet<UItemId>,
+    // Validation-related - slot index
     pub(in crate::svc::vast) slotted_implants: RMapRSet<SlotIndex, UItemId>,
     pub(in crate::svc::vast) slotted_boosters: RMapRSet<SlotIndex, UItemId>,
     pub(in crate::svc::vast) slotted_subsystems: RMapRSet<SlotIndex, UItemId>,
+    // Validation-related - restrictions between ship type/attribute and its items
     pub(in crate::svc::vast) ship_limited_items: RMap<UItemId, RItemShipLimit>,
+    pub(in crate::svc::vast) rigs_rig_size: RMap<UItemId, Option<Value>>,
+    pub(in crate::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<UItemId, ValShipKind>,
+    pub(in crate::svc::vast) mods_capital: RMap<UItemId, PValue>,
+    pub(in crate::svc::vast) drone_group_limit: Vec<AItemGrpId>,
+    pub(in crate::svc::vast) drone_groups: RMap<UItemId, AItemGrpId>,
+    // Validation-related - max type/group
+    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Count>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<AItemGrpId, UItemId>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemId, AItemGrpId>,
     pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<AItemGrpId, UItemId>,
     pub(in crate::svc::vast) mods_svcs_max_group_online_limited: RMap<UItemId, AItemGrpId>,
     pub(in crate::svc::vast) mods_max_group_active_all: RMapRSet<AItemGrpId, UItemId>,
     pub(in crate::svc::vast) mods_max_group_active_limited: RMap<UItemId, AItemGrpId>,
-    pub(in crate::svc::vast) rigs_rig_size: RMap<UItemId, Option<Value>>,
-    pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<AItemId, UItemId>,
-    pub(in crate::svc::vast) srqs_missing: RMap<UItemId, RMap<AItemId, ValSrqSkillInfo>>,
+    // Validation-related - module-charge restrictions
     pub(in crate::svc::vast) charge_group: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_cont_group: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_size: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_volume: RMap<UItemId, UItemId>,
-    pub(in crate::svc::vast) mods_capital: RMap<UItemId, PValue>,
-    pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
-    pub(in crate::svc::vast) mods_state: RMap<UItemId, ValModuleStateModuleInfo>,
-    pub(in crate::svc::vast) item_kind: RMap<UItemId, ValItemKindItemInfo>,
-    pub(in crate::svc::vast) drone_group_limit: Vec<AItemGrpId>,
-    pub(in crate::svc::vast) drone_groups: RMap<UItemId, AItemGrpId>,
-    pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeFighterInfo>,
+    // Validation-related - projection
+    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemId, RItemListId>,
+    pub(in crate::svc::vast) blockable_assistance: RMapRSet<UItemId, EffectSpec>,
+    pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemId, EffectSpec>,
+    pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
+    pub(in crate::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
+    // Validation-related - skills
+    pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<AItemId, UItemId>,
+    pub(in crate::svc::vast) srqs_missing: RMap<UItemId, RMap<AItemId, ValSrqSkillInfo>>,
     pub(in crate::svc::vast) overload_td_lvl: RMap<UItemId, SkillLevel>,
-    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Count>,
+    // Validation-related - security zone
     pub(in crate::svc::vast) sec_zone_fitted: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_fitted_wspace_banned: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_online_class: RMap<UItemId, Value>,
@@ -122,14 +130,13 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) sec_zone_unonlineable_class: RMap<UItemId, Value>,
     pub(in crate::svc::vast) sec_zone_unactivable: RSet<UItemId>,
     pub(in crate::svc::vast) sec_zone_effect: RMapRMap<UItemId, REffectId, EffectSecZoneInfo>,
+    // Validation-related - misc
+    pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
+    pub(in crate::svc::vast) item_kind: RMap<UItemId, ValItemKindItemInfo>,
+    pub(in crate::svc::vast) mods_state: RMap<UItemId, ValModuleStateModuleInfo>,
     pub(in crate::svc::vast) mods_active: RSet<UItemId>,
-    pub(in crate::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<UItemId, ValShipKind>,
-    pub(in crate::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
-    pub(in crate::svc::vast) blockable_assistance: RMapRSet<UItemId, EffectSpec>,
-    pub(in crate::svc::vast) blockable_offense: RMapRSet<UItemId, EffectSpec>,
-    pub(in crate::svc::vast) resist_immunity: RMapRSet<AttrSpec, EffectSpec>,
-    pub(in crate::svc::vast) projectee_filter: RMapRMap<EffectSpec, UItemId, RItemListId>,
     pub(in crate::svc::vast) mods_cap_consumers: RSet<UItemId>,
+    pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeFighterInfo>,
     // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectDmgOutputGetter>>,
     pub(in crate::svc::vast) dmg_breacher:
@@ -164,13 +171,16 @@ pub(in crate::svc) struct VastFitData {
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
         Self {
-            // Validation-related
+            // Validation-related - resources
             mods_svcs_online: RSet::new(),
             rigs_offline_calibration: RMap::new(),
             drones_volume: RMap::new(),
             drones_bandwidth: RMap::new(),
             drones_online_bandwidth: RMap::new(),
             fighters_volume: RMap::new(),
+            // Validation-related - slots
+            mods_turret: RSet::new(),
+            mods_launcher: RSet::new(),
             fighters_online: RSet::new(),
             light_fighters: RSet::new(),
             light_fighters_online: RSet::new(),
@@ -184,34 +194,41 @@ impl VastFitData {
             st_heavy_fighters_online: RSet::new(),
             st_support_fighters: RSet::new(),
             st_support_fighters_online: RSet::new(),
-            mods_turret: RSet::new(),
-            mods_launcher: RSet::new(),
+            // Validation-related - slot index
             slotted_implants: RMapRSet::new(),
             slotted_boosters: RMapRSet::new(),
             slotted_subsystems: RMapRSet::new(),
+            // Validation-related - restrictions between ship type/attribute and its items
             ship_limited_items: RMap::new(),
+            rigs_rig_size: RMap::new(),
+            mods_rigs_svcs_vs_ship_kind: RMap::new(),
+            mods_capital: RMap::new(),
+            drone_group_limit: Vec::new(),
+            drone_groups: RMap::new(),
+            // Validation-related - max type/group
+            mods_svcs_max_type_fitted: RMapRMap::new(),
             mods_svcs_rigs_max_group_fitted_all: RMapRSet::new(),
             mods_svcs_rigs_max_group_fitted_limited: RMap::new(),
             mods_svcs_max_group_online_all: RMapRSet::new(),
             mods_svcs_max_group_online_limited: RMap::new(),
             mods_max_group_active_all: RMapRSet::new(),
             mods_max_group_active_limited: RMap::new(),
-            rigs_rig_size: RMap::new(),
-            srqs_skill_item_map: RMapRSet::new(),
-            srqs_missing: RMap::new(),
+            // Validation-related - module-charge restrictions
             charge_group: RMap::new(),
             charge_cont_group: RMap::new(),
             charge_size: RMap::new(),
             charge_volume: RMap::new(),
-            mods_capital: RMap::new(),
-            not_loaded: RSet::new(),
-            mods_state: RMap::new(),
-            item_kind: RMap::new(),
-            drone_group_limit: Vec::new(),
-            drone_groups: RMap::new(),
-            fighter_squad_size: RMap::new(),
+            // Validation-related - projection
+            projectee_filter: RMapRMap::new(),
+            blockable_assistance: RMapRSet::new(),
+            blockable_offense: RMapRSet::new(),
+            resist_immunity: RMapRSet::new(),
+            stopped_effects: RMapRSet::new(),
+            // Validation-related - skills
+            srqs_skill_item_map: RMapRSet::new(),
+            srqs_missing: RMap::new(),
             overload_td_lvl: RMap::new(),
-            mods_svcs_max_type_fitted: RMapRMap::new(),
+            // Validation-related - security zone
             sec_zone_fitted: RSet::new(),
             sec_zone_fitted_wspace_banned: RSet::new(),
             sec_zone_online_class: RMap::new(),
@@ -219,14 +236,13 @@ impl VastFitData {
             sec_zone_unonlineable_class: RMap::new(),
             sec_zone_unactivable: RSet::new(),
             sec_zone_effect: RMapRMap::new(),
+            // Validation-related - misc
+            not_loaded: RSet::new(),
+            item_kind: RMap::new(),
+            mods_state: RMap::new(),
             mods_active: RSet::new(),
-            mods_rigs_svcs_vs_ship_kind: RMap::new(),
-            stopped_effects: RMapRSet::new(),
-            projectee_filter: RMapRMap::new(),
-            blockable_assistance: RMapRSet::new(),
-            blockable_offense: RMapRSet::new(),
-            resist_immunity: RMapRSet::new(),
             mods_cap_consumers: RSet::new(),
+            fighter_squad_size: RMap::new(),
             // Stats-related - damage output
             dmg_normal: RMapRMap::new(),
             dmg_breacher: RMapRMap::new(),

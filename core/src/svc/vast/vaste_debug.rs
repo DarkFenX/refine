@@ -10,6 +10,9 @@ impl Vast {
         for item_uid in self.not_loaded.iter() {
             item_uid.consistency_check(u_data, false)?;
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - incoming remote reps
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (projectee_uid, projector_data) in self.irr_shield.iter() {
             // Projectees are not guaranteed to be loaded
             projectee_uid.consistency_check(u_data, false)?;
@@ -65,6 +68,9 @@ impl Vast {
                 }
             }
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - cap
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (projectee_uid, projector_data) in self.in_cap.iter() {
             // Projectees are not guaranteed to be loaded
             projectee_uid.consistency_check(u_data, false)?;
@@ -87,6 +93,9 @@ impl Vast {
                 }
             }
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - ewar
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (projectee_uid, projector_data) in self.in_ecm.iter() {
             // Projectees are not guaranteed to be loaded
             projectee_uid.consistency_check(u_data, false)?;
@@ -104,6 +113,9 @@ impl Vast {
 
 impl VastFitData {
     pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - resources
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for item_uid in self.mods_svcs_online.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
@@ -127,6 +139,15 @@ impl VastFitData {
         for (item_uid, val) in self.fighters_volume.iter() {
             item_uid.consistency_check(u_data, true)?;
             val.consistency_check()?;
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - slots
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for item_uid in self.mods_turret.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.mods_launcher.iter() {
+            item_uid.consistency_check(u_data, true)?;
         }
         for item_uid in self.fighters_online.iter() {
             // Holds not loaded fighters as well
@@ -168,12 +189,9 @@ impl VastFitData {
         for item_uid in self.st_support_fighters_online.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
-        for item_uid in self.mods_turret.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.mods_launcher.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - slot index
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for item_uids in self.slotted_implants.values() {
             for item_uid in item_uids {
                 item_uid.consistency_check(u_data, true)?;
@@ -189,8 +207,36 @@ impl VastFitData {
                 item_uid.consistency_check(u_data, true)?;
             }
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - restrictions between ship type/attribute and its items
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for item_uid in self.ship_limited_items.keys() {
             item_uid.consistency_check(u_data, true)?;
+        }
+        for (item_uid, val) in self.rigs_rig_size.iter() {
+            // This container can store info about non-loaded rigs
+            item_uid.consistency_check(u_data, false)?;
+            if let Some(val) = val {
+                val.consistency_check()?;
+            }
+        }
+        for item_uid in self.mods_rigs_svcs_vs_ship_kind.keys() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for (item_uid, val) in self.mods_capital.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
+        }
+        for item_uid in self.drone_groups.keys() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - max type/group
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for item_data in self.mods_svcs_max_type_fitted.values() {
+            for item_uid in item_data.keys() {
+                item_uid.consistency_check(u_data, true)?;
+            }
         }
         for item_uids in self.mods_svcs_rigs_max_group_fitted_all.values() {
             for item_uid in item_uids {
@@ -216,21 +262,9 @@ impl VastFitData {
         for item_uid in self.mods_max_group_active_limited.keys() {
             item_uid.consistency_check(u_data, true)?;
         }
-        for (item_uid, val) in self.rigs_rig_size.iter() {
-            // This container can store info about non-loaded rigs
-            item_uid.consistency_check(u_data, false)?;
-            if let Some(val) = val {
-                val.consistency_check()?;
-            }
-        }
-        for item_uids in self.srqs_skill_item_map.values() {
-            for item_uid in item_uids {
-                item_uid.consistency_check(u_data, true)?;
-            }
-        }
-        for item_uid in self.srqs_missing.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - module-charge restrictions
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (charge_uid, cont_uid) in self.charge_group.iter() {
             cont_uid.consistency_check(u_data, true)?;
             charge_uid.consistency_check(u_data, true)?;
@@ -247,72 +281,9 @@ impl VastFitData {
             cont_uid.consistency_check(u_data, true)?;
             charge_uid.consistency_check(u_data, true)?;
         }
-        for (item_uid, val) in self.mods_capital.iter() {
-            item_uid.consistency_check(u_data, true)?;
-            val.consistency_check()?;
-        }
-        for item_uid in self.not_loaded.iter() {
-            item_uid.consistency_check(u_data, false)?;
-        }
-        for item_uid in self.mods_state.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.item_kind.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.drone_groups.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.fighter_squad_size.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.overload_td_lvl.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_data in self.mods_svcs_max_type_fitted.values() {
-            for item_uid in item_data.keys() {
-                item_uid.consistency_check(u_data, true)?;
-            }
-        }
-        for item_uid in self.sec_zone_fitted.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.sec_zone_fitted_wspace_banned.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for (item_uid, val) in self.sec_zone_online_class.iter() {
-            item_uid.consistency_check(u_data, true)?;
-            val.consistency_check()?;
-        }
-        for item_uid in self.sec_zone_active.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for (item_uid, val) in self.sec_zone_unonlineable_class.iter() {
-            item_uid.consistency_check(u_data, true)?;
-            val.consistency_check()?;
-        }
-        for item_uid in self.sec_zone_unactivable.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for (item_uid, item_data) in self.sec_zone_effect.iter() {
-            item_uid.consistency_check(u_data, true)?;
-            for effect_rid in item_data.keys() {
-                effect_rid.consistency_check(u_data)?;
-            }
-        }
-        for item_uid in self.mods_active.iter() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for item_uid in self.mods_rigs_svcs_vs_ship_kind.keys() {
-            item_uid.consistency_check(u_data, true)?;
-        }
-        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
-            // There is no logic which ensures that projection target is loaded
-            stopped_espec.consistency_check(u_data, false)?;
-            for stopper_espec in stopper_especs {
-                stopper_espec.consistency_check(u_data, true)?;
-            }
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - projection
+        ////////////////////////////////////////////////////////////////////////////////////////////
         for (projector_espec, projectee_uids) in self.projectee_filter.iter() {
             projector_espec.consistency_check(u_data, true)?;
             for projectee_uid in projectee_uids.keys() {
@@ -341,7 +312,75 @@ impl VastFitData {
                 projector_espec.consistency_check(u_data, true)?;
             }
         }
+        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
+            // There is no logic which ensures that projection target is loaded
+            stopped_espec.consistency_check(u_data, false)?;
+            for stopper_espec in stopper_especs {
+                stopper_espec.consistency_check(u_data, true)?;
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - skills
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for item_uids in self.srqs_skill_item_map.values() {
+            for item_uid in item_uids {
+                item_uid.consistency_check(u_data, true)?;
+            }
+        }
+        for item_uid in self.srqs_missing.keys() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.overload_td_lvl.keys() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - security zone
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for item_uid in self.sec_zone_fitted.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.sec_zone_fitted_wspace_banned.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for (item_uid, val) in self.sec_zone_online_class.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
+        }
+        for item_uid in self.sec_zone_active.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for (item_uid, val) in self.sec_zone_unonlineable_class.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            val.consistency_check()?;
+        }
+        for item_uid in self.sec_zone_unactivable.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for (item_uid, item_data) in self.sec_zone_effect.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            for effect_rid in item_data.keys() {
+                effect_rid.consistency_check(u_data)?;
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Validation-related - misc
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for item_uid in self.not_loaded.iter() {
+            item_uid.consistency_check(u_data, false)?;
+        }
+        for item_uid in self.item_kind.keys() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.mods_state.keys() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.mods_active.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
         for item_uid in self.mods_cap_consumers.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.fighter_squad_size.keys() {
             item_uid.consistency_check(u_data, true)?;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
