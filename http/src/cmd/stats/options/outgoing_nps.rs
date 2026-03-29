@@ -40,6 +40,7 @@ pub(in crate::cmd) struct HStatNeutItemKinds {
     module: Option<bool>,
     minion: Option<bool>,
     bomb: Option<bool>,
+    side_effect: Option<bool>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +60,9 @@ impl HStatNeutItemKinds {
         }
         if let Some(bomb) = self.bomb {
             core_item_kinds.bomb = bomb;
+        }
+        if let Some(side_effect) = self.side_effect {
+            core_item_kinds.side_effect = side_effect;
         }
         core_item_kinds
     }
