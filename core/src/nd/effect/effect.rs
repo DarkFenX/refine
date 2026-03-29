@@ -4,7 +4,7 @@ use crate::{
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter,
         NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningOutputGetter,
-        NEffectModProjAttrsGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
+        NEffectModProjAttrsGetter, NEffectNeut, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
         NEffectSpoolAttrs,
     },
     svc::calc::CalcCustomModifier,
@@ -55,7 +55,7 @@ pub(crate) struct NEffect {
     pub(crate) local_hull_rep_opc_spec: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
     // Getters/specs - cap
     pub(crate) cap_consume_opc_spec: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
-    pub(crate) neut_opc_spec: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
+    pub(crate) neut: Option<NEffectNeut> = None,
     // Nosf spec is used only for purposes of cap balance/sim calcs
     pub(crate) nosf_opc_spec: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,

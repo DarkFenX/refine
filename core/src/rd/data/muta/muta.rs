@@ -12,6 +12,15 @@ pub(crate) struct RMuta {
     pub(crate) item_map: RMap<AItemId, AItemId>,
     pub(crate) attr_mods: RMap<RAttrId, RMutaAttrRange>,
 }
+impl LibGetId<AItemId> for RMuta {
+    fn lib_get_id(&self) -> AItemId {
+        self.id
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RMuta {
     pub(in crate::rd) fn from_a_muta(a_muta: &AMuta) -> Self {
         Self {
@@ -36,10 +45,5 @@ impl RMuta {
                 .get(&a_muta_attr.attr_id)
                 .map(|attr_rid| (*attr_rid, RMutaAttrRange::from_a_attr_range(&a_muta_attr.range)))
         }))
-    }
-}
-impl LibGetId<AItemId> for RMuta {
-    fn lib_get_id(&self) -> AItemId {
-        self.id
     }
 }

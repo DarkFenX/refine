@@ -10,6 +10,10 @@ pub(crate) struct REffectModifier {
     pub(crate) affectee_filter: AEffectAffecteeFilter,
     pub(crate) affectee_attr_rid: RAttrId,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffectModifier {
     pub(in crate::rd::data::effect) fn try_from_a_effect_mod(
         a_effect_mod: &AEffectModifier,

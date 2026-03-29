@@ -12,6 +12,31 @@ pub(crate) struct REffectBuff {
     pub(crate) attr_merge: Option<REffectBuffAttrMerge>,
     pub(crate) full: Vec<REffectBuffFull>,
 }
+
+pub(crate) struct REffectBuffAttrMerge {
+    pub(crate) scope: REffectBuffScope,
+}
+
+pub(crate) struct REffectBuffFull {
+    pub(crate) buff_rid: RBuffId,
+    pub(crate) strength: REffectBuffStrength,
+    pub(crate) scope: REffectBuffScope,
+}
+
+pub(crate) enum REffectBuffStrength {
+    Attr(RAttrId),
+    Hardcoded(Value),
+}
+
+pub(crate) enum REffectBuffScope {
+    Carrier,
+    Projected(RItemListId),
+    Fleet(RItemListId),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffectBuff {
     pub(in crate::rd::data::effect) fn try_from_a_buff(
         a_buff: &AEffectBuff,
@@ -39,9 +64,6 @@ impl REffectBuff {
     }
 }
 
-pub(crate) struct REffectBuffAttrMerge {
-    pub(crate) scope: REffectBuffScope,
-}
 impl REffectBuffAttrMerge {
     fn try_from_a_buff_attr_merge(
         a_buff_attr_merge: &AEffectBuffAttrMerge,
@@ -53,11 +75,6 @@ impl REffectBuffAttrMerge {
     }
 }
 
-pub(crate) struct REffectBuffFull {
-    pub(crate) buff_rid: RBuffId,
-    pub(crate) strength: REffectBuffStrength,
-    pub(crate) scope: REffectBuffScope,
-}
 impl REffectBuffFull {
     fn try_from_a_buff_full(
         a_buff_full: &AEffectBuffFull,
@@ -73,10 +90,6 @@ impl REffectBuffFull {
     }
 }
 
-pub(crate) enum REffectBuffStrength {
-    Attr(RAttrId),
-    Hardcoded(Value),
-}
 impl REffectBuffStrength {
     fn try_from_a_buff_strength(
         a_buff_strength: &AEffectBuffStrength,
@@ -89,11 +102,6 @@ impl REffectBuffStrength {
     }
 }
 
-pub(crate) enum REffectBuffScope {
-    Carrier,
-    Projected(RItemListId),
-    Fleet(RItemListId),
-}
 impl REffectBuffScope {
     fn try_from_a_buff_scope(
         a_buff_scope: &AEffectBuffScope,

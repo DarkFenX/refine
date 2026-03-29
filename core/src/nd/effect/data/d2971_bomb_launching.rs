@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter, NEffectGeneralOutputGetter,
-        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
+        NEffectNeut, NEffectNeutKind, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
     },
 };
 
@@ -21,13 +21,16 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
             ..
         }),
-        neut_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEffectGeneralOutputGetter::NeutBomb,
-            proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
-            proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
-            resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
-            ..
+        neut: Some(NEffectNeut {
+            kind: NEffectNeutKind::Bomb,
+            ospec: NEffectProjOpcSpec {
+                base: NEffectGeneralOutputGetter::NeutBomb,
+                proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
+                proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
+                resist: Some(NEffectResist::Standard),
+                limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
+                ..
+            },
         }),
         ecm_opc_spec: Some(NEffectProjOpcSpec {
             base: NEffectEcmOutputGetter::Bomb,

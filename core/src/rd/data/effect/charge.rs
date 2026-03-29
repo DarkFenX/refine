@@ -9,6 +9,25 @@ pub(crate) struct REffectCharge {
     pub(crate) location: REffectChargeLoc,
     pub(crate) activates_charge: bool,
 }
+
+pub(crate) enum REffectChargeLoc {
+    Loaded(NEffectChargeDepl),
+    Autocharge(RAttrId),
+    TargetAttack,
+}
+impl REffectChargeLoc {
+    pub(crate) fn get_autocharge_attr_rid(&self) -> Option<RAttrId> {
+        match self {
+            Self::Loaded(_) => None,
+            Self::Autocharge(attr_rid) => Some(*attr_rid),
+            Self::TargetAttack => None,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffectCharge {
     pub(in crate::rd::data::effect) fn try_from_n_charge(
         n_charge: &NEffectCharge,
@@ -21,11 +40,6 @@ impl REffectCharge {
     }
 }
 
-pub(crate) enum REffectChargeLoc {
-    Loaded(NEffectChargeDepl),
-    Autocharge(RAttrId),
-    TargetAttack,
-}
 impl REffectChargeLoc {
     pub(in crate::rd::data::effect) fn try_from_n_charge_loc(
         n_charge_loc: &NEffectChargeLoc,
@@ -38,13 +52,6 @@ impl REffectChargeLoc {
                 Some(Self::Autocharge(attr_rid))
             }
             NEffectChargeLoc::TargetAttack(_) => Some(Self::TargetAttack),
-        }
-    }
-    pub(crate) fn get_autocharge_attr_rid(&self) -> Option<RAttrId> {
-        match self {
-            Self::Loaded(_) => None,
-            Self::Autocharge(attr_rid) => Some(*attr_rid),
-            Self::TargetAttack => None,
         }
     }
 }

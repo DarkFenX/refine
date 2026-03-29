@@ -30,6 +30,10 @@ pub(in crate::rd) struct RData {
     pub(in crate::rd) mutas: RMap<AItemId, RcMuta>,
     pub(in crate::rd) abils: RMap<AAbilId, RAbil>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RData {
     pub(in crate::rd) fn from_a_data(a_data: AData) -> Self {
         let mut items: RMap<_, _> = a_data
@@ -91,8 +95,8 @@ impl RData {
             buff_aid_rid_map.insert(a_buff.id, buff_rid);
         }
         // Create runtime "constants"
-        let attr_consts = RAttrConsts::new(&attr_aid_rid_map);
-        let effect_consts = REffectConsts::new(&effect_aid_rid_map);
+        let attr_consts = RAttrConsts::from_id_map(&attr_aid_rid_map);
+        let effect_consts = REffectConsts::from_id_map(&effect_aid_rid_map);
         // Fill in data which wasn't filled during instantiation (e.g. depends on slab keys)
         for (_, r_effect) in effects.iter_mut() {
             Arc::get_mut(r_effect).unwrap().fill_runtime(

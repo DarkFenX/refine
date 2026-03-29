@@ -31,3 +31,4 @@ class StatNeutItemKinds:
     module: bool | type[Absent] = Absent
     minion: bool | type[Absent] = Absent
     bomb: bool | type[Absent] = Absent
+    side_effect: bool | type[Absent] = Absent

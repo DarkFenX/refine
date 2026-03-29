@@ -13,6 +13,10 @@ pub(crate) struct RItemEffectData {
     pub(crate) charge_reload_duration: PValue,
     pub(crate) projectee_filter: Option<RItemListId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemEffectData {
     pub(in crate::rd::data::item) fn from_a_effect_data(
         a_effect_data: &AItemEffectData,

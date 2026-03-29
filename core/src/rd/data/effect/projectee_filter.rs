@@ -10,6 +10,18 @@ pub(crate) enum REffectProjecteeFilter {
     ItemListAttr(RAttrId),
 }
 impl REffectProjecteeFilter {
+    pub(crate) fn get_item_list_attr_rid(&self) -> Option<RAttrId> {
+        match self {
+            Self::ItemList(_) => None,
+            Self::ItemListAttr(attr_rid) => Some(*attr_rid),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl REffectProjecteeFilter {
     pub(in crate::rd::data::effect) fn try_from_n_projectee_filter(
         n_projectee_filter: &NEffectProjecteeFilter,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
@@ -24,12 +36,6 @@ impl REffectProjecteeFilter {
                 let attr_rid = *attr_aid_rid_map.get(attr_aid)?;
                 Some(Self::ItemListAttr(attr_rid))
             }
-        }
-    }
-    pub(crate) fn get_item_list_attr_rid(&self) -> Option<RAttrId> {
-        match self {
-            Self::ItemList(_) => None,
-            Self::ItemListAttr(attr_rid) => Some(*attr_rid),
         }
     }
 }

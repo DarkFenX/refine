@@ -19,7 +19,16 @@ pub(crate) enum RState {
     Overload,
 }
 impl RState {
-    pub(crate) fn from_a_state(a_state: &AState) -> Self {
+    pub(crate) fn iter() -> std::array::IntoIter<Self, 6> {
+        STATES.into_iter()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl RState {
+    pub(in crate::rd::data) fn from_a_state(a_state: &AState) -> Self {
         match a_state {
             AState::Disabled => Self::Disabled,
             AState::Offline => Self::Offline,
@@ -27,8 +36,5 @@ impl RState {
             AState::Active => Self::Active,
             AState::Overload => Self::Overload,
         }
-    }
-    pub(crate) fn iter() -> std::array::IntoIter<Self, 6> {
-        STATES.into_iter()
     }
 }

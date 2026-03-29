@@ -294,13 +294,13 @@ impl Vast {
         }
     }
     fn handle_neut_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if let Some(neut_ospec) = effect.neut_opc_spec {
+        if let Some(neut) = &effect.neut {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.out_neuts.add_entry(item_uid, effect.rid, neut_ospec);
+            fit_data.out_neuts.add_entry(item_uid, effect.rid, neut.ospec);
         }
     }
     fn handle_neut_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if effect.neut_opc_spec.is_some() {
+        if effect.neut.is_some() {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.out_neuts.remove_l2(item_uid, &effect.rid);
         }

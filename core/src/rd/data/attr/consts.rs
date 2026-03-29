@@ -217,8 +217,12 @@ pub(crate) struct RAttrConsts {
     pub(crate) buff_merge_ids_strs: Vec<(RAttrId, RAttrId)>,
     pub(crate) buff_merge_ids: Vec<RAttrId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RAttrConsts {
-    pub(in crate::rd) fn new(attr_aid_rid_map: &RMap<AAttrId, RAttrId>) -> Self {
+    pub(in crate::rd) fn from_id_map(attr_aid_rid_map: &RMap<AAttrId, RAttrId>) -> Self {
         let limited_precision = AAttrId::LIMITED_PRECISION_ATTRS
             .iter()
             .filter_map(|aid| attr_aid_rid_map.get(aid).copied())

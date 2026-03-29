@@ -40,6 +40,15 @@ pub(crate) struct RItem {
     pub(crate) disallowed_in_wspace: bool,
     pub(crate) axt: RItemAXt,
 }
+impl LibGetId<AItemId> for RItem {
+    fn lib_get_id(&self) -> AItemId {
+        self.aid
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItem {
     pub(in crate::rd) fn from_a_item(a_item: &AItem) -> Self {
         Self {
@@ -129,11 +138,6 @@ impl RItem {
             attr_consts,
             effect_consts,
         );
-    }
-}
-impl LibGetId<AItemId> for RItem {
-    fn lib_get_id(&self) -> AItemId {
-        self.aid
     }
 }
 

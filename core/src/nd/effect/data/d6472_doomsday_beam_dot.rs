@@ -1,4 +1,4 @@
-use super::shared::{get_aoe_dd_side_neut_ospec, make_dd_self_debuffs};
+use super::shared::{get_aoe_dd_warmup_neut, make_dd_self_debuffs};
 use crate::{
     ad::{AEffectBuff, AEffectId},
     ed::EEffectId,
@@ -22,7 +22,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
             ..
         }),
-        neut_opc_spec: Some(get_aoe_dd_side_neut_ospec()),
+        neut: Some(get_aoe_dd_warmup_neut()),
         ..
     }
 }

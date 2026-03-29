@@ -24,7 +24,7 @@ pub(crate) enum NEffectGeneralOutputGetter {
     NeutNosf,
     NeutAoe,
     NeutBomb,
-    NeutDdSideEffect,
+    NeutDdWarmup,
     // Variants specific to a single effect
     PowerBooster,
 }
@@ -50,7 +50,7 @@ impl NEffectOutputGetter for NEffectGeneralOutputGetter {
             Self::NeutNosf => get_neut_nosf(ctx, calc, item_uid, effect),
             Self::NeutAoe => get_neut_aoe(ctx, calc, item_uid),
             Self::NeutBomb => get_neut_bomb(ctx, calc, item_uid),
-            Self::NeutDdSideEffect => get_attr(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true),
+            Self::NeutDdWarmup => get_attr(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true),
             Self::PowerBooster => get_power_booster(ctx, calc, item_uid),
         }
     }

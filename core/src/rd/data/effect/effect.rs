@@ -6,7 +6,8 @@ use crate::{
     },
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
-        REffectModifier, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
+        REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem,
+        RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -60,12 +61,52 @@ pub(crate) struct REffect {
     pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) neut_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) neut: Option<REffectNeut>,
     pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<NEffectEcmOutputGetter>>,
 }
+impl REffect {
+    pub(crate) fn is_active(&self) -> bool {
+        self.state == RState::Active
+    }
+    pub(crate) fn activates_charge(&self) -> bool {
+        let charge_info = match &self.charge {
+            Some(charge_info) => charge_info,
+            None => return false,
+        };
+        if !charge_info.activates_charge {
+            return false;
+        }
+        matches!(charge_info.location, REffectChargeLoc::Loaded(_))
+    }
+    pub(crate) fn activates_charge_for_item(&self, item: &RItem) -> bool {
+        if !self.activates_charge() {
+            return false;
+        }
+        // Only default effects can activate regular charge
+        let defeff_rid = match item.defeff_rid {
+            Some(defeff_rid) => defeff_rid,
+            None => return false,
+        };
+        defeff_rid == self.rid
+    }
+    pub(crate) fn activates_autocharge(&self) -> bool {
+        let charge_info = match &self.charge {
+            Some(charge_info) => charge_info,
+            None => return false,
+        };
+        if !charge_info.activates_charge {
+            return false;
+        }
+        matches!(charge_info.location, REffectChargeLoc::Autocharge(_))
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffect {
     pub(in crate::rd) fn from_a_effect(effect_rid: REffectId, a_effect: &AEffect) -> Self {
         let n_effect = N_EFFECT_MAP.get(&a_effect.id);
@@ -112,7 +153,7 @@ impl REffect {
             local_armor_rep_opc_spec: Default::default(),
             local_hull_rep_opc_spec: Default::default(),
             cap_consume_opc_spec: Default::default(),
-            neut_opc_spec: Default::default(),
+            neut: Default::default(),
             nosf_opc_spec: Default::default(),
             outgoing_cap_opc_spec: Default::default(),
             cap_inject_opc_spec: Default::default(),
@@ -238,10 +279,10 @@ impl REffect {
                 .cap_consume_opc_spec
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
-            self.neut_opc_spec = n_effect
-                .neut_opc_spec
+            self.neut = n_effect
+                .neut
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|neut| REffectNeut::from_n_effect_neut(neut, attr_aid_rid_map));
             self.nosf_opc_spec = n_effect
                 .nosf_opc_spec
                 .as_ref()
@@ -269,40 +310,5 @@ impl REffect {
             })
         }
         self.is_active_with_duration = self.state == RState::Active && self.duration_attr_rid.is_some();
-    }
-    pub(crate) fn is_active(&self) -> bool {
-        self.state == RState::Active
-    }
-    // Misc methods
-    pub(crate) fn activates_charge(&self) -> bool {
-        let charge_info = match &self.charge {
-            Some(charge_info) => charge_info,
-            None => return false,
-        };
-        if !charge_info.activates_charge {
-            return false;
-        }
-        matches!(charge_info.location, REffectChargeLoc::Loaded(_))
-    }
-    pub(crate) fn activates_charge_for_item(&self, item: &RItem) -> bool {
-        if !self.activates_charge() {
-            return false;
-        }
-        // Only default effects can activate regular charge
-        let defeff_rid = match item.defeff_rid {
-            Some(defeff_rid) => defeff_rid,
-            None => return false,
-        };
-        defeff_rid == self.rid
-    }
-    pub(crate) fn activates_autocharge(&self) -> bool {
-        let charge_info = match &self.charge {
-            Some(charge_info) => charge_info,
-            None => return false,
-        };
-        if !charge_info.activates_charge {
-            return false;
-        }
-        matches!(charge_info.location, REffectChargeLoc::Autocharge(_))
     }
 }

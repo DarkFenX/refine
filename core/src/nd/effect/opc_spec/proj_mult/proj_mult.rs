@@ -33,7 +33,7 @@ pub(crate) enum NEffectProjMultGetter {
     Neut,
     AoeDd,
     AoeDdRange,
-    AoeDdSideNeut,
+    AoeDdWarmupNeut,
     AoeBurst,
     AoeBurstRange,
     // Variants specific to a single effect
@@ -71,7 +71,7 @@ impl NEffectProjMultGetter {
             Self::Neut => get_neut_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::AoeDd => get_aoe_dd_dmg_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
             Self::AoeDdRange => get_aoe_dd_range_mult(ctx, calc, projector_uid, proj_data),
-            Self::AoeDdSideNeut => get_aoe_dd_side_neut_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
+            Self::AoeDdWarmupNeut => get_aoe_dd_side_neut_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
             Self::AoeBurst => get_aoe_burst_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::AoeBurstRange => get_aoe_burst_range_mult(ctx, calc, projector_uid, effect, proj_data),
             // Variants specific to a single effect

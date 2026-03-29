@@ -33,8 +33,8 @@ impl Vast {
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let ospec = match effect.neut_opc_spec {
-                Some(ospec) => ospec,
+            let ospec = match &effect.neut {
+                Some(neut) => neut.ospec,
                 None => continue,
             };
             let mut accum = SeqAccum::new_stack();

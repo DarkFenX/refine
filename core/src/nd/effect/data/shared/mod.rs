@@ -1,4 +1,4 @@
-pub(in crate::nd::effect::data) use aoe_dd_side_neut::get_aoe_dd_side_neut_ospec;
+pub(in crate::nd::effect::data) use aoe_dd_warmup_neut::get_aoe_dd_warmup_neut;
 pub(in crate::nd::effect::data) use assign_effect::assign_defeff_to_item;
 pub(in crate::nd::effect::data) use missile_dmg_self_srq::missile_dmg_self_srq_update_effect;
 pub(in crate::nd::effect::data) use mods::{
@@ -6,7 +6,7 @@ pub(in crate::nd::effect::data) use mods::{
     mk_mjd_sig_mod, mk_mwd_sig_mod, mk_prop_mass_mod, mk_subsystem_mod,
 };
 
-mod aoe_dd_side_neut;
+mod aoe_dd_warmup_neut;
 mod assign_effect;
 mod missile_dmg_self_srq;
 mod mods;

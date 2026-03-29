@@ -78,16 +78,15 @@ fn get_nps(
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
             continue;
         }
-        let u_item = ctx.u_data.items.get(item_uid);
-        if !item_kinds.resolve(u_item) {
-            continue;
-        }
         for (&effect_rid, ospec) in item_data.iter() {
+            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            if !item_kinds.resolve(effect) {
+                continue;
+            }
             let cseq = match reuse_cseq_map.get(&effect_rid) {
                 Some(cseq) => cseq,
                 None => continue,
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
                 StatTimeOptions::Burst(burst_opts) => aggr_proj_first(

@@ -10,6 +10,15 @@ pub(crate) struct RAbil {
     pub(crate) effect_aid: AEffectId,
     pub(crate) effect_rid: REffectId,
 }
+impl LibGetId<AAbilId> for RAbil {
+    fn lib_get_id(&self) -> AAbilId {
+        self.aid
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RAbil {
     pub(in crate::rd) fn from_a_abil(a_abil: &AAbil) -> Self {
         Self {
@@ -22,10 +31,5 @@ impl RAbil {
     pub(in crate::rd) fn fill_runtime(&mut self, effect_aid_rid_map: &RMap<AEffectId, REffectId>) {
         // Adapted data generator guarantees that all abilities will have a backing effect
         self.effect_rid = *effect_aid_rid_map.get(&self.effect_aid).unwrap()
-    }
-}
-impl LibGetId<AAbilId> for RAbil {
-    fn lib_get_id(&self) -> AAbilId {
-        self.aid
     }
 }

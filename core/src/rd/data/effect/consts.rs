@@ -10,8 +10,12 @@ pub(crate) struct REffectConsts {
     pub(crate) rig_slot: Option<REffectId>,
     pub(crate) service_slot: Option<REffectId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffectConsts {
-    pub(in crate::rd) fn new(effect_aid_rid_map: &RMap<AEffectId, REffectId>) -> Self {
+    pub(in crate::rd) fn from_id_map(effect_aid_rid_map: &RMap<AEffectId, REffectId>) -> Self {
         Self {
             adaptive_armor_hardener: effect_aid_rid_map.get(&AEffectId::ADAPTIVE_ARMOR_HARDENER).copied(),
             hi_power: effect_aid_rid_map.get(&AEffectId::HI_POWER).copied(),
