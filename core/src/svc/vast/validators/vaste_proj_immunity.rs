@@ -46,7 +46,7 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> bool {
         for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO) {
+            if funcs::get_resist_mult(ctx, calc, projectee_aspec) == Some(PValue::ZERO) {
                 match kfs.is_empty() {
                     true => return false,
                     false => {
@@ -90,9 +90,7 @@ impl VastFitData {
     ) -> Option<ValProjImmunityFail> {
         let mut items = HashMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if funcs::get_resist_mult_by_projectee_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO)
-                && projector_especs.len() > 0
-            {
+            if funcs::get_resist_mult(ctx, calc, projectee_aspec) == Some(PValue::ZERO) && projector_especs.len() > 0 {
                 let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_aspec.item_uid);
                 for projector_espec in projector_especs {
                     if kfs.contains(&projector_espec.item_uid) {

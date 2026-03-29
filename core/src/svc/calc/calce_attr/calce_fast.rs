@@ -19,6 +19,14 @@ impl Calc {
     // Thin wrappers around core query methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // - Extra value as an option
+    pub(in crate::svc) fn get_item_attr_odogma(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+    ) -> Option<Value> {
+        self.get_item_attr_rfull(ctx, item_uid, attr_rid).ok().map(|v| v.dogma)
+    }
     pub(in crate::svc) fn get_item_attr_oextra(
         &mut self,
         ctx: SvcCtx,

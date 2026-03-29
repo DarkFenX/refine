@@ -49,7 +49,10 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
 
 def run_server(*, proj_root: Path, config_path: Path, optimized: bool, cpu_affinity: list[int]) -> ServerInfo:
     binary_path = proj_root / 'target' / get_profile_name(optimized=optimized) / 'refine-http'
-    popen = subprocess.Popen([binary_path, config_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    popen = subprocess.Popen(
+        [binary_path, config_path],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL)
     if cpu_affinity:
         psutil.Process(pid=popen.pid).cpu_affinity(cpus=cpu_affinity)
     return ServerInfo(popen=popen)

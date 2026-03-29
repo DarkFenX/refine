@@ -2,8 +2,11 @@ use crate::{ad::AAttrId, nd::NEffectResist, rd::RAttrId, util::RMap};
 
 #[derive(Copy, Clone)]
 pub(crate) enum REffectResist {
+    // On-effect reference to resist attr ID, or, if it is not defined, on-item reference from the
+    // standard remoteResistanceID attribute
     Standard,
-    Attr(RAttrId),
+    // Defines attribute whose value will have reference to resistance attribute ID
+    AttrRef(RAttrId),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,7 +19,7 @@ impl REffectResist {
     ) -> Option<Self> {
         Some(match n_effect_resist {
             NEffectResist::Standard => Self::Standard,
-            NEffectResist::Attr(attr_aid) => Self::Attr(*attr_aid_rid_map.get(&attr_aid)?),
+            NEffectResist::AttrRef(attr_aid) => Self::AttrRef(*attr_aid_rid_map.get(&attr_aid)?),
         })
     }
 }

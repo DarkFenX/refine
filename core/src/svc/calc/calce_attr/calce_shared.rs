@@ -21,7 +21,7 @@ impl Calc {
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
         let resist_attr_rid = cmod.raw.resist_attr_rid?;
         let item_uid = cmod.ctx.get_item_uid()?;
-        let resist = funcs::get_resist_mult_by_projectee_aspec(ctx, self, &AttrSpec::new(item_uid, resist_attr_rid))?;
+        let resist = funcs::get_resist_mult(ctx, self, &AttrSpec::new(item_uid, resist_attr_rid))?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {

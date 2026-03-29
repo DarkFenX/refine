@@ -74,12 +74,13 @@ where
             if let Some(resist) = ospec.resist {
                 let resist_mult = match resist {
                     REffectResist::Standard => {
-                        funcs::get_effect_resist_mult(ctx, calc, projector_uid, effect, projectee_uid)
+                        funcs::get_effect_default_resist_mult(ctx, calc, projector_uid, effect, projectee_uid)
                     }
-                    REffectResist::Attr(resist_attr_rid) => funcs::get_resist_mult_by_projectee_aspec(
+                    REffectResist::AttrRef(resist_ref_attr_rid) => funcs::get_referenced_resist_mult(
                         ctx,
                         calc,
-                        &AttrSpec::new(projectee_uid, resist_attr_rid),
+                        &AttrSpec::new(projector_uid, resist_ref_attr_rid),
+                        projectee_uid,
                     ),
                 };
                 match resist_mult {
