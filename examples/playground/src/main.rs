@@ -14,7 +14,7 @@ use chrono::Utc;
 use itertools::Itertools;
 use rc::{
     AddMode, ItemCommon, ItemMutCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone,
-    SecZoneCorruption, SkillLevel, SolarSystem, Src, StOption, VERSION,
+    SecZoneCorruption, SkillLevel, SolarSystem, Src, VERSION,
     ad::{AState, AdaptedDataCacher},
     ed::{EItemCatId, EveDataHandler},
     val::ValOptions,
