@@ -42,7 +42,7 @@ impl Svc {
         item_uid: UItemId,
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
-        stagger: StatCapSimStaggerInt,
+        stagger: &StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast.get_stat_item_cap_sim(
             reuse_cseq_map,

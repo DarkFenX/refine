@@ -30,7 +30,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     calc: &mut Calc,
     vast: &Vast,
     optional_reloads: Option<OptionalReload>,
-    stagger: StatCapSimStaggerInt,
+    stagger: &StatCapSimStaggerInt,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
 ) -> BinaryHeap<CapSimEvent> {
@@ -42,7 +42,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         calc,
         &mut merger,
         cycling_options,
-        &stagger,
+        stagger,
         fit_data,
     );
     fill_nosfs(
@@ -51,7 +51,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         calc,
         &mut merger,
         cycling_options,
-        &stagger,
+        stagger,
         fit_data,
     );
     fill_incoming_neuts(
@@ -60,7 +60,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         calc,
         &mut merger,
         cycling_options,
-        &stagger,
+        stagger,
         vast,
         cap_item_uid,
     );
@@ -70,7 +70,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         calc,
         &mut merger,
         cycling_options,
-        &stagger,
+        stagger,
         vast,
         cap_item_uid,
     );

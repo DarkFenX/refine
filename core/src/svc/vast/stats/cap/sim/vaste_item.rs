@@ -29,7 +29,7 @@ impl Vast {
         item_uid: UItemId,
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
-        stagger: StatCapSimStaggerInt,
+        stagger: &StatCapSimStaggerInt,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let max_cap = Vast::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();

@@ -427,7 +427,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 item_uid,
                 cap_perc,
                 optional_reloads,
-                StatCapSimStaggerInt::from_pub(sol, &stagger),
+                &StatCapSimStaggerInt::from_pub(sol, &stagger),
             )
             .map_err(|e| ItemStatError::from_svc_err(&sol.u_data.items, e))
     }
