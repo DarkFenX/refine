@@ -1,9 +1,9 @@
 from fw import approx
 
 
-def test_affectee_filter_item(client, consts):
-    # Ensure that hardcoded buffs defined on hardcoded effects are not cleaned up. Hardcoded buffs
-    # on hardcoded effects are used on stability generators (sov upgrade effects)
+def test_adg_cleanup(client, consts):
+    # Stability generators use hardcoded buffs on hardcoded effects. This test ensures that those
+    # are not cleaned up during adapted data generation.
     eve_attr_id = client.mk_eve_attr()
     client.mk_eve_buff(
         id_=consts.EveBuff.capacitor_recharge_bonus,
