@@ -9,6 +9,10 @@ pub(super) enum CEffectAffecteeFilter {
     LocSrq(CEffectLocation, CModifierSrq),
     OwnSrq(CModifierSrq),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CEffectAffecteeFilter {
     pub(super) fn from_adapted(a_effect_affectee_filter: &rc::ad::AEffectAffecteeFilter) -> Self {
         match a_effect_affectee_filter {

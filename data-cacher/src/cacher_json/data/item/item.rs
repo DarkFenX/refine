@@ -23,6 +23,26 @@ pub(in crate::cacher_json::data) struct CItem {
     is_ice_harvester: bool,
     disallowed_in_wspace: bool,
 }
+
+#[serde_with::serde_as]
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+struct CItemAttr {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    id: rc::ad::AAttrId,
+    val: f64,
+}
+
+#[serde_with::serde_as]
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+struct CItemEffect {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    id: rc::ad::AEffectId,
+    data: CItemEffectData,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CItem {
     pub(in crate::cacher_json::data) fn from_adapted(a_item: &rc::ad::AItem) -> Self {
         Self {
@@ -107,20 +127,4 @@ impl CItem {
             disallowed_in_wspace: self.disallowed_in_wspace,
         }
     }
-}
-
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct CItemAttr {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::ad::AAttrId,
-    val: f64,
-}
-
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct CItemEffect {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::ad::AEffectId,
-    data: CItemEffectData,
 }

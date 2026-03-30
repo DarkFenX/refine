@@ -3,6 +3,51 @@ pub(super) struct CEffectBuffInfo {
     attr_merge: Option<CEffectBuffAttrMerge>,
     full: Vec<CEffectBuffFull>,
 }
+
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+struct CEffectBuffAttrMerge {
+    duration: CEffectBuffDuration,
+    scope: CEffectBuffScope,
+}
+
+#[serde_with::serde_as]
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+struct CEffectBuffFull {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    buff_id: rc::ad::ABuffId,
+    strength: CEffectBuffStrength,
+    duration: CEffectBuffDuration,
+    scope: CEffectBuffScope,
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum CEffectBuffStrength {
+    Attr(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
+    Hardcoded(f64),
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum CEffectBuffDuration {
+    None,
+    AttrMs(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum CEffectBuffScope {
+    Carrier,
+    Projected(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AItemListId),
+    Fleet(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AItemListId),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CEffectBuffInfo {
     pub(super) fn from_adapted(a_effect_buff: &rc::ad::AEffectBuff) -> Self {
         Self {
@@ -29,11 +74,6 @@ impl CEffectBuffInfo {
     }
 }
 
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct CEffectBuffAttrMerge {
-    duration: CEffectBuffDuration,
-    scope: CEffectBuffScope,
-}
 impl CEffectBuffAttrMerge {
     fn from_adapted(a_buff_attr_merge: &rc::ad::AEffectBuffAttrMerge) -> Self {
         Self {
@@ -49,15 +89,6 @@ impl CEffectBuffAttrMerge {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct CEffectBuffFull {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
-    buff_id: rc::ad::ABuffId,
-    strength: CEffectBuffStrength,
-    duration: CEffectBuffDuration,
-    scope: CEffectBuffScope,
-}
 impl CEffectBuffFull {
     fn from_adapted(a_buff_full: &rc::ad::AEffectBuffFull) -> Self {
         Self {
@@ -77,13 +108,6 @@ impl CEffectBuffFull {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum CEffectBuffStrength {
-    Attr(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
-    Hardcoded(f64),
-}
 impl CEffectBuffStrength {
     fn from_adapted(a_buff_str: &rc::ad::AEffectBuffStrength) -> Self {
         match a_buff_str {
@@ -99,13 +123,6 @@ impl CEffectBuffStrength {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum CEffectBuffDuration {
-    None,
-    AttrMs(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
-}
 impl CEffectBuffDuration {
     fn from_adapted(a_buff_duration: &rc::ad::AEffectBuffDuration) -> Self {
         match a_buff_duration {
@@ -121,14 +138,6 @@ impl CEffectBuffDuration {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum CEffectBuffScope {
-    Carrier,
-    Projected(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AItemListId),
-    Fleet(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AItemListId),
-}
 impl CEffectBuffScope {
     fn from_adapted(a_buff_scope: &rc::ad::AEffectBuffScope) -> Self {
         match a_buff_scope {

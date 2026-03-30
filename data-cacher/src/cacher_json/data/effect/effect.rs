@@ -30,6 +30,10 @@ pub(in crate::cacher_json::data) struct CEffect {
     #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
     resist_attr_id: Option<rc::ad::AAttrId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CEffect {
     pub(in crate::cacher_json::data) fn from_adapted(a_effect: &rc::ad::AEffect) -> Self {
         Self {

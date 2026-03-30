@@ -11,6 +11,10 @@ pub(in crate::cacher_json::data) struct CAttr {
     #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
     max_attr_id: Option<rc::ad::AAttrId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CAttr {
     pub(in crate::cacher_json::data) fn from_adapted(a_attr: &rc::ad::AAttr) -> Self {
         Self {

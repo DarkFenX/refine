@@ -8,6 +8,10 @@ pub(super) struct CItemEffectData {
     #[serde_as(as = "Option<serde_with::DisplayFromStr>", no_default)]
     projectee_filter: Option<rc::ad::AItemListId>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CItemEffectData {
     pub(super) fn from_adapted(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {
         Self {
