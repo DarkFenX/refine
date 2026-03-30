@@ -102,7 +102,7 @@ fn get_neut_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outp
     let instance = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
     let instance = match instance > Value::ZERO {
         true => PValue::from_value_unchecked(instance),
-        // Do not return neut stats for non-neut bombs
+        // Do not return neut output for non-neut bombs
         false => return None,
     };
     Some(Output::Simple(OutputSimple {

@@ -51,12 +51,6 @@ impl Value {
         Self(val as f64)
     }
 }
-// TODO: consider if it's still needed
-impl From<Value> for f64 {
-    fn from(v: Value) -> Self {
-        v.0
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ordering/equality/hash - those are implemented manually using conversion of values into ordered
