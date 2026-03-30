@@ -19,7 +19,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 buff_id: ABuffId::SIGNATURE_RADIUS_PENALTY,
                 strength: AEffectBuffStrength::Attr(AAttrId::SIG_RADIUS_BONUS),
                 duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
-                scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
             }],
             ..
         }),

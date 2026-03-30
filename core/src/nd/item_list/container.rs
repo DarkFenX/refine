@@ -11,9 +11,10 @@ pub(crate) static N_ITEM_LIST_MAP: LazyLock<RMap<AItemListId, NItemList>> = Lazy
 fn get_item_list_map() -> RMap<AItemListId, NItemList> {
     [
         data::c1_ships::mk_n_item_list(),
-        data::c2_ships_drones_fighters_entities::mk_n_item_list(),
-        data::c3_capitals_freighters::mk_n_item_list(),
-        data::c4_panic_eligible::mk_n_item_list(),
+        data::c2_ships_drones_fighters::mk_n_item_list(),
+        data::c3_ships_drones_fighters_entities::mk_n_item_list(),
+        data::c4_capitals_freighters::mk_n_item_list(),
+        data::c5_panic_eligible::mk_n_item_list(),
     ]
     .into_iter()
     .map(|n_item_list| (n_item_list.aid, n_item_list))

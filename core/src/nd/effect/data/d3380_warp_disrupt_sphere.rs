@@ -42,7 +42,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
                     strength: AEffectBuffStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
                     duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,

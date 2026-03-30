@@ -41,7 +41,7 @@ fn make_effect() -> AEffect {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
                     strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
                     duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 // Bubble prevents dictor from tethering as long as it's up
                 AEffectBuffFull {

@@ -20,13 +20,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                     buff_id: ABuffId::DAMP_BURST_TARGETING_RANGE_PENALTY,
                     strength: AEffectBuffStrength::Attr(AAttrId::MAX_TARGET_RANGE_BONUS),
                     duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
-                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::DAMP_BURST_SCAN_RESOLUTION_PENALTY,
                     strength: AEffectBuffStrength::Attr(AAttrId::SCAN_RESOLUTION_BONUS),
                     duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
-                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
+                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
             ],
             ..

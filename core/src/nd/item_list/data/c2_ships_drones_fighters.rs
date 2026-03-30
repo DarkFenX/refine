@@ -1,0 +1,19 @@
+use crate::{
+    ad::{AItem, AItemCatId, AItemListId},
+    nd::NItemList,
+};
+
+const A_ITEM_LIST_ID: AItemListId = AItemListId::SHIPS_DRONES_FIGHTERS;
+
+pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
+    NItemList {
+        eid: None,
+        aid: A_ITEM_LIST_ID,
+        adg_item_filter_fn: Some(item_filter),
+        ..
+    }
+}
+
+fn item_filter(a_item: &AItem) -> bool {
+    [AItemCatId::SHIP, AItemCatId::DRONE, AItemCatId::FIGHTER].contains(&a_item.cat_id)
+}
