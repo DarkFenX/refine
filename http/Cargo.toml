@@ -27,4 +27,4 @@ time = { version = ">=0.3.47", features = ["macros"] }
 tracing = ">=0.1.44"
 tracing-appender = ">=0.2.4"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
-uuid = { version = ">=1.22.0", features = ["v4", "fast-rng"] }
+uuid = { version = ">=1.23.0", features = ["v4", "fast-rng"] }
