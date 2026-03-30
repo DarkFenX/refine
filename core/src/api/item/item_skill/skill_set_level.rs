@@ -6,7 +6,7 @@ impl SolarSystem {
         if u_skill.get_level() == level {
             return;
         }
-        u_skill.set_level(level.into());
+        u_skill.set_level(level);
         let fit_skill = self
             .u_data
             .fits

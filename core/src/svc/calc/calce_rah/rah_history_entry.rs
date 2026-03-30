@@ -27,10 +27,10 @@ impl RahSimHistoryEntry {
                 explosive: resonances.explosive.dogma.sig_rounded(SIG_ROUND_DIGITS),
             },
             false => DmgKinds {
-                em: resonances.em.dogma.into(),
-                thermal: resonances.thermal.dogma.into(),
-                kinetic: resonances.kinetic.dogma.into(),
-                explosive: resonances.explosive.dogma.into(),
+                em: resonances.em.dogma,
+                thermal: resonances.thermal.dogma,
+                kinetic: resonances.kinetic.dogma,
+                explosive: resonances.explosive.dogma,
             },
         };
         Self {

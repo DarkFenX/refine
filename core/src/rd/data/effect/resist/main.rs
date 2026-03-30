@@ -19,7 +19,7 @@ impl REffectResist {
     ) -> Option<Self> {
         Some(match n_effect_resist {
             NEffectResist::Standard => Self::Standard,
-            NEffectResist::AttrRef(attr_aid) => Self::AttrRef(*attr_aid_rid_map.get(&attr_aid)?),
+            NEffectResist::AttrRef(attr_aid) => Self::AttrRef(*attr_aid_rid_map.get(attr_aid)?),
         })
     }
 }

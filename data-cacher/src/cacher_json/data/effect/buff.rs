@@ -54,12 +54,8 @@ impl CEffectBuffInfo {
             attr_merge: a_effect_buff
                 .attr_merge
                 .as_ref()
-                .map(|a_buff_merge| CEffectBuffAttrMerge::from_adapted(a_buff_merge)),
-            full: a_effect_buff
-                .full
-                .iter()
-                .map(|a_buff_full| CEffectBuffFull::from_adapted(a_buff_full))
-                .collect(),
+                .map(CEffectBuffAttrMerge::from_adapted),
+            full: a_effect_buff.full.iter().map(CEffectBuffFull::from_adapted).collect(),
         }
     }
     pub(super) fn into_adapted(self) -> rc::ad::AEffectBuff {

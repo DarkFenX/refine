@@ -286,17 +286,13 @@ impl Vast {
                     // Not every item is guaranteed to be loaded
                     if let Some(item_cat_id) = item.get_category_id() {
                         match item_cat_id {
-                            AItemCatId::MODULE => {
-                                if !matches!(fit.ship_kind, UShipKind::Ship) {
-                                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_uid, ValShipKind::Ship);
-                                }
+                            AItemCatId::MODULE if !matches!(fit.ship_kind, UShipKind::Ship) => {
+                                fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_uid, ValShipKind::Ship);
                             }
-                            AItemCatId::STRUCTURE_MODULE => {
-                                if !matches!(fit.ship_kind, UShipKind::Structure) {
-                                    fit_data
-                                        .mods_rigs_svcs_vs_ship_kind
-                                        .insert(item_uid, ValShipKind::Structure);
-                                }
+                            AItemCatId::STRUCTURE_MODULE if !matches!(fit.ship_kind, UShipKind::Structure) => {
+                                fit_data
+                                    .mods_rigs_svcs_vs_ship_kind
+                                    .insert(item_uid, ValShipKind::Structure);
                             }
                             _ => (),
                         }

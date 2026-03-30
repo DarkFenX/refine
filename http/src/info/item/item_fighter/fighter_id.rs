@@ -25,7 +25,7 @@ impl HFighterInfoId {
                 .iter_autocharges_mut()
                 .map_into_iter(|mut autocharge| {
                     (
-                        autocharge.get_cont_effect_id().into(),
+                        autocharge.get_cont_effect_id(),
                         HAutochargeInfo::from_core(&mut autocharge, item_mode),
                     )
                 })

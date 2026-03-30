@@ -24,10 +24,10 @@ impl CItemEffectData {
     }
     pub(super) fn into_adapted(self) -> rc::ad::AItemEffectData {
         rc::ad::AItemEffectData {
-            autocharge: self.autocharge.map(|v| rc::ad::AItemId::from_i32(v)),
-            cooldown: self.cooldown.map(|v| rc::ad::AValue::from_f64(v)),
-            charge_count: self.charge_count.map(|v| rc::ad::ACount::from_u32(v)),
-            charge_reload_duration: self.charge_reload_duration.map(|v| rc::ad::AValue::from_f64(v)),
+            autocharge: self.autocharge.map(rc::ad::AItemId::from_i32),
+            cooldown: self.cooldown.map(rc::ad::AValue::from_f64),
+            charge_count: self.charge_count.map(rc::ad::ACount::from_u32),
+            charge_reload_duration: self.charge_reload_duration.map(rc::ad::AValue::from_f64),
             projectee_filter: self.projectee_filter,
         }
     }

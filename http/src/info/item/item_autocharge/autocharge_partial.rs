@@ -29,7 +29,7 @@ impl HAutochargeInfoPartial {
             type_id: core_autocharge.get_type_id().into_i32(),
             fit_id: core_autocharge.get_fit().get_fit_id(),
             cont_item_id: core_autocharge.get_cont_item().get_item_id(),
-            cont_effect_id: core_autocharge.get_cont_effect_id().into(),
+            cont_effect_id: core_autocharge.get_cont_effect_id(),
             enabled: core_autocharge.get_state(),
         }
     }

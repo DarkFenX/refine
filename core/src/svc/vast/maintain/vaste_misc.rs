@@ -23,22 +23,22 @@ impl Vast {
                                         missing_skills_entry.remove();
                                     }
                                 }
-                                false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_level().into()),
+                                false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_level()),
                             }
                         }
                         // Entry for the item and no entry for the skill - create skill entry if new
                         // level fails requirement
                         Entry::Vacant(missing_skill_entry) => {
                             let other_item = u_data.items.get(other_item_uid);
-                            let required_a_lvl = *other_item
+                            let required_lvl = *other_item
                                 .get_effective_skill_reqs()
                                 .unwrap()
                                 .get(&skill.get_type_aid())
                                 .unwrap();
-                            if skill.get_level() < required_a_lvl {
+                            if skill.get_level() < required_lvl {
                                 missing_skill_entry.insert(ValSrqSkillInfo {
-                                    current_lvl: Some(skill.get_level().into()),
-                                    required_lvl: required_a_lvl.into(),
+                                    current_lvl: Some(skill.get_level()),
+                                    required_lvl,
                                 });
                             }
                         }
@@ -47,18 +47,18 @@ impl Vast {
                 // No entry for item - create one if skill level change fails requirement
                 Entry::Vacant(missing_skills_entry) => {
                     let other_item = u_data.items.get(other_item_uid);
-                    let required_a_lvl = *other_item
+                    let required_lvl = *other_item
                         .get_effective_skill_reqs()
                         .unwrap()
                         .get(&skill.get_type_aid())
                         .unwrap();
-                    if skill.get_level() < required_a_lvl {
+                    if skill.get_level() < required_lvl {
                         let mut missing_skills = RMap::new();
                         missing_skills.insert(
                             skill.get_type_aid(),
                             ValSrqSkillInfo {
-                                current_lvl: Some(skill.get_level().into()),
-                                required_lvl: required_a_lvl.into(),
+                                current_lvl: Some(skill.get_level()),
+                                required_lvl,
                             },
                         );
                         missing_skills_entry.insert(missing_skills);

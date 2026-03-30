@@ -17,9 +17,7 @@ use crate::{
 };
 
 pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
-    if attr_consts.radius.is_none() {
-        return None;
-    }
+    attr_consts.radius?;
     Some(RawModifier {
         kind: ModifierKind::Local,
         affector_espec: espec,

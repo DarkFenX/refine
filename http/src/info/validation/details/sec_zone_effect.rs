@@ -29,7 +29,7 @@ impl HValEffectSecZoneFail {
                             .map(|(effect_id, allowed_sec_zones)| {
                                 (
                                     effect_id,
-                                    allowed_sec_zones.into_iter().map(|v| HSecZone::from_core(v)).collect(),
+                                    allowed_sec_zones.into_iter().map(HSecZone::from_core).collect(),
                                 )
                             })
                             .collect(),

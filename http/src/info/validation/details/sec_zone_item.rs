@@ -24,7 +24,7 @@ impl HValItemSecZoneFail {
                 .map(|(item_id, allowed_sec_zones)| {
                     (
                         item_id,
-                        allowed_sec_zones.into_iter().map(|v| HSecZone::from_core(v)).collect(),
+                        allowed_sec_zones.into_iter().map(HSecZone::from_core).collect(),
                     )
                 })
                 .collect(),

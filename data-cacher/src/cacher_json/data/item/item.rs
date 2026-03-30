@@ -104,11 +104,7 @@ impl CItem {
                 })
                 .collect(),
             defeff_id: self.defeff_id,
-            abil_ids: self
-                .abil_ids
-                .into_iter()
-                .map(|v| rc::ad::AAbilId::from_i32(v))
-                .collect(),
+            abil_ids: self.abil_ids.into_iter().map(rc::ad::AAbilId::from_i32).collect(),
             srqs: self
                 .srqs
                 .into_iter()
@@ -120,9 +116,9 @@ impl CItem {
             max_state: self.max_state.into_adapted(),
             proj_buff_item_list_ids: self.proj_buff_item_list_ids.into_iter().collect(),
             fleet_buff_item_list_ids: self.fleet_buff_item_list_ids.into_iter().collect(),
-            val_fitted_group_id: self.val_fitted_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
-            val_online_group_id: self.val_online_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
-            val_active_group_id: self.val_active_group_id.map(|v| rc::ad::AItemGrpId::from_i32(v)),
+            val_fitted_group_id: self.val_fitted_group_id.map(rc::ad::AItemGrpId::from_i32),
+            val_online_group_id: self.val_online_group_id.map(rc::ad::AItemGrpId::from_i32),
+            val_active_group_id: self.val_active_group_id.map(rc::ad::AItemGrpId::from_i32),
             is_ice_harvester: self.is_ice_harvester,
             disallowed_in_wspace: self.disallowed_in_wspace,
         }

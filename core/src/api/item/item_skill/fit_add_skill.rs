@@ -21,7 +21,7 @@ impl SolarSystem {
         match fit.skills.entry(type_aid) {
             Entry::Vacant(entry) => {
                 let item_id = self.u_data.items.alloc_id();
-                let skill = USkill::new(item_id, type_aid, fit_uid, level.into(), true, &self.u_data.src);
+                let skill = USkill::new(item_id, type_aid, fit_uid, level, true, &self.u_data.src);
                 let item = UItem::Skill(skill);
                 let skill_uid = self.u_data.items.add(item);
                 entry.insert(UFitSkill {

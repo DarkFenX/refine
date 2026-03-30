@@ -19,11 +19,7 @@ impl CItemList {
     pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AItemList {
         rc::ad::AItemList {
             id: self.id,
-            item_ids: self
-                .item_ids
-                .into_iter()
-                .map(|v| rc::ad::AItemId::from_i32(v))
-                .collect(),
+            item_ids: self.item_ids.into_iter().map(rc::ad::AItemId::from_i32).collect(),
         }
     }
 }

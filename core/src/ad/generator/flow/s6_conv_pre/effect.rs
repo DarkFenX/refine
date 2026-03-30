@@ -44,15 +44,13 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
             is_offense: e_effect.is_offensive,
             banned_in_hisec: false,
             banned_in_lowsec: false,
-            discharge_attr_id: e_effect.discharge_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            duration_attr_id: e_effect.duration_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            range_attr_id: e_effect.range_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            falloff_attr_id: e_effect.falloff_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            track_attr_id: e_effect.tracking_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            chance_attr_id: e_effect
-                .usage_chance_attr_id
-                .map(|attr_eid| AAttrId::from_eid(attr_eid)),
-            resist_attr_id: e_effect.resist_attr_id.map(|attr_eid| AAttrId::from_eid(attr_eid)),
+            discharge_attr_id: e_effect.discharge_attr_id.map(AAttrId::from_eid),
+            duration_attr_id: e_effect.duration_attr_id.map(AAttrId::from_eid),
+            range_attr_id: e_effect.range_attr_id.map(AAttrId::from_eid),
+            falloff_attr_id: e_effect.falloff_attr_id.map(AAttrId::from_eid),
+            track_attr_id: e_effect.tracking_attr_id.map(AAttrId::from_eid),
+            chance_attr_id: e_effect.usage_chance_attr_id.map(AAttrId::from_eid),
+            resist_attr_id: e_effect.resist_attr_id.map(AAttrId::from_eid),
         };
         for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
@@ -219,19 +217,19 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
 }
 
 fn get_mod_affector_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttrId, StrMsgError> {
-    get_arg_int(&arg_map, "modifyingAttributeID")
+    get_arg_int(arg_map, "modifyingAttributeID")
         .map(EAttrId::from_i32)
         .map(AAttrId::from_eid)
 }
 
 fn get_mod_affectee_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttrId, StrMsgError> {
-    get_arg_int(&arg_map, "modifiedAttributeID")
+    get_arg_int(arg_map, "modifiedAttributeID")
         .map(EAttrId::from_i32)
         .map(AAttrId::from_eid)
 }
 
 fn get_mod_location(arg_map: &RMap<String, EPrimitive>, a_effect: &AEffect) -> Result<AEffectLocation, StrMsgError> {
-    let domain = get_arg_str(&arg_map, "domain")?;
+    let domain = get_arg_str(arg_map, "domain")?;
     match domain.as_str() {
         "itemID" => Ok(AEffectLocation::Item),
         "charID" => Ok(AEffectLocation::Char),
@@ -251,7 +249,7 @@ fn get_mod_location(arg_map: &RMap<String, EPrimitive>, a_effect: &AEffect) -> R
 }
 
 fn get_mod_operation(arg_map: &RMap<String, EPrimitive>) -> Result<AOp, StrMsgError> {
-    let op = get_arg_int(&arg_map, "operation")?;
+    let op = get_arg_int(arg_map, "operation")?;
     match op {
         -1 => Ok(AOp::PreAssign),
         0 => Ok(AOp::PreMul),
@@ -270,13 +268,13 @@ fn get_mod_operation(arg_map: &RMap<String, EPrimitive>) -> Result<AOp, StrMsgEr
 }
 
 fn get_mod_grp_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AItemGrpId, StrMsgError> {
-    get_arg_int(&arg_map, "groupID")
+    get_arg_int(arg_map, "groupID")
         .map(EItemGrpId::from_i32)
         .map(AItemGrpId::from_eid)
 }
 
 fn get_mod_skill_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AItemId, StrMsgError> {
-    get_arg_int(&arg_map, "skillTypeID")
+    get_arg_int(arg_map, "skillTypeID")
         .map(EItemId::from_i32)
         .map(AItemId::from_eid)
 }

@@ -259,14 +259,14 @@ fn get_irr_data(
 }
 
 fn irr_data_to_raw(irr_data: &[IrrEntry]) -> PValue {
-    irr_data.iter().filter_map(|v| get_normal_rps(v)).sum()
+    irr_data.iter().filter_map(get_normal_rps).sum()
 }
 
 const RR_PEN_ADDITION: PValue = PValue::from_f64_clamped(7000.0);
 const RR_PEN_MULTIPLIER: PValue = PValue::from_f64_clamped(20.0);
 
-fn irr_data_to_penalized(irr_data: &Vec<IrrEntry>) -> PValue {
-    let total_adjusted_rps: PValue = irr_data.iter().filter_map(|v| get_adjusted_rps(v)).sum();
+fn irr_data_to_penalized(irr_data: &[IrrEntry]) -> PValue {
+    let total_adjusted_rps: PValue = irr_data.iter().filter_map(get_adjusted_rps).sum();
     let mut result = PValue::ZERO;
     for entry in irr_data.iter() {
         let adjusted_rps = match get_adjusted_rps(entry) {

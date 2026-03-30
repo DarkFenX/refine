@@ -33,7 +33,7 @@ where
     Simple(OutputInstanceIterSimple<T>),
     Complex(OutputInstanceIterComplex<T>),
 }
-impl<'a, T> Iterator for OutputInstanceIter<T>
+impl<T> Iterator for OutputInstanceIter<T>
 where
     T: Copy,
 {

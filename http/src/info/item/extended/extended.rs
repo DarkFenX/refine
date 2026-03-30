@@ -36,7 +36,7 @@ impl HItemExtendedInfo {
         };
         let mods = match core_item.iter_modifiers() {
             Ok(iter_mods) => iter_mods
-                .map(|(k, v)| (k, v.into_iter().map(|m| HModification::from_core(m)).collect()))
+                .map(|(k, v)| (k, v.into_iter().map(HModification::from_core).collect()))
                 .collect(),
             Err(_) => Vec::new(),
         };

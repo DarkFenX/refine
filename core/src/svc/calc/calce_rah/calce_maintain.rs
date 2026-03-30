@@ -119,33 +119,29 @@ impl Calc {
             | AAttrId::ARMOR_KIN_DMG_RESONANCE
             | AAttrId::ARMOR_EXPL_DMG_RESONANCE => match ctx.u_data.items.get(aspec.item_uid) {
                 UItem::Ship(ship) => self.clear_fit_rah_results(ctx, ship.get_fit_uid()),
-                UItem::Module(module) => {
-                    if self.rah.resonances.contains_key(&aspec.item_uid) {
-                        self.clear_fit_rah_results(ctx, module.get_fit_uid());
-                    }
+                UItem::Module(module) if self.rah.resonances.contains_key(&aspec.item_uid) => {
+                    self.clear_fit_rah_results(ctx, module.get_fit_uid());
                 }
                 _ => (),
             },
             // RAH shift amount
-            AAttrId::RESIST_SHIFT_AMOUNT => {
-                if self.rah.resonances.contains_key(&aspec.item_uid) {
-                    // Only modules should be registered in resonances container, and those are
-                    // guaranteed to have fit ID
-                    let fit_uid = ctx.u_data.items.get(aspec.item_uid).get_fit_uid().unwrap();
-                    self.clear_fit_rah_results(ctx, fit_uid);
-                }
+            AAttrId::RESIST_SHIFT_AMOUNT if self.rah.resonances.contains_key(&aspec.item_uid) => {
+                // Only modules should be registered in resonances container, and those are
+                // guaranteed to have fit ID
+                let fit_uid = ctx.u_data.items.get(aspec.item_uid).get_fit_uid().unwrap();
+                self.clear_fit_rah_results(ctx, fit_uid);
             }
             // RAH cycle duration
-            _ if Some(aspec.attr_rid) == ctx.u_data.src.get_rah_duration_attr_rid() => {
-                if self.rah.resonances.contains_key(&aspec.item_uid) {
-                    // Only modules should be registered in resonances container, and those are
-                    // guaranteed to have fit ID
-                    let fit_uid = ctx.u_data.items.get(aspec.item_uid).get_fit_uid().unwrap();
-                    // Clear only for fits with 2+ RAHs, since changing cycle duration of 1 RAH does
-                    // not change sim results
-                    if self.rah.by_fit.get(&fit_uid).len() >= 2 {
-                        self.clear_fit_rah_results(ctx, fit_uid);
-                    }
+            _ if Some(aspec.attr_rid) == ctx.u_data.src.get_rah_duration_attr_rid()
+                && self.rah.resonances.contains_key(&aspec.item_uid) =>
+            {
+                // Only modules should be registered in resonances container, and those are
+                // guaranteed to have fit ID
+                let fit_uid = ctx.u_data.items.get(aspec.item_uid).get_fit_uid().unwrap();
+                // Clear only for fits with 2+ RAHs, since changing cycle duration of 1 RAH does not
+                // change sim results
+                if self.rah.by_fit.get(&fit_uid).len() >= 2 {
+                    self.clear_fit_rah_results(ctx, fit_uid);
                 }
             }
             // Ship HP - need to clear results since breacher DPS depends on those

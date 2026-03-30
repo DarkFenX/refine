@@ -33,7 +33,7 @@ impl Vast {
                             true => {
                                 missing_skill_entry.remove();
                             }
-                            false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_level().into()),
+                            false => missing_skill_entry.get_mut().current_lvl = Some(skill.get_level()),
                         }
                     }
                     // Keep root container clean if there are no missing skills for current "other"
@@ -79,7 +79,7 @@ impl Vast {
                                     .unwrap();
                                 missing_skill_entry.insert(ValSrqSkillInfo {
                                     current_lvl: None,
-                                    required_lvl: required_lvl.into(),
+                                    required_lvl,
                                 });
                             }
                         }
@@ -98,7 +98,7 @@ impl Vast {
                             skill.get_type_aid(),
                             ValSrqSkillInfo {
                                 current_lvl: None,
-                                required_lvl: required_lvl.into(),
+                                required_lvl,
                             },
                         );
                         missing_skills_entry.insert(missing_skills);

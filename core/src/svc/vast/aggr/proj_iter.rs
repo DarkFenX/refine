@@ -73,7 +73,7 @@ where
             self.calc,
             self.projector_uid,
             self.ospec,
-            &self.inv_proj,
+            self.inv_proj,
             input.chargedness,
         );
         AggrPartDataRegular {

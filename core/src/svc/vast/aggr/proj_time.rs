@@ -103,7 +103,7 @@ where
             self.calc,
             self.projector_uid,
             self.ospec,
-            &self.inv_proj,
+            self.inv_proj,
             input.chargedness,
         );
         AggrPartDataTail {
@@ -366,7 +366,7 @@ fn process_single_spool<BG, T, A>(
         .into_value();
     let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, inv_proj, cycle_data.chargedness);
     let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
-    let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, cycle_spool);
+    let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, cycle_spool);
     match *time >= cycle_completion_duration {
         true => accum.add_instance(
             cycle_output.get_instance(),

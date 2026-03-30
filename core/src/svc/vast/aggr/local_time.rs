@@ -60,7 +60,7 @@ where
             self.calc,
             self.item_uid,
             self.ospec,
-            &self.inv_local,
+            self.inv_local,
             input.chargedness,
         );
         AggrPartDataTail {
