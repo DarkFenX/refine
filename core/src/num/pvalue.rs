@@ -67,12 +67,12 @@ impl From<PValue> for f64 {
 // use constants in pattern matching arms.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Eq for PValue {}
-impl std::marker::StructuralPartialEq for PValue {}
 impl PartialEq for PValue {
     fn eq(&self, other: &Self) -> bool {
         OrderedFloat(self.0).eq(&OrderedFloat(other.0))
     }
 }
+impl std::marker::StructuralPartialEq for PValue {}
 
 impl Ord for PValue {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
@@ -81,7 +81,7 @@ impl Ord for PValue {
 }
 impl PartialOrd for PValue {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        OrderedFloat(self.0).partial_cmp(&OrderedFloat(other.0))
+        Some(self.cmp(other))
     }
 }
 

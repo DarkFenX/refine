@@ -75,7 +75,7 @@ impl Ord for UnitInterval {
 }
 impl PartialOrd for UnitInterval {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        OrderedFloat(self.0).partial_cmp(&OrderedFloat(other.0))
+        Some(self.cmp(other))
     }
 }
 

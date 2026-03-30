@@ -58,12 +58,12 @@ impl Value {
 // use constants in pattern matching arms.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Eq for Value {}
-impl std::marker::StructuralPartialEq for Value {}
 impl PartialEq for Value {
     fn eq(&self, other: &Self) -> bool {
         OrderedFloat(self.0).eq(&OrderedFloat(other.0))
     }
 }
+impl std::marker::StructuralPartialEq for Value {}
 
 impl Ord for Value {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
@@ -72,7 +72,7 @@ impl Ord for Value {
 }
 impl PartialOrd for Value {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        OrderedFloat(self.0).partial_cmp(&OrderedFloat(other.0))
+        Some(self.cmp(other))
     }
 }
 
