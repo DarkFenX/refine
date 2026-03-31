@@ -1,5 +1,5 @@
 from fw import approx, check_no_field
-from fw.api import FitStatsOptions, ValOptions
+from fw.api import FitStatsOptions, ValOptions, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
 
 
 def test_bubble_sig_local(client, consts):
@@ -950,22 +950,29 @@ def test_cycling(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
-    assert api_fit_stats.cap_balance.one() == approx(-3.75)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeBurst()),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance == [approx(-3.75), approx(-3.75)]
     # Action
     api_module.change_module(charge_type_id=eve_sscript_id)
     # Verification - despite main script effect having its own duration and discharge attributes,
-    #     # for cycling values from module effects are used
-    api_module.update()
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
-    assert api_fit_stats.cap_balance.one() == approx(-7.5)
+    # for cycling values from module effects are used
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeBurst()),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance == [approx(-7.5), approx(-7.5)]
     # Action
     api_module.change_module(charge_type_id=eve_dscript_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
-    assert api_fit_stats.cap_balance.one() == approx(-7.5)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeBurst()),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance == [approx(-7.5), approx(-7.5)]
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
-    assert api_fit_stats.cap_balance.one() == approx(-3.75)
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+        StatsOptionCapBalance(time_options=StatTimeBurst()),
+        StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance == [approx(-3.75), approx(-3.75)]
