@@ -892,7 +892,8 @@ def test_assist_sscript(client, consts):
 def test_cycling(client, consts):
     eve_cap_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.duration)
-    eve_cap_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cap_use1_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cap_use2_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need_hidden)
     eve_cycle_mod_attr_id = client.mk_eve_attr()
     eve_cap_mod_attr_id = client.mk_eve_attr()
     eve_script_cycle_mod = client.mk_eve_effect_mod(
@@ -906,28 +907,32 @@ def test_cycling(client, consts):
         loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_cap_mod_attr_id,
-        affectee_attr_id=eve_cap_use_attr_id)
+        affectee_attr_id=eve_cap_use1_attr_id)
     eve_sscript_main_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
         cat_id=consts.EveEffCat.target,
-        is_offensive=True)
+        is_offensive=True,
+        discharge_attr_id=eve_cap_use2_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_sscript_mod_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_script_cycle_mod, eve_script_cap_mod])
     eve_dscript_main_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target,
-        is_offensive=True)
+        is_offensive=True,
+        discharge_attr_id=eve_cap_use2_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_dscript_mod_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_script_cycle_mod, eve_script_cap_mod])
     eve_wdfg_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.warp_disrupt_sphere,
         cat_id=consts.EveEffCat.active,
-        discharge_attr_id=eve_cap_use_attr_id,
+        discharge_attr_id=eve_cap_use1_attr_id,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_wdfg_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 30000, eve_cap_use_attr_id: 112.5},
+        attrs={eve_cycle_time_attr_id: 30000, eve_cap_use1_attr_id: 112.5},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
     eve_sscript_id = client.mk_eve_item(
@@ -949,7 +954,8 @@ def test_cycling(client, consts):
     assert api_fit_stats.cap_balance.one() == approx(-3.75)
     # Action
     api_module.change_module(charge_type_id=eve_sscript_id)
-    # Verification
+    # Verification - despite main script effect having its own duration and discharge attributes,
+    #     # for cycling values from module effects are used
     api_module.update()
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_fit_stats.cap_balance.one() == approx(-7.5)
@@ -958,3 +964,8 @@ def test_cycling(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_fit_stats.cap_balance.one() == approx(-7.5)
+    # Action
+    api_module.change_module(charge_type_id=None)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(-3.75)

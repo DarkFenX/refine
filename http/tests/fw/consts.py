@@ -383,6 +383,7 @@ class EveAttr(IntEnum):
     can_fit_ship_type3 = 1304
     can_fit_ship_type4 = 1305
     max_range_hidden = 1317
+    capacitor_need_hidden = 1319
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
     activation_blocked_strength = 1350
