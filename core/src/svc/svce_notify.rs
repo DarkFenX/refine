@@ -5,6 +5,7 @@ use crate::{
     ud::{UData, UFighter, UFitId, UFleet, UItem, UItemId, UProjData, USkill},
 };
 
+// TODO: cleanup unused methods
 impl Svc {
     pub(crate) fn notify_fit_added(&mut self, fit_uid: UFitId) {
         self.calc.fit_added(fit_uid);
