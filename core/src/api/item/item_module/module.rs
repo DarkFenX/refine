@@ -85,12 +85,12 @@ impl<'a> ModuleMut<'a> {
     pub fn get_optional_reload(&self) -> ItemOptionalReloadInfo {
         get_optional_reload(self.sol, self.uid)
     }
-    pub fn get_cycle_count_until_reload(&mut self) -> Option<Count> {
+    pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let mut reuse_cseq_map = CseqMap::new();
         match self
             .sol
             .svc
-            .get_item_cycles_until_empty(&mut reuse_cseq_map, &self.sol.u_data, self.uid)
+            .get_item_charged_cycle_count(&mut reuse_cseq_map, &self.sol.u_data, self.uid)
         {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,

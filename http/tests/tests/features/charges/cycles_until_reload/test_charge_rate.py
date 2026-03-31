@@ -20,7 +20,7 @@ def test_basic(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_empty == 10
+    assert api_module.update().charged_cycles == 10
 
 
 def test_rounding_cycles(client, consts):
@@ -43,7 +43,7 @@ def test_rounding_cycles(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - result is floored, since most effects are supposed to be unable to run without
     # full stack of charges
-    assert api_module.update().cycles_until_empty == 9
+    assert api_module.update().charged_cycles == 9
 
 
 def test_rounding_cycles_aar(client, consts):
@@ -75,8 +75,8 @@ def test_rounding_cycles_aar(client, consts):
     api_remote_aar = api_fit.add_module(type_id=eve_remote_aar_id, charge_type_id=eve_charge_id)
     # Verification - armor ancillary modules are an exception to this rule and can run on partial
     # stack of charges
-    assert api_local_aar.update().cycles_until_empty == 10
-    assert api_remote_aar.update().cycles_until_empty == 10
+    assert api_local_aar.update().charged_cycles == 10
+    assert api_remote_aar.update().charged_cycles == 10
 
 
 def test_rounding_charge_rate(client, consts):
@@ -103,8 +103,8 @@ def test_rounding_charge_rate(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module1.update().cycles_until_empty == 10
-    assert api_module2.update().cycles_until_empty == 5
+    assert api_module1.update().charged_cycles == 10
+    assert api_module2.update().charged_cycles == 5
 
 
 def test_zero_charge_rate(client, consts):
@@ -126,7 +126,7 @@ def test_zero_charge_rate(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_empty is None
+    assert api_module.update().charged_cycles is None
 
 
 def test_modified_charge_rate(client, consts):
@@ -160,7 +160,7 @@ def test_modified_charge_rate(client, consts):
     # Verification - unmodified charge rate is still used
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
-    assert api_module.cycles_until_empty == 10
+    assert api_module.charged_cycles == 10
 
 
 def test_mutation_charge_rate(client, consts):
@@ -191,25 +191,25 @@ def test_mutation_charge_rate(client, consts):
     # Verification
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(1)
-    assert api_module.cycles_until_empty == 10
+    assert api_module.charged_cycles == 10
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification - value from mutated item is used
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
-    assert api_module.cycles_until_empty == 5
+    assert api_module.charged_cycles == 5
     # Action
     api_module.change_module(mutation={eve_charge_rate_attr_id: Muta.roll_to_api(val=1)})
     # Verification - but attribute mutation is ignored
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(3)
-    assert api_module.cycles_until_empty == 5
+    assert api_module.charged_cycles == 5
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(1)
-    assert api_module.cycles_until_empty == 10
+    assert api_module.charged_cycles == 10
 
 
 def test_no_charge(client, consts):
@@ -231,7 +231,7 @@ def test_no_charge(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.cycles_until_empty  # noqa: B018
+        api_module.charged_cycles  # noqa: B018
 
 
 def test_no_charge_rate(client, consts):
@@ -252,7 +252,7 @@ def test_no_charge_rate(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - by default charge rate is assumed to be 0
-    assert api_module.update().cycles_until_empty == 10
+    assert api_module.update().charged_cycles == 10
 
 
 def test_not_loaded_charge(client, consts):
@@ -273,4 +273,4 @@ def test_not_loaded_charge(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    assert api_module.update().cycles_until_empty is None
+    assert api_module.update().charged_cycles is None

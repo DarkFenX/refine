@@ -15,7 +15,7 @@ const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 });
 
 impl Svc {
-    pub(crate) fn get_item_cycles_until_empty(
+    pub(crate) fn get_item_charged_cycle_count(
         &mut self,
         reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
