@@ -1,5 +1,5 @@
 from fw import approx, check_no_field
-from fw.api import FitStatsOptions, ValOptions, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
+from fw.api import FitStatsOptions, StatsOptionCapBalance, StatTimeBurst, StatTimeSim, ValOptions
 
 
 def test_bubble_sig_local(client, consts):
