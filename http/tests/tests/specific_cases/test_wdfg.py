@@ -887,3 +887,74 @@ def test_assist_sscript(client, consts):
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
+
+
+def test_cycling(client, consts):
+    eve_cap_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.duration)
+    eve_cap_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cycle_mod_attr_id = client.mk_eve_attr()
+    eve_cap_mod_attr_id = client.mk_eve_attr()
+    eve_script_cycle_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_cycle_mod_attr_id,
+        affectee_attr_id=eve_cycle_time_attr_id)
+    eve_script_cap_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_cap_mod_attr_id,
+        affectee_attr_id=eve_cap_use_attr_id)
+    eve_sscript_main_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
+    eve_sscript_mod_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_script_cycle_mod, eve_script_cap_mod])
+    eve_dscript_main_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True)
+    eve_dscript_mod_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_script_cycle_mod, eve_script_cap_mod])
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_cap_use_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_wdfg_id = client.mk_eve_item(
+        attrs={eve_cycle_time_attr_id: 30000, eve_cap_use_attr_id: 112.5},
+        eff_ids=[eve_wdfg_effect_id],
+        defeff_id=eve_wdfg_effect_id)
+    eve_sscript_id = client.mk_eve_item(
+        attrs={eve_cycle_mod_attr_id: -80, eve_cap_mod_attr_id: -60},
+        eff_ids=[eve_sscript_main_effect_id, eve_sscript_mod_effect_id],
+        defeff_id=eve_sscript_main_effect_id)
+    eve_dscript_id = client.mk_eve_item(
+        attrs={eve_cycle_mod_attr_id: -80, eve_cap_mod_attr_id: -60},
+        eff_ids=[eve_dscript_main_effect_id, eve_dscript_mod_effect_id],
+        defeff_id=eve_dscript_main_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cap_amount_attr_id: 1562.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(-3.75)
+    # Action
+    api_module.change_module(charge_type_id=eve_sscript_id)
+    # Verification
+    api_module.update()
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(-7.5)
+    # Action
+    api_module.change_module(charge_type_id=eve_dscript_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == approx(-7.5)

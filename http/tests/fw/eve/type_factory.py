@@ -358,7 +358,7 @@ class EveTypeFactory(EveDataManager):
             chance_attr_id: int | type[Absent | Default] = Default,
             resist_attr_id: int | type[Absent | Default] = Default,
             mod_info: list[EffectModifier] | type[Absent | Default] = Default,
-    ) -> id:
+    ) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]
         if id_ is Default:
