@@ -1,5 +1,6 @@
 use crate::{
     ad::{AAttrId, AItemCatId, AItemGrpId, AItemId},
+    dbg::DebugResult,
     misc::ItemKind,
     num::{Count, FighterCount, PValue, SkillLevel, SlotIndex, Value},
     rd::{
@@ -29,6 +30,7 @@ use crate::{
             slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
         },
     },
+    ud::UData,
     util::RMap,
 };
 
@@ -141,5 +143,17 @@ impl RItemAXt {
         self.is_mobile = is_mobile(item_attrs, attr_consts);
         self.entity_mwd = entity_has_mwd(item_attrs, attr_consts);
         self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(item_attrs, attr_consts);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl RItemAXt {
+    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        if let Some(attr_rid) = self.remote_resist_attr_rid {
+            attr_rid.consistency_check(u_data)?;
+        }
+        Ok(())
     }
 }

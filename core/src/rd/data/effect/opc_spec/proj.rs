@@ -1,7 +1,9 @@
 use crate::{
     ad::AAttrId,
+    dbg::DebugResult,
     nd::{NEffectChargeMultGetter, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
     rd::{RAttrId, REffectResist},
+    ud::UData,
     util::RMap,
 };
 
@@ -44,5 +46,23 @@ where
                 .limit_attr_id
                 .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<BG> REffectProjOpcSpec<BG>
+where
+    BG: NEffectOutputGetter,
+{
+    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        if let Some(resist) = &self.resist {
+            resist.consistency_check(u_data)?;
+        }
+        if let Some(attr_rid) = &self.limit_attr_rid {
+            attr_rid.consistency_check(u_data)?;
+        }
+        Ok(())
     }
 }

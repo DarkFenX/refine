@@ -1,4 +1,4 @@
-use crate::{ad::AAttrId, nd::NEffectResist, rd::RAttrId, util::RMap};
+use crate::{ad::AAttrId, dbg::DebugResult, nd::NEffectResist, rd::RAttrId, ud::UData, util::RMap};
 
 #[derive(Copy, Clone)]
 pub(crate) enum REffectResist {
@@ -21,5 +21,17 @@ impl REffectResist {
             NEffectResist::Standard => Self::Standard,
             NEffectResist::AttrRef(attr_aid) => Self::AttrRef(*attr_aid_rid_map.get(attr_aid)?),
         })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl REffectResist {
+    pub(in crate::rd) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        if let REffectResist::AttrRef(attr_rid) = self {
+            attr_rid.consistency_check(u_data)?;
+        }
+        Ok(())
     }
 }
