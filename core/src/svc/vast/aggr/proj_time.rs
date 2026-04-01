@@ -330,7 +330,6 @@ fn aggr_spool<BG, T, A>(
                         let loop_full_repeat_count = get_full_repeats_count(time, loop_duration, loop_tail_duration);
                         // Fast-forward by count of full repeating loops remaining time can fit
                         if loop_full_repeat_count > Count::ZERO {
-                            let loop_full_repeat_count = loop_full_repeat_count;
                             accum.merge(&loop_accum, loop_full_repeat_count);
                             time -= loop_duration * loop_full_repeat_count.into_pvalue();
                         }
