@@ -17,6 +17,11 @@ impl AEffects {
         self.data.values()
     }
 }
+impl Default for AEffects {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AEffect> for AEffects {
     fn from_iter<I>(iter: I) -> Self
     where

@@ -22,6 +22,11 @@ impl ABuffModifiers {
         self.data.iter()
     }
 }
+impl Default for ABuffModifiers {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<ABuffModifier> for ABuffModifiers {
     fn from_iter<I>(iter: I) -> Self
     where

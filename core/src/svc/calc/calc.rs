@@ -1,7 +1,11 @@
-use crate::svc::calc::{
-    calce_rah::RahSim,
-    misc::AttrValData,
-    registers::{BuffRegister, DependencyRegister, RevisionRegister, StandardRegister},
+use crate::{
+    dbg::DebugResult,
+    svc::calc::{
+        calce_rah::RahSim,
+        misc::AttrValData,
+        registers::{BuffRegister, DependencyRegister, RevisionRegister, StandardRegister},
+    },
+    ud::UData,
 };
 
 #[derive(Clone)]
@@ -23,5 +27,20 @@ impl Calc {
             revs: RevisionRegister::new(),
             rah: RahSim::new(),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Calc {
+    pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        self.attrs.consistency_check(u_data)?;
+        self.std.consistency_check(u_data)?;
+        self.buffs.consistency_check(u_data)?;
+        self.deps.consistency_check(u_data)?;
+        self.revs.consistency_check(u_data)?;
+        self.rah.consistency_check(u_data)?;
+        Ok(())
     }
 }

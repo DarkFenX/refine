@@ -17,6 +17,11 @@ impl AAttrs {
         self.data.values()
     }
 }
+impl Default for AAttrs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AAttr> for AAttrs {
     fn from_iter<I>(iter: I) -> Self
     where

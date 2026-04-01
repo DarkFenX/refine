@@ -17,6 +17,11 @@ impl AAbils {
         self.data.values()
     }
 }
+impl Default for AAbils {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AAbil> for AAbils {
     fn from_iter<I>(iter: I) -> Self
     where

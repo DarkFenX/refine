@@ -17,6 +17,11 @@ impl AMutas {
         self.data.values()
     }
 }
+impl Default for AMutas {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AMuta> for AMutas {
     fn from_iter<I>(iter: I) -> Self
     where

@@ -27,6 +27,11 @@ impl AItemEffects {
         self.data.values()
     }
 }
+impl Default for AItemEffects {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AItemEffect> for AItemEffects {
     fn from_iter<I>(iter: I) -> Self
     where

@@ -27,6 +27,11 @@ impl AItemSkillReqs {
         self.data.values()
     }
 }
+impl Default for AItemSkillReqs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AItemSkillReq> for AItemSkillReqs {
     fn from_iter<I>(iter: I) -> Self
     where

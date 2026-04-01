@@ -4,6 +4,7 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::AEffectCatId,
+    dbg::DebugResult,
     misc::EffectSpec,
     nd::NEffectProjMultGetter,
     num::Value,
@@ -16,7 +17,7 @@ use crate::{
         },
         funcs,
     },
-    ud::{UItem, UItemId},
+    ud::{UData, UItem, UItemId},
 };
 
 #[derive(Copy, Clone)]
@@ -227,5 +228,25 @@ fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilte
         AEffectCatId::SYSTEM => Some(ModifierKind::System),
         AEffectCatId::TARGET => Some(ModifierKind::Targeted),
         _ => None,
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl RawModifier {
+    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        self.affector_espec.consistency_check(u_data, true)?;
+        self.affectee_attr_rid.consistency_check(u_data)?;
+        if let Some(attr_rid) = self.buff_type_attr_rid {
+            attr_rid.consistency_check(u_data)?;
+        }
+        for attr_rid in self.proj_attr_rids.iter().flatten() {
+            attr_rid.consistency_check(u_data)?;
+        }
+        if let Some(attr_rid) = self.resist_attr_rid {
+            attr_rid.consistency_check(u_data)?;
+        }
+        Ok(())
     }
 }

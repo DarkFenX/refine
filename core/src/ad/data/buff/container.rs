@@ -17,6 +17,11 @@ impl ABuffs {
         self.data.values()
     }
 }
+impl Default for ABuffs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<ABuff> for ABuffs {
     fn from_iter<I>(iter: I) -> Self
     where

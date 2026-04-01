@@ -24,6 +24,11 @@ impl AEffectModifiers {
         self.data.iter()
     }
 }
+impl Default for AEffectModifiers {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AEffectModifier> for AEffectModifiers {
     fn from_iter<I>(iter: I) -> Self
     where

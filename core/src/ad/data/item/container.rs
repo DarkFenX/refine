@@ -17,6 +17,11 @@ impl AItems {
         self.data.values()
     }
 }
+impl Default for AItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AItem> for AItems {
     fn from_iter<I>(iter: I) -> Self
     where

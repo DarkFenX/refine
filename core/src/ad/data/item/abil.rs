@@ -14,6 +14,11 @@ impl AItemAbils {
         self.data.iter()
     }
 }
+impl Default for AItemAbils {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AAbilId> for AItemAbils {
     fn from_iter<I>(iter: I) -> Self
     where

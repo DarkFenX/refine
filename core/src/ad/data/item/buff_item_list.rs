@@ -14,6 +14,11 @@ impl AItemBuffItemLists {
         self.data.iter()
     }
 }
+impl Default for AItemBuffItemLists {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AItemListId> for AItemBuffItemLists {
     fn from_iter<I>(iter: I) -> Self
     where

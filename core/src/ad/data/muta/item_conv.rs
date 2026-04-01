@@ -21,6 +21,11 @@ impl AMutaItemConvs {
         self.data.iter()
     }
 }
+impl Default for AMutaItemConvs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AMutaItemConv> for AMutaItemConvs {
     fn from_iter<I>(iter: I) -> Self
     where

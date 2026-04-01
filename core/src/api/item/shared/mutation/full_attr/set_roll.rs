@@ -7,7 +7,7 @@ impl<'a> FullMAttrMut<'a> {
     pub fn set_roll(&mut self, roll: Option<UnitInterval>) {
         let attr_mutation_request = vec![UAttrMutationRequest {
             attr_aid: self.attr_aid,
-            roll: roll,
+            roll,
         }];
         self.sol
             .internal_change_item_mutation_attrs(self.item_uid, attr_mutation_request)

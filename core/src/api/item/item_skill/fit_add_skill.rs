@@ -24,10 +24,7 @@ impl SolarSystem {
                 let skill = USkill::new(item_id, type_aid, fit_uid, level, true, &self.u_data.src);
                 let item = UItem::Skill(skill);
                 let skill_uid = self.u_data.items.add(item);
-                entry.insert(UFitSkill {
-                    skill_uid: skill_uid,
-                    level,
-                });
+                entry.insert(UFitSkill { skill_uid, level });
                 SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
                 Ok(skill_uid)
             }

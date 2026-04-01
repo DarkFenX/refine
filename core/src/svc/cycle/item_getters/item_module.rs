@@ -125,7 +125,7 @@ fn fill_module_effect_info(
             effect_rid,
             CycleSeq::Lim(CSeqLim {
                 data: CycleDataFull {
-                    duration: duration,
+                    duration,
                     interrupt: None,
                     chargedness: charge_info.get_first_cycle_chargedness(),
                 },

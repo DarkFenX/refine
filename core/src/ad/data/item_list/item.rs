@@ -14,6 +14,11 @@ impl AItemListItemIds {
         self.data.iter()
     }
 }
+impl Default for AItemListItemIds {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AItemId> for AItemListItemIds {
     fn from_iter<I>(iter: I) -> Self
     where

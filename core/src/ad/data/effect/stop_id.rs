@@ -14,6 +14,11 @@ impl AEffectStopIds {
         self.data.iter()
     }
 }
+impl Default for AEffectStopIds {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl FromIterator<AEffectId> for AEffectStopIds {
     fn from_iter<I>(iter: I) -> Self
     where
