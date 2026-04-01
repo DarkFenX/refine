@@ -7,9 +7,10 @@ pub(crate) use effect::NEffect;
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
 pub(crate) use neut::{NEffectNeut, NEffectNeutKind};
 pub(crate) use opc_spec::{
-    NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter,
-    NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningOutputGetter, NEffectMiningXargs,
-    NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
+    NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgOutputGetter,
+    NEffectEcmAmount, NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningAmount,
+    NEffectMiningOutputGetter, NEffectMiningXargs, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
+    NEffectResist,
 };
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use spool::NEffectSpoolAttrs;

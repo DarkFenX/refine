@@ -1,5 +1,5 @@
 pub use option::StatMiningItemKinds;
-pub use stat::StatMining;
+pub use stat::{StatMining, StatMiningEntry};
 
 mod option;
 mod stat;

@@ -4,10 +4,9 @@ use super::{
     traits::{HasImpact, InstanceLimit},
 };
 use crate::{
-    Count,
     misc::InfCount,
     nd::NEffectOutputGetter,
-    num::PValue,
+    num::{Count, PValue},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
         SvcCtx,

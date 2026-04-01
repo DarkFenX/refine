@@ -1,7 +1,9 @@
-use super::{option::StatMiningItemKinds, stat::StatMining};
+use super::{
+    option::StatMiningItemKinds,
+    stat::{StatMining, StatMiningEntry},
+};
 use crate::{
-    misc::MiningAmount,
-    nd::{NEffectMiningOutputGetter, NEffectMiningXargs},
+    nd::{NEffectMiningAmount, NEffectMiningOutputGetter, NEffectMiningXargs},
     num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
     svc::{
@@ -29,37 +31,44 @@ impl Vast {
         mission_ore: bool,
     ) -> StatMining {
         let base_xargs = NEffectMiningXargs { mission_ore };
-        fit_uids
-            .map(|fit_uid| StatMining {
-                ore: get_mps(
-                    reuse_cseq_map,
-                    ctx,
-                    calc,
-                    item_kinds,
-                    time_options,
-                    base_xargs,
-                    &self.get_fit_data(&fit_uid).mining_ore,
-                ),
-                ice: get_mps(
-                    reuse_cseq_map,
-                    ctx,
-                    calc,
-                    item_kinds,
-                    time_options,
-                    base_xargs,
-                    &self.get_fit_data(&fit_uid).mining_ice,
-                ),
-                gas: get_mps(
-                    reuse_cseq_map,
-                    ctx,
-                    calc,
-                    item_kinds,
-                    time_options,
-                    base_xargs,
-                    &self.get_fit_data(&fit_uid).mining_gas,
-                ),
-            })
-            .sum()
+        let mut ore = NEffectMiningAmount::new();
+        let mut ice = NEffectMiningAmount::new();
+        let mut gas = NEffectMiningAmount::new();
+        for fit_uid in fit_uids {
+            let fit_data = self.get_fit_data(&fit_uid);
+            ore += get_mps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                base_xargs,
+                &fit_data.mining_ore,
+            );
+            ice += get_mps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                base_xargs,
+                &fit_data.mining_ice,
+            );
+            gas += get_mps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                base_xargs,
+                &fit_data.mining_gas,
+            )
+        }
+        StatMining {
+            ore: StatMiningEntry::from_effect_amount(ore),
+            ice: StatMiningEntry::from_effect_amount(ice),
+            gas: StatMiningEntry::from_effect_amount(gas),
+        }
     }
     pub(in crate::svc) fn get_stat_fit_mps(
         &self,
@@ -74,7 +83,7 @@ impl Vast {
         let fit_data = self.get_fit_data(&fit_uid);
         let base_xargs = NEffectMiningXargs { mission_ore };
         StatMining {
-            ore: get_mps(
+            ore: StatMiningEntry::from_effect_amount(get_mps(
                 reuse_cseq_map,
                 ctx,
                 calc,
@@ -82,8 +91,8 @@ impl Vast {
                 time_options,
                 base_xargs,
                 &fit_data.mining_ore,
-            ),
-            ice: get_mps(
+            )),
+            ice: StatMiningEntry::from_effect_amount(get_mps(
                 reuse_cseq_map,
                 ctx,
                 calc,
@@ -91,8 +100,8 @@ impl Vast {
                 time_options,
                 base_xargs,
                 &fit_data.mining_ice,
-            ),
-            gas: get_mps(
+            )),
+            gas: StatMiningEntry::from_effect_amount(get_mps(
                 reuse_cseq_map,
                 ctx,
                 calc,
@@ -100,7 +109,7 @@ impl Vast {
                 time_options,
                 base_xargs,
                 &fit_data.mining_gas,
-            ),
+            )),
         }
     }
 }
@@ -113,8 +122,8 @@ fn get_mps(
     time_options: StatTimeOptions,
     base_xargs: NEffectMiningXargs,
     fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectMiningOutputGetter>>,
-) -> MiningAmount {
-    let mut mps = MiningAmount::default();
+) -> NEffectMiningAmount {
+    let mut mps = NEffectMiningAmount::new();
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {

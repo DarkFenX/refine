@@ -2,7 +2,7 @@ pub(crate) use cap::StatCapSimStaggerInt;
 pub use cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
-pub use mining::{StatMining, StatMiningItemKinds};
+pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;

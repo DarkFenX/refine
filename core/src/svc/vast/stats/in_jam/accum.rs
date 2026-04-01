@@ -1,5 +1,5 @@
 use crate::{
-    misc::Ecm,
+    nd::NEffectEcmAmount,
     num::{Count, PValue, UnitInterval},
     svc::vast::{
         StatSensors, StatSensorsKind,
@@ -45,8 +45,8 @@ impl SeqInstanceAccumEcm {
         }
     }
 }
-impl SeqInstanceAccum<Ecm> for SeqInstanceAccumEcm {
-    fn add_instance(&mut self, instance: Ecm, chance_mult: Option<PValue>, count: Count) {
+impl SeqInstanceAccum<NEffectEcmAmount> for SeqInstanceAccumEcm {
+    fn add_instance(&mut self, instance: NEffectEcmAmount, chance_mult: Option<PValue>, count: Count) {
         if count == Count::ZERO {
             return;
         }

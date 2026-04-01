@@ -1,7 +1,6 @@
-use super::stat::StatMining;
+use super::stat::{StatMining, StatMiningEntry};
 use crate::{
-    misc::MiningAmount,
-    nd::{NEffectMiningOutputGetter, NEffectMiningXargs},
+    nd::{NEffectMiningAmount, NEffectMiningOutputGetter, NEffectMiningXargs},
     num::PValue,
     rd::{REffect, REffectProjOpcSpec},
     svc::{
@@ -75,14 +74,14 @@ fn get_mps_item_uid<F>(
     base_xargs: NEffectMiningXargs,
     ignore_state: bool,
     mining_ospec_getter: F,
-) -> MiningAmount
+) -> StatMiningEntry
 where
     F: Fn(&REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>>,
 {
-    let mut mps = MiningAmount::default();
+    let mut mps = NEffectMiningAmount::new();
     let cycling_options = CyclingOptions::from_time_options(time_options);
     if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
-        return mps;
+        return StatMiningEntry::from_effect_amount(mps);
     }
     for (&effect_rid, cseq) in reuse_cseq_map.iter() {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
@@ -114,7 +113,7 @@ where
             mps += accum.get_per_second();
         }
     }
-    mps
+    StatMiningEntry::from_effect_amount(mps)
 }
 
 fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {

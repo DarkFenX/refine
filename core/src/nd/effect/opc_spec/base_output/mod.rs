@@ -1,8 +1,8 @@
-pub(crate) use breacher::NEffectBreacherOutputGetter;
+pub(crate) use breacher::{NEffectBreacherAmount, NEffectBreacherOutputGetter};
 pub(crate) use dmg::NEffectDmgOutputGetter;
-pub(crate) use ecm::NEffectEcmOutputGetter;
+pub(crate) use ecm::{NEffectEcmAmount, NEffectEcmOutputGetter};
 pub(crate) use general::NEffectGeneralOutputGetter;
-pub(crate) use mining::{NEffectMiningOutputGetter, NEffectMiningXargs};
+pub(crate) use mining::{NEffectMiningAmount, NEffectMiningOutputGetter, NEffectMiningXargs};
 pub(crate) use output_getter::NEffectOutputGetter;
 
 mod breacher;

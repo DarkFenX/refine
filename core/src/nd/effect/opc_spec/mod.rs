@@ -1,6 +1,7 @@
 pub(crate) use base_output::{
-    NEffectBreacherOutputGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter, NEffectGeneralOutputGetter,
-    NEffectMiningOutputGetter, NEffectMiningXargs, NEffectOutputGetter,
+    NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectDmgOutputGetter, NEffectEcmAmount,
+    NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectMiningAmount, NEffectMiningOutputGetter,
+    NEffectMiningXargs, NEffectOutputGetter,
 };
 pub(crate) use charge_mult_getter::NEffectChargeMultGetter;
 pub(crate) use opc_spec::{NEffectLocalOpcSpec, NEffectProjOpcSpec};

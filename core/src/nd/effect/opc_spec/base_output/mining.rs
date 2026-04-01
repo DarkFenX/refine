@@ -1,5 +1,4 @@
 use crate::{
-    misc::MiningAmount,
     nd::NEffectOutputGetter,
     num::{PValue, UnitInterval, Value},
     rd::REffect,
@@ -12,11 +11,31 @@ use crate::{
     ud::UItemId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Output amount and extra arguments
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone)]
+pub(crate) struct NEffectMiningAmount {
+    pub(crate) yield_: PValue,
+    pub(crate) drain: PValue,
+}
+impl NEffectMiningAmount {
+    pub(crate) fn new() -> Self {
+        Self {
+            yield_: PValue::ZERO,
+            drain: PValue::ZERO,
+        }
+    }
+}
+
 #[derive(Copy, Clone)]
 pub(crate) struct NEffectMiningXargs {
     pub(crate) mission_ore: bool,
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Getter
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(crate) enum NEffectMiningOutputGetter {
     Regular,
@@ -27,7 +46,7 @@ pub(crate) enum NEffectMiningOutputGetter {
     MiningLaserIce,
 }
 impl NEffectOutputGetter for NEffectMiningOutputGetter {
-    type Instance = MiningAmount;
+    type Instance = NEffectMiningAmount;
     type Xargs = NEffectMiningXargs;
 
     fn get(
@@ -50,7 +69,7 @@ impl NEffectOutputGetter for NEffectMiningOutputGetter {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Getter implementations
+// Getter-related private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_regular(
     ctx: SvcCtx,
@@ -58,10 +77,10 @@ fn get_regular(
     item_uid: UItemId,
     effect: &REffect,
     xargs: NEffectMiningXargs,
-) -> Option<Output<MiningAmount>> {
+) -> Option<Output<NEffectMiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, xargs)?;
     Some(Output::Simple(OutputSimple {
-        instance: MiningAmount { yield_, drain },
+        instance: NEffectMiningAmount { yield_, drain },
         delay,
     }))
 }
@@ -72,7 +91,7 @@ fn get_crit(
     item_uid: UItemId,
     effect: &REffect,
     xargs: NEffectMiningXargs,
-) -> Option<Output<MiningAmount>> {
+) -> Option<Output<NEffectMiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, xargs)?;
     let attr_consts = ctx.ac();
     // Mission ore is immune to crits
@@ -90,7 +109,7 @@ fn get_crit(
         false => yield_,
     };
     Some(Output::Simple(OutputSimple {
-        instance: MiningAmount { yield_, drain },
+        instance: NEffectMiningAmount { yield_, drain },
         delay,
     }))
 }
@@ -101,7 +120,7 @@ fn get_mining_ore(
     item_uid: UItemId,
     effect: &REffect,
     xargs: NEffectMiningXargs,
-) -> Option<Output<MiningAmount>> {
+) -> Option<Output<NEffectMiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if item.is_ice_harvester() {
         return None;
@@ -115,7 +134,7 @@ fn get_mining_ice(
     item_uid: UItemId,
     effect: &REffect,
     xargs: NEffectMiningXargs,
-) -> Option<Output<MiningAmount>> {
+) -> Option<Output<NEffectMiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if !item.is_ice_harvester() {
         return None;
@@ -129,7 +148,7 @@ fn get_crit_hybrid_ore(
     item_uid: UItemId,
     effect: &REffect,
     base_xargs: NEffectMiningXargs,
-) -> Option<Output<MiningAmount>> {
+) -> Option<Output<NEffectMiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if item.is_ice_harvester() {
         return None;
@@ -143,7 +162,7 @@ fn get_crit_hybrid_ice(
     item_uid: UItemId,
     effect: &REffect,
     base_xargs: NEffectMiningXargs,
-) -> Option<Output<MiningAmount>> {
+) -> Option<Output<NEffectMiningAmount>> {
     let item = ctx.u_data.items.get(item_uid);
     if !item.is_ice_harvester() {
         return None;

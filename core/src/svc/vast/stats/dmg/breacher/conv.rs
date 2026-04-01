@@ -3,7 +3,7 @@ use super::{
     ticks::{AbtCycleComplex, AbtCycleSimple, AbtInfinite, AggrBreacherTicks},
 };
 use crate::{
-    misc::Breacher,
+    nd::NEffectBreacherAmount,
     num::Count,
     svc::{
         cycle::{CycleDataDur, CycleSeq},
@@ -14,7 +14,10 @@ use crate::{
 // Process breacher module cycle sequence + output per cycle into some kind of aggregated value,
 // which discards all overlapping instances and aligns everything to ticks, which is needed for
 // further processing
-pub(super) fn cseq_to_ticks(cseq: CycleSeq<CycleDataDur>, output: Output<Breacher>) -> Option<AggrBreacherTicks> {
+pub(super) fn cseq_to_ticks(
+    cseq: CycleSeq<CycleDataDur>,
+    output: Output<NEffectBreacherAmount>,
+) -> Option<AggrBreacherTicks> {
     // Breacher aggregator only supports simple output, and only simple output is used
     let output = match output {
         Output::Simple(output) => output,
