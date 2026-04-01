@@ -91,7 +91,8 @@ fn get_state(sol: &SolarSystem, drone_uid: UItemId) -> MinionState {
     get_u_drone(sol, drone_uid).get_drone_state()
 }
 fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> ItemNpcPropInfo {
-    let value = sol.u_data.get_item_npc_prop(drone_uid).unwrap();
+    let u_item = sol.u_data.items.get(drone_uid);
+    let value = sol.u_data.get_item_npc_prop(u_item).unwrap();
     let overridden = get_u_drone(sol, drone_uid).get_npc_prop().is_some();
     ItemNpcPropInfo { value, overridden }
 }

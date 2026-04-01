@@ -22,7 +22,7 @@ use crate::{
             },
             kind::get_item_kind,
             max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
-            mobility::is_mobile,
+            mobility::{entity_has_mwd, is_mobile},
             sec_zone::is_sec_zone_limitable,
             ship_kind::get_item_ship_kind,
             ship_limit::get_item_ship_limit,
@@ -109,6 +109,8 @@ pub(crate) struct RItemAXt {
     pub(crate) rig_size: Option<Value>,
     // Base time it takes to refuel a fighter, even if it did not spend any charges
     pub(crate) fighter_refuel_duration: PValue,
+    // True for items which have both maxVelocity and entityCruiseSpeed
+    pub(crate) entity_mwd: bool,
 }
 impl RItemAXt {
     pub(crate) fn fill(
@@ -164,5 +166,6 @@ impl RItemAXt {
         self.max_group_active_limited = get_max_group_active_limited(item_attrs, attr_consts);
         self.rig_size = get_rig_size(item_attrs, attr_consts);
         self.fighter_refuel_duration = get_fighter_refuel_duration(item_attrs, attr_consts);
+        self.entity_mwd = entity_has_mwd(item_attrs, attr_consts);
     }
 }

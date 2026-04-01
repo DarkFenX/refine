@@ -33,8 +33,7 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_npc_prop(&self, item_uid: UItemId) -> Option<NpcProp> {
-        let u_item = self.items.get(item_uid);
+    pub(crate) fn get_item_npc_prop(&self, u_item: &UItem) -> Option<NpcProp> {
         u_item.get_npc_prop().map(|npc_prop| match npc_prop {
             Some(npc_prop) => npc_prop,
             None => self.default_npc_prop,
