@@ -642,54 +642,6 @@ def test_drone_attr_sig_res_absent(client, consts):
     assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(558.68352), 0]
 
 
-def test_drone_attr_speed_cruise_absent(client, consts):
-    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_drone_id = make_eve_drone(
-        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 64, 0), dmg_mult=8.6, cycle_time=4000,
-        range_optimal=6000, range_falloff=5000, tracking=0.97, sig_resolution=400,
-        speed_chase=2670, radius=35)
-    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, speed=1770, sig_radius=126, radius=143)
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_src_fit = api_sol.create_fit()
-    api_src_drone_proj = api_src_fit.add_drone(
-        type_id=eve_drone_id,
-        state=consts.ApiMinionState.engaging,
-        coordinates=(0, 0, 0),
-        movement=(0, 0, 1),
-        npc_prop=consts.ApiNpcProp.cruise)
-    api_src_drone_nonproj = api_src_fit.add_drone(
-        type_id=eve_drone_id,
-        state=consts.ApiMinionState.engaging,
-        coordinates=(0, 0, 0),
-        movement=(0, 0, 1),
-        npc_prop=consts.ApiNpcProp.cruise)
-    api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6178, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
-    # Verification
-    api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
-    assert api_drone_proj_dmg_stats.dps == [0, 0, approx(139.67088), 0]
-    assert api_drone_proj_dmg_stats.volley == [0, 0, approx(558.68352), 0]
-    api_drone_nonproj_dmg_stats = api_src_drone_nonproj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
-    assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(139.67088), 0]
-    assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(558.68352), 0]
-    # Action
-    api_src_drone_proj.change_drone(npc_prop=consts.ApiNpcProp.chase)
-    api_src_drone_nonproj.change_drone(npc_prop=consts.ApiNpcProp.chase)
-    # Verification
-    api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
-    assert api_drone_proj_dmg_stats.dps == [0, 0, approx(24.592144), 0]
-    assert api_drone_proj_dmg_stats.volley == [0, 0, approx(98.368575), 0]
-    api_drone_nonproj_dmg_stats = api_src_drone_nonproj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
-    assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(24.592144), 0]
-    assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(98.368575), 0]
-
-
 def test_drone_attr_speed_chase_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_drone_id = make_eve_drone(

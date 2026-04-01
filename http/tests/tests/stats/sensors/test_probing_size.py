@@ -253,6 +253,7 @@ def test_struct_modified(client, consts):
 def test_drone_modified(client, consts):
     eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_ladar_strength)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
     eve_prop_blow_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -271,8 +272,8 @@ def test_drone_modified(client, consts):
     eve_sig_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_sig_buff_id, eve_buff_val_attr_id: -10},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_drone(
-        attrs={eve_sensor_attr_id: 20, eve_sig_radius_attr_id: 40, eve_prop_blow_attr_id: 6})
+    eve_drone_id = client.mk_eve_drone(attrs={
+        eve_sensor_attr_id: 20, eve_sig_radius_attr_id: 40, eve_prop_blow_attr_id: 6, eve_cruise_speed_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

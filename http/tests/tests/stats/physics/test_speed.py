@@ -91,7 +91,32 @@ def test_struct(client, consts):
     assert api_ship_stats.speed is None
 
 
-def test_drone_modified(client, consts):
+def test_drone_single_prop(client, consts):
+    # Some drones kinds (mining, salvage) do not have cruise speed set; for them, maxVelocity is
+    # exposed as speed in both modes
+    client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
+    eve_chase_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_drone_id = client.mk_eve_drone(attrs={eve_chase_speed_attr_id: 1350})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcProp.cruise)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_drone_stats.speed == approx(1350)
+    # Action
+    api_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_drone_stats.speed == approx(1350)
+    # Action
+    api_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_drone_stats.speed == approx(1350)
+
+
+def test_drone_dual_prop_modified(client, consts):
     eve_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
     eve_chase_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)

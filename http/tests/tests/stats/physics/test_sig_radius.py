@@ -114,8 +114,37 @@ def test_struct_modified(client, consts):
     assert api_ship_stats.sig_radius == approx(100)
 
 
-def test_drone_modified(client, consts):
+def test_drone_single_prop(client, consts):
+    # Some drones kinds (mining, salvage) do not have cruise speed set; for those, sig blow is not
+    # applied whenever they move. Tested on 2026-04-01 on Thunderdome by bombing t2 mining drones
+    # moving towards an asteroid and during drone recall, and by bombing salvage drones during drone
+    # recall
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
+    eve_prop_blow_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
+    eve_drone_id = client.mk_eve_drone(attrs={eve_sig_radius_attr_id: 1350, eve_prop_blow_attr_id: 6})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcProp.cruise)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
+    assert api_drone_stats.sig_radius == approx(1350)
+    # Action
+    api_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
+    assert api_drone_stats.sig_radius == approx(1350)
+    # Action
+    api_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    # Verification
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
+    assert api_drone_stats.sig_radius == approx(1350)
+
+
+def test_drone_dual_prop_modified(client, consts):
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
     eve_prop_blow_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -127,7 +156,8 @@ def test_drone_modified(client, consts):
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 300},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_drone_id = client.mk_eve_drone(attrs={eve_sig_radius_attr_id: 1350, eve_prop_blow_attr_id: 6})
+    eve_drone_id = client.mk_eve_drone(
+        attrs={eve_sig_radius_attr_id: 1350, eve_prop_blow_attr_id: 6, eve_cruise_speed_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

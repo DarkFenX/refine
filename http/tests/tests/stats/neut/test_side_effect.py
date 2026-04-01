@@ -282,6 +282,7 @@ def test_application_and_cap_limit(client, consts):
     eve_neut_sig_res_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_energy_neut_sig_radius)
     eve_cycle_time_attr_id = client.mk_eve_attr()
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
     eve_prop_blow_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
     eve_cap_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_effect_id = client.mk_eve_effect(
@@ -296,8 +297,8 @@ def test_application_and_cap_limit(client, consts):
         defeff_id=eve_effect_id)
     eve_tgt_ship1_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 100000, eve_cap_attr_id: 12000})
     eve_tgt_ship2_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 5000, eve_cap_attr_id: 12000})
-    eve_tgt_drone_id = client.mk_eve_drone(
-        attrs={eve_sig_radius_attr_id: 100, eve_prop_blow_attr_id: 6, eve_cap_attr_id: 10000})
+    eve_tgt_drone_id = client.mk_eve_drone(attrs={
+        eve_sig_radius_attr_id: 100, eve_prop_blow_attr_id: 6, eve_cap_attr_id: 10000, eve_cruise_speed_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
