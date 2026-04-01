@@ -61,7 +61,7 @@ pub(crate) struct DmgKindsIter<'a, T> {
     index: usize,
 }
 impl<'a, T> DmgKindsIter<'a, T> {
-    pub(super) fn new(item: &'a DmgKinds<T>) -> Self {
+    pub(in crate::misc) fn new(item: &'a DmgKinds<T>) -> Self {
         Self { item, index: 0 }
     }
 }
