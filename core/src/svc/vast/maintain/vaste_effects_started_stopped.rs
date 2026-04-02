@@ -1,12 +1,18 @@
 use crate::{
     misc::EffectSpec,
-    rd::{REffect, RcEffect},
+    rd::{RAttrConsts, REffect, RcEffect},
     svc::vast::{Vast, validators::EffectSecZoneInfo},
     ud::{UFitId, UItem, UItemId},
 };
 
 impl Vast {
-    pub(in crate::svc) fn effects_started(&mut self, item_uid: UItemId, item: &UItem, effects: &[RcEffect]) {
+    pub(in crate::svc) fn effects_started(
+        &mut self,
+        attr_consts: &RAttrConsts,
+        item_uid: UItemId,
+        item: &UItem,
+        effects: &[RcEffect],
+    ) {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
@@ -21,7 +27,7 @@ impl Vast {
                     self.handle_aggr_start(effect, item_uid, &charge.get_fit_uid());
                     if effect.is_active() {
                         self.handle_dmg_start(effect, item_uid, &charge.get_fit_uid());
-                        self.handle_neut_start(effect, item_uid, &charge.get_fit_uid());
+                        self.handle_neut_start(attr_consts, effect, item_uid, item, &charge.get_fit_uid());
                     }
                 }
             }
@@ -32,7 +38,7 @@ impl Vast {
                         self.handle_dmg_start(effect, item_uid, &drone.get_fit_uid());
                         self.handle_mining_start(effect, item_uid, &drone.get_fit_uid());
                         self.handle_orrs_start(effect, item_uid, &drone.get_fit_uid());
-                        self.handle_neut_start(effect, item_uid, &drone.get_fit_uid());
+                        self.handle_neut_start(attr_consts, effect, item_uid, item, &drone.get_fit_uid());
                     }
                 }
             }
@@ -42,7 +48,7 @@ impl Vast {
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_uid, &fighter.get_fit_uid());
                         self.handle_orrs_start(effect, item_uid, &fighter.get_fit_uid());
-                        self.handle_neut_start(effect, item_uid, &fighter.get_fit_uid());
+                        self.handle_neut_start(attr_consts, effect, item_uid, item, &fighter.get_fit_uid());
                     }
                     if effect.banned_in_hisec || effect.banned_in_lowsec {
                         let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
@@ -97,14 +103,20 @@ impl Vast {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                             fit_data.cap_injects.add_entry(item_uid, effect.rid, inject_ospec);
                         }
-                        self.handle_neut_start(effect, item_uid, &module.get_fit_uid());
+                        self.handle_neut_start(attr_consts, effect, item_uid, item, &module.get_fit_uid());
                     }
                 }
             }
             _ => (),
         }
     }
-    pub(in crate::svc) fn effects_stopped(&mut self, item_uid: UItemId, item: &UItem, effects: &[RcEffect]) {
+    pub(in crate::svc) fn effects_stopped(
+        &mut self,
+        attr_consts: &RAttrConsts,
+        item_uid: UItemId,
+        item: &UItem,
+        effects: &[RcEffect],
+    ) {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
@@ -119,7 +131,7 @@ impl Vast {
                     self.handle_aggr_stop(effect, item_uid, &charge.get_fit_uid());
                     if effect.is_active() {
                         self.handle_dmg_stop(effect, item_uid, &charge.get_fit_uid());
-                        self.handle_neut_stop(effect, item_uid, &charge.get_fit_uid());
+                        self.handle_neut_stop(attr_consts, effect, item_uid, item, &charge.get_fit_uid());
                     }
                 }
             }
@@ -130,7 +142,7 @@ impl Vast {
                         self.handle_dmg_stop(effect, item_uid, &drone.get_fit_uid());
                         self.handle_mining_stop(effect, item_uid, &drone.get_fit_uid());
                         self.handle_orrs_stop(effect, item_uid, &drone.get_fit_uid());
-                        self.handle_neut_stop(effect, item_uid, &drone.get_fit_uid());
+                        self.handle_neut_stop(attr_consts, effect, item_uid, item, &drone.get_fit_uid());
                     }
                 }
             }
@@ -140,7 +152,7 @@ impl Vast {
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_uid, &fighter.get_fit_uid());
                         self.handle_orrs_stop(effect, item_uid, &fighter.get_fit_uid());
-                        self.handle_neut_stop(effect, item_uid, &fighter.get_fit_uid());
+                        self.handle_neut_stop(attr_consts, effect, item_uid, item, &fighter.get_fit_uid());
                     }
                     for effect in effects {
                         if effect.banned_in_hisec || effect.banned_in_lowsec {
@@ -190,7 +202,7 @@ impl Vast {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                             fit_data.cap_injects.remove_l2(item_uid, &effect.rid);
                         }
-                        self.handle_neut_stop(effect, item_uid, &module.get_fit_uid());
+                        self.handle_neut_stop(attr_consts, effect, item_uid, item, &module.get_fit_uid());
                     }
                 }
             }
@@ -293,14 +305,32 @@ impl Vast {
             fit_data.out_cap.remove_l2(item_uid, &effect.rid);
         }
     }
-    fn handle_neut_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if let Some(neut) = &effect.neut {
+    fn handle_neut_start(
+        &mut self,
+        attr_consts: &RAttrConsts,
+        effect: &REffect,
+        item_uid: UItemId,
+        item: &UItem,
+        fit_uid: &UFitId,
+    ) {
+        if let Some(neut) = &effect.neut
+            && neut.check(item, attr_consts)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.out_neuts.add_entry(item_uid, effect.rid, neut.ospec);
         }
     }
-    fn handle_neut_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if effect.neut.is_some() {
+    fn handle_neut_stop(
+        &mut self,
+        attr_consts: &RAttrConsts,
+        effect: &REffect,
+        item_uid: UItemId,
+        item: &UItem,
+        fit_uid: &UFitId,
+    ) {
+        if let Some(neut) = &effect.neut
+            && neut.check(item, attr_consts)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.out_neuts.remove_l2(item_uid, &effect.rid);
         }

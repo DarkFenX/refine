@@ -31,11 +31,12 @@ impl Vast {
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
             return Ok(nps);
         }
+        let u_item = ctx.u_data.items.get(item_uid);
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let ospec = match &effect.neut {
-                Some(neut) => neut.ospec,
-                None => continue,
+                Some(neut) if neut.check(u_item, ctx.ac()) => neut.ospec,
+                _ => continue,
             };
             let mut accum = SeqAccum::new_stack();
             if match time_options {
@@ -71,7 +72,7 @@ impl Vast {
             }
         }
         if include_charges {
-            for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
+            for charge_uid in u_item.iter_charges() {
                 if let Ok(charge_nps) = Vast::get_stat_item_outgoing_nps(
                     reuse_cseq_map,
                     ctx,

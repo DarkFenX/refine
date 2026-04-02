@@ -1,7 +1,8 @@
 use crate::{
     ad::AAttrId,
     nd::{NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind},
-    rd::{RAttrId, REffectProjOpcSpec},
+    rd::{RAttrConsts, RAttrId, REffectProjOpcSpec},
+    ud::UItem,
     util::RMap,
 };
 
@@ -9,6 +10,14 @@ pub(crate) struct REffectNeut {
     pub(crate) kind: NEffectNeutKind,
     pub(crate) checker: Option<NEffectNeutChecker>,
     pub(crate) ospec: REffectProjOpcSpec<NEffectGeneralOutputGetter>,
+}
+impl REffectNeut {
+    pub(crate) fn check(&self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
+        match self.checker {
+            Some(checker) => checker.check(u_item, attr_consts),
+            None => false,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

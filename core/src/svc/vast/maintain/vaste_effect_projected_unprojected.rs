@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectCatId,
     misc::{AttrSpec, EffectSpec},
-    rd::REffect,
+    rd::{RAttrConsts, REffect},
     svc::{funcs, vast::Vast},
     ud::{UItem, UItemId},
 };
@@ -9,6 +9,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn effect_projected(
         &mut self,
+        attr_consts: &RAttrConsts,
         projector_uid: UItemId,
         projector_item: &UItem,
         effect: &REffect,
@@ -88,7 +89,9 @@ impl Vast {
             self.in_cap
                 .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
         }
-        if let Some(neut) = &effect.neut {
+        if let Some(neut) = &effect.neut
+            && neut.check(projector_item, attr_consts)
+        {
             self.in_neuts
                 .add_entry(projectee_uid, projector_uid, effect.rid, neut.ospec);
         }
@@ -99,6 +102,7 @@ impl Vast {
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
+        attr_consts: &RAttrConsts,
         projector_uid: UItemId,
         projector_item: &UItem,
         effect: &REffect,
@@ -167,7 +171,9 @@ impl Vast {
         if effect.outgoing_cap_opc_spec.is_some() && effect.is_active_with_duration {
             self.in_cap.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
-        if effect.neut.is_some() {
+        if let Some(neut) = &effect.neut
+            && neut.check(projector_item, attr_consts)
+        {
             self.in_neuts.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
         if effect.ecm_opc_spec.is_some() {
