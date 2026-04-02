@@ -15,7 +15,7 @@ impl REffectNeut {
     pub(crate) fn check(&self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
         match self.checker {
             Some(checker) => checker.check(u_item, attr_consts),
-            None => false,
+            None => true,
         }
     }
 }
