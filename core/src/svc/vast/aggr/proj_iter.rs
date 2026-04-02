@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, T>(
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrIterData<T>>
 where
-    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
 {
     let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;

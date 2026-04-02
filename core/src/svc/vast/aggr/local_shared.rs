@@ -30,7 +30,7 @@ where
         base_xargs: BX,
     ) -> Option<Self>
     where
-        BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+        BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     {
         let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
         if !output.has_impact() || output.get_instance_count() == Count::ZERO {

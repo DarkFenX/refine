@@ -43,7 +43,7 @@ pub(crate) enum NEffectBreacherOutputGetter {
 }
 impl NEffectOutputGetter for NEffectBreacherOutputGetter {
     type Instance = NEffectBreacherAmount;
-    type Xargs = ();
+    type XArgs = ();
 
     fn get(
         &self,
@@ -51,7 +51,7 @@ impl NEffectOutputGetter for NEffectBreacherOutputGetter {
         calc: &mut Calc,
         item_uid: UItemId,
         _effect: &REffect,
-        _xargs: Self::Xargs,
+        _xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
             Self::Regular => get_regular(ctx, calc, item_uid),

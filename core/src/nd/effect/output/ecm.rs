@@ -62,7 +62,7 @@ pub(crate) enum NEffectEcmOutputGetter {
 }
 impl NEffectOutputGetter for NEffectEcmOutputGetter {
     type Instance = NEffectEcmAmount;
-    type Xargs = ();
+    type XArgs = ();
 
     fn get(
         &self,
@@ -70,7 +70,7 @@ impl NEffectOutputGetter for NEffectEcmOutputGetter {
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        _xargs: Self::Xargs,
+        _xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
             Self::Direct => get_direct(ctx, calc, item_uid, effect),

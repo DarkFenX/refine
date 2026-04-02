@@ -35,7 +35,7 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
-        BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+        BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     {
         let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
         if !base_output.has_impact() || base_output.get_instance_count() == Count::ZERO {

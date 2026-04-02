@@ -64,7 +64,7 @@ pub(crate) enum NEffectMiningOutputGetter {
 }
 impl NEffectOutputGetter for NEffectMiningOutputGetter {
     type Instance = NEffectMiningAmount;
-    type Xargs = NEffectMiningXargs;
+    type XArgs = NEffectMiningXargs;
 
     fn get(
         &self,
@@ -72,7 +72,7 @@ impl NEffectOutputGetter for NEffectMiningOutputGetter {
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        xargs: Self::Xargs,
+        xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
             Self::Regular => get_regular(ctx, calc, item_uid, effect, xargs),

@@ -29,7 +29,7 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
