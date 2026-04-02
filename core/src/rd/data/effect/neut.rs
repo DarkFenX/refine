@@ -1,12 +1,13 @@
 use crate::{
     ad::AAttrId,
-    nd::{NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutKind},
+    nd::{NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind},
     rd::{RAttrId, REffectProjOpcSpec},
     util::RMap,
 };
 
 pub(crate) struct REffectNeut {
     pub(crate) kind: NEffectNeutKind,
+    pub(crate) checker: Option<NEffectNeutChecker>,
     pub(crate) ospec: REffectProjOpcSpec<NEffectGeneralOutputGetter>,
 }
 
@@ -20,6 +21,7 @@ impl REffectNeut {
     ) -> Self {
         Self {
             kind: n_effect_neut.kind,
+            checker: n_effect_neut.checker,
             ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_neut.ospec, attr_aid_rid_map),
         }
     }

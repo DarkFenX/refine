@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter, NEffectGeneralOutputGetter,
-        NEffectNeut, NEffectNeutKind, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
+        NEffectNeut, NEffectNeutChecker, NEffectNeutKind, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
     },
 };
 
@@ -23,6 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         neut: Some(NEffectNeut {
             kind: NEffectNeutKind::Bomb,
+            checker: Some(NEffectNeutChecker::Bomb),
             ospec: NEffectProjOpcSpec {
                 base: NEffectGeneralOutputGetter::NeutBomb,
                 proj_mult_str: Some(NEffectProjMultGetter::BombApplication),

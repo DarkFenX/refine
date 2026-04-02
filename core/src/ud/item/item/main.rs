@@ -623,9 +623,9 @@ impl UItem {
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_rid: RAttrId) -> Option<Value> {
+    pub(crate) fn get_attr(&self, attr_rid: &RAttrId) -> Option<Value> {
         match self.get_attrs() {
-            Some(attrs) => attrs.get(&attr_rid).copied(),
+            Some(attrs) => attrs.get(attr_rid).copied(),
             None => None,
         }
     }

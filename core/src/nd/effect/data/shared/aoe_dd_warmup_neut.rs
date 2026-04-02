@@ -9,6 +9,7 @@ use crate::{
 pub(in crate::nd::effect::data) fn get_aoe_dd_warmup_neut() -> NEffectNeut {
     NEffectNeut {
         kind: NEffectNeutKind::SideEffect,
+        checker: None,
         ospec: NEffectProjOpcSpec {
             base: NEffectGeneralOutputGetter::NeutDdWarmup,
             proj_mult_str: Some(NEffectProjMultGetter::AoeDdWarmupNeut),

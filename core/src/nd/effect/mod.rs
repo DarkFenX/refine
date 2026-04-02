@@ -5,7 +5,7 @@ pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
 pub(crate) use effect::NEffect;
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
-pub(crate) use neut::{NEffectNeut, NEffectNeutKind};
+pub(crate) use neut::{NEffectNeut, NEffectNeutChecker, NEffectNeutKind};
 pub(crate) use opc_spec::{
     NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgOutputGetter,
     NEffectEcmAmount, NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningAmount,

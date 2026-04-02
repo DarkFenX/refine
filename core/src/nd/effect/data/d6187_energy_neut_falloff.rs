@@ -16,6 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         neut: Some(NEffectNeut {
             kind: NEffectNeutKind::Module,
+            checker: None,
             ospec: NEffectProjOpcSpec {
                 base: NEffectGeneralOutputGetter::Neut,
                 proj_mult_str: Some(NEffectProjMultGetter::Neut),
