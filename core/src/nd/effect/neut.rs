@@ -38,12 +38,5 @@ impl NEffectNeutChecker {
 }
 
 fn check_bomb(u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
-    let attr_rid = match attr_consts.energy_neut_amount {
-        Some(attr_rid) => attr_rid,
-        None => return false,
-    };
-    match u_item.get_attr(&attr_rid) {
-        Some(value) => value > Value::FLOAT_TOLERANCE,
-        None => false,
-    }
+    u_item.get_oattr_ffb(attr_consts.energy_neut_amount, Value::ZERO) > Value::ZERO
 }

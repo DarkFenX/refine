@@ -623,11 +623,18 @@ impl UItem {
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_rid: &RAttrId) -> Option<Value> {
+    pub(crate) fn get_attr(&self, attr_rid: RAttrId) -> Option<Value> {
         match self.get_attrs() {
-            Some(attrs) => attrs.get(attr_rid).copied(),
+            Some(attrs) => attrs.get(&attr_rid).copied(),
             None => None,
         }
+    }
+    pub(crate) fn get_oattr_ffb(&self, attr_rid: Option<RAttrId>, fallback: Value) -> Value {
+        let attr_rid = match attr_rid {
+            Some(attr_rid) => attr_rid,
+            None => return fallback,
+        };
+        self.get_attr(attr_rid).unwrap_or(fallback)
     }
     pub(crate) fn get_effective_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         match self {

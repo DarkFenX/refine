@@ -1,6 +1,7 @@
 pub(crate) use buff::{REffectBuff, REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength};
 pub(crate) use charge::{REffectCharge, REffectChargeLoc};
 pub(crate) use consts::REffectConsts;
+pub(crate) use ecm::REffectEcm;
 pub(crate) use effect::REffect;
 pub(crate) use id::REffectId;
 pub(crate) use modifier::REffectModifier;
@@ -13,6 +14,7 @@ pub(crate) use spool::REffectSpoolAttrs;
 mod buff;
 mod charge;
 mod consts;
+mod ecm;
 mod effect;
 mod id;
 mod modifier;

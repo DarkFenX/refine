@@ -2,10 +2,9 @@ use crate::{
     ad::{AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     ed::EEffectId,
     nd::{
-        NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter,
-        NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningOutputGetter,
-        NEffectModProjAttrsGetter, NEffectNeut, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter,
-        NEffectSpoolAttrs,
+        NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm,
+        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningOutputGetter, NEffectModProjAttrsGetter,
+        NEffectNeut, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -61,5 +60,5 @@ pub(crate) struct NEffect {
     pub(crate) outgoing_cap_opc_spec: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) cap_inject_opc_spec: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
     // Getters/specs - misc
-    pub(crate) ecm_opc_spec: Option<NEffectProjOpcSpec<NEffectEcmOutputGetter>> = None,
+    pub(crate) ecm: Option<NEffectEcm> = None,
 }

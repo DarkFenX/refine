@@ -2,12 +2,12 @@ use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
         N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
-        NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectMiningOutputGetter, NEffectProjMultGetter,
+        NEffectGeneralOutputGetter, NEffectMiningOutputGetter, NEffectProjMultGetter,
     },
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
         REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem,
-        RItemListId, RState,
+        RItemListId, RState, REffectEcm,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -65,7 +65,7 @@ pub(crate) struct REffect {
     pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) ecm_opc_spec: Option<REffectProjOpcSpec<NEffectEcmOutputGetter>>,
+    pub(crate) ecm: Option<REffectEcm>,
 }
 impl REffect {
     pub(crate) fn is_active(&self) -> bool {
@@ -157,7 +157,7 @@ impl REffect {
             nosf_opc_spec: Default::default(),
             outgoing_cap_opc_spec: Default::default(),
             cap_inject_opc_spec: Default::default(),
-            ecm_opc_spec: Default::default(),
+            ecm: Default::default(),
         }
     }
     pub(in crate::rd) fn fill_runtime(
@@ -295,10 +295,10 @@ impl REffect {
                 .cap_inject_opc_spec
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
-            self.ecm_opc_spec = n_effect
-                .ecm_opc_spec
+            self.ecm = n_effect
+                .ecm
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ecm| REffectEcm::from_n_effect_ecm(ecm, attr_aid_rid_map));
         }
         // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
         // all effects which need it.

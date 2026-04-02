@@ -1,17 +1,16 @@
 use crate::{
     ad::AAttrId,
-    nd::{NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind},
+    nd::{NEffectEcm, NEffectEcmChecker, NEffectEcmOutputGetter},
     rd::{RAttrConsts, RAttrId, REffectProjOpcSpec},
     ud::UItem,
     util::RMap,
 };
 
-pub(crate) struct REffectNeut {
-    pub(crate) kind: NEffectNeutKind,
-    checker: Option<NEffectNeutChecker>,
-    pub(crate) ospec: REffectProjOpcSpec<NEffectGeneralOutputGetter>,
+pub(crate) struct REffectEcm {
+    checker: Option<NEffectEcmChecker>,
+    pub(crate) ospec: REffectProjOpcSpec<NEffectEcmOutputGetter>,
 }
-impl REffectNeut {
+impl REffectEcm {
     pub(crate) fn check(&self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
         match self.checker {
             Some(checker) => checker.check(u_item, attr_consts),
@@ -23,15 +22,14 @@ impl REffectNeut {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl REffectNeut {
-    pub(in crate::rd::data::effect) fn from_n_effect_neut(
-        n_effect_neut: &NEffectNeut,
+impl REffectEcm {
+    pub(in crate::rd::data::effect) fn from_n_effect_ecm(
+        n_effect_ecm: &NEffectEcm,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
-            kind: n_effect_neut.kind,
-            checker: n_effect_neut.checker,
-            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_neut.ospec, attr_aid_rid_map),
+            checker: n_effect_ecm.checker,
+            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_ecm.ospec, attr_aid_rid_map),
         }
     }
 }

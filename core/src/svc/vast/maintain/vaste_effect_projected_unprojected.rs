@@ -95,9 +95,11 @@ impl Vast {
             self.in_neuts
                 .add_entry(projectee_uid, projector_uid, effect.rid, neut.ospec);
         }
-        if let Some(ecm_ospec) = effect.ecm_opc_spec {
+        if let Some(ecm) = &effect.ecm
+            && ecm.check(projector_item, attr_consts)
+        {
             self.in_ecm
-                .add_entry(projectee_uid, projector_uid, effect.rid, ecm_ospec);
+                .add_entry(projectee_uid, projector_uid, effect.rid, ecm.ospec);
         }
     }
     pub(in crate::svc) fn effect_unprojected(
@@ -176,7 +178,9 @@ impl Vast {
         {
             self.in_neuts.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
-        if effect.ecm_opc_spec.is_some() {
+        if let Some(ecm) = &effect.ecm
+            && ecm.check(projector_item, attr_consts)
+        {
             self.in_ecm.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
     }

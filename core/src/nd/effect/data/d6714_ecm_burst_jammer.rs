@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectEcmOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffect, NEffectEcm, NEffectEcmOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::ECM_BURST_JAMMER;
@@ -11,11 +11,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        ecm_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEffectEcmOutputGetter::Burst,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
-            resist: Some(NEffectResist::Standard),
-            ..
+        ecm: Some(NEffectEcm {
+            checker: None,
+            ospec: NEffectProjOpcSpec {
+                base: NEffectEcmOutputGetter::Burst,
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                resist: Some(NEffectResist::Standard),
+                ..
+            },
         }),
         ..
     }

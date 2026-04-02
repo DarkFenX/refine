@@ -3,6 +3,7 @@ pub(crate) use charge::{
 };
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
+pub(crate) use ecm::{NEffectEcm, NEffectEcmChecker};
 pub(crate) use effect::NEffect;
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
 pub(crate) use neut::{NEffectNeut, NEffectNeutChecker, NEffectNeutKind};
@@ -19,6 +20,7 @@ mod charge;
 mod container;
 mod data;
 mod dmg_kind;
+mod ecm;
 mod effect;
 mod mod_proj_attrs;
 mod neut;

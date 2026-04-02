@@ -11,10 +11,11 @@
 use data::RData;
 pub(crate) use data::{
     RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, REffect, REffectBuff, REffectBuffAttrMerge,
-    REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectId,
-    REffectLocalOpcSpec, REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter, REffectResist,
-    REffectSpoolAttrs, RItem, RItemAXt, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemList,
-    RItemListId, RItemShipLimit, RMuta, RMutaAttrRange, RShipDroneLimit, RShipKind, RState, RcEffect, RcItem, RcMuta,
+    REffectBuffFull, REffectBuffScope, REffectBuffStrength, REffectCharge, REffectChargeLoc, REffectConsts, REffectEcm,
+    REffectId, REffectLocalOpcSpec, REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter,
+    REffectResist, REffectSpoolAttrs, RItem, RItemAXt, RItemCapConsumer, RItemChargeLimit, RItemContLimit,
+    RItemEffectData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange, RShipDroneLimit, RShipKind, RState,
+    RcEffect, RcItem, RcMuta,
 };
 pub use src::{Src, SrcInitError};
 
