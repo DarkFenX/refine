@@ -2,18 +2,14 @@ pub(crate) use charge::{
     NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,
 };
 pub(crate) use container::N_EFFECT_MAP;
-pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
 pub(crate) use effect::NEffect;
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
-pub(crate) use opc_spec::{
-    NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgOutputGetter,
-    NEffectEcmAmount, NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningAmount,
-    NEffectMiningOutputGetter, NEffectMiningXargs, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
-    NEffectResist,
-};
 pub(crate) use output::{
-    NEffectEcm, NEffectEcmChecker, NEffectMining, NEffectMiningChecker, NEffectNeut, NEffectNeutChecker,
-    NEffectNeutKind,
+    NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgKind, NEffectDmgKindGetter,
+    NEffectDmgOutputGetter, NEffectEcm, NEffectEcmAmount, NEffectEcmChecker, NEffectEcmOutputGetter,
+    NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectMiningAmount, NEffectMiningChecker,
+    NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut, NEffectNeutChecker, NEffectNeutKind,
+    NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
 };
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use spool::NEffectSpoolAttrs;
@@ -21,10 +17,8 @@ pub(crate) use spool::NEffectSpoolAttrs;
 mod charge;
 mod container;
 mod defs;
-mod dmg_kind;
 mod effect;
 mod mod_proj_attrs;
-mod opc_spec;
 mod output;
 mod projectee_filter;
 mod spool;

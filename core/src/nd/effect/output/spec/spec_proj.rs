@@ -3,16 +3,6 @@ use crate::{
     nd::{NEffectChargeMultGetter, NEffectOutputGetter, NEffectProjMultGetter, NEffectResist},
 };
 
-// OPC stands for output-per-cycle
-pub(crate) struct NEffectLocalOpcSpec<BG>
-where
-    BG: NEffectOutputGetter,
-{
-    pub(crate) base: BG,
-    pub(crate) charge_mult: Option<NEffectChargeMultGetter> = None,
-    pub(crate) limit_attr_id: Option<AAttrId> = None,
-}
-
 pub(crate) struct NEffectProjOpcSpec<BG>
 where
     BG: NEffectOutputGetter,
