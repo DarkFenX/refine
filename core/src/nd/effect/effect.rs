@@ -3,8 +3,8 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm,
-        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningOutputGetter, NEffectModProjAttrsGetter,
-        NEffectNeut, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
+        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectModProjAttrsGetter, NEffectNeut,
+        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -41,9 +41,9 @@ pub(crate) struct NEffect {
     pub(crate) normal_dmg_opc_spec: Option<NEffectProjOpcSpec<NEffectDmgOutputGetter>> = None,
     pub(crate) breacher_dmg_opc_spec: Option<NEffectProjOpcSpec<NEffectBreacherOutputGetter>> = None,
     // Getters/specs - mining
-    pub(crate) mining_ore_opc_spec: Option<NEffectProjOpcSpec<NEffectMiningOutputGetter>> = None,
-    pub(crate) mining_ice_opc_spec: Option<NEffectProjOpcSpec<NEffectMiningOutputGetter>> = None,
-    pub(crate) mining_gas_opc_spec: Option<NEffectProjOpcSpec<NEffectMiningOutputGetter>> = None,
+    pub(crate) mining_ore: Option<NEffectMining> = None,
+    pub(crate) mining_ice: Option<NEffectMining> = None,
+    pub(crate) mining_gas: Option<NEffectMining> = None,
     // Getters/specs - rep output
     pub(crate) outgoing_shield_rep_opc_spec: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) outgoing_armor_rep_opc_spec: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,

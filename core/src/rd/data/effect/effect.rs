@@ -2,12 +2,12 @@ use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
         N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
-        NEffectGeneralOutputGetter, NEffectMiningOutputGetter, NEffectProjMultGetter,
+        NEffectGeneralOutputGetter, NEffectProjMultGetter,
     },
     rd::{
-        RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectId, REffectLocalOpcSpec,
-        REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem,
-        RItemListId, RState, REffectEcm,
+        RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectEcm, REffectId, REffectLocalOpcSpec,
+        REffectMining, REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs,
+        RItem, RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -51,9 +51,9 @@ pub(crate) struct REffect {
     pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter>,
     pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<NEffectDmgOutputGetter>>,
     pub(crate) breacher_dmg_opc_spec: Option<REffectProjOpcSpec<NEffectBreacherOutputGetter>>,
-    pub(crate) mining_ore_opc_spec: Option<REffectProjOpcSpec<NEffectMiningOutputGetter>>,
-    pub(crate) mining_ice_opc_spec: Option<REffectProjOpcSpec<NEffectMiningOutputGetter>>,
-    pub(crate) mining_gas_opc_spec: Option<REffectProjOpcSpec<NEffectMiningOutputGetter>>,
+    pub(crate) mining_ore: Option<REffectMining>,
+    pub(crate) mining_ice: Option<REffectMining>,
+    pub(crate) mining_gas: Option<REffectMining>,
     pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
@@ -143,9 +143,9 @@ impl REffect {
             is_active_with_duration: Default::default(),
             normal_dmg_opc_spec: Default::default(),
             breacher_dmg_opc_spec: Default::default(),
-            mining_ore_opc_spec: Default::default(),
-            mining_ice_opc_spec: Default::default(),
-            mining_gas_opc_spec: Default::default(),
+            mining_ore: Default::default(),
+            mining_ice: Default::default(),
+            mining_gas: Default::default(),
             outgoing_shield_rep_opc_spec: Default::default(),
             outgoing_armor_rep_opc_spec: Default::default(),
             outgoing_hull_rep_opc_spec: Default::default(),
@@ -239,18 +239,18 @@ impl REffect {
                 .breacher_dmg_opc_spec
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.mining_ore_opc_spec = n_effect
-                .mining_ore_opc_spec
+            self.mining_ore = n_effect
+                .mining_ore
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.mining_ice_opc_spec = n_effect
-                .mining_ice_opc_spec
+                .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
+            self.mining_ice = n_effect
+                .mining_ice
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.mining_gas_opc_spec = n_effect
-                .mining_gas_opc_spec
+                .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
+            self.mining_gas = n_effect
+                .mining_gas
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
             self.outgoing_shield_rep_opc_spec = n_effect
                 .outgoing_shield_rep_opc_spec
                 .as_ref()

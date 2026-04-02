@@ -36,7 +36,7 @@ impl Vast {
                     self.handle_aggr_start(effect, item_uid, &drone.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_uid, &drone.get_fit_uid());
-                        self.handle_mining_start(effect, item_uid, &drone.get_fit_uid());
+                        self.handle_mining_start(effect, item_uid, item, &drone.get_fit_uid());
                         self.handle_orrs_start(effect, item_uid, &drone.get_fit_uid());
                         self.handle_neut_start(attr_consts, effect, item_uid, item, &drone.get_fit_uid());
                     }
@@ -68,7 +68,7 @@ impl Vast {
                     self.handle_aggr_start(effect, item_uid, &module.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_uid, &module.get_fit_uid());
-                        self.handle_mining_start(effect, item_uid, &module.get_fit_uid());
+                        self.handle_mining_start(effect, item_uid, item, &module.get_fit_uid());
                         // Local reps
                         if let Some(rep_ospec) = effect.local_shield_rep_opc_spec {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
@@ -140,7 +140,7 @@ impl Vast {
                     self.handle_aggr_stop(effect, item_uid, &drone.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_uid, &drone.get_fit_uid());
-                        self.handle_mining_stop(effect, item_uid, &drone.get_fit_uid());
+                        self.handle_mining_stop(effect, item_uid, item, &drone.get_fit_uid());
                         self.handle_orrs_stop(effect, item_uid, &drone.get_fit_uid());
                         self.handle_neut_stop(attr_consts, effect, item_uid, item, &drone.get_fit_uid());
                     }
@@ -167,7 +167,7 @@ impl Vast {
                     self.handle_aggr_stop(effect, item_uid, &module.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_uid, &module.get_fit_uid());
-                        self.handle_mining_stop(effect, item_uid, &module.get_fit_uid());
+                        self.handle_mining_stop(effect, item_uid, item, &module.get_fit_uid());
                         // Local reps
                         if effect.local_shield_rep_opc_spec.is_some() {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
@@ -241,30 +241,42 @@ impl Vast {
             fit_data.dmg_breacher.remove_l2(item_uid, &effect.rid);
         }
     }
-    fn handle_mining_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if let Some(mining_ospec) = effect.mining_ore_opc_spec {
+    fn handle_mining_start(&mut self, effect: &REffect, item_uid: UItemId, item: &UItem, fit_uid: &UFitId) {
+        if let Some(mining) = &effect.mining_ore
+            && mining.check(item)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.mining_ore.add_entry(item_uid, effect.rid, mining_ospec);
+            fit_data.mining_ore.add_entry(item_uid, effect.rid, mining.ospec);
         }
-        if let Some(mining_ospec) = effect.mining_ice_opc_spec {
+        if let Some(mining) = &effect.mining_ice
+            && mining.check(item)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.mining_ice.add_entry(item_uid, effect.rid, mining_ospec);
+            fit_data.mining_ice.add_entry(item_uid, effect.rid, mining.ospec);
         }
-        if let Some(mining_ospec) = effect.mining_gas_opc_spec {
+        if let Some(mining) = &effect.mining_gas
+            && mining.check(item)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.mining_gas.add_entry(item_uid, effect.rid, mining_ospec);
+            fit_data.mining_gas.add_entry(item_uid, effect.rid, mining.ospec);
         }
     }
-    fn handle_mining_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if effect.mining_ore_opc_spec.is_some() {
+    fn handle_mining_stop(&mut self, effect: &REffect, item_uid: UItemId, item: &UItem, fit_uid: &UFitId) {
+        if let Some(mining) = &effect.mining_ore
+            && mining.check(item)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.mining_ore.remove_l2(item_uid, &effect.rid);
         }
-        if effect.mining_ice_opc_spec.is_some() {
+        if let Some(mining) = &effect.mining_ice
+            && mining.check(item)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.mining_ice.remove_l2(item_uid, &effect.rid);
         }
-        if effect.mining_gas_opc_spec.is_some() {
+        if let Some(mining) = &effect.mining_gas
+            && mining.check(item)
+        {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.mining_gas.remove_l2(item_uid, &effect.rid);
         }

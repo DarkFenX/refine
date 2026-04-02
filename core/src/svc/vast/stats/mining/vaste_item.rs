@@ -2,7 +2,7 @@ use super::stat::{StatMining, StatMiningEntry};
 use crate::{
     nd::{NEffectMiningAmount, NEffectMiningOutputGetter, NEffectMiningXargs},
     num::PValue,
-    rd::{REffect, REffectProjOpcSpec},
+    rd::{REffect, REffectMining},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -38,7 +38,7 @@ impl Vast {
                 time_options,
                 base_xargs,
                 ignore_state,
-                get_getter_ore,
+                get_effect_mining_ore,
             ),
             ice: get_mps_item_uid(
                 reuse_cseq_map,
@@ -48,7 +48,7 @@ impl Vast {
                 time_options,
                 base_xargs,
                 ignore_state,
-                get_getter_ice,
+                get_effect_mining_ice,
             ),
             gas: get_mps_item_uid(
                 reuse_cseq_map,
@@ -58,7 +58,7 @@ impl Vast {
                 time_options,
                 base_xargs,
                 ignore_state,
-                get_getter_gas,
+                get_effect_mining_gas,
             ),
         };
         Ok(mps)
@@ -76,18 +76,19 @@ fn get_mps_item_uid<F>(
     mining_ospec_getter: F,
 ) -> StatMiningEntry
 where
-    F: Fn(&REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>>,
+    F: Fn(&REffect) -> Option<&REffectMining>,
 {
     let mut mps = NEffectMiningAmount::new();
     let cycling_options = CyclingOptions::from_time_options(time_options);
     if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
         return StatMiningEntry::from_effect_amount(mps);
     }
+    let item = ctx.u_data.items.get(item_uid);
     for (&effect_rid, cseq) in reuse_cseq_map.iter() {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
         let ospec = match mining_ospec_getter(effect) {
-            Some(ospec) => ospec,
-            None => continue,
+            Some(effect_mining) if effect_mining.check(item) => &effect_mining.ospec,
+            _ => continue,
         };
         let mut accum = SeqAccum::new_stack();
         if match time_options {
@@ -116,14 +117,14 @@ where
     StatMiningEntry::from_effect_amount(mps)
 }
 
-fn get_getter_ore(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {
-    effect.mining_ore_opc_spec.as_ref()
+fn get_effect_mining_ore(effect: &REffect) -> Option<&REffectMining> {
+    effect.mining_ore.as_ref()
 }
 
-fn get_getter_ice(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {
-    effect.mining_ice_opc_spec.as_ref()
+fn get_effect_mining_ice(effect: &REffect) -> Option<&REffectMining> {
+    effect.mining_ice.as_ref()
 }
 
-fn get_getter_gas(effect: &REffect) -> Option<&REffectProjOpcSpec<NEffectMiningOutputGetter>> {
-    effect.mining_gas_opc_spec.as_ref()
+fn get_effect_mining_gas(effect: &REffect) -> Option<&REffectMining> {
+    effect.mining_gas.as_ref()
 }

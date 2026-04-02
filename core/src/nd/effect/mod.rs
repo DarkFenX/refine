@@ -5,6 +5,7 @@ pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
 pub(crate) use ecm::{NEffectEcm, NEffectEcmChecker};
 pub(crate) use effect::NEffect;
+pub(crate) use mining::{NEffectMining, NEffectMiningChecker};
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
 pub(crate) use neut::{NEffectNeut, NEffectNeutChecker, NEffectNeutKind};
 pub(crate) use opc_spec::{
@@ -22,6 +23,7 @@ mod data;
 mod dmg_kind;
 mod ecm;
 mod effect;
+mod mining;
 mod mod_proj_attrs;
 mod neut;
 mod opc_spec;

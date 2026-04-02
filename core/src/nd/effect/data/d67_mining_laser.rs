@@ -2,8 +2,8 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc,
-        NEffectMiningOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
+        NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectMining,
+        NEffectMiningChecker, NEffectMiningOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
     },
 };
 
@@ -20,15 +20,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             })),
             activates_charge: false,
         }),
-        mining_ore_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEffectMiningOutputGetter::MiningLaserOre,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
-            ..
+        mining_ore: Some(NEffectMining {
+            checker: Some(NEffectMiningChecker::NonIce),
+            ospec: NEffectProjOpcSpec {
+                base: NEffectMiningOutputGetter::Crit,
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                ..
+            },
         }),
-        mining_ice_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEffectMiningOutputGetter::MiningLaserIce,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
-            ..
+        mining_ice: Some(NEffectMining {
+            checker: Some(NEffectMiningChecker::Ice),
+            ospec: NEffectProjOpcSpec {
+                base: NEffectMiningOutputGetter::Crit,
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                ..
+            },
         }),
         ..
     }

@@ -1,7 +1,10 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectMiningOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{
+        NEffect, NEffectMining, NEffectMiningChecker, NEffectMiningOutputGetter, NEffectProjMultGetter,
+        NEffectProjOpcSpec,
+    },
 };
 
 const EFFECT_EID: EEffectId = EEffectId::MINING;
@@ -11,15 +14,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        mining_ore_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEffectMiningOutputGetter::MiningOre,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
-            ..
+        mining_ore: Some(NEffectMining {
+            checker: Some(NEffectMiningChecker::NonIce),
+            ospec: NEffectProjOpcSpec {
+                base: NEffectMiningOutputGetter::Regular,
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                ..
+            },
         }),
-        mining_ice_opc_spec: Some(NEffectProjOpcSpec {
-            base: NEffectMiningOutputGetter::MiningIce,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
-            ..
+        mining_ice: Some(NEffectMining {
+            checker: Some(NEffectMiningChecker::Ice),
+            ospec: NEffectProjOpcSpec {
+                base: NEffectMiningOutputGetter::Regular,
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                ..
+            },
         }),
         ..
     }
