@@ -32,7 +32,7 @@ impl Vast {
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let ospec = match effect.outgoing_cap_opc_spec {
+            let ospec = match effect.outgoing_cap {
                 Some(ospec) => ospec,
                 None => continue,
             };

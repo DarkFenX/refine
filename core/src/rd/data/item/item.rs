@@ -120,7 +120,7 @@ impl RItem {
         );
         for &effect_rid in self.effects.keys() {
             let r_effect = r_effects.get(effect_rid.into_usize()).unwrap();
-            if let Some(opc_spec) = r_effect.cap_consume_opc_spec {
+            if let Some(opc_spec) = r_effect.cap_consume {
                 self.cap_consumers.push(RItemCapConsumer { effect_rid, opc_spec })
             }
         }

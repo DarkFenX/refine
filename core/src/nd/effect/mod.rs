@@ -3,29 +3,28 @@ pub(crate) use charge::{
 };
 pub(crate) use container::N_EFFECT_MAP;
 pub(crate) use dmg_kind::{NEffectDmgKind, NEffectDmgKindGetter};
-pub(crate) use ecm::{NEffectEcm, NEffectEcmChecker};
 pub(crate) use effect::NEffect;
-pub(crate) use mining::{NEffectMining, NEffectMiningChecker};
 pub(crate) use mod_proj_attrs::NEffectModProjAttrsGetter;
-pub(crate) use neut::{NEffectNeut, NEffectNeutChecker, NEffectNeutKind};
 pub(crate) use opc_spec::{
     NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectChargeMultGetter, NEffectDmgOutputGetter,
     NEffectEcmAmount, NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMiningAmount,
     NEffectMiningOutputGetter, NEffectMiningXargs, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
     NEffectResist,
 };
+pub(crate) use output::{
+    NEffectEcm, NEffectEcmChecker, NEffectMining, NEffectMiningChecker, NEffectNeut, NEffectNeutChecker,
+    NEffectNeutKind,
+};
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use spool::NEffectSpoolAttrs;
 
 mod charge;
 mod container;
-mod data;
+mod defs;
 mod dmg_kind;
-mod ecm;
 mod effect;
-mod mining;
 mod mod_proj_attrs;
-mod neut;
 mod opc_spec;
+mod output;
 mod projectee_filter;
 mod spool;

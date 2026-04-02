@@ -48,23 +48,23 @@ pub(crate) struct REffect {
     pub(crate) modifier_proj_attr_rids: [Option<RAttrId>; 2],
     pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter>,
     // Output getters/specs
-    pub(crate) dmg_kind_getter: Option<NEffectDmgKindGetter>,
-    pub(crate) normal_dmg_opc_spec: Option<REffectProjOpcSpec<NEffectDmgOutputGetter>>,
-    pub(crate) breacher_dmg_opc_spec: Option<REffectProjOpcSpec<NEffectBreacherOutputGetter>>,
+    pub(crate) dmg_kind: Option<NEffectDmgKindGetter>,
+    pub(crate) normal_dmg: Option<REffectProjOpcSpec<NEffectDmgOutputGetter>>,
+    pub(crate) breacher_dmg: Option<REffectProjOpcSpec<NEffectBreacherOutputGetter>>,
     pub(crate) mining_ore: Option<REffectMining>,
     pub(crate) mining_ice: Option<REffectMining>,
     pub(crate) mining_gas: Option<REffectMining>,
-    pub(crate) outgoing_shield_rep_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) outgoing_armor_rep_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) outgoing_hull_rep_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) local_shield_rep_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) local_armor_rep_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) local_hull_rep_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) cap_consume_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) outgoing_shield_rep: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) outgoing_armor_rep: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) outgoing_hull_rep: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) local_shield_rep: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) local_armor_rep: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) local_hull_rep: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) cap_consume: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) neut: Option<REffectNeut>,
-    pub(crate) nosf_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) outgoing_cap_opc_spec: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
-    pub(crate) cap_inject_opc_spec: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) nosf: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) outgoing_cap: Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
+    pub(crate) cap_inject: Option<REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     pub(crate) ecm: Option<REffectEcm>,
 }
 impl REffect {
@@ -123,8 +123,8 @@ impl REffect {
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
-            modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult_getter),
-            dmg_kind_getter: n_effect.and_then(|n| n.dmg_kind_getter),
+            modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult),
+            dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             // Fields which depend on data not available during instantiation
             modifiers: Default::default(),
             stopped_effect_rids: Default::default(),
@@ -141,22 +141,22 @@ impl REffect {
             chance_attr_rid: Default::default(),
             resist_attr_rid: Default::default(),
             is_active_with_duration: Default::default(),
-            normal_dmg_opc_spec: Default::default(),
-            breacher_dmg_opc_spec: Default::default(),
+            normal_dmg: Default::default(),
+            breacher_dmg: Default::default(),
             mining_ore: Default::default(),
             mining_ice: Default::default(),
             mining_gas: Default::default(),
-            outgoing_shield_rep_opc_spec: Default::default(),
-            outgoing_armor_rep_opc_spec: Default::default(),
-            outgoing_hull_rep_opc_spec: Default::default(),
-            local_shield_rep_opc_spec: Default::default(),
-            local_armor_rep_opc_spec: Default::default(),
-            local_hull_rep_opc_spec: Default::default(),
-            cap_consume_opc_spec: Default::default(),
+            outgoing_shield_rep: Default::default(),
+            outgoing_armor_rep: Default::default(),
+            outgoing_hull_rep: Default::default(),
+            local_shield_rep: Default::default(),
+            local_armor_rep: Default::default(),
+            local_hull_rep: Default::default(),
+            cap_consume: Default::default(),
             neut: Default::default(),
-            nosf_opc_spec: Default::default(),
-            outgoing_cap_opc_spec: Default::default(),
-            cap_inject_opc_spec: Default::default(),
+            nosf: Default::default(),
+            outgoing_cap: Default::default(),
+            cap_inject: Default::default(),
             ecm: Default::default(),
         }
     }
@@ -226,17 +226,17 @@ impl REffect {
                 .spool_attrs
                 .as_ref()
                 .and_then(|n_spool_attrs| REffectSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_aid_rid_map));
-            if let Some(modifier_proj_attrs_getter) = &n_effect.modifier_proj_attrs_getter {
+            if let Some(modifier_proj_attrs_getter) = &n_effect.modifier_proj_attrs {
                 let proj_attr_aids = modifier_proj_attrs_getter.get(a_effect);
                 self.modifier_proj_attr_rids = proj_attr_aids
                     .map(|attr_aid| attr_aid.and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()));
             }
-            self.normal_dmg_opc_spec = n_effect
-                .normal_dmg_opc_spec
+            self.normal_dmg = n_effect
+                .normal_dmg
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.breacher_dmg_opc_spec = n_effect
-                .breacher_dmg_opc_spec
+            self.breacher_dmg = n_effect
+                .breacher_dmg
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
             self.mining_ore = n_effect
@@ -251,48 +251,48 @@ impl REffect {
                 .mining_gas
                 .as_ref()
                 .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
-            self.outgoing_shield_rep_opc_spec = n_effect
-                .outgoing_shield_rep_opc_spec
+            self.outgoing_shield_rep = n_effect
+                .outgoing_shield_rep
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.outgoing_armor_rep_opc_spec = n_effect
-                .outgoing_armor_rep_opc_spec
+            self.outgoing_armor_rep = n_effect
+                .outgoing_armor_rep
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.outgoing_hull_rep_opc_spec = n_effect
-                .outgoing_hull_rep_opc_spec
+            self.outgoing_hull_rep = n_effect
+                .outgoing_hull_rep
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.local_shield_rep_opc_spec = n_effect
-                .local_shield_rep_opc_spec
+            self.local_shield_rep = n_effect
+                .local_shield_rep
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
-            self.local_armor_rep_opc_spec = n_effect
-                .local_armor_rep_opc_spec
+            self.local_armor_rep = n_effect
+                .local_armor_rep
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
-            self.local_hull_rep_opc_spec = n_effect
-                .local_hull_rep_opc_spec
+            self.local_hull_rep = n_effect
+                .local_hull_rep
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
-            self.cap_consume_opc_spec = n_effect
-                .cap_consume_opc_spec
+            self.cap_consume = n_effect
+                .cap_consume
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
             self.neut = n_effect
                 .neut
                 .as_ref()
                 .map(|neut| REffectNeut::from_n_effect_neut(neut, attr_aid_rid_map));
-            self.nosf_opc_spec = n_effect
-                .nosf_opc_spec
+            self.nosf = n_effect
+                .nosf
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.outgoing_cap_opc_spec = n_effect
-                .outgoing_cap_opc_spec
+            self.outgoing_cap = n_effect
+                .outgoing_cap
                 .as_ref()
                 .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
-            self.cap_inject_opc_spec = n_effect
-                .cap_inject_opc_spec
+            self.cap_inject = n_effect
+                .cap_inject
                 .as_ref()
                 .map(|ospec| REffectLocalOpcSpec::from_n_local_opc_spec(ospec, attr_aid_rid_map));
             self.ecm = n_effect
@@ -302,8 +302,8 @@ impl REffect {
         }
         // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
         // all effects which need it.
-        if self.cap_consume_opc_spec.is_none() && self.discharge_attr_rid.is_some() {
-            self.cap_consume_opc_spec = Some(REffectLocalOpcSpec {
+        if self.cap_consume.is_none() && self.discharge_attr_rid.is_some() {
+            self.cap_consume = Some(REffectLocalOpcSpec {
                 base: NEffectGeneralOutputGetter::CapConsumer,
                 charge_mult: None,
                 limit_attr_rid: None,

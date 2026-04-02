@@ -1,0 +1,72 @@
+// See note in WDFG bubble effect d3380
+
+use crate::{
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AItemId, AModifierSrq,
+        AOp,
+    },
+    ed::EEffectId,
+    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+};
+
+const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT;
+const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT;
+
+pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
+    NEffect {
+        eid: Some(EFFECT_EID),
+        aid: EFFECT_AID,
+        adg_update_effect_fn: Some(update_effect),
+        ignore_offmod_immunity: true,
+        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::Simple),
+        modifier_proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+        ..
+    }
+}
+
+fn update_effect(a_effect: &mut AEffect) {
+    // Effect is expected to have some modifiers, so we're silently clearing them up
+    a_effect.modifiers.clear();
+    a_effect.modifiers.extend([
+        // Warp scrambling
+        AEffectModifier {
+            affector_attr_id: AAttrId::WARP_SCRAMBLE_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
+            affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
+        },
+        // Gate jump scrambling
+        AEffectModifier {
+            affector_attr_id: AAttrId::GATE_SCRAMBLE_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
+            affectee_attr_id: AAttrId::GATE_SCRAMBLE_STATUS,
+        },
+        // MJD/subcap MJFG blocker
+        AEffectModifier {
+            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::LocSrq(
+                AEffectLocation::Target,
+                AModifierSrq::ItemId(AItemId::MICRO_JUMP_DRIVE_OPERATION),
+            ),
+            affectee_attr_id: AAttrId::ACTIVATION_BLOCKED,
+        },
+        // Capital MJFG blocker
+        AEffectModifier {
+            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::LocSrq(
+                AEffectLocation::Target,
+                AModifierSrq::ItemId(AItemId::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
+            ),
+            affectee_attr_id: AAttrId::ACTIVATION_BLOCKED,
+        },
+    ]);
+    // Fighter MWD and MJD stoppers
+    a_effect
+        .stopped_effect_ids
+        .extend([AEffectId::FTR_ABIL_MWD, AEffectId::FTR_ABIL_MJD]);
+    // Effect range attribute
+    a_effect.range_attr_id = Some(AAttrId::MAX_RANGE_HIDDEN);
+}

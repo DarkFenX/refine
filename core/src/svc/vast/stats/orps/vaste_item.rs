@@ -125,13 +125,13 @@ where
 }
 
 fn get_getter_shield(effect: &REffect) -> Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>> {
-    effect.outgoing_shield_rep_opc_spec
+    effect.outgoing_shield_rep
 }
 
 fn get_getter_armor(effect: &REffect) -> Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>> {
-    effect.outgoing_armor_rep_opc_spec
+    effect.outgoing_armor_rep
 }
 
 fn get_getter_hull(effect: &REffect) -> Option<REffectProjOpcSpec<NEffectGeneralOutputGetter>> {
-    effect.outgoing_hull_rep_opc_spec
+    effect.outgoing_hull_rep
 }

@@ -1,6 +1,6 @@
 use super::stat::{StatMining, StatMiningEntry};
 use crate::{
-    nd::{NEffectMiningAmount, NEffectMiningOutputGetter, NEffectMiningXargs},
+    nd::{NEffectMiningAmount, NEffectMiningXargs},
     num::PValue,
     rd::{REffect, REffectMining},
     svc::{

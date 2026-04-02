@@ -57,7 +57,7 @@ impl Vast {
                 projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
             }
         }
-        if let Some(rep_ospec) = effect.outgoing_shield_rep_opc_spec {
+        if let Some(rep_ospec) = effect.outgoing_shield_rep {
             if effect.is_active_with_duration {
                 self.irr_shield
                     .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
@@ -67,7 +67,7 @@ impl Vast {
                     .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
             }
         }
-        if let Some(rep_ospec) = effect.outgoing_armor_rep_opc_spec {
+        if let Some(rep_ospec) = effect.outgoing_armor_rep {
             if effect.is_active_with_duration {
                 self.irr_armor
                     .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
@@ -77,13 +77,13 @@ impl Vast {
                     .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
             }
         }
-        if let Some(rep_ospec) = effect.outgoing_hull_rep_opc_spec
+        if let Some(rep_ospec) = effect.outgoing_hull_rep
             && effect.is_active_with_duration
         {
             self.irr_hull
                 .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
         }
-        if let Some(rep_ospec) = effect.outgoing_cap_opc_spec
+        if let Some(rep_ospec) = effect.outgoing_cap
             && effect.is_active_with_duration
         {
             self.in_cap
@@ -149,7 +149,7 @@ impl Vast {
                 projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
             }
         }
-        if effect.outgoing_shield_rep_opc_spec.is_some() {
+        if effect.outgoing_shield_rep.is_some() {
             if effect.is_active_with_duration {
                 self.irr_shield.remove_l3(projectee_uid, projector_uid, &effect.rid);
             }
@@ -158,7 +158,7 @@ impl Vast {
                     .remove_l3(projectee_uid, projector_uid, &effect.rid);
             }
         }
-        if effect.outgoing_armor_rep_opc_spec.is_some() {
+        if effect.outgoing_armor_rep.is_some() {
             if effect.is_active_with_duration {
                 self.irr_armor.remove_l3(projectee_uid, projector_uid, &effect.rid);
             }
@@ -167,10 +167,10 @@ impl Vast {
                     .remove_l3(projectee_uid, projector_uid, &effect.rid);
             }
         }
-        if effect.outgoing_hull_rep_opc_spec.is_some() && effect.is_active_with_duration {
+        if effect.outgoing_hull_rep.is_some() && effect.is_active_with_duration {
             self.irr_hull.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
-        if effect.outgoing_cap_opc_spec.is_some() && effect.is_active_with_duration {
+        if effect.outgoing_cap.is_some() && effect.is_active_with_duration {
             self.in_cap.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
         if let Some(neut) = &effect.neut

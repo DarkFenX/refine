@@ -62,7 +62,7 @@ impl StatDmgItemKinds {
             }
             _ => (),
         };
-        let dmg_kind = match r_effect.dmg_kind_getter {
+        let dmg_kind = match r_effect.dmg_kind {
             Some(dmg_kind_getter) => dmg_kind_getter.get(u_item),
             None => return false,
         };

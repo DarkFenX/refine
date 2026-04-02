@@ -116,7 +116,7 @@ impl Vast {
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            if let Some(ospec) = &effect.normal_dmg_opc_spec {
+            if let Some(ospec) = &effect.normal_dmg {
                 let mut accum = SeqAccum::new_stack_max();
                 if match time_options {
                     StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
@@ -142,7 +142,7 @@ impl Vast {
                     *dps_normal += accum.get_per_second();
                 }
             }
-            if let Some(ospec) = &effect.breacher_dmg_opc_spec {
+            if let Some(ospec) = &effect.breacher_dmg {
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);
             }
         }
@@ -184,7 +184,7 @@ impl Vast {
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            if let Some(ospec) = &effect.normal_dmg_opc_spec {
+            if let Some(ospec) = &effect.normal_dmg {
                 let mut accum = SeqAccum::new_stack_max();
                 if match time_options {
                     StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
@@ -229,7 +229,7 @@ impl Vast {
                     *dps_normal += accum.get_per_second();
                 }
             }
-            if let Some(ospec) = &effect.breacher_dmg_opc_spec {
+            if let Some(ospec) = &effect.breacher_dmg {
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid);
             }
         }
