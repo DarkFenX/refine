@@ -5,8 +5,8 @@ use crate::{
     svc::{
         cycle::CseqMap,
         vast::{
-            StatCapRegenOptions, StatCapSrcKinds, StatDmgItemKinds, StatMiningItemKinds, StatNeutItemKinds,
-            StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+            StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatDmgItemKinds, StatMiningItemKinds,
+            StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
         },
     },
     ud::ItemId,
@@ -36,17 +36,17 @@ impl<'a> FitMut<'a> {
         let mining_item_kinds = StatMiningItemKinds::all_enabled();
         let neut_item_kinds = StatNeutItemKinds::all_enabled();
         let rr_item_kinds = StatOutRepItemKinds::all_enabled();
-        let cap_src_kinds_all = StatCapSrcKinds::all_enabled();
-        let cap_src_kinds_positive = StatCapSrcKinds {
-            regen: StatCapRegenOptions { enabled: true, .. },
+        let cap_src_kinds_all = StatCapBlcSrcKinds::all_enabled();
+        let cap_src_kinds_positive = StatCapBlcSrcKinds {
+            regen: StatCapBlcRegen::Enabled(StatCapBlcRegenOptions { .. }),
             cap_injectors: true,
             nosfs: true,
             consumers: false,
             incoming_transfers: true,
             incoming_neuts: false,
         };
-        let cap_src_kinds_negative = StatCapSrcKinds {
-            regen: StatCapRegenOptions { enabled: false, .. },
+        let cap_src_kinds_negative = StatCapBlcSrcKinds {
+            regen: StatCapBlcRegen::Disabled,
             cap_injectors: false,
             nosfs: false,
             consumers: true,

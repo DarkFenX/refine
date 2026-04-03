@@ -1,4 +1,4 @@
-pub use balance::{StatCapRegenOptions, StatCapSrcKinds};
+pub use balance::{StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds};
 pub(crate) use sim::StatCapSimStaggerInt;
 pub use sim::{StatCapSim, StatCapSimStagger};
 

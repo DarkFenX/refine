@@ -5,9 +5,9 @@ use crate::{
     cmd::{
         shared::get_primary_item,
         stats::options::{
-            HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps,
-            HStatOptionIncomingJam, HStatOptionItemDmg, HStatOptionItemMining, HStatOptionItemOutCps,
-            HStatOptionItemOutNps, HStatOptionItemOutRps, HStatOptionRps, HStatResolvedOption,
+            HStatOption, HStatOptionCapBlc, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionIncomingJam,
+            HStatOptionItemDmg, HStatOptionItemMining, HStatOptionItemOutCps, HStatOptionItemOutNps,
+            HStatOptionItemOutRps, HStatOptionRps, HStatResolvedOption,
         },
     },
     info::{
@@ -41,7 +41,7 @@ pub(crate) struct HGetItemStatsCmd {
     erps: Option<HStatOption<HStatOptionErps>>,
     // Cap
     cap_amount: Option<bool>,
-    cap_balance: Option<HStatOption<HStatOptionCapBalance>>,
+    cap_balance: Option<HStatOption<HStatOptionCapBlc>>,
     cap_sim: Option<HStatOption<HStatOptionCapSim>>,
     neut_resist: Option<bool>,
     // Sensors
@@ -415,7 +415,7 @@ fn get_erps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionErps>) ->
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<f64>> {
+fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBlc>) -> Option<Vec<f64>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = option.src_kinds.into_core();

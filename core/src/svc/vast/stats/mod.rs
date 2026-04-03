@@ -1,5 +1,5 @@
 pub(crate) use cap::StatCapSimStaggerInt;
-pub use cap::{StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds};
+pub use cap::{StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger};
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};

@@ -1,4 +1,4 @@
-pub(in crate::cmd::stats) use cap_balance::HStatOptionCapBalance;
+pub(in crate::cmd::stats) use cap_balance::HStatOptionCapBlc;
 pub(in crate::cmd::stats) use cap_sim::HStatOptionCapSim;
 pub(in crate::cmd::stats) use dmg::{HStatOptionFitDmg, HStatOptionItemDmg};
 pub(in crate::cmd::stats) use incoming_jam::HStatOptionIncomingJam;

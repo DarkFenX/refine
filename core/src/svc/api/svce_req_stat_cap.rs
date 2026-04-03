@@ -5,7 +5,7 @@ use crate::{
         Svc, SvcCtx,
         cycle::CseqMap,
         err::StatItemCheckError,
-        vast::{StatCapSim, StatCapSimStaggerInt, StatCapSrcKinds, StatTimeOptions, Vast},
+        vast::{StatCapBlcSrcKinds, StatCapSim, StatCapSimStaggerInt, StatTimeOptions, Vast},
     },
     ud::{UData, UItemId},
 };
@@ -23,7 +23,7 @@ impl Svc {
         reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
         item_uid: UItemId,
-        src_kinds: StatCapSrcKinds,
+        src_kinds: StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, StatItemCheckError> {
         self.vast.get_stat_item_cap_balance(

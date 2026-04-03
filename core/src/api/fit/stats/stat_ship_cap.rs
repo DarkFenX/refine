@@ -2,7 +2,7 @@ use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
     misc::OptionalReload,
     num::{PValue, UnitInterval, Value},
-    svc::vast::{StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatTimeOptions},
+    svc::vast::{StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatTimeOptions},
 };
 
 impl<'a> FitMut<'a> {
@@ -11,7 +11,7 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stat_cap_balance(
         &mut self,
-        src_kinds: StatCapSrcKinds,
+        src_kinds: StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, FitShipStatError> {
         Ok(self

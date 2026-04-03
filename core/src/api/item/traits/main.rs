@@ -10,7 +10,7 @@ use crate::{
     misc::{DpsProfile, EffectMode, OptionalReload},
     num::{Count, PValue, UnitInterval, Value},
     sol::SolarSystem,
-    stats::StatCapSrcKinds,
+    stats::StatCapBlcSrcKinds,
     svc::{
         calc::Modification,
         cycle::CseqMap,
@@ -401,7 +401,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn get_stat_cap_balance(
         &mut self,
-        src_kinds: StatCapSrcKinds,
+        src_kinds: StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, ItemStatError> {
         let item_uid = self.get_uid();

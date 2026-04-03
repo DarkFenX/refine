@@ -1,4 +1,4 @@
-use super::option::StatCapSrcKinds;
+use super::option::{StatCapBlcRegen, StatCapBlcSrcKinds};
 use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
@@ -25,14 +25,14 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-        src_kinds: StatCapSrcKinds,
+        src_kinds: StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
         let mut balance = Value::ZERO;
-        if src_kinds.regen.enabled {
-            balance += get_cap_regen(ctx, calc, item_uid, src_kinds.regen.cap_perc);
+        if let StatCapBlcRegen::Enabled(regen_options) = src_kinds.regen {
+            balance += get_cap_regen(ctx, calc, item_uid, regen_options.cap_perc);
         }
         if src_kinds.cap_injectors {
             balance += get_cap_injects(reuse_cseq_map, ctx, calc, time_options, fit_data);
