@@ -38,7 +38,14 @@ impl Vast {
             balance += get_cap_injects(reuse_cseq_map, ctx, calc, time_options, fit_data);
         }
         if let StatCapBlcNosfsInt::Enabled(nosfs_options) = src_kinds.nosfs {
-            balance += get_nosfs(reuse_cseq_map, ctx, calc, time_options, fit_data);
+            balance += get_nosfs(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                time_options,
+                nosfs_options.projectee_item_uid,
+                fit_data,
+            );
         }
         if src_kinds.consumers {
             balance -= get_cap_consumed(reuse_cseq_map, ctx, calc, time_options, fit_data);
@@ -136,6 +143,7 @@ fn get_nosfs(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
+    projectee_item_uid: Option<UItemId>,
     fit_data: &VastFitData,
 ) -> Value {
     let mut cps = Value::ZERO;
@@ -160,7 +168,7 @@ fn get_nosfs(
                     cseq,
                     ospec,
                     (),
-                    None,
+                    projectee_item_uid,
                     burst_opts.spool,
                     &mut accum,
                 ),
@@ -173,11 +181,21 @@ fn get_nosfs(
                         cseq,
                         ospec,
                         (),
-                        None,
+                        projectee_item_uid,
                         &mut accum,
                         time,
                     ),
-                    _ => aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), None, &mut accum),
+                    _ => aggr_proj_looped(
+                        ctx,
+                        calc,
+                        nosf_item_uid,
+                        effect,
+                        cseq,
+                        ospec,
+                        (),
+                        projectee_item_uid,
+                        &mut accum,
+                    ),
                 },
             } {
                 cps += accum.get_per_second();
