@@ -316,7 +316,9 @@ impl ValOption {
     }
 }
 
-// Internal variant of validation options, with fit/item UIDs instead of external IDs.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Internal variant, with fit/item UIDs instead of external IDs
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct ValOptionsSolInt {
     pub(crate) options: ValOptionsInt,
     pub(crate) fit_uids: Vec<UFitId>,
@@ -504,20 +506,26 @@ impl ValOptionsInt {
     }
 }
 
-pub(in crate::svc::vast) struct ValOptionInt {
-    pub(in crate::svc::vast) enabled: bool,
-    pub(in crate::svc::vast) kfs: RSet<UItemId>,
+pub(in crate::svc::vast) enum ValOptionInt {
+    Enabled(ValOptionEnabledOptionsInt),
+    Disabled,
 }
 impl ValOptionInt {
     fn from_pub(sol: &SolarSystem, pub_opt: &ValOption) -> Self {
-        Self {
-            enabled: pub_opt.enabled,
-            kfs: pub_opt
-                .kfs
-                .iter()
-                .filter_map(|item_id| sol.u_data.items.iid_by_xid(item_id))
-                .unique()
-                .collect(),
+        match pub_opt.enabled {
+            true => Self::Enabled(ValOptionEnabledOptionsInt {
+                kfs: pub_opt
+                    .kfs
+                    .iter()
+                    .filter_map(|item_id| sol.u_data.items.iid_by_xid(item_id))
+                    .unique()
+                    .collect(),
+            }),
+            false => Self::Disabled,
         }
     }
+}
+
+pub(in crate::svc::vast) struct ValOptionEnabledOptionsInt {
+    pub(in crate::svc::vast) kfs: RSet<UItemId>,
 }

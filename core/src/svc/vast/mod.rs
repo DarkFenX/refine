@@ -7,6 +7,7 @@ pub use stats::{
     StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions,
     StatTimeOptionsBurst, StatTimeOptionsSim,
 };
+use val_options::ValOptionInt;
 pub use val_options::{ValOption, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
