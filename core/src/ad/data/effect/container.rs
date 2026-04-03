@@ -3,6 +3,7 @@ use crate::{
     util::RMap,
 };
 
+#[derive(Default)]
 pub struct AEffects {
     pub(crate) data: RMap<AEffectId, AEffect>,
 }
@@ -15,11 +16,6 @@ impl AEffects {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AEffect> {
         self.data.values()
-    }
-}
-impl Default for AEffects {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AEffect> for AEffects {

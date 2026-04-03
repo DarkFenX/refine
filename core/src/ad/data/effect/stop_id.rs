@@ -1,5 +1,6 @@
 use crate::ad::AEffectId;
 
+#[derive(Default)]
 pub struct AEffectStopIds {
     data: Vec<AEffectId>,
 }
@@ -12,11 +13,6 @@ impl AEffectStopIds {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AEffectId> {
         self.data.iter()
-    }
-}
-impl Default for AEffectStopIds {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AEffectId> for AEffectStopIds {

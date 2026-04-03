@@ -10,6 +10,7 @@ pub struct AEffectModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AEffectModifiers {
     data: Vec<AEffectModifier>,
 }
@@ -22,11 +23,6 @@ impl AEffectModifiers {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AEffectModifier> {
         self.data.iter()
-    }
-}
-impl Default for AEffectModifiers {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AEffectModifier> for AEffectModifiers {
