@@ -11,11 +11,11 @@ impl SolarSystem {
         self.svc.validate_sol_verbose(&self.u_data, options)
     }
     pub fn validate_fast(&mut self, options: &ValOptionsSol) -> bool {
-        let int_options = ValOptionsSolInt::from_pub(self, options);
+        let int_options = ValOptionsSolInt::from_pub(options, self);
         self.internal_validate_fast(&int_options)
     }
     pub fn validate_verbose(&mut self, options: &ValOptionsSol) -> ValResultSol {
-        let int_options = ValOptionsSolInt::from_pub(self, options);
+        let int_options = ValOptionsSolInt::from_pub(options, self);
         self.internal_validate_verbose(&int_options)
     }
 }

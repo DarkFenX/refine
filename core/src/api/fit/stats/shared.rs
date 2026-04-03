@@ -1,10 +1,10 @@
 use crate::{
-    api::{CharacterMut, FitMut, ItemStatError, ShipMut},
+    api::{CharacterMut, FitMut, ItemStatAppliedError, ItemStatError, ShipMut},
     err::basic::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
     },
-    ud::{ItemId, UItemId},
+    ud::ProjecteeUidError,
 };
 
 impl<'a> FitMut<'a> {
@@ -30,22 +30,24 @@ impl<'a> FitMut<'a> {
         };
         Ok(ShipMut::new(self.sol, ship_uid))
     }
-    pub(super) fn get_stat_applied_projectee_uid(
-        &self,
-        projectee_item_id: &ItemId,
-    ) -> Result<UItemId, FitStatAppliedError> {
-        let projectee_uid = self.sol.u_data.items.iid_by_xid_err(projectee_item_id)?;
-        let projectee_u_item = self.sol.u_data.items.get(projectee_uid);
-        if projectee_u_item.get_direct_physics().is_none() {
-            return Err(ItemReceiveProjError {
-                item_id: projectee_u_item.get_item_id(),
-                item_kind: projectee_u_item.lib_get_name(),
-            }
-            .into());
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum FitAppliedStatError {
+    #[error("{0}")]
+    ProjecteeNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+}
+impl From<ProjecteeUidError> for FitAppliedStatError {
+    fn from(uid_err: ProjecteeUidError) -> Self {
+        match uid_err {
+            ProjecteeUidError::ProjecteeNotFound(e) => e.into(),
+            ProjecteeUidError::ProjecteeCantTakeProjs(e) => e.into(),
         }
-        Ok(projectee_uid)
     }
 }
+
 #[derive(thiserror::Error, Debug)]
 pub enum FitShipStatError {
     #[error("{0}")]
@@ -60,6 +62,30 @@ impl From<ItemStatError> for FitShipStatError {
         match item_err {
             ItemStatError::ItemNotLoaded(e) => e.into(),
             ItemStatError::UnsupportedStat(e) => e.into(),
+        }
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum FitShipAppliedStatError {
+    #[error("{0}")]
+    NoShip(#[from] FitHasShipError),
+    #[error("{0}")]
+    ItemNotLoaded(#[from] ItemLoadedError),
+    #[error("{0}")]
+    UnsupportedStat(#[from] SupportedStatError),
+    #[error("{0}")]
+    ProjecteeNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+}
+impl From<ItemStatAppliedError> for FitShipAppliedStatError {
+    fn from(item_err: ItemStatAppliedError) -> Self {
+        match item_err {
+            ItemStatAppliedError::ItemNotLoaded(e) => e.into(),
+            ItemStatAppliedError::UnsupportedStat(e) => e.into(),
+            ItemStatAppliedError::ProjecteeNotFound(e) => e.into(),
+            ItemStatAppliedError::ProjecteeCantTakeProjs(e) => e.into(),
         }
     }
 }
@@ -80,12 +106,4 @@ impl From<ItemStatError> for FitCharacterStatError {
             ItemStatError::UnsupportedStat(e) => e.into(),
         }
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum FitStatAppliedError {
-    #[error("{0}")]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
-    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }

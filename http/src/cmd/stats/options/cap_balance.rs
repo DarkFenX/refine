@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use super::shared::HStatTimeOptions;
 use crate::util::default_true;
@@ -32,7 +33,7 @@ pub(in crate::cmd) struct HStatCapBlcSrcKinds {
     default: bool,
     regen: Option<HStatCapBlcRegen>,
     cap_injectors: Option<bool>,
-    nosfs: Option<bool>,
+    nosfs: Option<HStatCapBlcNosfs>,
     consumers: Option<bool>,
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
@@ -48,6 +49,20 @@ enum HStatCapBlcRegen {
 #[derive(Copy, Clone, Deserialize)]
 struct HStatCapRegenOptionsFull {
     cap_perc: Option<f64>,
+}
+
+#[derive(Copy, Clone, Deserialize)]
+#[serde(untagged)]
+enum HStatCapBlcNosfs {
+    Simple(bool),
+    Extended(bool, HStatCapNosfsOptionsFull),
+}
+
+#[serde_as]
+#[derive(Copy, Clone, Deserialize)]
+struct HStatCapNosfsOptionsFull {
+    #[serde_as(as = "Option<DisplayFromStr>")]
+    projectee_item_id: Option<rc::ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +81,7 @@ impl HStatCapBlcSrcKinds {
             core_src_kinds.cap_injectors = cap_injectors;
         }
         if let Some(nosfs) = self.nosfs {
-            core_src_kinds.nosfs = nosfs;
+            core_src_kinds.nosfs = nosfs.into_core();
         }
         if let Some(consumers) = self.consumers {
             core_src_kinds.consumers = consumers;
@@ -96,6 +111,26 @@ impl HStatCapBlcRegen {
                     None => rc::stats::StatCapBlcRegen::Enabled(rc::stats::StatCapBlcRegenOptions { .. }),
                 },
                 false => rc::stats::StatCapBlcRegen::Disabled,
+            },
+        }
+    }
+}
+
+impl HStatCapBlcNosfs {
+    fn into_core(self) -> rc::stats::StatCapBlcNosfs {
+        match self {
+            Self::Simple(enabled) => match enabled {
+                true => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions { .. }),
+                false => rc::stats::StatCapBlcNosfs::Disabled,
+            },
+            Self::Extended(enabled, options) => match enabled {
+                true => match options.projectee_item_id {
+                    Some(projectee_item_id) => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions {
+                        projectee_item_id: Some(projectee_item_id),
+                    }),
+                    None => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions { .. }),
+                },
+                false => rc::stats::StatCapBlcNosfs::Disabled,
             },
         }
     }

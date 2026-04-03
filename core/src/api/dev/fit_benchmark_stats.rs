@@ -5,8 +5,9 @@ use crate::{
     svc::{
         cycle::CseqMap,
         vast::{
-            StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatDmgItemKinds, StatMiningItemKinds,
-            StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+            StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcRegen, StatCapBlcRegenOptions,
+            StatCapBlcSrcKindsInt, StatDmgItemKinds, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds,
+            StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
         },
     },
     ud::ItemId,
@@ -36,19 +37,26 @@ impl<'a> FitMut<'a> {
         let mining_item_kinds = StatMiningItemKinds::all_enabled();
         let neut_item_kinds = StatNeutItemKinds::all_enabled();
         let rr_item_kinds = StatOutRepItemKinds::all_enabled();
-        let cap_src_kinds_all = StatCapBlcSrcKinds::all_enabled();
-        let cap_src_kinds_positive = StatCapBlcSrcKinds {
+        let cap_src_kinds_all = StatCapBlcSrcKindsInt {
             regen: StatCapBlcRegen::Enabled(StatCapBlcRegenOptions { .. }),
             cap_injectors: true,
-            nosfs: true,
+            nosfs: StatCapBlcNosfsInt::Enabled(StatCapBlcNosfsOptionsInt { .. }),
+            consumers: true,
+            incoming_transfers: true,
+            incoming_neuts: true,
+        };
+        let cap_src_kinds_positive = StatCapBlcSrcKindsInt {
+            regen: StatCapBlcRegen::Enabled(StatCapBlcRegenOptions { .. }),
+            cap_injectors: true,
+            nosfs: StatCapBlcNosfsInt::Enabled(StatCapBlcNosfsOptionsInt { .. }),
             consumers: false,
             incoming_transfers: true,
             incoming_neuts: false,
         };
-        let cap_src_kinds_negative = StatCapBlcSrcKinds {
+        let cap_src_kinds_negative = StatCapBlcSrcKindsInt {
             regen: StatCapBlcRegen::Disabled,
             cap_injectors: false,
-            nosfs: false,
+            nosfs: StatCapBlcNosfsInt::Disabled,
             consumers: true,
             incoming_transfers: false,
             incoming_neuts: true,

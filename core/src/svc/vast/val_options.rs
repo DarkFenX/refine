@@ -327,9 +327,9 @@ pub(crate) struct ValOptionsSolInt {
     pub(crate) fit_uids: Vec<UFitId>,
 }
 impl ValOptionsSolInt {
-    pub(crate) fn from_pub(sol: &SolarSystem, pub_sol_opts: &ValOptionsSol) -> Self {
+    pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, sol: &SolarSystem) -> Self {
         Self {
-            options: ValOptionsInt::from_pub(sol, &pub_sol_opts.options),
+            options: ValOptionsInt::from_pub(&pub_sol_opts.options, sol),
             fit_uids: pub_sol_opts
                 .fit_ids
                 .iter()
@@ -423,88 +423,88 @@ pub(crate) struct ValOptionsInt {
     pub(in crate::svc::vast) sec_zone_effect: ValOptionInt,
 }
 impl ValOptionsInt {
-    pub(crate) fn from_pub(sol: &SolarSystem, pub_opts: &ValOptions) -> Self {
+    pub(crate) fn from_pub(pub_opts: &ValOptions, sol: &SolarSystem) -> Self {
         Self {
             // Generic
-            not_loaded_item: ValOptionInt::from_pub(sol, &pub_opts.not_loaded_item),
-            item_kind: ValOptionInt::from_pub(sol, &pub_opts.item_kind),
-            skill_reqs: ValOptionInt::from_pub(sol, &pub_opts.skill_reqs),
+            not_loaded_item: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            item_kind: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            skill_reqs: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Implants/boosters
-            implant_slot_index: ValOptionInt::from_pub(sol, &pub_opts.implant_slot_index),
-            booster_slot_index: ValOptionInt::from_pub(sol, &pub_opts.booster_slot_index),
+            implant_slot_index: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            booster_slot_index: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Shared between mod-alike items
-            cpu: ValOptionInt::from_pub(sol, &pub_opts.cpu),
-            powergrid: ValOptionInt::from_pub(sol, &pub_opts.powergrid),
-            ship_limit: ValOptionInt::from_pub(sol, &pub_opts.ship_limit),
-            max_group_fitted: ValOptionInt::from_pub(sol, &pub_opts.max_group_fitted),
-            max_group_online: ValOptionInt::from_pub(sol, &pub_opts.max_group_online),
-            max_group_active: ValOptionInt::from_pub(sol, &pub_opts.max_group_active),
-            max_type_fitted: ValOptionInt::from_pub(sol, &pub_opts.max_type_fitted),
-            item_vs_ship_kind: ValOptionInt::from_pub(sol, &pub_opts.item_vs_ship_kind),
+            cpu: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            powergrid: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            ship_limit: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            max_group_fitted: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            max_group_online: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            max_group_active: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            max_type_fitted: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            item_vs_ship_kind: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Modules
-            high_slot_count: ValOptionInt::from_pub(sol, &pub_opts.high_slot_count),
-            mid_slot_count: ValOptionInt::from_pub(sol, &pub_opts.mid_slot_count),
-            low_slot_count: ValOptionInt::from_pub(sol, &pub_opts.low_slot_count),
-            turret_slot_count: ValOptionInt::from_pub(sol, &pub_opts.turret_slot_count),
-            launcher_slot_count: ValOptionInt::from_pub(sol, &pub_opts.launcher_slot_count),
-            module_state: ValOptionInt::from_pub(sol, &pub_opts.module_state),
-            capital_module: ValOptionInt::from_pub(sol, &pub_opts.capital_module),
-            overload_skill: ValOptionInt::from_pub(sol, &pub_opts.overload_skill),
-            unusable_cap: ValOptionInt::from_pub(sol, &pub_opts.unusable_cap),
+            high_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            mid_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            low_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            turret_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launcher_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            module_state: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            capital_module: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            overload_skill: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unusable_cap: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Charges
-            charge_group: ValOptionInt::from_pub(sol, &pub_opts.charge_group),
-            charge_parent_group: ValOptionInt::from_pub(sol, &pub_opts.charge_parent_group),
-            charge_size: ValOptionInt::from_pub(sol, &pub_opts.charge_size),
-            charge_volume: ValOptionInt::from_pub(sol, &pub_opts.charge_volume),
+            charge_group: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            charge_parent_group: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            charge_size: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            charge_volume: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Rigs
-            rig_slot_count: ValOptionInt::from_pub(sol, &pub_opts.rig_slot_count),
-            calibration: ValOptionInt::from_pub(sol, &pub_opts.calibration),
-            rig_size: ValOptionInt::from_pub(sol, &pub_opts.rig_size),
+            rig_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            calibration: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            rig_size: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Services
-            service_slot_count: ValOptionInt::from_pub(sol, &pub_opts.service_slot_count),
+            service_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // T3 subsystems/stances
-            subsystem_slot_count: ValOptionInt::from_pub(sol, &pub_opts.subsystem_slot_count),
-            subsystem_slot_index: ValOptionInt::from_pub(sol, &pub_opts.subsystem_slot_index),
-            ship_stance: ValOptionInt::from_pub(sol, &pub_opts.ship_stance),
+            subsystem_slot_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            subsystem_slot_index: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            ship_stance: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Drones
-            drone_bay_volume: ValOptionInt::from_pub(sol, &pub_opts.drone_bay_volume),
-            launched_drone_count: ValOptionInt::from_pub(sol, &pub_opts.launched_drone_count),
-            drone_bandwidth: ValOptionInt::from_pub(sol, &pub_opts.drone_bandwidth),
-            unlaunchable_drone_slot: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_drone_slot),
-            unlaunchable_drone_bandwidth: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_drone_bandwidth),
-            drone_group: ValOptionInt::from_pub(sol, &pub_opts.drone_group),
+            drone_bay_volume: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_drone_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            drone_bandwidth: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_drone_slot: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_drone_bandwidth: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            drone_group: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Fighters
-            fighter_bay_volume: ValOptionInt::from_pub(sol, &pub_opts.fighter_bay_volume),
-            launched_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_fighter_count),
-            launched_light_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_light_fighter_count),
-            launched_heavy_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_heavy_fighter_count),
-            launched_support_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_support_fighter_count),
-            launched_st_light_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_st_light_fighter_count),
-            launched_st_heavy_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_st_heavy_fighter_count),
-            launched_st_support_fighter_count: ValOptionInt::from_pub(sol, &pub_opts.launched_st_support_fighter_count),
-            unlaunchable_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_fighter),
-            unlaunchable_light_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_light_fighter),
-            unlaunchable_heavy_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_heavy_fighter),
-            unlaunchable_support_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_support_fighter),
-            unlaunchable_st_light_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_st_light_fighter),
-            unlaunchable_st_heavy_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_st_heavy_fighter),
-            unlaunchable_st_support_fighter: ValOptionInt::from_pub(sol, &pub_opts.unlaunchable_st_support_fighter),
-            fighter_squad_size: ValOptionInt::from_pub(sol, &pub_opts.fighter_squad_size),
+            fighter_bay_volume: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_light_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_heavy_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_support_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_st_light_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_st_heavy_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            launched_st_support_fighter_count: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_light_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_heavy_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_support_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_st_light_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_st_heavy_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            unlaunchable_st_support_fighter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            fighter_squad_size: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Projection, destination side
-            activation_blocked: ValOptionInt::from_pub(sol, &pub_opts.activation_blocked),
-            effect_stopper: ValOptionInt::from_pub(sol, &pub_opts.effect_stopper),
+            activation_blocked: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            effect_stopper: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Projection, source side
-            projectee_filter: ValOptionInt::from_pub(sol, &pub_opts.projectee_filter),
-            assist_immunity: ValOptionInt::from_pub(sol, &pub_opts.assist_immunity),
-            offense_immunity: ValOptionInt::from_pub(sol, &pub_opts.offense_immunity),
-            resist_immunity: ValOptionInt::from_pub(sol, &pub_opts.resist_immunity),
+            projectee_filter: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            assist_immunity: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            offense_immunity: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            resist_immunity: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
             // Sec zone
-            sec_zone_fitted: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_fitted),
-            sec_zone_online: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_online),
-            sec_zone_active: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_active),
-            sec_zone_unonlineable: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_unonlineable),
-            sec_zone_unactivable: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_unactivable),
-            sec_zone_effect: ValOptionInt::from_pub(sol, &pub_opts.sec_zone_effect),
+            sec_zone_fitted: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            sec_zone_online: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            sec_zone_active: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            sec_zone_unonlineable: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            sec_zone_unactivable: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
+            sec_zone_effect: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
         }
     }
 }
@@ -514,7 +514,7 @@ pub(in crate::svc::vast) enum ValOptionInt {
     Disabled,
 }
 impl ValOptionInt {
-    fn from_pub(sol: &SolarSystem, pub_opt: &ValOption) -> Self {
+    fn from_pub(pub_opt: &ValOption, sol: &SolarSystem) -> Self {
         match pub_opt {
             ValOption::Enabled(pub_opt) => Self::Enabled(ValOptionEnabledOptionsInt {
                 kfs: pub_opt

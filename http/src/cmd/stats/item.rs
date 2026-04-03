@@ -415,14 +415,17 @@ fn get_erps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionErps>) ->
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBlc>) -> Option<Vec<f64>> {
+fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionCapBlc>) -> Option<Vec<Option<f64>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = option.src_kinds.into_core();
         let core_time_options = option.time_options.into_core();
-        match core_item.get_stat_cap_balance(core_src_kinds, core_time_options) {
-            Ok(result) => results.push(result.into_f64()),
-            Err(_) => return None,
+        match core_item.get_stat_cap_balance(&core_src_kinds, core_time_options) {
+            Ok(result) => results.push(Some(result.into_f64())),
+            Err(core_err) => match is_fatal_app(core_err) {
+                true => return None,
+                false => results.push(None),
+            },
         }
     }
     Some(results)

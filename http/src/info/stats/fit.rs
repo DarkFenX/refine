@@ -84,7 +84,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_amount: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap_balance: TriStateField<Vec<f64>>,
+    pub(crate) cap_balance: TriStateField<Vec<Option<f64>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_sim: TriStateField<Vec<HStatCapSim>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

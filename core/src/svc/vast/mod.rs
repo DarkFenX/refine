@@ -1,12 +1,12 @@
-pub(crate) use stats::StatCapSimStaggerInt;
 pub use stats::{
-    StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg,
-    StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp, StatEhpLayer,
-    StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatMining, StatMiningEntry,
-    StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer,
-    StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions,
-    StatTimeOptionsBurst, StatTimeOptionsSim,
+    StatCapBlcNosfs, StatCapBlcNosfsOptions, StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatCapSim,
+    StatCapSimStagger, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher,
+    StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer,
+    StatInJam, StatMining, StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps,
+    StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors,
+    StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
 };
+pub(crate) use stats::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 use val_options::ValOptionInt;
 pub use val_options::{ValOption, ValOptionEnabledOptions, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};

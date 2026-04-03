@@ -1,5 +1,5 @@
 use crate::{
-    api::{FitMut, FitStatAppliedError},
+    api::{FitAppliedStatError, FitMut},
     num::PValue,
     svc::{
         cycle::CseqMap,
@@ -27,8 +27,8 @@ impl<'a> FitMut<'a> {
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, FitStatAppliedError> {
-        let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
+    ) -> Result<StatDmgApplied, FitAppliedStatError> {
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
         let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_dmg_applied(
             &mut reuse_cseq_map,
@@ -75,8 +75,8 @@ impl<'a> FitMut<'a> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatOutReps, FitStatAppliedError> {
-        let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
+    ) -> Result<StatOutReps, FitAppliedStatError> {
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
         let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_outgoing_rps(
             &mut reuse_cseq_map,
@@ -97,8 +97,8 @@ impl<'a> FitMut<'a> {
         &mut self,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<PValue, FitStatAppliedError> {
-        let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
+    ) -> Result<PValue, FitAppliedStatError> {
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
         let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_outgoing_cps(
             &mut reuse_cseq_map,
@@ -124,8 +124,8 @@ impl<'a> FitMut<'a> {
         item_kinds: StatNeutItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<PValue, FitStatAppliedError> {
-        let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
+    ) -> Result<PValue, FitAppliedStatError> {
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
         let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_outgoing_nps(
             &mut reuse_cseq_map,

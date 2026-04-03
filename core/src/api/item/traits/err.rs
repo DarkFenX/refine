@@ -1,7 +1,7 @@
 use crate::{
     err::basic::{AttrFoundError, ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
     svc::err::StatItemCheckError,
-    ud::UItems,
+    ud::{ProjecteeUidError, UItems},
 };
 
 #[derive(thiserror::Error, Debug)]
@@ -38,10 +38,10 @@ pub enum ItemStatError {
     UnsupportedStat(#[from] SupportedStatError),
 }
 impl ItemStatError {
-    pub(crate) fn from_svc_err(u_items: &UItems, svc_err: StatItemCheckError) -> Self {
+    pub(crate) fn from_svc_err(svc_err: StatItemCheckError, u_items: &UItems) -> Self {
         match svc_err {
-            StatItemCheckError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(u_items, svc_err).into(),
-            StatItemCheckError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(u_items, svc_err).into(),
+            StatItemCheckError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
+            StatItemCheckError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
         }
     }
 }
@@ -58,10 +58,18 @@ pub enum ItemStatAppliedError {
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 impl ItemStatAppliedError {
-    pub(crate) fn from_svc_err(u_items: &UItems, svc_err: StatItemCheckError) -> Self {
+    pub(super) fn from_svc_err(svc_err: StatItemCheckError, u_items: &UItems) -> Self {
         match svc_err {
-            StatItemCheckError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(u_items, svc_err).into(),
-            StatItemCheckError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(u_items, svc_err).into(),
+            StatItemCheckError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
+            StatItemCheckError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
+        }
+    }
+}
+impl From<ProjecteeUidError> for ItemStatAppliedError {
+    fn from(uid_err: ProjecteeUidError) -> Self {
+        match uid_err {
+            ProjecteeUidError::ProjecteeNotFound(uid_err) => uid_err.into(),
+            ProjecteeUidError::ProjecteeCantTakeProjs(uid_err) => uid_err.into(),
         }
     }
 }

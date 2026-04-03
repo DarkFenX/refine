@@ -1,7 +1,8 @@
 use crate::{
+    err::basic::{ItemFoundError, ItemReceiveProjError},
     misc::{DpsProfile, NpcProp, OptionalReload, RearmMinion, Spool},
     num::PValue,
-    ud::{UData, UFit, UFitId, UItem, UItemId, UPhysics},
+    ud::{ItemId, UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
 
 impl UData {
@@ -107,4 +108,24 @@ impl UData {
             UItem::SwEffect(_) => None,
         }
     }
+    pub(crate) fn get_projectee_uid(&self, projectee_item_id: &ItemId) -> Result<UItemId, ProjecteeUidError> {
+        let projectee_uid = self.items.iid_by_xid_err(projectee_item_id)?;
+        let projectee_u_item = self.items.get(projectee_uid);
+        if projectee_u_item.get_direct_physics().is_none() {
+            return Err(ItemReceiveProjError {
+                item_id: projectee_u_item.get_item_id(),
+                item_kind: projectee_u_item.lib_get_name(),
+            }
+            .into());
+        }
+        Ok(projectee_uid)
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub(crate) enum ProjecteeUidError {
+    #[error("{0}")]
+    ProjecteeNotFound(#[from] ItemFoundError),
+    #[error("{0}")]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }

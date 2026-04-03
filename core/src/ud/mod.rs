@@ -4,6 +4,7 @@
 //! store user data, so it is called like that.
 
 pub(crate) use data::UData;
+pub(crate) use datae_access::ProjecteeUidError;
 pub use fit::FitId;
 pub(crate) use fit::{UFit, UFitId, UFitSkill, UFits, UItemVec};
 pub use fleet::FleetId;

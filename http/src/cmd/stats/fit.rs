@@ -468,14 +468,17 @@ fn get_erps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionErps>) -> O
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBlc>) -> Option<Vec<f64>> {
+fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBlc>) -> Option<Vec<Option<f64>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = option.src_kinds.into_core();
         let core_time_options = option.time_options.into_core();
-        match core_fit.get_stat_cap_balance(core_src_kinds, core_time_options) {
-            Ok(result) => results.push(result.into_f64()),
-            Err(_) => return None,
+        match core_fit.get_stat_cap_balance(&core_src_kinds, core_time_options) {
+            Ok(result) => results.push(Some(result.into_f64())),
+            Err(core_err) => match is_fatal_ship_app(core_err) {
+                true => return None,
+                false => results.push(None),
+            },
         }
     }
     Some(results)
@@ -507,4 +510,17 @@ fn get_incoming_jam_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionInc
         }
     }
     Some(results)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn is_fatal_ship_app(core_err: rc::err::FitShipAppliedStatError) -> bool {
+    match core_err {
+        rc::err::FitShipAppliedStatError::NoShip(_)
+        | rc::err::FitShipAppliedStatError::ItemNotLoaded(_)
+        | rc::err::FitShipAppliedStatError::UnsupportedStat(_) => true,
+        rc::err::FitShipAppliedStatError::ProjecteeNotFound(_)
+        | rc::err::FitShipAppliedStatError::ProjecteeCantTakeProjs(_) => false,
+    }
 }
