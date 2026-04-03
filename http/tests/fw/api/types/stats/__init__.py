@@ -1,4 +1,5 @@
 from .opt_cap import (
+    StatCapNosfsOptions,
     StatCapRegenOptions,
     StatCapSrcKinds,
     StatsOptionCapBalance,
