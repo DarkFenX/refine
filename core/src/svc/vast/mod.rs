@@ -8,7 +8,7 @@ pub use stats::{
     StatTimeOptionsBurst, StatTimeOptionsSim,
 };
 use val_options::ValOptionInt;
-pub use val_options::{ValOption, ValOptions, ValOptionsSol};
+pub use val_options::{ValOption, ValOptionEnabledOptions, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
 pub use validators::{

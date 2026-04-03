@@ -300,22 +300,23 @@ impl HValOptions {
 
 fn process_option(option: &Option<HValOption>, core_option: &mut rc::val::ValOption) {
     if let Some(option) = option {
-        core_option.enabled = option.is_enabled();
-        core_option.kfs = option.get_known_failures();
+        *core_option = option.to_core();
     }
 }
 
 impl HValOption {
-    fn is_enabled(&self) -> bool {
+    fn to_core(&self) -> rc::val::ValOption {
         match self {
-            Self::Simple(enabled) => *enabled,
-            Self::Extended(enabled, _) => *enabled,
-        }
-    }
-    fn get_known_failures(&self) -> Vec<rc::ItemId> {
-        match self {
-            Self::Simple(_) => Vec::new(),
-            Self::Extended(_, known_failures) => known_failures.clone(),
+            Self::Simple(enabled) => match enabled {
+                true => rc::val::ValOption::new_enabled(),
+                false => rc::val::ValOption::new_disabled(),
+            },
+            Self::Extended(enabled, known_failures) => match enabled {
+                true => rc::val::ValOption::Enabled(rc::val::ValOptionEnabledOptions {
+                    kfs: known_failures.clone(),
+                }),
+                false => rc::val::ValOption::new_disabled(),
+            },
         }
     }
 }

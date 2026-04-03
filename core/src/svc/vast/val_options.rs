@@ -288,31 +288,34 @@ impl ValOptions {
     }
 }
 
-/// Options for individual validation.
+/// Controls if validation will be run or not.
 #[derive(Clone)]
-pub struct ValOption {
-    /// Controls if validation will be run or not.
-    pub enabled: bool,
-    /// Known failures or a validation.
+pub enum ValOption {
+    Enabled(ValOptionEnabledOptions),
+    Disabled,
+}
+impl ValOption {
+    /// Initialize options with enabled flag on.
+    pub fn new_enabled() -> Self {
+        Self::Enabled(Default::default())
+    }
+    /// Initialize options with enabled flag off.
+    pub fn new_disabled() -> Self {
+        Self::Disabled
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct ValOptionEnabledOptions {
+    /// Known failures of a validation.
     ///
     /// Every validation failure is attached to an item. Items listed here will not be returned as
     /// validation failures. If all validation's failures are known, it is passed.
     pub kfs: Vec<ItemId>,
 }
-impl ValOption {
-    /// Initialize options with enabled flag on.
-    pub fn new_enabled() -> Self {
-        Self {
-            enabled: true,
-            kfs: Vec::new(),
-        }
-    }
-    /// Initialize options with enabled flag off.
-    pub fn new_disabled() -> Self {
-        Self {
-            enabled: false,
-            kfs: Vec::new(),
-        }
+impl ValOptionEnabledOptions {
+    pub fn new() -> Self {
+        Self { kfs: Vec::default() }
     }
 }
 
@@ -512,8 +515,8 @@ pub(in crate::svc::vast) enum ValOptionInt {
 }
 impl ValOptionInt {
     fn from_pub(sol: &SolarSystem, pub_opt: &ValOption) -> Self {
-        match pub_opt.enabled {
-            true => Self::Enabled(ValOptionEnabledOptionsInt {
+        match pub_opt {
+            ValOption::Enabled(pub_opt) => Self::Enabled(ValOptionEnabledOptionsInt {
                 kfs: pub_opt
                     .kfs
                     .iter()
@@ -521,7 +524,7 @@ impl ValOptionInt {
                     .unique()
                     .collect(),
             }),
-            false => Self::Disabled,
+            ValOption::Disabled => Self::Disabled,
         }
     }
 }
