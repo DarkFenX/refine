@@ -18,7 +18,8 @@ where
     pub(crate) proj_mult_str: Option<NEffectProjMultGetter>,
     pub(crate) proj_mult_chance: Option<NEffectProjMultGetter>,
     pub(crate) resist: Option<REffectResist>,
-    pub(crate) limit_attr_rid: Option<RAttrId>,
+    pub(crate) local_limit_attr_id: Option<RAttrId>,
+    pub(crate) remote_limit_attr_id: Option<RAttrId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,8 +43,11 @@ where
                 .resist
                 .as_ref()
                 .and_then(|n_resist| REffectResist::try_from_n_effect_resist(n_resist, attr_aid_rid_map)),
-            limit_attr_rid: n_proj_opc_spec
-                .limit_attr_id
+            local_limit_attr_id: n_proj_opc_spec
+                .local_limit_attr_id
+                .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()),
+            remote_limit_attr_id: n_proj_opc_spec
+                .remote_limit_attr_id
                 .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()),
         }
     }
@@ -60,7 +64,7 @@ where
         if let Some(resist) = &self.resist {
             resist.consistency_check(u_data)?;
         }
-        if let Some(attr_rid) = &self.limit_attr_rid {
+        if let Some(attr_rid) = &self.remote_limit_attr_id {
             attr_rid.consistency_check(u_data)?;
         }
         Ok(())

@@ -21,7 +21,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 base: NEffectGeneralOutputGetter::NeutNosf,
                 proj_mult_str: Some(NEffectProjMultGetter::Neut),
                 resist: Some(NEffectResist::Standard),
-                limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
+                remote_limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
                 ..
             },
         }),
@@ -29,7 +29,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: NEffectGeneralOutputGetter::PowerTransfer,
             proj_mult_str: Some(NEffectProjMultGetter::Neut),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
+            local_limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
+            remote_limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
             ..
         }),
         ..

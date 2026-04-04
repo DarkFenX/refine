@@ -27,6 +27,7 @@ mod proj_iter;
 mod proj_looped;
 mod proj_shared;
 mod proj_time;
+mod shared;
 mod shared_iter;
 mod shared_time;
 mod traits;

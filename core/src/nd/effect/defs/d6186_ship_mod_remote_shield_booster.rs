@@ -15,7 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             base: NEffectGeneralOutputGetter::RepShield,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(AAttrId::SHIELD_CAPACITY),
+            remote_limit_attr_id: Some(AAttrId::SHIELD_CAPACITY),
             ..
         }),
         ..

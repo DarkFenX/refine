@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             spoolable: true,
             proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(AAttrId::ARMOR_HP),
+            remote_limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..
         }),
         ..
