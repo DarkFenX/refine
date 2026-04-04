@@ -1,7 +1,7 @@
 use super::stat::{StatRps, StatRpsLayer, StatRpsLayerRegen};
 use crate::{
     nd::NEffectGeneralOutputGetter,
-    num::{PValue, UnitInterval, Value},
+    num::{PValue, UnitInterval},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -14,7 +14,7 @@ use crate::{
                 SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
                 aggr_proj_time,
             },
-            stats::{item_checks::check_drone_fighter_ship, shared::calc_regen},
+            stats::{item_checks::check_drone_fighter_ship, shared::calc_regen_for_attrs},
         },
     },
     ud::{UItem, UItemId},
@@ -301,15 +301,12 @@ fn get_adjusted_rps(entry: &IrrEntry) -> Option<PValue> {
 }
 
 fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, shield_perc: UnitInterval) -> PValue {
-    let attr_consts = ctx.ac();
-    let shield_hp = PValue::from_value_clamped(
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.shield_capacity, Value::ZERO)
-            .unwrap(),
-    );
-    let shield_regen_duration = PValue::from_value_clamped(
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.shield_recharge_rate, Value::ZERO)
-            .unwrap()
-            / Value::THOUSAND,
-    );
-    calc_regen(shield_hp, shield_regen_duration, shield_perc)
+    calc_regen_for_attrs(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().shield_capacity,
+        ctx.ac().shield_recharge_rate,
+        shield_perc,
+    )
 }

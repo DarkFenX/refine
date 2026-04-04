@@ -1,4 +1,18 @@
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance
+from fw.api import FitStatsOptions, ItemStatsOptions
+
+
+def test_no_cap_changes(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == 0
 
 
 def test_error_fatality(client, consts):
@@ -28,21 +42,17 @@ def test_error_fatality(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     api_nosf = api_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     # Verification - attempt to get stats of item of incorrect kind fails whole batch
-    api_nosf_stats = api_nosf.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
+    api_nosf_stats = api_nosf.get_stats(options=ItemStatsOptions(cap_balance=True))
     assert api_nosf_stats.cap_balance is None
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification - attempt to get stats of ship which is not loaded fails whole batch
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_fit_stats.cap_balance is None
-    api_src_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
+    api_src_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
     assert api_src_ship_stats.cap_balance is None
     # Action
     api_ship.remove()
     # Verification - attempt to get stats of a fit without ship fails whole batch
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_fit_stats.cap_balance is None

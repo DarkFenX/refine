@@ -12,7 +12,7 @@ use crate::{
                 SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
                 aggr_proj_time,
             },
-            stats::{item_checks::check_ship, shared::calc_regen},
+            stats::{item_checks::check_ship, shared::calc_regen_for_attrs},
         },
     },
     ud::UItemId,
@@ -61,9 +61,14 @@ impl Vast {
 }
 
 fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: UnitInterval) -> PValue {
-    let max_amount = Vast::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
-    let cap_recharge_duration = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
-    calc_regen(max_amount, cap_recharge_duration, cap_perc)
+    calc_regen_for_attrs(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().capacitor_capacity,
+        ctx.ac().recharge_rate,
+        cap_perc,
+    )
 }
 
 fn get_cap_injects(
