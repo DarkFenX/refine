@@ -1,4 +1,5 @@
 use crate::{
+    ItemId,
     api::{FitMut, FitShipAppliedStatError, FitShipStatError, ItemMutCommon},
     misc::OptionalReload,
     num::{PValue, UnitInterval, Value},
@@ -23,10 +24,11 @@ impl<'a> FitMut<'a> {
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
         stagger: StatCapSimStagger,
-    ) -> Result<StatCapSim, FitShipStatError> {
+        nosf_projectee_item_id: Option<&ItemId>,
+    ) -> Result<StatCapSim, FitShipAppliedStatError> {
         Ok(self
             .get_ship_for_stats()?
-            .get_stat_cap_sim(cap_perc, optional_reloads, stagger)?)
+            .get_stat_cap_sim(cap_perc, optional_reloads, stagger, nosf_projectee_item_id)?)
     }
     pub fn get_stat_neut_resist(&mut self) -> Result<UnitInterval, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_neut_resist()?)

@@ -13,9 +13,8 @@ use crate::{
 
 impl<'a> FitMut<'a> {
     pub fn get_stat_dmg(&mut self, item_kinds: StatDmgItemKinds, time_options: StatTimeOptions) -> StatDmg {
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol.svc.get_stat_fit_dmg_raw(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -29,9 +28,8 @@ impl<'a> FitMut<'a> {
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, FitAppliedStatError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
-        let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_dmg_applied(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -45,9 +43,8 @@ impl<'a> FitMut<'a> {
         time_options: StatTimeOptions,
         mission_ore: bool,
     ) -> StatMining {
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol.svc.get_stat_fit_mps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -60,9 +57,8 @@ impl<'a> FitMut<'a> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
     ) -> StatOutReps {
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol.svc.get_stat_fit_outgoing_rps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -77,9 +73,8 @@ impl<'a> FitMut<'a> {
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, FitAppliedStatError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
-        let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_outgoing_rps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -88,10 +83,9 @@ impl<'a> FitMut<'a> {
         ))
     }
     pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> PValue {
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol
             .svc
-            .get_stat_fit_outgoing_cps(&mut reuse_cseq_map, &self.sol.u_data, self.uid, time_options, None)
+            .get_stat_fit_outgoing_cps(&mut CseqMap::new(), &self.sol.u_data, self.uid, time_options, None)
     }
     pub fn get_stat_outgoing_cps_applied(
         &mut self,
@@ -99,9 +93,8 @@ impl<'a> FitMut<'a> {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, FitAppliedStatError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
-        let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_outgoing_cps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             time_options,
@@ -109,9 +102,8 @@ impl<'a> FitMut<'a> {
         ))
     }
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds, time_options: StatTimeOptions) -> PValue {
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol.svc.get_stat_fit_outgoing_nps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -126,9 +118,8 @@ impl<'a> FitMut<'a> {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, FitAppliedStatError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
-        let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fit_outgoing_nps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,

@@ -43,6 +43,7 @@ impl Svc {
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
         stagger: &StatCapSimStaggerInt,
+        nosf_projectee_item_uid: Option<UItemId>,
     ) -> Result<StatCapSim, StatItemCheckError> {
         self.vast.get_stat_item_cap_sim(
             reuse_cseq_map,
@@ -52,6 +53,7 @@ impl Svc {
             cap_perc,
             optional_reloads,
             stagger,
+            nosf_projectee_item_uid,
         )
     }
     pub(crate) fn get_stat_item_neut_resist(

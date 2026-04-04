@@ -14,9 +14,8 @@ impl<'a> FleetMut<'a> {
         mission_ore: bool,
     ) -> StatMining {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol.svc.get_stat_fits_mps(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             u_fleet.iter_fits(),
             item_kinds,

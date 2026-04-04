@@ -47,7 +47,7 @@ impl ItemStatError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ItemStatAppliedError {
+pub enum ItemAppliedStatError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error("{0}")]
@@ -57,7 +57,7 @@ pub enum ItemStatAppliedError {
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
-impl ItemStatAppliedError {
+impl ItemAppliedStatError {
     pub(super) fn from_svc_err(svc_err: StatItemCheckError, u_items: &UItems) -> Self {
         match svc_err {
             StatItemCheckError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
@@ -65,7 +65,7 @@ impl ItemStatAppliedError {
         }
     }
 }
-impl From<ProjecteeUidError> for ItemStatAppliedError {
+impl From<ProjecteeUidError> for ItemAppliedStatError {
     fn from(uid_err: ProjecteeUidError) -> Self {
         match uid_err {
             ProjecteeUidError::ProjecteeNotFound(uid_err) => uid_err.into(),

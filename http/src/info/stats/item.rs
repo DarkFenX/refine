@@ -40,7 +40,7 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_balance: TriStateField<Vec<Option<f64>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap_sim: TriStateField<Vec<HStatCapSim>>,
+    pub(crate) cap_sim: TriStateField<Vec<Option<HStatCapSim>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) neut_resist: TriStateField<f64>,
     // Sensors

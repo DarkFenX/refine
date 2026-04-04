@@ -30,6 +30,7 @@ impl Vast {
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
         stagger: &StatCapSimStaggerInt,
+        nosf_projectee_item_uid: Option<UItemId>,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let max_cap = Vast::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
@@ -43,6 +44,7 @@ impl Vast {
             self,
             optional_reloads,
             stagger,
+            nosf_projectee_item_uid,
             fit_data,
             item_uid,
         );

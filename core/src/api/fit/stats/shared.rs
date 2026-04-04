@@ -1,5 +1,5 @@
 use crate::{
-    api::{CharacterMut, FitMut, ItemStatAppliedError, ItemStatError, ShipMut},
+    api::{CharacterMut, FitMut, ItemAppliedStatError, ItemStatError, ShipMut},
     err::basic::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
@@ -79,13 +79,13 @@ pub enum FitShipAppliedStatError {
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
-impl From<ItemStatAppliedError> for FitShipAppliedStatError {
-    fn from(item_err: ItemStatAppliedError) -> Self {
+impl From<ItemAppliedStatError> for FitShipAppliedStatError {
+    fn from(item_err: ItemAppliedStatError) -> Self {
         match item_err {
-            ItemStatAppliedError::ItemNotLoaded(e) => e.into(),
-            ItemStatAppliedError::UnsupportedStat(e) => e.into(),
-            ItemStatAppliedError::ProjecteeNotFound(e) => e.into(),
-            ItemStatAppliedError::ProjecteeCantTakeProjs(e) => e.into(),
+            ItemAppliedStatError::ItemNotLoaded(e) => e.into(),
+            ItemAppliedStatError::UnsupportedStat(e) => e.into(),
+            ItemAppliedStatError::ProjecteeNotFound(e) => e.into(),
+            ItemAppliedStatError::ProjecteeCantTakeProjs(e) => e.into(),
         }
     }
 }

@@ -45,3 +45,4 @@ class StatsOptionCapSim:
     cap_perc: float | type[Absent] = Absent
     optional_reloads: ApiOptionalReload | type[Absent] = Absent
     stagger: bool | tuple[bool, list[str]] | type[Absent] = Absent
+    nosf_projectee_item_id: str | type[Absent] = Absent

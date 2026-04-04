@@ -7,7 +7,7 @@ pub use crate::{
         GetCharacterError, GetChargeError, GetDroneError, GetFighterError, GetFitError, GetFleetError,
         GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError, GetProjEffectError,
         GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError, GetSkillError,
-        GetStanceError, GetSubsystemError, GetSwEffectError, ItemStatAppliedError, ItemStatError, IterItemAttrsError,
+        GetStanceError, GetSubsystemError, GetSwEffectError, ItemAppliedStatError, ItemStatError, IterItemAttrsError,
         IterItemEffectsError, IterItemModifiersError, RemoveFitRahIncomingDpsError, RemoveItemError, SetFitFleetError,
         SetSkillTypeIdError, UnsetFitFleetError,
     },
