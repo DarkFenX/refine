@@ -138,13 +138,14 @@ def test_projection_range_and_limit(client, consts):
             eve_falloff_attr_id: 10000},
         eff_ids=[eve_nosf_effect_id],
         defeff_id=eve_nosf_effect_id)
-    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 400})
+    eve_src_ship1_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 400})
+    eve_src_ship2_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 50, eve_radius_attr_id: 400})
     eve_tgt_ship_id = client.mk_eve_ship(attrs={
         eve_ship_amount_attr_id: 100, eve_radius_attr_id: 120, eve_sig_radius_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
+    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 20520, 0))
     api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
@@ -165,6 +166,15 @@ def test_projection_range_and_limit(client, consts):
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
         cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
     assert api_src_ship_stats.cap_balance.one() == approx(6)
+    # Action
+    api_src_ship.change_ship(type_id=eve_src_ship2_id)
+    # Verification - gain limited by nosf carrier ship cap amount
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+    assert api_src_fit_stats.cap_balance.one() == approx(5)
+    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+    assert api_src_ship_stats.cap_balance.one() == approx(5)
 
 
 def test_projection_resist_and_limit(client, consts):
@@ -189,7 +199,8 @@ def test_projection_resist_and_limit(client, consts):
             eve_override_attr_id: 0},
         eff_ids=[eve_nosf_effect_id],
         defeff_id=eve_nosf_effect_id)
-    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 400})
+    eve_src_ship1_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 400})
+    eve_src_ship2_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 30, eve_radius_attr_id: 400})
     eve_tgt_ship1_id = client.mk_eve_ship(
         attrs={eve_ship_amount_attr_id: 100, eve_resist_attr_id: 0.9, eve_sig_radius_attr_id: 1})
     eve_tgt_ship2_id = client.mk_eve_ship(
@@ -197,7 +208,7 @@ def test_projection_resist_and_limit(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
+    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
@@ -218,6 +229,15 @@ def test_projection_resist_and_limit(client, consts):
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
         cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
     assert api_src_ship_stats.cap_balance.one() == approx(4.8)
+    # Action
+    api_src_ship.change_ship(type_id=eve_src_ship2_id)
+    # Verification - gain limited by nosf carrier ship cap amount
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+    assert api_src_fit_stats.cap_balance.one() == approx(3)
+    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+    assert api_src_ship_stats.cap_balance.one() == approx(3)
 
 
 def test_time(client, consts):
@@ -295,7 +315,7 @@ def test_error_fatality(client, consts):
             eve_override_attr_id: 0},
         eff_ids=[eve_nosf_effect_id],
         defeff_id=eve_nosf_effect_id)
-    eve_src_ship1_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 400})
+    eve_src_ship1_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 400})
     eve_src_ship2_id = client.alloc_item_id()
     eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 100, eve_sig_radius_attr_id: 1})
     client.create_sources()
