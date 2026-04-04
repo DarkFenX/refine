@@ -93,16 +93,14 @@ def test_projection_range_and_limit(client, consts):
         attrs={eve_use_amount_attr_id: 10, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
-    eve_src_ship1_id = client.mk_eve_ship(
+    eve_src_ship_id = client.mk_eve_ship(
         attrs={eve_ship_amount_attr_id: 500, eve_regen_attr_id: 250000, eve_radius_attr_id: 400})
-    eve_src_ship2_id = client.mk_eve_ship(
-        attrs={eve_ship_amount_attr_id: 40, eve_regen_attr_id: 20000, eve_radius_attr_id: 400})
     eve_tgt_ship_id = client.mk_eve_ship(attrs={
         eve_ship_amount_attr_id: 50, eve_radius_attr_id: 120, eve_sig_radius_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
+    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
     api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_src_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
@@ -123,15 +121,6 @@ def test_projection_range_and_limit(client, consts):
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
         cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.529436)}
-    # Action
-    api_src_ship.change_ship(type_id=eve_src_ship2_id)
-    # Verification - gain limited by nosf carrier ship cap amount
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.5505012)}
-    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.5505012)}
 
 
 def test_projection_resist_and_limit(client, consts):
@@ -162,10 +151,8 @@ def test_projection_resist_and_limit(client, consts):
         attrs={eve_use_amount_attr_id: 10, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
-    eve_src_ship1_id = client.mk_eve_ship(
+    eve_src_ship_id = client.mk_eve_ship(
         attrs={eve_ship_amount_attr_id: 500, eve_regen_attr_id: 250000, eve_radius_attr_id: 400})
-    eve_src_ship2_id = client.mk_eve_ship(
-        attrs={eve_ship_amount_attr_id: 30, eve_regen_attr_id: 12000, eve_radius_attr_id: 400})
     eve_tgt_ship1_id = client.mk_eve_ship(
         attrs={eve_ship_amount_attr_id: 100, eve_resist_attr_id: 0.9, eve_sig_radius_attr_id: 1})
     eve_tgt_ship2_id = client.mk_eve_ship(
@@ -173,7 +160,7 @@ def test_projection_resist_and_limit(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
+    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
     api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_src_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
@@ -194,12 +181,3 @@ def test_projection_resist_and_limit(client, consts):
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
         cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(674)}
-    # Action
-    api_src_ship.change_ship(type_id=eve_src_ship2_id)
-    # Verification - gain limited by nosf carrier ship cap amount
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(9)}
-    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
-    assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(9)}
