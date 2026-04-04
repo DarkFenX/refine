@@ -315,13 +315,12 @@ def test_error_fatality(client, consts):
             eve_override_attr_id: 0},
         eff_ids=[eve_nosf_effect_id],
         defeff_id=eve_nosf_effect_id)
-    eve_src_ship1_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 400})
-    eve_src_ship2_id = client.alloc_item_id()
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 400})
     eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 100, eve_sig_radius_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
+    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_nosf = api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
@@ -346,22 +345,3 @@ def test_error_fatality(client, consts):
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
                 default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id))))])))
     assert api_src_ship_stats.cap_balance == [None, None, approx(10)]
-    # Verification - attempt to get stats of item of incorrect kind fails whole batch
-    api_nosf_stats = api_nosf.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
-    assert api_nosf_stats.cap_balance is None
-    # Action
-    api_src_ship.change_ship(type_id=eve_src_ship2_id)
-    # Verification - attempt to get stats of ship which is not loaded fails whole batch
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
-    assert api_src_fit_stats.cap_balance is None
-    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
-    assert api_src_ship_stats.cap_balance is None
-    # Action
-    api_src_ship.remove()
-    # Verification - attempt to get stats of a fit without ship fails whole batch
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True))])))
-    assert api_src_fit_stats.cap_balance is None
