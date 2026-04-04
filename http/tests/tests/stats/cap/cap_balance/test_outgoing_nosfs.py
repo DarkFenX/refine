@@ -146,9 +146,9 @@ def test_projection_range_and_limit(client, consts):
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
+    api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 20520, 0))
-    api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_src_kinds = StatCapSrcKinds(default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))
     # Verification - gain limited by target ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
@@ -193,10 +193,7 @@ def test_projection_resist_and_limit(client, consts):
         duration_attr_id=eve_cycle_time_attr_id,
         resist_attr_id=eve_resist_attr_id)
     eve_nosf_id = client.mk_eve_item(
-        attrs={
-            eve_nosf_amount_attr_id: 120,
-            eve_cycle_time_attr_id: 10000,
-            eve_override_attr_id: 0},
+        attrs={eve_nosf_amount_attr_id: 120, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 0},
         eff_ids=[eve_nosf_effect_id],
         defeff_id=eve_nosf_effect_id)
     eve_src_ship1_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500, eve_radius_attr_id: 400})
@@ -209,9 +206,9 @@ def test_projection_resist_and_limit(client, consts):
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship1_id)
+    api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
-    api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_src_kinds = StatCapSrcKinds(default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))
     # Verification - gain limited by target ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
