@@ -181,3 +181,44 @@ def test_projection_resist_and_limit(client, consts):
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
         cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(674)}
+
+
+def test_error_fatality(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
+    eve_use_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_nosf_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_nosf_falloff,
+        cat_id=consts.EveEffCat.target,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_nosf_id = client.mk_eve_item(
+        attrs={eve_nosf_amount_attr_id: 120, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 0},
+        eff_ids=[eve_nosf_effect_id],
+        defeff_id=eve_nosf_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 100, eve_sig_radius_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
+    api_nosf = api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
+    api_tmp = api_src_fit.add_module(type_id=eve_nosf_id)
+    api_tmp.remove()
+    # Verification - specifying incorrect projectee item IDs should fail only that specific option,
+    # not whole stat batch
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(cap_sim=(True, [
+        StatsOptionCapSim(nosf_projectee_item_id=api_tmp.id),
+        StatsOptionCapSim(nosf_projectee_item_id=api_nosf.id),
+        StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_fit_stats.cap_sim == [None, None, {consts.ApiCapSimResult.stable: 1}]
+    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, [
+        StatsOptionCapSim(nosf_projectee_item_id=api_tmp.id),
+        StatsOptionCapSim(nosf_projectee_item_id=api_nosf.id),
+        StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+    assert api_src_ship_stats.cap_sim == [None, None, {consts.ApiCapSimResult.stable: 1}]
