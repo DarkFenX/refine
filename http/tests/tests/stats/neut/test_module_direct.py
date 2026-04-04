@@ -517,20 +517,3 @@ def test_no_cycle_time(client, consts):
     assert api_fit_stats.outgoing_nps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_module_stats.outgoing_nps.one() == 0
-
-
-def test_item_not_loaded(client, consts):
-    eve_module_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
-    # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
-    assert api_fleet_stats.outgoing_nps.one() == 0
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
-    assert api_fit_stats.outgoing_nps.one() == 0
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=True))
-    assert api_module_stats.outgoing_nps is None

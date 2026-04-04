@@ -77,7 +77,7 @@ def test_struct(client, consts):
     assert api_ship_stats.cap_amount == approx(500)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_cap_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_drone_id = client.mk_eve_drone(attrs={eve_cap_attr_id: 100})
     client.create_sources()

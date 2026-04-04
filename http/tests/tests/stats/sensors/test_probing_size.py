@@ -360,7 +360,7 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.probing_size == approx(2)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_sensor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_module_id = client.mk_eve_item(attrs={eve_sensor_attr_id: 20, eve_sig_radius_attr_id: 40})

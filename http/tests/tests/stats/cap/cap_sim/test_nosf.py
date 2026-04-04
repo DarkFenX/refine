@@ -183,7 +183,7 @@ def test_projection_resist_and_limit(client, consts):
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(674)}
 
 
-def test_error_fatality(client, consts):
+def test_incorrect_projectee(client, consts):
     eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)

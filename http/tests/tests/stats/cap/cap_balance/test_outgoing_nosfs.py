@@ -292,7 +292,7 @@ def test_time(client, consts):
     assert api_ship_stats.cap_balance.one() == approx(10.909091)
 
 
-def test_error_fatality(client, consts):
+def test_incorrect_projectee(client, consts):
     eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)

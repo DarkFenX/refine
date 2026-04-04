@@ -313,7 +313,27 @@ def test_item_not_loaded(client, consts):
     assert api_module_stats.outgoing_cps is None
 
 
-def test_error_fatality(client, consts):
+def test_incorrect_item_kind(client, consts):
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_module_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_implant_id = client.mk_eve_item(
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000},
+        eff_ids=[eve_module_effect_id],
+        defeff_id=eve_module_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_implant = api_fit.add_implant(type_id=eve_implant_id)
+    # Verification - attempt to get stats of item of incorrect kind fails whole stat batch
+    api_implant_stats = api_implant.get_stats(options=ItemStatsOptions(outgoing_cps=True))
+    assert api_implant_stats.outgoing_cps is None
+
+
+def test_incorrect_projectee(client, consts):
     eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
@@ -336,11 +356,15 @@ def test_error_fatality(client, consts):
     api_tgt_tmp = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_tgt_tmp.remove()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    # Verification - attempt to get stats of item of incorrect kind fails whole stat batch
-    api_implant_stats = api_implant.get_stats(options=ItemStatsOptions(outgoing_cps=True))
-    assert api_implant_stats.outgoing_cps is None
+    api_fleet = api_sol.create_fleet()
+    api_fleet.change(add_fits=[api_src_fit.id])
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=(True, [
+        StatsOptionFitOutCps(projectee_item_id=api_tgt_tmp.id),
+        StatsOptionFitOutCps(projectee_item_id=api_implant.id),
+        StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+    assert api_fleet_stats.outgoing_cps == [None, None, approx(70.2)]
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_cps=(True, [
         StatsOptionFitOutCps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitOutCps(projectee_item_id=api_implant.id),
