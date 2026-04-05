@@ -2,8 +2,7 @@ use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
     nd::{
-        NEffect, NEffectGeneralOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
-        NEffectSpoolAttrs,
+        NEffect, NEffectGeneralOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist, NEffectSpoolAttrs,
     },
 };
 
@@ -21,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         outgoing_armor_rep: Some(NEffectProjOpcSpec {
             base: NEffectGeneralOutputGetter::RepArmor,
             spoolable: true,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+            proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
             resist: Some(NEffectResist::Standard),
             remote_limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..

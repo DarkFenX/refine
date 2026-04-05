@@ -2,7 +2,7 @@ use super::shared::{get_aoe_dd_warmup_neut, make_dd_self_debuffs};
 use crate::{
     ad::{AEffectBuff, AEffectId},
     ed::EEffectId,
-    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_CONE_DOT;
@@ -19,7 +19,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::DotDelay,
-            proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
+            proj_mult_str: Some(NEffectProjGetter::AoeDd),
             ..
         }),
         neut: Some(get_aoe_dd_warmup_neut()),

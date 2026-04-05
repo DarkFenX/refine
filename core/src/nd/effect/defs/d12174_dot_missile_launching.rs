@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectProjGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOT_MISSILE_LAUNCHING;
@@ -14,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind: Some(NEffectDmgKindGetter::Breacher),
         breacher_dmg: Some(NEffectProjOpcSpec {
             base: NEffectBreacherOutputGetter::Regular,
-            proj_mult_chance: Some(NEffectProjMultGetter::MissileRange),
+            proj_mult_chance: Some(NEffectProjGetter::MissileRange),
             ..
         }),
         ..

@@ -29,7 +29,7 @@ impl Calc {
         let proj_mult_getter = cmod.raw.proj_mult_getter?;
         let effect = ctx.u_data.src.get_effect_by_rid(cmod.raw.affector_espec.effect_rid);
         let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, item_uid)?;
-        Some(proj_mult_getter.get(ctx, self, cmod.raw.affector_espec.item_uid, effect, item_uid, proj_data))
+        Some(proj_mult_getter.get_mult(ctx, self, cmod.raw.affector_espec.item_uid, effect, item_uid, proj_data))
     }
 }
 

@@ -1,4 +1,4 @@
-use super::{
+use super::mult::{
     application::{get_bomb_application_mult, get_missile_application_mult},
     composite::{
         get_aoe_burst_proj_mult, get_aoe_dd_dmg_proj_mult, get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult,
@@ -10,6 +10,7 @@ use super::{
     },
 };
 use crate::{
+    ad::{AAttrId, AEffect},
     num::PValue,
     rd::REffect,
     svc::{SvcCtx, calc::Calc},
@@ -17,7 +18,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NEffectProjMultGetter {
+pub(crate) enum NEffectProjGetter {
     Null,
     GenericRangeSimpleCts,
     GenericRangeSimpleSts,
@@ -39,8 +40,8 @@ pub(crate) enum NEffectProjMultGetter {
     // Variants specific to a single effect
     MissileLaunchingApplication,
 }
-impl NEffectProjMultGetter {
-    pub(crate) fn get(
+impl NEffectProjGetter {
+    pub(crate) fn get_mult(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -82,6 +83,32 @@ impl NEffectProjMultGetter {
                     false => get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
                 }
             }
+        }
+    }
+    // Returns attributes which can affect modifier application strength
+    pub(crate) fn get_modifier_attr_aids(&self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
+        // Only variants actually used to project modifiers are filled
+        match self {
+            Self::Null => [None, None],
+            Self::GenericRangeSimpleCts => [a_effect.range_attr_id, None],
+            Self::GenericRangeSimpleSts => [a_effect.range_attr_id, None],
+            Self::GenericRangeFullStsRestricted => [a_effect.range_attr_id, a_effect.falloff_attr_id],
+            Self::Turret => [None, None],
+            Self::Disintegrator => [None, None],
+            Self::Vorton => [None, None],
+            Self::MissileRange => [None, None],
+            Self::MissileRangeFof => [None, None],
+            Self::MissileApplication => [None, None],
+            Self::BombRange => [None, None],
+            Self::BombApplication => [None, None],
+            Self::Neut => [None, None],
+            Self::AoeDd => [None, None],
+            Self::AoeDdRange => [Some(AAttrId::MAX_RANGE), None],
+            Self::AoeDdWarmupNeut => [None, None],
+            Self::AoeBurst => [None, None],
+            Self::AoeBurstRange => [Some(AAttrId::MAX_RANGE), Some(AAttrId::DOOMSDAY_AOE_RANGE)],
+            // Variants specific to a single effect
+            Self::MissileLaunchingApplication => [None, None],
         }
     }
 }

@@ -283,7 +283,7 @@ impl AppliedBreacherAccum {
             let proj_data =
                 ctx.eff_projs
                     .get_or_make_proj_data(ctx.u_data, EffectSpec::new(item_uid, effect.rid), projectee_uid);
-            applied *= proj_mult_getter.get(ctx, calc, item_uid, effect, projectee_uid, proj_data);
+            applied *= proj_mult_getter.get_mult(ctx, calc, item_uid, effect, projectee_uid, proj_data);
             if applied == PValue::ZERO {
                 return;
             }

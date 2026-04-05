@@ -4,7 +4,7 @@ use crate::{
         AEffectId, AItemListId,
     },
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+    nd::{NEffect, NEffectProjGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_DAMP;
@@ -31,8 +31,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ],
             ..
         }),
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::AoeBurst),
-        modifier_proj_mult: Some(NEffectProjMultGetter::AoeBurstRange),
+        modifier_proj: Some(NEffectProjGetter::AoeBurstRange),
         ..
     }
 }

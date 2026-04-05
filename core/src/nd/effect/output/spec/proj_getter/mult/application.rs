@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_missile_application_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -49,7 +49,7 @@ pub(super) fn get_missile_application_mult(
     radius_ratio.min(mobile_mult).clamp(PValue::ZERO, PValue::ONE)
 }
 
-pub(super) fn get_bomb_application_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_bomb_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -61,7 +61,7 @@ pub(super) fn get_bomb_application_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_turret_application_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_turret_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -91,7 +91,7 @@ pub(super) fn get_turret_application_mult(
     }
 }
 
-pub(super) fn get_radius_ratio_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

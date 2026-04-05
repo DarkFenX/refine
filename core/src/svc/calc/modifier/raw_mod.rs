@@ -6,7 +6,7 @@ use crate::{
     ad::AEffectCatId,
     dbg::DebugResult,
     misc::EffectSpec,
-    nd::NEffectProjMultGetter,
+    nd::NEffectProjGetter,
     num::Value,
     rd::{RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModifier},
     svc::{
@@ -32,7 +32,7 @@ pub(in crate::svc::calc) struct RawModifier {
     // Buff-related
     pub(in crate::svc::calc) buff_type_attr_rid: Option<RAttrId> = None,
     // Projection-related
-    pub(in crate::svc::calc) proj_mult_getter: Option<NEffectProjMultGetter> = None,
+    pub(in crate::svc::calc) proj_mult_getter: Option<NEffectProjGetter> = None,
     pub(in crate::svc::calc) proj_attr_rids: [Option<RAttrId>; 2] = [None, None],
     pub(in crate::svc::calc) resist_attr_rid: Option<RAttrId> = None,
 }
@@ -84,7 +84,7 @@ impl RawModifier {
             affectee_filter,
             affectee_attr_rid: effect_mod.affectee_attr_rid,
             buff_type_attr_rid: None,
-            proj_mult_getter: effect.modifier_proj_mult_getter,
+            proj_mult_getter: effect.modifier_proj,
             proj_attr_rids: effect.modifier_proj_attr_rids,
             resist_attr_rid,
             ..
@@ -177,7 +177,7 @@ impl RawModifier {
                 ),
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
                 buff_type_attr_rid,
-                proj_mult_getter: effect.modifier_proj_mult_getter,
+                proj_mult_getter: effect.modifier_proj,
                 proj_attr_rids: effect.modifier_proj_attr_rids,
                 resist_attr_rid: funcs::get_resist_attr_rid(affector_item, effect),
                 ..

@@ -63,7 +63,7 @@ where
             }
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                let proj_mult = proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                let proj_mult = proj_mult_getter.get_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
                 if proj_mult == PValue::ZERO {
                     return None;
                 }
@@ -71,7 +71,7 @@ where
             }
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                let proj_mult = proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                let proj_mult = proj_mult_getter.get_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
                 if proj_mult == PValue::ZERO {
                     return None;
                 }

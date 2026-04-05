@@ -8,7 +8,7 @@ pub(crate) use mining::{
 };
 pub(crate) use neut::{NEffectNeut, NEffectNeutChecker, NEffectNeutKind};
 pub(crate) use spec::{
-    NEffectChargeMultGetter, NEffectLocalOpcSpec, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec,
+    NEffectChargeMultGetter, NEffectLocalOpcSpec, NEffectOutputGetter, NEffectProjGetter, NEffectProjOpcSpec,
     NEffectResist,
 };
 
