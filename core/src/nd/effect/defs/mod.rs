@@ -116,6 +116,7 @@ pub(in crate::nd::effect) mod d7062_weather_infernal;
 pub(in crate::nd::effect) mod d7063_weather_xenon_gas;
 pub(in crate::nd::effect) mod d7166_ship_mod_remote_armor_mutadaptive_repairer;
 pub(in crate::nd::effect) mod d8037_chain_lightning;
+pub(in crate::nd::effect) mod d8093_clone_respawn_bay;
 pub(in crate::nd::effect) mod d848_cloaking_targeting_delay_bonus;
 pub(in crate::nd::effect) mod d9_missile_launching;
 mod shared;

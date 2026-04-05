@@ -160,6 +160,7 @@ impl AAttrId {
         Self::from_eid(EAttrId::ENTITY_MAX_VELOCITY_SIG_RADIUS_MULT);
     pub(crate) const UPGRADE_COST: Self = Self::from_eid(EAttrId::UPGRADE_COST);
     pub(crate) const UPGRADE_SLOTS_LEFT: Self = Self::from_eid(EAttrId::UPGRADE_SLOTS_LEFT);
+    pub(crate) const CAN_CLOAK: Self = Self::from_eid(EAttrId::CAN_CLOAK);
     pub(crate) const SPEED_FACTOR_BONUS: Self = Self::from_eid(EAttrId::SPEED_FACTOR_BONUS);
     pub(crate) const REQUIRED_THERMODYNAMICS_SKILL: Self = Self::from_eid(EAttrId::REQUIRED_THERMODYNAMICS_SKILL);
     pub(crate) const SPEED_BOOST_FACTOR_BONUS: Self = Self::from_eid(EAttrId::SPEED_BOOST_FACTOR_BONUS);

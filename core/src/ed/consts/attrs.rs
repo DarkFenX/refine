@@ -148,6 +148,7 @@ impl EAttrId {
     pub(crate) const ENTITY_MAX_VELOCITY_SIG_RADIUS_MULT: Self = Self::from_i32(1133);
     pub(crate) const UPGRADE_COST: Self = Self::from_i32(1153);
     pub(crate) const UPGRADE_SLOTS_LEFT: Self = Self::from_i32(1154);
+    pub(crate) const CAN_CLOAK: Self = Self::from_i32(1163);
     pub(crate) const SPEED_FACTOR_BONUS: Self = Self::from_i32(1164);
     pub(crate) const REQUIRED_THERMODYNAMICS_SKILL: Self = Self::from_i32(1212);
     pub(crate) const SPEED_BOOST_FACTOR_BONUS: Self = Self::from_i32(1270);

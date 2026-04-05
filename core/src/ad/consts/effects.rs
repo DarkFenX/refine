@@ -150,6 +150,7 @@ impl AEffectId {
     pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: Self =
         Self::from_eid(EEffectId::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER);
     pub(crate) const CHAIN_LIGHTNING: Self = Self::from_eid(EEffectId::CHAIN_LIGHTNING);
+    pub(crate) const CLONE_RESPAWN_BAY: Self = Self::from_eid(EEffectId::CLONE_RESPAWN_BAY);
     pub(crate) const DEBUFF_LANCE: Self = Self::from_eid(EEffectId::DEBUFF_LANCE);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_eid(EEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DOT_MISSILE_LAUNCHING);

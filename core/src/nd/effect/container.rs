@@ -127,6 +127,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d7063_weather_xenon_gas::mk_n_effect(),
         defs::d7166_ship_mod_remote_armor_mutadaptive_repairer::mk_n_effect(),
         defs::d8037_chain_lightning::mk_n_effect(),
+        defs::d8093_clone_respawn_bay::mk_n_effect(),
         defs::d11691_debuff_lance::mk_n_effect(),
         defs::d12126_micro_jump_portal_drive_capital::mk_n_effect(),
         defs::d12174_dot_missile_launching::mk_n_effect(),

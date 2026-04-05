@@ -128,6 +128,7 @@ impl EEffectId {
     pub(crate) const WEATHER_XENON_GAS: Self = Self::from_i32(7063);
     pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: Self = Self::from_i32(7166);
     pub(crate) const CHAIN_LIGHTNING: Self = Self::from_i32(8037);
+    pub(crate) const CLONE_RESPAWN_BAY: Self = Self::from_i32(8093);
     pub(crate) const DEBUFF_LANCE: Self = Self::from_i32(11691);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_i32(12126);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_i32(12174);
