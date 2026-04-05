@@ -5,7 +5,7 @@ use crate::{
     util::RSet,
 };
 
-/// Fails when a ship which can't have a stance has one.
+/// Fails when a ship which can't have a stance but has one.
 pub struct ValShipStanceFail {
     /// Stance item ID.
     pub stance_item_id: ItemId,

@@ -34,85 +34,204 @@ impl ValOptionsSol {
 /// Validation options.
 #[derive(Clone)]
 pub struct ValOptions {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails for any items which are not loaded. Items can become not loaded when they were added
+    /// to a fit, but current data source does not have an EVE item with corresponding type ID.
     pub not_loaded_item: ValOption,
+    /// Any EVE item usually can be represented by a single item kind in the lib. For example, an
+    /// item from Implant category with "boosterness" attribute is a booster. This validation checks
+    /// relations between user-defined item kind and item kind detected for a backing EVE item.
     pub item_kind: ValOption,
+    /// Fails when a direct skill requirement is not satisfied for an item.
     pub skill_reqs: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Implants/boosters
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when multiple implants attempt to take the same slot.
     pub implant_slot_index: ValOption,
+    /// Fails when multiple boosters attempt to take the same slot.
     pub booster_slot_index: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Shared between mod-alike items
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when items take more CPU than ship can produce.
     pub cpu: ValOption,
+    /// Fails when items take more PG than ship can produce.
     pub powergrid: ValOption,
+    /// When a fit has any items which can be fit to specific set of ships (identified by ship list
+    /// and ship group list), and ship does not fall into it, this validation is failed for those
+    /// items.
     pub ship_limit: ValOption,
+    /// When an item has limit on how many items from its group can be fitted, and count of fitted
+    /// items exceeds that, this validation fails.
     pub max_group_fitted: ValOption,
+    /// When an item has limit on how many items from its group can be online, and count of online
+    /// items exceeds that, this validation fails.
     pub max_group_online: ValOption,
+    /// When an item has limit on how many items from its group can be active, and count of active
+    /// items exceeds that, this validation fails.
     pub max_group_active: ValOption,
+    /// When an item has limit on how many items with the same type ID can be fitted, and count of
+    /// fitted items exceeds that, this validation fails.
     pub max_type_fitted: ValOption,
+    /// Checks that structure items are not fit to a ship fit, and ship items are not fit to a
+    /// structure fit. Type of fit is defined by its ship kind.
     pub item_vs_ship_kind: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Modules
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// If any of high slot modules occupy slots with indices higher than ship supports, this
+    /// validation fails, only for those modules.
     pub high_slot_count: ValOption,
+    /// If any of medium slot modules occupy slots with indices higher than ship supports, this
+    /// validation fails, only for those modules.
     pub mid_slot_count: ValOption,
+    /// If any of low slot modules occupy slots with indices higher than ship supports, this
+    /// validation fails, only for those modules.
     pub low_slot_count: ValOption,
+    /// If count of taken turret slots is higher than ship provides, this validation fails for all
+    /// modules which need a turret slot.
     pub turret_slot_count: ValOption,
+    /// If count of taken launcher slots is higher than ship provides, this validation fails for all
+    /// modules which need a launcher slot.
     pub launcher_slot_count: ValOption,
+    /// If any module has state higher than it supports (e.g. active bulkhead), this validation
+    /// fails.
     pub module_state: ValOption,
+    /// Fails when any capital modules (large-volume modules) are fit to subcapital ships.
     pub capital_module: ValOption,
+    /// Fails when fit has any items overloaded, and overload skill requirement is not satisfied.
     pub overload_skill: ValOption,
+    /// Fails when any item consumes more cap than ship has. Only on-fit items which consume cap are
+    /// considered for this, anything else (e.g. incoming neutralizers) are ignored.
     pub unusable_cap: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Charges
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Some modules restrict charges which can be loaded into them by group; if charge from
+    /// disallowed group is loaded, validation fails for charge.
     pub charge_group: ValOption,
+    /// Some charges restrict into which modules they can be loaded by module group; if charge from
+    /// disallowed group is loaded, validation fails for charge.
     pub charge_parent_group: ValOption,
+    /// Some charges and modules have charge size set. When a module specifies it, and has a charge
+    /// without size or with mismatching size loaded, this validation fails for the charge.
     pub charge_size: ValOption,
+    /// Fails when volume of a single charge is larger than capacity of a module it's loaded into.
     pub charge_volume: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Rigs
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when fit has more rigs than ship has rig slots.
     pub rig_slot_count: ValOption,
+    /// Fails when rigs take more calibration than ship can produce.
     pub calibration: ValOption,
+    /// Ships and rigs specify rig size; when those mismatch, this validation fails for rigs.
     pub rig_size: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Services
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when fit has more services than ship/structure has service slots.
     pub service_slot_count: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // T3 subsystems/stances
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when fit has more subsystems than ship has subsystem slots.
     pub subsystem_slot_count: ValOption,
+    /// Fails when multiple subsystems attempt to take the same slot.
     pub subsystem_slot_index: ValOption,
+    /// Fails when a ship which can't have a stance but has one.
     pub ship_stance: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Drones
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when drones take more volume than ship's drone bay has.
     pub drone_bay_volume: ValOption,
+    /// Fails when fit has more in-space drones than ship supports.
     pub launched_drone_count: ValOption,
+    /// Fails when in-space drones take more bandwidth than ship provides.
     pub drone_bandwidth: ValOption,
+    /// Fails when fit has any drones when ship supports none.
     pub unlaunchable_drone_slot: ValOption,
+    /// Fails when fit has any drones which take more bandwidth than ship provides.
     pub unlaunchable_drone_bandwidth: ValOption,
+    /// Ship can limit which drone groups can be put into its drone bay. If it does, and drones from
+    /// mismatching groups are fit, this validation fails for those drones.
     pub drone_group: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Fighters
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when fighters take more volume than ship's fighter bay has.
     pub fighter_bay_volume: ValOption,
+    /// Fails when fit has more in-space fighters than ship supports.
     pub launched_fighter_count: ValOption,
+    /// Fails when fit has more in-space light fighters than ship supports.
     pub launched_light_fighter_count: ValOption,
+    /// Fails when fit has more in-space heavy fighters than ship supports.
     pub launched_heavy_fighter_count: ValOption,
+    /// Fails when fit has more in-space support fighters than ship supports.
     pub launched_support_fighter_count: ValOption,
+    /// Fails when fit has more in-space standup light fighters than ship supports.
     pub launched_st_light_fighter_count: ValOption,
+    /// Fails when fit has more in-space standup heavy fighters than ship supports.
     pub launched_st_heavy_fighter_count: ValOption,
+    /// Fails when fit has more in-space standup support fighters than ship supports.
     pub launched_st_support_fighter_count: ValOption,
+    /// Fails when fit has any fighters when ship supports none.
     pub unlaunchable_fighter: ValOption,
+    /// Fails when fit has any light fighters when ship supports none.
     pub unlaunchable_light_fighter: ValOption,
+    /// Fails when fit has any heavy fighters when ship supports none.
     pub unlaunchable_heavy_fighter: ValOption,
+    /// Fails when fit has any support fighters when ship supports none.
     pub unlaunchable_support_fighter: ValOption,
+    /// Fails when fit has any standup light fighters when ship supports none.
     pub unlaunchable_st_light_fighter: ValOption,
+    /// Fails when fit has any standup heavy fighters when ship supports none.
     pub unlaunchable_st_heavy_fighter: ValOption,
+    /// Fails when fit has any standup support fighters when ship supports none.
     pub unlaunchable_st_support_fighter: ValOption,
+    /// Fails for fighter squads which have more fighters than squad supports.
     pub fighter_squad_size: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, destination side
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when any modules are active but their activation is blocked (e.g. scrambled MWDs).
     pub activation_blocked: ValOption,
+    /// Fails when any items have running effects which are stopped by external factors (e.g.
+    /// scrambled fighter MWD).
     pub effect_stopper: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, source side
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when item defines which targets it can be applied to, but some of its targets do not
+    /// belong to it.
     pub projectee_filter: ValOption,
+    /// Fails when item is marked as assistive, and is applied to a target which is immune to
+    /// assistance.
     pub assist_immunity: ValOption,
+    /// Fails when item is marked as offensive, and is applied to a target which is immune to
+    /// offense.
     pub offense_immunity: ValOption,
+    /// Fails when item's effect can be resisted, and is applied to a target which completely
+    /// resists its effect.
     pub resist_immunity: ValOption,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     // Sec zone
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Fails when some items are not allowed to be fitted in current sol security zone.
     pub sec_zone_fitted: ValOption,
+    /// Fails when some items are not allowed to be online in current sol security zone.
     pub sec_zone_online: ValOption,
+    /// Fails when some items are not allowed to be active in current sol security zone.
     pub sec_zone_active: ValOption,
+    /// Fails when fit has items which cannot be onlined in current sol security zone.
     pub sec_zone_unonlineable: ValOption,
+    /// Fails when fit has items which cannot be activated in current sol security zone.
     pub sec_zone_unactivable: ValOption,
+    /// Fails when some effects are not allowed to run in current sol security zone.
     pub sec_zone_effect: ValOption,
 }
 impl ValOptions {
