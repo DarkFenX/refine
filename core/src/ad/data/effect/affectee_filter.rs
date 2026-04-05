@@ -1,6 +1,6 @@
 use crate::ad::{AEffectLocation, AItemGrpId, AModifierSrq};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AEffectAffecteeFilter {
     Direct(AEffectLocation),
     Loc(AEffectLocation),

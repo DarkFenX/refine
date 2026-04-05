@@ -88,6 +88,7 @@ impl EEffectId {
     pub(crate) const FTR_ABIL_BOMB: Self = Self::from_i32(6485);
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_i32(6513);
     pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_i32(6554);
+    pub(crate) const MOD_BONUS_NETWORKED_SENSOR_ARRAY: Self = Self::from_i32(6567);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: Self = Self::from_i32(6651);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: Self = Self::from_i32(6652);
     pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: Self = Self::from_i32(6682);
@@ -132,4 +133,5 @@ impl EEffectId {
     pub(crate) const DEBUFF_LANCE: Self = Self::from_i32(11691);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_i32(12126);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_i32(12174);
+    pub(crate) const MOD_BONUS_INTEGRATED_SENSOR_ARRAY: Self = Self::from_i32(12597);
 }

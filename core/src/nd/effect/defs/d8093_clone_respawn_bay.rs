@@ -21,6 +21,8 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: tactical recloner effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
+    // Not tested; just assume tactical recloner has same modifiers as clone vat bay, minus mobility
+    // modifier, for which module does not have the attribute
     a_effect.modifiers.extend([
         AEffectModifier {
             affector_attr_id: AAttrId::SIEGE_MODE_WARP_STATUS,
