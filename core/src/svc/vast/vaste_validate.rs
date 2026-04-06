@@ -328,7 +328,7 @@ impl Vast {
         // Depends on some incoming projections or system/fit-wide effects, but can fail for some
         // modules in those conditions (e.g. MWD under ESS bubble effect).
         if let ValOptionInt::Enabled(opts) = &options.activation_blocked
-            && !fit_data.validate_activation_blocked_fast(&opts.kfs, ctx, calc)
+            && !fit_data.validate_activation_blocked_fast(&opts.kfs, ctx, calc, fit)
         {
             return false;
         }
@@ -679,7 +679,7 @@ impl Vast {
         }
         // Projection, destination side
         if let ValOptionInt::Enabled(opts) = &options.activation_blocked {
-            result.activation_blocked = fit_data.validate_activation_blocked_verbose(&opts.kfs, ctx, calc);
+            result.activation_blocked = fit_data.validate_activation_blocked_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = &options.effect_stopper {
             result.effect_stopper = fit_data.validate_effect_stopper_verbose(&opts.kfs, ctx, calc);

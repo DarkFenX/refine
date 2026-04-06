@@ -241,6 +241,7 @@ impl EAttrId {
     pub(crate) const DOOMSDAY_IMMOBILITY_DURATION: Self = Self::from_i32(2428);
     pub(crate) const MAX_TYPE_FITTED: Self = Self::from_i32(2431);
     pub(crate) const ENERGY_NEUT_SIG_RESOLUTION: Self = Self::from_i32(2451);
+    pub(crate) const DISALLOW_CLOAKING: Self = Self::from_i32(2454);
     pub(crate) const CAN_FIT_SHIP_TYPE7: Self = Self::from_i32(2463);
     pub(crate) const WARFARE_BUFF1_ID: Self = Self::from_i32(2468);
     pub(crate) const WARFARE_BUFF1_VAL: Self = Self::from_i32(2469);

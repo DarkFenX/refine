@@ -1,7 +1,7 @@
-use super::shared::is_attr_flag_set;
+use super::shared::{is_attr_flag_set, is_oattr_flag_set};
 use crate::{
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::{ItemId, UFit, UItemId},
     util::RSet,
 };
 
@@ -17,14 +17,26 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
+        fit: &UFit,
     ) -> bool {
-        let attr_rid = match ctx.ac().activation_blocked {
-            Some(attr_rid) => attr_rid,
-            None => return true,
-        };
-        self.mods_active
-            .difference(kfs)
-            .all(|item_uid| !is_attr_flag_set(ctx, calc, *item_uid, attr_rid))
+        if let Some(block_attr_rid) = ctx.ac().activation_blocked {
+            for item_uid in self.mods_active.iter() {
+                if is_attr_flag_set(ctx, calc, *item_uid, block_attr_rid) && !kfs.contains(item_uid) {
+                    return false;
+                }
+            }
+        }
+        if !self.mods_active_cloaks.is_empty()
+            && let Some(ship_uid) = fit.ship
+            && !can_cloak(ctx, calc, ship_uid)
+        {
+            for espec in self.mods_active_cloaks.iter() {
+                if !kfs.contains(&espec.item_uid) {
+                    return false;
+                }
+            }
+        }
+        true
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
@@ -32,17 +44,36 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
+        fit: &UFit,
     ) -> Option<ValActivationBlockedFail> {
-        let attr_rid = ctx.ac().activation_blocked?;
-        let module_ids: Vec<_> = self
-            .mods_active
-            .difference(kfs)
-            .filter(|item_uid| is_attr_flag_set(ctx, calc, **item_uid, attr_rid))
-            .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
-            .collect();
+        let mut module_ids = RSet::new();
+        if let Some(block_attr_rid) = ctx.ac().activation_blocked {
+            for item_uid in self.mods_active.iter() {
+                if is_attr_flag_set(ctx, calc, *item_uid, block_attr_rid) && !kfs.contains(item_uid) {
+                    module_ids.insert(ctx.u_data.items.xid_by_iid(*item_uid));
+                }
+            }
+        }
+        if !self.mods_active_cloaks.is_empty()
+            && let Some(ship_uid) = fit.ship
+            && !can_cloak(ctx, calc, ship_uid)
+        {
+            for espec in self.mods_active_cloaks.iter() {
+                if !kfs.contains(&espec.item_uid) {
+                    module_ids.insert(ctx.u_data.items.xid_by_iid(espec.item_uid));
+                }
+            }
+        }
         match module_ids.is_empty() {
             true => None,
-            false => Some(ValActivationBlockedFail { module_ids }),
+            false => Some(ValActivationBlockedFail {
+                module_ids: module_ids.into_iter().collect(),
+            }),
         }
     }
+}
+
+fn can_cloak(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId) -> bool {
+    is_oattr_flag_set(ctx, calc, ship_uid, ctx.ac().can_cloak)
+        && !is_oattr_flag_set(ctx, calc, ship_uid, ctx.ac().disallow_cloaking)
 }
