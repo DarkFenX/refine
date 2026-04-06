@@ -20,12 +20,14 @@ impl EEffectId {
     pub(crate) const USE_MISSILES: Self = Self::from_i32(101);
     pub(crate) const DEFENDER_MISSILE_LAUNCHING: Self = Self::from_i32(103);
     pub(crate) const FOF_MISSILE_LAUNCHING: Self = Self::from_i32(104);
+    pub(crate) const CLOAKING: Self = Self::from_i32(607);
     pub(crate) const MISSILE_EM_DMG_BONUS: Self = Self::from_i32(660);
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_i32(661);
     pub(crate) const MISSILE_THERM_DMG_BONUS: Self = Self::from_i32(662);
     pub(crate) const MISSILE_KIN_DMG_BONUS: Self = Self::from_i32(668);
     pub(crate) const AMMO_INFLUENCE_CAP_NEED: Self = Self::from_i32(804);
     pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: Self = Self::from_i32(848);
+    pub(crate) const CLOAKING_WARP_SAFE: Self = Self::from_i32(980);
     pub(crate) const DRONE_DMG_BONUS: Self = Self::from_i32(1730);
     pub(crate) const SELF_ROF: Self = Self::from_i32(1851);
     pub(crate) const JUMP_PORTAL_GENERATION: Self = Self::from_i32(2152);
@@ -44,6 +46,7 @@ impl EEffectId {
     pub(crate) const ADAPTIVE_ARMOR_HARDENER: Self = Self::from_i32(4928);
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_i32(4936);
     pub(crate) const FUELED_ARMOR_REPAIR: Self = Self::from_i32(5275);
+    pub(crate) const CLOAKING_PROTOTYPE: Self = Self::from_i32(5945);
     pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: Self = Self::from_i32(6184);
     pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: Self = Self::from_i32(6185);
     pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: Self = Self::from_i32(6186);

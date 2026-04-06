@@ -26,12 +26,14 @@ impl AEffectId {
     pub(crate) const USE_MISSILES: Self = Self::from_eid(EEffectId::USE_MISSILES);
     pub(crate) const DEFENDER_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DEFENDER_MISSILE_LAUNCHING);
     pub(crate) const FOF_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::FOF_MISSILE_LAUNCHING);
+    pub(crate) const CLOAKING: Self = Self::from_eid(EEffectId::CLOAKING);
     pub(crate) const MISSILE_EM_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EM_DMG_BONUS);
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EXPL_DMG_BONUS);
     pub(crate) const MISSILE_THERM_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_THERM_DMG_BONUS);
     pub(crate) const MISSILE_KIN_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_KIN_DMG_BONUS);
     pub(crate) const AMMO_INFLUENCE_CAP_NEED: Self = Self::from_eid(EEffectId::AMMO_INFLUENCE_CAP_NEED);
     pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: Self = Self::from_eid(EEffectId::CLOAKING_TARGETING_DELAY_BONUS);
+    pub(crate) const CLOAKING_WARP_SAFE: Self = Self::from_eid(EEffectId::CLOAKING_WARP_SAFE);
     pub(crate) const DRONE_DMG_BONUS: Self = Self::from_eid(EEffectId::DRONE_DMG_BONUS);
     pub(crate) const SELF_ROF: Self = Self::from_eid(EEffectId::SELF_ROF);
     pub(crate) const JUMP_PORTAL_GENERATION: Self = Self::from_eid(EEffectId::JUMP_PORTAL_GENERATION);
@@ -50,6 +52,7 @@ impl AEffectId {
     pub(crate) const ADAPTIVE_ARMOR_HARDENER: Self = Self::from_eid(EEffectId::ADAPTIVE_ARMOR_HARDENER);
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_eid(EEffectId::FUELED_SHIELD_BOOSTING);
     pub(crate) const FUELED_ARMOR_REPAIR: Self = Self::from_eid(EEffectId::FUELED_ARMOR_REPAIR);
+    pub(crate) const CLOAKING_PROTOTYPE: Self = Self::from_eid(EEffectId::CLOAKING_PROTOTYPE);
     pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: Self =
         Self::from_eid(EEffectId::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER);
     pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: Self = Self::from_eid(EEffectId::SHIP_MOD_REMOTE_HULL_REPAIRER);

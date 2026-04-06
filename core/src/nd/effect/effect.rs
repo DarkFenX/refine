@@ -29,6 +29,7 @@ pub(crate) struct NEffect {
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
+    pub(crate) cloaks_carrier: bool = false,
     pub(crate) kills_item: bool = false,
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization ran during runtime in calculator service
