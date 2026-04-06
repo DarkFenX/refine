@@ -103,6 +103,7 @@ class EveEffect(IntEnum):
     missile_therm_dmg_bonus = 662
     missile_kin_dmg_bonus = 668
     cloaking_targeting_delay_bonus = 848
+    cloaking_warp_safe = 980
     drone_dmg_bonus = 1730
     self_rof = 1851
     rig_slot = 2663
@@ -121,6 +122,7 @@ class EveEffect(IntEnum):
     adaptive_armor_hardener = 4928
     fueled_shield_boosting = 4936
     fueled_armor_repair = 5275
+    cloaking_prototype = 5945
     ship_mod_remote_capacitor_transmitter = 6184
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
