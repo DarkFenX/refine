@@ -211,20 +211,6 @@ def test_regular_no_attr(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_regular_not_loaded(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
-    eve_module_id = client.alloc_item_id()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
-
-
 def test_cloak_add_remove(client, consts):
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
     eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
@@ -501,6 +487,70 @@ def test_cloak_ship_not_loaded(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_cloak_absent_attr1(client, consts):
+    eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_cloak_attr2_id: 0})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_cloak_attr2_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak.id]
+
+
+def test_cloak_absent_attr2(client, consts):
+    eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_cloak_attr1_id: 0})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_cloak_attr1_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship1_id)
+    api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak.id]
+    # Action
+    api_ship.change_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_cloak_absent_attrs(client, consts):
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_known_failures(client, consts):
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
@@ -524,12 +574,31 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_cloak.id])))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module_blocked.id]
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_blocked.id, api_module_cloak.id])))
+    api_val = api_fit.validate(options=ValOptions(
+        activation_blocked=(True, [api_module_blocked.id, api_module_cloak.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
         activation_blocked=(True, [api_module_blocked.id, api_other.id, api_module_cloak.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_module_not_loaded(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
+    eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_module_id = client.alloc_item_id()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cloak_attr1_id: 0, eve_cloak_attr2_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
