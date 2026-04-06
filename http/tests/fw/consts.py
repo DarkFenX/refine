@@ -97,6 +97,7 @@ class EveEffect(IntEnum):
     use_missiles = 101
     defender_missile_launching = 103
     fof_missile_launching = 104
+    cloaking = 607
     missile_em_dmg_bonus = 660
     missile_expl_dmg_bonus = 661
     missile_therm_dmg_bonus = 662
@@ -370,6 +371,7 @@ class EveAttr(IntEnum):
     entity_max_velocity_sig_radius_mult = 1133
     upgrade_cost = 1153
     upgrade_slots_left = 1154
+    can_cloak = 1163
     overload_self_duration_bonus = 1206
     required_thermodynamics_skill = 1212
     drone_bandwidth = 1271
@@ -448,6 +450,7 @@ class EveAttr(IntEnum):
     can_fit_ship_group10 = 2396
     max_type_fitted = 2431
     energy_neut_sig_res = 2451
+    disallow_cloaking = 2454
     can_fit_ship_type7 = 2463
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469
