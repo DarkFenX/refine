@@ -135,6 +135,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) item_kind: RMap<UItemId, ValItemKindItemInfo>,
     pub(in crate::svc::vast) mods_state: RMap<UItemId, ValModuleStateModuleInfo>,
     pub(in crate::svc::vast) mods_active: RSet<UItemId>,
+    pub(in crate::svc::vast) mods_active_cloaks: RSet<EffectSpec>,
     pub(in crate::svc::vast) mods_cap_consumers: RSet<UItemId>,
     pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeFighterInfo>,
     // Stats-related - damage output
@@ -241,6 +242,7 @@ impl VastFitData {
             item_kind: RMap::new(),
             mods_state: RMap::new(),
             mods_active: RSet::new(),
+            mods_active_cloaks: RSet::new(),
             mods_cap_consumers: RSet::new(),
             fighter_squad_size: RMap::new(),
             // Stats-related - damage output

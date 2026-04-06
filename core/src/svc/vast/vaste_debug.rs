@@ -377,6 +377,9 @@ impl VastFitData {
         for item_uid in self.mods_active.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
+        for espec in self.mods_active_cloaks.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
         for item_uid in self.mods_cap_consumers.iter() {
             item_uid.consistency_check(u_data, true)?;
         }

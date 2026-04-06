@@ -105,6 +105,12 @@ impl Vast {
                         }
                         self.handle_neut_start(attr_consts, effect, item_uid, item, &module.get_fit_uid());
                     }
+                    if effect.cloaks_carrier {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mods_active_cloaks
+                            .insert(EffectSpec::new(item_uid, effect.rid));
+                    }
                 }
             }
             _ => (),
@@ -203,6 +209,12 @@ impl Vast {
                             fit_data.cap_injects.remove_l2(item_uid, &effect.rid);
                         }
                         self.handle_neut_stop(attr_consts, effect, item_uid, item, &module.get_fit_uid());
+                    }
+                    if effect.cloaks_carrier {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mods_active_cloaks
+                            .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
                 }
             }
