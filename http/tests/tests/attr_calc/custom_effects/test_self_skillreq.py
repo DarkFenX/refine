@@ -28,9 +28,9 @@ def test_missile_launcher_rof(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-20)
+    assert api_mod.initial_str == approx(-20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(-20)
+    assert api_mod.applied_str == approx(-20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
@@ -61,9 +61,9 @@ def test_missile_damage_em(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
     assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
@@ -95,9 +95,9 @@ def test_missile_damage_therm(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
     assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
@@ -129,9 +129,9 @@ def test_missile_damage_kin(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
     assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
@@ -163,9 +163,9 @@ def test_missile_damage_expl(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     api_launcher2 = api_launcher2.update()
     api_charge2 = api_launcher2.charge
     assert api_charge2.attrs[eve_affectee_attr_id].modified == approx(5)
@@ -196,9 +196,9 @@ def test_drone_dmg(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     api_drone2 = api_drone2.update()
     assert api_drone2.attrs[eve_affectee_attr_id].modified == approx(5)
     with check_no_field():
@@ -232,9 +232,9 @@ def test_cloak_recalibration(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_skill1.id).one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(-50)
+    assert api_mod.applied_str == approx(-50)
     api_module2 = api_module2.update()
     assert api_module2.attrs[eve_affectee_attr_id].modified == approx(10000)
     with check_no_field():

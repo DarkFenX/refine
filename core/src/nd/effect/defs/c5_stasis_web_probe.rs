@@ -5,8 +5,8 @@
 use super::shared::assign_defeff_to_item;
 use crate::{
     ad::{
-        AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItemId, AItemListId, AState,
+        AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId,
+        AEffectId, AEffectModStrength, AItemId, AItemListId, AState,
     },
     nd::{NEffect, NEffectProjGetter},
 };
@@ -35,7 +35,7 @@ fn make_effect() -> AEffect {
             // Slowdown debuff. Intentionally do not slow the carrying ship down automatically
             full: vec![AEffectBuffFull {
                 buff_id: ABuffId::STASIS_WEBIFICATION_BURST,
-                strength: AEffectBuffStrength::Attr(AAttrId::SPEED_FACTOR),
+                strength: AEffectModStrength::Attr(AAttrId::SPEED_FACTOR),
                 duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
                 scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
             }],

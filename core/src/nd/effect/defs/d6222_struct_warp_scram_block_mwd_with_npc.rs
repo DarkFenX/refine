@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AItemId, AModifierSrq,
-        AOp,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
+        AItemId, AModifierSrq, AOp,
     },
     ed::EEffectId,
     nd::{NEffect, NEffectProjGetter},
@@ -26,14 +26,14 @@ fn update_effect(a_effect: &mut AEffect) {
     a_effect.modifiers.extend([
         // Warp scrambling
         AEffectModifier {
-            affector_attr_id: AAttrId::WARP_SCRAMBLE_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::WARP_SCRAMBLE_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
             affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
         },
         // MWD blocker
         AEffectModifier {
-            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::ACTIVATION_BLOCKED_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
@@ -43,7 +43,7 @@ fn update_effect(a_effect: &mut AEffect) {
         },
         // MJD/subcap MJFG blocker
         AEffectModifier {
-            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::ACTIVATION_BLOCKED_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
@@ -53,7 +53,7 @@ fn update_effect(a_effect: &mut AEffect) {
         },
         // Capital MJFG blocker
         AEffectModifier {
-            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::ACTIVATION_BLOCKED_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,

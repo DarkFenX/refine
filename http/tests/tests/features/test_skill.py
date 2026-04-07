@@ -24,9 +24,9 @@ def test_level_switch_loaded(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(5)
+    assert api_mod.initial_str == approx(5)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(5)
+    assert api_mod.applied_str == approx(5)
     # Action
     api_item.change_skill(level=3)
     # Verification
@@ -37,9 +37,9 @@ def test_level_switch_loaded(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(3)
+    assert api_mod.initial_str == approx(3)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(3)
+    assert api_mod.applied_str == approx(3)
 
 
 def test_level_switch_not_loaded(client, consts):
@@ -77,9 +77,9 @@ def test_level_switch_not_loaded(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(5)
+    assert api_mod.initial_str == approx(5)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(5)
+    assert api_mod.applied_str == approx(5)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -108,9 +108,9 @@ def test_level_switch_not_loaded(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(3)
+    assert api_mod.initial_str == approx(3)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(3)
+    assert api_mod.applied_str == approx(3)
 
 
 def test_duplicate_loaded(client, consts):

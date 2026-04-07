@@ -63,7 +63,7 @@ def test_premul(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -72,7 +72,7 @@ def test_premul(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_prediv(client, consts):
@@ -101,7 +101,7 @@ def test_prediv(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -110,7 +110,7 @@ def test_prediv(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_prediv_zero(client, consts):
@@ -175,7 +175,7 @@ def test_add(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.add
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -184,7 +184,7 @@ def test_add(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.add
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_sub(client, consts):
@@ -213,7 +213,7 @@ def test_sub(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.add
-    assert api_side.str.val == approx(-25)
+    assert api_side.str.str == approx(-25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -222,7 +222,7 @@ def test_sub(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.add
-    assert api_side.str.val == approx(-25)
+    assert api_side.str.str == approx(-25)
 
 
 def test_postmul(client, consts):
@@ -251,7 +251,7 @@ def test_postmul(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -260,7 +260,7 @@ def test_postmul(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_postdiv(client, consts):
@@ -289,7 +289,7 @@ def test_postdiv(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -298,7 +298,7 @@ def test_postdiv(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_postdiv_zero(client, consts):
@@ -363,7 +363,7 @@ def test_postperc(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -372,7 +372,7 @@ def test_postperc(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_postassign(client, consts):

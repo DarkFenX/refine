@@ -5,8 +5,8 @@
 use super::shared::assign_defeff_to_item;
 use crate::{
     ad::{
-        AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
-        AEffectBuffStrength, AEffectCatId, AEffectId, AItem, AItemId, AItemListId, AState, AValue,
+        AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId,
+        AEffectId, AEffectModStrength, AItem, AItemId, AItemListId, AState, AValue,
     },
     nd::{NEffect, NEffectProjGetter},
     util::RMap,
@@ -38,14 +38,14 @@ fn make_effect() -> AEffect {
                 // citadels too. Intentionally do not apply effects onto ship which launches buff
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                    strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 // Bubble prevents dictor from tethering as long as it's up
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_TETHER,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                    strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
                     duration: AEffectBuffDuration::AttrMs(AAttrId::EXPLOSION_DELAY),
                     scope: AEffectBuffScope::Carrier,
                 },

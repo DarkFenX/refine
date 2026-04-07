@@ -2,7 +2,7 @@ use crate::{
     ad::{ABuffId, AEveBuffId},
     misc::EffectSpec,
     num::Value,
-    rd::{RAttrId, RBuff, REffect, REffectBuffScope, REffectBuffStrength, REffectId},
+    rd::{RAttrId, RBuff, REffect, REffectBuffScope, REffectId, REffectModStrength},
     svc::{
         SvcCtx,
         calc::{Calc, RawModifier},
@@ -55,7 +55,7 @@ impl Calc {
             // Fully defined buffs
             for buff_full in effect_buff.full.iter() {
                 match buff_full.strength {
-                    REffectBuffStrength::Attr(buff_str_attr_rid) => {
+                    REffectModStrength::Attr(buff_str_attr_rid) => {
                         let buff = ctx.u_data.src.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_attr(
                             reuse_rmods,
@@ -68,7 +68,7 @@ impl Calc {
                             buff_str_attr_rid,
                         )
                     }
-                    REffectBuffStrength::Hardcoded(buff_str) => {
+                    REffectModStrength::Hardcoded(buff_str) => {
                         let buff = ctx.u_data.src.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_hardcoded(
                             reuse_rmods,

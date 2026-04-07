@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+    },
     ed::EEffectId,
     nd::NEffect,
 };
@@ -31,7 +33,7 @@ fn update_effect(a_effect: &mut AEffect) {
 
 fn mk_rah_resonance_mod(attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: attr_id,
+        strength: AEffectModStrength::Attr(attr_id),
         op: AOp::PreMul,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: attr_id,

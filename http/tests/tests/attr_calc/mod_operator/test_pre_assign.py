@@ -36,9 +36,9 @@ def test_high_is_good(client, consts):
     assert attr_val == approx(53.02)
     attr_mod = attr_mods.one()
     assert attr_mod.op == consts.ApiModOp.pre_assign
-    assert attr_mod.initial_val == approx(53.02)
+    assert attr_mod.initial_str == approx(53.02)
     assert attr_mod.stacking_mult is None
-    assert attr_mod.applied_val == approx(53.02)
+    assert attr_mod.applied_str == approx(53.02)
     assert attr_mod.affectors.one().item_id == api_item_affector3.id
 
 
@@ -48,7 +48,7 @@ def test_high_is_bad(client, consts):
     assert attr_val == approx(-20)
     attr_mod = attr_mods.one()
     assert attr_mod.op == consts.ApiModOp.pre_assign
-    assert attr_mod.initial_val == approx(-20)
+    assert attr_mod.initial_str == approx(-20)
     assert attr_mod.stacking_mult is None
-    assert attr_mod.applied_val == approx(-20)
+    assert attr_mod.applied_str == approx(-20)
     assert attr_mod.affectors.one().item_id == api_item_affector2.id

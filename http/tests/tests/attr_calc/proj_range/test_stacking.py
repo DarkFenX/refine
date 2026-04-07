@@ -51,13 +51,13 @@ def test_stacking(client, consts):
     assert len(api_mods) == 2
     api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()
     assert api_module1_mod.op == consts.ApiModOp.post_percent
-    assert api_module1_mod.initial_val == approx(-80)
+    assert api_module1_mod.initial_str == approx(-80)
     assert api_module1_mod.range_mult == approx(0.1349035)
     assert api_module1_mod.stacking_mult == approx(consts.PenaltyStr.p2)
-    assert api_module1_mod.applied_val == approx(-9.3797882)
+    assert api_module1_mod.applied_str == approx(-9.3797882)
     api_module2_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module2.id).one()
     assert api_module2_mod.op == consts.ApiModOp.post_percent
-    assert api_module2_mod.initial_val == approx(-30)
+    assert api_module2_mod.initial_str == approx(-30)
     assert api_module2_mod.range_mult == approx(0.8408964)
     assert api_module2_mod.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_module2_mod.applied_val == approx(-25.2268925)
+    assert api_module2_mod.applied_str == approx(-25.2268925)

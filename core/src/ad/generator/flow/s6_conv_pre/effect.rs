@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier,
-        AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId, AItemId, AModifierSrq, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModStrength,
+        AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId, AItemId, AModifierSrq, AOp, AState,
         generator::{GSupport, get_abil_effect},
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
@@ -152,7 +152,7 @@ fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgE
 fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_affector_attr_aid(&arg_map)?,
+        strength: get_mod_strength(&arg_map)?,
         op: get_mod_operation(&arg_map)?,
         affectee_filter: AEffectAffecteeFilter::Direct(get_mod_location(&arg_map, a_effect)?),
         affectee_attr_id: get_mod_affectee_attr_aid(&arg_map)?,
@@ -162,7 +162,7 @@ fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectM
 fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_affector_attr_aid(&arg_map)?,
+        strength: get_mod_strength(&arg_map)?,
         op: get_mod_operation(&arg_map)?,
         affectee_filter: AEffectAffecteeFilter::Loc(get_mod_location(&arg_map, a_effect)?),
         affectee_attr_id: get_mod_affectee_attr_aid(&arg_map)?,
@@ -172,7 +172,7 @@ fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectMo
 fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_affector_attr_aid(&arg_map)?,
+        strength: get_mod_strength(&arg_map)?,
         op: get_mod_operation(&arg_map)?,
         affectee_filter: AEffectAffecteeFilter::LocGrp(
             get_mod_location(&arg_map, a_effect)?,
@@ -185,7 +185,7 @@ fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
 fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_affector_attr_aid(&arg_map)?,
+        strength: get_mod_strength(&arg_map)?,
         op: get_mod_operation(&arg_map)?,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             get_mod_location(&arg_map, a_effect)?,
@@ -209,17 +209,18 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
         });
     }
     Ok(AEffectModifier {
-        affector_attr_id: get_mod_affector_attr_aid(&arg_map)?,
+        strength: get_mod_strength(&arg_map)?,
         op: get_mod_operation(&arg_map)?,
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::ItemId(get_mod_skill_aid(&arg_map)?)),
         affectee_attr_id: get_mod_affectee_attr_aid(&arg_map)?,
     })
 }
 
-fn get_mod_affector_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttrId, StrMsgError> {
+fn get_mod_strength(arg_map: &RMap<String, EPrimitive>) -> Result<AEffectModStrength, StrMsgError> {
     get_arg_int(arg_map, "modifyingAttributeID")
         .map(EAttrId::from_i32)
         .map(AAttrId::from_eid)
+        .map(AEffectModStrength::Attr)
 }
 
 fn get_mod_affectee_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttrId, StrMsgError> {

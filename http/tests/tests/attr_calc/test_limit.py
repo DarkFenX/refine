@@ -27,9 +27,9 @@ def test_default_max(client, consts):
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.max_limit
-    assert api_mod.initial_val == approx(5)
+    assert api_mod.initial_str == approx(5)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(5)
+    assert api_mod.applied_str == approx(5)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_limiter_attr_id
 
@@ -60,9 +60,9 @@ def test_default_min(client, consts):
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.min_limit
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_limiter_attr_id
 
@@ -92,9 +92,9 @@ def test_unmodified_max(client, consts):
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.max_limit
-    assert api_mod.initial_val == approx(2)
+    assert api_mod.initial_str == approx(2)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(2)
+    assert api_mod.applied_str == approx(2)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_limiter_attr_id
 
@@ -124,9 +124,9 @@ def test_unmodified_min(client, consts):
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.min_limit
-    assert api_mod.initial_val == approx(25)
+    assert api_mod.initial_str == approx(25)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(25)
+    assert api_mod.applied_str == approx(25)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_limiter_attr_id
 
@@ -162,9 +162,9 @@ def test_modified(client, consts):
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one()
     assert api_mod.op == consts.ApiModOp.max_limit
-    assert api_mod.initial_val == approx(0.6)
+    assert api_mod.initial_str == approx(0.6)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(0.6)
+    assert api_mod.applied_str == approx(0.6)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_limiter_attr_id
 
@@ -203,7 +203,7 @@ def test_update(client, consts):
     api_limitee_item.update()
     assert api_limitee_item.attrs[eve_limitee_attr_id].modified == approx(2)
     assert api_limitee_item.mods.find_by_affector_attr(
-        affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_val == approx(2)
+        affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_str == approx(2)
     # Action
     api_limiter_item = api_fit.add_implant(type_id=eve_limiter_item_id)
     # Verification - here, limiter attribute should be multiplied by 3.5 (2 * 3.5 = 7), which is
@@ -211,14 +211,14 @@ def test_update(client, consts):
     api_limitee_item.update()
     assert api_limitee_item.attrs[eve_limitee_attr_id].modified == approx(7)
     assert api_limitee_item.mods.find_by_affector_attr(
-        affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_val == approx(7)
+        affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_str == approx(7)
     # Action
     api_limiter_item.remove()
     # Verification - should revert back to base value after change of limiter attribute
     api_limitee_item.update()
     assert api_limitee_item.attrs[eve_limitee_attr_id].modified == approx(2)
     assert api_limitee_item.mods.find_by_affector_attr(
-        affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_val == approx(2)
+        affectee_attr_id=eve_limitee_attr_id, affector_attr_id=eve_limiter_attr_id).one().applied_str == approx(2)
 
 
 def test_unlimited(client, consts):

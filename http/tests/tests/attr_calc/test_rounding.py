@@ -41,7 +41,7 @@ def test_cpu_modified(client, consts):
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].modified == 2.33
     api_mod = api_item.mods[eve_affectee_attr_id].find_by_affector_item(affector_item_id=api_item.id).one()
-    assert api_mod.applied_val == approx(20.005)
+    assert api_mod.applied_str == approx(20.005)
 
 
 def test_cpu_output(client, consts):

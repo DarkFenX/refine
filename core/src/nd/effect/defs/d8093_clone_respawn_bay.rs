@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+    },
     ed::EEffectId,
     nd::NEffect,
 };
@@ -25,13 +27,13 @@ fn update_effect(a_effect: &mut AEffect) {
     // modifier, for which module does not have the attribute
     a_effect.modifiers.extend([
         AEffectModifier {
-            affector_attr_id: AAttrId::SIEGE_MODE_WARP_STATUS,
+            strength: AEffectModStrength::Attr(AAttrId::SIEGE_MODE_WARP_STATUS),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
         },
         AEffectModifier {
-            affector_attr_id: AAttrId::CAN_CLOAK,
+            strength: AEffectModStrength::Attr(AAttrId::CAN_CLOAK),
             op: AOp::PostAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::CAN_CLOAK,

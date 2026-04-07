@@ -39,7 +39,7 @@ def test_valid_to_valid_matching(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -48,7 +48,7 @@ def test_valid_to_valid_matching(client, consts):
     assert api_side.chance == approx(0.5)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(30)
+    assert api_side.str.str == approx(30)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -57,7 +57,7 @@ def test_valid_to_valid_matching(client, consts):
     assert api_side.chance == approx(0.5)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(30)
+    assert api_side.str.str == approx(30)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -66,7 +66,7 @@ def test_valid_to_valid_matching(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_valid_to_valid_different(client, consts):
@@ -131,7 +131,7 @@ def test_valid_to_valid_different(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -143,7 +143,7 @@ def test_valid_to_valid_different(client, consts):
     assert api_side.chance == approx(0.5)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(30)
+    assert api_side.str.str == approx(30)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -155,7 +155,7 @@ def test_valid_to_valid_different(client, consts):
     assert api_side.chance == approx(0.5)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(30)
+    assert api_side.str.str == approx(30)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -167,7 +167,7 @@ def test_valid_to_valid_different(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_regular_effect_toggle(client, consts):
@@ -210,7 +210,7 @@ def test_regular_effect_toggle(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -233,7 +233,7 @@ def test_regular_effect_toggle(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -256,7 +256,7 @@ def test_regular_effect_toggle(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_absent_to_valid(client, consts):
@@ -314,12 +314,12 @@ def test_absent_to_valid(client, consts):
     assert api_side1.chance == approx(0.5)
     assert api_side1.state is True
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(30)
+    assert api_side1.str.str == approx(30)
     api_side2 = api_booster2.update().side_effects[eve_effect_id]
     assert api_side2.chance == approx(0.5)
     assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(30)
+    assert api_side2.str.str == approx(30)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -348,9 +348,9 @@ def test_absent_to_valid(client, consts):
     assert api_side1.chance == approx(0.5)
     assert api_side1.state is True
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(30)
+    assert api_side1.str.str == approx(30)
     api_side2 = api_booster2.update().side_effects[eve_effect_id]
     assert api_side2.chance == approx(0.5)
     assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(30)
+    assert api_side2.str.str == approx(30)

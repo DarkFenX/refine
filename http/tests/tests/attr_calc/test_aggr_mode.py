@@ -30,9 +30,9 @@ def test_add_max(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(180)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(30)
+    assert api_mod.initial_str == approx(30)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(30)
+    assert api_mod.applied_str == approx(30)
     assert api_mod.affectors.one().item_id == api_sw_effect2.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -64,9 +64,9 @@ def test_add_min(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(110)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(-40)
+    assert api_mod.initial_str == approx(-40)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(-40)
+    assert api_mod.applied_str == approx(-40)
     assert api_mod.affectors.one().item_id == api_sw_effect1.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -98,9 +98,9 @@ def test_postmul_max(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(195)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(1.3)
+    assert api_mod.initial_str == approx(1.3)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(1.3)
+    assert api_mod.applied_str == approx(1.3)
     assert api_mod.affectors.one().item_id == api_sw_effect2.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -132,9 +132,9 @@ def test_postmul_min(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(90)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(0.6)
+    assert api_mod.initial_str == approx(0.6)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(0.6)
+    assert api_mod.applied_str == approx(0.6)
     assert api_mod.affectors.one().item_id == api_sw_effect1.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -166,9 +166,9 @@ def test_postperc_max(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(195)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(30)
+    assert api_mod.initial_str == approx(30)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(30)
+    assert api_mod.applied_str == approx(30)
     assert api_mod.affectors.one().item_id == api_sw_effect2.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -200,9 +200,9 @@ def test_postperc_min(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(90)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-40)
+    assert api_mod.initial_str == approx(-40)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(-40)
+    assert api_mod.applied_str == approx(-40)
     assert api_mod.affectors.one().item_id == api_sw_effect1.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -234,9 +234,9 @@ def test_postassign_max(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(30)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
-    assert api_mod.initial_val == approx(30)
+    assert api_mod.initial_str == approx(30)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(30)
+    assert api_mod.applied_str == approx(30)
     assert api_mod.affectors.one().item_id == api_sw_effect2.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -268,9 +268,9 @@ def test_postassign_min(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(-40)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
-    assert api_mod.initial_val == approx(-40)
+    assert api_mod.initial_str == approx(-40)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(-40)
+    assert api_mod.applied_str == approx(-40)
     assert api_mod.affectors.one().item_id == api_sw_effect1.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -308,16 +308,16 @@ def test_different_buffs(client, consts):
     assert len(api_mods) == 2
     api_mod1 = api_mods.find_by_affector_attr(affector_attr_id=eve_buff_val_attr1_id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(-40)
+    assert api_mod1.initial_str == approx(-40)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(-40)
+    assert api_mod1.applied_str == approx(-40)
     assert api_mod1.affectors.one().item_id == api_sw_effect.id
     assert api_mod1.affectors.one().attr_id == eve_buff_val_attr1_id
     api_mod2 = api_mods.find_by_affector_attr(affector_attr_id=eve_buff_val_attr2_id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(30)
+    assert api_mod2.initial_str == approx(30)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(30)
+    assert api_mod2.applied_str == approx(30)
     assert api_mod2.affectors.one().item_id == api_sw_effect.id
     assert api_mod2.affectors.one().attr_id == eve_buff_val_attr2_id
 
@@ -375,8 +375,8 @@ def test_different_sources(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(750)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(5)
+    assert api_mod.initial_str == approx(5)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(5)
+    assert api_mod.applied_str == approx(5)
     assert api_mod.affectors.one().item_id == api_module.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr2_id

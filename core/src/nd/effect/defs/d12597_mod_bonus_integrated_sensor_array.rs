@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+    },
     ed::EEffectId,
     nd::NEffect,
 };
@@ -20,7 +22,7 @@ fn update_effect(a_effect: &mut AEffect) {
     // Tested on 2026-04-06 on thunderdome, carrier can't cloak despite ISA having no modifiers to
     // transfer the cloak attribute
     let cloak_modifier = AEffectModifier {
-        affector_attr_id: AAttrId::CAN_CLOAK,
+        strength: AEffectModStrength::Attr(AAttrId::CAN_CLOAK),
         op: AOp::PostAssign,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: AAttrId::CAN_CLOAK,

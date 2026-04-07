@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AEffectId, AItemListId,
+        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
+        AEffectModStrength, AItemListId,
     },
     ed::EEffectId,
     nd::{NEffect, NEffectProjGetter},
@@ -18,13 +18,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             full: vec![
                 AEffectBuffFull {
                     buff_id: ABuffId::DAMP_BURST_TARGETING_RANGE_PENALTY,
-                    strength: AEffectBuffStrength::Attr(AAttrId::MAX_TARGET_RANGE_BONUS),
+                    strength: AEffectModStrength::Attr(AAttrId::MAX_TARGET_RANGE_BONUS),
                     duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::DAMP_BURST_SCAN_RESOLUTION_PENALTY,
-                    strength: AEffectBuffStrength::Attr(AAttrId::SCAN_RESOLUTION_BONUS),
+                    strength: AEffectModStrength::Attr(AAttrId::SCAN_RESOLUTION_BONUS),
                     duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },

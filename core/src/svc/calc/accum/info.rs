@@ -407,11 +407,11 @@ impl AttrAggr {
         let diminished_val = diminish_func(normalized_val, proj_mult, res_mult);
         let info = Modification {
             op: Op::from_calc_op(op),
-            initial_val,
+            initial_str: initial_val,
             range_mult: proj_mult,
             resist_mult: res_mult,
             stacking_mult: None,
-            applied_val: revert_func(diminished_val),
+            applied_str: revert_func(diminished_val),
             affectors: affectors.into_vec(),
         };
         let attr_info = AttrValInfo::from_effective_info(diminished_val, info);
@@ -651,7 +651,7 @@ where
                     (other_attr_info.value - Value::ONE).mul_add(penalty_multiplier.into_value(), Value::ONE);
                 for info in other_attr_info.effective_infos.iter_mut() {
                     info.stacking_mult = Some(penalty_multiplier);
-                    info.applied_val = revert_func(value_multiplier);
+                    info.applied_str = revert_func(value_multiplier);
                 }
                 if first_zero && i > 0 {
                     attr_info.merge_ineffective(other_attr_info);
@@ -664,7 +664,7 @@ where
             None => {
                 for info in other_attr_info.effective_infos.iter_mut() {
                     info.stacking_mult = Some(PValue::ZERO);
-                    info.applied_val = revert_func(Value::ONE);
+                    info.applied_str = revert_func(Value::ONE);
                 }
                 attr_info.merge_ineffective(other_attr_info);
             }

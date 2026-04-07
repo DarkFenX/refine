@@ -23,8 +23,8 @@ def test_default_val(client, consts):
     assert api_affectee_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_affectee_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.initial_str == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().item_id == api_affector_item.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
     # Check that value was stored on the affector item

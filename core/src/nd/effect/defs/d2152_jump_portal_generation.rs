@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+    },
     ed::EEffectId,
     nd::NEffect,
 };
@@ -21,7 +23,7 @@ fn update_effect(a_effect: &mut AEffect) {
     // active, assistance just cannot be applied to carrying ship. In the lib, we just transfer it
     // to ship for simplicity
     let modifier = AEffectModifier {
-        affector_attr_id: AAttrId::DISALLOW_ASSISTANCE,
+        strength: AEffectModStrength::Attr(AAttrId::DISALLOW_ASSISTANCE),
         op: AOp::Add,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: AAttrId::DISALLOW_ASSISTANCE,

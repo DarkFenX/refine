@@ -4,6 +4,7 @@ use smallvec::SmallVec;
 
 use super::{aar_paste, missile_flight_time, prop_speed, reviser::ItemAddRemoveReviser};
 use crate::{
+    dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
     rd::{RAttrConsts, RAttrId},
@@ -11,7 +12,7 @@ use crate::{
         SvcCtx,
         calc::{Affector, Calc, RawModifier},
     },
-    ud::UItemId,
+    ud::{UData, UItemId},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -31,7 +32,7 @@ impl CalcCustomModifier {
 }
 
 #[derive(Copy, Clone)]
-pub(in crate::svc::calc::modifier) struct CalcCustomAffectorValue {
+pub(in crate::svc::calc::modifier) struct CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) kind: CalcCustomModifier,
     // Modifiers have two ways to define affector attribute:
     // - cheap way is via this field, with limitation that value of the attribute has to be on the same item as the
@@ -41,18 +42,18 @@ pub(in crate::svc::calc::modifier) struct CalcCustomAffectorValue {
     // Use this field over the dependency approach whenever possible.
     pub(in crate::svc::calc::modifier) affector_attr_rid: Option<RAttrId>,
 }
-impl PartialEq for CalcCustomAffectorValue {
+impl PartialEq for CalcCustomModStrength {
     fn eq(&self, other: &Self) -> bool {
         self.kind.eq(&other.kind)
     }
 }
-impl Eq for CalcCustomAffectorValue {}
-impl Hash for CalcCustomAffectorValue {
+impl Eq for CalcCustomModStrength {}
+impl Hash for CalcCustomModStrength {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.kind.hash(state);
     }
 }
-impl CalcCustomAffectorValue {
+impl CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) fn get_affector_info(
         &self,
         ctx: SvcCtx,
@@ -64,7 +65,7 @@ impl CalcCustomAffectorValue {
             CalcCustomModifier::MissileFlightTime => missile_flight_time::get_affector_info(ctx, item_uid),
         }
     }
-    pub(in crate::svc::calc::modifier) fn get_mod_val(
+    pub(in crate::svc::calc::modifier) fn get_strength(
         &self,
         calc: &mut Calc,
         ctx: SvcCtx,
@@ -82,5 +83,17 @@ impl CalcCustomAffectorValue {
             CalcCustomModifier::AarPaste => Some(ItemAddRemoveReviser::AarPaste),
             CalcCustomModifier::MissileFlightTime => Some(ItemAddRemoveReviser::MissileFlightTime),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CalcCustomModStrength {
+    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        if let Some(attr_rid) = self.affector_attr_rid {
+            attr_rid.consistency_check(u_data)?;
+        }
+        Ok(())
     }
 }

@@ -1,4 +1,4 @@
-pub(in crate::svc::calc::modifier) use custom::CalcCustomAffectorValue;
+pub(in crate::svc::calc::modifier) use custom::CalcCustomModStrength;
 pub(crate) use custom::CalcCustomModifier;
 pub(in crate::svc::calc) use reviser::ItemAddRemoveReviser;
 

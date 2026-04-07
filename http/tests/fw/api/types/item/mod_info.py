@@ -11,11 +11,11 @@ class AttrModInfoMap(UserDict):
             attr_http_to_fw(attr_id=k): ModInfoList(
                 ModInfo(
                     op=m[0],
-                    initial_val=m[1],
+                    initial_str=m[1],
                     range_mult=m[2],
                     resist_mult=m[3],
                     stacking_mult=m[4],
-                    applied_val=m[5],
+                    applied_str=m[5],
                     affectors=ModAffectorInfoList(ModAffectorInfo(data=n) for n in m[6]))
                 for m in v)
             for k, v in data.items()})
@@ -62,11 +62,11 @@ class ModInfoList(UserList):
 class ModInfo:
 
     op: str
-    initial_val: float
+    initial_str: float
     range_mult: float | None
     resist_mult: float | None
     stacking_mult: float | None
-    applied_val: float
+    applied_str: float
     affectors: list[ModAffectorInfo]
 
 

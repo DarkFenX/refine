@@ -1,3 +1,5 @@
+use super::strength::CEffectModStrength;
+
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(super) struct CEffectBuffInfo {
     attr_merge: Option<CEffectBuffAttrMerge>,
@@ -15,17 +17,9 @@ struct CEffectBuffAttrMerge {
 struct CEffectBuffFull {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     buff_id: rc::ad::ABuffId,
-    strength: CEffectBuffStrength,
+    strength: CEffectModStrength,
     duration: CEffectBuffDuration,
     scope: CEffectBuffScope,
-}
-
-#[serde_with::serde_as]
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum CEffectBuffStrength {
-    Attr(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
-    Hardcoded(f64),
 }
 
 #[serde_with::serde_as]
@@ -89,7 +83,7 @@ impl CEffectBuffFull {
     fn from_adapted(a_buff_full: &rc::ad::AEffectBuffFull) -> Self {
         Self {
             buff_id: a_buff_full.buff_id,
-            strength: CEffectBuffStrength::from_adapted(&a_buff_full.strength),
+            strength: CEffectModStrength::from_adapted(&a_buff_full.strength),
             duration: CEffectBuffDuration::from_adapted(&a_buff_full.duration),
             scope: CEffectBuffScope::from_adapted(&a_buff_full.scope),
         }
@@ -100,21 +94,6 @@ impl CEffectBuffFull {
             strength: self.strength.into_adapted(),
             duration: self.duration.into_adapted(),
             scope: self.scope.into_adapted(),
-        }
-    }
-}
-
-impl CEffectBuffStrength {
-    fn from_adapted(a_buff_str: &rc::ad::AEffectBuffStrength) -> Self {
-        match a_buff_str {
-            rc::ad::AEffectBuffStrength::Attr(attr_id) => Self::Attr(*attr_id),
-            rc::ad::AEffectBuffStrength::Hardcoded(buff_val) => Self::Hardcoded(buff_val.into_f64()),
-        }
-    }
-    fn into_adapted(self) -> rc::ad::AEffectBuffStrength {
-        match self {
-            Self::Attr(attr_id) => rc::ad::AEffectBuffStrength::Attr(attr_id),
-            Self::Hardcoded(buff_val) => rc::ad::AEffectBuffStrength::Hardcoded(rc::ad::AValue::from_f64(buff_val)),
         }
     }
 }

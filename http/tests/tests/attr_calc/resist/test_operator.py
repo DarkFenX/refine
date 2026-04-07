@@ -36,9 +36,9 @@ def test_pre_assign(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(400)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
-    assert api_mod.initial_val == approx(400)
+    assert api_mod.initial_str == approx(400)
     assert api_mod.resist_mult == approx(1.0)
-    assert api_mod.applied_val == approx(400)
+    assert api_mod.applied_str == approx(400)
     # Action
     api_affectee_ship.change_ship(type_id=eve_affectee_ship2_id)
     # Verification - when resistance reaches 100%, assignment is not applied altogether
@@ -81,9 +81,9 @@ def test_pre_mul(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(380)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_mul
-    assert api_mod.initial_val == approx(0.4)
+    assert api_mod.initial_str == approx(0.4)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(0.76)
+    assert api_mod.applied_str == approx(0.76)
 
 
 def test_pre_div(client, consts):
@@ -119,9 +119,9 @@ def test_pre_div(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(380)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_div
-    assert api_mod.initial_val == approx(2.5)
+    assert api_mod.initial_str == approx(2.5)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(1.3157895)
+    assert api_mod.applied_str == approx(1.3157895)
 
 
 def test_add(client, consts):
@@ -157,9 +157,9 @@ def test_add(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(540)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(100)
+    assert api_mod.initial_str == approx(100)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(40)
+    assert api_mod.applied_str == approx(40)
 
 
 def test_sub(client, consts):
@@ -196,9 +196,9 @@ def test_sub(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(460)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_sub
-    assert api_mod.initial_val == approx(100)
+    assert api_mod.initial_str == approx(100)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(40)
+    assert api_mod.applied_str == approx(40)
 
 
 def test_post_mul(client, consts):
@@ -234,9 +234,9 @@ def test_post_mul(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(380)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(0.4)
+    assert api_mod.initial_str == approx(0.4)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(0.76)
+    assert api_mod.applied_str == approx(0.76)
 
 
 def test_post_div(client, consts):
@@ -272,9 +272,9 @@ def test_post_div(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(380)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_div
-    assert api_mod.initial_val == approx(2.5)
+    assert api_mod.initial_str == approx(2.5)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(1.3157895)
+    assert api_mod.applied_str == approx(1.3157895)
 
 
 def test_post_percent(client, consts):
@@ -309,9 +309,9 @@ def test_post_percent(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(380)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-60)
+    assert api_mod.initial_str == approx(-60)
     assert api_mod.resist_mult == approx(0.4)
-    assert api_mod.applied_val == approx(-24)
+    assert api_mod.applied_str == approx(-24)
 
 
 def test_post_assign(client, consts):
@@ -349,9 +349,9 @@ def test_post_assign(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(400)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_assign
-    assert api_mod.initial_val == approx(400)
+    assert api_mod.initial_str == approx(400)
     assert api_mod.resist_mult == approx(1.0)
-    assert api_mod.applied_val == approx(400)
+    assert api_mod.applied_str == approx(400)
     # Action
     api_affectee_ship.change_ship(type_id=eve_affectee_ship2_id)
     # Verification - when resistance reaches 100%, assignment is not applied altogether

@@ -7,7 +7,7 @@ class SideEffectInfo:
 
     chance: float
     state: bool
-    str: tuple[SideEffectStrInfo] | list[SideEffectStrInfo] | None
+    str: SideEffectStrInfo | None
 
     def __init__(self, *, data: list | tuple) -> None:
         self.chance, self.state, side_str = data
@@ -27,10 +27,10 @@ class SideEffectInfo:
 class SideEffectStrInfo:
 
     op: str
-    val: float
+    str: float
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.op, self.val = data
+        self.op, self.str = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -39,4 +39,4 @@ class SideEffectStrInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.op, self.val] == other
+        return [self.op, self.str] == other

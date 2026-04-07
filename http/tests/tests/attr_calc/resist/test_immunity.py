@@ -53,6 +53,6 @@ def test_cutoff(client, consts):
     assert api_affectee_drone4.attrs[eve_affectee_attr_id].modified == approx(499.967)
     api_mod = api_affectee_drone4.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-60)
+    assert api_mod.initial_str == approx(-60)
     assert api_mod.resist_mult == approx(0.00011)
-    assert api_mod.applied_val == approx(-0.0066)
+    assert api_mod.applied_str == approx(-0.0066)

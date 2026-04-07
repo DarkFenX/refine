@@ -49,7 +49,7 @@ def test_not_loaded_item(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -72,7 +72,7 @@ def test_not_loaded_item(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
 
 
 def test_no_chance_attr(client, consts):

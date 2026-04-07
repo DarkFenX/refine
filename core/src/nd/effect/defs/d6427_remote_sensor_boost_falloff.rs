@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+    },
     ed::EEffectId,
     nd::{NEffect, NEffectProjGetter},
 };
@@ -40,7 +42,7 @@ fn update_effect(a_effect: &mut AEffect) {
 
 fn make_rsb_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: affector_attr_aid,
+        strength: AEffectModStrength::Attr(affector_attr_aid),
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
         affectee_attr_id: affectee_attr_aid,

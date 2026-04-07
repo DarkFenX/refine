@@ -73,9 +73,9 @@ def test_mod_info(client, consts):
     assert api_module.charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     api_mod = api_module.charge.mods[eve_flight_time_attr_id].one()
     assert api_mod.op == consts.ApiModOp.extra_add
-    assert api_mod.initial_val == approx(4000)
+    assert api_mod.initial_str == approx(4000)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(4000)
+    assert api_mod.applied_str == approx(4000)
     assert len(api_mod.affectors) == 2
     assert api_mod.affectors.find_by_item(item_id=api_module.charge.id).one().attr_id == eve_speed_attr_id
     assert api_mod.affectors.find_by_item(item_id=api_ship.id).one().attr_id == eve_radius_attr_id

@@ -42,19 +42,19 @@ def test_non_penalized(client, consts):
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.mod_sub
-    assert api_mod1.initial_val == approx(-50)
+    assert api_mod1.initial_str == approx(-50)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(-50)
+    assert api_mod1.applied_str == approx(-50)
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
     assert api_mod2.op == consts.ApiModOp.mod_sub
-    assert api_mod2.initial_val == approx(23)
+    assert api_mod2.initial_str == approx(23)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(23)
+    assert api_mod2.applied_str == approx(23)
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
     assert api_mod3.op == consts.ApiModOp.mod_sub
-    assert api_mod3.initial_val == approx(53.08)
+    assert api_mod3.initial_str == approx(53.08)
     assert api_mod3.stacking_mult is None
-    assert api_mod3.applied_val == approx(53.08)
+    assert api_mod3.applied_str == approx(53.08)
 
 
 def test_penalized(client, consts):
@@ -65,16 +65,16 @@ def test_penalized(client, consts):
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.mod_sub
-    assert api_mod1.initial_val == approx(-50)
+    assert api_mod1.initial_str == approx(-50)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(-50)
+    assert api_mod1.applied_str == approx(-50)
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
     assert api_mod2.op == consts.ApiModOp.mod_sub
-    assert api_mod2.initial_val == approx(23)
+    assert api_mod2.initial_str == approx(23)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(23)
+    assert api_mod2.applied_str == approx(23)
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
     assert api_mod3.op == consts.ApiModOp.mod_sub
-    assert api_mod3.initial_val == approx(53.08)
+    assert api_mod3.initial_str == approx(53.08)
     assert api_mod3.stacking_mult is None
-    assert api_mod3.applied_val == approx(53.08)
+    assert api_mod3.applied_str == approx(53.08)

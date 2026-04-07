@@ -1,8 +1,8 @@
-use crate::ad::{AAttrId, AEffectAffecteeFilter, AOp};
+use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectModStrength, AOp};
 
-#[derive(Eq, PartialEq)]
+#[derive(PartialEq)]
 pub struct AEffectModifier {
-    pub affector_attr_id: AAttrId,
+    pub strength: AEffectModStrength,
     pub op: AOp,
     pub affectee_filter: AEffectAffecteeFilter,
     pub affectee_attr_id: AAttrId,

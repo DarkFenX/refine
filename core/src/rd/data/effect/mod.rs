@@ -1,4 +1,4 @@
-pub(crate) use buff::{REffectBuff, REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope, REffectBuffStrength};
+pub(crate) use buff::{REffectBuff, REffectBuffAttrMerge, REffectBuffFull, REffectBuffScope};
 pub(crate) use charge::{REffectCharge, REffectChargeLoc};
 pub(crate) use consts::REffectConsts;
 pub(crate) use effect::REffect;
@@ -8,6 +8,7 @@ pub(crate) use output::{REffectEcm, REffectLocalOpcSpec, REffectMining, REffectN
 pub(crate) use projectee_filter::REffectProjecteeFilter;
 pub(crate) use resist::REffectResist;
 pub(crate) use spool::REffectSpoolAttrs;
+pub(crate) use strength::REffectModStrength;
 
 mod buff;
 mod charge;
@@ -19,3 +20,4 @@ mod output;
 mod projectee_filter;
 mod resist;
 mod spool;
+mod strength;

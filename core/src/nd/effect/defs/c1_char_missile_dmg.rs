@@ -6,8 +6,8 @@
 
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectModifier, AItem, AItemEffect,
-        AItemGrpId, AItemId, AModifierSrq, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectModStrength, AEffectModifier, AItem,
+        AItemEffect, AItemGrpId, AItemId, AModifierSrq, AOp, AState,
     },
     nd::NEffect,
     util::RMap,
@@ -56,7 +56,7 @@ fn assign_effect(a_items: &mut RMap<AItemId, AItem>) -> bool {
 
 fn mk_modifier(affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: AAttrId::MISSILE_DMG_MULT,
+        strength: AEffectModStrength::Attr(AAttrId::MISSILE_DMG_MULT),
         op: AOp::PostMulImmune,
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::ItemId(AItemId::MISSILE_LAUNCHER_OPERATION)),
         affectee_attr_id,

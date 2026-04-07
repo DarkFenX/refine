@@ -55,12 +55,12 @@ def test_influence(client, consts):
     assert api_side1.chance == approx(0.4)
     assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(25)
+    assert api_side1.str.str == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect_id]
     assert api_side2.chance == approx(0.2)
     assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(10)
+    assert api_side2.str.str == approx(10)
     # Action
     api_booster.change_booster(side_effects={eve_side1_effect_id: True})
     # Verification
@@ -73,20 +73,20 @@ def test_influence(client, consts):
         affectee_attr_id=eve_side1_affectee_attr_id,
         affector_item_id=api_booster.id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(25)
+    assert api_mod1.initial_str == approx(25)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(25)
+    assert api_mod1.applied_str == approx(25)
     api_booster.update()
     api_side1 = api_booster.side_effects[eve_side1_effect_id]
     assert api_side1.chance == approx(0.4)
     assert api_side1.state is True
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(25)
+    assert api_side1.str.str == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect_id]
     assert api_side2.chance == approx(0.2)
     assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(10)
+    assert api_side2.str.str == approx(10)
     # Action
     api_booster.change_booster(side_effects={eve_side2_effect_id: True})
     # Verification
@@ -99,27 +99,27 @@ def test_influence(client, consts):
         affectee_attr_id=eve_side1_affectee_attr_id,
         affector_item_id=api_booster.id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(25)
+    assert api_mod1.initial_str == approx(25)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(25)
+    assert api_mod1.applied_str == approx(25)
     api_mod2 = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_side2_affectee_attr_id,
         affector_item_id=api_booster.id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(10)
+    assert api_mod2.initial_str == approx(10)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(10)
+    assert api_mod2.applied_str == approx(10)
     api_booster.update()
     api_side1 = api_booster.side_effects[eve_side1_effect_id]
     assert api_side1.chance == approx(0.4)
     assert api_side1.state is True
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(25)
+    assert api_side1.str.str == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect_id]
     assert api_side2.chance == approx(0.2)
     assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(10)
+    assert api_side2.str.str == approx(10)
     # Action
     api_booster.change_booster(side_effects={eve_side1_effect_id: False})
     # Verification
@@ -132,20 +132,20 @@ def test_influence(client, consts):
         affectee_attr_id=eve_side2_affectee_attr_id,
         affector_item_id=api_booster.id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(10)
+    assert api_mod2.initial_str == approx(10)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(10)
+    assert api_mod2.applied_str == approx(10)
     api_booster.update()
     api_side1 = api_booster.side_effects[eve_side1_effect_id]
     assert api_side1.chance == approx(0.4)
     assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(25)
+    assert api_side1.str.str == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect_id]
     assert api_side2.chance == approx(0.2)
     assert api_side2.state is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(10)
+    assert api_side2.str.str == approx(10)
     # Action
     api_booster.change_booster(side_effects={eve_side2_effect_id: False})
     # Verification
@@ -159,12 +159,12 @@ def test_influence(client, consts):
     assert api_side1.chance == approx(0.4)
     assert api_side1.state is False
     assert api_side1.str.op == consts.ApiSideEffectOp.perc
-    assert api_side1.str.val == approx(25)
+    assert api_side1.str.str == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect_id]
     assert api_side2.chance == approx(0.2)
     assert api_side2.state is False
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
-    assert api_side2.str.val == approx(10)
+    assert api_side2.str.str == approx(10)
 
 
 def test_booster_state(client, consts):
@@ -193,7 +193,7 @@ def test_booster_state(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
     # Action
     api_booster.change_booster(state=False)
     # Verification
@@ -204,4 +204,4 @@ def test_booster_state(client, consts):
     # Side effect status is reported regardless of if effect is running or not
     assert api_side.state is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
+    assert api_side.str.str == approx(25)
