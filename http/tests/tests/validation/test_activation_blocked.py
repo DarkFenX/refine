@@ -307,6 +307,44 @@ def test_cloak_effects(client, consts):
     assert api_val.details.activation_blocked == [api_cloak.id]
 
 
+def test_cloak_multiple_effects(client, consts):
+    eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_effect1_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_effect2_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking_prototype, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect1_id, eve_effect2_id], defeff_id=eve_effect1_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cloak_attr1_id: 0, eve_cloak_attr2_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification - only first effect is running
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak.id]
+    # Action
+    api_cloak.change_module(effect_modes={eve_effect2_id: consts.ApiEffMode.force_run})
+    # Verification - both effects are running
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak.id]
+    # Action
+    api_cloak.change_module(effect_modes={eve_effect2_id: consts.ApiEffMode.force_stop})
+    # Verification - only second effect is running, first effect stopped does not prevent failure
+    # from happening
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak.id]
+    # Action
+    api_cloak.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.force_stop})
+    # Verification - both are stopped, validation finally passes
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_cloak_modified(client, consts):
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
     eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
