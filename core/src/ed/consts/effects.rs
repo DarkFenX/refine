@@ -42,6 +42,7 @@ impl EEffectId {
     pub(crate) const SUPER_WEAPON_CALDARI: Self = Self::from_i32(4490);
     pub(crate) const SUPER_WEAPON_GALLENTE: Self = Self::from_i32(4491);
     pub(crate) const SUPER_WEAPON_MINMATAR: Self = Self::from_i32(4492);
+    pub(crate) const INDUSTRIAL_CORE_EFFECT2: Self = Self::from_i32(4575);
     pub(crate) const MICRO_JUMP_DRIVE: Self = Self::from_i32(4921);
     pub(crate) const ADAPTIVE_ARMOR_HARDENER: Self = Self::from_i32(4928);
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_i32(4936);
@@ -92,8 +93,11 @@ impl EEffectId {
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_i32(6513);
     pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_i32(6554);
     pub(crate) const MOD_BONUS_NETWORKED_SENSOR_ARRAY: Self = Self::from_i32(6567);
+    pub(crate) const MOD_BONUS_TRIAGE: Self = Self::from_i32(6581);
+    pub(crate) const MOD_BONUS_SIEGE: Self = Self::from_i32(6582);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: Self = Self::from_i32(6651);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: Self = Self::from_i32(6652);
+    pub(crate) const MOD_BONUS_BASTION: Self = Self::from_i32(6658);
     pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: Self = Self::from_i32(6682);
     pub(crate) const STRUCT_MOD_EFFECT_TARGET_PAINTER: Self = Self::from_i32(6683);
     pub(crate) const STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER: Self = Self::from_i32(6684);
@@ -133,6 +137,7 @@ impl EEffectId {
     pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: Self = Self::from_i32(7166);
     pub(crate) const CHAIN_LIGHTNING: Self = Self::from_i32(8037);
     pub(crate) const CLONE_RESPAWN_BAY: Self = Self::from_i32(8093);
+    pub(crate) const INDUSTRIAL_COMPACT_CORE_EFFECT2: Self = Self::from_i32(8119);
     pub(crate) const DEBUFF_LANCE: Self = Self::from_i32(11691);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_i32(12126);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_i32(12174);

@@ -48,6 +48,7 @@ impl AEffectId {
     pub(crate) const SUPER_WEAPON_CALDARI: Self = Self::from_eid(EEffectId::SUPER_WEAPON_CALDARI);
     pub(crate) const SUPER_WEAPON_GALLENTE: Self = Self::from_eid(EEffectId::SUPER_WEAPON_GALLENTE);
     pub(crate) const SUPER_WEAPON_MINMATAR: Self = Self::from_eid(EEffectId::SUPER_WEAPON_MINMATAR);
+    pub(crate) const INDUSTRIAL_CORE_EFFECT2: Self = Self::from_eid(EEffectId::INDUSTRIAL_CORE_EFFECT2);
     pub(crate) const MICRO_JUMP_DRIVE: Self = Self::from_eid(EEffectId::MICRO_JUMP_DRIVE);
     pub(crate) const ADAPTIVE_ARMOR_HARDENER: Self = Self::from_eid(EEffectId::ADAPTIVE_ARMOR_HARDENER);
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_eid(EEffectId::FUELED_SHIELD_BOOSTING);
@@ -102,10 +103,13 @@ impl AEffectId {
     pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_eid(EEffectId::FTR_ABIL_KAMIKAZE);
     pub(crate) const MOD_BONUS_NETWORKED_SENSOR_ARRAY: Self =
         Self::from_eid(EEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY);
+    pub(crate) const MOD_BONUS_TRIAGE: Self = Self::from_eid(EEffectId::MOD_BONUS_TRIAGE);
+    pub(crate) const MOD_BONUS_SIEGE: Self = Self::from_eid(EEffectId::MOD_BONUS_SIEGE);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: Self =
         Self::from_eid(EEffectId::SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: Self =
         Self::from_eid(EEffectId::SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER);
+    pub(crate) const MOD_BONUS_BASTION: Self = Self::from_eid(EEffectId::MOD_BONUS_BASTION);
     pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: Self =
         Self::from_eid(EEffectId::STRUCT_MOD_EFFECT_STASIS_WEBIFIER);
     pub(crate) const STRUCT_MOD_EFFECT_TARGET_PAINTER: Self =
@@ -156,6 +160,7 @@ impl AEffectId {
         Self::from_eid(EEffectId::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER);
     pub(crate) const CHAIN_LIGHTNING: Self = Self::from_eid(EEffectId::CHAIN_LIGHTNING);
     pub(crate) const CLONE_RESPAWN_BAY: Self = Self::from_eid(EEffectId::CLONE_RESPAWN_BAY);
+    pub(crate) const INDUSTRIAL_COMPACT_CORE_EFFECT2: Self = Self::from_eid(EEffectId::INDUSTRIAL_COMPACT_CORE_EFFECT2);
     pub(crate) const DEBUFF_LANCE: Self = Self::from_eid(EEffectId::DEBUFF_LANCE);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_eid(EEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DOT_MISSILE_LAUNCHING);

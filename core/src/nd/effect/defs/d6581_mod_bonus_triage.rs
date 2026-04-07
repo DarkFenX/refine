@@ -1,13 +1,14 @@
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+        AValue,
     },
     ed::EEffectId,
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY;
-const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY;
+const EFFECT_EID: EEffectId = EEffectId::MOD_BONUS_TRIAGE;
+const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_TRIAGE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -19,9 +20,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    // Not tested, assumed to work similar to integrated sensor array
+    // Tested on 2026-04-07 on thunderdome, minokawa can't cloak with triage running, and there are
+    // no attributes and modifiers to transfer either of no-cloak attributes to ship
     a_effect.modifiers.insert(AEffectModifier {
-        strength: AEffectModStrength::Attr(AAttrId::CAN_CLOAK),
+        strength: AEffectModStrength::Hardcoded(AValue::from_f64(0.0)),
         op: AOp::PostAssign,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
         affectee_attr_id: AAttrId::CAN_CLOAK,
