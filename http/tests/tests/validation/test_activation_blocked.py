@@ -589,7 +589,7 @@ def test_cloak_absent_attrs(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_multicloak(client, consts):
+def test_multicloak_state_and_effects(client, consts):
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
     eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
     eve_effect1_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
@@ -667,6 +667,66 @@ def test_multicloak(client, consts):
     assert api_val.details.activation_blocked == [api_cloak1.id]
 
 
+def test_multicloak_ship_absent(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_cloak1 = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.online)
+    # Verification - multiple cloak is a failure regardless of ship status
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak1.id]
+
+
+def test_multicloak_ship_not_loaded(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_cloak1 = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.online)
+    # Verification - multiple cloak is a failure regardless of ship status
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_cloak1.id]
+
+
+def test_multicloak_multiple_effects(client, consts):
+    eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_effect1_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_effect2_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking_prototype, cat_id=consts.EveEffCat.active)
+    eve_cloak1_id = client.mk_eve_item(eff_ids=[eve_effect1_id, eve_effect2_id], defeff_id=eve_effect1_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cloak_attr1_id: 1, eve_cloak_attr2_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_cloak = api_fit.add_module(type_id=eve_cloak1_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_cloak.change_module(effect_modes={eve_effect2_id: consts.ApiEffMode.force_run})
+    # Verification - it is one cloak even if it has multiple cloak effects
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_known_failures(client, consts):
     eve_block_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked)
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
@@ -682,21 +742,41 @@ def test_known_failures(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_other = api_fit.add_rig(type_id=eve_other_id)
     api_module_blocked = api_fit.add_module(type_id=eve_module_blocked_id, state=consts.ApiModuleState.active)
-    api_module_cloak = api_fit.add_module(type_id=eve_module_cloak_id, state=consts.ApiModuleState.active)
+    api_module_cloak1 = api_fit.add_module(type_id=eve_module_cloak_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_blocked.id])))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked == [api_module_cloak.id]
-    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_cloak.id])))
+    assert api_val.details.activation_blocked == [api_module_cloak1.id]
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_cloak1.id])))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module_blocked.id]
     api_val = api_fit.validate(options=ValOptions(
-        activation_blocked=(True, [api_module_blocked.id, api_module_cloak.id])))
+        activation_blocked=(True, [api_module_blocked.id, api_module_cloak1.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        activation_blocked=(True, [api_module_blocked.id, api_other.id, api_module_cloak.id])))
+        activation_blocked=(True, [api_module_blocked.id, api_other.id, api_module_cloak1.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module_blocked.remove()
+    api_module_cloak2 = api_fit.add_module(type_id=eve_module_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_cloak1.id])))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_module_cloak2.id]
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=(True, [api_module_cloak2.id])))
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_module_cloak1.id]
+    api_val = api_fit.validate(options=ValOptions(
+        activation_blocked=(True, [api_module_cloak1.id, api_module_cloak2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        activation_blocked=(True, [api_module_cloak1.id, api_other.id, api_module_cloak2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
