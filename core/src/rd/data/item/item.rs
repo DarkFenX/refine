@@ -36,6 +36,7 @@ pub(crate) struct RItem {
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
     pub(crate) takes_launcher_hardpoint: bool,
+    pub(crate) is_cloak: bool,
     pub(crate) is_ice_harvester: bool,
     pub(crate) disallowed_in_wspace: bool,
     pub(crate) axt: RItemAXt,
@@ -65,6 +66,7 @@ impl RItem {
             val_fitted_group_id: a_item.val_fitted_group_id,
             val_online_group_id: a_item.val_online_group_id,
             val_active_group_id: a_item.val_active_group_id,
+            is_cloak: a_item.is_cloak,
             is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
             // Fields which depend on data not available during instantiation

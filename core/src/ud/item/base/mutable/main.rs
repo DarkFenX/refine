@@ -189,6 +189,9 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn takes_launcher_hardpoint(&self) -> bool {
         self.base.takes_launcher_hardpoint()
     }
+    pub(in crate::ud::item) fn is_cloak(&self) -> bool {
+        self.base.is_cloak()
+    }
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
         self.base.is_ice_harvester()
     }

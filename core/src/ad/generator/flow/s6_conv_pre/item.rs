@@ -45,6 +45,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
             val_fitted_group_id: None,
             val_online_group_id: None,
             val_active_group_id: None,
+            is_cloak: false,
             is_ice_harvester: false,
             disallowed_in_wspace: false,
         };

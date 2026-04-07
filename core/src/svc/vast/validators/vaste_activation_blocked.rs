@@ -1,5 +1,6 @@
 use super::shared::{is_attr_flag_set, is_oattr_flag_set};
 use crate::{
+    num::Count,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{ItemId, UFit, UItemId},
     util::RSet,
@@ -26,9 +27,7 @@ impl VastFitData {
                 }
             }
         }
-        if !self.mods_active_cloaks.is_empty()
-            && let Some(ship_uid) = fit.ship
-            && !can_cloak(ctx, calc, ship_uid)
+        if !self.mods_active_cloaks.is_empty() && !can_fit_activate_cloaks(ctx, calc, fit.ship, self.mods_fitted_cloaks)
         {
             for espec in self.mods_active_cloaks.iter() {
                 if !kfs.contains(&espec.item_uid) {
@@ -54,9 +53,7 @@ impl VastFitData {
                 }
             }
         }
-        if !self.mods_active_cloaks.is_empty()
-            && let Some(ship_uid) = fit.ship
-            && !can_cloak(ctx, calc, ship_uid)
+        if !self.mods_active_cloaks.is_empty() && !can_fit_activate_cloaks(ctx, calc, fit.ship, self.mods_fitted_cloaks)
         {
             for espec in self.mods_active_cloaks.iter() {
                 if !kfs.contains(&espec.item_uid) {
@@ -73,7 +70,16 @@ impl VastFitData {
     }
 }
 
-fn can_cloak(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId) -> bool {
+fn can_fit_activate_cloaks(ctx: SvcCtx, calc: &mut Calc, ship_uid: Option<UItemId>, fitted_cloaks: Count) -> bool {
+    if let Some(ship_uid) = ship_uid
+        && !can_ship_cloak(ctx, calc, ship_uid)
+    {
+        return false;
+    }
+    fitted_cloaks <= Count::ONE
+}
+
+fn can_ship_cloak(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId) -> bool {
     is_oattr_flag_set(ctx, calc, ship_uid, ctx.ac().can_cloak).unwrap_or(true)
         && !is_oattr_flag_set(ctx, calc, ship_uid, ctx.ac().disallow_cloaking).unwrap_or(false)
 }

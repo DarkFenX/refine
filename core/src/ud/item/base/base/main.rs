@@ -140,6 +140,12 @@ impl UItemBase {
             None => false,
         }
     }
+    pub(in crate::ud::item) fn is_cloak(&self) -> bool {
+        match self.base_get_r_item() {
+            Some(r_item) => r_item.is_cloak,
+            None => false,
+        }
+    }
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
         match self.base_get_r_item() {
             Some(r_item) => r_item.is_ice_harvester,

@@ -20,6 +20,7 @@ pub(in crate::cacher_json::data) struct CItem {
     val_fitted_group_id: Option<i32>,
     val_online_group_id: Option<i32>,
     val_active_group_id: Option<i32>,
+    is_cloak: bool,
     is_ice_harvester: bool,
     disallowed_in_wspace: bool,
 }
@@ -78,6 +79,7 @@ impl CItem {
             val_fitted_group_id: a_item.val_fitted_group_id.map(|grp_aid| grp_aid.into_i32()),
             val_online_group_id: a_item.val_online_group_id.map(|grp_aid| grp_aid.into_i32()),
             val_active_group_id: a_item.val_active_group_id.map(|grp_aid| grp_aid.into_i32()),
+            is_cloak: a_item.is_cloak,
             is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
         }
@@ -119,6 +121,7 @@ impl CItem {
             val_fitted_group_id: self.val_fitted_group_id.map(rc::ad::AItemGrpId::from_i32),
             val_online_group_id: self.val_online_group_id.map(rc::ad::AItemGrpId::from_i32),
             val_active_group_id: self.val_active_group_id.map(rc::ad::AItemGrpId::from_i32),
+            is_cloak: self.is_cloak,
             is_ice_harvester: self.is_ice_harvester,
             disallowed_in_wspace: self.disallowed_in_wspace,
         }
