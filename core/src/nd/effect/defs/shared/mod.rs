@@ -3,8 +3,8 @@ pub(in crate::nd::effect::defs) use assign_effect::assign_defeff_to_item;
 pub(in crate::nd::effect::defs) use missile_dmg_self_srq::missile_dmg_self_srq_update_effect;
 pub(in crate::nd::effect::defs) use mods::{
     add_damp_mods, add_gd_mods, add_td_mods, add_tp_mods, add_wd_mods, add_web_mods, make_dd_self_debuffs,
-    mk_can_cloak_mod, mk_cannot_cloak_mod, mk_disallow_cloak_buff, mk_mjd_sig_mod, mk_mwd_sig_mod, mk_prop_mass_mod,
-    mk_subsystem_mod,
+    mk_can_cloak_mod, mk_cannot_cloak_mod, mk_disallow_assistance_mod, mk_disallow_cloak_buff, mk_mjd_sig_mod,
+    mk_mwd_sig_mod, mk_prop_mass_mod, mk_subsystem_mod,
 };
 
 mod aoe_dd_warmup_neut;

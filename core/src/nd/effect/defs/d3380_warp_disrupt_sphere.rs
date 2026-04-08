@@ -16,6 +16,7 @@
 //   well (although transferring would also work).
 // Script effects are defined in other files.
 
+use super::shared::mk_disallow_assistance_mod;
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffDuration, AEffectBuffFull,
@@ -75,12 +76,7 @@ fn update_effect(a_effect: &mut AEffect) {
             affectee_attr_id: AAttrId::SIG_RADIUS,
         },
         // Disallow assistance
-        AEffectModifier {
-            strength: AEffectModStrength::Attr(AAttrId::DISALLOW_ASSISTANCE),
-            op: AOp::Add,
-            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: AAttrId::DISALLOW_ASSISTANCE,
-        },
+        mk_disallow_assistance_mod(),
         // Transfer warp core scram strength to script
         AEffectModifier {
             strength: AEffectModStrength::Attr(AAttrId::WARP_SCRAMBLE_STRENGTH),

@@ -1,7 +1,6 @@
+use super::shared::{mk_cannot_cloak_mod, mk_disallow_assistance_mod};
 use crate::{
-    ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
-    },
+    ad::{AEffect, AEffectId},
     ed::EEffectId,
     nd::NEffect,
 };
@@ -22,11 +21,7 @@ fn update_effect(a_effect: &mut AEffect) {
     // In EVE, it seems like modules which disallow assistance do it indirectly. Whenever they are
     // active, assistance just cannot be applied to carrying ship. In the lib, we just transfer it
     // to ship for simplicity
-    let modifier = AEffectModifier {
-        strength: AEffectModStrength::Attr(AAttrId::DISALLOW_ASSISTANCE),
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id: AAttrId::DISALLOW_ASSISTANCE,
-    };
-    a_effect.modifiers.insert(modifier);
+    a_effect
+        .modifiers
+        .extend([mk_disallow_assistance_mod(), mk_cannot_cloak_mod()]);
 }
