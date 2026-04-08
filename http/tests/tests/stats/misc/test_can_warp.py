@@ -224,7 +224,7 @@ def test_struct(client, consts):
     assert api_ship_stats.can_warp is None
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_drone_id = client.mk_eve_drone(attrs={eve_warp_attr_id: 100, eve_speed_attr_id: 1})

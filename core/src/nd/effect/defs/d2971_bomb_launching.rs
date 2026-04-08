@@ -3,7 +3,7 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm, NEffectEcmChecker, NEffectEcmOutputGetter,
-        NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind, NEffectProjMultGetter,
+        NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind, NEffectProjGetter,
         NEffectProjOpcSpec, NEffectResist,
     },
 };
@@ -18,8 +18,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind: Some(NEffectDmgKindGetter::Bomb),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::Regular,
-            proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
-            proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
+            proj_mult_str: Some(NEffectProjGetter::BombApplication),
+            proj_mult_chance: Some(NEffectProjGetter::BombRange),
             ..
         }),
         neut: Some(NEffectNeut {
@@ -27,10 +27,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: Some(NEffectNeutChecker::Bomb),
             ospec: NEffectProjOpcSpec {
                 base: NEffectGeneralOutputGetter::NeutBomb,
-                proj_mult_str: Some(NEffectProjMultGetter::BombApplication),
-                proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
+                proj_mult_str: Some(NEffectProjGetter::BombApplication),
+                proj_mult_chance: Some(NEffectProjGetter::BombRange),
                 resist: Some(NEffectResist::Standard),
-                limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
+                remote_limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
                 ..
             },
         }),
@@ -38,7 +38,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: Some(NEffectEcmChecker::Bomb),
             ospec: NEffectProjOpcSpec {
                 base: NEffectEcmOutputGetter::Bomb,
-                proj_mult_chance: Some(NEffectProjMultGetter::BombRange),
+                proj_mult_chance: Some(NEffectProjGetter::BombRange),
                 resist: Some(NEffectResist::Standard),
                 ..
             },

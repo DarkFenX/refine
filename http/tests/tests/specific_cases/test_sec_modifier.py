@@ -42,16 +42,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(1.2)
+    assert api_sec_mod.initial_str == approx(1.2)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(1.2)
+    assert api_sec_mod.applied_str == approx(1.2)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_hisec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(1.2)
+    assert api_affectee_mod.initial_str == approx(1.2)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(1.2)
+    assert api_affectee_mod.applied_str == approx(1.2)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
     # Action
@@ -62,16 +62,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-2.88)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(1.2)
+    assert api_sec_mod.initial_str == approx(1.2)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(1.2)
+    assert api_sec_mod.applied_str == approx(1.2)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_hisec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(1.2)
+    assert api_affectee_mod.initial_str == approx(1.2)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(1.2)
+    assert api_affectee_mod.applied_str == approx(1.2)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
     # Action
@@ -82,16 +82,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(1.9)
+    assert api_sec_mod.initial_str == approx(1.9)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(1.9)
+    assert api_sec_mod.applied_str == approx(1.9)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_lowsec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(1.9)
+    assert api_affectee_mod.initial_str == approx(1.9)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(1.9)
+    assert api_affectee_mod.applied_str == approx(1.9)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
     # Action
@@ -102,16 +102,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-4.56)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(1.9)
+    assert api_sec_mod.initial_str == approx(1.9)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(1.9)
+    assert api_sec_mod.applied_str == approx(1.9)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_lowsec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(1.9)
+    assert api_affectee_mod.initial_str == approx(1.9)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(1.9)
+    assert api_affectee_mod.applied_str == approx(1.9)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
     # Action
@@ -122,16 +122,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(2.1)
+    assert api_sec_mod.initial_str == approx(2.1)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(2.1)
+    assert api_sec_mod.applied_str == approx(2.1)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_nullsec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(2.1)
+    assert api_affectee_mod.initial_str == approx(2.1)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(2.1)
+    assert api_affectee_mod.applied_str == approx(2.1)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
     # Action
@@ -142,16 +142,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(2.1)
+    assert api_sec_mod.initial_str == approx(2.1)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(2.1)
+    assert api_sec_mod.applied_str == approx(2.1)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_nullsec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(2.1)
+    assert api_affectee_mod.initial_str == approx(2.1)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(2.1)
+    assert api_affectee_mod.applied_str == approx(2.1)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
     # Action
@@ -162,16 +162,16 @@ def test_sec_zones(client, consts):
     assert api_rig.attrs[eve_affectee_attr_id].modified == approx(-5.04)
     api_sec_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_sec_mod.op == consts.ApiModOp.base_assign
-    assert api_sec_mod.initial_val == approx(2.1)
+    assert api_sec_mod.initial_str == approx(2.1)
     assert api_sec_mod.stacking_mult is None
-    assert api_sec_mod.applied_val == approx(2.1)
+    assert api_sec_mod.applied_str == approx(2.1)
     assert api_sec_mod.affectors.one().item_id == api_rig.id
     assert api_sec_mod.affectors.one().attr_id == eve_nullsec_attr_id
     api_affectee_mod = api_rig.mods[eve_affectee_attr_id].one()
     assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(2.1)
+    assert api_affectee_mod.initial_str == approx(2.1)
     assert api_affectee_mod.stacking_mult is None
-    assert api_affectee_mod.applied_val == approx(2.1)
+    assert api_affectee_mod.applied_str == approx(2.1)
     assert api_affectee_mod.affectors.one().item_id == api_rig.id
     assert api_affectee_mod.affectors.one().attr_id == eve_sec_attr_id
 
@@ -618,9 +618,9 @@ def test_op_precedence_high_is_good(client, consts):
     assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.5)
     api_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
-    assert api_mod.initial_val == approx(1.5)
+    assert api_mod.initial_str == approx(1.5)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(1.5)
+    assert api_mod.applied_str == approx(1.5)
     assert api_mod.affectors.one().item_id == api_implant.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
 
@@ -641,8 +641,8 @@ def test_op_precedence_high_is_bad(client, consts):
     assert api_rig.attrs[eve_sec_attr_id].modified == approx(1.5)
     api_mod = api_rig.mods[eve_sec_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_assign
-    assert api_mod.initial_val == approx(1.5)
+    assert api_mod.initial_str == approx(1.5)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(1.5)
+    assert api_mod.applied_str == approx(1.5)
     assert api_mod.affectors.one().item_id == api_implant.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id

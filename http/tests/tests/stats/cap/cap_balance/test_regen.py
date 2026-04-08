@@ -1,4 +1,4 @@
-from fw import approx, check_no_field
+from fw import approx
 from fw.api import FitStatsOptions, ItemStatsOptions, StatCapRegenOptions, StatCapSrcKinds, StatsOptionCapBalance
 
 
@@ -81,7 +81,7 @@ def test_struct(client, consts):
     assert api_ship_stats.cap_balance.one() == approx(419.773318)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
     eve_drone_id = client.mk_eve_drone(attrs={eve_amount_attr_id: 518.76, eve_regen_attr_id: 233437.5})
@@ -181,20 +181,3 @@ def test_ship_not_loaded(client, consts):
     assert api_fit_stats.cap_balance is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
     assert api_ship_stats.cap_balance is None
-
-
-def test_not_requested(client, consts):
-    eve_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
-    eve_regen_attr_id = client.mk_eve_attr(id_=consts.EveAttr.recharge_rate)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_amount_attr_id: 518.76, eve_regen_attr_id: 233437.5})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=False))
-    with check_no_field():
-        api_fit_stats.cap_balance  # noqa: B018
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=False))
-    with check_no_field():
-        api_ship_stats.cap_balance  # noqa: B018

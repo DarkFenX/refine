@@ -32,7 +32,7 @@ pub(crate) enum NEffectGeneralOutputGetter {
 }
 impl NEffectOutputGetter for NEffectGeneralOutputGetter {
     type Instance = PValue;
-    type Xargs = ();
+    type XArgs = ();
 
     fn get(
         &self,
@@ -40,7 +40,7 @@ impl NEffectOutputGetter for NEffectGeneralOutputGetter {
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        _xargs: Self::Xargs,
+        _xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
             Self::CapConsumer => get_attr(ctx, calc, item_uid, effect, effect.discharge_attr_rid, true),

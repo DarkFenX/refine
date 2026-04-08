@@ -1,7 +1,8 @@
-use crate::ad::{AAttrId, AEffectAffecteeFilter, AOp};
+use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectModStrength, AOp};
 
+#[derive(PartialEq)]
 pub struct AEffectModifier {
-    pub affector_attr_id: AAttrId,
+    pub strength: AEffectModStrength,
     pub op: AOp,
     pub affectee_filter: AEffectAffecteeFilter,
     pub affectee_attr_id: AAttrId,
@@ -10,6 +11,7 @@ pub struct AEffectModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AEffectModifiers {
     data: Vec<AEffectModifier>,
 }
@@ -22,11 +24,6 @@ impl AEffectModifiers {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AEffectModifier> {
         self.data.iter()
-    }
-}
-impl Default for AEffectModifiers {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AEffectModifier> for AEffectModifiers {

@@ -1,6 +1,6 @@
 use crate::{
     misc::OptionalReload,
-    num::UnitInterval,
+    num::{PValue, UnitInterval, Value},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -30,10 +30,17 @@ impl Vast {
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
         stagger: &StatCapSimStaggerInt,
+        nosf_projectee_item_uid: Option<UItemId>,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let max_cap = Vast::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
-        let recharge_time = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
+        let recharge_time_ms = calc
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO)
+            .unwrap();
+        let recharge_time_s = match recharge_time_ms < Value::FLOAT_TOLERANCE {
+            true => None,
+            false => Some(PValue::from_value_clamped(recharge_time_ms / Value::THOUSAND)),
+        };
         let start_cap = max_cap * cap_perc.into_pvalue();
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
         let events = prepare_events(
@@ -43,10 +50,11 @@ impl Vast {
             self,
             optional_reloads,
             stagger,
+            nosf_projectee_item_uid,
             fit_data,
             item_uid,
         );
-        let mut sim = CapSim::new(start_cap, max_cap, recharge_time, events);
+        let mut sim = CapSim::new(start_cap, max_cap, recharge_time_s, events);
         Ok(sim.run())
     }
 }

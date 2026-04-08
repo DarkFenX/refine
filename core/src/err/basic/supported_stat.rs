@@ -9,7 +9,7 @@ pub struct SupportedStatError {
     pub item_id: ItemId,
 }
 impl SupportedStatError {
-    pub(crate) fn from_svc_err(u_items: &UItems, svc_err: UItemKindVsStatError) -> Self {
+    pub(crate) fn from_svc_err(svc_err: UItemKindVsStatError, u_items: &UItems) -> Self {
         Self {
             item_id: u_items.xid_by_iid(svc_err.item_uid),
         }

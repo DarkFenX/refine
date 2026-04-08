@@ -12,7 +12,7 @@ use crate::{
     ud::{UItemId, UProjData},
 };
 
-pub(super) fn get_turret_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_turret_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -31,7 +31,7 @@ pub(super) fn get_turret_proj_mult(
     calc_turret_mult(cth)
 }
 
-pub(super) fn get_disintegrator_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_disintegrator_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -50,7 +50,7 @@ pub(super) fn get_disintegrator_proj_mult(
     calc_turret_mult(cth)
 }
 
-pub(super) fn get_vorton_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_vorton_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -65,7 +65,7 @@ pub(super) fn get_vorton_proj_mult(
     mult * get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
 }
 
-pub(super) fn get_aoe_burst_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_burst_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -86,7 +86,7 @@ pub(super) fn get_aoe_burst_proj_mult(
     )
 }
 
-pub(super) fn get_aoe_dd_dmg_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_dd_dmg_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -100,7 +100,7 @@ pub(super) fn get_aoe_dd_dmg_proj_mult(
     mult * get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().sig_radius)
 }
 
-pub(super) fn get_aoe_dd_side_neut_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_dd_side_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -120,7 +120,7 @@ pub(super) fn get_aoe_dd_side_neut_proj_mult(
     )
 }
 
-pub(super) fn get_neut_proj_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

@@ -1,5 +1,4 @@
 pub(in crate::svc::calc) use affectee_filter::AffecteeFilter;
-use affector_val::AffectorValue;
 pub(in crate::svc::calc) use aggr_mode::{AggrKey, AggrMode};
 pub(in crate::svc::calc) use context::ModContext;
 pub(in crate::svc::calc) use ctx_mod::CtxModifier;
@@ -9,9 +8,9 @@ pub(in crate::svc::calc) use kind::ModifierKind;
 pub(in crate::svc::calc) use location::Location;
 pub(crate) use op::CalcOp;
 pub(in crate::svc::calc) use raw_mod::RawModifier;
+use strength::ModStrength;
 
 mod affectee_filter;
-mod affector_val;
 mod aggr_mode;
 mod context;
 mod ctx_mod;
@@ -20,3 +19,4 @@ mod kind;
 mod location;
 mod op;
 mod raw_mod;
+mod strength;

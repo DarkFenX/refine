@@ -1,6 +1,6 @@
 use crate::ad::{
-    AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AEffectModifiers, AItemId,
-    AModifierSrq, AOp,
+    AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
+    AEffectModifiers, AItemId, AModifierSrq, AOp,
 };
 
 pub(in crate::nd::effect::defs) fn add_td_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
@@ -92,7 +92,7 @@ fn add_gd_modifiers(mods: &mut AEffectModifiers) {
 
 fn make_td_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: affector_attr_aid,
+        strength: AEffectModStrength::Attr(affector_attr_aid),
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(AEffectLocation::Target, AModifierSrq::ItemId(AItemId::GUNNERY)),
         affectee_attr_id: affectee_attr_aid,
@@ -101,7 +101,7 @@ fn make_td_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AE
 
 fn make_gd_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: affector_attr_aid,
+        strength: AEffectModStrength::Attr(affector_attr_aid),
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::LocSrq(
             AEffectLocation::Target,
@@ -113,7 +113,7 @@ fn make_gd_loc_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AE
 
 fn make_direct_mod(affector_attr_aid: AAttrId, affectee_attr_aid: AAttrId) -> AEffectModifier {
     AEffectModifier {
-        affector_attr_id: affector_attr_aid,
+        strength: AEffectModStrength::Attr(affector_attr_aid),
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
         affectee_attr_id: affectee_attr_aid,

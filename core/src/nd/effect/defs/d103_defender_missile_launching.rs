@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DEFENDER_MISSILE_LAUNCHING;
@@ -13,7 +13,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::Regular,
-            proj_mult_str: Some(NEffectProjMultGetter::Null),
+            proj_mult_str: Some(NEffectProjGetter::Null),
             ..
         }),
         ..

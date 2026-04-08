@@ -28,9 +28,9 @@ def test_sec_status_switch(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(4)
+    assert api_mod.initial_str == approx(4)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(4)
+    assert api_mod.applied_str == approx(4)
     # No info about what modifies security status attr
     assert eve_affector_attr_id not in api_item.mods
     # Action
@@ -48,9 +48,9 @@ def test_sec_status_switch(client, consts):
         affectee_attr_id=eve_affectee_attr_id,
         affector_item_id=api_item.id).one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(-9.9)
+    assert api_mod.initial_str == approx(-9.9)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(-9.9)
+    assert api_mod.applied_str == approx(-9.9)
     # No info about what modifies security status attr
     assert eve_affector_attr_id not in api_item.mods
 

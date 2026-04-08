@@ -21,7 +21,7 @@ pub enum StatCapSim {
 pub(super) struct CapSim {
     max_cap: Value,
     max_pcap: PValue,
-    tau: PValue,
+    tau: Option<PValue>,
     events: BinaryHeap<CapSimEvent>,
     // Injectors available for immediate use
     injectors: Vec<CapSimEventInjector>,
@@ -40,13 +40,13 @@ impl CapSim {
     pub(super) fn new(
         start_cap: PValue,
         max_cap: PValue,
-        recharge_duration: PValue,
+        recharge_duration: Option<PValue>,
         events: BinaryHeap<CapSimEvent>,
     ) -> Self {
         Self {
             max_cap: max_cap.into_value(),
             max_pcap: max_cap,
-            tau: recharge_duration / PValue::from_f64_unchecked(5.0),
+            tau: recharge_duration.map(|v| v / PValue::from_f64_unchecked(5.0)),
             events,
             injectors: Vec::new(),
             time: PValue::ZERO,
@@ -62,6 +62,14 @@ impl CapSim {
         }
     }
     pub(super) fn run(&mut self) -> StatCapSim {
+        // When there are no events, return 100% if there is some cap regen, or initial cap value if
+        // cap is not regenerating
+        if self.events.is_empty() {
+            return match self.tau {
+                Some(_) => StatCapSim::Stable(UnitInterval::ONE),
+                None => StatCapSim::Stable(UnitInterval::from_value_clamped(self.cap / self.max_cap)),
+            };
+        }
         while let Some(event) = self.events.pop() {
             match event {
                 CapSimEvent::CycleCheck(mut event) => {
@@ -122,7 +130,8 @@ impl CapSim {
                 }
             }
         }
-        // No drains - cap regens up to 100% even if no other gains are registered
+        // There were some events, but only gains - expose 100% stability without using any
+        // watermark logic
         if self.only_gains {
             return StatCapSim::Stable(UnitInterval::ONE);
         }
@@ -143,14 +152,16 @@ impl CapSim {
     }
     fn advance_time(&mut self, new_time: PValue) {
         if new_time > self.time {
-            self.cap = regenerate(
-                PValue::from_value_unchecked(self.cap),
-                self.max_pcap,
-                self.tau,
-                self.time,
-                new_time,
-            )
-            .into_value();
+            if let Some(tau) = self.tau {
+                self.cap = regenerate(
+                    PValue::from_value_unchecked(self.cap),
+                    self.max_pcap,
+                    tau,
+                    self.time,
+                    new_time,
+                )
+                .into_value()
+            };
             self.time = new_time;
             self.process_high_watermark();
         }

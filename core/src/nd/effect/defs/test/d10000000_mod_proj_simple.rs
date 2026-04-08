@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+    nd::{NEffect, NEffectProjGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::from_i32(10_000_000);
@@ -11,8 +11,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::Simple),
-        modifier_proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+        modifier_proj: Some(NEffectProjGetter::GenericRangeSimpleSts),
         ..
     }
 }

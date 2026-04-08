@@ -26,7 +26,7 @@ pub(crate) enum NEffectDmgOutputGetter {
 }
 impl NEffectOutputGetter for NEffectDmgOutputGetter {
     type Instance = DmgKinds<PValue>;
-    type Xargs = ();
+    type XArgs = ();
 
     fn get(
         &self,
@@ -34,7 +34,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
         calc: &mut Calc,
         item_uid: UItemId,
         _effect: &REffect,
-        _xargs: Self::Xargs,
+        _xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
             Self::Regular => get_regular(ctx, calc, item_uid),

@@ -26,9 +26,9 @@ def test_debuff_rr(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.affectors.one().item_id == api_affector_module1.id
     assert api_mod.affectors.one().attr_id is None
     # Action
@@ -42,9 +42,9 @@ def test_debuff_rr(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_mod.affectors.one().attr_id is None
 
@@ -78,9 +78,9 @@ def test_debuff_warp(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(100)
+    assert api_mod.initial_str == approx(100)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(100)
+    assert api_mod.initial_str == approx(100)
     assert api_mod.affectors.one().item_id == api_affector_module1.id
     assert api_mod.affectors.one().attr_id is None
     # Action
@@ -99,9 +99,9 @@ def test_debuff_warp(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(100)
+    assert api_mod.initial_str == approx(100)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(100)
+    assert api_mod.initial_str == approx(100)
     assert api_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_mod.affectors.one().attr_id is None
 
@@ -140,16 +140,16 @@ def test_debuff_dock_jump(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].modified == approx(1)
     api_dock_mod = api_affectee_ship.mods[eve_affectee_dock_attr_id].one()
     assert api_dock_mod.op == consts.ApiModOp.mod_add
-    assert api_dock_mod.initial_val == approx(1)
+    assert api_dock_mod.initial_str == approx(1)
     assert api_dock_mod.stacking_mult is None
-    assert api_dock_mod.initial_val == approx(1)
+    assert api_dock_mod.initial_str == approx(1)
     assert api_dock_mod.affectors.one().item_id == api_affector_module1.id
     assert api_dock_mod.affectors.one().attr_id is None
     api_jump_mod = api_affectee_ship.mods[eve_affectee_jump_attr_id].one()
     assert api_jump_mod.op == consts.ApiModOp.mod_add
-    assert api_jump_mod.initial_val == approx(1)
+    assert api_jump_mod.initial_str == approx(1)
     assert api_jump_mod.stacking_mult is None
-    assert api_jump_mod.initial_val == approx(1)
+    assert api_jump_mod.initial_str == approx(1)
     assert api_jump_mod.affectors.one().item_id == api_affector_module1.id
     assert api_jump_mod.affectors.one().attr_id is None
     # Action
@@ -170,16 +170,16 @@ def test_debuff_dock_jump(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].modified == approx(1)
     api_dock_mod = api_affectee_ship.mods[eve_affectee_dock_attr_id].one()
     assert api_dock_mod.op == consts.ApiModOp.mod_add
-    assert api_dock_mod.initial_val == approx(1)
+    assert api_dock_mod.initial_str == approx(1)
     assert api_dock_mod.stacking_mult is None
-    assert api_dock_mod.initial_val == approx(1)
+    assert api_dock_mod.initial_str == approx(1)
     assert api_dock_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_dock_mod.affectors.one().attr_id is None
     api_jump_mod = api_affectee_ship.mods[eve_affectee_jump_attr_id].one()
     assert api_jump_mod.op == consts.ApiModOp.mod_add
-    assert api_jump_mod.initial_val == approx(1)
+    assert api_jump_mod.initial_str == approx(1)
     assert api_jump_mod.stacking_mult is None
-    assert api_jump_mod.initial_val == approx(1)
+    assert api_jump_mod.initial_str == approx(1)
     assert api_jump_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_jump_mod.affectors.one().attr_id is None
 
@@ -210,9 +210,9 @@ def test_debuff_tether(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(1)
+    assert api_mod.initial_str == approx(1)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(1)
+    assert api_mod.initial_str == approx(1)
     assert api_mod.affectors.one().item_id == api_affector_module1.id
     assert api_mod.affectors.one().attr_id is None
     # Action
@@ -228,9 +228,9 @@ def test_debuff_tether(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_add
-    assert api_mod.initial_val == approx(1)
+    assert api_mod.initial_str == approx(1)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(1)
+    assert api_mod.initial_str == approx(1)
     assert api_mod.affectors.one().item_id in {api_affector_module1.id, api_affector_module2.id}
     assert api_mod.affectors.one().attr_id is None
 
@@ -259,9 +259,9 @@ def test_drone(client, consts):
     assert api_affectee_drone.attrs[eve_affectee_attr_id].modified == approx(0.5)
     api_mod = api_affectee_drone.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.stacking_mult is None
-    assert api_mod.initial_val == approx(-50)
+    assert api_mod.initial_str == approx(-50)
     assert api_mod.affectors.one().item_id == api_affector_module.id
     assert api_mod.affectors.one().attr_id is None
 

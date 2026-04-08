@@ -264,7 +264,7 @@ def test_fighter_modified_agility(client, consts):
     assert api_fighter_stats.align_time == 1
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_module_id = client.mk_eve_item(attrs={eve_agility_attr_id: 3.2, eve_mass_attr_id: 1050000})

@@ -4,6 +4,7 @@ pub use vaste_charge_cont_group::{ValChargeParentGroupFail, ValChargeParentGroup
 pub use vaste_charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
 pub use vaste_charge_size::{ValChargeSizeChargeInfo, ValChargeSizeFail};
 pub use vaste_charge_volume::{ValChargeVolumeChargeInfo, ValChargeVolumeFail};
+pub use vaste_cloaking_blocked::ValCloakingBlockedFail;
 pub use vaste_drone_group::ValDroneGroupFail;
 pub use vaste_effect_stopper::ValEffectStopperFail;
 pub use vaste_fighter_squad_size::{ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo};
@@ -37,6 +38,7 @@ mod vaste_charge_cont_group;
 mod vaste_charge_group;
 mod vaste_charge_size;
 mod vaste_charge_volume;
+mod vaste_cloaking_blocked;
 mod vaste_drone_group;
 mod vaste_effect_stopper;
 mod vaste_fighter_squad_size;

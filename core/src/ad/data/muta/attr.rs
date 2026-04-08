@@ -7,6 +7,7 @@ pub struct AMutaAttr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AMutaAttrs {
     data: Vec<AMutaAttr>,
 }
@@ -21,11 +22,7 @@ impl AMutaAttrs {
         self.data.iter()
     }
 }
-impl Default for AMutaAttrs {
-    fn default() -> Self {
-        Self::new()
-    }
-}
+
 impl FromIterator<AMutaAttr> for AMutaAttrs {
     fn from_iter<I>(iter: I) -> Self
     where

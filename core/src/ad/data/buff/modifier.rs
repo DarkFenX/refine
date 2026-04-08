@@ -8,6 +8,7 @@ pub struct ABuffModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct ABuffModifiers {
     data: Vec<ABuffModifier>,
 }
@@ -20,11 +21,6 @@ impl ABuffModifiers {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &ABuffModifier> {
         self.data.iter()
-    }
-}
-impl Default for ABuffModifiers {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<ABuffModifier> for ABuffModifiers {

@@ -1,10 +1,6 @@
 use crate::{
-    ad::{
-        AAttrId, ABuffId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AItemListId,
-    },
-    num::Value,
-    rd::{RAttrId, RBuffId, RItemListId},
+    ad::{AAttrId, ABuffId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffFull, AEffectBuffScope, AItemListId},
+    rd::{RAttrId, RBuffId, REffectModStrength, RItemListId},
     util::RMap,
 };
 
@@ -19,13 +15,8 @@ pub(crate) struct REffectBuffAttrMerge {
 
 pub(crate) struct REffectBuffFull {
     pub(crate) buff_rid: RBuffId,
-    pub(crate) strength: REffectBuffStrength,
+    pub(crate) strength: REffectModStrength,
     pub(crate) scope: REffectBuffScope,
-}
-
-pub(crate) enum REffectBuffStrength {
-    Attr(RAttrId),
-    Hardcoded(Value),
 }
 
 pub(crate) enum REffectBuffScope {
@@ -84,21 +75,9 @@ impl REffectBuffFull {
     ) -> Option<Self> {
         Some(Self {
             buff_rid: *buff_aid_rid_map.get(&a_buff_full.buff_id)?,
-            strength: REffectBuffStrength::try_from_a_buff_strength(&a_buff_full.strength, attr_aid_rid_map)?,
+            strength: REffectModStrength::try_from_a_mod_strength(&a_buff_full.strength, attr_aid_rid_map)?,
             scope: REffectBuffScope::try_from_a_buff_scope(&a_buff_full.scope, item_list_aid_rid_map)?,
         })
-    }
-}
-
-impl REffectBuffStrength {
-    fn try_from_a_buff_strength(
-        a_buff_strength: &AEffectBuffStrength,
-        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
-    ) -> Option<Self> {
-        match a_buff_strength {
-            AEffectBuffStrength::Attr(attr_id) => Some(Self::Attr(*attr_aid_rid_map.get(attr_id)?)),
-            AEffectBuffStrength::Hardcoded(val) => Some(Self::Hardcoded(Value::from_a_value(*val))),
-        }
     }
 }
 

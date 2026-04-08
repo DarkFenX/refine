@@ -1,6 +1,6 @@
 use smallvec::SmallVec;
 
-use super::CalcCustomAffectorValue;
+use super::CalcCustomModStrength;
 use crate::{
     api::AttrId,
     misc::{AttrSpec, EffectSpec},
@@ -10,7 +10,7 @@ use crate::{
         SvcCtx,
         calc::{
             AffecteeFilter, Affector, AggrMode, Calc, CalcCustomModifier, CalcOp, Location, ModifierKind, RawModifier,
-            modifier::AffectorValue,
+            modifier::ModStrength,
         },
     },
     ud::UItemId,
@@ -23,7 +23,7 @@ pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<
     Some(RawModifier {
         kind: ModifierKind::Local,
         affector_espec: espec,
-        affector_value: AffectorValue::Custom(CalcCustomAffectorValue {
+        strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::PropSpeed,
             // Exposing just 1 on-item attribute here which should change more than the other
             // one, not to handle it via dependencies

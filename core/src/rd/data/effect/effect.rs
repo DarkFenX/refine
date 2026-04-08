@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
         N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
-        NEffectGeneralOutputGetter, NEffectProjMultGetter,
+        NEffectGeneralOutputGetter, NEffectProjGetter,
     },
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectEcm, REffectId, REffectLocalOpcSpec,
@@ -33,6 +33,7 @@ pub(crate) struct REffect {
     pub(crate) banned_in_hisec: bool,
     pub(crate) banned_in_lowsec: bool,
     pub(crate) ignore_offmod_immunity: bool,
+    pub(crate) cloaks_carrier: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
     pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
@@ -46,7 +47,7 @@ pub(crate) struct REffect {
     pub(crate) resist_attr_rid: Option<RAttrId>,
     pub(crate) spool_attr_rids: Option<REffectSpoolAttrs>,
     pub(crate) modifier_proj_attr_rids: [Option<RAttrId>; 2],
-    pub(crate) modifier_proj_mult_getter: Option<NEffectProjMultGetter>,
+    pub(crate) modifier_proj: Option<NEffectProjGetter>,
     // Output getters/specs
     pub(crate) dmg_kind: Option<NEffectDmgKindGetter>,
     pub(crate) normal_dmg: Option<REffectProjOpcSpec<NEffectDmgOutputGetter>>,
@@ -121,9 +122,10 @@ impl REffect {
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
+            cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
-            modifier_proj_mult_getter: n_effect.and_then(|n| n.modifier_proj_mult),
+            modifier_proj: n_effect.and_then(|n| n.modifier_proj),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             // Fields which depend on data not available during instantiation
             modifiers: Default::default(),
@@ -226,8 +228,8 @@ impl REffect {
                 .spool_attrs
                 .as_ref()
                 .and_then(|n_spool_attrs| REffectSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_aid_rid_map));
-            if let Some(modifier_proj_attrs_getter) = &n_effect.modifier_proj_attrs {
-                let proj_attr_aids = modifier_proj_attrs_getter.get(a_effect);
+            if let Some(modifier_proj_attrs_getter) = &n_effect.modifier_proj {
+                let proj_attr_aids = modifier_proj_attrs_getter.get_modifier_attr_aids(a_effect);
                 self.modifier_proj_attr_rids = proj_attr_aids
                     .map(|attr_aid| attr_aid.and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()));
             }

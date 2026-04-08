@@ -3,8 +3,8 @@ use crate::{
     ed::EEffectId,
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm,
-        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectModProjAttrsGetter, NEffectNeut,
-        NEffectProjMultGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
+        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjGetter,
+        NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -29,13 +29,13 @@ pub(crate) struct NEffect {
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
+    pub(crate) cloaks_carrier: bool = false,
     pub(crate) kills_item: bool = false,
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization ran during runtime in calculator service
     pub(crate) calc_custom_mod: Option<CalcCustomModifier> = None,
     // Getters/specs - modifier projection
-    pub(crate) modifier_proj_attrs: Option<NEffectModProjAttrsGetter> = None,
-    pub(crate) modifier_proj_mult: Option<NEffectProjMultGetter> = None,
+    pub(crate) modifier_proj: Option<NEffectProjGetter> = None,
     // Getters/specs - damage output
     pub(crate) dmg_kind: Option<NEffectDmgKindGetter> = None,
     pub(crate) normal_dmg: Option<NEffectProjOpcSpec<NEffectDmgOutputGetter>> = None,

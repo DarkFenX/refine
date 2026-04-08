@@ -7,8 +7,8 @@ pub use buff::{
 pub use data::AData;
 pub use effect::{
     ACustomEffectId, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge,
-    AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectCatId, AEffectId,
-    AEffectIdParseError, AEffectLocation, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects,
+    AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId, AEffectIdParseError,
+    AEffectLocation, AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects,
 };
 pub use item::{
     AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect, AItemEffectData,

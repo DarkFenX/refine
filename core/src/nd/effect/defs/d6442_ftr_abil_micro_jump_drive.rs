@@ -1,5 +1,7 @@
 use crate::{
-    ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AOp},
+    ad::{
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+    },
     ed::EEffectId,
     nd::NEffect,
 };
@@ -22,7 +24,7 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.insert(AEffectModifier {
-        affector_attr_id: AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS,
+        strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS),
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id: AAttrId::SIG_RADIUS,

@@ -27,7 +27,7 @@ pub(in crate::svc::vast) fn aggr_local_iter<BG, BX, T>(
     base_xargs: BX,
 ) -> Option<AggrIterData<T>>
 where
-    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
 {
     let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;

@@ -53,29 +53,29 @@ def test_non_penalized(client, consts):
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(20)
+    assert api_mod1.initial_str == approx(20)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(20)
+    assert api_mod1.applied_str == approx(20)
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(50)
+    assert api_mod2.initial_str == approx(50)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(50)
+    assert api_mod2.applied_str == approx(50)
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
     assert api_mod3.op == consts.ApiModOp.post_percent
-    assert api_mod3.initial_val == approx(-90)
+    assert api_mod3.initial_str == approx(-90)
     assert api_mod3.stacking_mult is None
-    assert api_mod3.applied_val == approx(-90)
+    assert api_mod3.applied_str == approx(-90)
     api_mod4 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector4.id).one()
     assert api_mod4.op == consts.ApiModOp.post_percent
-    assert api_mod4.initial_val == approx(-25)
+    assert api_mod4.initial_str == approx(-25)
     assert api_mod4.stacking_mult is None
-    assert api_mod4.applied_val == approx(-25)
+    assert api_mod4.applied_str == approx(-25)
     api_mod5 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector5.id).one()
     assert api_mod5.op == consts.ApiModOp.post_percent
-    assert api_mod5.initial_val == approx(400)
+    assert api_mod5.initial_str == approx(400)
     assert api_mod5.stacking_mult is None
-    assert api_mod5.applied_val == approx(400)
+    assert api_mod5.applied_str == approx(400)
 
 
 def test_penalized(client, consts):
@@ -91,29 +91,29 @@ def test_penalized(client, consts):
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(20)
+    assert api_mod1.initial_str == approx(20)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(20)
+    assert api_mod1.applied_str == approx(20)
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(50)
+    assert api_mod2.initial_str == approx(50)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(50)
+    assert api_mod2.applied_str == approx(50)
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
     assert api_mod3.op == consts.ApiModOp.post_percent
-    assert api_mod3.initial_val == approx(-90)
+    assert api_mod3.initial_str == approx(-90)
     assert api_mod3.stacking_mult is None
-    assert api_mod3.applied_val == approx(-90)
+    assert api_mod3.applied_str == approx(-90)
     api_mod4 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector4.id).one()
     assert api_mod4.op == consts.ApiModOp.post_percent
-    assert api_mod4.initial_val == approx(-25)
+    assert api_mod4.initial_str == approx(-25)
     assert api_mod4.stacking_mult is None
-    assert api_mod4.applied_val == approx(-25)
+    assert api_mod4.applied_str == approx(-25)
     api_mod5 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector5.id).one()
     assert api_mod5.op == consts.ApiModOp.post_percent
-    assert api_mod5.initial_val == approx(400)
+    assert api_mod5.initial_str == approx(400)
     assert api_mod5.stacking_mult is None
-    assert api_mod5.applied_val == approx(400)
+    assert api_mod5.applied_str == approx(400)
 
 
 def test_insignificant_base(client, consts):
@@ -175,9 +175,9 @@ def test_insignificant_modified_base(client, consts):
     assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     api_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.initial_val == approx(0)
+    assert api_mod.initial_str == approx(0)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(0)
+    assert api_mod.applied_str == approx(0)
 
 
 def test_insignificant_earlier_ops(client, consts):
@@ -315,9 +315,9 @@ def test_insignificant_earlier_ops(client, consts):
     assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(expected_value)
     api_post_perc_immune_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_post_perc_immune_mod.op == consts.ApiModOp.post_percent
-    assert api_post_perc_immune_mod.initial_val == approx(post_perc_immune_val)
+    assert api_post_perc_immune_mod.initial_str == approx(post_perc_immune_val)
     assert api_post_perc_immune_mod.stacking_mult is None
-    assert api_post_perc_immune_mod.applied_val == approx(post_perc_immune_val)
+    assert api_post_perc_immune_mod.applied_str == approx(post_perc_immune_val)
 
 
 def test_insignificant_op_collision(client, consts):
@@ -355,9 +355,9 @@ def test_insignificant_op_collision(client, consts):
     assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     api_post_perc_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_post_perc_mod.op == consts.ApiModOp.post_percent
-    assert api_post_perc_mod.initial_val == approx(-100)
+    assert api_post_perc_mod.initial_str == approx(-100)
     assert api_post_perc_mod.stacking_mult is None
-    assert api_post_perc_mod.applied_val == approx(-100)
+    assert api_post_perc_mod.applied_str == approx(-100)
 
 
 def setup_insignificant_chain_values_test(*, client, consts, stackable):
@@ -403,14 +403,14 @@ def test_insignificant_chain_values_non_penalized(client, consts):
     assert len(api_mods) == 2
     api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(-100)
+    assert api_mod1.initial_str == approx(-100)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(-100)
+    assert api_mod1.applied_str == approx(-100)
     api_mod3 = api_mods.find_by_affector_item(affector_item_id=api_affector3.id).one()
     assert api_mod3.op == consts.ApiModOp.post_percent
-    assert api_mod3.initial_val == approx(-100)
+    assert api_mod3.initial_str == approx(-100)
     assert api_mod3.stacking_mult is None
-    assert api_mod3.applied_val == approx(-100)
+    assert api_mod3.applied_str == approx(-100)
 
 
 def test_insignificant_chain_values_penalized(client, consts):
@@ -425,11 +425,11 @@ def test_insignificant_chain_values_penalized(client, consts):
     assert len(api_mods) == 2
     api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(-100)
+    assert api_mod1.initial_str == approx(-100)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(-100)
+    assert api_mod1.applied_str == approx(-100)
     api_mod3 = api_mods.find_by_affector_item(affector_item_id=api_affector3.id).one()
     assert api_mod3.op == consts.ApiModOp.post_percent
-    assert api_mod3.initial_val == approx(-100)
+    assert api_mod3.initial_str == approx(-100)
     assert api_mod3.stacking_mult is None
-    assert api_mod3.applied_val == approx(-100)
+    assert api_mod3.applied_str == approx(-100)

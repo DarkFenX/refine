@@ -148,6 +148,7 @@ impl EAttrId {
     pub(crate) const ENTITY_MAX_VELOCITY_SIG_RADIUS_MULT: Self = Self::from_i32(1133);
     pub(crate) const UPGRADE_COST: Self = Self::from_i32(1153);
     pub(crate) const UPGRADE_SLOTS_LEFT: Self = Self::from_i32(1154);
+    pub(crate) const CAN_CLOAK: Self = Self::from_i32(1163);
     pub(crate) const SPEED_FACTOR_BONUS: Self = Self::from_i32(1164);
     pub(crate) const REQUIRED_THERMODYNAMICS_SKILL: Self = Self::from_i32(1212);
     pub(crate) const SPEED_BOOST_FACTOR_BONUS: Self = Self::from_i32(1270);
@@ -240,6 +241,7 @@ impl EAttrId {
     pub(crate) const DOOMSDAY_IMMOBILITY_DURATION: Self = Self::from_i32(2428);
     pub(crate) const MAX_TYPE_FITTED: Self = Self::from_i32(2431);
     pub(crate) const ENERGY_NEUT_SIG_RESOLUTION: Self = Self::from_i32(2451);
+    pub(crate) const DISALLOW_CLOAKING: Self = Self::from_i32(2454);
     pub(crate) const CAN_FIT_SHIP_TYPE7: Self = Self::from_i32(2463);
     pub(crate) const WARFARE_BUFF1_ID: Self = Self::from_i32(2468);
     pub(crate) const WARFARE_BUFF1_VAL: Self = Self::from_i32(2469);

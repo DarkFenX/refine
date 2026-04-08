@@ -2,8 +2,7 @@ use crate::{
     ad::AEffectId,
     ed::EEffectId,
     nd::{
-        NEffect, NEffectMining, NEffectMiningChecker, NEffectMiningOutputGetter, NEffectProjMultGetter,
-        NEffectProjOpcSpec,
+        NEffect, NEffectMining, NEffectMiningChecker, NEffectMiningOutputGetter, NEffectProjGetter, NEffectProjOpcSpec,
     },
 };
 
@@ -18,7 +17,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: Some(NEffectMiningChecker::NonIce),
             ospec: NEffectProjOpcSpec {
                 base: NEffectMiningOutputGetter::Regular,
-                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
                 ..
             },
         }),
@@ -26,7 +25,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: Some(NEffectMiningChecker::Ice),
             ospec: NEffectProjOpcSpec {
                 base: NEffectMiningOutputGetter::Regular,
-                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+                proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
                 ..
             },
         }),

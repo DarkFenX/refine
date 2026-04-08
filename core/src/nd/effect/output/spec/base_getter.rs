@@ -6,7 +6,7 @@ use crate::{
 
 pub(crate) trait NEffectOutputGetter {
     type Instance: Copy;
-    type Xargs;
+    type XArgs;
 
     fn get(
         &self,
@@ -14,6 +14,6 @@ pub(crate) trait NEffectOutputGetter {
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        xargs: Self::Xargs,
+        xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>>;
 }

@@ -2,7 +2,7 @@ use super::shared::add_wd_mods;
 use crate::{
     ad::AEffectId,
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+    nd::{NEffect, NEffectProjGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::STRUCT_MOD_EFFECT_WEAPON_DISRUPTION;
@@ -13,8 +13,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(|a_effect| add_wd_mods(EFFECT_AID, a_effect)),
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::Full),
-        modifier_proj_mult: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
+        modifier_proj: Some(NEffectProjGetter::GenericRangeFullStsRestricted),
         ..
     }
 }

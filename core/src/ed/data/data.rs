@@ -3,6 +3,7 @@ use crate::ed::data::{
     EItemSpaceComp, EMutaAttrMod, EMutaItemConv,
 };
 
+#[derive(Default)]
 pub struct EData {
     pub items: EDataCont<EItem>,
     pub groups: EDataCont<EItemGroup>,
@@ -37,11 +38,6 @@ impl EData {
             muta_items: EDataCont::new(),
             muta_attrs: EDataCont::new(),
         }
-    }
-}
-impl Default for EData {
-    fn default() -> Self {
-        Self::new()
     }
 }
 

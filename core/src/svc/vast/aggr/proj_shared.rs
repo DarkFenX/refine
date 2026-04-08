@@ -1,4 +1,7 @@
-use super::traits::{HasImpact, InstanceLimit};
+use super::{
+    shared::get_item_ship_limit,
+    traits::{HasImpact, InstanceLimit},
+};
 use crate::{
     misc::{AttrSpec, EffectSpec},
     nd::NEffectOutputGetter,
@@ -35,7 +38,7 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
-        BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+        BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     {
         let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
         if !base_output.has_impact() || base_output.get_instance_count() == Count::ZERO {
@@ -43,20 +46,24 @@ where
         }
         let mut str_mult = PValue::ONE;
         let mut chance_mult = PValue::ONE;
-        let mut instance_limit = None;
+        let mut instance_limit = get_item_ship_limit(ctx, calc, projector_uid, ospec.local_limit_attr_id);
         if let Some(projectee_uid) = projectee_uid {
             let proj_data = ctx.eff_projs.get_or_make_proj_data(
                 ctx.u_data,
                 EffectSpec::new(projector_uid, effect.rid),
                 projectee_uid,
             );
-            // Amount limit
-            instance_limit = calc
-                .get_item_oattr_oextra(ctx, projectee_uid, ospec.limit_attr_rid)
-                .map(PValue::from_value_clamped);
+            // Remote limit
+            if let Some(remote_limit) = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.remote_limit_attr_id) {
+                let remote_limit = PValue::from_value_clamped(remote_limit);
+                match instance_limit {
+                    Some(local_limit) => instance_limit = Some(local_limit.min(remote_limit)),
+                    None => instance_limit = Some(remote_limit),
+                }
+            }
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                let proj_mult = proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                let proj_mult = proj_mult_getter.get_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
                 if proj_mult == PValue::ZERO {
                     return None;
                 }
@@ -64,7 +71,7 @@ where
             }
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                let proj_mult = proj_mult_getter.get(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                let proj_mult = proj_mult_getter.get_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
                 if proj_mult == PValue::ZERO {
                     return None;
                 }

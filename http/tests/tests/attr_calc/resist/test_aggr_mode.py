@@ -39,8 +39,8 @@ def test_resist_aggr_max(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].modified == approx(127.5)
     api_mod = api_ship.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(-30)
+    assert api_mod.initial_str == approx(-30)
     assert api_mod.resist_mult == approx(0.5)
-    assert api_mod.applied_val == approx(-15)
+    assert api_mod.applied_str == approx(-15)
     assert api_mod.affectors.one().item_id == api_sw_effect2.id
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id

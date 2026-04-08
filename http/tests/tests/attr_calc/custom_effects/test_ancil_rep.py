@@ -22,9 +22,9 @@ def test_local_aar(client, consts):
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     api_mod = api_aar_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.extra_mul
-    assert api_mod.initial_val == approx(3)
+    assert api_mod.initial_str == approx(3)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(3)
+    assert api_mod.applied_str == approx(3)
     assert api_mod.affectors.one().item_id == api_aar_item.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
 
@@ -50,9 +50,9 @@ def test_remote_aar(client, consts):
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
     api_mod = api_aar_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.extra_mul
-    assert api_mod.initial_val == approx(3)
+    assert api_mod.initial_str == approx(3)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(3)
+    assert api_mod.applied_str == approx(3)
     assert api_mod.affectors.one().item_id == api_aar_item.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
 
@@ -194,14 +194,14 @@ def test_penalties(client, consts):
     assert len(api_mods) == 2
     api_mod_paste = api_mods.find_by_affector_item(affector_item_id=api_aar.id).one()
     assert api_mod_paste.op == consts.ApiModOp.extra_mul
-    assert api_mod_paste.initial_val == approx(3)
+    assert api_mod_paste.initial_str == approx(3)
     assert api_mod_paste.stacking_mult is None
-    assert api_mod_paste.applied_val == approx(3)
+    assert api_mod_paste.applied_str == approx(3)
     api_mod_rig = api_mods.find_by_affector_item(affector_item_id=api_rig.id).one()
     assert api_mod_rig.op == consts.ApiModOp.post_mul
-    assert api_mod_rig.initial_val == approx(1.5)
+    assert api_mod_rig.initial_str == approx(1.5)
     assert api_mod_rig.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_mod_rig.applied_val == approx(1.5)
+    assert api_mod_rig.applied_str == approx(1.5)
 
 
 def test_state(client, consts):

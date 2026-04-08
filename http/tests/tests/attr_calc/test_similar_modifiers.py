@@ -34,14 +34,14 @@ def test_same_item_different_effects_attrs(client, consts):
     assert len(api_item.mods[eve_affectee_attr_id]) == 2
     api_mod1 = api_item.mods[eve_affectee_attr_id].find_by_affector_attr(affector_attr_id=eve_affector_attr1_id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(20)
+    assert api_mod1.initial_str == approx(20)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(20)
+    assert api_mod1.applied_str == approx(20)
     api_mod2 = api_item.mods[eve_affectee_attr_id].find_by_affector_attr(affector_attr_id=eve_affector_attr2_id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(20)
+    assert api_mod2.initial_str == approx(20)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(20)
+    assert api_mod2.applied_str == approx(20)
 
 
 def test_same_item_different_effects_attrs_switching(client, consts):
@@ -79,9 +79,9 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr1_id
     # Action
     api_item.change_module(state=consts.ApiModuleState.active)
@@ -91,14 +91,14 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     assert len(api_item.mods[eve_affectee_attr_id]) == 2
     api_mod1 = api_item.mods[eve_affectee_attr_id].find_by_affector_attr(affector_attr_id=eve_affector_attr1_id).one()
     assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.initial_val == approx(20)
+    assert api_mod1.initial_str == approx(20)
     assert api_mod1.stacking_mult is None
-    assert api_mod1.applied_val == approx(20)
+    assert api_mod1.applied_str == approx(20)
     api_mod2 = api_item.mods[eve_affectee_attr_id].find_by_affector_attr(affector_attr_id=eve_affector_attr2_id).one()
     assert api_mod2.op == consts.ApiModOp.post_percent
-    assert api_mod2.initial_val == approx(20)
+    assert api_mod2.initial_str == approx(20)
     assert api_mod2.stacking_mult is None
-    assert api_mod2.applied_val == approx(20)
+    assert api_mod2.applied_str == approx(20)
     # Action
     api_item.change_module(state=consts.ApiModuleState.offline)
     # Verification
@@ -106,9 +106,9 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr1_id
 
 
@@ -155,9 +155,9 @@ def test_same_item_attr_different_effects(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
 
 
@@ -201,9 +201,9 @@ def test_same_item_attr_different_effects_switch(client, consts):
     assert api_affectee_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_affectee_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
     # Action
     api_affector_item.change_module(state=consts.ApiModuleState.active)
@@ -212,9 +212,9 @@ def test_same_item_attr_different_effects_switch(client, consts):
     assert api_affectee_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_affectee_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
     # Action
     api_affector_item.change_module(state=consts.ApiModuleState.offline)
@@ -223,7 +223,7 @@ def test_same_item_attr_different_effects_switch(client, consts):
     assert api_affectee_item.attrs[eve_affectee_attr_id].modified == approx(120)
     api_mod = api_affectee_item.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.post_percent
-    assert api_mod.initial_val == approx(20)
+    assert api_mod.initial_str == approx(20)
     assert api_mod.stacking_mult is None
-    assert api_mod.applied_val == approx(20)
+    assert api_mod.applied_str == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id

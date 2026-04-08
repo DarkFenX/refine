@@ -3,6 +3,7 @@ use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{shared::HOptionalReload, util::default_one};
 
+#[serde_as]
 #[derive(Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
 pub(in crate::cmd) struct HStatOptionCapSim {
@@ -13,6 +14,8 @@ pub(in crate::cmd) struct HStatOptionCapSim {
     pub(in crate::cmd) optional_reloads: Option<HOptionalReload>,
     #[serde(default)]
     pub(in crate::cmd) stagger: HStatOptionCapSimStagger,
+    #[serde_as(as = "Option<DisplayFromStr>")]
+    pub(in crate::cmd) nosf_projectee_item_id: Option<rc::ItemId>,
 }
 
 #[serde_as]

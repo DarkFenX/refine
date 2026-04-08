@@ -3,11 +3,11 @@ use serde_with::{DisplayFromStr, Map, serde_as};
 
 use crate::info::validation::details::{
     HValActivationBlockedFail, HValCapitalModFail, HValChargeGroupFail, HValChargeParentGroupFail, HValChargeSizeFail,
-    HValChargeVolumeFail, HValDroneGroupFail, HValEffectSecZoneFail, HValEffectStopperFail, HValFighterSquadSizeFail,
-    HValItemKindFail, HValItemSecZoneFail, HValItemVsShipKindFail, HValMaxGroupFail, HValMaxTypeFail,
-    HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail, HValProjFilterFail, HValProjImmunityFail,
-    HValResourceFail, HValRigSizeFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail,
-    HValSrqFail, HValUnusableCapFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValChargeVolumeFail, HValCloakingBlockedFail, HValDroneGroupFail, HValEffectSecZoneFail, HValEffectStopperFail,
+    HValFighterSquadSizeFail, HValItemKindFail, HValItemSecZoneFail, HValItemVsShipKindFail, HValMaxGroupFail,
+    HValMaxTypeFail, HValModuleStateFail, HValNotLoadedItemFail, HValOverloadSkillFail, HValProjFilterFail,
+    HValProjImmunityFail, HValResourceFail, HValRigSizeFail, HValShipLimitFail, HValShipStanceFail, HValSlotCountFail,
+    HValSlotIndexFail, HValSrqFail, HValUnusableCapFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 // Sol-specific
@@ -170,6 +170,8 @@ struct HValFitInfo {
     activation_blocked: Option<HValActivationBlockedFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     effect_stopper: Option<HValEffectStopperFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cloaking_blocked: Option<HValCloakingBlockedFail>,
     // Projection, source side
     #[serde(skip_serializing_if = "Option::is_none")]
     projectee_filter: Option<HValProjFilterFail>,
@@ -263,6 +265,7 @@ impl HValFitInfo {
             // Projection, destination side
             && self.activation_blocked.is_none()
             && self.effect_stopper.is_none()
+            && self.cloaking_blocked.is_none()
             // Projection, source side
             && self.projectee_filter.is_none()
             && self.assist_immunity.is_none()
@@ -419,6 +422,7 @@ impl HValFitInfo {
                 .activation_blocked
                 .map(HValActivationBlockedFail::from_core),
             effect_stopper: core_val_result.effect_stopper.map(HValEffectStopperFail::from_core),
+            cloaking_blocked: core_val_result.cloaking_blocked.map(HValCloakingBlockedFail::from_core),
             // Projection, source side
             projectee_filter: core_val_result.projectee_filter.map(HValProjFilterFail::from_core),
             assist_immunity: core_val_result.assist_immunity.map(HValProjImmunityFail::from_core),

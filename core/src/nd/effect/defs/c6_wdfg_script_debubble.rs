@@ -2,8 +2,8 @@
 
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier, AItem,
-        AItemEffect, AItemId, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModStrength,
+        AEffectModifier, AItem, AItemEffect, AItemId, AOp, AState,
     },
     nd::NEffect,
     util::RMap,
@@ -27,7 +27,7 @@ fn make_effect() -> AEffect {
         category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
         modifiers: [AEffectModifier {
-            affector_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
+            strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
             op: AOp::PostAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
             affectee_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,

@@ -31,6 +31,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     vast: &Vast,
     optional_reloads: Option<OptionalReload>,
     stagger: &StatCapSimStaggerInt,
+    nosf_projectee_item_uid: Option<UItemId>,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
 ) -> BinaryHeap<CapSimEvent> {
@@ -52,6 +53,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         &mut merger,
         cycling_options,
         stagger,
+        nosf_projectee_item_uid,
         fit_data,
     );
     fill_incoming_neuts(
@@ -121,6 +123,7 @@ fn fill_nosfs(
     merger: &mut Merger,
     cycling_options: CyclingOptions,
     stagger: &StatCapSimStaggerInt,
+    projectee_item_uid: Option<UItemId>,
     fit_data: &VastFitData,
 ) {
     let direction = Direction::Gain;
@@ -135,7 +138,8 @@ fn fill_nosfs(
                 None => continue,
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), None) {
+            let iter_data = match aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), projectee_item_uid)
+            {
                 Some(iter_data) => iter_data,
                 None => continue,
             };

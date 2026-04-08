@@ -1,8 +1,11 @@
-use super::traits::{HasImpact, InstanceLimit};
+use super::{
+    shared::get_item_ship_limit,
+    traits::{HasImpact, InstanceLimit},
+};
 use crate::{
     nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval},
-    rd::{RAttrId, REffect, REffectLocalOpcSpec},
+    rd::{REffect, REffectLocalOpcSpec},
     svc::{SvcCtx, calc::Calc, output::Output},
     ud::UItemId,
 };
@@ -30,7 +33,7 @@ where
         base_xargs: BX,
     ) -> Option<Self>
     where
-        BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+        BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     {
         let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
         if !output.has_impact() || output.get_instance_count() == Count::ZERO {
@@ -38,17 +41,9 @@ where
         }
         Some(AggrLocalInvData {
             output,
-            instance_limit: get_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
+            instance_limit: get_item_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
         })
     }
-}
-
-fn get_ship_limit(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: Option<RAttrId>) -> Option<PValue> {
-    let attr_rid = attr_rid?;
-    let fit_uid = ctx.u_data.items.get(item_uid).get_fit_uid()?;
-    let ship_uid = ctx.u_data.fits.get(fit_uid).ship?;
-    calc.get_item_attr_oextra(ctx, ship_uid, attr_rid)
-        .map(PValue::from_value_clamped)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

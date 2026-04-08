@@ -259,7 +259,7 @@ def test_struct(client, consts):
     assert api_ship_stats.can_jump_gate is None
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
     eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
     eve_fighter_id = client.mk_eve_fighter(attrs={eve_gate_attr_id: 100, eve_dock_attr_id: 100})

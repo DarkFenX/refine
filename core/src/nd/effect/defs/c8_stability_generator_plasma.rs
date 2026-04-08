@@ -4,8 +4,8 @@
 use super::shared::assign_defeff_to_item;
 use crate::{
     ad::{
-        ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AEffectCatId, AEffectId, AItemId, AItemListId, AState, AValue,
+        ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId,
+        AEffectModStrength, AItemId, AItemListId, AState, AValue,
     },
     nd::NEffect,
 };
@@ -32,19 +32,19 @@ fn make_effect() -> AEffect {
             full: vec![
                 AEffectBuffFull {
                     buff_id: ABuffId::SOV_SMOD_ARMOR_HITPOINT_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(5.0)),
+                    strength: AEffectModStrength::Hardcoded(AValue::from_f64(5.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::SOV_SMOD_ARMOR_REPAIRER_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(5.0)),
+                    strength: AEffectModStrength::Hardcoded(AValue::from_f64(5.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::SOV_SMOD_MODULE_OVERHEAT_BONUS,
-                    strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(10.0)),
+                    strength: AEffectModStrength::Hardcoded(AValue::from_f64(10.0)),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },

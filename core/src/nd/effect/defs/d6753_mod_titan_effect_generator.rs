@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId, AItemListId},
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+    nd::{NEffect, NEffectProjGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::MOD_TITAN_EFFECT_GENERATOR;
@@ -18,8 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             }),
             ..
         }),
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::Simple),
-        modifier_proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+        modifier_proj: Some(NEffectProjGetter::GenericRangeSimpleSts),
         ..
     }
 }

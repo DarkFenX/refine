@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Default, Hash)]
 pub(crate) struct DmgKinds<T> {
     pub(crate) em: T,
     pub(crate) thermal: T,
@@ -16,19 +16,6 @@ where
 {
     pub(crate) fn get_total(&self) -> T {
         self.em + self.thermal + self.kinetic + self.explosive
-    }
-}
-impl<T> Default for DmgKinds<T>
-where
-    T: Default,
-{
-    fn default() -> Self {
-        Self {
-            em: T::default(),
-            thermal: T::default(),
-            kinetic: T::default(),
-            explosive: T::default(),
-        }
     }
 }
 impl<T> std::ops::Index<usize> for DmgKinds<T> {

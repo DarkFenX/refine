@@ -123,7 +123,7 @@ fn validate_fast(
         None => return true,
     };
     for (&projectee_uid, mut projector_especs) in blockable.iter() {
-        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid) {
+        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -147,7 +147,7 @@ fn validate_verbose(
     let attr_rid = attr_rid?;
     let mut items = HashMap::new();
     for (&projectee_uid, projector_especs) in blockable.iter() {
-        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid) && projector_especs.len() > 0 {
+        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) && projector_especs.len() > 0 {
             let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_uid);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_uid) {

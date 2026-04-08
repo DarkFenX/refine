@@ -4,7 +4,7 @@ use crate::{
     cmd::{
         shared::get_primary_fit,
         stats::options::{
-            HStatOption, HStatOptionCapBalance, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDmg,
+            HStatOption, HStatOptionCapBlc, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDmg,
             HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps, HStatOptionFitOutRps,
             HStatOptionIncomingJam, HStatOptionRps, HStatResolvedOption,
         },
@@ -64,7 +64,7 @@ pub(crate) struct HGetFitStatsCmd {
     erps: Option<HStatOption<HStatOptionErps>>,
     // Ship cap
     cap_amount: Option<bool>,
-    cap_balance: Option<HStatOption<HStatOptionCapBalance>>,
+    cap_balance: Option<HStatOption<HStatOptionCapBlc>>,
     cap_sim: Option<HStatOption<HStatOptionCapSim>>,
     neut_resist: Option<bool>,
     // Ship sensors
@@ -468,27 +468,38 @@ fn get_erps_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionErps>) -> O
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBalance>) -> Option<Vec<f64>> {
+fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapBlc>) -> Option<Vec<Option<f64>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_src_kinds = option.src_kinds.into_core();
         let core_time_options = option.time_options.into_core();
-        match core_fit.get_stat_cap_balance(core_src_kinds, core_time_options) {
-            Ok(result) => results.push(result.into_f64()),
-            Err(_) => return None,
+        match core_fit.get_stat_cap_balance(&core_src_kinds, core_time_options) {
+            Ok(result) => results.push(Some(result.into_f64())),
+            Err(core_err) => match is_fatal_ship_app(core_err) {
+                true => return None,
+                false => results.push(None),
+            },
         }
     }
     Some(results)
 }
-fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapSim>) -> Option<Vec<HStatCapSim>> {
+fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionCapSim>) -> Option<Vec<Option<HStatCapSim>>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_cap_perc = rc::UnitInterval::from_f64_clamped(option.cap_perc);
         let core_optional_reloads = option.optional_reloads.map(|v| v.into_core());
         let core_stagger = option.stagger.into_core();
-        match core_fit.get_stat_cap_sim(core_cap_perc, core_optional_reloads, core_stagger) {
-            Ok(result) => results.push(HStatCapSim::from_core(result)),
-            Err(_) => return None,
+        match core_fit.get_stat_cap_sim(
+            core_cap_perc,
+            core_optional_reloads,
+            core_stagger,
+            option.nosf_projectee_item_id.as_ref(),
+        ) {
+            Ok(result) => results.push(Some(HStatCapSim::from_core(result))),
+            Err(core_err) => match is_fatal_ship_app(core_err) {
+                true => return None,
+                false => results.push(None),
+            },
         }
     }
     Some(results)
@@ -507,4 +518,17 @@ fn get_incoming_jam_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionInc
         }
     }
     Some(results)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn is_fatal_ship_app(core_err: rc::err::FitShipAppliedStatError) -> bool {
+    match core_err {
+        rc::err::FitShipAppliedStatError::NoShip(_)
+        | rc::err::FitShipAppliedStatError::ItemNotLoaded(_)
+        | rc::err::FitShipAppliedStatError::UnsupportedStat(_) => true,
+        rc::err::FitShipAppliedStatError::ProjecteeNotFound(_)
+        | rc::err::FitShipAppliedStatError::ProjecteeCantTakeProjs(_) => false,
+    }
 }

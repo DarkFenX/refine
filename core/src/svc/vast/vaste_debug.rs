@@ -1,11 +1,15 @@
 use super::{Vast, VastFitData};
-use crate::{dbg::DebugResult, ud::UData};
+use crate::{
+    dbg::{DebugError, DebugResult},
+    num::Count,
+    ud::{UData, UFitId},
+};
 
 impl Vast {
     pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for (fit_uid, fit_data) in self.fit_datas.iter() {
+        for (&fit_uid, fit_data) in self.fit_datas.iter() {
             fit_uid.consistency_check(u_data)?;
-            fit_data.consistency_check(u_data)?;
+            fit_data.consistency_check(u_data, fit_uid)?;
         }
         for item_uid in self.not_loaded.iter() {
             item_uid.consistency_check(u_data, false)?;
@@ -112,7 +116,7 @@ impl Vast {
 }
 
 impl VastFitData {
-    pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+    pub(in crate::svc) fn consistency_check(&self, u_data: &UData, fit_uid: UFitId) -> DebugResult {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Validation-related - resources
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,6 +386,19 @@ impl VastFitData {
         }
         for item_uid in self.fighter_squad_size.keys() {
             item_uid.consistency_check(u_data, true)?;
+        }
+        for espec in self.mods_active_cloaks.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        // Check cloak count
+        let mut cloak_count = Count::ZERO;
+        for module_uid in u_data.fits.get(fit_uid).iter_module_uids() {
+            if u_data.items.get(module_uid).dc_module().unwrap().is_cloak() {
+                cloak_count += Count::ONE;
+            }
+        }
+        if self.mods_fitted_cloaks != cloak_count {
+            return Err(DebugError {});
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - damage output

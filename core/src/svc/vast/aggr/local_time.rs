@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_local_time<BG, BX, T, A>(
     time: PValue,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, Xargs = BX>,
+    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

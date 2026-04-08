@@ -3,14 +3,11 @@ use itertools::chain;
 use super::shared::{get_aoe_dd_warmup_neut, make_dd_self_debuffs};
 use crate::{
     ad::{
-        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AEffectId, AItemListId, AValue,
+        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
+        AEffectModStrength, AItemListId, AValue,
     },
     ed::EEffectId,
-    nd::{
-        NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectModProjAttrsGetter, NEffectProjMultGetter,
-        NEffectProjOpcSpec,
-    },
+    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DEBUFF_LANCE;
@@ -26,25 +23,25 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 [
                     AEffectBuffFull {
                         buff_id: ABuffId::REMOTE_REPAIR_IMPEDANCE,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(-50.0)),
+                        strength: AEffectModStrength::Hardcoded(AValue::from_f64(-50.0)),
                         duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                     },
                     AEffectBuffFull {
                         buff_id: ABuffId::WARP_PENALTY,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(100.0)),
+                        strength: AEffectModStrength::Hardcoded(AValue::from_f64(100.0)),
                         duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                     },
                     AEffectBuffFull {
                         buff_id: ABuffId::DISALLOW_DOCK_JUMP,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                        strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
                         duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                     },
                     AEffectBuffFull {
                         buff_id: ABuffId::DISALLOW_TETHER,
-                        strength: AEffectBuffStrength::Hardcoded(AValue::from_f64(1.0)),
+                        strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
                         duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION),
                         scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                     },
@@ -55,12 +52,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             .collect(),
             ..
         }),
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::AoeDd),
-        modifier_proj_mult: Some(NEffectProjMultGetter::AoeDdRange),
+        modifier_proj: Some(NEffectProjGetter::AoeDdRange),
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::DotDelay,
-            proj_mult_str: Some(NEffectProjMultGetter::AoeDd),
+            proj_mult_str: Some(NEffectProjGetter::AoeDd),
             ..
         }),
         neut: Some(get_aoe_dd_warmup_neut()),

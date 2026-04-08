@@ -1,5 +1,6 @@
 use crate::ad::AItemId;
 
+#[derive(Default)]
 pub struct AItemListItemIds {
     data: Vec<AItemId>,
 }
@@ -12,11 +13,6 @@ impl AItemListItemIds {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AItemId> {
         self.data.iter()
-    }
-}
-impl Default for AItemListItemIds {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AItemId> for AItemListItemIds {

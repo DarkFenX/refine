@@ -1,12 +1,12 @@
 use serde_tuple::Serialize_tuple;
 
-use super::strength::HSideEffectStr;
+use super::modification::HSideEffectModification;
 
 #[derive(Serialize_tuple)]
 pub(in crate::info::item::item_booster) struct HSideEffectInfo {
     chance: f64,
     state: bool,
-    strength: Option<HSideEffectStr>,
+    modification: Option<HSideEffectModification>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,9 @@ impl HSideEffectInfo {
         Self {
             chance: core_side_effect.get_chance().into_f64(),
             state: core_side_effect.get_state(),
-            strength: core_side_effect.get_strength().and_then(HSideEffectStr::try_from_core),
+            modification: core_side_effect
+                .get_strength()
+                .and_then(HSideEffectModification::try_from_core),
         }
     }
 }

@@ -9,7 +9,7 @@ pub use data::{
     AAbil, AAbilId, AAbils, AAttr, AAttrId, AAttrs, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier,
     ABuffModifiers, ABuffs, ACount, ACustomAttrId, ACustomBuffId, ACustomEffectId, ACustomItemListId, AData,
     ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration,
-    AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength, AEffectCatId, AEffectId, AEffectLocation, AEffectModifier,
+    AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
     AEffectModifiers, AEffectStopIds, AEffects, AEveAttrId, AEveBuffId, AEveItemListId, AItem, AItemAbils, AItemAttr,
     AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect, AItemEffectData, AItemEffects, AItemGrpId, AItemId,
     AItemList, AItemListId, AItemListItemIds, AItemLists, AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta,

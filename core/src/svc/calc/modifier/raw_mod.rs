@@ -6,14 +6,14 @@ use crate::{
     ad::AEffectCatId,
     dbg::DebugResult,
     misc::EffectSpec,
-    nd::NEffectProjMultGetter,
+    nd::NEffectProjGetter,
     num::Value,
-    rd::{RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModifier},
+    rd::{RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModStrength, REffectModifier},
     svc::{
         SvcCtx,
         calc::{
             AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddRemoveReviser, Location, ModifierKind,
-            modifier::AffectorValue,
+            modifier::ModStrength,
         },
         funcs,
     },
@@ -24,7 +24,7 @@ use crate::{
 pub(in crate::svc::calc) struct RawModifier {
     pub(in crate::svc::calc) kind: ModifierKind,
     pub(in crate::svc::calc) affector_espec: EffectSpec,
-    pub(in crate::svc::calc::modifier) affector_value: AffectorValue,
+    pub(in crate::svc::calc::modifier) strength: ModStrength,
     pub(in crate::svc::calc) op: CalcOp,
     pub(in crate::svc::calc) aggr_mode: AggrMode,
     pub(in crate::svc::calc) affectee_filter: AffecteeFilter,
@@ -32,7 +32,7 @@ pub(in crate::svc::calc) struct RawModifier {
     // Buff-related
     pub(in crate::svc::calc) buff_type_attr_rid: Option<RAttrId> = None,
     // Projection-related
-    pub(in crate::svc::calc) proj_mult_getter: Option<NEffectProjMultGetter> = None,
+    pub(in crate::svc::calc) proj_mult_getter: Option<NEffectProjGetter> = None,
     pub(in crate::svc::calc) proj_attr_rids: [Option<RAttrId>; 2] = [None, None],
     pub(in crate::svc::calc) resist_attr_rid: Option<RAttrId> = None,
 }
@@ -40,7 +40,7 @@ impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {
         self.kind.eq(&other.kind)
             && self.affector_espec.eq(&other.affector_espec)
-            && self.affector_value.eq(&other.affector_value)
+            && self.strength.eq(&other.strength)
             && self.op.eq(&other.op)
             && self.aggr_mode.eq(&other.aggr_mode)
             && self.affectee_filter.eq(&other.affectee_filter)
@@ -53,7 +53,7 @@ impl Hash for RawModifier {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.kind.hash(state);
         self.affector_espec.hash(state);
-        self.affector_value.hash(state);
+        self.strength.hash(state);
         self.op.hash(state);
         self.aggr_mode.hash(state);
         self.affectee_filter.hash(state);
@@ -78,13 +78,16 @@ impl RawModifier {
         Some(Self {
             kind,
             affector_espec: EffectSpec::new(affector_uid, effect.rid),
-            affector_value: AffectorValue::Attr(effect_mod.affector_attr_rid),
+            strength: match effect_mod.strength {
+                REffectModStrength::Attr(attr_rid) => ModStrength::Attr(attr_rid),
+                REffectModStrength::Hardcoded(value) => ModStrength::Hardcoded(value),
+            },
             op: CalcOp::from_a_op(effect_mod.op),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
             affectee_attr_rid: effect_mod.affectee_attr_rid,
             buff_type_attr_rid: None,
-            proj_mult_getter: effect.modifier_proj_mult_getter,
+            proj_mult_getter: effect.modifier_proj,
             proj_attr_rids: effect.modifier_proj_attr_rids,
             resist_attr_rid,
             ..
@@ -108,7 +111,7 @@ impl RawModifier {
             buff_scope,
             buff_mod,
             buff_type_attr_rid,
-            AffectorValue::Attr(buff_str_attr_rid),
+            ModStrength::Attr(buff_str_attr_rid),
         )
     }
     pub(in crate::svc::calc) fn try_from_buff_with_hardcoded(
@@ -128,7 +131,7 @@ impl RawModifier {
             buff_scope,
             buff_mod,
             None,
-            AffectorValue::Hardcoded(buff_str),
+            ModStrength::Hardcoded(buff_str),
         )
     }
     fn try_from_buff(
@@ -139,7 +142,7 @@ impl RawModifier {
         buff_scope: &REffectBuffScope,
         buff_mod: &RBuffModifier,
         buff_type_attr_rid: Option<RAttrId>,
-        buff_str: AffectorValue,
+        buff_str: ModStrength,
     ) -> Option<Self> {
         if effect.category != AEffectCatId::ACTIVE {
             return None;
@@ -151,7 +154,7 @@ impl RawModifier {
             REffectBuffScope::Carrier => Self {
                 kind: ModifierKind::Local,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
-                affector_value: buff_str,
+                strength: buff_str,
                 op: CalcOp::from_a_op(buff.op),
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
@@ -167,7 +170,7 @@ impl RawModifier {
             REffectBuffScope::Projected(item_list_rid) => Self {
                 kind: ModifierKind::Buff,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
-                affector_value: buff_str,
+                strength: buff_str,
                 op: CalcOp::from_a_op(buff.op),
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
@@ -177,7 +180,7 @@ impl RawModifier {
                 ),
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
                 buff_type_attr_rid,
-                proj_mult_getter: effect.modifier_proj_mult_getter,
+                proj_mult_getter: effect.modifier_proj,
                 proj_attr_rids: effect.modifier_proj_attr_rids,
                 resist_attr_rid: funcs::get_resist_attr_rid(affector_item, effect),
                 ..
@@ -186,7 +189,7 @@ impl RawModifier {
             REffectBuffScope::Fleet(item_list_rid) => Self {
                 kind: ModifierKind::FleetBuff,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
-                affector_value: buff_str,
+                strength: buff_str,
                 op: CalcOp::from_a_op(buff.op),
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
@@ -201,17 +204,17 @@ impl RawModifier {
         })
     }
     pub(in crate::svc::calc) fn get_affector_attr_rid(&self) -> Option<RAttrId> {
-        self.affector_value.get_affector_attr_rid()
+        self.strength.get_affector_attr_rid()
     }
     pub(in crate::svc::calc) fn get_affector_info(&self, ctx: SvcCtx) -> SmallVec<Affector, 1> {
-        self.affector_value.get_affector_info(ctx, self.affector_espec.item_uid)
+        self.strength.get_affector_info(ctx, self.affector_espec.item_uid)
     }
     pub(in crate::svc::calc) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx) -> Option<Value> {
-        self.affector_value.get_mod_val(calc, ctx, self.affector_espec)
+        self.strength.get_strength(calc, ctx, self.affector_espec)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::svc::calc) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
-        self.affector_value.get_item_add_remove_reviser()
+        self.strength.get_item_add_remove_reviser()
     }
 }
 
@@ -237,6 +240,7 @@ fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilte
 impl RawModifier {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.affector_espec.consistency_check(u_data, true)?;
+        self.strength.consistency_check(u_data)?;
         self.affectee_attr_rid.consistency_check(u_data)?;
         if let Some(attr_rid) = self.buff_type_attr_rid {
             attr_rid.consistency_check(u_data)?;

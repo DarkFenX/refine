@@ -292,7 +292,7 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.locks == 8
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_locks_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_locked_targets)
     eve_module_id = client.mk_eve_item(attrs={eve_locks_attr_id: 8})
     client.create_sources()

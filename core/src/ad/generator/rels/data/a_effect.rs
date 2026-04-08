@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffScope, AEffectBuffStrength, AEffectId},
+    ad::{AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffScope, AEffectId, AEffectModStrength},
     ed::{EAttrId, EBuffId, EEffectId, EItemId, EItemListId},
 };
 
@@ -81,7 +81,7 @@ impl AEffectBuff {
     }
 }
 
-impl AEffectBuffStrength {
+impl AEffectModStrength {
     fn get_attr_eid(&self) -> Option<EAttrId> {
         match self {
             Self::Attr(attr_aid) => attr_aid.dc_eve(),

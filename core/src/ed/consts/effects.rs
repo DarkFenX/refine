@@ -20,12 +20,14 @@ impl EEffectId {
     pub(crate) const USE_MISSILES: Self = Self::from_i32(101);
     pub(crate) const DEFENDER_MISSILE_LAUNCHING: Self = Self::from_i32(103);
     pub(crate) const FOF_MISSILE_LAUNCHING: Self = Self::from_i32(104);
+    pub(crate) const CLOAKING: Self = Self::from_i32(607);
     pub(crate) const MISSILE_EM_DMG_BONUS: Self = Self::from_i32(660);
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_i32(661);
     pub(crate) const MISSILE_THERM_DMG_BONUS: Self = Self::from_i32(662);
     pub(crate) const MISSILE_KIN_DMG_BONUS: Self = Self::from_i32(668);
     pub(crate) const AMMO_INFLUENCE_CAP_NEED: Self = Self::from_i32(804);
     pub(crate) const CLOAKING_TARGETING_DELAY_BONUS: Self = Self::from_i32(848);
+    pub(crate) const CLOAKING_WARP_SAFE: Self = Self::from_i32(980);
     pub(crate) const DRONE_DMG_BONUS: Self = Self::from_i32(1730);
     pub(crate) const SELF_ROF: Self = Self::from_i32(1851);
     pub(crate) const JUMP_PORTAL_GENERATION: Self = Self::from_i32(2152);
@@ -40,10 +42,12 @@ impl EEffectId {
     pub(crate) const SUPER_WEAPON_CALDARI: Self = Self::from_i32(4490);
     pub(crate) const SUPER_WEAPON_GALLENTE: Self = Self::from_i32(4491);
     pub(crate) const SUPER_WEAPON_MINMATAR: Self = Self::from_i32(4492);
+    pub(crate) const INDUSTRIAL_CORE_EFFECT2: Self = Self::from_i32(4575);
     pub(crate) const MICRO_JUMP_DRIVE: Self = Self::from_i32(4921);
     pub(crate) const ADAPTIVE_ARMOR_HARDENER: Self = Self::from_i32(4928);
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_i32(4936);
     pub(crate) const FUELED_ARMOR_REPAIR: Self = Self::from_i32(5275);
+    pub(crate) const CLOAKING_PROTOTYPE: Self = Self::from_i32(5945);
     pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: Self = Self::from_i32(6184);
     pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: Self = Self::from_i32(6185);
     pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: Self = Self::from_i32(6186);
@@ -88,8 +92,12 @@ impl EEffectId {
     pub(crate) const FTR_ABIL_BOMB: Self = Self::from_i32(6485);
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_i32(6513);
     pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_i32(6554);
+    pub(crate) const MOD_BONUS_NETWORKED_SENSOR_ARRAY: Self = Self::from_i32(6567);
+    pub(crate) const MOD_BONUS_TRIAGE: Self = Self::from_i32(6581);
+    pub(crate) const MOD_BONUS_SIEGE: Self = Self::from_i32(6582);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: Self = Self::from_i32(6651);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_SHIELD_BOOSTER: Self = Self::from_i32(6652);
+    pub(crate) const MOD_BONUS_BASTION: Self = Self::from_i32(6658);
     pub(crate) const STRUCT_MOD_EFFECT_STASIS_WEBIFIER: Self = Self::from_i32(6682);
     pub(crate) const STRUCT_MOD_EFFECT_TARGET_PAINTER: Self = Self::from_i32(6683);
     pub(crate) const STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER: Self = Self::from_i32(6684);
@@ -128,7 +136,10 @@ impl EEffectId {
     pub(crate) const WEATHER_XENON_GAS: Self = Self::from_i32(7063);
     pub(crate) const SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER: Self = Self::from_i32(7166);
     pub(crate) const CHAIN_LIGHTNING: Self = Self::from_i32(8037);
+    pub(crate) const CLONE_RESPAWN_BAY: Self = Self::from_i32(8093);
+    pub(crate) const INDUSTRIAL_COMPACT_CORE_EFFECT2: Self = Self::from_i32(8119);
     pub(crate) const DEBUFF_LANCE: Self = Self::from_i32(11691);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_i32(12126);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_i32(12174);
+    pub(crate) const MOD_BONUS_INTEGRATED_SENSOR_ARRAY: Self = Self::from_i32(12597);
 }

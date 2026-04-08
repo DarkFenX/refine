@@ -44,36 +44,36 @@ def test_normal(client, consts):
         affectee_attr_id=eve_basic_info.res_em_attr_id,
         affector_item_id=api_implant.id).one()
     assert api_rah_mod_em.op == consts.ApiModOp.post_percent
-    assert api_rah_mod_em.initial_val == approx(-10)
+    assert api_rah_mod_em.initial_str == approx(-10)
     assert api_rah_mod_em.stacking_mult is None
-    assert api_rah_mod_em.applied_val == approx(-10)
+    assert api_rah_mod_em.applied_str == approx(-10)
     assert api_rah_mod_em.affectors.one().item_id == api_implant.id
     assert api_rah_mod_em.affectors.one().attr_id == eve_implant_attr_id
     api_rah_mod_therm = api_rah.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_therm_attr_id,
         affector_item_id=api_implant.id).one()
     assert api_rah_mod_therm.op == consts.ApiModOp.post_percent
-    assert api_rah_mod_therm.initial_val == approx(-10)
+    assert api_rah_mod_therm.initial_str == approx(-10)
     assert api_rah_mod_therm.stacking_mult is None
-    assert api_rah_mod_therm.applied_val == approx(-10)
+    assert api_rah_mod_therm.applied_str == approx(-10)
     assert api_rah_mod_therm.affectors.one().item_id == api_implant.id
     assert api_rah_mod_therm.affectors.one().attr_id == eve_implant_attr_id
     api_rah_mod_kin = api_rah.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_kin_attr_id,
         affector_item_id=api_implant.id).one()
     assert api_rah_mod_kin.op == consts.ApiModOp.post_percent
-    assert api_rah_mod_kin.initial_val == approx(-10)
+    assert api_rah_mod_kin.initial_str == approx(-10)
     assert api_rah_mod_kin.stacking_mult is None
-    assert api_rah_mod_kin.applied_val == approx(-10)
+    assert api_rah_mod_kin.applied_str == approx(-10)
     assert api_rah_mod_kin.affectors.one().item_id == api_implant.id
     assert api_rah_mod_kin.affectors.one().attr_id == eve_implant_attr_id
     api_rah_mod_expl = api_rah.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_expl_attr_id,
         affector_item_id=api_implant.id).one()
     assert api_rah_mod_expl.op == consts.ApiModOp.post_percent
-    assert api_rah_mod_expl.initial_val == approx(-10)
+    assert api_rah_mod_expl.initial_str == approx(-10)
     assert api_rah_mod_expl.stacking_mult is None
-    assert api_rah_mod_expl.applied_val == approx(-10)
+    assert api_rah_mod_expl.applied_str == approx(-10)
     assert api_rah_mod_expl.affectors.one().item_id == api_implant.id
     assert api_rah_mod_expl.affectors.one().attr_id == eve_implant_attr_id
     api_ship.update()
@@ -85,36 +85,36 @@ def test_normal(client, consts):
         affectee_attr_id=eve_basic_info.res_em_attr_id,
         affector_item_id=api_rah.id).one()
     assert api_ship_mod_em.op == consts.ApiModOp.pre_mul
-    assert api_ship_mod_em.initial_val == approx(0.855)
+    assert api_ship_mod_em.initial_str == approx(0.855)
     assert api_ship_mod_em.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_ship_mod_em.applied_val == approx(0.855)
+    assert api_ship_mod_em.applied_str == approx(0.855)
     assert api_ship_mod_em.affectors.one().item_id == api_rah.id
     assert api_ship_mod_em.affectors.one().attr_id == eve_basic_info.res_em_attr_id
     api_ship_mod_therm = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_therm_attr_id,
         affector_item_id=api_rah.id).one()
     assert api_ship_mod_therm.op == consts.ApiModOp.pre_mul
-    assert api_ship_mod_therm.initial_val == approx(0.675)
+    assert api_ship_mod_therm.initial_str == approx(0.675)
     assert api_ship_mod_therm.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_ship_mod_therm.applied_val == approx(0.675)
+    assert api_ship_mod_therm.applied_str == approx(0.675)
     assert api_ship_mod_therm.affectors.one().item_id == api_rah.id
     assert api_ship_mod_therm.affectors.one().attr_id == eve_basic_info.res_therm_attr_id
     api_ship_mod_kin = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_kin_attr_id,
         affector_item_id=api_rah.id).one()
     assert api_ship_mod_kin.op == consts.ApiModOp.pre_mul
-    assert api_ship_mod_kin.initial_val == approx(0.735)
+    assert api_ship_mod_kin.initial_str == approx(0.735)
     assert api_ship_mod_kin.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_ship_mod_kin.applied_val == approx(0.735)
+    assert api_ship_mod_kin.applied_str == approx(0.735)
     assert api_ship_mod_kin.affectors.one().item_id == api_rah.id
     assert api_ship_mod_kin.affectors.one().attr_id == eve_basic_info.res_kin_attr_id
     api_ship_mod_expl = api_ship.mods.find_by_affector_item(
         affectee_attr_id=eve_basic_info.res_expl_attr_id,
         affector_item_id=api_rah.id).one()
     assert api_ship_mod_expl.op == consts.ApiModOp.pre_mul
-    assert api_ship_mod_expl.initial_val == approx(0.795)
+    assert api_ship_mod_expl.initial_str == approx(0.795)
     assert api_ship_mod_expl.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_ship_mod_expl.applied_val == approx(0.795)
+    assert api_ship_mod_expl.applied_str == approx(0.795)
     assert api_ship_mod_expl.affectors.one().item_id == api_rah.id
     assert api_ship_mod_expl.affectors.one().attr_id == eve_basic_info.res_expl_attr_id
 
@@ -157,30 +157,30 @@ def test_incoming(client, consts):
     assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.795)
     api_em_mod = api_rah.mods[eve_basic_info.res_em_attr_id].one()
     assert api_em_mod.op == consts.ApiModOp.post_percent
-    assert api_em_mod.initial_val == approx(-10)
+    assert api_em_mod.initial_str == approx(-10)
     assert api_em_mod.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_em_mod.applied_val == approx(-10)
+    assert api_em_mod.applied_str == approx(-10)
     assert api_em_mod.affectors.one().item_id == api_implant.id
     assert api_em_mod.affectors.one().attr_id == eve_implant_attr_id
     api_therm_mod = api_rah.mods[eve_basic_info.res_therm_attr_id].one()
     assert api_therm_mod.op == consts.ApiModOp.post_percent
-    assert api_therm_mod.initial_val == approx(-10)
+    assert api_therm_mod.initial_str == approx(-10)
     assert api_therm_mod.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_therm_mod.applied_val == approx(-10)
+    assert api_therm_mod.applied_str == approx(-10)
     assert api_therm_mod.affectors.one().item_id == api_implant.id
     assert api_therm_mod.affectors.one().attr_id == eve_implant_attr_id
     api_kin_mod = api_rah.mods[eve_basic_info.res_kin_attr_id].one()
     assert api_kin_mod.op == consts.ApiModOp.post_percent
-    assert api_kin_mod.initial_val == approx(-10)
+    assert api_kin_mod.initial_str == approx(-10)
     assert api_kin_mod.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_kin_mod.applied_val == approx(-10)
+    assert api_kin_mod.applied_str == approx(-10)
     assert api_kin_mod.affectors.one().item_id == api_implant.id
     assert api_kin_mod.affectors.one().attr_id == eve_implant_attr_id
     api_expl_mod = api_rah.mods[eve_basic_info.res_expl_attr_id].one()
     assert api_expl_mod.op == consts.ApiModOp.post_percent
-    assert api_expl_mod.initial_val == approx(-10)
+    assert api_expl_mod.initial_str == approx(-10)
     assert api_expl_mod.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_expl_mod.applied_val == approx(-10)
+    assert api_expl_mod.applied_str == approx(-10)
     assert api_expl_mod.affectors.one().item_id == api_implant.id
     assert api_expl_mod.affectors.one().attr_id == eve_implant_attr_id
 
@@ -235,8 +235,8 @@ def test_outgoing_insignificance(client, consts):
     assert len(api_ship.mods) == 1
     api_mod = api_ship.mods[eve_basic_info.res_therm_attr_id].one()
     assert api_mod.op == consts.ApiModOp.pre_mul
-    assert api_mod.initial_val == approx(0)
+    assert api_mod.initial_str == approx(0)
     assert api_mod.stacking_mult == approx(consts.PenaltyStr.p1)
-    assert api_mod.applied_val == approx(0)
+    assert api_mod.applied_str == approx(0)
     assert api_mod.affectors.one().item_id == api_rah.id
     assert api_mod.affectors.one().attr_id == eve_basic_info.res_therm_attr_id

@@ -144,7 +144,7 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.warp_speed == approx(1.5)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_speed_mult)
     eve_module_id = client.mk_eve_item(attrs={eve_mult_attr_id: 3})
     client.create_sources()

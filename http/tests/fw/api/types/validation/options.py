@@ -77,6 +77,7 @@ class ValOptions:
     # Projection, destination side
     activation_blocked: ValOption = Absent
     effect_stopper: ValOption = Absent
+    cloaking_blocked: ValOption = Absent
     # Projection, source side
     projectee_filter: ValOption = Absent
     assist_immunity: ValOption = Absent

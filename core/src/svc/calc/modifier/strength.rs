@@ -1,8 +1,9 @@
 use smallvec::{SmallVec, smallvec};
 
-use super::custom::CalcCustomAffectorValue;
+use super::custom::CalcCustomModStrength;
 use crate::{
     api::AttrId,
+    dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
     rd::RAttrId,
@@ -10,16 +11,16 @@ use crate::{
         SvcCtx,
         calc::{Affector, Calc, ItemAddRemoveReviser},
     },
-    ud::UItemId,
+    ud::{UData, UItemId},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) enum AffectorValue {
+pub(super) enum ModStrength {
     Attr(RAttrId),
     Hardcoded(Value),
-    Custom(CalcCustomAffectorValue),
+    Custom(CalcCustomModStrength),
 }
-impl AffectorValue {
+impl ModStrength {
     // Simple and fast way to get affector attribute. Variants which have actual affector attributes
     // but do not expose anything are designed to handle attribute cleanup in some other way (via
     // dependency/revision registers)
@@ -27,7 +28,7 @@ impl AffectorValue {
         match self {
             Self::Attr(attr_rid) => Some(*attr_rid),
             Self::Hardcoded(_) => None,
-            Self::Custom(custom) => custom.affector_attr_rid,
+            Self::Custom(custom_str) => custom_str.affector_attr_rid,
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
@@ -41,14 +42,14 @@ impl AffectorValue {
                 item_id: ctx.u_data.items.xid_by_iid(item_uid),
                 attr_id: None
             }],
-            Self::Custom(custom) => custom.get_affector_info(ctx, item_uid),
+            Self::Custom(custom_str) => custom_str.get_affector_info(ctx, item_uid),
         }
     }
-    pub(super) fn get_mod_val(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+    pub(super) fn get_strength(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
         match self {
             Self::Attr(attr_rid) => Some(calc.get_item_attr_rfull(ctx, espec.item_uid, *attr_rid).ok()?.dogma),
-            Self::Hardcoded(a_val) => Some(*a_val),
-            Self::Custom(custom) => custom.get_mod_val(calc, ctx, espec),
+            Self::Hardcoded(strength) => Some(*strength),
+            Self::Custom(custom_str) => custom_str.get_strength(calc, ctx, espec),
         }
     }
     // Revision methods - define if modification value can change upon some action
@@ -56,7 +57,21 @@ impl AffectorValue {
         match self {
             Self::Attr(_) => None,
             Self::Hardcoded(_) => None,
-            Self::Custom(custom) => custom.get_item_add_remove_reviser(),
+            Self::Custom(custom_str) => custom_str.get_item_add_remove_reviser(),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModStrength {
+    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        match self {
+            Self::Attr(attr_rid) => attr_rid.consistency_check(u_data)?,
+            Self::Hardcoded(_) => (),
+            Self::Custom(custom_str) => custom_str.consistency_check(u_data)?,
+        }
+        Ok(())
     }
 }

@@ -245,7 +245,7 @@ def test_struct(client, consts):
     assert api_ship_stats.can_jump_drive is None
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_fighter_id = client.mk_eve_fighter(attrs={eve_jump_attr_id: 100, eve_warp_attr_id: 100})

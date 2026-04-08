@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     ed::EEffectId,
-    nd::{NEffect, NEffectGeneralOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffect, NEffectGeneralOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::NPC_ENTITY_REMOTE_ARMOR_REPAIRER;
@@ -13,9 +13,9 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         outgoing_armor_rep: Some(NEffectProjOpcSpec {
             base: NEffectGeneralOutputGetter::RepArmor,
-            proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+            proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
             resist: Some(NEffectResist::Standard),
-            limit_attr_id: Some(AAttrId::ARMOR_HP),
+            remote_limit_attr_id: Some(AAttrId::ARMOR_HP),
             ..
         }),
         ..

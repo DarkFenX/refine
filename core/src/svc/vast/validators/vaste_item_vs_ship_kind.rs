@@ -6,7 +6,6 @@ use crate::{
     util::RSet,
 };
 
-/// Some items can only be fit to a ship or a structure. Currently, applies just to modules.
 pub struct ValItemVsShipKindFail {
     /// Kind of current ship.
     pub ship_kind: ValShipKind,

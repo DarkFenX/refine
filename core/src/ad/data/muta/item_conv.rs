@@ -7,6 +7,7 @@ pub struct AMutaItemConv {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AMutaItemConvs {
     data: Vec<AMutaItemConv>,
 }
@@ -19,11 +20,6 @@ impl AMutaItemConvs {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AMutaItemConv> {
         self.data.iter()
-    }
-}
-impl Default for AMutaItemConvs {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AMutaItemConv> for AMutaItemConvs {

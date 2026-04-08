@@ -77,7 +77,7 @@ def test_char_not_loaded(client, consts):
     assert api_char_stats.drone_control_range is None
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_dcr_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_control_distance)
     eve_ship_id = client.mk_eve_ship(attrs={eve_dcr_attr_id: 20000})
     client.create_sources()

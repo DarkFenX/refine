@@ -3,6 +3,7 @@ use itertools::chain;
 use crate::{
     ad::{AItemCatId, AItemGrpId},
     misc::{ItemKind, ModRack},
+    num::Count,
     rd::{RItemAXt, RShipKind},
     svc::vast::{ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast, VastFitData},
     ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},
@@ -135,6 +136,9 @@ impl Vast {
                 }
                 if module.takes_launcher_hardpoint() {
                     fit_data.mods_launcher.insert(item_uid);
+                }
+                if module.is_cloak() {
+                    fit_data.mods_fitted_cloaks += Count::ONE;
                 }
                 if let Some(ship_limit) = &item_axt.ship_limit {
                     fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
@@ -416,6 +420,9 @@ impl Vast {
                 }
                 if module.takes_launcher_hardpoint() {
                     fit_data.mods_launcher.remove(item_uid);
+                }
+                if module.is_cloak() {
+                    fit_data.mods_fitted_cloaks -= Count::ONE;
                 }
                 if item_axt.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_uid);

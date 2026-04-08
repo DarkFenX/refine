@@ -1,10 +1,10 @@
 use crate::{
     ad::{
-        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectBuffStrength,
-        AEffectId, AItemListId,
+        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
+        AEffectModStrength, AItemListId,
     },
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+    nd::{NEffect, NEffectProjGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_WEB;
@@ -17,14 +17,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_buff: Some(AEffectBuff {
             full: vec![AEffectBuffFull {
                 buff_id: ABuffId::STASIS_WEBIFICATION_BURST,
-                strength: AEffectBuffStrength::Attr(AAttrId::SPEED_FACTOR),
+                strength: AEffectModStrength::Attr(AAttrId::SPEED_FACTOR),
                 duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
                 scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
             }],
             ..
         }),
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::AoeBurst),
-        modifier_proj_mult: Some(NEffectProjMultGetter::AoeBurstRange),
+        modifier_proj: Some(NEffectProjGetter::AoeBurstRange),
         ..
     }
 }

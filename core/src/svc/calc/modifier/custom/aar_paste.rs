@@ -1,6 +1,6 @@
 use smallvec::SmallVec;
 
-use super::CalcCustomAffectorValue;
+use super::CalcCustomModStrength;
 use crate::{
     ad::AItemId,
     api::AttrId,
@@ -11,7 +11,7 @@ use crate::{
         SvcCtx,
         calc::{
             AffecteeFilter, Affector, AggrMode, Calc, CalcCustomModifier, CalcOp, Location, ModifierKind, RawModifier,
-            modifier::AffectorValue,
+            modifier::ModStrength,
         },
     },
     ud::{UItem, UItemId},
@@ -21,7 +21,7 @@ pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<
     Some(RawModifier {
         kind: ModifierKind::Local,
         affector_espec: espec,
-        affector_value: AffectorValue::Custom(CalcCustomAffectorValue {
+        strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::AarPaste,
             affector_attr_rid: Some(attr_consts.charged_armor_dmg_mult?),
         }),

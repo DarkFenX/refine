@@ -260,7 +260,7 @@ def test_fighter(client, consts):
     assert api_fighter_stats.max_warp_range is None
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_cap_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_cap_need_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_capacitor_need)

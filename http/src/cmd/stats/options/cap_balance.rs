@@ -1,17 +1,18 @@
 use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
 
 use super::shared::HStatTimeOptions;
 use crate::util::default_true;
 
 #[derive(Copy, Clone, Deserialize)]
-pub(in crate::cmd) struct HStatOptionCapBalance {
+pub(in crate::cmd) struct HStatOptionCapBlc {
     #[serde(default)]
-    pub(in crate::cmd) src_kinds: HStatCapSrcKinds,
+    pub(in crate::cmd) src_kinds: HStatCapBlcSrcKinds,
     #[serde(default = "default_time_options")]
     pub(in crate::cmd) time_options: HStatTimeOptions,
 }
 // Custom default implementation to use Sim mode instead of default Burst mode
-impl Default for HStatOptionCapBalance {
+impl Default for HStatOptionCapBlc {
     fn default() -> Self {
         Self {
             src_kinds: Default::default(),
@@ -26,13 +27,13 @@ fn default_time_options() -> HStatTimeOptions {
 
 #[derive(Copy, Clone, educe::Educe, Deserialize)]
 #[educe(Default)]
-pub(in crate::cmd) struct HStatCapSrcKinds {
+pub(in crate::cmd) struct HStatCapBlcSrcKinds {
     #[serde(default = "default_true")]
     #[educe(Default = true)]
     default: bool,
-    regen: Option<HStatCapRegenOptions>,
+    regen: Option<HStatCapBlcRegen>,
     cap_injectors: Option<bool>,
-    nosfs: Option<bool>,
+    nosfs: Option<HStatCapBlcNosfs>,
     consumers: Option<bool>,
     incoming_transfers: Option<bool>,
     incoming_neuts: Option<bool>,
@@ -40,47 +41,47 @@ pub(in crate::cmd) struct HStatCapSrcKinds {
 
 #[derive(Copy, Clone, Deserialize)]
 #[serde(untagged)]
-enum HStatCapRegenOptions {
+enum HStatCapBlcRegen {
     Simple(bool),
     Extended(bool, HStatCapRegenOptionsFull),
 }
-impl HStatCapRegenOptions {
-    fn is_enabled(&self) -> bool {
-        match self {
-            Self::Simple(enabled) => *enabled,
-            Self::Extended(enabled, _) => *enabled,
-        }
-    }
-    fn get_cap_perc(&self) -> Option<f64> {
-        match self {
-            Self::Simple(_) => None,
-            Self::Extended(_, options) => options.cap_perc,
-        }
-    }
-}
+
 #[derive(Copy, Clone, Deserialize)]
 struct HStatCapRegenOptionsFull {
     cap_perc: Option<f64>,
 }
 
+#[derive(Copy, Clone, Deserialize)]
+#[serde(untagged)]
+enum HStatCapBlcNosfs {
+    Simple(bool),
+    Extended(bool, HStatCapNosfsOptionsFull),
+}
+
+#[serde_as]
+#[derive(Copy, Clone, Deserialize)]
+struct HStatCapNosfsOptionsFull {
+    #[serde_as(as = "Option<DisplayFromStr>")]
+    projectee_item_id: Option<rc::ItemId>,
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HStatCapSrcKinds {
-    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatCapSrcKinds {
+impl HStatCapBlcSrcKinds {
+    pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatCapBlcSrcKinds {
         let mut core_src_kinds = match self.default {
-            true => rc::stats::StatCapSrcKinds::all_enabled(),
-            false => rc::stats::StatCapSrcKinds::all_disabled(),
+            true => rc::stats::StatCapBlcSrcKinds::all_enabled(),
+            false => rc::stats::StatCapBlcSrcKinds::all_disabled(),
         };
         if let Some(regen) = self.regen {
-            core_src_kinds.regen.enabled = regen.is_enabled();
-            core_src_kinds.regen.cap_perc = rc::UnitInterval::from_f64_clamped(regen.get_cap_perc().unwrap_or(0.25));
+            core_src_kinds.regen = regen.into_core();
         }
         if let Some(cap_injectors) = self.cap_injectors {
             core_src_kinds.cap_injectors = cap_injectors;
         }
         if let Some(nosfs) = self.nosfs {
-            core_src_kinds.nosfs = nosfs;
+            core_src_kinds.nosfs = nosfs.into_core();
         }
         if let Some(consumers) = self.consumers {
             core_src_kinds.consumers = consumers;
@@ -92,5 +93,45 @@ impl HStatCapSrcKinds {
             core_src_kinds.incoming_neuts = incoming_neuts;
         }
         core_src_kinds
+    }
+}
+
+impl HStatCapBlcRegen {
+    fn into_core(self) -> rc::stats::StatCapBlcRegen {
+        match self {
+            Self::Simple(enabled) => match enabled {
+                true => rc::stats::StatCapBlcRegen::Enabled(rc::stats::StatCapBlcRegenOptions { .. }),
+                false => rc::stats::StatCapBlcRegen::Disabled,
+            },
+            Self::Extended(enabled, options) => match enabled {
+                true => match options.cap_perc {
+                    Some(cap_perc) => rc::stats::StatCapBlcRegen::Enabled(rc::stats::StatCapBlcRegenOptions {
+                        cap_perc: rc::UnitInterval::from_f64_clamped(cap_perc),
+                    }),
+                    None => rc::stats::StatCapBlcRegen::Enabled(rc::stats::StatCapBlcRegenOptions { .. }),
+                },
+                false => rc::stats::StatCapBlcRegen::Disabled,
+            },
+        }
+    }
+}
+
+impl HStatCapBlcNosfs {
+    fn into_core(self) -> rc::stats::StatCapBlcNosfs {
+        match self {
+            Self::Simple(enabled) => match enabled {
+                true => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions { .. }),
+                false => rc::stats::StatCapBlcNosfs::Disabled,
+            },
+            Self::Extended(enabled, options) => match enabled {
+                true => match options.projectee_item_id {
+                    Some(projectee_item_id) => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions {
+                        projectee_item_id: Some(projectee_item_id),
+                    }),
+                    None => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions { .. }),
+                },
+                false => rc::stats::StatCapBlcNosfs::Disabled,
+            },
+        }
     }
 }

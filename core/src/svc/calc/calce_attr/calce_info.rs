@@ -127,11 +127,11 @@ impl Calc {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(Modification {
                     op: Op::MinLimit,
-                    initial_val: limiter_val.dogma,
+                    initial_str: limiter_val.dogma,
                     range_mult: None,
                     resist_mult: None,
                     stacking_mult: None,
-                    applied_val: limiter_val.dogma,
+                    applied_str: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.xid_by_iid(item_uid),
                         attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
@@ -148,11 +148,11 @@ impl Calc {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(Modification {
                     op: Op::MaxLimit,
-                    initial_val: limiter_val.dogma,
+                    initial_str: limiter_val.dogma,
                     range_mult: None,
                     resist_mult: None,
                     stacking_mult: None,
-                    applied_val: limiter_val.dogma,
+                    applied_str: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.xid_by_iid(item_uid),
                         attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
@@ -198,11 +198,11 @@ impl Calc {
                     // regardless of its value), but pre-assignment is still used in info for
                     // simplicity. In any EVE scenario there is no pre-assignment for this attribute
                     op: Op::BaseAssign,
-                    initial_val: security_full_val.dogma,
+                    initial_str: security_full_val.dogma,
                     range_mult: None,
                     resist_mult: None,
                     stacking_mult: None,
-                    applied_val: security_full_val.dogma,
+                    applied_str: security_full_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.xid_by_iid(item_uid),
                         attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(security_attr_rid).aid)),

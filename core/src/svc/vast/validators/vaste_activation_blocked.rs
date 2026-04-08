@@ -18,13 +18,14 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        let attr_rid = match ctx.ac().activation_blocked {
-            Some(attr_rid) => attr_rid,
-            None => return true,
-        };
-        self.mods_active
-            .difference(kfs)
-            .all(|item_uid| !is_attr_flag_set(ctx, calc, *item_uid, attr_rid))
+        if let Some(block_attr_rid) = ctx.ac().activation_blocked {
+            for item_uid in self.mods_active.iter() {
+                if is_attr_flag_set(ctx, calc, *item_uid, block_attr_rid).unwrap_or(false) && !kfs.contains(item_uid) {
+                    return false;
+                }
+            }
+        }
+        true
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
@@ -33,13 +34,14 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
-        let attr_rid = ctx.ac().activation_blocked?;
-        let module_ids: Vec<_> = self
-            .mods_active
-            .difference(kfs)
-            .filter(|item_uid| is_attr_flag_set(ctx, calc, **item_uid, attr_rid))
-            .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
-            .collect();
+        let mut module_ids = Vec::new();
+        if let Some(block_attr_rid) = ctx.ac().activation_blocked {
+            for item_uid in self.mods_active.iter() {
+                if is_attr_flag_set(ctx, calc, *item_uid, block_attr_rid).unwrap_or(false) && !kfs.contains(item_uid) {
+                    module_ids.push(ctx.u_data.items.xid_by_iid(*item_uid));
+                }
+            }
+        }
         match module_ids.is_empty() {
             true => None,
             false => Some(ValActivationBlockedFail { module_ids }),

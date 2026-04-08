@@ -1,10 +1,10 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModifier, AItemId, AModifierSrq,
-        AOp,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
+        AItemId, AModifierSrq, AOp,
     },
     ed::EEffectId,
-    nd::{NEffect, NEffectModProjAttrsGetter, NEffectProjMultGetter},
+    nd::{NEffect, NEffectProjGetter},
 };
 
 const EFFECT_EID: EEffectId = EEffectId::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
@@ -15,8 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
-        modifier_proj_attrs: Some(NEffectModProjAttrsGetter::Simple),
-        modifier_proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
+        modifier_proj: Some(NEffectProjGetter::GenericRangeSimpleSts),
         ..
     }
 }
@@ -27,14 +26,14 @@ fn update_effect(a_effect: &mut AEffect) {
     a_effect.modifiers.extend([
         // Warp scrambling
         AEffectModifier {
-            affector_attr_id: AAttrId::WARP_SCRAMBLE_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::WARP_SCRAMBLE_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
             affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
         },
         // MWD blocker
         AEffectModifier {
-            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::ACTIVATION_BLOCKED_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
@@ -44,7 +43,7 @@ fn update_effect(a_effect: &mut AEffect) {
         },
         // MJD/subcap MJFG blocker
         AEffectModifier {
-            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::ACTIVATION_BLOCKED_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,
@@ -54,7 +53,7 @@ fn update_effect(a_effect: &mut AEffect) {
         },
         // Capital MJFG blocker
         AEffectModifier {
-            affector_attr_id: AAttrId::ACTIVATION_BLOCKED_STRENGTH,
+            strength: AEffectModStrength::Attr(AAttrId::ACTIVATION_BLOCKED_STRENGTH),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::LocSrq(
                 AEffectLocation::Target,

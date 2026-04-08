@@ -10,9 +10,8 @@ use crate::{
 impl<'a> FleetMut<'a> {
     pub fn get_stat_dmg(&mut self, item_kinds: StatDmgItemKinds, time_options: StatTimeOptions) -> StatDmg {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        let mut reuse_cseq_map = CseqMap::new();
         self.sol.svc.get_stat_fits_dmg_raw(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             u_fleet.iter_fits(),
             item_kinds,
@@ -27,9 +26,8 @@ impl<'a> FleetMut<'a> {
     ) -> Result<StatDmgApplied, FleetStatAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        let mut reuse_cseq_map = CseqMap::new();
         Ok(self.sol.svc.get_stat_fits_dmg_applied(
-            &mut reuse_cseq_map,
+            &mut CseqMap::new(),
             &self.sol.u_data,
             u_fleet.iter_fits(),
             item_kinds,

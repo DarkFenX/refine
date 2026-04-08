@@ -1,5 +1,5 @@
 pub use fit::{
-    Fit, FitCharacterStatError, FitMut, FitShipStatError, FitStatAppliedError, GetFitError,
+    Fit, FitAppliedStatError, FitCharacterStatError, FitMut, FitShipAppliedStatError, FitShipStatError, GetFitError,
     RemoveFitRahIncomingDpsError, SetFitFleetError, UnsetFitFleetError,
 };
 pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, FleetStatAppliedError, GetFleetError};
@@ -11,13 +11,13 @@ pub use item::{
     GetChargeError, GetDroneError, GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError,
     GetModuleError, GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError,
     GetServiceError, GetShipError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant,
-    ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon,
-    ItemStatAppliedError, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module,
-    ModuleIter, ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj,
-    RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError, Rig, RigMut, Service,
-    ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr,
-    SideEffectStr, Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut,
-    SwEffect, SwEffectMut,
+    ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemAppliedStatError, ItemCommon, ItemMut,
+    ItemMutCommon, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module, ModuleIter,
+    ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj, RangedProjIter,
+    RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError, Rig, RigMut, Service, ServiceMut,
+    SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
+    Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect,
+    SwEffectMut,
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_uids, iter_ranged_projs};
 pub use misc::{

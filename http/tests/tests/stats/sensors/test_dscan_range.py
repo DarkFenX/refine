@@ -114,7 +114,7 @@ def test_struct_modified(client, consts):
     assert api_ship_stats.dscan_range == approx(14.355042)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_dscan_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_directional_scan_range)
     eve_drone_id = client.mk_eve_drone(attrs={eve_dscan_range_attr_id: 2147483647000})
     client.create_sources()

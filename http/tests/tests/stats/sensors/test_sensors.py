@@ -336,7 +336,7 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_radar_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_radar_strength)
     eve_grav_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_gravimetric_strength)
     eve_magnet_attr_id = client.mk_eve_attr(id_=consts.EveAttr.scan_magnetometric_strength)

@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use crate::{
     svc::vast::{
         ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
-        ValChargeVolumeFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
-        ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail,
-        ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail,
-        ValResourceFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
-        ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
+        ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail,
+        ValFighterSquadSizeFail, ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail,
+        ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail,
+        ValProjImmunityFail, ValResourceFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail,
+        ValSlotIndexFail, ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
     },
     ud::FitId,
 };
@@ -102,6 +102,7 @@ pub struct ValResultFit {
     // Projection, destination side
     pub activation_blocked: Option<ValActivationBlockedFail>,
     pub effect_stopper: Option<ValEffectStopperFail>,
+    pub cloaking_blocked: Option<ValCloakingBlockedFail>,
     // Projection, source side
     pub projectee_filter: Option<ValProjFilterFail>,
     pub assist_immunity: Option<ValProjImmunityFail>,
@@ -186,6 +187,7 @@ impl ValResultFit {
             // Projection, destination side
             activation_blocked: None,
             effect_stopper: None,
+            cloaking_blocked: None,
             // Projection, source side
             projectee_filter: None,
             assist_immunity: None,
@@ -269,6 +271,7 @@ impl ValResultFit {
             // Projection, destination side
             && self.activation_blocked.is_none()
             && self.effect_stopper.is_none()
+            && self.cloaking_blocked.is_none()
             // Projection, source side
             && self.projectee_filter.is_none()
             && self.assist_immunity.is_none()

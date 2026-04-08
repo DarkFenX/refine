@@ -220,7 +220,7 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.sig_radius == approx(873)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_module_id = client.mk_eve_item(attrs={eve_sig_radius_attr_id: 100})
     client.create_sources()

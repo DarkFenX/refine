@@ -3,6 +3,7 @@ use crate::{
     util::RMap,
 };
 
+#[derive(Default)]
 pub struct AItemLists {
     pub(crate) data: RMap<AItemListId, AItemList>,
 }
@@ -15,11 +16,6 @@ impl AItemLists {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AItemList> {
         self.data.values()
-    }
-}
-impl Default for AItemLists {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AItemList> for AItemLists {

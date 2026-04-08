@@ -160,6 +160,7 @@ impl AAttrId {
         Self::from_eid(EAttrId::ENTITY_MAX_VELOCITY_SIG_RADIUS_MULT);
     pub(crate) const UPGRADE_COST: Self = Self::from_eid(EAttrId::UPGRADE_COST);
     pub(crate) const UPGRADE_SLOTS_LEFT: Self = Self::from_eid(EAttrId::UPGRADE_SLOTS_LEFT);
+    pub(crate) const CAN_CLOAK: Self = Self::from_eid(EAttrId::CAN_CLOAK);
     pub(crate) const SPEED_FACTOR_BONUS: Self = Self::from_eid(EAttrId::SPEED_FACTOR_BONUS);
     pub(crate) const REQUIRED_THERMODYNAMICS_SKILL: Self = Self::from_eid(EAttrId::REQUIRED_THERMODYNAMICS_SKILL);
     pub(crate) const SPEED_BOOST_FACTOR_BONUS: Self = Self::from_eid(EAttrId::SPEED_BOOST_FACTOR_BONUS);
@@ -259,6 +260,7 @@ impl AAttrId {
     pub(crate) const DOOMSDAY_IMMOBILITY_DURATION: Self = Self::from_eid(EAttrId::DOOMSDAY_IMMOBILITY_DURATION);
     pub(crate) const MAX_TYPE_FITTED: Self = Self::from_eid(EAttrId::MAX_TYPE_FITTED);
     pub(crate) const ENERGY_NEUT_SIG_RESOLUTION: Self = Self::from_eid(EAttrId::ENERGY_NEUT_SIG_RESOLUTION);
+    pub(crate) const DISALLOW_CLOAKING: Self = Self::from_eid(EAttrId::DISALLOW_CLOAKING);
     pub(crate) const CAN_FIT_SHIP_TYPE7: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_TYPE7);
     pub(crate) const WARFARE_BUFF1_ID: Self = Self::from_eid(EAttrId::WARFARE_BUFF1_ID);
     pub(crate) const WARFARE_BUFF1_VAL: Self = Self::from_eid(EAttrId::WARFARE_BUFF1_VAL);

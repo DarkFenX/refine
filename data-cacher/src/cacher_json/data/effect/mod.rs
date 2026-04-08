@@ -5,3 +5,4 @@ mod buff;
 mod effect;
 mod location;
 mod modifier;
+mod strength;

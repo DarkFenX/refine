@@ -179,7 +179,7 @@ def test_fighter_modified(client, consts):
     assert api_fighter_stats.mass == approx(873)
 
 
-def test_other(client, consts):
+def test_incorrect_item_kind(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_module_id = client.mk_eve_item(attrs={eve_mass_attr_id: 100})
     client.create_sources()

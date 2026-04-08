@@ -103,6 +103,9 @@ impl UModule {
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
+    pub(crate) fn is_cloak(&self) -> bool {
+        self.base.is_cloak()
+    }
     pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
         self.base.is_ice_harvester()
     }

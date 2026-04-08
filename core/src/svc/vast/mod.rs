@@ -1,25 +1,26 @@
-pub(crate) use stats::StatCapSimStaggerInt;
 pub use stats::{
-    StatCapRegenOptions, StatCapSim, StatCapSimStagger, StatCapSrcKinds, StatDmg, StatDmgApplied, StatDmgEntry,
-    StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer,
-    StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatMining, StatMiningEntry, StatMiningItemKinds,
-    StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps,
-    StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst,
-    StatTimeOptionsSim,
+    StatCapBlcNosfs, StatCapBlcNosfsOptions, StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatCapSim,
+    StatCapSimStagger, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher,
+    StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer,
+    StatInJam, StatMining, StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps,
+    StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors,
+    StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
 };
-pub use val_options::{ValOption, ValOptions, ValOptionsSol};
+pub(crate) use stats::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
+use val_options::ValOptionInt;
+pub use val_options::{ValOption, ValOptionEnabledOptions, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
 pub use validators::{
     ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,
-    ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail,
-    ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail,
-    ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo,
-    ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail,
-    ValProjImmunityFail, ValResourceFail, ValRigSizeFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo,
-    ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableCapFail,
-    ValUnusableResFail, ValUnusableSlotFail,
+    ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail,
+    ValEffectStopperFail, ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail,
+    ValItemKindItemInfo, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxGroupGroupInfo,
+    ValMaxTypeFail, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail,
+    ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResourceFail, ValRigSizeFail, ValShipKind,
+    ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail,
+    ValSrqSkillInfo, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
 };
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;

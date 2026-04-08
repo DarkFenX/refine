@@ -1,4 +1,4 @@
-use super::option::StatCapSrcKinds;
+use super::option::{StatCapBlcNosfsInt, StatCapBlcRegen, StatCapBlcSrcKindsInt};
 use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
@@ -12,7 +12,7 @@ use crate::{
                 SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
                 aggr_proj_time,
             },
-            stats::{item_checks::check_ship, shared::calc_regen},
+            stats::{item_checks::check_ship, shared::calc_regen_for_attrs},
         },
     },
     ud::UItemId,
@@ -25,20 +25,27 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-        src_kinds: StatCapSrcKinds,
+        src_kinds: StatCapBlcSrcKindsInt,
         time_options: StatTimeOptions,
     ) -> Result<Value, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
         let mut balance = Value::ZERO;
-        if src_kinds.regen.enabled {
-            balance += get_cap_regen(ctx, calc, item_uid, src_kinds.regen.cap_perc);
+        if let StatCapBlcRegen::Enabled(regen_options) = src_kinds.regen {
+            balance += get_cap_regen(ctx, calc, item_uid, regen_options.cap_perc);
         }
         if src_kinds.cap_injectors {
             balance += get_cap_injects(reuse_cseq_map, ctx, calc, time_options, fit_data);
         }
-        if src_kinds.nosfs {
-            balance += get_nosfs(reuse_cseq_map, ctx, calc, time_options, fit_data);
+        if let StatCapBlcNosfsInt::Enabled(nosfs_options) = src_kinds.nosfs {
+            balance += get_nosfs(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                time_options,
+                nosfs_options.projectee_item_uid,
+                fit_data,
+            );
         }
         if src_kinds.consumers {
             balance -= get_cap_consumed(reuse_cseq_map, ctx, calc, time_options, fit_data);
@@ -54,9 +61,14 @@ impl Vast {
 }
 
 fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: UnitInterval) -> PValue {
-    let max_amount = Vast::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
-    let cap_recharge_duration = Vast::internal_get_stat_item_cap_recharge_time_unchecked(ctx, calc, item_uid);
-    calc_regen(max_amount, cap_recharge_duration, cap_perc)
+    calc_regen_for_attrs(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().capacitor_capacity,
+        ctx.ac().recharge_rate,
+        cap_perc,
+    )
 }
 
 fn get_cap_injects(
@@ -136,6 +148,7 @@ fn get_nosfs(
     ctx: SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
+    projectee_item_uid: Option<UItemId>,
     fit_data: &VastFitData,
 ) -> Value {
     let mut cps = Value::ZERO;
@@ -160,7 +173,7 @@ fn get_nosfs(
                     cseq,
                     ospec,
                     (),
-                    None,
+                    projectee_item_uid,
                     burst_opts.spool,
                     &mut accum,
                 ),
@@ -173,11 +186,21 @@ fn get_nosfs(
                         cseq,
                         ospec,
                         (),
-                        None,
+                        projectee_item_uid,
                         &mut accum,
                         time,
                     ),
-                    _ => aggr_proj_looped(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), None, &mut accum),
+                    _ => aggr_proj_looped(
+                        ctx,
+                        calc,
+                        nosf_item_uid,
+                        effect,
+                        cseq,
+                        ospec,
+                        (),
+                        projectee_item_uid,
+                        &mut accum,
+                    ),
                 },
             } {
                 cps += accum.get_per_second();

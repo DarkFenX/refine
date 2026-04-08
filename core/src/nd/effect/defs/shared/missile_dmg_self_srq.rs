@@ -1,4 +1,6 @@
-use crate::ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModifier, AModifierSrq, AOp};
+use crate::ad::{
+    AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModStrength, AEffectModifier, AModifierSrq, AOp,
+};
 
 pub(in crate::nd::effect::defs) fn missile_dmg_self_srq_update_effect(
     effect_aid: AEffectId,
@@ -10,7 +12,7 @@ pub(in crate::nd::effect::defs) fn missile_dmg_self_srq_update_effect(
         a_effect.modifiers.clear();
     }
     let modifier = AEffectModifier {
-        affector_attr_id: AAttrId::DMG_MULT_BONUS,
+        strength: AEffectModStrength::Attr(AAttrId::DMG_MULT_BONUS),
         op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::OwnSrq(AModifierSrq::SelfRef),
         affectee_attr_id: attr_aid,
