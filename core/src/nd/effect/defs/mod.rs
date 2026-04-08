@@ -42,6 +42,7 @@ pub(in crate::nd::effect) mod d4936_fueled_shield_boosting;
 pub(in crate::nd::effect) mod d4_shield_boosting;
 pub(in crate::nd::effect) mod d5275_fueled_armor_repair;
 pub(in crate::nd::effect) mod d5945_cloaking_prototype;
+pub(in crate::nd::effect) mod d6063_entosis_link;
 pub(in crate::nd::effect) mod d607_cloaking;
 pub(in crate::nd::effect) mod d6184_ship_mod_remote_capacitor_transmitter;
 pub(in crate::nd::effect) mod d6185_ship_mod_remote_hull_repairer;

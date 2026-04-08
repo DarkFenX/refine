@@ -59,6 +59,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d4936_fueled_shield_boosting::mk_n_effect(),
         defs::d5275_fueled_armor_repair::mk_n_effect(),
         defs::d5945_cloaking_prototype::mk_n_effect(),
+        defs::d6063_entosis_link::mk_n_effect(),
         defs::d6184_ship_mod_remote_capacitor_transmitter::mk_n_effect(),
         defs::d6185_ship_mod_remote_hull_repairer::mk_n_effect(),
         defs::d6186_ship_mod_remote_shield_booster::mk_n_effect(),

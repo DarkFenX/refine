@@ -1,3 +1,4 @@
+use super::shared::mk_can_cloak_mod;
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
@@ -32,11 +33,6 @@ fn update_effect(a_effect: &mut AEffect) {
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
         },
-        AEffectModifier {
-            strength: AEffectModStrength::Attr(AAttrId::CAN_CLOAK),
-            op: AOp::PostAssign,
-            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: AAttrId::CAN_CLOAK,
-        },
+        mk_can_cloak_mod(),
     ]);
 }

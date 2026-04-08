@@ -1,7 +1,6 @@
+use super::shared::mk_can_cloak_mod;
 use crate::{
-    ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
-    },
+    ad::{AEffect, AEffectId},
     ed::EEffectId,
     nd::NEffect,
 };
@@ -21,10 +20,5 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn update_effect(a_effect: &mut AEffect) {
     // Tested on 2026-04-06 on thunderdome, carrier can't cloak despite ISA having no modifiers to
     // transfer the cloak attribute
-    a_effect.modifiers.insert(AEffectModifier {
-        strength: AEffectModStrength::Attr(AAttrId::CAN_CLOAK),
-        op: AOp::PostAssign,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id: AAttrId::CAN_CLOAK,
-    });
+    a_effect.modifiers.insert(mk_can_cloak_mod());
 }

@@ -1,6 +1,6 @@
 use crate::ad::{AAttrId, ABuffId, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectModStrength, AValue};
 
-pub(in crate::nd::effect::defs) fn make_dd_self_debuffs() -> impl Iterator<Item = AEffectBuffFull> {
+pub(in crate::nd::effect::defs) fn make_dd_self_debuffs() -> impl ExactSizeIterator<Item = AEffectBuffFull> {
     [
         // Short debuffs
         AEffectBuffFull {

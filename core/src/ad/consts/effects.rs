@@ -54,6 +54,7 @@ impl AEffectId {
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_eid(EEffectId::FUELED_SHIELD_BOOSTING);
     pub(crate) const FUELED_ARMOR_REPAIR: Self = Self::from_eid(EEffectId::FUELED_ARMOR_REPAIR);
     pub(crate) const CLOAKING_PROTOTYPE: Self = Self::from_eid(EEffectId::CLOAKING_PROTOTYPE);
+    pub(crate) const ENTOSIS_LINK: Self = Self::from_eid(EEffectId::ENTOSIS_LINK);
     pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: Self =
         Self::from_eid(EEffectId::SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER);
     pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: Self = Self::from_eid(EEffectId::SHIP_MOD_REMOTE_HULL_REPAIRER);

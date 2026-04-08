@@ -48,6 +48,7 @@ impl EEffectId {
     pub(crate) const FUELED_SHIELD_BOOSTING: Self = Self::from_i32(4936);
     pub(crate) const FUELED_ARMOR_REPAIR: Self = Self::from_i32(5275);
     pub(crate) const CLOAKING_PROTOTYPE: Self = Self::from_i32(5945);
+    pub(crate) const ENTOSIS_LINK: Self = Self::from_i32(6063);
     pub(crate) const SHIP_MOD_REMOTE_CAPACITOR_TRANSMITTER: Self = Self::from_i32(6184);
     pub(crate) const SHIP_MOD_REMOTE_HULL_REPAIRER: Self = Self::from_i32(6185);
     pub(crate) const SHIP_MOD_REMOTE_SHIELD_BOOSTER: Self = Self::from_i32(6186);
