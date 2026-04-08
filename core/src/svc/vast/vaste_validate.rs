@@ -328,7 +328,7 @@ impl Vast {
         // Depends on some incoming projections or system/fit-wide effects, but can fail for some
         // modules in those conditions (e.g. MWD under ESS bubble effect).
         if let ValOptionInt::Enabled(opts) = &options.activation_blocked
-            && !fit_data.validate_activation_blocked_fast(&opts.kfs, ctx, calc, fit)
+            && !fit_data.validate_activation_blocked_fast(&opts.kfs, ctx, calc)
         {
             return false;
         }
@@ -347,6 +347,13 @@ impl Vast {
         // slots filled anyway
         if let ValOptionInt::Enabled(opts) = &options.service_slot_count
             && !fit_data.validate_service_slot_count_fast(&opts.kfs, ctx, calc, fit)
+        {
+            return false;
+        }
+        // Moderate cost-wise check, which unlikely to fail, since it works only fit has multiple
+        // cloaks, or cloak + items blocking it
+        if let ValOptionInt::Enabled(opts) = &options.cloaking_blocked
+            && !fit_data.validate_cloaking_blocked_fast(&opts.kfs, ctx, calc, fit)
         {
             return false;
         }
@@ -677,12 +684,17 @@ impl Vast {
         if let ValOptionInt::Enabled(opts) = &options.fighter_squad_size {
             result.fighter_squad_size = fit_data.validate_fighter_squad_size_verbose(&opts.kfs, ctx);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Projection, destination side
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = &options.activation_blocked {
-            result.activation_blocked = fit_data.validate_activation_blocked_verbose(&opts.kfs, ctx, calc, fit);
+            result.activation_blocked = fit_data.validate_activation_blocked_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = &options.effect_stopper {
             result.effect_stopper = fit_data.validate_effect_stopper_verbose(&opts.kfs, ctx, calc);
+        }
+        if let ValOptionInt::Enabled(opts) = &options.cloaking_blocked {
+            result.cloaking_blocked = fit_data.validate_cloaking_blocked_verbose(&opts.kfs, ctx, calc, fit);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Projection, source side

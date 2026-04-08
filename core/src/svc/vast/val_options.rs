@@ -203,6 +203,9 @@ pub struct ValOptions {
     /// Fails when any items have running effects which are stopped by external factors (e.g.
     /// scrambled fighter MWD).
     pub effect_stopper: ValOption,
+    /// When a cloak is active and something blocks it (weather, modules incompatible with cloaking
+    /// like sieges, multiple cloaks fit to ship), this validation fails.
+    pub cloaking_blocked: ValOption,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, source side
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,6 +309,7 @@ impl ValOptions {
             // Projection, destination side
             activation_blocked: ValOption::new_enabled(),
             effect_stopper: ValOption::new_enabled(),
+            cloaking_blocked: ValOption::new_enabled(),
             // Projection, source side
             projectee_filter: ValOption::new_enabled(),
             assist_immunity: ValOption::new_enabled(),
@@ -391,6 +395,7 @@ impl ValOptions {
             // Projection, destination side
             activation_blocked: ValOption::new_disabled(),
             effect_stopper: ValOption::new_disabled(),
+            cloaking_blocked: ValOption::new_disabled(),
             // Projection, source side
             projectee_filter: ValOption::new_disabled(),
             assist_immunity: ValOption::new_disabled(),
@@ -528,6 +533,7 @@ pub(crate) struct ValOptionsInt {
     // Projection, destination side
     pub(in crate::svc::vast) activation_blocked: ValOptionInt,
     pub(in crate::svc::vast) effect_stopper: ValOptionInt,
+    pub(in crate::svc::vast) cloaking_blocked: ValOptionInt,
     // Projection, source side
     pub(in crate::svc::vast) projectee_filter: ValOptionInt,
     pub(in crate::svc::vast) assist_immunity: ValOptionInt,
@@ -612,6 +618,7 @@ impl ValOptionsInt {
             // Projection, destination side
             activation_blocked: ValOptionInt::from_pub(&pub_opts.activation_blocked, sol),
             effect_stopper: ValOptionInt::from_pub(&pub_opts.effect_stopper, sol),
+            cloaking_blocked: ValOptionInt::from_pub(&pub_opts.cloaking_blocked, sol),
             // Projection, source side
             projectee_filter: ValOptionInt::from_pub(&pub_opts.projectee_filter, sol),
             assist_immunity: ValOptionInt::from_pub(&pub_opts.assist_immunity, sol),

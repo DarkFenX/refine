@@ -134,6 +134,8 @@ pub(in crate::cmd) struct HValOptions {
     activation_blocked: Option<HValOption>,
     #[serde(default)]
     effect_stopper: Option<HValOption>,
+    #[serde(default)]
+    cloaking_blocked: Option<HValOption>,
     // Projection, source side
     #[serde(default)]
     projectee_filter: Option<HValOption>,
@@ -282,6 +284,7 @@ impl HValOptions {
         // Projection, destination side
         process_option(&self.activation_blocked, &mut core_options.activation_blocked);
         process_option(&self.effect_stopper, &mut core_options.effect_stopper);
+        process_option(&self.cloaking_blocked, &mut core_options.cloaking_blocked);
         // Projection, source side
         process_option(&self.projectee_filter, &mut core_options.projectee_filter);
         process_option(&self.assist_immunity, &mut core_options.assist_immunity);
