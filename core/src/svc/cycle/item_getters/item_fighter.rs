@@ -50,16 +50,9 @@ pub(super) fn get_fighter_cseq_map(
                     effect_rid,
                 )
             }
-            // If there are any self-killer effects, choose the fastest one, and discard all other effects
             if !self_killers.is_empty() {
-                let fastest_sk_effect_rid = self_killers
-                    .into_iter()
-                    .min_by_key(|sk_info| sk_info.duration)
-                    .unwrap()
-                    .effect_rid;
-                reuse_cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
+                process_fighter_sk(reuse_cseq_map, self_killers);
             }
-            true
         }
         CyclingOptions::Sim(sim_options) => {
             let rearm_minions = ctx.u_data.get_item_rearm_minion(item_uid, sim_options.rearm_minions);
@@ -76,16 +69,9 @@ pub(super) fn get_fighter_cseq_map(
                             effect_rid,
                         )
                     }
-                    // If there are any self-killer effects, choose the fastest one, and discard all other effects
                     if !self_killers.is_empty() {
-                        let fastest_sk_effect_rid = self_killers
-                            .into_iter()
-                            .min_by_key(|sk_info| sk_info.duration)
-                            .unwrap()
-                            .effect_rid;
-                        reuse_cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
+                        process_fighter_sk(reuse_cseq_map, self_killers);
                     }
-                    true
                 }
                 RearmMinion::OnFirstEmpty => {
                     let mut ext_cseq_map = RMap::new();
@@ -100,7 +86,8 @@ pub(super) fn get_fighter_cseq_map(
                             effect_rid,
                         )
                     }
-                    // If there are any self-killer effects, choose the fastest one, and discard all other effects
+                    // If there are any self-killer effects, choose the fastest one, and return data
+                    // just for it
                     if !self_killers.is_empty() {
                         let fastest_sk_effect_rid = self_killers
                             .into_iter()
@@ -112,11 +99,11 @@ pub(super) fn get_fighter_cseq_map(
                         return true;
                     }
                     process_refuel(reuse_cseq_map, ext_cseq_map);
-                    true
                 }
             }
         }
     }
+    true
 }
 
 struct CommonInfo {
@@ -263,6 +250,16 @@ fn process_effect_sk(
             repeat_count: Count::ONE,
         }),
     );
+}
+
+fn process_fighter_sk(cseq_map: &mut CseqMap, self_killers: Vec<SelfKillerInfo>) {
+    // If there are any self-killer effects, choose the fastest one, and discard all other effects
+    let fastest_sk_effect_rid = self_killers
+        .into_iter()
+        .min_by_key(|sk_info| sk_info.duration)
+        .unwrap()
+        .effect_rid;
+    cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
