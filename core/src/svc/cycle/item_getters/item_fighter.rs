@@ -36,9 +36,9 @@ pub(super) fn get_fighter_cseq_map(
         false => Either::Right(fighter.get_reffs().unwrap().iter().copied()),
     };
     reuse_cseq_map.clear();
-    let mut self_killers = Vec::new();
     match options {
         CyclingOptions::Burst => {
+            let mut self_killers = Vec::new();
             for effect_rid in effect_rids {
                 burst_fill_effect_cseq(
                     reuse_cseq_map,
@@ -58,6 +58,7 @@ pub(super) fn get_fighter_cseq_map(
             let rearm_minions = ctx.u_data.get_item_rearm_minion(item_uid, sim_options.rearm_minions);
             match rearm_minions {
                 RearmMinion::Disabled => {
+                    let mut self_killers = Vec::new();
                     for effect_rid in effect_rids {
                         sim_no_rearm_fill_effect_cseq(
                             reuse_cseq_map,
@@ -335,7 +336,7 @@ fn rearm_trigger_info_to_cseq(
     downtime_duration: PValue,
 ) -> CycleSeq<CycleDataFull> {
     match rearm.charge_count {
-        Count::ZERO => unreachable!(),
+        Count::ZERO => unreachable!("trigger effect should always have at least 1 charge"),
         Count::ONE => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
                 duration: info.cycle_duration + downtime_duration,
