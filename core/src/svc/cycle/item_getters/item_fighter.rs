@@ -383,7 +383,8 @@ fn rearm_other_info_to_cseq(
             let p1_repeat_count = cycle_count - Count::ONE;
             let p1_duration = info.cycle_duration_with_cd;
             let p2_duration =
-                PValue::from_value_clamped(in_space_duration - p1_duration * p1_repeat_count.into_pvalue());
+                PValue::from_value_clamped(in_space_duration - p1_duration * p1_repeat_count.into_pvalue())
+                    + downtime_duration;
             Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
                 p1_data: CycleDataFull {
                     duration: p1_duration,
