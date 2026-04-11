@@ -40,7 +40,7 @@ pub(super) fn get_fighter_cseq_map(
     match options {
         CyclingOptions::Burst => {
             for effect_rid in effect_rids {
-                fill_effect_cseq_burst(
+                burst_fill_effect_cseq(
                     reuse_cseq_map,
                     &mut self_killers,
                     ctx,
@@ -59,7 +59,7 @@ pub(super) fn get_fighter_cseq_map(
             match rearm_minions {
                 RearmMinion::Disabled => {
                     for effect_rid in effect_rids {
-                        fill_effect_cseq_sim_no_rearm(
+                        sim_no_rearm_fill_effect_cseq(
                             reuse_cseq_map,
                             &mut self_killers,
                             ctx,
@@ -74,31 +74,11 @@ pub(super) fn get_fighter_cseq_map(
                     }
                 }
                 RearmMinion::OnFirstEmpty => {
-                    let mut ext_cseq_map = RMap::new();
-                    for effect_rid in effect_rids {
-                        fill_effect_cseq_sim_rearm(
-                            &mut ext_cseq_map,
-                            &mut self_killers,
-                            ctx,
-                            calc,
-                            item_uid,
-                            fighter,
-                            effect_rid,
-                        )
-                    }
-                    // If there are any self-killer effects, choose the fastest one, and return data
-                    // just for it
-                    if !self_killers.is_empty() {
-                        let fastest_sk_effect_rid = self_killers
-                            .into_iter()
-                            .min_by_key(|sk_info| sk_info.duration)
-                            .unwrap()
-                            .effect_rid;
-                        let fastest_sk_cseq = ext_cseq_map.get(&fastest_sk_effect_rid).unwrap().cseq;
-                        reuse_cseq_map.insert(fastest_sk_effect_rid, fastest_sk_cseq);
+                    let info_map = rearm_collect_infos(ctx, calc, item_uid, fighter, effect_rids);
+                    if rearm_process_sks(reuse_cseq_map, &info_map) {
                         return true;
                     }
-                    process_refuel(reuse_cseq_map, ext_cseq_map);
+                    rearm_process_refuel(reuse_cseq_map, info_map, fighter);
                 }
             }
         }
@@ -106,22 +86,23 @@ pub(super) fn get_fighter_cseq_map(
     true
 }
 
-struct CommonInfo {
+#[derive(Copy, Clone)]
+struct EffectInfo {
     kills_item: bool,
-    duration: PValue,
-    duration_with_cd: PValue,
+    cycle_duration: PValue,
+    cycle_duration_with_cd: PValue,
     int_cd: bool,
     charge_count: InfCount,
-    charge_reload_duration: PValue,
+    charge_rearm_duration: PValue,
 }
 
-fn get_common_info(
+fn get_effect_info(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
     effect_rid: REffectId,
-) -> Option<CommonInfo> {
+) -> Option<EffectInfo> {
     let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
     if !effect.is_active_with_duration {
         return None;
@@ -145,20 +126,20 @@ fn get_common_info(
     let duration_with_cd = duration.max(effect_data.cooldown_s);
     // Assume any cooldown interrupts cycling, even if it shorter than ability cycle
     let int_cd = effect_data.cooldown_s > PValue::FLOAT_TOLERANCE;
-    Some(CommonInfo {
+    Some(EffectInfo {
         kills_item: effect.kills_item,
-        duration,
-        duration_with_cd,
+        cycle_duration: duration,
+        cycle_duration_with_cd: duration_with_cd,
         int_cd,
         charge_count,
-        charge_reload_duration: effect_data.charge_reload_duration,
+        charge_rearm_duration: effect_data.charge_reload_duration,
     })
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // No rearm considered
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn fill_effect_cseq_burst(
+fn burst_fill_effect_cseq(
     cseq_map: &mut CseqMap,
     self_killers: &mut Vec<SelfKillerInfo>,
     ctx: SvcCtx,
@@ -167,66 +148,63 @@ fn fill_effect_cseq_burst(
     fighter: &UFighter,
     effect_rid: REffectId,
 ) {
-    let common = match get_common_info(ctx, calc, item_uid, fighter, effect_rid) {
-        Some(common) => common,
+    let info = match get_effect_info(ctx, calc, item_uid, fighter, effect_rid) {
+        Some(info) => info,
         None => return,
     };
-    if common.kills_item {
-        process_effect_sk(cseq_map, self_killers, effect_rid, common.duration);
+    if info.kills_item {
+        process_effect_sk(cseq_map, self_killers, effect_rid, info.cycle_duration);
         return;
     }
-    cseq_map.insert(
-        effect_rid,
-        CycleSeq::Inf(CSeqInf {
+    cseq_map.insert(effect_rid, burst_info_to_cseq(info));
+}
+fn burst_info_to_cseq(info: EffectInfo) -> CycleSeq<CycleDataFull> {
+    CycleSeq::Inf(CSeqInf {
+        data: CycleDataFull {
+            duration: info.cycle_duration_with_cd,
+            interrupt: CycleInterrupt::try_new(info.int_cd, false),
+            chargedness: None,
+        },
+    })
+}
+
+fn sim_no_rearm_fill_effect_cseq(
+    cseq_map: &mut CseqMap,
+    self_killers: &mut Vec<SelfKillerInfo>,
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    fighter: &UFighter,
+    effect_rid: REffectId,
+) {
+    let info = match get_effect_info(ctx, calc, item_uid, fighter, effect_rid) {
+        Some(info) => info,
+        None => return,
+    };
+    if info.kills_item {
+        process_effect_sk(cseq_map, self_killers, effect_rid, info.cycle_duration);
+        return;
+    }
+    cseq_map.insert(effect_rid, sim_no_rearm_info_to_cseq(info));
+}
+fn sim_no_rearm_info_to_cseq(info: EffectInfo) -> CycleSeq<CycleDataFull> {
+    match info.charge_count {
+        InfCount::Count(charge_count) => CycleSeq::Lim(CSeqLim {
             data: CycleDataFull {
-                duration: common.duration_with_cd,
-                interrupt: CycleInterrupt::try_new(common.int_cd, false),
+                duration: info.cycle_duration_with_cd,
+                interrupt: CycleInterrupt::try_new(info.int_cd, false),
+                chargedness: None,
+            },
+            repeat_count: charge_count,
+        }),
+        InfCount::Infinite => CycleSeq::Inf(CSeqInf {
+            data: CycleDataFull {
+                duration: info.cycle_duration_with_cd,
+                interrupt: CycleInterrupt::try_new(info.int_cd, false),
                 chargedness: None,
             },
         }),
-    );
-}
-
-fn fill_effect_cseq_sim_no_rearm(
-    cseq_map: &mut CseqMap,
-    self_killers: &mut Vec<SelfKillerInfo>,
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    fighter: &UFighter,
-    effect_rid: REffectId,
-) {
-    let common = match get_common_info(ctx, calc, item_uid, fighter, effect_rid) {
-        Some(common) => common,
-        None => return,
-    };
-    if common.kills_item {
-        process_effect_sk(cseq_map, self_killers, effect_rid, common.duration);
-        return;
     }
-    match common.charge_count {
-        InfCount::Count(charge_count) => cseq_map.insert(
-            effect_rid,
-            CycleSeq::Lim(CSeqLim {
-                data: CycleDataFull {
-                    duration: common.duration_with_cd,
-                    interrupt: CycleInterrupt::try_new(common.int_cd, false),
-                    chargedness: None,
-                },
-                repeat_count: charge_count,
-            }),
-        ),
-        InfCount::Infinite => cseq_map.insert(
-            effect_rid,
-            CycleSeq::Inf(CSeqInf {
-                data: CycleDataFull {
-                    duration: common.duration_with_cd,
-                    interrupt: CycleInterrupt::try_new(common.int_cd, false),
-                    chargedness: None,
-                },
-            }),
-        ),
-    };
 }
 
 fn process_effect_sk(
@@ -265,152 +243,101 @@ fn process_fighter_sk(cseq_map: &mut CseqMap, self_killers: Vec<SelfKillerInfo>)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rearm is considered
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct EffectInfo {
-    cseq: CycleSeq<CycleDataFull>,
-    rearm: Option<EffectRearmInfo>,
-}
-
-#[derive(Copy, Clone)]
-struct EffectRearmInfo {
-    duration_until_rearm: PValue,
-    full_rearm_duration: PValue,
-    charge_rearm_duration: PValue,
-}
-
-fn fill_effect_cseq_sim_rearm(
-    ext_cseq_map: &mut RMap<REffectId, EffectInfo>,
-    self_killers: &mut Vec<SelfKillerInfo>,
+fn rearm_collect_infos(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
-    effect_rid: REffectId,
-) {
-    let common = match get_common_info(ctx, calc, item_uid, fighter, effect_rid) {
-        Some(common) => common,
-        None => return,
-    };
-    if common.kills_item {
-        self_killers.push(SelfKillerInfo {
-            effect_rid,
-            duration: common.duration,
-        });
-        ext_cseq_map.insert(
-            effect_rid,
-            EffectInfo {
-                cseq: CycleSeq::Lim(CSeqLim {
+    effect_rids: impl Iterator<Item = REffectId>,
+) -> RMap<REffectId, EffectInfo> {
+    let mut info_map = RMap::new();
+    for effect_rid in effect_rids {
+        match get_effect_info(ctx, calc, item_uid, fighter, effect_rid) {
+            Some(info) => info_map.insert(effect_rid, info),
+            None => continue,
+        };
+    }
+    info_map
+}
+
+fn rearm_process_sks(cseq_map: &mut CseqMap, info_map: &RMap<REffectId, EffectInfo>) -> bool {
+    match info_map
+        .iter()
+        .filter_map(|(effect_rid, info)| match info.kills_item {
+            true => Some((*effect_rid, info.cycle_duration)),
+            false => None,
+        })
+        .min_by_key(|(_, cycle_duration)| *cycle_duration)
+    {
+        Some((fastest_sk_effect_rid, fastest_sk_cycle_duration)) => {
+            cseq_map.insert(
+                fastest_sk_effect_rid,
+                CycleSeq::Lim(CSeqLim {
                     data: CycleDataFull {
-                        duration: common.duration,
+                        duration: fastest_sk_cycle_duration,
                         interrupt: None,
                         chargedness: None,
                     },
                     repeat_count: Count::ONE,
                 }),
-                rearm: None,
-            },
-        );
-        return;
-    }
-    match common.charge_count {
-        // Recalling and releasing fighter resets current effect cycles and cooldowns. Here, for
-        // deciding when to recall, we let effect cycle to complete (since some effects are not
-        // applied instantly, e.g. micro bomb from LR fighters disappears when fighter is recalled),
-        // but ignore ongoing cooldowns.
-        InfCount::Count(charge_count) => {
-            let full_rearm_duration = common.charge_reload_duration * charge_count.into_pvalue();
-            match charge_count {
-                Count::ONE => {
-                    ext_cseq_map.insert(
-                        effect_rid,
-                        EffectInfo {
-                            cseq: CycleSeq::Inf(CSeqInf {
-                                data: CycleDataFull {
-                                    duration: common.duration,
-                                    interrupt: CycleInterrupt::try_new(false, true),
-                                    chargedness: None,
-                                },
-                            }),
-                            rearm: Some(EffectRearmInfo {
-                                duration_until_rearm: common.duration,
-                                full_rearm_duration,
-                                charge_rearm_duration: common.charge_reload_duration,
-                            }),
-                        },
-                    );
-                }
-                charge_count => {
-                    let p1_repeat_count = charge_count - Count::ONE;
-                    ext_cseq_map.insert(
-                        effect_rid,
-                        EffectInfo {
-                            cseq: CycleSeq::LoopLimSin(CSeqLoopLimSin {
-                                p1_data: CycleDataFull {
-                                    duration: common.duration_with_cd,
-                                    interrupt: CycleInterrupt::try_new(common.int_cd, false),
-                                    chargedness: None,
-                                },
-                                p1_repeat_count,
-                                p2_data: CycleDataFull {
-                                    duration: common.duration,
-                                    interrupt: CycleInterrupt::try_new(false, true),
-                                    chargedness: None,
-                                },
-                            }),
-                            rearm: Some(EffectRearmInfo {
-                                duration_until_rearm: common.duration_with_cd * p1_repeat_count.into_pvalue()
-                                    + common.duration,
-                                full_rearm_duration,
-                                charge_rearm_duration: common.charge_reload_duration,
-                            }),
-                        },
-                    );
-                }
-            }
-        }
-        InfCount::Infinite => {
-            ext_cseq_map.insert(
-                effect_rid,
-                EffectInfo {
-                    cseq: CycleSeq::Inf(CSeqInf {
-                        data: CycleDataFull {
-                            duration: common.duration_with_cd,
-                            interrupt: CycleInterrupt::try_new(common.int_cd, false),
-                            chargedness: None,
-                        },
-                    }),
-                    rearm: None,
-                },
             );
+            true
         }
-    };
+        None => false,
+    }
 }
 
-fn process_refuel(cseq_map: &mut CseqMap, mut ext_cseq_map: RMap<REffectId, EffectInfo>) {
-    cseq_map.reserve(ext_cseq_map.len());
+fn rearm_process_refuel(cseq_map: &mut CseqMap, mut info_map: RMap<REffectId, EffectInfo>, fighter: &UFighter) {
+    cseq_map.reserve(info_map.len());
     // Get effect which runs out of its charges fastest
-    let (effect_rid, cseq, rearm) = match ext_cseq_map
+    let (trigger_effect_rid, trigger_info, trigger_durations) = match info_map
         .iter()
-        .filter_map(|(effect_rid, effect_info)| match effect_info.rearm {
-            Some(rearm_info) => Some((*effect_rid, effect_info.cseq, rearm_info)),
+        .filter_map(|(effect_rid, info)| match get_rearm_durations(&info) {
+            Some(trigger_durations) => Some((*effect_rid, *info, trigger_durations)),
             None => None,
         })
-        .min_by_key(|(_, _, rearm)| rearm.duration_until_rearm)
+        .min_by_key(|(_, _, trigger_durations)| trigger_durations.in_space)
     {
-        Some((effect_rid, cseq, rearm)) => {
+        Some((trigger_effect_rid, trigger_info, trigger_durations)) => {
             // Remove it from source map, since we extracted the data we needed anyway
-            ext_cseq_map.remove(&effect_rid);
-            (effect_rid, cseq, rearm)
+            info_map.remove(&trigger_effect_rid);
+            (trigger_effect_rid, trigger_info, trigger_durations)
         }
         None => {
-            // No rearm data means all effects can cycle infinitely, just return everything we
-            // received in this case
-            for (effect_key, effect_info) in ext_cseq_map.into_iter() {
-                cseq_map.insert(effect_key, effect_info.cseq);
+            // When no effect needs fighter to be recalled for rearming, process it the no-rearm way
+            for (effect_rid, info) in info_map.into_iter() {
+                cseq_map.insert(effect_rid, sim_no_rearm_info_to_cseq(info));
             }
             return;
         }
     };
-    // Time it takes to rearm just abilities
-    // let mut max_rearm_time_s = rearm.full_rearm_time_s;
-    // cycle_infos
+    // Here it is assumed that ability which triggers reload is the one which takes the longest time
+    // to rearm its charges. On top of that, fighters take extra second to land, some time to
+    // refuel, and extra second to launch.
+    // let trigger_rearm_duration =
+    let refuel_duration = fighter.get_axt().unwrap().fighter_refuel_duration;
+    let downtime = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_durations.rearm;
+}
+
+struct RearmDurations {
+    in_space: PValue,
+    rearm: PValue,
+}
+
+fn get_rearm_durations(info: &EffectInfo) -> Option<RearmDurations> {
+    match info.charge_count {
+        // Send fighter into rearm as soon as effect cycle is completed, do not wait for cooldowns
+        InfCount::Count(charge_count) => match charge_count {
+            Count::ZERO => None,
+            Count::ONE => Some(RearmDurations {
+                in_space: info.cycle_duration,
+                rearm: info.charge_rearm_duration,
+            }),
+            charge_count => Some(RearmDurations {
+                in_space: info.cycle_duration_with_cd * (charge_count - Count::ONE).into_pvalue() + info.cycle_duration,
+                rearm: info.charge_rearm_duration * charge_count.into_pvalue(),
+            }),
+        },
+        InfCount::Infinite => None,
+    }
 }
