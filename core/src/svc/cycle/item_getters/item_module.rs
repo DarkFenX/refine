@@ -2,7 +2,7 @@ use either::Either;
 
 use super::{
     map::CseqMap,
-    shared::{CyclingOptions, SelfKillerEffect, SelfKillerItem},
+    shared::{CyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
 };
 use crate::{
     def::SERVER_TICK_S,
@@ -44,7 +44,7 @@ pub(super) fn get_module_cseq_map(
         return false;
     };
     reuse_cseq_map.clear();
-    let mut self_killer_item = SelfKillerItem::new();
+    let mut sk_item_info = SelfKillerItemInfo::new();
     let effect_rids = match ignore_state {
         true => Either::Left(module.get_effects().unwrap().keys().copied()),
         false => Either::Right(module.get_reffs().unwrap().iter().copied()),
@@ -52,7 +52,7 @@ pub(super) fn get_module_cseq_map(
     for effect_rid in effect_rids {
         fill_module_effect_info(
             reuse_cseq_map,
-            &mut self_killer_item,
+            &mut sk_item_info,
             ctx,
             calc,
             item_uid,
@@ -64,7 +64,7 @@ pub(super) fn get_module_cseq_map(
     }
     // If there are any self-killer effects, the fastest one is used, and other effects are
     // discarded
-    if let Some(sk_effect_rid) = self_killer_item.get_effect_rid() {
+    if let Some(sk_effect_rid) = sk_item_info.get_effect_rid() {
         reuse_cseq_map.retain(|&k, _| k == sk_effect_rid);
     }
     true
@@ -72,7 +72,7 @@ pub(super) fn get_module_cseq_map(
 
 fn fill_module_effect_info(
     reuse_cseq_map: &mut CseqMap,
-    self_killer_item: &mut SelfKillerItem,
+    sk_item_info: &mut SelfKillerItemInfo,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -116,7 +116,7 @@ fn fill_module_effect_info(
     }
     // Record info about self-killers and bail, those do not depend on cycling options
     if effect.kills_item {
-        self_killer_item.push(SelfKillerEffect { effect_rid, duration });
+        sk_item_info.push(SelfKillerEffectInfo { effect_rid, duration });
         reuse_cseq_map.insert(
             effect_rid,
             CycleSeq::Lim(CSeqLim {

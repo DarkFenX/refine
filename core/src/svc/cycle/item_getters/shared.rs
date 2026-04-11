@@ -20,19 +20,19 @@ pub(in crate::svc) struct CycleOptionsSim {
     pub(in crate::svc) rearm_minions: Option<RearmMinion> = None,
 }
 
-pub(super) struct SelfKillerEffect {
+pub(super) struct SelfKillerEffectInfo {
     pub(super) effect_rid: REffectId,
     pub(super) duration: PValue,
 }
 
-pub(super) struct SelfKillerItem {
-    effect: Option<SelfKillerEffect>,
+pub(super) struct SelfKillerItemInfo {
+    effect: Option<SelfKillerEffectInfo>,
 }
-impl SelfKillerItem {
+impl SelfKillerItemInfo {
     pub(super) fn new() -> Self {
         Self { effect: None }
     }
-    pub(super) fn push(&mut self, effect: SelfKillerEffect) {
+    pub(super) fn push(&mut self, effect: SelfKillerEffectInfo) {
         match &self.effect {
             Some(stored) => {
                 if effect.duration < stored.duration {
