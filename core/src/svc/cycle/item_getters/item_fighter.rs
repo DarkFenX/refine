@@ -2,7 +2,7 @@ use either::Either;
 
 use super::{
     map::CseqMap,
-    shared::{CyclingOptions, SelfKillerInfo},
+    shared::{CyclingOptions, SelfKillerEffect, SelfKillerItem},
 };
 use crate::{
     misc::RearmMinion,
@@ -38,11 +38,11 @@ pub(super) fn get_fighter_cseq_map(
     reuse_cseq_map.clear();
     match options {
         CyclingOptions::Burst => {
-            let mut self_killers = Vec::new();
+            let mut self_killer_item = SelfKillerItem::new();
             for effect_rid in effect_rids {
                 burst_fill_effect_cseq(
                     reuse_cseq_map,
-                    &mut self_killers,
+                    &mut self_killer_item,
                     ctx,
                     calc,
                     item_uid,
@@ -50,19 +50,21 @@ pub(super) fn get_fighter_cseq_map(
                     effect_rid,
                 )
             }
-            if !self_killers.is_empty() {
-                process_fighter_sk(reuse_cseq_map, self_killers);
+            // If there are any self-killer effects, the fastest one is used, and other effects are
+            // discarded
+            if let Some(sk_effect_rid) = self_killer_item.get_effect_rid() {
+                reuse_cseq_map.retain(|&k, _| k == sk_effect_rid);
             }
         }
         CyclingOptions::Sim(sim_options) => {
             let rearm_minions = ctx.u_data.get_item_rearm_minion(item_uid, sim_options.rearm_minions);
             match rearm_minions {
                 RearmMinion::Disabled => {
-                    let mut self_killers = Vec::new();
+                    let mut self_killer_item = SelfKillerItem::new();
                     for effect_rid in effect_rids {
                         sim_no_rearm_fill_effect_cseq(
                             reuse_cseq_map,
-                            &mut self_killers,
+                            &mut self_killer_item,
                             ctx,
                             calc,
                             item_uid,
@@ -70,8 +72,10 @@ pub(super) fn get_fighter_cseq_map(
                             effect_rid,
                         )
                     }
-                    if !self_killers.is_empty() {
-                        process_fighter_sk(reuse_cseq_map, self_killers);
+                    // If there are any self-killer effects, the fastest one is used, and other effects are
+                    // discarded
+                    if let Some(sk_effect_rid) = self_killer_item.get_effect_rid() {
+                        reuse_cseq_map.retain(|&k, _| k == sk_effect_rid);
                     }
                 }
                 RearmMinion::OnFirstEmpty => {
@@ -146,7 +150,7 @@ fn get_effect_info(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn burst_fill_effect_cseq(
     cseq_map: &mut CseqMap,
-    self_killers: &mut Vec<SelfKillerInfo>,
+    self_killer_item: &mut SelfKillerItem,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -158,7 +162,7 @@ fn burst_fill_effect_cseq(
         None => return,
     };
     if info.kills_item {
-        process_effect_sk(cseq_map, self_killers, effect_rid, info);
+        process_effect_sk(cseq_map, self_killer_item, effect_rid, info);
         return;
     }
     cseq_map.insert(effect_rid, burst_info_to_cseq(info));
@@ -175,7 +179,7 @@ fn burst_info_to_cseq(info: EffectInfo) -> CycleSeq<CycleDataFull> {
 
 fn sim_no_rearm_fill_effect_cseq(
     cseq_map: &mut CseqMap,
-    self_killers: &mut Vec<SelfKillerInfo>,
+    self_killer_item: &mut SelfKillerItem,
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -187,7 +191,7 @@ fn sim_no_rearm_fill_effect_cseq(
         None => return,
     };
     if info.kills_item {
-        process_effect_sk(cseq_map, self_killers, effect_rid, info);
+        process_effect_sk(cseq_map, self_killer_item, effect_rid, info);
         return;
     }
     cseq_map.insert(effect_rid, sim_no_rearm_info_to_cseq(info));
@@ -214,11 +218,11 @@ fn sim_no_rearm_info_to_cseq(info: EffectInfo) -> CycleSeq<CycleDataFull> {
 
 fn process_effect_sk(
     cseq_map: &mut CseqMap,
-    self_killers: &mut Vec<SelfKillerInfo>,
+    self_killer_item: &mut SelfKillerItem,
     effect_rid: REffectId,
     info: EffectInfo,
 ) {
-    self_killers.push(SelfKillerInfo {
+    self_killer_item.push(SelfKillerEffect {
         effect_rid,
         duration: info.cycle_duration,
     });
@@ -233,16 +237,6 @@ fn process_effect_sk(
             repeat_count: Count::ONE,
         }),
     );
-}
-
-fn process_fighter_sk(cseq_map: &mut CseqMap, self_killers: Vec<SelfKillerInfo>) {
-    // If there are any self-killer effects, choose the fastest one, and discard all other effects
-    let fastest_sk_effect_rid = self_killers
-        .into_iter()
-        .min_by_key(|sk_info| sk_info.duration)
-        .unwrap()
-        .effect_rid;
-    cseq_map.retain(|&k, _| k == fastest_sk_effect_rid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
