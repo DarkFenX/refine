@@ -290,18 +290,18 @@ fn rearm_process_sks(cseq_map: &mut CseqMap, info_map: &RMap<REffectId, EffectIn
 fn rearm_process_refuel(cseq_map: &mut CseqMap, mut info_map: RMap<REffectId, EffectInfo>, fighter: &UFighter) {
     cseq_map.reserve(info_map.len());
     // Get effect which runs out of its charges fastest
-    let (trigger_effect_rid, trigger_info, trigger_durations) = match info_map
+    let (trigger_effect_rid, trigger_info, trigger_rearm) = match info_map
         .iter()
-        .filter_map(|(effect_rid, info)| match get_rearm_durations(&info) {
-            Some(trigger_durations) => Some((*effect_rid, *info, trigger_durations)),
+        .filter_map(|(effect_rid, info)| match RearmInfo::try_build(&info) {
+            Some(trigger_rearm) => Some((*effect_rid, *info, trigger_rearm)),
             None => None,
         })
-        .min_by_key(|(_, _, trigger_durations)| trigger_durations.in_space)
+        .min_by_key(|(_, _, trigger_rearm)| trigger_rearm.in_space_duration)
     {
-        Some((trigger_effect_rid, trigger_info, trigger_durations)) => {
+        Some((trigger_effect_rid, trigger_info, trigger_rearm)) => {
             // Remove it from source map, since we extracted the data we needed anyway
             info_map.remove(&trigger_effect_rid);
-            (trigger_effect_rid, trigger_info, trigger_durations)
+            (trigger_effect_rid, trigger_info, trigger_rearm)
         }
         None => {
             // When no effect needs fighter to be recalled for rearming, process it the no-rearm way
@@ -314,30 +314,117 @@ fn rearm_process_refuel(cseq_map: &mut CseqMap, mut info_map: RMap<REffectId, Ef
     // Here it is assumed that ability which triggers reload is the one which takes the longest time
     // to rearm its charges. On top of that, fighters take extra second to land, some time to
     // refuel, and extra second to launch.
-    // let trigger_rearm_duration =
+    let in_space_duration = trigger_rearm.in_space_duration;
     let refuel_duration = fighter.get_axt().unwrap().fighter_refuel_duration;
-    let downtime = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_durations.rearm;
+    let downtime_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm.rearm_duration;
+    // Fill data for triggering effect
+    cseq_map.insert(
+        trigger_effect_rid,
+        rearm_trigger_info_to_cseq(trigger_info, trigger_rearm, downtime_duration),
+    );
+    // Fill data for the rest of effects
+    for (effect_rid, info) in info_map.into_iter() {
+        if let Some(cseq) = rearm_other_info_to_cseq(info, in_space_duration, downtime_duration) {
+            cseq_map.insert(effect_rid, cseq);
+        }
+    }
+}
+fn rearm_trigger_info_to_cseq(
+    info: EffectInfo,
+    rearm: RearmInfo,
+    downtime_duration: PValue,
+) -> CycleSeq<CycleDataFull> {
+    match rearm.charge_count {
+        Count::ZERO => unreachable!(),
+        Count::ONE => CycleSeq::Inf(CSeqInf {
+            data: CycleDataFull {
+                duration: info.cycle_duration + downtime_duration,
+                interrupt: CycleInterrupt::try_new(info.int_cd, true),
+                chargedness: None,
+            },
+        }),
+        charge_count => {
+            let p1_repeat_count = charge_count - Count::ONE;
+            CycleSeq::LoopLimSin(CSeqLoopLimSin {
+                p1_data: CycleDataFull {
+                    duration: info.cycle_duration_with_cd,
+                    interrupt: CycleInterrupt::try_new(info.int_cd, false),
+                    chargedness: None,
+                },
+                p1_repeat_count,
+                p2_data: CycleDataFull {
+                    duration: info.cycle_duration + downtime_duration,
+                    interrupt: CycleInterrupt::try_new(info.int_cd, true),
+                    chargedness: None,
+                },
+            })
+        }
+    }
+}
+fn rearm_other_info_to_cseq(
+    info: EffectInfo,
+    in_space_duration: PValue,
+    downtime_duration: PValue,
+) -> Option<CycleSeq<CycleDataFull>> {
+    let mut cycle_count = Count::from_pvalue_trunced(in_space_duration / info.cycle_duration_with_cd);
+    if in_space_duration % info.cycle_duration_with_cd >= info.cycle_duration {
+        cycle_count += Count::ONE;
+    }
+    match cycle_count {
+        Count::ZERO => None,
+        Count::ONE => Some(CycleSeq::Inf(CSeqInf {
+            data: CycleDataFull {
+                duration: in_space_duration + downtime_duration,
+                interrupt: CycleInterrupt::try_new(info.int_cd, true),
+                chargedness: None,
+            },
+        })),
+        cycle_count => {
+            let p1_repeat_count = cycle_count - Count::ONE;
+            let p1_duration = info.cycle_duration_with_cd;
+            let p2_duration =
+                PValue::from_value_clamped(in_space_duration - p1_duration * p1_repeat_count.into_pvalue());
+            Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
+                p1_data: CycleDataFull {
+                    duration: p1_duration,
+                    interrupt: CycleInterrupt::try_new(info.int_cd, false),
+                    chargedness: None,
+                },
+                p1_repeat_count,
+                p2_data: CycleDataFull {
+                    duration: p2_duration,
+                    interrupt: CycleInterrupt::try_new(info.int_cd, true),
+                    chargedness: None,
+                },
+            }))
+        }
+    }
 }
 
-struct RearmDurations {
-    in_space: PValue,
-    rearm: PValue,
+struct RearmInfo {
+    charge_count: Count,
+    in_space_duration: PValue,
+    rearm_duration: PValue,
 }
-
-fn get_rearm_durations(info: &EffectInfo) -> Option<RearmDurations> {
-    match info.charge_count {
-        // Send fighter into rearm as soon as effect cycle is completed, do not wait for cooldowns
-        InfCount::Count(charge_count) => match charge_count {
-            Count::ZERO => None,
-            Count::ONE => Some(RearmDurations {
-                in_space: info.cycle_duration,
-                rearm: info.charge_rearm_duration,
-            }),
-            charge_count => Some(RearmDurations {
-                in_space: info.cycle_duration_with_cd * (charge_count - Count::ONE).into_pvalue() + info.cycle_duration,
-                rearm: info.charge_rearm_duration * charge_count.into_pvalue(),
-            }),
-        },
-        InfCount::Infinite => None,
+impl RearmInfo {
+    fn try_build(info: &EffectInfo) -> Option<Self> {
+        match info.charge_count {
+            // Send fighter into rearm as soon as effect cycle is completed, do not wait for cooldowns
+            InfCount::Count(charge_count) => match charge_count {
+                Count::ZERO => None,
+                Count::ONE => Some(Self {
+                    charge_count,
+                    in_space_duration: info.cycle_duration,
+                    rearm_duration: info.charge_rearm_duration,
+                }),
+                charge_count => Some(Self {
+                    charge_count,
+                    in_space_duration: info.cycle_duration_with_cd * (charge_count - Count::ONE).into_pvalue()
+                        + info.cycle_duration,
+                    rearm_duration: info.charge_rearm_duration * charge_count.into_pvalue(),
+                }),
+            },
+            InfCount::Infinite => None,
+        }
     }
 }

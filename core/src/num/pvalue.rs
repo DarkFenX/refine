@@ -195,6 +195,13 @@ impl std::ops::Div<Value> for PValue {
         Value::from_f64(self.0 / rhs.into_f64())
     }
 }
+// Remainder
+impl std::ops::Rem<PValue> for PValue {
+    type Output = PValue;
+    fn rem(self, rhs: Self) -> Self::Output {
+        Self(self.0 % rhs.0)
+    }
+}
 // Sum
 impl std::iter::Sum<PValue> for PValue {
     fn sum<I: Iterator<Item = PValue>>(iter: I) -> Self {
