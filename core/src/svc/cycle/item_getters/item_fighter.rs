@@ -101,7 +101,7 @@ struct EffectInfo {
     charge_rearm_duration: PValue,
 }
 impl EffectInfo {
-    fn to_chargedness(&self) -> Option<UnitInterval> {
+    fn get_chargedness(&self) -> Option<UnitInterval> {
         match &self.charge_count {
             Some(_) => Some(UnitInterval::ONE),
             None => None,
@@ -172,7 +172,7 @@ fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull> {
         data: CycleDataFull {
             duration: effect_info.cycle_duration_with_cd,
             interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
-            chargedness: effect_info.to_chargedness(),
+            chargedness: effect_info.get_chargedness(),
         },
     })
 }
@@ -202,7 +202,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
             data: CycleDataFull {
                 duration: effect_info.cycle_duration_with_cd,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
-                chargedness: effect_info.to_chargedness(),
+                chargedness: effect_info.get_chargedness(),
             },
             repeat_count: charge_count,
         }),
@@ -210,7 +210,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
             data: CycleDataFull {
                 duration: effect_info.cycle_duration_with_cd,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
-                chargedness: effect_info.to_chargedness(),
+                chargedness: effect_info.get_chargedness(),
             },
         }),
     }
@@ -232,7 +232,7 @@ fn process_effect_sk(
             data: CycleDataFull {
                 duration: effect_info.cycle_duration,
                 interrupt: None,
-                chargedness: effect_info.to_chargedness(),
+                chargedness: effect_info.get_chargedness(),
             },
             repeat_count: Count::ONE,
         }),
@@ -275,7 +275,7 @@ fn rearm_process_sks(cseq_map: &mut CseqMap, effect_infos: &RMap<REffectId, Effe
                     data: CycleDataFull {
                         duration: fastest_sk_info.cycle_duration,
                         interrupt: None,
-                        chargedness: fastest_sk_info.to_chargedness(),
+                        chargedness: fastest_sk_info.get_chargedness(),
                     },
                     repeat_count: Count::ONE,
                 }),
@@ -288,7 +288,7 @@ fn rearm_process_sks(cseq_map: &mut CseqMap, effect_infos: &RMap<REffectId, Effe
 
 fn rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffectId, EffectInfo>, fighter: &UFighter) {
     cseq_map.reserve(effect_infos.len());
-    // Get effect which runs out of its charges fastest
+    // Get effect which runs out of its charges first
     let (trigger_effect_rid, trigger_effect_info, trigger_rearm_info) = match effect_infos
         .iter()
         .filter_map(|(effect_rid, effect_info)| match RearmInfo::try_build(&effect_info) {
@@ -330,16 +330,16 @@ fn rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffectId
 }
 fn rearm_trigger_info_to_cseq(
     effect_info: EffectInfo,
-    rearm: RearmInfo,
+    rearm_info: RearmInfo,
     downtime_duration: PValue,
 ) -> CycleSeq<CycleDataFull> {
-    match rearm.charge_count {
-        Count::ZERO => unreachable!("trigger effect should always have at least 1 charge"),
+    match rearm_info.charge_count {
+        Count::ZERO => unreachable!("0-charged effects are not processed"),
         Count::ONE => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
                 duration: effect_info.cycle_duration + downtime_duration,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
-                chargedness: effect_info.to_chargedness(),
+                chargedness: effect_info.get_chargedness(),
             },
         }),
         charge_count => {
@@ -348,13 +348,13 @@ fn rearm_trigger_info_to_cseq(
                 p1_data: CycleDataFull {
                     duration: effect_info.cycle_duration_with_cd,
                     interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
-                    chargedness: effect_info.to_chargedness(),
+                    chargedness: effect_info.get_chargedness(),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
                     duration: effect_info.cycle_duration + downtime_duration,
                     interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
-                    chargedness: effect_info.to_chargedness(),
+                    chargedness: effect_info.get_chargedness(),
                 },
             })
         }
@@ -375,7 +375,7 @@ fn rearm_other_info_to_cseq(
             data: CycleDataFull {
                 duration: in_space_duration + downtime_duration,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
-                chargedness: effect_info.to_chargedness(),
+                chargedness: effect_info.get_chargedness(),
             },
         })),
         cycle_count => {
@@ -388,13 +388,13 @@ fn rearm_other_info_to_cseq(
                 p1_data: CycleDataFull {
                     duration: p1_duration,
                     interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
-                    chargedness: effect_info.to_chargedness(),
+                    chargedness: effect_info.get_chargedness(),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
                     duration: p2_duration,
                     interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
-                    chargedness: effect_info.to_chargedness(),
+                    chargedness: effect_info.get_chargedness(),
                 },
             }))
         }
