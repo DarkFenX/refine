@@ -145,6 +145,7 @@ class EveEffect(IntEnum):
     doomsday_cone_dot = 6473
     doomsday_aoe_web = 6476
     doomsday_aoe_neut = 6477
+    emergency_hull_energizer = 6484
     ftr_abil_launch_bomb = 6485
     doomsday_aoe_ecm = 6513
     ship_mod_ancillary_remote_armor_repairer = 6651

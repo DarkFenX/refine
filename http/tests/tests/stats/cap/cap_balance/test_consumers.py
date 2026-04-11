@@ -396,6 +396,61 @@ def test_time_reactivation_delay(client, consts):
     assert api_ship_stats.cap_balance.one() == approx(-0.8)
 
 
+def test_time_self_killer(client, consts):
+    eve_use_attr_id = client.mk_eve_attr()
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.emergency_hull_energizer,
+        cat_id=consts.EveEffCat.active,
+        discharge_attr_id=eve_use_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_use_attr_id: 12000, eve_cycle_time_attr_id: 17500},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    # Verification - for cap balance default is sim with no time (looped stats). For modules which
+    # kill themselves, module cycles only once, so consumption over infinite period is 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=True))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=True))
+    assert api_ship_stats.cap_balance.one() == 0
+    # Burst stats - first cycle of the module
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_fit_stats.cap_balance.one() == approx(-685.714286)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+    assert api_ship_stats.cap_balance.one() == approx(-685.714286)
+    # Sim without specified time - looped stats
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_fit_stats.cap_balance.one() == 0
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+    assert api_ship_stats.cap_balance.one() == 0
+    # Sim with time just after cap was used on 1st cycle
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+    assert api_fit_stats.cap_balance.one() == approx(-12000)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+    assert api_ship_stats.cap_balance.one() == approx(-12000)
+    # Sim with time just after cycle completed - there is no 2nd cycle, so use only by 1st is
+    # considered
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=18))])))
+    assert api_fit_stats.cap_balance.one() == approx(-666.666667)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=18))])))
+    assert api_ship_stats.cap_balance.one() == approx(-666.666667)
+
+
 def test_effect_no_discharge(client, consts):
     eve_use_attr_id = client.mk_eve_attr()
     eve_cycle_time_attr_id = client.mk_eve_attr()
