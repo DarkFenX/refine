@@ -5,8 +5,8 @@ use super::{
     shared::{CyclingOptions, SelfKillerInfo},
 };
 use crate::{
-    misc::{InfCount, RearmMinion},
-    num::{Count, PValue},
+    misc::RearmMinion,
+    num::{Count, PValue, UnitInterval},
     rd::REffectId,
     svc::{
         SvcCtx,
@@ -93,8 +93,16 @@ struct EffectInfo {
     cycle_duration: PValue,
     cycle_duration_with_cd: PValue,
     int_cd: bool,
-    charge_count: InfCount,
+    charge_count: Option<Count>,
     charge_rearm_duration: PValue,
+}
+impl EffectInfo {
+    fn to_chargedness(&self) -> Option<UnitInterval> {
+        match &self.charge_count {
+            Some(_) => Some(UnitInterval::ONE),
+            None => None,
+        }
+    }
 }
 
 fn get_effect_info(
@@ -114,12 +122,8 @@ fn get_effect_info(
         None => return None,
     };
     let effect_data = fighter.get_effects().unwrap().get(&effect_rid).unwrap();
-    let charge_count = match effect_data.charge_count {
-        Some(charge_count) => InfCount::Count(charge_count),
-        None => InfCount::Infinite,
-    };
     // Completely skip effects which can't cycle
-    if charge_count == InfCount::Count(Count::ZERO) {
+    if effect_data.charge_count == Some(Count::ZERO) {
         return None;
     }
     // For fighter abilities, cooldown starts as soon as effect starts cycling. It typically is
@@ -132,7 +136,7 @@ fn get_effect_info(
         cycle_duration: duration,
         cycle_duration_with_cd: duration_with_cd,
         int_cd,
-        charge_count,
+        charge_count: effect_data.charge_count,
         charge_rearm_duration: effect_data.charge_reload_duration,
     })
 }
@@ -154,7 +158,7 @@ fn burst_fill_effect_cseq(
         None => return,
     };
     if info.kills_item {
-        process_effect_sk(cseq_map, self_killers, effect_rid, info.cycle_duration);
+        process_effect_sk(cseq_map, self_killers, effect_rid, info);
         return;
     }
     cseq_map.insert(effect_rid, burst_info_to_cseq(info));
@@ -164,7 +168,7 @@ fn burst_info_to_cseq(info: EffectInfo) -> CycleSeq<CycleDataFull> {
         data: CycleDataFull {
             duration: info.cycle_duration_with_cd,
             interrupt: CycleInterrupt::try_new(info.int_cd, false),
-            chargedness: None,
+            chargedness: info.to_chargedness(),
         },
     })
 }
@@ -183,26 +187,26 @@ fn sim_no_rearm_fill_effect_cseq(
         None => return,
     };
     if info.kills_item {
-        process_effect_sk(cseq_map, self_killers, effect_rid, info.cycle_duration);
+        process_effect_sk(cseq_map, self_killers, effect_rid, info);
         return;
     }
     cseq_map.insert(effect_rid, sim_no_rearm_info_to_cseq(info));
 }
 fn sim_no_rearm_info_to_cseq(info: EffectInfo) -> CycleSeq<CycleDataFull> {
     match info.charge_count {
-        InfCount::Count(charge_count) => CycleSeq::Lim(CSeqLim {
+        Some(charge_count) => CycleSeq::Lim(CSeqLim {
             data: CycleDataFull {
                 duration: info.cycle_duration_with_cd,
                 interrupt: CycleInterrupt::try_new(info.int_cd, false),
-                chargedness: None,
+                chargedness: info.to_chargedness(),
             },
             repeat_count: charge_count,
         }),
-        InfCount::Infinite => CycleSeq::Inf(CSeqInf {
+        None => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
                 duration: info.cycle_duration_with_cd,
                 interrupt: CycleInterrupt::try_new(info.int_cd, false),
-                chargedness: None,
+                chargedness: info.to_chargedness(),
             },
         }),
     }
@@ -212,19 +216,19 @@ fn process_effect_sk(
     cseq_map: &mut CseqMap,
     self_killers: &mut Vec<SelfKillerInfo>,
     effect_rid: REffectId,
-    effect_duration: PValue,
+    info: EffectInfo,
 ) {
     self_killers.push(SelfKillerInfo {
         effect_rid,
-        duration: effect_duration,
+        duration: info.cycle_duration,
     });
     cseq_map.insert(
         effect_rid,
         CycleSeq::Lim(CSeqLim {
             data: CycleDataFull {
-                duration: effect_duration,
+                duration: info.cycle_duration,
                 interrupt: None,
-                chargedness: None,
+                chargedness: info.to_chargedness(),
             },
             repeat_count: Count::ONE,
         }),
@@ -265,19 +269,19 @@ fn rearm_process_sks(cseq_map: &mut CseqMap, info_map: &RMap<REffectId, EffectIn
     match info_map
         .iter()
         .filter_map(|(effect_rid, info)| match info.kills_item {
-            true => Some((*effect_rid, info.cycle_duration)),
+            true => Some((*effect_rid, *info)),
             false => None,
         })
-        .min_by_key(|(_, cycle_duration)| *cycle_duration)
+        .min_by_key(|(_, info)| info.cycle_duration)
     {
-        Some((fastest_sk_effect_rid, fastest_sk_cycle_duration)) => {
+        Some((fastest_sk_effect_rid, fastest_sk_info)) => {
             cseq_map.insert(
                 fastest_sk_effect_rid,
                 CycleSeq::Lim(CSeqLim {
                     data: CycleDataFull {
-                        duration: fastest_sk_cycle_duration,
+                        duration: fastest_sk_info.cycle_duration,
                         interrupt: None,
-                        chargedness: None,
+                        chargedness: fastest_sk_info.to_chargedness(),
                     },
                     repeat_count: Count::ONE,
                 }),
@@ -341,7 +345,7 @@ fn rearm_trigger_info_to_cseq(
             data: CycleDataFull {
                 duration: info.cycle_duration + downtime_duration,
                 interrupt: CycleInterrupt::try_new(info.int_cd, true),
-                chargedness: None,
+                chargedness: info.to_chargedness(),
             },
         }),
         charge_count => {
@@ -350,13 +354,13 @@ fn rearm_trigger_info_to_cseq(
                 p1_data: CycleDataFull {
                     duration: info.cycle_duration_with_cd,
                     interrupt: CycleInterrupt::try_new(info.int_cd, false),
-                    chargedness: None,
+                    chargedness: info.to_chargedness(),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
                     duration: info.cycle_duration + downtime_duration,
                     interrupt: CycleInterrupt::try_new(info.int_cd, true),
-                    chargedness: None,
+                    chargedness: info.to_chargedness(),
                 },
             })
         }
@@ -377,7 +381,7 @@ fn rearm_other_info_to_cseq(
             data: CycleDataFull {
                 duration: in_space_duration + downtime_duration,
                 interrupt: CycleInterrupt::try_new(info.int_cd, true),
-                chargedness: None,
+                chargedness: info.to_chargedness(),
             },
         })),
         cycle_count => {
@@ -390,13 +394,13 @@ fn rearm_other_info_to_cseq(
                 p1_data: CycleDataFull {
                     duration: p1_duration,
                     interrupt: CycleInterrupt::try_new(info.int_cd, false),
-                    chargedness: None,
+                    chargedness: info.to_chargedness(),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
                     duration: p2_duration,
                     interrupt: CycleInterrupt::try_new(info.int_cd, true),
-                    chargedness: None,
+                    chargedness: info.to_chargedness(),
                 },
             }))
         }
@@ -410,23 +414,22 @@ struct RearmInfo {
 }
 impl RearmInfo {
     fn try_build(info: &EffectInfo) -> Option<Self> {
-        match info.charge_count {
-            // Send fighter into rearm as soon as effect cycle is completed, do not wait for cooldowns
-            InfCount::Count(charge_count) => match charge_count {
-                Count::ZERO => None,
-                Count::ONE => Some(Self {
-                    charge_count,
-                    in_space_duration: info.cycle_duration,
-                    rearm_duration: info.charge_rearm_duration,
-                }),
-                charge_count => Some(Self {
-                    charge_count,
-                    in_space_duration: info.cycle_duration_with_cd * (charge_count - Count::ONE).into_pvalue()
-                        + info.cycle_duration,
-                    rearm_duration: info.charge_rearm_duration * charge_count.into_pvalue(),
-                }),
-            },
-            InfCount::Infinite => None,
+        let charge_count = info.charge_count?;
+        // Send fighter into rearm as soon as final effect cycle is completed, do not wait for
+        // cooldowns
+        match charge_count {
+            Count::ZERO => None,
+            Count::ONE => Some(Self {
+                charge_count,
+                in_space_duration: info.cycle_duration,
+                rearm_duration: info.charge_rearm_duration,
+            }),
+            charge_count => Some(Self {
+                charge_count,
+                in_space_duration: info.cycle_duration_with_cd * (charge_count - Count::ONE).into_pvalue()
+                    + info.cycle_duration,
+                rearm_duration: info.charge_rearm_duration * charge_count.into_pvalue(),
+            }),
         }
     }
 }
