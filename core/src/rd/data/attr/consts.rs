@@ -120,6 +120,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) ftr_abil_atk_missile_explosion_radius: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_explosion_velocity: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_reduction_factor: Option<RAttrId>,
+    pub(crate) ftr_abil_atk_missile_reduction_sensitivity: Option<RAttrId>,
     pub(crate) ftr_capacity: Option<RAttrId>,
     pub(crate) ftr_heavy_slots: Option<RAttrId>,
     pub(crate) ftr_light_slots: Option<RAttrId>,
@@ -375,6 +376,9 @@ impl RAttrConsts {
                 .copied(),
             ftr_abil_atk_missile_reduction_factor: attr_aid_rid_map
                 .get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_FACTOR)
+                .copied(),
+            ftr_abil_atk_missile_reduction_sensitivity: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_SENSITIVITY)
                 .copied(),
             ftr_capacity: attr_aid_rid_map.get(&AAttrId::FTR_CAPACITY).copied(),
             ftr_heavy_slots: attr_aid_rid_map.get(&AAttrId::FTR_HEAVY_SLOTS).copied(),

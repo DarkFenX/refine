@@ -98,6 +98,9 @@ impl Value {
     pub(crate) fn exp(self) -> PValue {
         PValue::from_f64_unchecked(self.0.exp())
     }
+    pub(crate) fn log(self, base: Self) -> Self {
+        Self(self.0.log(base.0))
+    }
     pub(crate) fn powi(self, n: i32) -> Self {
         Self(self.0.powi(n))
     }

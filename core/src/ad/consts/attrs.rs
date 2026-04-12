@@ -235,6 +235,8 @@ impl AAttrId {
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_EXPL: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_EXPL);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_FACTOR: Self =
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_FACTOR);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_SENSITIVITY: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_SENSITIVITY);
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS: Self =
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS);
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY: Self =

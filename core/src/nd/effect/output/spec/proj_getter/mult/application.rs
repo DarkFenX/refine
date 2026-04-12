@@ -9,13 +9,19 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_missile_application_mult_standard(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_standard_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
+    let src_drf = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        ctx.ac().aoe_dmg_reduction_factor,
+        Value::ZERO,
+    ));
     get_missile_application_mult(
         ctx,
         calc,
@@ -24,10 +30,10 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_missile_application_
         proj_data,
         ctx.ac().aoe_cloud_size,
         ctx.ac().aoe_velocity,
-        ctx.ac().aoe_dmg_reduction_factor,
+        src_drf,
     )
 }
-pub(super) fn get_missile_application_mult(
+pub(super) fn get_legacy_missile_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -36,13 +42,43 @@ pub(super) fn get_missile_application_mult(
     src_er_attr_rid: Option<RAttrId>,
     src_ev_attr_rid: Option<RAttrId>,
     src_drf_attr_rid: Option<RAttrId>,
+    src_drs_attr_rid: Option<RAttrId>,
+) -> PValue {
+    // DRF is aggregated into a single attribute only for missiles; for effects where it hasn't been
+    // adjusted (e.g. fighters), it still has to be calculated
+    let src_drf = calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_drf_attr_rid, Value::ZERO);
+    let src_drs = calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_drs_attr_rid, Value::ZERO);
+    let src_drf = src_drf.log(src_drs);
+    let src_drf = match src_drf.is_finite() {
+        true => PValue::from_value_clamped(src_drf),
+        // Assume DRF of 0 in case of any unexpected values
+        false => PValue::ZERO,
+    };
+    get_missile_application_mult(
+        ctx,
+        calc,
+        projector_uid,
+        projectee_uid,
+        proj_data,
+        src_er_attr_rid,
+        src_ev_attr_rid,
+        src_drf,
+    )
+}
+fn get_missile_application_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    projectee_uid: UItemId,
+    proj_data: UProjData,
+    src_er_attr_rid: Option<RAttrId>,
+    src_ev_attr_rid: Option<RAttrId>,
+    src_drf: PValue,
 ) -> PValue {
     let src_er =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_er_attr_rid, Value::ZERO));
     let src_ev =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_ev_attr_rid, Value::ZERO));
-    let src_drf =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_drf_attr_rid, Value::ZERO));
     let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let tgt_speed = proj_data.get_tgt_speed() * funcs::get_speed(ctx, calc, projectee_uid);
     // "Static" part

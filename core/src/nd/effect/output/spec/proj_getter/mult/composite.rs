@@ -1,6 +1,6 @@
 use super::{
     application::{
-        get_missile_application_mult, get_missile_application_mult_standard, get_radius_ratio_mult,
+        get_legacy_missile_application_mult, get_radius_ratio_mult, get_standard_missile_application_mult,
         get_turret_application_mult,
     },
     range::{
@@ -65,7 +65,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_vorton_proj_mult(
     if mult == PValue::ZERO {
         return PValue::ZERO;
     }
-    mult * get_missile_application_mult_standard(ctx, calc, projector_uid, projectee_uid, proj_data)
+    mult * get_standard_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
 }
 
 pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_burst_proj_mult(
@@ -156,7 +156,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_attack_m_pr
     if mult == PValue::ZERO {
         return PValue::ZERO;
     }
-    mult * get_missile_application_mult(
+    mult * get_legacy_missile_application_mult(
         ctx,
         calc,
         projector_uid,
@@ -165,6 +165,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_attack_m_pr
         ctx.ac().ftr_abil_atk_missile_explosion_radius,
         ctx.ac().ftr_abil_atk_missile_explosion_velocity,
         ctx.ac().ftr_abil_atk_missile_reduction_factor,
+        ctx.ac().ftr_abil_atk_missile_reduction_sensitivity,
     )
 }
 
