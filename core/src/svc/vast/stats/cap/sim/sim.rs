@@ -51,8 +51,8 @@ impl CapSim {
             injectors: Vec::new(),
             time: PValue::ZERO,
             cap: start_cap.into_value(),
+            // Data needed to calculate cap stability - watermarks and extra flags for edge cases
             only_gains: true,
-            // Watermark data
             wm_high_time: PValue::ZERO,
             wm_high_cap: start_cap.into_value(),
             wm_low_time: PValue::ZERO,
@@ -62,32 +62,44 @@ impl CapSim {
         }
     }
     pub(super) fn run(&mut self) -> StatCapSim {
-        // When there are no events, return 100% if there is some cap regen, or initial cap value if
-        // cap is not regenerating
-        if self.events.is_empty() {
-            return match self.tau {
-                Some(_) => StatCapSim::Stable(UnitInterval::ONE),
-                None => StatCapSim::Stable(UnitInterval::from_value_clamped(self.cap / self.max_cap)),
-            };
+        if let Some(result) = self.check_no_events() {
+            return result;
         }
         while let Some(event) = self.events.pop() {
             match event {
                 CapSimEvent::CycleCheck(mut event) => {
                     // Check if it can cycle altogether
-                    if let Some(cycle_iter_item) = event.cycle_iter.next() {
-                        // Add outputs for this cycle
-                        self.schedule_cycle_output(
-                            event.time,
-                            cycle_iter_item.output.into_instance_iter(),
-                            event.direction,
-                        );
-                        // Schedule next cycle check
-                        let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                            time: event.time + cycle_iter_item.cycle_duration,
-                            cycle_iter: event.cycle_iter,
-                            direction: event.direction,
-                        });
-                        self.events.push(next_event);
+                    match event.cycle_iter.next() {
+                        Some(cycle_iter_item) => {
+                            // Add outputs for this cycle
+                            self.schedule_cycle_output(
+                                event.time,
+                                cycle_iter_item.output.into_instance_iter(),
+                                event.direction,
+                            );
+                            // Schedule next cycle check
+                            let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
+                                time: event.time + cycle_iter_item.cycle_duration,
+                                cycle_iter: event.cycle_iter,
+                                direction: event.direction,
+                            });
+                            self.events.push(next_event);
+                        }
+                        // When some module is done with cycling (non-repeating modules like CEHE),
+                        // check if there are any events left, and if there are some, reset extra
+                        // data used for stability value calculation.
+                        None => {
+                            if let Some(result) = self.check_no_events() {
+                                return result;
+                            }
+                            self.only_gains = true;
+                            self.wm_high_time = event.time;
+                            self.wm_high_cap = self.cap;
+                            self.wm_low_time = event.time;
+                            self.wm_low_cap = self.cap;
+                            self.wm_aux_high = self.cap;
+                            self.wm_aux_low = self.cap;
+                        }
                     }
                 }
                 CapSimEvent::InjectorReady(event) => {
@@ -279,6 +291,17 @@ impl CapSim {
             };
             let injector = self.injectors.remove(idx);
             self.use_injector(injector);
+        }
+    }
+    fn check_no_events(&self) -> Option<StatCapSim> {
+        match self.events.is_empty() {
+            // When there are no events, return 100% if there is some cap regen, or initial cap
+            // value if cap is not regenerating
+            true => Some(match self.tau {
+                Some(_) => StatCapSim::Stable(UnitInterval::ONE),
+                None => StatCapSim::Stable(UnitInterval::from_value_clamped(self.cap / self.max_cap)),
+            }),
+            false => None,
         }
     }
 }
