@@ -64,10 +64,7 @@ struct EffectInfo {
 }
 impl EffectInfo {
     fn get_chargedness(&self) -> Option<UnitInterval> {
-        match &self.charge_count {
-            Some(_) => Some(UnitInterval::ONE),
-            None => None,
-        }
+        self.charge_count.map(|_| UnitInterval::ONE)
     }
 }
 
@@ -83,10 +80,7 @@ fn get_effect_info(
         return None;
     }
     // No appropriate duration - effect does not cycle
-    let duration = match funcs::get_effect_duration_s(ctx, calc, item_uid, effect) {
-        Some(duration) => duration,
-        None => return None,
-    };
+    let duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let effect_data = fighter.get_effects().unwrap().get(&effect_rid).unwrap();
     // Completely skip effects which can't cycle
     if effect_data.charge_count == Some(Count::ZERO) {
@@ -298,9 +292,8 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
     // Get effect which runs out of its charges first
     let (trigger_effect_rid, trigger_effect_info, trigger_rearm_info) = match effect_infos
         .iter()
-        .filter_map(|(effect_rid, effect_info)| match RearmInfo::try_build(effect_info) {
-            Some(rearm_info) => Some((effect_rid, effect_info, rearm_info)),
-            None => None,
+        .filter_map(|(effect_rid, effect_info)| {
+            RearmInfo::try_build(effect_info).map(|rearm_info| (effect_rid, effect_info, rearm_info))
         })
         .min_by_key(|(_, _, rearm_info)| rearm_info.in_space_duration)
     {
