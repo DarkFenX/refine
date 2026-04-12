@@ -1,5 +1,8 @@
 use super::{
-    application::{get_missile_application_mult, get_radius_ratio_mult, get_turret_application_mult},
+    application::{
+        get_missile_application_mult, get_missile_application_mult_standard, get_radius_ratio_mult,
+        get_turret_application_mult,
+    },
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_dd_neut_range_mult, get_full_restricted_range_mult,
         get_full_unrestricted_range_mult, get_simple_s2s_range_mult,
@@ -62,7 +65,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_vorton_proj_mult(
     if mult == PValue::ZERO {
         return PValue::ZERO;
     }
-    mult * get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
+    mult * get_missile_application_mult_standard(ctx, calc, projector_uid, projectee_uid, proj_data)
 }
 
 pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_burst_proj_mult(
@@ -138,6 +141,30 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_neut_proj_mult(
         projector_uid,
         projectee_uid,
         ctx.ac().energy_neut_sig_resolution,
+    )
+}
+
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_attack_m_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    effect: &REffect,
+    projectee_uid: UItemId,
+    proj_data: UProjData,
+) -> PValue {
+    let mult = get_full_unrestricted_range_mult(ctx, calc, projector_uid, effect, proj_data);
+    if mult == PValue::ZERO {
+        return PValue::ZERO;
+    }
+    mult * get_missile_application_mult(
+        ctx,
+        calc,
+        projector_uid,
+        projectee_uid,
+        proj_data,
+        ctx.ac().ftr_abil_atk_missile_explosion_radius,
+        ctx.ac().ftr_abil_atk_missile_explosion_velocity,
+        ctx.ac().ftr_abil_atk_missile_reduction_factor,
     )
 }
 

@@ -1,8 +1,8 @@
 use super::mult::{
-    application::{get_bomb_application_mult, get_missile_application_mult},
+    application::{get_bomb_application_mult, get_missile_application_mult_standard},
     composite::{
         get_aoe_burst_proj_mult, get_aoe_dd_dmg_proj_mult, get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult,
-        get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
+        get_ftr_abil_attack_m_proj_mult, get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
     },
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_bomb_range_mult, get_fof_missile_range_mult,
@@ -39,6 +39,7 @@ pub(crate) enum NEffectProjGetter {
     AoeBurstRange,
     // Variants specific to a single effect
     MissileLaunchingApplication,
+    FtrAbilAttackM,
 }
 impl NEffectProjGetter {
     pub(crate) fn get_mult(
@@ -65,7 +66,7 @@ impl NEffectProjGetter {
             Self::MissileRange => get_missile_range_mult(ctx, calc, projector_uid, proj_data),
             Self::MissileRangeFof => get_fof_missile_range_mult(ctx, calc, projector_uid, proj_data),
             Self::MissileApplication => {
-                get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
+                get_missile_application_mult_standard(ctx, calc, projector_uid, projectee_uid, proj_data)
             }
             Self::BombRange => get_bomb_range_mult(ctx, calc, projector_uid, proj_data),
             Self::BombApplication => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
@@ -80,8 +81,11 @@ impl NEffectProjGetter {
                 let u_item = ctx.u_data.items.get(projector_uid);
                 match u_item.is_guided_bomb() {
                     true => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
-                    false => get_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
+                    false => get_missile_application_mult_standard(ctx, calc, projector_uid, projectee_uid, proj_data),
                 }
+            }
+            Self::FtrAbilAttackM => {
+                get_ftr_abil_attack_m_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data)
             }
         }
     }
@@ -109,6 +113,7 @@ impl NEffectProjGetter {
             Self::AoeBurstRange => [Some(AAttrId::MAX_RANGE), Some(AAttrId::DOOMSDAY_AOE_RANGE)],
             // Variants specific to a single effect
             Self::MissileLaunchingApplication => [None, None],
+            Self::FtrAbilAttackM => [None, None],
         }
     }
 }

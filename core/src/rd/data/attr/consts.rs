@@ -117,6 +117,9 @@ pub(crate) struct RAttrConsts {
     pub(crate) ftr_abil_atk_missile_dmg_kin: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_dmg_mult: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_dmg_therm: Option<RAttrId>,
+    pub(crate) ftr_abil_atk_missile_explosion_radius: Option<RAttrId>,
+    pub(crate) ftr_abil_atk_missile_explosion_velocity: Option<RAttrId>,
+    pub(crate) ftr_abil_atk_missile_reduction_factor: Option<RAttrId>,
     pub(crate) ftr_capacity: Option<RAttrId>,
     pub(crate) ftr_heavy_slots: Option<RAttrId>,
     pub(crate) ftr_light_slots: Option<RAttrId>,
@@ -364,6 +367,15 @@ impl RAttrConsts {
             ftr_abil_atk_missile_dmg_kin: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_KIN).copied(),
             ftr_abil_atk_missile_dmg_mult: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_MULT).copied(),
             ftr_abil_atk_missile_dmg_therm: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_THERM).copied(),
+            ftr_abil_atk_missile_explosion_radius: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS)
+                .copied(),
+            ftr_abil_atk_missile_explosion_velocity: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY)
+                .copied(),
+            ftr_abil_atk_missile_reduction_factor: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_FACTOR)
+                .copied(),
             ftr_capacity: attr_aid_rid_map.get(&AAttrId::FTR_CAPACITY).copied(),
             ftr_heavy_slots: attr_aid_rid_map.get(&AAttrId::FTR_HEAVY_SLOTS).copied(),
             ftr_light_slots: attr_aid_rid_map.get(&AAttrId::FTR_LIGHT_SLOTS).copied(),

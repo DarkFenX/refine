@@ -9,31 +9,40 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_missile_application_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_missile_application_mult_standard(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
-    let src_er = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    get_missile_application_mult(
         ctx,
+        calc,
         projector_uid,
+        projectee_uid,
+        proj_data,
         ctx.ac().aoe_cloud_size,
-        Value::ZERO,
-    ));
-    let src_ev = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
-        ctx,
-        projector_uid,
         ctx.ac().aoe_velocity,
-        Value::ZERO,
-    ));
-    let src_drf = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
-        ctx,
-        projector_uid,
         ctx.ac().aoe_dmg_reduction_factor,
-        Value::ZERO,
-    ));
+    )
+}
+pub(super) fn get_missile_application_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    projectee_uid: UItemId,
+    proj_data: UProjData,
+    src_er_attr_rid: Option<RAttrId>,
+    src_ev_attr_rid: Option<RAttrId>,
+    src_drf_attr_rid: Option<RAttrId>,
+) -> PValue {
+    let src_er =
+        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_er_attr_rid, Value::ZERO));
+    let src_ev =
+        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_ev_attr_rid, Value::ZERO));
+    let src_drf =
+        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, src_drf_attr_rid, Value::ZERO));
     let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
     let tgt_speed = proj_data.get_tgt_speed() * funcs::get_speed(ctx, calc, projectee_uid);
     // "Static" part
@@ -91,7 +100,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_turret_application_m
     }
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_radius_ratio_mult(
+pub(super) fn get_radius_ratio_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

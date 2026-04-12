@@ -219,6 +219,7 @@ impl EAttrId {
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_THERM: Self = Self::from_i32(2228);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_KIN: Self = Self::from_i32(2229);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_EXPL: Self = Self::from_i32(2230);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_FACTOR: Self = Self::from_i32(2231);
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS: Self = Self::from_i32(2234);
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY: Self = Self::from_i32(2235);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL: Self = Self::from_i32(2236);
