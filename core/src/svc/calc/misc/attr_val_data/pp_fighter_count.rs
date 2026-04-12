@@ -14,10 +14,10 @@ pub(super) fn fighter_count_postproc_fast(ctx: SvcCtx, item_uid: UItemId, mut va
         .dc_fighter()
         .unwrap()
         .get_count()
-        .unwrap();
-    let current_count = count.current.into_value();
-    val.dogma = current_count;
-    val.extra = current_count;
+        .unwrap()
+        .into_value();
+    val.dogma = count;
+    val.extra = count;
     val
 }
 
@@ -29,7 +29,7 @@ pub(super) fn fighter_count_postproc_info(ctx: SvcCtx, item_uid: UItemId) -> Att
         .dc_fighter()
         .unwrap()
         .get_count()
-        .unwrap();
-    let current_count = count.current.into_value();
-    AttrValInfo::new(current_count)
+        .unwrap()
+        .into_value();
+    AttrValInfo::new(count)
 }

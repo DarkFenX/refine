@@ -2,7 +2,7 @@ use crate::{
     misc::DmgKinds,
     nd::NEffectOutputGetter,
     num::{Count, PValue, Value},
-    rd::REffect,
+    rd::{RAttrId, REffect},
     svc::{
         SvcCtx,
         calc::Calc,
@@ -23,6 +23,7 @@ pub(crate) enum NEffectDmgOutputGetter {
     DotDelay,
     // Variants specific to a single effect
     TargetAttack,
+    FtrAbilAttackM,
 }
 impl NEffectOutputGetter for NEffectDmgOutputGetter {
     type Instance = DmgKinds<PValue>;
@@ -44,6 +45,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
             Self::DotDelay => get_dot_delay(ctx, calc, item_uid),
             // Variants specific to a single effect
             Self::TargetAttack => get_target_attack(ctx, calc, item_uid),
+            Self::FtrAbilAttackM => get_ftr_abil_attack_m(ctx, calc, item_uid),
         }
     }
 }
@@ -53,14 +55,14 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_regular(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
-        instance: get_dmg_values(ctx, calc, item_uid)?,
+        instance: get_dmg_values_standard(ctx, calc, item_uid)?,
         delay: PValue::ZERO,
     }))
 }
 
 fn get_delay1(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
-        instance: get_dmg_values(ctx, calc, item_uid)?,
+        instance: get_dmg_values_standard(ctx, calc, item_uid)?,
         delay: PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_delay_duration, Value::ZERO)? / Value::THOUSAND,
         ),
@@ -69,7 +71,7 @@ fn get_delay1(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
 
 fn get_delay2(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
-        instance: get_dmg_values(ctx, calc, item_uid)?,
+        instance: get_dmg_values_standard(ctx, calc, item_uid)?,
         delay: PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
                 / Value::THOUSAND,
@@ -78,7 +80,7 @@ fn get_delay2(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
 }
 
 fn get_dot_delay(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
-    let dmg = get_dmg_values(ctx, calc, item_uid)?;
+    let dmg = get_dmg_values_standard(ctx, calc, item_uid)?;
     let delay_s = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
             / Value::THOUSAND,
@@ -107,7 +109,7 @@ fn get_mult_charge(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Ou
     let charge_uid = ctx.u_data.items.get(item_uid).get_charge_uid()?;
     let dmg_mult =
         PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_mult, Value::ONE)?);
-    let mut dmg = get_dmg_values(ctx, calc, charge_uid)?;
+    let mut dmg = get_dmg_values_standard(ctx, calc, charge_uid)?;
     dmg.em *= dmg_mult;
     dmg.thermal *= dmg_mult;
     dmg.kinetic *= dmg_mult;
@@ -127,7 +129,7 @@ fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
     };
     let dmg_mult =
         PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().dmg_mult, Value::ONE)?);
-    let mut dmg = get_dmg_values(ctx, calc, dmg_dealer_uid)?;
+    let mut dmg = get_dmg_values_standard(ctx, calc, dmg_dealer_uid)?;
     dmg.em *= dmg_mult;
     dmg.thermal *= dmg_mult;
     dmg.kinetic *= dmg_mult;
@@ -138,25 +140,75 @@ fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
     }))
 }
 
-fn get_dmg_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<DmgKinds<PValue>> {
+fn get_ftr_abil_attack_m(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+    let mut dmg = get_dmg_values(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().ftr_abil_atk_missile_dmg_em,
+        ctx.ac().ftr_abil_atk_missile_dmg_therm,
+        ctx.ac().ftr_abil_atk_missile_dmg_kin,
+        ctx.ac().ftr_abil_atk_missile_dmg_expl,
+    )?;
+    let mut dmg_mult = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        item_uid,
+        ctx.ac().ftr_abil_atk_missile_dmg_mult,
+        Value::ONE,
+    )?);
+    if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
+        && let Some(count) = u_fighter.get_count()
+    {
+        dmg_mult *= count.into_pvalue();
+    }
+    dmg.em *= dmg_mult;
+    dmg.thermal *= dmg_mult;
+    dmg.kinetic *= dmg_mult;
+    dmg.explosive *= dmg_mult;
+    Some(Output::Simple(OutputSimple {
+        instance: dmg,
+        delay: PValue::ZERO,
+    }))
+}
+
+fn get_dmg_values_standard(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<DmgKinds<PValue>> {
+    get_dmg_values(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().em_dmg,
+        ctx.ac().therm_dmg,
+        ctx.ac().kin_dmg,
+        ctx.ac().expl_dmg,
+    )
+}
+fn get_dmg_values(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    em_attr_rid: Option<RAttrId>,
+    therm_attr_rid: Option<RAttrId>,
+    kin_attr_rid: Option<RAttrId>,
+    expl_attr_rid: Option<RAttrId>,
+) -> Option<DmgKinds<PValue>> {
     Some(DmgKinds {
-        em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().em_dmg, Value::ZERO)?),
+        em: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, em_attr_rid, Value::ZERO)?),
         thermal: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
             ctx,
             item_uid,
-            ctx.ac().therm_dmg,
+            therm_attr_rid,
             Value::ZERO,
         )?),
         kinetic: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
             ctx,
             item_uid,
-            ctx.ac().kin_dmg,
+            kin_attr_rid,
             Value::ZERO,
         )?),
         explosive: PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
             ctx,
             item_uid,
-            ctx.ac().expl_dmg,
+            expl_attr_rid,
             Value::ZERO,
         )?),
     })

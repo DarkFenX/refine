@@ -9,7 +9,7 @@ pub(in crate::ad::generator) fn get_abil_effect(abil_id: EAbilId) -> Option<EEff
         | EAbilId::ATK_RAIL_THERM
         | EAbilId::ATK_RAIL_KIN
         | EAbilId::ATK_AUTOCANNON
-        | EAbilId::ATK_ARTY => Some(EEffectId::FTR_ABIL_ATK_MISSILE),
+        | EAbilId::ATK_ARTY => Some(EEffectId::FTR_ABIL_ATTACK_M),
         EAbilId::UMISSILE_EM
         | EAbilId::UMISSILE_THERM
         | EAbilId::UMISSILE_KIN

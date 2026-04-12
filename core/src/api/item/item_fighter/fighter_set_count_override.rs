@@ -8,9 +8,9 @@ impl SolarSystem {
     ) {
         // Update user data
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
-        let old_count = u_fighter.get_count().map(|v| v.current);
+        let old_count = u_fighter.get_count();
         u_fighter.set_count_override(count_override);
-        let new_count = u_fighter.get_count().map(|v| v.current);
+        let new_count = u_fighter.get_count();
         // Update services
         if old_count != new_count {
             let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();

@@ -123,7 +123,16 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_count(&self) -> Option<FighterCountInfo> {
+    pub(crate) fn get_count(&self) -> Option<FighterCount> {
+        match self.get_axt() {
+            Some(axt) => match self.count_override {
+                Some(count_override) => Some(count_override),
+                None => Some(axt.max_fighter_count),
+            },
+            None => None,
+        }
+    }
+    pub(crate) fn get_count_info(&self) -> Option<FighterCountInfo> {
         match self.get_axt() {
             Some(axt) => match self.count_override {
                 Some(count_override) => Some(FighterCountInfo {

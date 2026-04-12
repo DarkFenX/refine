@@ -97,7 +97,7 @@ fn get_state(sol: &SolarSystem, fighter_uid: UItemId) -> MinionState {
     get_u_fighter(sol, fighter_uid).get_fighter_state()
 }
 fn get_count(sol: &SolarSystem, fighter_uid: UItemId) -> Option<FighterCountInfo> {
-    get_u_fighter(sol, fighter_uid).get_count()
+    get_u_fighter(sol, fighter_uid).get_count_info()
 }
 fn get_coordinates(sol: &SolarSystem, fighter_uid: UItemId) -> Coordinates {
     Coordinates::from_xyz(get_u_fighter(sol, fighter_uid).get_physics().coordinates)

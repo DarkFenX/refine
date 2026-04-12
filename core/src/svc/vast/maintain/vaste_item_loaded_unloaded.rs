@@ -89,7 +89,7 @@ impl Vast {
             UItem::Fighter(fighter) => {
                 let item_axt = fighter.get_axt().unwrap();
                 item_kind_add(fit_data, item_uid, item_axt.kind, ItemKind::Fighter);
-                let count = fighter.get_count().unwrap();
+                let count = fighter.get_count_info().unwrap();
                 fit_data
                     .fighters_volume
                     .insert(item_uid, item_axt.volume * count.current.into_pvalue());
@@ -382,7 +382,7 @@ impl Vast {
                 let item_axt = fighter.get_axt().unwrap();
                 item_kind_remove(fit_data, item_uid, item_axt.kind, ItemKind::Fighter);
                 fit_data.fighters_volume.remove(item_uid);
-                let count = fighter.get_count().unwrap();
+                let count = fighter.get_count_info().unwrap();
                 if count.current > count.max {
                     fit_data.fighter_squad_size.remove(item_uid);
                 }

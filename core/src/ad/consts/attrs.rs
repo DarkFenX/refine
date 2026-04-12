@@ -228,6 +228,11 @@ impl AAttrId {
     pub(crate) const FTR_LIGHT_SLOTS: Self = Self::from_eid(EAttrId::FTR_LIGHT_SLOTS);
     pub(crate) const FTR_SUPPORT_SLOTS: Self = Self::from_eid(EAttrId::FTR_SUPPORT_SLOTS);
     pub(crate) const FTR_HEAVY_SLOTS: Self = Self::from_eid(EAttrId::FTR_HEAVY_SLOTS);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_MULT: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_MULT);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_EM: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_EM);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_THERM: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_THERM);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_KIN: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_KIN);
+    pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_EXPL: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_EXPL);
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS: Self =
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_EXPLOSION_RADIUS);
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY: Self =

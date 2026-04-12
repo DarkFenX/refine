@@ -79,7 +79,7 @@ impl EEffectId {
     pub(crate) const POINT_DEFENSE: Self = Self::from_i32(6443);
     pub(crate) const LIGHTNING_WEAPON: Self = Self::from_i32(6447);
     pub(crate) const FTR_ABIL_TACKLE: Self = Self::from_i32(6464);
-    pub(crate) const FTR_ABIL_ATK_MISSILE: Self = Self::from_i32(6465);
+    pub(crate) const FTR_ABIL_ATTACK_M: Self = Self::from_i32(6465);
     pub(crate) const REMOTE_ECM_FALLOFF: Self = Self::from_i32(6470);
     pub(crate) const DOOMSDAY_BEAM_DOT: Self = Self::from_i32(6472);
     pub(crate) const DOOMSDAY_CONE_DOT: Self = Self::from_i32(6473);

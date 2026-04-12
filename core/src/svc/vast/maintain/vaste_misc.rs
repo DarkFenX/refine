@@ -70,7 +70,7 @@ impl Vast {
     pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_uid: UItemId, fighter: &UFighter) {
         let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
         let fighter_axt = fighter.get_axt().unwrap();
-        let count = fighter.get_count().unwrap();
+        let count = fighter.get_count_info().unwrap();
         fit_data
             .fighters_volume
             .insert(fighter_uid, fighter_axt.volume * count.current.into_pvalue());

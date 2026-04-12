@@ -64,6 +64,7 @@ pub(in crate::nd::effect) mod d6428_ship_mod_remote_tracking_computer;
 pub(in crate::nd::effect) mod d6442_ftr_abil_micro_jump_drive;
 pub(in crate::nd::effect) mod d6443_point_defense;
 pub(in crate::nd::effect) mod d6447_lightning_weapon;
+pub(in crate::nd::effect) mod d6465_ftr_abil_attack_m;
 pub(in crate::nd::effect) mod d6470_remote_ecm_falloff;
 pub(in crate::nd::effect) mod d6472_doomsday_beam_dot;
 pub(in crate::nd::effect) mod d6473_doomsday_cone_dot;

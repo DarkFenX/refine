@@ -88,7 +88,7 @@ impl AEffectId {
     pub(crate) const POINT_DEFENSE: Self = Self::from_eid(EEffectId::POINT_DEFENSE);
     pub(crate) const LIGHTNING_WEAPON: Self = Self::from_eid(EEffectId::LIGHTNING_WEAPON);
     pub(crate) const FTR_ABIL_TACKLE: Self = Self::from_eid(EEffectId::FTR_ABIL_TACKLE);
-    pub(crate) const FTR_ABIL_ATK_MISSILE: Self = Self::from_eid(EEffectId::FTR_ABIL_ATK_MISSILE);
+    pub(crate) const FTR_ABIL_ATTACK_M: Self = Self::from_eid(EEffectId::FTR_ABIL_ATTACK_M);
     pub(crate) const REMOTE_ECM_FALLOFF: Self = Self::from_eid(EEffectId::REMOTE_ECM_FALLOFF);
     pub(crate) const DOOMSDAY_BEAM_DOT: Self = Self::from_eid(EEffectId::DOOMSDAY_BEAM_DOT);
     pub(crate) const DOOMSDAY_CONE_DOT: Self = Self::from_eid(EEffectId::DOOMSDAY_CONE_DOT);

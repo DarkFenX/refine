@@ -80,6 +80,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d6442_ftr_abil_micro_jump_drive::mk_n_effect(),
         defs::d6443_point_defense::mk_n_effect(),
         defs::d6447_lightning_weapon::mk_n_effect(),
+        defs::d6465_ftr_abil_attack_m::mk_n_effect(),
         defs::d6470_remote_ecm_falloff::mk_n_effect(),
         defs::d6472_doomsday_beam_dot::mk_n_effect(),
         defs::d6473_doomsday_cone_dot::mk_n_effect(),
