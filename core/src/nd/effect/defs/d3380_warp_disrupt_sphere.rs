@@ -23,16 +23,13 @@ use crate::{
         AEffectBuffScope, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AItemGrpId, AItemListId,
         AOp,
     },
-    ed::EEffectId,
     nd::{NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeLoc, NEffectProjGetter},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::WARP_DISRUPT_SPHERE;
 const EFFECT_AID: AEffectId = AEffectId::WARP_DISRUPT_SPHERE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: vec![

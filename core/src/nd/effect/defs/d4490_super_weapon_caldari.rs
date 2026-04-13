@@ -1,16 +1,13 @@
 use super::shared::make_dd_self_debuffs;
 use crate::{
     ad::{AEffectBuff, AEffectId, AItemListId},
-    ed::EEffectId,
     nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjOpcSpec, NEffectProjecteeFilter},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::SUPER_WEAPON_CALDARI;
 const EFFECT_AID: AEffectId = AEffectId::SUPER_WEAPON_CALDARI;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: make_dd_self_debuffs().collect(),

@@ -5,16 +5,13 @@ use crate::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
         AItemId, AModifierSrq, AOp,
     },
-    ed::EEffectId,
     nd::{NEffect, NEffectProjGetter},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT;
 const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_FOCUSED_WARP_DISRUPT_SCRIPT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ignore_offmod_immunity: true,

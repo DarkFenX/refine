@@ -16,7 +16,6 @@ const EFFECT_AID: AEffectId = AEffectId::STASIS_WEB_PROBE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: None,
         aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(|a_items| assign_defeff_to_item(a_items, ITEM_AID, EFFECT_AID)),

@@ -1,17 +1,14 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    ed::EEffectId,
     nd::{
         NEffect, NEffectGeneralOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist, NEffectSpoolAttrs,
     },
 };
 
-const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
 const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_REMOTE_ARMOR_MUTADAPTIVE_REPAIRER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         spool_attrs: Some(NEffectSpoolAttrs {
             step_attr_id: AAttrId::REP_MULT_BONUS_PER_CYCLE,

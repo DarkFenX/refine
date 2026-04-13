@@ -1,17 +1,14 @@
 use super::shared::{mk_mwd_sig_mod, mk_prop_mass_mod};
 use crate::{
     ad::{AEffect, AEffectId},
-    ed::EEffectId,
     nd::NEffect,
     svc::calc::CalcCustomModifier,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::MOD_BONUS_MICROWARPDRIVE;
 const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_MICROWARPDRIVE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         calc_custom_mod: Some(CalcCustomModifier::PropSpeed),

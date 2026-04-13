@@ -1,16 +1,13 @@
 use super::shared::add_damp_mods;
 use crate::{
     ad::AEffectId,
-    ed::EEffectId,
     nd::{NEffect, NEffectProjGetter},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER;
 const EFFECT_AID: AEffectId = AEffectId::STRUCT_MOD_EFFECT_REMOTE_SENSOR_DAMPENER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(|a_effect| add_damp_mods(EFFECT_AID, a_effect)),
         modifier_proj: Some(NEffectProjGetter::GenericRangeFullStsRestricted),

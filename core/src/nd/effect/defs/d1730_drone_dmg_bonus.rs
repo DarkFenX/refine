@@ -1,15 +1,12 @@
 use crate::{
     ad::{AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectModStrength, AEffectModifier, AModifierSrq, AOp},
-    ed::EEffectId,
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::DRONE_DMG_BONUS;
 const EFFECT_AID: AEffectId = AEffectId::DRONE_DMG_BONUS;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ..

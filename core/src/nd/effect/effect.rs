@@ -1,6 +1,5 @@
 use crate::{
     ad::{AEffect, AEffectBuff, AEffectId, AItem, AItemId},
-    ed::EEffectId,
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm,
         NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjGetter,
@@ -16,8 +15,6 @@ pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect);
 
 pub(crate) struct NEffect {
-    // EVE data effect ID. Not all effects have it, since some are added via other means
-    pub(crate) eid: Option<EEffectId>,
     // Adapted data effect ID
     pub(crate) aid: AEffectId,
     // Fields related to adapted data generation - buff info and effect customization functions

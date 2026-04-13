@@ -1,18 +1,15 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeLoc, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter,
         NEffectProjOpcSpec,
     },
 };
 
-const EFFECT_EID: EEffectId = EEffectId::TGT_ATTACK;
 const EFFECT_AID: AEffectId = AEffectId::TGT_ATTACK;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel

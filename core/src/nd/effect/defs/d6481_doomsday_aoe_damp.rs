@@ -3,16 +3,13 @@ use crate::{
         AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
         AEffectModStrength, AItemListId,
     },
-    ed::EEffectId,
     nd::{NEffect, NEffectProjGetter},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::DOOMSDAY_AOE_DAMP;
 const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_DAMP;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: vec![

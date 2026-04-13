@@ -1,4 +1,7 @@
-use crate::{ad::AItemId, ed::EEffectId};
+use crate::{
+    ad::AItemId,
+    ed::{EEffectId, EItemId},
+};
 
 const DOGMA_PREFIX: &str = "d";
 const SC_SYSWIDE_PREFIX: &str = "scsw";
@@ -112,5 +115,26 @@ impl ACustomEffectId {
 impl AEffectId {
     pub(crate) const fn from_eid(effect_eid: EEffectId) -> Self {
         Self::Dogma(ADogmaEffectId(effect_eid.into_i32()))
+    }
+    pub(in crate::ad) fn dc_sc_item(&self) -> Option<EItemId> {
+        match self {
+            Self::ScSystemWide(item_aid)
+            | Self::ScSystemEmitter(item_aid)
+            | Self::ScProxyEffect(item_aid)
+            | Self::ScProxyTrap(item_aid)
+            | Self::ScShipLink(item_aid) => Some(EItemId::from_i32(item_aid.into_i32())),
+            Self::Dogma(_) | Self::Custom(_) => None,
+        }
+    }
+    pub(in crate::ad) fn dc_dogma_effect(&self) -> Option<EEffectId> {
+        match self {
+            Self::Dogma(dogma_effect_aid) => Some(EEffectId::from_i32(dogma_effect_aid.into_i32())),
+            Self::ScSystemWide(_)
+            | Self::ScSystemEmitter(_)
+            | Self::ScProxyEffect(_)
+            | Self::ScProxyTrap(_)
+            | Self::ScShipLink(_)
+            | Self::Custom(_) => None,
+        }
     }
 }

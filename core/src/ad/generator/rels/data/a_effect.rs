@@ -1,11 +1,11 @@
 use crate::{
-    ad::{AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffScope, AEffectId, AEffectModStrength},
+    ad::{AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffScope, AEffectModStrength},
     ed::{EAttrId, EBuffId, EEffectId, EItemId, EItemListId},
 };
 
 impl AEffect {
     pub(in crate::ad::generator::rels) fn iter_item_eids(&self) -> impl Iterator<Item = EItemId> {
-        self.id.dc_eve_item().into_iter()
+        self.id.dc_sc_item().into_iter()
     }
     pub(in crate::ad::generator::rels) fn iter_item_list_eids(&self) -> impl Iterator<Item = EItemListId> {
         self.buff.as_ref().into_iter().flat_map(|v| v.iter_item_list_eids())
@@ -28,36 +28,12 @@ impl AEffect {
             .chain(resist)
     }
     pub(in crate::ad::generator::rels) fn iter_effect_eids(&self) -> impl Iterator<Item = EEffectId> {
-        let id = self.id.dc_eve_effect().into_iter();
-        let stopped = self.stopped_effect_ids.iter().filter_map(|v| v.dc_eve_effect());
+        let id = self.id.dc_dogma_effect().into_iter();
+        let stopped = self.stopped_effect_ids.iter().filter_map(|v| v.dc_dogma_effect());
         id.chain(stopped)
     }
     pub(in crate::ad::generator::rels) fn iter_buff_eids(&self) -> impl Iterator<Item = EBuffId> {
         self.buff.as_ref().into_iter().flat_map(|v| v.iter_buff_eids())
-    }
-}
-
-impl AEffectId {
-    fn dc_eve_item(&self) -> Option<EItemId> {
-        match self {
-            Self::ScSystemWide(item_aid)
-            | Self::ScSystemEmitter(item_aid)
-            | Self::ScProxyEffect(item_aid)
-            | Self::ScProxyTrap(item_aid)
-            | Self::ScShipLink(item_aid) => Some(EItemId::from_i32(item_aid.into_i32())),
-            Self::Dogma(_) | Self::Custom(_) => None,
-        }
-    }
-    fn dc_eve_effect(&self) -> Option<EEffectId> {
-        match self {
-            Self::Dogma(dogma_effect_aid) => Some(EEffectId::from_i32(dogma_effect_aid.into_i32())),
-            Self::ScSystemWide(_)
-            | Self::ScSystemEmitter(_)
-            | Self::ScProxyEffect(_)
-            | Self::ScProxyTrap(_)
-            | Self::ScShipLink(_)
-            | Self::Custom(_) => None,
-        }
     }
 }
 

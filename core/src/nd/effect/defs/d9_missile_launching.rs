@@ -1,16 +1,13 @@
 use crate::{
     ad::{AEffectId, AItemGrpId},
-    ed::EEffectId,
     nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
     ud::UItem,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::MISSILE_LAUNCHING;
 const EFFECT_AID: AEffectId = AEffectId::MISSILE_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         dmg_kind: Some(NEffectDmgKindGetter::MissileLaunching),
         normal_dmg: Some(NEffectProjOpcSpec {

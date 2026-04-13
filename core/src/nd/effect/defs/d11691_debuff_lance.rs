@@ -6,16 +6,13 @@ use crate::{
         AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
         AEffectModStrength, AItemListId, AValue,
     },
-    ed::EEffectId,
     nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::DEBUFF_LANCE;
 const EFFECT_AID: AEffectId = AEffectId::DEBUFF_LANCE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             full: chain(

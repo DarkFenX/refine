@@ -2,16 +2,13 @@ use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
     },
-    ed::EEffectId,
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::ADAPTIVE_ARMOR_HARDENER;
 const EFFECT_AID: AEffectId = AEffectId::ADAPTIVE_ARMOR_HARDENER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ..

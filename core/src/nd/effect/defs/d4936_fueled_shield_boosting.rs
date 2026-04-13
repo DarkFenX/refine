@@ -1,18 +1,15 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    ed::EEffectId,
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc,
         NEffectChargeMultGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec,
     },
 };
 
-const EFFECT_EID: EEffectId = EEffectId::FUELED_SHIELD_BOOSTING;
 const EFFECT_AID: AEffectId = AEffectId::FUELED_SHIELD_BOOSTING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         charge: Some(NEffectCharge {
             location: NEffectChargeLoc::Loaded(NEffectChargeDepl::ChargeRate(NEffectChargeDeplChargeRate {

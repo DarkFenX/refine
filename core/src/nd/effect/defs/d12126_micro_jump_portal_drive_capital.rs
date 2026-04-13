@@ -1,16 +1,13 @@
 use super::shared::{mk_cannot_cloak_mod, mk_mjd_sig_mod};
 use crate::{
     ad::{AEffect, AEffectId},
-    ed::EEffectId,
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL;
 const EFFECT_AID: AEffectId = AEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         ..

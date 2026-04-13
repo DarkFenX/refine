@@ -1,18 +1,15 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    ed::EEffectId,
     nd::{
         NEffect, NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutKind, NEffectProjGetter, NEffectProjOpcSpec,
         NEffectResist,
     },
 };
 
-const EFFECT_EID: EEffectId = EEffectId::STRUCT_ENERGY_NEUT_FALLOFF;
 const EFFECT_AID: AEffectId = AEffectId::STRUCT_ENERGY_NEUT_FALLOFF;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         neut: Some(NEffectNeut {
             kind: NEffectNeutKind::Module,

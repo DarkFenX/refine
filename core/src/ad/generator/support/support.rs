@@ -47,7 +47,7 @@ impl GSupport {
     }
     fn fill_effect_buff_data(&mut self) {
         for n_effect in N_EFFECT_MAP.values() {
-            if let Some(effect_eid) = n_effect.eid
+            if let Some(effect_eid) = n_effect.aid.dc_dogma_effect()
                 && let Some(effect_buff) = &n_effect.adg_buff
             {
                 self.eff_buff_map.insert(effect_eid, effect_buff.clone());
@@ -63,7 +63,7 @@ impl GSupport {
             }
         }
         for n_effect in N_EFFECT_MAP.values() {
-            if n_effect.eid.is_none()
+            if n_effect.aid.dc_dogma_effect().is_none()
                 && let Some(effect_maker) = n_effect.adg_make_effect_fn
             {
                 self.standalone_effects.push(effect_maker());

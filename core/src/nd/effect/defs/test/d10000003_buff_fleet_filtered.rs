@@ -7,12 +7,10 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_EID: EEffectId = EEffectId::from_i32(10_000_003);
-const EFFECT_AID: AEffectId = AEffectId::from_eid(EFFECT_EID);
+const EFFECT_AID: AEffectId = AEffectId::from_eid(EEffectId::from_i32(10_000_003));
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {

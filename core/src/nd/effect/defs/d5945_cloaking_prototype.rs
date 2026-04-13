@@ -1,11 +1,9 @@
-use crate::{ad::AEffectId, ed::EEffectId, nd::NEffect};
+use crate::{ad::AEffectId, nd::NEffect};
 
-const EFFECT_EID: EEffectId = EEffectId::CLOAKING_PROTOTYPE;
 const EFFECT_AID: AEffectId = AEffectId::CLOAKING_PROTOTYPE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         cloaks_carrier: true,
         ..

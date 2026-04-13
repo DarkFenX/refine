@@ -1,6 +1,5 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    ed::EEffectId,
     nd::{
         NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm, NEffectEcmChecker, NEffectEcmOutputGetter,
         NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind, NEffectProjGetter,
@@ -8,12 +7,10 @@ use crate::{
     },
 };
 
-const EFFECT_EID: EEffectId = EEffectId::BOMB_LAUNCHING;
 const EFFECT_AID: AEffectId = AEffectId::BOMB_LAUNCHING;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         dmg_kind: Some(NEffectDmgKindGetter::Bomb),
         normal_dmg: Some(NEffectProjOpcSpec {

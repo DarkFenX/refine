@@ -1,15 +1,12 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    ed::EEffectId,
     nd::{NEffect, NEffectGeneralOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist},
 };
 
-const EFFECT_EID: EEffectId = EEffectId::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
 const EFFECT_AID: AEffectId = AEffectId::SHIP_MOD_REMOTE_SHIELD_BOOSTER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
-        eid: Some(EFFECT_EID),
         aid: EFFECT_AID,
         outgoing_shield_rep: Some(NEffectProjOpcSpec {
             base: NEffectGeneralOutputGetter::RepShield,
