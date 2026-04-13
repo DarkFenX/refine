@@ -1,13 +1,8 @@
-use crate::{
-    ad::{ABuff, ABuffId},
-    ed::EBuffId,
-};
+use crate::ad::{ABuff, ABuffId};
 
 pub(crate) type NBuffMaker = fn() -> ABuff;
 
 pub(crate) struct NBuff {
-    // EVE data buff ID
-    pub(crate) eid: Option<EBuffId>,
     // Adapted data buff ID
     pub(crate) aid: ABuffId,
     // Fields related to adapted data generation

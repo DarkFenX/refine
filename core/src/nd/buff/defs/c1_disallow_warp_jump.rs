@@ -3,12 +3,11 @@ use crate::{
     nd::NBuff,
 };
 
-const A_BUFF_ID: ABuffId = ABuffId::DISALLOW_WARP_JUMP;
+const BUFF_AID: ABuffId = ABuffId::DISALLOW_WARP_JUMP;
 
 pub(in crate::nd::buff) fn mk_n_buff() -> NBuff {
     NBuff {
-        eid: None,
-        aid: A_BUFF_ID,
+        aid: BUFF_AID,
         adg_make_buff_fn: Some(make_buff),
         ..
     }
@@ -16,7 +15,7 @@ pub(in crate::nd::buff) fn mk_n_buff() -> NBuff {
 
 fn make_buff() -> ABuff {
     ABuff {
-        id: A_BUFF_ID,
+        id: BUFF_AID,
         aggr_mode: ABuffAggrMode::Max,
         op: AOp::Add,
         mods: [ABuffModifier {

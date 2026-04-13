@@ -1,5 +1,5 @@
 use crate::{
-    ad::{ABuff, ABuffAffecteeFilter, ABuffId, ABuffModifier},
+    ad::{ABuff, ABuffAffecteeFilter, ABuffModifier},
     ed::{EAttrId, EBuffId, EItemGrpId},
 };
 
@@ -12,15 +12,6 @@ impl ABuff {
     }
     pub(in crate::ad::generator::rels) fn iter_buff_eids(&self) -> impl Iterator<Item = EBuffId> {
         self.id.dc_eve().into_iter()
-    }
-}
-
-impl ABuffId {
-    pub(super) fn dc_eve(&self) -> Option<EBuffId> {
-        match self {
-            ABuffId::Eve(eve_buff_aid) => Some(EBuffId::from_i32(eve_buff_aid.into_i32())),
-            ABuffId::Custom(_) => None,
-        }
     }
 }
 

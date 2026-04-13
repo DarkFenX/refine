@@ -5,12 +5,11 @@ use crate::{
     nd::NItemList,
 };
 
-const A_ITEM_LIST_ID: AItemListId = AItemListId::PANIC_ELIGIBLE;
+const ITEM_LIST_AID: AItemListId = AItemListId::PANIC_ELIGIBLE;
 
 pub(in crate::nd::item_list) fn mk_n_item_list() -> NItemList {
     NItemList {
-        eid: None,
-        aid: A_ITEM_LIST_ID,
+        aid: ITEM_LIST_AID,
         adg_item_filter_fn: Some(item_filter),
         ..
     }

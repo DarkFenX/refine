@@ -56,7 +56,7 @@ impl GSupport {
     }
     fn fill_standalone_data(&mut self) {
         for n_attr in N_ATTR_MAP.values() {
-            if n_attr.eid.is_none()
+            if n_attr.aid.dc_eve().is_none()
                 && let Some(attr_maker) = n_attr.adg_make_attr_fn
             {
                 self.standalone_attrs.push(attr_maker());
@@ -70,7 +70,7 @@ impl GSupport {
             }
         }
         for n_buff in N_BUFF_MAP.values() {
-            if n_buff.eid.is_none()
+            if n_buff.aid.dc_eve().is_none()
                 && let Some(buff_maker) = n_buff.adg_make_buff_fn
             {
                 self.standalone_buffs.push(buff_maker());

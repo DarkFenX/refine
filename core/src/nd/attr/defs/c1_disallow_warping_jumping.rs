@@ -3,12 +3,11 @@ use crate::{
     nd::NAttr,
 };
 
-const A_ATTR_ID: AAttrId = AAttrId::DISALLOW_WARPING_JUMPING;
+const ATTR_AID: AAttrId = AAttrId::DISALLOW_WARPING_JUMPING;
 
 pub(in crate::nd::attr) fn mk_n_attr() -> NAttr {
     NAttr {
-        eid: None,
-        aid: A_ATTR_ID,
+        aid: ATTR_AID,
         adg_make_attr_fn: Some(make_attr),
         ..
     }
@@ -16,7 +15,7 @@ pub(in crate::nd::attr) fn mk_n_attr() -> NAttr {
 
 fn make_attr() -> AAttr {
     AAttr {
-        id: A_ATTR_ID,
+        id: ATTR_AID,
         penalizable: false,
         hig: false,
         def_val: AValue::from_f64(0.0),

@@ -66,6 +66,12 @@ impl AItemListId {
     pub(in crate::ad) const fn from_eid(item_list_eid: EItemListId) -> Self {
         Self::Eve(AEveItemListId(item_list_eid.into_i32()))
     }
+    pub(in crate::ad) fn dc_eve(&self) -> Option<EItemListId> {
+        match self {
+            Self::Eve(eve_item_list_aid) => Some(EItemListId::from_i32(eve_item_list_aid.into_i32())),
+            _ => None,
+        }
+    }
 }
 impl AEveItemListId {
     pub(crate) fn from_f64_rounded(id: f64) -> Self {

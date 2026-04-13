@@ -66,6 +66,12 @@ impl AAttrId {
     pub(in crate::ad) const fn from_eid(attr_eid: EAttrId) -> Self {
         Self::Eve(AEveAttrId(attr_eid.into_i32()))
     }
+    pub(in crate::ad) fn dc_eve(&self) -> Option<EAttrId> {
+        match self {
+            Self::Eve(eve_attr_aid) => Some(EAttrId::from_i32(eve_attr_aid.into_i32())),
+            Self::Custom(_) => None,
+        }
+    }
 }
 impl AEveAttrId {
     pub(crate) fn from_f64_rounded(id: f64) -> Self {

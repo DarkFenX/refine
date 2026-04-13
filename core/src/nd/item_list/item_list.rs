@@ -1,13 +1,8 @@
-use crate::{
-    ad::{AItem, AItemListId},
-    ed::EItemListId,
-};
+use crate::ad::{AItem, AItemListId};
 
 pub(crate) type NItemListFilter = fn(&AItem) -> bool;
 
 pub(crate) struct NItemList {
-    // EVE data item list ID
-    pub(crate) eid: Option<EItemListId>,
     // Adapted data item list ID
     pub(crate) aid: AItemListId,
     // Function which controls which items will be in the list
