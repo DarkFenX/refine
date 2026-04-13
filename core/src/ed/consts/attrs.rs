@@ -200,6 +200,10 @@ impl EAttrId {
     pub(crate) const LAUNCHER_GROUP5: Self = Self::from_i32(2077);
     pub(crate) const LAUNCHER_GROUP6: Self = Self::from_i32(2078);
     pub(crate) const CAN_FIT_SHIP_TYPE6: Self = Self::from_i32(2103);
+    pub(crate) const FTR_ABIL_EVASION_EM_RESONANCE: Self = Self::from_i32(2118);
+    pub(crate) const FTR_ABIL_EVASION_THERM_RESONANCE: Self = Self::from_i32(2119);
+    pub(crate) const FTR_ABIL_EVASION_KIN_RESONANCE: Self = Self::from_i32(2120);
+    pub(crate) const FTR_ABIL_EVASION_EXPL_RESONANCE: Self = Self::from_i32(2121);
     pub(crate) const FTR_ABIL_MISSILES_EXPLOSION_RADIUS: Self = Self::from_i32(2125);
     pub(crate) const FTR_ABIL_MISSILES_EXPLOSION_VELOCITY: Self = Self::from_i32(2126);
     pub(crate) const FTR_ABIL_MISSILES_DMG_REDUCTION_FACTOR: Self = Self::from_i32(2127);
@@ -212,6 +216,7 @@ impl EAttrId {
     pub(crate) const REMOTE_RESIST_ID: Self = Self::from_i32(2138);
     pub(crate) const FTR_ABIL_MISSILES_RANGE: Self = Self::from_i32(2149);
     pub(crate) const FTR_SQ_SIZE: Self = Self::from_i32(2150);
+    pub(crate) const FTR_ABIL_AB_SPEED_BONUS: Self = Self::from_i32(2151);
     pub(crate) const FTR_ABIL_MWD_SPEED_BONUS: Self = Self::from_i32(2152);
     pub(crate) const FTR_ABIL_MWD_SIG_RADIUS_BONUS: Self = Self::from_i32(2153);
     pub(crate) const FTR_ABIL_MJD_SIG_RADIUS_BONUS: Self = Self::from_i32(2156);
@@ -224,6 +229,8 @@ impl EAttrId {
     pub(crate) const FTR_LIGHT_SLOTS: Self = Self::from_i32(2217);
     pub(crate) const FTR_SUPPORT_SLOTS: Self = Self::from_i32(2218);
     pub(crate) const FTR_HEAVY_SLOTS: Self = Self::from_i32(2219);
+    pub(crate) const FTR_ABIL_EVASION_SPEED_BONUS: Self = Self::from_i32(2224);
+    pub(crate) const FTR_ABIL_EVASION_SIG_RADIUS_BONUS: Self = Self::from_i32(2225);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_MULT: Self = Self::from_i32(2226);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_EM: Self = Self::from_i32(2227);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_THERM: Self = Self::from_i32(2228);

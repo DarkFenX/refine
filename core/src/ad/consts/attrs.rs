@@ -212,6 +212,10 @@ impl AAttrId {
     pub(crate) const LAUNCHER_GROUP5: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP5);
     pub(crate) const LAUNCHER_GROUP6: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP6);
     pub(crate) const CAN_FIT_SHIP_TYPE6: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_TYPE6);
+    pub(crate) const FTR_ABIL_EVASION_EM_RESONANCE: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_EM_RESONANCE);
+    pub(crate) const FTR_ABIL_EVASION_THERM_RESONANCE: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_THERM_RESONANCE);
+    pub(crate) const FTR_ABIL_EVASION_KIN_RESONANCE: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_KIN_RESONANCE);
+    pub(crate) const FTR_ABIL_EVASION_EXPL_RESONANCE: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_EXPL_RESONANCE);
     pub(crate) const FTR_ABIL_MISSILES_EXPLOSION_RADIUS: Self =
         Self::from_eid(EAttrId::FTR_ABIL_MISSILES_EXPLOSION_RADIUS);
     pub(crate) const FTR_ABIL_MISSILES_EXPLOSION_VELOCITY: Self =
@@ -228,6 +232,7 @@ impl AAttrId {
     pub(crate) const REMOTE_RESIST_ID: Self = Self::from_eid(EAttrId::REMOTE_RESIST_ID);
     pub(crate) const FTR_ABIL_MISSILES_RANGE: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_RANGE);
     pub(crate) const FTR_SQ_SIZE: Self = Self::from_eid(EAttrId::FTR_SQ_SIZE);
+    pub(crate) const FTR_ABIL_AB_SPEED_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_AB_SPEED_BONUS);
     pub(crate) const FTR_ABIL_MWD_SPEED_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_MWD_SPEED_BONUS);
     pub(crate) const FTR_ABIL_MWD_SIG_RADIUS_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_MWD_SIG_RADIUS_BONUS);
     pub(crate) const FTR_ABIL_MJD_SIG_RADIUS_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS);
@@ -240,6 +245,9 @@ impl AAttrId {
     pub(crate) const FTR_LIGHT_SLOTS: Self = Self::from_eid(EAttrId::FTR_LIGHT_SLOTS);
     pub(crate) const FTR_SUPPORT_SLOTS: Self = Self::from_eid(EAttrId::FTR_SUPPORT_SLOTS);
     pub(crate) const FTR_HEAVY_SLOTS: Self = Self::from_eid(EAttrId::FTR_HEAVY_SLOTS);
+    pub(crate) const FTR_ABIL_EVASION_SPEED_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_SPEED_BONUS);
+    pub(crate) const FTR_ABIL_EVASION_SIG_RADIUS_BONUS: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_EVASION_SIG_RADIUS_BONUS);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_MULT: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_MULT);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_EM: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_EM);
     pub(crate) const FTR_ABIL_ATK_MISSILE_DMG_THERM: Self = Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_DMG_THERM);

@@ -62,6 +62,8 @@ pub(in crate::nd::effect) mod d6426_remote_webifier_falloff;
 pub(in crate::nd::effect) mod d6427_remote_sensor_boost_falloff;
 pub(in crate::nd::effect) mod d6428_ship_mod_remote_tracking_computer;
 pub(in crate::nd::effect) mod d6431_ftr_abil_missiles;
+pub(in crate::nd::effect) mod d6439_ftr_abil_evasive_maneuvers;
+pub(in crate::nd::effect) mod d6440_ftr_abil_afterburner;
 pub(in crate::nd::effect) mod d6441_ftr_abil_micro_warp_drive;
 pub(in crate::nd::effect) mod d6442_ftr_abil_micro_jump_drive;
 pub(in crate::nd::effect) mod d6443_point_defense;
