@@ -1,6 +1,7 @@
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+        AState,
     },
     nd::NEffect,
 };
@@ -16,6 +17,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect) {
+    // Make sure to apply self-modifiers even if fighter is disabled
+    a_effect.state = AState::Disabled;
     if !a_effect.modifiers.is_empty() {
         tracing::info!("effect {EFFECT_AID}: fighter MJD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();

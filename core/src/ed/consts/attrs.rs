@@ -212,6 +212,8 @@ impl EAttrId {
     pub(crate) const REMOTE_RESIST_ID: Self = Self::from_i32(2138);
     pub(crate) const FTR_ABIL_MISSILES_RANGE: Self = Self::from_i32(2149);
     pub(crate) const FTR_SQ_SIZE: Self = Self::from_i32(2150);
+    pub(crate) const FTR_ABIL_MWD_SPEED_BONUS: Self = Self::from_i32(2152);
+    pub(crate) const FTR_ABIL_MWD_SIG_RADIUS_BONUS: Self = Self::from_i32(2153);
     pub(crate) const FTR_ABIL_MJD_SIG_RADIUS_BONUS: Self = Self::from_i32(2156);
     pub(crate) const FTR_ABIL_MISSILES_RESIST_ID: Self = Self::from_i32(2170);
     pub(crate) const FTR_SQ_IS_LIGHT: Self = Self::from_i32(2212);

@@ -10,6 +10,7 @@ from time import time
 from fw import approx
 from fw.api import (
     FitStatsOptions,
+    ItemStatsOptions,
     StatCapSrcKinds,
     StatsOptionCapBalance,
     StatsOptionCapSim,
@@ -400,6 +401,11 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
         StatsOptionFitDmg(time_options=StatTimeSim(rearm_minions=consts.ApiRearmMinion.on_first_empty))])))
     for stat in api_src_fit_stats.dmg:
         print(stat.dps.thermal, stat.volley.thermal)  # noqa: T201
+    api_src_ftr1_stats = api_src_ftr1.get_stats(options=ItemStatsOptions(speed=True))
+    print(api_src_ftr1_stats.speed)  # noqa: T201
+    api_src_ftr1.change_fighter(state=consts.ApiMinionState.in_bay)
+    api_src_ftr1_stats = api_src_ftr1.get_stats(options=ItemStatsOptions(speed=True))
+    print(api_src_ftr1_stats.speed)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001

@@ -4,13 +4,13 @@ impl<'a> AbilityMut<'a> {
     pub fn set_state(&mut self, state: bool) {
         // Only abilities which exist in source are exposed by API, just unwrap
         let r_abil = self.sol.u_data.src.get_ability_by_aid(&self.abil_aid).unwrap();
-        let effect_id = r_abil.effect_aid;
+        let effect_aid = r_abil.effect_aid;
         let effect_mode = match state {
             true => EffectMode::StateCompliance,
             false => EffectMode::ForceStop,
         };
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_effect_id_mode(self.fighter_uid, effect_id, effect_mode, &mut reuse_eupdates);
+            .internal_set_effect_id_mode(self.fighter_uid, effect_aid, effect_mode, &mut reuse_eupdates);
     }
 }
