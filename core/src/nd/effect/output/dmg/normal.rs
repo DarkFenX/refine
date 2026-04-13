@@ -24,6 +24,7 @@ pub(crate) enum NEffectDmgOutputGetter {
     // Variants specific to a single effect
     TargetAttack,
     FtrAbilAttackM,
+    FtrAbilMissiles,
 }
 impl NEffectOutputGetter for NEffectDmgOutputGetter {
     type Instance = DmgKinds<PValue>;
@@ -46,6 +47,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
             // Variants specific to a single effect
             Self::TargetAttack => get_target_attack(ctx, calc, item_uid),
             Self::FtrAbilAttackM => get_ftr_abil_attack_m(ctx, calc, item_uid),
+            Self::FtrAbilMissiles => get_ftr_abil_missiles(ctx, calc, item_uid),
         }
     }
 }
@@ -154,6 +156,37 @@ fn get_ftr_abil_attack_m(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
         ctx,
         item_uid,
         ctx.ac().ftr_abil_atk_missile_dmg_mult,
+        Value::ONE,
+    )?);
+    if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
+        && let Some(count) = u_fighter.get_count()
+    {
+        dmg_mult *= count.into_pvalue();
+    }
+    dmg.em *= dmg_mult;
+    dmg.thermal *= dmg_mult;
+    dmg.kinetic *= dmg_mult;
+    dmg.explosive *= dmg_mult;
+    Some(Output::Simple(OutputSimple {
+        instance: dmg,
+        delay: PValue::ZERO,
+    }))
+}
+
+fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+    let mut dmg = get_dmg_values(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().ftr_abil_missiles_dmg_em,
+        ctx.ac().ftr_abil_missiles_dmg_therm,
+        ctx.ac().ftr_abil_missiles_dmg_kin,
+        ctx.ac().ftr_abil_missiles_dmg_expl,
+    )?;
+    let mut dmg_mult = PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
+        ctx,
+        item_uid,
+        ctx.ac().ftr_abil_missiles_dmg_mult,
         Value::ONE,
     )?);
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()

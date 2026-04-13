@@ -216,10 +216,20 @@ impl AAttrId {
         Self::from_eid(EAttrId::FTR_ABIL_MISSILES_EXPLOSION_RADIUS);
     pub(crate) const FTR_ABIL_MISSILES_EXPLOSION_VELOCITY: Self =
         Self::from_eid(EAttrId::FTR_ABIL_MISSILES_EXPLOSION_VELOCITY);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_REDUCTION_FACTOR: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_REDUCTION_FACTOR);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_REDUCTION_SENSITIVITY: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_REDUCTION_SENSITIVITY);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_MULT: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_MULT);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_EM: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_EM);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_THERM: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_THERM);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_KIN: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_KIN);
+    pub(crate) const FTR_ABIL_MISSILES_DMG_EXPL: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_DMG_EXPL);
     pub(crate) const REMOTE_RESIST_ID: Self = Self::from_eid(EAttrId::REMOTE_RESIST_ID);
     pub(crate) const FTR_ABIL_MISSILES_RANGE: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_RANGE);
     pub(crate) const FTR_SQ_SIZE: Self = Self::from_eid(EAttrId::FTR_SQ_SIZE);
     pub(crate) const FTR_ABIL_MJD_SIG_RADIUS_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS);
+    pub(crate) const FTR_ABIL_MISSILES_RESIST_ID: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_RESIST_ID);
     pub(crate) const FTR_SQ_IS_LIGHT: Self = Self::from_eid(EAttrId::FTR_SQ_IS_LIGHT);
     pub(crate) const FTR_SQ_IS_SUPPORT: Self = Self::from_eid(EAttrId::FTR_SQ_IS_SUPPORT);
     pub(crate) const FTR_SQ_IS_HEAVY: Self = Self::from_eid(EAttrId::FTR_SQ_IS_HEAVY);

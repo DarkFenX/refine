@@ -169,6 +169,31 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_attack_m_pr
     )
 }
 
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_missiles_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    effect: &REffect,
+    projectee_uid: UItemId,
+    proj_data: UProjData,
+) -> PValue {
+    let mult = get_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data);
+    if mult == PValue::ZERO {
+        return PValue::ZERO;
+    }
+    mult * get_legacy_missile_application_mult(
+        ctx,
+        calc,
+        projector_uid,
+        projectee_uid,
+        proj_data,
+        ctx.ac().ftr_abil_missiles_explosion_radius,
+        ctx.ac().ftr_abil_missiles_explosion_velocity,
+        ctx.ac().ftr_abil_missiles_reduction_factor,
+        ctx.ac().ftr_abil_missiles_reduction_sensitivity,
+    )
+}
+
 // Utility
 fn calc_turret_mult(chance_to_hit: PValue) -> PValue {
     // https://wiki.eveuniversity.org/Turret_mechanics#Damage

@@ -2,7 +2,8 @@ use super::mult::{
     application::{get_bomb_application_mult, get_standard_missile_application_mult},
     composite::{
         get_aoe_burst_proj_mult, get_aoe_dd_dmg_proj_mult, get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult,
-        get_ftr_abil_attack_m_proj_mult, get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
+        get_ftr_abil_attack_m_proj_mult, get_ftr_abil_missiles_proj_mult, get_neut_proj_mult, get_turret_proj_mult,
+        get_vorton_proj_mult,
     },
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_bomb_range_mult, get_fof_missile_range_mult,
@@ -40,6 +41,7 @@ pub(crate) enum NEffectProjGetter {
     // Variants specific to a single effect
     MissileLaunchingApplication,
     FtrAbilAttackM,
+    FtrAbilMissiles,
 }
 impl NEffectProjGetter {
     pub(crate) fn get_mult(
@@ -87,6 +89,9 @@ impl NEffectProjGetter {
             Self::FtrAbilAttackM => {
                 get_ftr_abil_attack_m_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data)
             }
+            Self::FtrAbilMissiles => {
+                get_ftr_abil_missiles_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data)
+            }
         }
     }
     // Returns attributes which can affect modifier application strength
@@ -114,6 +119,7 @@ impl NEffectProjGetter {
             // Variants specific to a single effect
             Self::MissileLaunchingApplication => [None, None],
             Self::FtrAbilAttackM => [None, None],
+            Self::FtrAbilMissiles => [None, None],
         }
     }
 }

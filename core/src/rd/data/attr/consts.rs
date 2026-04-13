@@ -121,6 +121,15 @@ pub(crate) struct RAttrConsts {
     pub(crate) ftr_abil_atk_missile_explosion_velocity: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_reduction_factor: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_reduction_sensitivity: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_dmg_em: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_dmg_expl: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_dmg_kin: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_dmg_mult: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_dmg_therm: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_explosion_radius: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_explosion_velocity: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_reduction_factor: Option<RAttrId>,
+    pub(crate) ftr_abil_missiles_reduction_sensitivity: Option<RAttrId>,
     pub(crate) ftr_capacity: Option<RAttrId>,
     pub(crate) ftr_heavy_slots: Option<RAttrId>,
     pub(crate) ftr_light_slots: Option<RAttrId>,
@@ -379,6 +388,23 @@ impl RAttrConsts {
                 .copied(),
             ftr_abil_atk_missile_reduction_sensitivity: attr_aid_rid_map
                 .get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_SENSITIVITY)
+                .copied(),
+            ftr_abil_missiles_dmg_em: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_MISSILES_DMG_EM).copied(),
+            ftr_abil_missiles_dmg_expl: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_MISSILES_DMG_EXPL).copied(),
+            ftr_abil_missiles_dmg_kin: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_MISSILES_DMG_KIN).copied(),
+            ftr_abil_missiles_dmg_mult: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_MISSILES_DMG_MULT).copied(),
+            ftr_abil_missiles_dmg_therm: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_MISSILES_DMG_THERM).copied(),
+            ftr_abil_missiles_explosion_radius: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_MISSILES_EXPLOSION_RADIUS)
+                .copied(),
+            ftr_abil_missiles_explosion_velocity: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_MISSILES_EXPLOSION_VELOCITY)
+                .copied(),
+            ftr_abil_missiles_reduction_factor: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_MISSILES_DMG_REDUCTION_FACTOR)
+                .copied(),
+            ftr_abil_missiles_reduction_sensitivity: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_MISSILES_DMG_REDUCTION_SENSITIVITY)
                 .copied(),
             ftr_capacity: attr_aid_rid_map.get(&AAttrId::FTR_CAPACITY).copied(),
             ftr_heavy_slots: attr_aid_rid_map.get(&AAttrId::FTR_HEAVY_SLOTS).copied(),
