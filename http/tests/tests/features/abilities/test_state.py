@@ -1,7 +1,83 @@
 from fw import approx
 
 
-def test_switch_state(client, consts):
+def test_switch_state_local(client, consts):
+    # Check that local abilities are applied only when they are enabled, and that they apply
+    # regardless of fighter state
+    eve_affector_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_ab_speed_bonus)
+    eve_affectee_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_affector_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_mjd_sig_radius_bonus)
+    eve_affectee_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_primary_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_ab, cat_id=consts.EveEffCat.active)
+    eve_secondary_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
+    eve_primary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.ab)
+    eve_secondary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.mjd)
+    eve_fighter_id = client.mk_eve_fighter(
+        attrs={
+            eve_affector_attr1_id: 400, eve_affectee_attr1_id: 1017.5,
+            eve_affector_attr2_id: 150, eve_affectee_attr2_id: 100},
+        eff_ids=[eve_primary_effect_id, eve_secondary_effect_id],
+        defeff_id=eve_primary_effect_id,
+        abils=[client.mk_eve_item_abil(id_=eve_primary_abil_id), client.mk_eve_item_abil(id_=eve_secondary_abil_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    # Verification
+    api_fighter.update()
+    assert len(api_fighter.abilities) == 2
+    assert api_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_fighter.abilities[eve_secondary_abil_id].state is False
+    assert api_fighter.attrs[eve_affectee_attr1_id].modified == approx(5087.5)
+    assert api_fighter.attrs[eve_affectee_attr2_id].modified == approx(100)
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_fighter.update()
+    assert len(api_fighter.abilities) == 2
+    assert api_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_fighter.abilities[eve_secondary_abil_id].state is False
+    assert api_fighter.attrs[eve_affectee_attr1_id].modified == approx(5087.5)
+    assert api_fighter.attrs[eve_affectee_attr2_id].modified == approx(100)
+    # Action
+    api_fighter.change_fighter(abilities={eve_secondary_abil_id: True})
+    # Verification
+    api_fighter.update()
+    assert len(api_fighter.abilities) == 2
+    assert api_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_fighter.abilities[eve_secondary_abil_id].state is True
+    assert api_fighter.attrs[eve_affectee_attr1_id].modified == approx(5087.5)
+    assert api_fighter.attrs[eve_affectee_attr2_id].modified == approx(250)
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.engaging)
+    # Verification
+    api_fighter.update()
+    assert len(api_fighter.abilities) == 2
+    assert api_fighter.abilities[eve_primary_abil_id].state is True
+    assert api_fighter.abilities[eve_secondary_abil_id].state is True
+    assert api_fighter.attrs[eve_affectee_attr1_id].modified == approx(5087.5)
+    assert api_fighter.attrs[eve_affectee_attr2_id].modified == approx(250)
+    # Action
+    api_fighter.change_fighter(abilities={eve_primary_abil_id: False})
+    # Verification
+    api_fighter.update()
+    assert len(api_fighter.abilities) == 2
+    assert api_fighter.abilities[eve_primary_abil_id].state is False
+    assert api_fighter.abilities[eve_secondary_abil_id].state is True
+    assert api_fighter.attrs[eve_affectee_attr1_id].modified == approx(1017.5)
+    assert api_fighter.attrs[eve_affectee_attr2_id].modified == approx(250)
+    # Action
+    api_fighter.change_fighter(abilities={eve_secondary_abil_id: False})
+    # Verification
+    api_fighter.update()
+    assert len(api_fighter.abilities) == 2
+    assert api_fighter.abilities[eve_primary_abil_id].state is False
+    assert api_fighter.abilities[eve_secondary_abil_id].state is False
+    assert api_fighter.attrs[eve_affectee_attr1_id].modified == approx(1017.5)
+    assert api_fighter.attrs[eve_affectee_attr2_id].modified == approx(100)
+
+
+def test_switch_state_projected(client, consts):
     eve_affector_attr1_id = client.mk_eve_attr()
     eve_affector_attr2_id = client.mk_eve_attr()
     eve_affectee_attr1_id = client.mk_eve_attr()

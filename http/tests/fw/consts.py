@@ -251,6 +251,7 @@ class EveBuffOp(StrEnum):
 
 @unique
 class EveAbil(IntEnum):
+    mjd = 5
     launch_bomb = 7
     ab = 9
     pulse_cannon = 22
@@ -425,6 +426,8 @@ class EveAttr(IntEnum):
     launcher_group6 = 2078
     can_fit_ship_type6 = 2103
     remote_resistance_id = 2138
+    ftr_abil_ab_speed_bonus = 2151
+    ftr_abil_mjd_sig_radius_bonus = 2156
     ftr_tubes = 2216
     ftr_light_slots = 2217
     ftr_support_slots = 2218
