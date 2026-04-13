@@ -14,6 +14,8 @@ from fw.api import (
     StatsOptionCapBalance,
     StatsOptionCapSim,
     StatsOptionFitDmg,
+    StatTimeBurst,
+    StatTimeSim,
     ValOptions,
 )
 
@@ -381,25 +383,23 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     api_src_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_src_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_src_ship = api_src_fit.set_ship(type_id=28352, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Rorqual
-    # PANIC
-    api_src_lance = api_src_fit.add_module(type_id=42522, rack=consts.ApiRack.high, state=consts.ApiModuleState.online)
+    api_src_fit.set_ship(type_id=23913, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Nyx
+    # Cyclops II
+    api_src_ftr1 = api_src_fit.add_fighter(type_id=40563, state=consts.ApiMinionState.engaging)
+    api_src_ftr2 = api_src_fit.add_fighter(type_id=40563, state=consts.ApiMinionState.engaging)
+    api_src_ftr3 = api_src_fit.add_fighter(type_id=40563, state=consts.ApiMinionState.engaging)
+    api_src_ftr4 = api_src_fit.add_fighter(type_id=40563, state=consts.ApiMinionState.engaging)
+    api_src_ftr1.change_fighter(abilities={19: True})
+    api_src_ftr2.change_fighter(abilities={19: True})
+    api_src_ftr3.change_fighter(abilities={19: True})
+    api_src_ftr4.change_fighter(abilities={19: True})
 
-    api_src_ship_attrs_before = api_src_ship.update().update().attrs
-    api_src_lance.change_module(state=consts.ApiModuleState.active)
-    api_src_ship_attrs_after = api_src_ship.update().attrs
-    print_attr_diff(attrs1=api_src_ship_attrs_before, attrs2=api_src_ship_attrs_after)
-
-    api_tgt_fit = api_sol.create_fit()
-    api_tgt_fit.set_character(type_id=1373)
-    for eve_skill_id in get_skill_type_ids():
-        api_tgt_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=22544, coordinates=(0, 20000, 0), movement=(0, 0, 0))  # Hulk
-
-    api_tgt_ship_attrs_before = api_tgt_ship.update().update().attrs
-    api_tgt_fit.change(fleet_id=api_fleet.id)
-    api_tgt_ship_attrs_after = api_tgt_ship.update().attrs
-    print_attr_diff(attrs1=api_tgt_ship_attrs_before, attrs2=api_tgt_ship_attrs_after)
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+        StatsOptionFitDmg(time_options=StatTimeBurst()),
+        StatsOptionFitDmg(time_options=StatTimeSim(rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time_options=StatTimeSim(rearm_minions=consts.ApiRearmMinion.on_first_empty))])))
+    for stat in api_src_fit_stats.dmg:
+        print(stat.dps.thermal, stat.volley.thermal)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
