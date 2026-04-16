@@ -205,17 +205,21 @@ impl UItemBaseMutable {
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
+        require_disabled_defeff: bool,
         force_active_nondefeff: bool,
     ) {
-        self.base.update_reffs(reuse_eupdates, src, force_active_nondefeff);
+        self.base
+            .update_reffs(reuse_eupdates, src, require_disabled_defeff, force_active_nondefeff);
     }
     pub(in crate::ud::item) fn stop_all_reffs(
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
+        require_disabled_defeff: bool,
         force_active_nondefeff: bool,
     ) {
-        self.base.stop_all_reffs(reuse_eupdates, src, force_active_nondefeff);
+        self.base
+            .stop_all_reffs(reuse_eupdates, src, require_disabled_defeff, force_active_nondefeff);
     }
     pub(in crate::ud::item) fn get_state(&self) -> RState {
         self.base.get_state()

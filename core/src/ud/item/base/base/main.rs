@@ -226,6 +226,7 @@ impl UItemBase {
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
+        require_disabled_defeff: bool,
         force_active_nondefeff: bool,
     ) {
         // Always clear, regardless of item being loaded or not
@@ -238,6 +239,7 @@ impl UItemBase {
                 &cache.r_item,
                 self.state,
                 &self.effect_modes,
+                require_disabled_defeff,
                 force_active_nondefeff,
             )
         }
@@ -246,6 +248,7 @@ impl UItemBase {
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         src: &Src,
+        require_disabled_defeff: bool,
         force_active_nondefeff: bool,
     ) {
         reuse_eupdates.clear();
@@ -257,6 +260,7 @@ impl UItemBase {
                 &cache.r_item,
                 RState::Ghost,
                 &self.effect_modes,
+                require_disabled_defeff,
                 force_active_nondefeff,
             )
         }

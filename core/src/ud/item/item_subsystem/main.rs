@@ -63,10 +63,10 @@ impl USubsystem {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.update_reffs(reuse_eupdates, src, false);
+        self.base.update_reffs(reuse_eupdates, src, false, false);
     }
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.stop_all_reffs(reuse_eupdates, src, false)
+        self.base.stop_all_reffs(reuse_eupdates, src, false, false)
     }
     pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode(effect_rid)

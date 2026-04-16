@@ -42,6 +42,7 @@ pub(super) fn process_effects(
     item: &RItem,
     item_state: RState,
     item_effect_modes: &UEffectModes,
+    require_disabled_defeff: bool,
     force_active_nondefeff: bool,
 ) {
     match item_state {
@@ -53,6 +54,7 @@ pub(super) fn process_effects(
             item,
             item_state,
             item_effect_modes,
+            require_disabled_defeff,
             force_active_nondefeff,
         ),
     }
@@ -89,6 +91,7 @@ fn update_running_effects(
     item: &RItem,
     item_state: RState,
     item_effect_modes: &UEffectModes,
+    require_disabled_defeff: bool,
     force_active_nondefeff: bool,
 ) {
     // Separate handling for the online effect
@@ -115,6 +118,7 @@ fn update_running_effects(
             item.defeff_rid,
             item_state,
             effect,
+            require_disabled_defeff,
             force_active_nondefeff,
             online_should_run,
         );
@@ -168,6 +172,7 @@ fn resolve_regular_effect_status(
     item_defeff_rid: Option<REffectId>,
     item_state: RState,
     effect: &REffect,
+    require_disabled_defeff: bool,
     force_active_nondefeff: bool,
     online_running: bool,
 ) -> bool {
@@ -178,6 +183,7 @@ fn resolve_regular_effect_status(
             item_defeff_rid,
             item_state,
             effect,
+            require_disabled_defeff,
             force_active_nondefeff,
             online_running,
         ),
@@ -191,18 +197,33 @@ fn resolve_regular_effect_status_full(
     item_defeff_rid: Option<REffectId>,
     item_state: RState,
     effect: &REffect,
+    require_disabled_defeff: bool,
     force_active_nondefeff: bool,
     online_running: bool,
 ) -> bool {
     match effect.state {
         RState::Ghost => false,
-        RState::Disabled => item_state >= effect.state,
+        // All effects with disabled state are run if item is in disabled+ state, unless caller
+        // requested extra requirement for them to be default
+        RState::Disabled => {
+            if effect.state > item_state {
+                return false;
+            };
+            match require_disabled_defeff {
+                true => match item_defeff_rid {
+                    Some(defeff_rid) => defeff_rid == effect.rid,
+                    None => false,
+                },
+                false => true,
+            }
+        }
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
         RState::Offline => item_state >= effect.state && effect.chance_attr_rid.is_none(),
         // Online effects depend on 'online' effect, ignoring everything else
         RState::Online => online_running,
-        // Only default active effect is run, and only if item is in active+ state
+        // Only default active effect is run, and only if item is in active+ state, except for the
+        // case when all active effects are requested to run
         RState::Active => {
             if effect.state > item_state {
                 return false;
@@ -211,7 +232,7 @@ fn resolve_regular_effect_status_full(
                 true => true,
                 false => match item_defeff_rid {
                     Some(defeff_rid) => defeff_rid == effect.rid,
-                    _ => false,
+                    None => false,
                 },
             }
         }
