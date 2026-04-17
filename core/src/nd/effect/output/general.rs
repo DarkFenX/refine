@@ -128,7 +128,7 @@ fn get_neut_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
         && let Some(count) = u_fighter.get_count()
     {
-        instance += count.into_pvalue();
+        instance *= count.into_pvalue();
     }
     Some(Output::Simple(OutputSimple {
         instance,

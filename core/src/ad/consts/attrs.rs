@@ -266,6 +266,12 @@ impl AAttrId {
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF: Self =
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_LADAR: Self = Self::from_eid(EAttrId::FTR_ABIL_ECM_STRENGTH_LADAR);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_MAGNETOMETRIC: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_ECM_STRENGTH_MAGNETOMETRIC);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_RADAR: Self = Self::from_eid(EAttrId::FTR_ABIL_ECM_STRENGTH_RADAR);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_RADIUS: Self = Self::from_eid(EAttrId::DOOMSDAY_ENERGY_NEUT_RADIUS);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_AMOUNT: Self = Self::from_eid(EAttrId::DOOMSDAY_ENERGY_NEUT_AMOUNT);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_SIG_RADIUS: Self = Self::from_eid(EAttrId::DOOMSDAY_ENERGY_NEUT_SIG_RADIUS);

@@ -243,6 +243,10 @@ impl EAttrId {
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY: Self = Self::from_i32(2235);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL: Self = Self::from_i32(2236);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF: Self = Self::from_i32(2237);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC: Self = Self::from_i32(2246);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_LADAR: Self = Self::from_i32(2247);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_MAGNETOMETRIC: Self = Self::from_i32(2248);
+    pub(crate) const FTR_ABIL_ECM_STRENGTH_RADAR: Self = Self::from_i32(2249);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_RADIUS: Self = Self::from_i32(2259);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_AMOUNT: Self = Self::from_i32(2260);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_SIG_RADIUS: Self = Self::from_i32(2261);

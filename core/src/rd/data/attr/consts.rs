@@ -121,6 +121,10 @@ pub(crate) struct RAttrConsts {
     pub(crate) ftr_abil_atk_missile_explosion_velocity: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_reduction_factor: Option<RAttrId>,
     pub(crate) ftr_abil_atk_missile_reduction_sensitivity: Option<RAttrId>,
+    pub(crate) ftr_abil_ecm_strength_gravimetric: Option<RAttrId>,
+    pub(crate) ftr_abil_ecm_strength_ladar: Option<RAttrId>,
+    pub(crate) ftr_abil_ecm_strength_magnetometric: Option<RAttrId>,
+    pub(crate) ftr_abil_ecm_strength_radar: Option<RAttrId>,
     pub(crate) ftr_abil_energy_neut_amount: Option<RAttrId>,
     pub(crate) ftr_abil_kamikaze_dmg_em: Option<RAttrId>,
     pub(crate) ftr_abil_kamikaze_dmg_expl: Option<RAttrId>,
@@ -396,6 +400,14 @@ impl RAttrConsts {
             ftr_abil_atk_missile_reduction_sensitivity: attr_aid_rid_map
                 .get(&AAttrId::FTR_ABIL_ATK_MISSILE_DMG_REDUCTION_SENSITIVITY)
                 .copied(),
+            ftr_abil_ecm_strength_gravimetric: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC)
+                .copied(),
+            ftr_abil_ecm_strength_ladar: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_ECM_STRENGTH_LADAR).copied(),
+            ftr_abil_ecm_strength_magnetometric: attr_aid_rid_map
+                .get(&AAttrId::FTR_ABIL_ECM_STRENGTH_MAGNETOMETRIC)
+                .copied(),
+            ftr_abil_ecm_strength_radar: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_ECM_STRENGTH_RADAR).copied(),
             ftr_abil_energy_neut_amount: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_ENERGY_NEUT_AMOUNT).copied(),
             ftr_abil_kamikaze_dmg_em: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_KAMIKAZE_DMG_EM).copied(),
             ftr_abil_kamikaze_dmg_expl: attr_aid_rid_map.get(&AAttrId::FTR_ABIL_KAMIKAZE_DMG_EXPL).copied(),

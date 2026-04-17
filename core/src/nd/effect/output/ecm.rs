@@ -1,10 +1,11 @@
 use crate::{
     nd::{NEffectOutputGetter, NEffectProjOpcSpec},
     num::{PValue, Value},
-    rd::{RAttrConsts, REffect},
+    rd::{RAttrConsts, RAttrId, REffect},
     svc::{
         SvcCtx,
         calc::Calc,
+        funcs,
         output::{Output, OutputSimple},
     },
     ud::{UItem, UItemId},
@@ -59,6 +60,7 @@ pub(crate) enum NEffectEcmOutputGetter {
     Aoe,
     Bomb,
     Entity,
+    FtrAbil,
 }
 impl NEffectOutputGetter for NEffectEcmOutputGetter {
     type Instance = NEffectEcmAmount;
@@ -78,15 +80,14 @@ impl NEffectOutputGetter for NEffectEcmOutputGetter {
             Self::Aoe => get_aoe(ctx, calc, item_uid),
             Self::Bomb => get_bomb(ctx, calc, item_uid),
             Self::Entity => get_entity(ctx, calc, item_uid),
+            Self::FtrAbil => get_ftr_abil(ctx, calc, item_uid, effect),
         }
     }
 }
 
 fn get_direct(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<NEffectEcmAmount>> {
-    let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
-    let duration = PValue::from_value_clamped(
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, effect.duration_attr_rid, Value::ZERO)? / Value::THOUSAND,
-    );
+    let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
+    let duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     Some(Output::Simple(OutputSimple {
         instance: NEffectEcmAmount {
             radar,
@@ -100,7 +101,7 @@ fn get_direct(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect)
 }
 
 fn get_burst(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
-    let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
+    let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     Some(Output::Simple(OutputSimple {
         instance: NEffectEcmAmount {
             radar,
@@ -114,7 +115,7 @@ fn get_burst(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<N
 }
 
 fn get_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
-    let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
+    let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_aoe_duration, Value::ZERO)? / Value::THOUSAND,
     );
@@ -135,7 +136,7 @@ fn get_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEf
 }
 
 fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
-    let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
+    let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     // Do not return ECM stats for non-ecm bombs
     if radar <= PValue::ZERO && magnetometric <= PValue::ZERO && gravimetric <= PValue::ZERO && ladar <= PValue::ZERO {
         return None;
@@ -153,7 +154,7 @@ fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NE
 }
 
 fn get_entity(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
-    let (radar, magnetometric, gravimetric, ladar) = get_ecm_values(ctx, calc, item_uid)?;
+    let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().ecm_jam_duration, Value::ZERO)? / Value::THOUSAND,
     );
@@ -169,31 +170,68 @@ fn get_entity(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
     }))
 }
 
-fn get_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<(PValue, PValue, PValue, PValue)> {
+fn get_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<NEffectEcmAmount>> {
+    let (mut radar, mut magnetometric, mut gravimetric, mut ladar) = get_ecm_values(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().ftr_abil_ecm_strength_radar,
+        ctx.ac().ftr_abil_ecm_strength_magnetometric,
+        ctx.ac().ftr_abil_ecm_strength_gravimetric,
+        ctx.ac().ftr_abil_ecm_strength_ladar,
+    )?;
+    let duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
+    if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
+        && let Some(count) = u_fighter.get_count()
+    {
+        let str_mult = count.into_pvalue();
+        radar *= str_mult;
+        magnetometric *= str_mult;
+        gravimetric *= str_mult;
+        ladar *= str_mult;
+    }
+    Some(Output::Simple(OutputSimple {
+        instance: NEffectEcmAmount {
+            radar,
+            magnetometric,
+            gravimetric,
+            ladar,
+            duration,
+        },
+        delay: PValue::ZERO,
+    }))
+}
+
+fn get_std_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<(PValue, PValue, PValue, PValue)> {
+    get_ecm_values(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().scan_radar_strength_bonus,
+        ctx.ac().scan_magnetometric_strength_bonus,
+        ctx.ac().scan_gravimetric_strength_bonus,
+        ctx.ac().scan_ladar_strength_bonus,
+    )
+}
+
+fn get_ecm_values(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    radar_attr_rid: Option<RAttrId>,
+    magnetometric_attr_rid: Option<RAttrId>,
+    gravimetric_attr_rid: Option<RAttrId>,
+    ladar_attr_rid: Option<RAttrId>,
+) -> Option<(PValue, PValue, PValue, PValue)> {
     Some((
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, radar_attr_rid, Value::ZERO)?),
         PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
             ctx,
             item_uid,
-            ctx.ac().scan_radar_strength_bonus,
+            magnetometric_attr_rid,
             Value::ZERO,
         )?),
-        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-            ctx,
-            item_uid,
-            ctx.ac().scan_magnetometric_strength_bonus,
-            Value::ZERO,
-        )?),
-        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-            ctx,
-            item_uid,
-            ctx.ac().scan_gravimetric_strength_bonus,
-            Value::ZERO,
-        )?),
-        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(
-            ctx,
-            item_uid,
-            ctx.ac().scan_ladar_strength_bonus,
-            Value::ZERO,
-        )?),
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, gravimetric_attr_rid, Value::ZERO)?),
+        PValue::from_value_clamped(calc.get_item_oattr_afb_oextra(ctx, item_uid, ladar_attr_rid, Value::ZERO)?),
     ))
 }
