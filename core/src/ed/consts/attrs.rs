@@ -252,6 +252,13 @@ impl EAttrId {
     pub(crate) const DOOMSDAY_AOE_DURATION: Self = Self::from_i32(2280);
     pub(crate) const DOOMSDAY_AOE_SIG_RADIUS: Self = Self::from_i32(2281);
     pub(crate) const FTR_ABIL_BOMB_TYPE: Self = Self::from_i32(2324);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_EM: Self = Self::from_i32(2325);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_THERM: Self = Self::from_i32(2326);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_KIN: Self = Self::from_i32(2327);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_EXPL: Self = Self::from_i32(2328);
+    pub(crate) const FTR_ABIL_KAMIKAZE_SIG_RADIUS: Self = Self::from_i32(2329);
+    pub(crate) const FTR_ABIL_KAMIKAZE_RANGE: Self = Self::from_i32(2330);
+    pub(crate) const FTR_ABIL_KAMIKAZE_RESIST_ID: Self = Self::from_i32(2432);
     pub(crate) const DISALLOW_TETHERING: Self = Self::from_i32(2343);
     pub(crate) const DISALLOW_DRIVE_JUMPING: Self = Self::from_i32(2353);
     pub(crate) const DISALLOW_DOCKING: Self = Self::from_i32(2354);

@@ -1,13 +1,14 @@
 use super::mult::{
-    application::{get_bomb_application_mult, get_standard_missile_application_mult},
+    application::{get_bomb_application_mult, get_std_missile_application_mult},
     composite::{
         get_aoe_burst_proj_mult, get_aoe_dd_dmg_proj_mult, get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult,
-        get_ftr_abil_attack_m_proj_mult, get_ftr_abil_missiles_proj_mult, get_neut_proj_mult, get_turret_proj_mult,
-        get_vorton_proj_mult,
+        get_ftr_abil_attack_m_proj_mult, get_ftr_abil_kamikaze_proj_mult, get_ftr_abil_missiles_proj_mult,
+        get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
     },
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_bomb_range_mult, get_fof_missile_range_mult,
-        get_full_restricted_range_mult, get_missile_range_mult, get_simple_c2s_range_mult, get_simple_s2s_range_mult,
+        get_missile_range_mult, get_std_full_restricted_range_mult, get_std_simple_c2s_range_mult,
+        get_std_simple_s2s_range_mult,
     },
 };
 use crate::{
@@ -42,6 +43,7 @@ pub(crate) enum NEffectProjGetter {
     MissileLaunchingApplication,
     FtrAbilAttackM,
     FtrAbilMissiles,
+    FtrAbilKamikaze,
 }
 impl NEffectProjGetter {
     pub(crate) fn get_mult(
@@ -55,10 +57,10 @@ impl NEffectProjGetter {
     ) -> PValue {
         match self {
             Self::Null => PValue::ZERO,
-            Self::GenericRangeSimpleCts => get_simple_c2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
-            Self::GenericRangeSimpleSts => get_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
+            Self::GenericRangeSimpleCts => get_std_simple_c2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
+            Self::GenericRangeSimpleSts => get_std_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data),
             Self::GenericRangeFullStsRestricted => {
-                get_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data)
+                get_std_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data)
             }
             Self::Turret => get_turret_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::Disintegrator => {
@@ -68,7 +70,7 @@ impl NEffectProjGetter {
             Self::MissileRange => get_missile_range_mult(ctx, calc, projector_uid, proj_data),
             Self::MissileRangeFof => get_fof_missile_range_mult(ctx, calc, projector_uid, proj_data),
             Self::MissileApplication => {
-                get_standard_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
+                get_std_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
             }
             Self::BombRange => get_bomb_range_mult(ctx, calc, projector_uid, proj_data),
             Self::BombApplication => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
@@ -83,7 +85,7 @@ impl NEffectProjGetter {
                 let u_item = ctx.u_data.items.get(projector_uid);
                 match u_item.is_guided_bomb() {
                     true => get_bomb_application_mult(ctx, calc, projector_uid, projectee_uid),
-                    false => get_standard_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
+                    false => get_std_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data),
                 }
             }
             Self::FtrAbilAttackM => {
@@ -91,6 +93,9 @@ impl NEffectProjGetter {
             }
             Self::FtrAbilMissiles => {
                 get_ftr_abil_missiles_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data)
+            }
+            Self::FtrAbilKamikaze => {
+                get_ftr_abil_kamikaze_proj_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
             }
         }
     }
@@ -120,6 +125,7 @@ impl NEffectProjGetter {
             Self::MissileLaunchingApplication => [None, None],
             Self::FtrAbilAttackM => [None, None],
             Self::FtrAbilMissiles => [None, None],
+            Self::FtrAbilKamikaze => [None, None],
         }
     }
 }

@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular optimal/falloff range calculation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_simple_c2s_range_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_std_simple_c2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -21,42 +21,48 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_simple_c2s_range_mul
         false => PValue::ZERO,
     }
 }
-
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_simple_s2s_range_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_std_simple_s2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     proj_data: UProjData,
 ) -> PValue {
-    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_rid);
+    get_simple_s2s_range_mult(ctx, calc, projector_uid, proj_data, effect.range_attr_rid)
+}
+pub(super) fn get_simple_s2s_range_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    proj_data: UProjData,
+    range_attr_rid: Option<RAttrId>,
+) -> PValue {
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, range_attr_rid);
     match proj_data.get_range_s2s() <= affector_optimal {
         true => PValue::ONE,
         false => PValue::ZERO,
     }
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_full_restricted_range_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_std_full_restricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     proj_data: UProjData,
 ) -> PValue {
-    get_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), true)
+    get_std_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), true)
 }
-
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_full_unrestricted_range_mult(
+pub(in crate::nd::effect::output::spec::proj_getter) fn get_std_full_unrestricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     proj_data: UProjData,
 ) -> PValue {
-    get_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), false)
+    get_std_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), false)
 }
-
-fn get_full_range_mult(
+fn get_std_full_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

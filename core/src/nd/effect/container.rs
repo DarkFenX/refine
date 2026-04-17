@@ -97,6 +97,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d6484_emergency_hull_energizer::mk_n_effect(),
         defs::d6485_ftr_abil_bomb::mk_n_effect(),
         defs::d6513_doomsday_aoe_ecm::mk_n_effect(),
+        defs::d6554_ftr_abil_kamikaze::mk_n_effect(),
         defs::d6567_mod_bonus_networked_sensor_array::mk_n_effect(),
         defs::d6581_mod_bonus_triage::mk_n_effect(),
         defs::d6582_mod_bonus_siege::mk_n_effect(),

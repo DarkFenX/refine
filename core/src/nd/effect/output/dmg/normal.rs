@@ -25,6 +25,7 @@ pub(crate) enum NEffectDmgOutputGetter {
     TargetAttack,
     FtrAbilAttackM,
     FtrAbilMissiles,
+    FtrAbilKamikaze,
 }
 impl NEffectOutputGetter for NEffectDmgOutputGetter {
     type Instance = DmgKinds<PValue>;
@@ -48,6 +49,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
             Self::TargetAttack => get_target_attack(ctx, calc, item_uid),
             Self::FtrAbilAttackM => get_ftr_abil_attack_m(ctx, calc, item_uid),
             Self::FtrAbilMissiles => get_ftr_abil_missiles(ctx, calc, item_uid),
+            Self::FtrAbilKamikaze => get_ftr_abil_kamikaze(ctx, calc, item_uid),
         }
     }
 }
@@ -198,6 +200,31 @@ fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
     dmg.thermal *= dmg_mult;
     dmg.kinetic *= dmg_mult;
     dmg.explosive *= dmg_mult;
+    Some(Output::Simple(OutputSimple {
+        instance: dmg,
+        delay: PValue::ZERO,
+    }))
+}
+
+fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+    let mut dmg = get_dmg_values(
+        ctx,
+        calc,
+        item_uid,
+        ctx.ac().ftr_abil_kamikaze_dmg_em,
+        ctx.ac().ftr_abil_kamikaze_dmg_therm,
+        ctx.ac().ftr_abil_kamikaze_dmg_kin,
+        ctx.ac().ftr_abil_kamikaze_dmg_expl,
+    )?;
+    if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
+        && let Some(count) = u_fighter.get_count()
+    {
+        let dmg_mult = count.into_pvalue();
+        dmg.em *= dmg_mult;
+        dmg.thermal *= dmg_mult;
+        dmg.kinetic *= dmg_mult;
+        dmg.explosive *= dmg_mult;
+    }
     Some(Output::Simple(OutputSimple {
         instance: dmg,
         delay: PValue::ZERO,

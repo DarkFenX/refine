@@ -275,6 +275,13 @@ impl AAttrId {
     pub(crate) const DOOMSDAY_AOE_DURATION: Self = Self::from_eid(EAttrId::DOOMSDAY_AOE_DURATION);
     pub(crate) const DOOMSDAY_AOE_SIG_RADIUS: Self = Self::from_eid(EAttrId::DOOMSDAY_AOE_SIG_RADIUS);
     pub(crate) const FTR_ABIL_BOMB_TYPE: Self = Self::from_eid(EAttrId::FTR_ABIL_BOMB_TYPE);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_EM: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_DMG_EM);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_THERM: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_DMG_THERM);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_KIN: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_DMG_KIN);
+    pub(crate) const FTR_ABIL_KAMIKAZE_DMG_EXPL: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_DMG_EXPL);
+    pub(crate) const FTR_ABIL_KAMIKAZE_SIG_RADIUS: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_SIG_RADIUS);
+    pub(crate) const FTR_ABIL_KAMIKAZE_RANGE: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_RANGE);
+    pub(crate) const FTR_ABIL_KAMIKAZE_RESIST_ID: Self = Self::from_eid(EAttrId::FTR_ABIL_KAMIKAZE_RESIST_ID);
     pub(crate) const DISALLOW_TETHERING: Self = Self::from_eid(EAttrId::DISALLOW_TETHERING);
     pub(crate) const DISALLOW_DRIVE_JUMPING: Self = Self::from_eid(EAttrId::DISALLOW_DRIVE_JUMPING);
     pub(crate) const DISALLOW_DOCKING: Self = Self::from_eid(EAttrId::DISALLOW_DOCKING);
