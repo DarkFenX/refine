@@ -12,7 +12,9 @@ pub(in crate::cmd) struct HSideEffectMap {
 pub(in crate::cmd) fn apply_side_effects(core_booster: &mut rc::BoosterMut, side_effects: &Option<HSideEffectMap>) {
     if let Some(side_effect_map) = side_effects {
         for (effect_id, status) in side_effect_map.data.iter() {
-            core_booster.get_side_effect_mut(effect_id).set_state(*status);
+            if let Ok(mut core_side_effect) = core_booster.get_side_effect_mut(effect_id) {
+                core_side_effect.set_state(*status);
+            }
         }
     }
 }

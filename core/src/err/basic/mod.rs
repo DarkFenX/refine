@@ -18,6 +18,7 @@ pub use item_not_mutated::ItemNotMutatedError;
 pub use item_receive_proj::ItemReceiveProjError;
 pub use proj_found::ProjFoundError;
 pub use proj_not_found::ProjNotFoundError;
+pub use side_effect_found::SideEffectFoundError;
 pub use skill_eve_type::SkillEveTypeError;
 pub use supported_stat::SupportedStatError;
 
@@ -43,5 +44,6 @@ mod item_not_mutated;
 mod item_receive_proj;
 mod proj_found;
 mod proj_not_found;
+mod side_effect_found;
 mod skill_eve_type;
 mod supported_stat;

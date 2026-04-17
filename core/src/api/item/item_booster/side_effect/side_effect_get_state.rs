@@ -1,6 +1,6 @@
 use crate::{
     ad::AEffectId,
-    api::{FullSideEffect, FullSideEffectMut, SideEffect, SideEffectMut, StubSideEffect, StubSideEffectMut},
+    api::{SideEffect, SideEffectMut},
     misc::EffectMode,
     sol::SolarSystem,
     ud::UItemId,
@@ -11,53 +11,11 @@ impl<'a> SideEffect<'a> {
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        match self {
-            Self::Full(full_side_effect) => full_side_effect.get_state(),
-            Self::Stub(stub_side_effect) => stub_side_effect.get_state(),
-        }
+        get_state(self.sol, self.item_uid, &self.effect_aid)
     }
 }
 
 impl<'a> SideEffectMut<'a> {
-    /// Get side effect state.
-    ///
-    /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn get_state(&self) -> bool {
-        match self {
-            Self::Full(full_side_effect) => full_side_effect.get_state(),
-            Self::Stub(stub_side_effect) => stub_side_effect.get_state(),
-        }
-    }
-}
-
-impl<'a> FullSideEffect<'a> {
-    /// Get side effect state.
-    ///
-    /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.item_uid, &self.effect_aid)
-    }
-}
-
-impl<'a> FullSideEffectMut<'a> {
-    /// Get side effect state.
-    ///
-    /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.item_uid, &self.effect_aid)
-    }
-}
-
-impl<'a> StubSideEffect<'a> {
-    /// Get side effect state.
-    ///
-    /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.item_uid, &self.effect_aid)
-    }
-}
-
-impl<'a> StubSideEffectMut<'a> {
     /// Get side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.

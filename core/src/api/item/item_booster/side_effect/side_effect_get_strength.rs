@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::AEffectId,
-    api::{AttrId, FullSideEffect, FullSideEffectMut, Op},
+    api::{AttrId, Op, SideEffect, SideEffectMut},
     num::Value,
     rd::{REffectModStrength, Src},
 };
@@ -39,7 +39,7 @@ impl SideEffectStr {
     }
 }
 
-impl<'a> FullSideEffect<'a> {
+impl<'a> SideEffect<'a> {
     /// Get side effect strength as an operator and attribute ID which contains strength value.
     ///
     /// Returns something only if all the side effect modifiers use the same operator and attribute
@@ -49,7 +49,7 @@ impl<'a> FullSideEffect<'a> {
     }
 }
 
-impl<'a> FullSideEffectMut<'a> {
+impl<'a> SideEffectMut<'a> {
     /// Get side effect strength as an operator and attribute ID which contains strength value.
     ///
     /// Returns something only if all the side effect modifiers use the same operator and attribute

@@ -27,13 +27,13 @@ pub use api::{
     AbilId, Ability, AbilityIter, AbilityMut, AddMode, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
     BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CustomEffectId, Direction, DogmaEffectId,
     Drone, DroneMut, EffectId, EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut,
-    Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FullSideEffect, FullSideEffectMut, FwEffect, FwEffectMut,
-    Implant, ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon,
-    ItemTypeId, MinionState, Module, ModuleIter, ModuleMut, ModuleState, Movement, MutIter, Mutation, MutationMut, Op,
-    Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr,
-    RawMAttrIter, RawMAttrMut, Rig, RigMut, RmMode, Service, ServiceMut, ServiceState, Ship, ShipMut, SideEffect,
-    SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut,
-    StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut,
+    IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemTypeId, MinionState,
+    Module, ModuleIter, ModuleMut, ModuleState, Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect,
+    ProjEffectMut, ProjIter, ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,
+    RawMAttrMut, Rig, RigMut, RmMode, Service, ServiceMut, ServiceState, Ship, ShipMut, SideEffect, SideEffectIter,
+    SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut,
+    SwEffect, SwEffectMut,
 };
 pub use def::VERSION;
 pub use lender::Lender;

@@ -1,16 +1,16 @@
 use crate::{
-    api::{AttrId, FullSideEffect, FullSideEffectMut},
+    api::{AttrId, SideEffect, SideEffectMut},
     num::UnitInterval,
 };
 
-impl<'a> FullSideEffect<'a> {
+impl<'a> SideEffect<'a> {
     /// Get side effect chance attribute ID.
     pub fn get_chance_attr_id(&self) -> AttrId {
         AttrId::from_aid(self.chance_attr_aid)
     }
 }
 
-impl<'a> FullSideEffectMut<'a> {
+impl<'a> SideEffectMut<'a> {
     /// Get side effect chance attribute ID.
     pub fn get_chance_attr_id(&self) -> AttrId {
         AttrId::from_aid(self.chance_attr_aid)

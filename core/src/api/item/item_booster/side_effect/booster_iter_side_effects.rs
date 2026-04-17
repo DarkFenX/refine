@@ -3,7 +3,7 @@ use lender::{Lender, Lending, check_covariance};
 use super::shared::get_se_chance_attr_aid_by_effect_rid;
 use crate::{
     ad::{AAttrId, AEffectId},
-    api::{Booster, BoosterMut, FullSideEffect, FullSideEffectMut},
+    api::{Booster, BoosterMut, SideEffect, SideEffectMut},
     sol::SolarSystem,
     ud::UItemId,
 };
@@ -26,28 +26,28 @@ impl<'iter> SideEffectIter<'iter> {
     }
 }
 impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
-    type Lend = FullSideEffectMut<'lend>;
+    type Lend = SideEffectMut<'lend>;
 }
 impl<'iter> Lender for SideEffectIter<'iter> {
     check_covariance!();
 
-    fn next(&mut self) -> Option<FullSideEffectMut<'_>> {
+    fn next(&mut self) -> Option<SideEffectMut<'_>> {
         let (effect_id, attr_id) = *self.effects_with_chances.get(self.index)?;
         self.index += 1;
-        Some(FullSideEffectMut::new(self.sol, self.item_uid, effect_id, attr_id))
+        Some(SideEffectMut::new(self.sol, self.item_uid, effect_id, attr_id))
     }
 }
 
 impl<'a> Booster<'a> {
     /// Iterates over booster's side effects.
-    pub fn iter_side_effects(&self) -> impl Iterator<Item = FullSideEffect<'_>> {
+    pub fn iter_side_effects(&self) -> impl Iterator<Item = SideEffect<'_>> {
         iter_side_effects(self.sol, self.uid)
     }
 }
 
 impl<'a> BoosterMut<'a> {
     /// Iterates over booster's side effects.
-    pub fn iter_side_effects(&self) -> impl Iterator<Item = FullSideEffect<'_>> {
+    pub fn iter_side_effects(&self) -> impl Iterator<Item = SideEffect<'_>> {
         iter_side_effects(self.sol, self.uid)
     }
     /// Iterates over booster's side effects.
@@ -68,12 +68,12 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn iter_side_effects(sol: &SolarSystem, booster_uid: UItemId) -> impl Iterator<Item = FullSideEffect<'_>> {
+fn iter_side_effects(sol: &SolarSystem, booster_uid: UItemId) -> impl Iterator<Item = SideEffect<'_>> {
     let u_booster = sol.u_data.items.get(booster_uid).dc_booster().unwrap();
     u_booster.get_effects().into_iter().flat_map(move |effect_datas| {
         effect_datas.keys().filter_map(move |&effect_rid| {
             get_se_chance_attr_aid_by_effect_rid(&sol.u_data.src, effect_rid).map(|chance_attr_id| {
-                FullSideEffect::new(
+                SideEffect::new(
                     sol,
                     booster_uid,
                     sol.u_data.src.get_effect_by_rid(effect_rid).aid,

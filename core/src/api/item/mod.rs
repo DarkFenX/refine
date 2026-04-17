@@ -1,8 +1,8 @@
 pub use item::{GetItemError, Item, ItemMut, RemoveItemError};
 pub use item_autocharge::{Autocharge, AutochargeMut, GetAutochargeError};
 pub use item_booster::{
-    Booster, BoosterMut, FullSideEffect, FullSideEffectMut, GetBoosterError, SideEffect, SideEffectIter, SideEffectMut,
-    SideEffectPartialStr, SideEffectStr, StubSideEffect, StubSideEffectMut,
+    Booster, BoosterMut, GetBoosterError, GetSideEffectError, SideEffect, SideEffectIter, SideEffectMut,
+    SideEffectPartialStr, SideEffectStr,
 };
 pub use item_character::{Character, CharacterMut, GetCharacterError};
 pub use item_charge::{Charge, ChargeMut, GetChargeError};

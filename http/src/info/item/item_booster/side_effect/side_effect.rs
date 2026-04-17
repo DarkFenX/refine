@@ -13,7 +13,7 @@ pub(in crate::info::item::item_booster) struct HSideEffectInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSideEffectInfo {
-    pub(in crate::info::item::item_booster) fn from_core(mut core_side_effect: rc::FullSideEffectMut) -> Self {
+    pub(in crate::info::item::item_booster) fn from_core(mut core_side_effect: rc::SideEffectMut) -> Self {
         Self {
             chance: core_side_effect.get_chance().into_f64(),
             state: core_side_effect.get_state(),

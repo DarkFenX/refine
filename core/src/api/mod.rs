@@ -6,18 +6,17 @@ pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, FleetSta
 pub use item::{
     Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, Autocharge,
     AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut, EffectiveMutation,
-    EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FullSideEffect,
-    FullSideEffectMut, FwEffect, FwEffectMut, GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError,
-    GetChargeError, GetDroneError, GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError,
-    GetModuleError, GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError,
-    GetServiceError, GetShipError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant,
-    ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemAppliedStatError, ItemCommon, ItemMut,
-    ItemMutCommon, ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module, ModuleIter,
-    ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj, RangedProjIter,
+    EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut,
+    GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError,
+    GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
+    GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError,
+    GetSideEffectError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant, ImplantMut,
+    IncompleteMutation, IncompleteMutationMut, Item, ItemAppliedStatError, ItemCommon, ItemMut, ItemMutCommon,
+    ItemStatError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, Module, ModuleIter, ModuleMut,
+    Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj, RangedProjIter,
     RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError, Rig, RigMut, Service, ServiceMut,
     SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
-    Skill, SkillMut, Stance, StanceMut, StubSideEffect, StubSideEffectMut, Subsystem, SubsystemMut, SwEffect,
-    SwEffectMut,
+    Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_uids, iter_ranged_projs};
 pub use misc::{
