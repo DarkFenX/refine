@@ -134,6 +134,7 @@ class EveEffect(IntEnum):
     struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
     ftr_abil_missiles = 6431
+    ftr_abil_energy_neut = 6434
     ftr_abil_ab = 6440
     ftr_abil_mwd = 6441
     ftr_abil_mjd = 6442
@@ -254,6 +255,7 @@ class EveAbil(IntEnum):
     mjd = 5
     launch_bomb = 7
     ab = 9
+    energy_neut = 11
     pulse_cannon = 22
     heavy_rocket_salvo = 33
 
@@ -428,6 +430,7 @@ class EveAttr(IntEnum):
     remote_resistance_id = 2138
     ftr_abil_ab_speed_bonus = 2151
     ftr_abil_mjd_sig_radius_bonus = 2156
+    ftr_abil_energy_neut_amount = 2211
     ftr_tubes = 2216
     ftr_light_slots = 2217
     ftr_support_slots = 2218
