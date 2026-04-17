@@ -22,11 +22,13 @@ pub(crate) enum NEffectGeneralOutputGetter {
     RepArmor,
     RepHull,
     PowerTransfer,
+    // Neut-related
     Neut,
     NeutNosf,
     NeutAoe,
     NeutBomb,
     NeutDdWarmup,
+    NeutFtrAbil,
     // Variants specific to a single effect
     PowerBooster,
 }
@@ -48,11 +50,14 @@ impl NEffectOutputGetter for NEffectGeneralOutputGetter {
             Self::RepArmor => get_attr(ctx, calc, item_uid, effect, ctx.ac().armor_dmg_amount, false),
             Self::RepHull => get_attr(ctx, calc, item_uid, effect, ctx.ac().struct_dmg_amount, false),
             Self::PowerTransfer => get_attr(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false),
+            // Neut-related
             Self::Neut => get_attr(ctx, calc, item_uid, effect, ctx.ac().energy_neut_amount, true),
             Self::NeutNosf => get_neut_nosf(ctx, calc, item_uid, effect),
             Self::NeutAoe => get_neut_aoe(ctx, calc, item_uid),
             Self::NeutBomb => get_neut_bomb(ctx, calc, item_uid),
             Self::NeutDdWarmup => get_attr(ctx, calc, item_uid, effect, ctx.ac().doomsday_energy_neut_amount, true),
+            Self::NeutFtrAbil => get_neut_ftr_abil(ctx, calc, item_uid),
+            // Variants specific to a single effect
             Self::PowerBooster => get_power_booster(ctx, calc, item_uid),
         }
     }
@@ -107,6 +112,24 @@ fn get_neut_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outp
         // Do not return neut output for non-neut bombs
         false => return None,
     };
+    Some(Output::Simple(OutputSimple {
+        instance,
+        delay: PValue::ZERO,
+    }))
+}
+
+fn get_neut_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
+    let mut instance = PValue::from_value_clamped(calc.get_item_oattr_afb_odogma(
+        ctx,
+        item_uid,
+        ctx.ac().ftr_abil_energy_neut_amount,
+        Value::ZERO,
+    )?);
+    if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
+        && let Some(count) = u_fighter.get_count()
+    {
+        instance += count.into_pvalue();
+    }
     Some(Output::Simple(OutputSimple {
         instance,
         delay: PValue::ZERO,

@@ -78,6 +78,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d6427_remote_sensor_boost_falloff::mk_n_effect(),
         defs::d6428_ship_mod_remote_tracking_computer::mk_n_effect(),
         defs::d6431_ftr_abil_missiles::mk_n_effect(),
+        defs::d6434_ftr_abil_energy_neut::mk_n_effect(),
         defs::d6439_ftr_abil_evasive_maneuvers::mk_n_effect(),
         defs::d6440_ftr_abil_afterburner::mk_n_effect(),
         defs::d6441_ftr_abil_micro_warp_drive::mk_n_effect(),
