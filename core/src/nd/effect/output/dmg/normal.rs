@@ -6,6 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
+        funcs,
         output::{Output, OutputComplex, OutputSimple},
     },
     ud::UItemId,
@@ -36,7 +37,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-        _effect: &REffect,
+        effect: &REffect,
         _xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
@@ -49,7 +50,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
             Self::TargetAttack => get_target_attack(ctx, calc, item_uid),
             Self::FtrAbilAttackM => get_ftr_abil_attack_m(ctx, calc, item_uid),
             Self::FtrAbilMissiles => get_ftr_abil_missiles(ctx, calc, item_uid),
-            Self::FtrAbilKamikaze => get_ftr_abil_kamikaze(ctx, calc, item_uid),
+            Self::FtrAbilKamikaze => get_ftr_abil_kamikaze(ctx, calc, item_uid, effect),
         }
     }
 }
@@ -85,7 +86,7 @@ fn get_delay2(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
 
 fn get_dot_delay(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let dmg = get_dmg_values_standard(ctx, calc, item_uid)?;
-    let delay_s = PValue::from_value_clamped(
+    let delay = PValue::from_value_clamped(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO)?
             / Value::THOUSAND,
     );
@@ -97,16 +98,13 @@ fn get_dot_delay(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outp
         if repeats > Count::ONE {
             return Some(Output::Complex(OutputComplex {
                 instance: dmg,
-                delay: delay_s,
+                delay,
                 repeats,
                 interval: PValue::from_value_clamped(interval_ms / Value::THOUSAND),
             }));
         }
     }
-    Some(Output::Simple(OutputSimple {
-        instance: dmg,
-        delay: delay_s,
-    }))
+    Some(Output::Simple(OutputSimple { instance: dmg, delay }))
 }
 
 fn get_mult_charge(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
@@ -206,7 +204,13 @@ fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
     }))
 }
 
-fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_ftr_abil_kamikaze(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+) -> Option<Output<DmgKinds<PValue>>> {
+    let delay = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let mut dmg = get_dmg_values(
         ctx,
         calc,
@@ -225,10 +229,7 @@ fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
         dmg.kinetic *= dmg_mult;
         dmg.explosive *= dmg_mult;
     }
-    Some(Output::Simple(OutputSimple {
-        instance: dmg,
-        delay: PValue::ZERO,
-    }))
+    Some(Output::Simple(OutputSimple { instance: dmg, delay }))
 }
 
 fn get_dmg_values_standard(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<DmgKinds<PValue>> {
