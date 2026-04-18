@@ -4,7 +4,7 @@ use crate::{
     num::{Count, Index},
     sol::SolarSystem,
     svc::cycle::CseqMap,
-    ud::{UItemId, UModule},
+    ud::{UEffectUpdates, UItemId, UModule},
 };
 
 pub struct Module<'a> {
@@ -86,14 +86,18 @@ impl<'a> ModuleMut<'a> {
         get_optional_reload(self.sol, self.uid)
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
-        match self
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(false, true, &mut reuse_eupdates);
+        let result = match self
             .sol
             .svc
             .get_item_charged_cycle_count(&mut CseqMap::new(), &self.sol.u_data, self.uid)
         {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
-        }
+        };
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {
         self.sol.svc.get_effect_spool_cycle_count(&self.sol.u_data, self.uid)

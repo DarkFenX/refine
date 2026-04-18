@@ -29,7 +29,6 @@ impl Svc {
             &mut self.calc,
             item_uid,
             CYCLE_COUNT_OPTIONS,
-            true,
         ) {
             return None;
         }
