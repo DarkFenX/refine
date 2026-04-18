@@ -277,7 +277,7 @@ fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionItemMining
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_time_options = option.time_options.into_core();
-        match core_item.get_stat_mps(core_time_options, option.ignore_state, option.mission) {
+        match core_item.get_stat_mps(core_time_options, option.mission, option.ignore_state) {
             Ok(core_stat) => results.push(HStatMining::from_core(core_stat)),
             Err(_) => return None,
         }
