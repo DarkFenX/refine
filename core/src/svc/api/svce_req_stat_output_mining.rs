@@ -54,7 +54,6 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         mission_ore: bool,
-        ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         Vast::get_stat_item_mps(
             reuse_cseq_map,
@@ -63,7 +62,6 @@ impl Svc {
             item_uid,
             time_options,
             mission_ore,
-            ignore_state,
         )
     }
 }

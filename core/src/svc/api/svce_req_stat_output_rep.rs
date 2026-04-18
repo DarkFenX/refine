@@ -54,7 +54,6 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        ignore_state: bool,
         projectee_uid: Option<UItemId>,
     ) -> Result<StatOutReps, StatItemCheckError> {
         Vast::get_stat_item_outgoing_rps(
@@ -63,7 +62,6 @@ impl Svc {
             &mut self.calc,
             item_uid,
             time_options,
-            ignore_state,
             projectee_uid,
         )
     }
@@ -107,7 +105,6 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        ignore_state: bool,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, StatItemCheckError> {
         Vast::get_stat_item_outgoing_cps(
@@ -116,7 +113,6 @@ impl Svc {
             &mut self.calc,
             item_uid,
             time_options,
-            ignore_state,
             projectee_uid,
         )
     }

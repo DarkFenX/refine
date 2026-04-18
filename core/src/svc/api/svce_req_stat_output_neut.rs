@@ -55,7 +55,6 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, StatItemCheckError> {
         Vast::get_stat_item_outgoing_nps(
@@ -65,7 +64,6 @@ impl Svc {
             item_uid,
             time_options,
             include_charges,
-            ignore_state,
             projectee_uid,
         )
     }

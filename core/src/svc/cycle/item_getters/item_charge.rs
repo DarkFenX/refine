@@ -1,5 +1,3 @@
-use either::Either;
-
 use super::{item::get_item_cseq_map, map::CseqMap, shared::CyclingOptions};
 use crate::{
     svc::{SvcCtx, calc::Calc},
@@ -13,7 +11,6 @@ pub(super) fn get_charge_cseq_map(
     calc: &mut Calc,
     charge: &UCharge,
     options: CyclingOptions,
-    ignore_state: bool,
 ) -> bool {
     if !charge.is_loaded() {
         return false;
@@ -25,14 +22,7 @@ pub(super) fn get_charge_cseq_map(
         _ => return false,
     };
     // If cycle info for parent item is not available, charge is not cycling
-    if !get_item_cseq_map(
-        reuse_cseq_map,
-        ctx,
-        calc,
-        charge.get_cont_item_uid(),
-        options,
-        ignore_state,
-    ) {
+    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, charge.get_cont_item_uid(), options) {
         return false;
     }
     // If controlling effect is not cycling, charge is not cycling either
@@ -41,12 +31,9 @@ pub(super) fn get_charge_cseq_map(
         None => return false,
     };
     reuse_cseq_map.clear();
-    let effect_rids = match ignore_state {
-        true => Either::Left(charge.get_effects().unwrap().keys().copied()),
-        false => Either::Right(charge.get_reffs().unwrap().iter().copied()),
-    };
+    let effect_rids = charge.get_reffs().unwrap().iter();
     reuse_cseq_map.reserve(effect_rids.len());
-    for effect_rid in effect_rids {
+    for &effect_rid in effect_rids {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
         if effect.is_active() {
             reuse_cseq_map.insert(effect_rid, cont_effect_cycle);

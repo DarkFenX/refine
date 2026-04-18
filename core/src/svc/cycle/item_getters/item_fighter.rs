@@ -1,5 +1,3 @@
-use either::Either;
-
 use super::{
     map::CseqMap,
     shared::{CyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
@@ -26,15 +24,11 @@ pub(super) fn get_fighter_cseq_map(
     item_uid: UItemId,
     fighter: &UFighter,
     options: CyclingOptions,
-    ignore_state: bool,
 ) -> bool {
     if !fighter.is_loaded() {
         return false;
     };
-    let effect_rids = match ignore_state {
-        true => Either::Left(fighter.get_effects().unwrap().keys().copied()),
-        false => Either::Right(fighter.get_reffs().unwrap().iter().copied()),
-    };
+    let effect_rids = fighter.get_reffs().unwrap().iter().copied();
     reuse_cseq_map.clear();
     match options {
         CyclingOptions::Burst => burst_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, reuse_cseq_map),

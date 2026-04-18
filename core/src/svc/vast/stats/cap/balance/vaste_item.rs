@@ -81,7 +81,7 @@ fn get_cap_injects(
     let mut cps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.cap_injects.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
@@ -117,7 +117,7 @@ fn get_cap_consumed(
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
@@ -154,7 +154,7 @@ fn get_nosfs(
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, nosf_item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, nosf_item_uid, cycling_options) {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
@@ -225,7 +225,7 @@ fn get_incoming_cap_transfers(
         None => return cps,
     };
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, transfer_item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, transfer_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
@@ -296,7 +296,7 @@ fn get_incoming_neuts(
         None => return nps,
     };
     for (&neut_item_uid, item_data) in neut_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, neut_item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, neut_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {

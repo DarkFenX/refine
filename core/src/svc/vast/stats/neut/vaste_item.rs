@@ -22,13 +22,12 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, StatItemCheckError> {
         check_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let mut nps = PValue::ZERO;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             return Ok(nps);
         }
         let u_item = ctx.u_data.items.get(item_uid);
@@ -80,7 +79,6 @@ impl Vast {
                     charge_uid,
                     time_options,
                     false,
-                    ignore_state,
                     projectee_uid,
                 ) {
                     nps += charge_nps;

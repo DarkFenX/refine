@@ -24,7 +24,6 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
@@ -39,7 +38,6 @@ impl Vast {
             item_uid,
             time_options,
             include_charges,
-            ignore_state,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
             StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
@@ -63,7 +61,6 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, StatItemCheckError> {
         let mut dps_normal = DmgKinds::default();
@@ -79,7 +76,6 @@ impl Vast {
             item_uid,
             time_options,
             include_charges,
-            ignore_state,
             projectee_uid,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
@@ -107,11 +103,10 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             return Ok(());
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
@@ -158,7 +153,6 @@ impl Vast {
                     charge_uid,
                     time_options,
                     false,
-                    ignore_state,
                 );
             }
         }
@@ -174,12 +168,11 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
         projectee_uid: UItemId,
     ) -> Result<(), StatItemCheckError> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             return Ok(());
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
@@ -245,7 +238,6 @@ impl Vast {
                     charge_uid,
                     time_options,
                     false,
-                    ignore_state,
                     projectee_uid,
                 );
             }

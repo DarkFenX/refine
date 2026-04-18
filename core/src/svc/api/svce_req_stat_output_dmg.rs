@@ -88,7 +88,6 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
     ) -> Result<StatDmg, StatItemCheckError> {
         Vast::get_stat_item_dmg_raw(
             reuse_cseq_map,
@@ -97,7 +96,6 @@ impl Svc {
             item_uid,
             time_options,
             include_charges,
-            ignore_state,
         )
     }
     pub(crate) fn get_stat_item_dmg_applied(
@@ -107,7 +105,6 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-        ignore_state: bool,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, StatItemCheckError> {
         Vast::get_stat_item_dmg_applied(
@@ -117,7 +114,6 @@ impl Svc {
             item_uid,
             time_options,
             include_charges,
-            ignore_state,
             projectee_uid,
         )
     }

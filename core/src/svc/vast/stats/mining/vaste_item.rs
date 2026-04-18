@@ -25,7 +25,6 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         mission_ore: bool,
-        ignore_state: bool,
     ) -> Result<StatMining, StatItemCheckError> {
         check_drone_module(ctx.u_data, item_uid)?;
         let base_xargs = NEffectMiningXargs { mission_ore };
@@ -37,7 +36,6 @@ impl Vast {
                 item_uid,
                 time_options,
                 base_xargs,
-                ignore_state,
                 get_effect_mining_ore,
             ),
             ice: get_mps_item_uid(
@@ -47,7 +45,6 @@ impl Vast {
                 item_uid,
                 time_options,
                 base_xargs,
-                ignore_state,
                 get_effect_mining_ice,
             ),
             gas: get_mps_item_uid(
@@ -57,7 +54,6 @@ impl Vast {
                 item_uid,
                 time_options,
                 base_xargs,
-                ignore_state,
                 get_effect_mining_gas,
             ),
         };
@@ -72,7 +68,6 @@ fn get_mps_item_uid<F>(
     item_uid: UItemId,
     time_options: StatTimeOptions,
     base_xargs: NEffectMiningXargs,
-    ignore_state: bool,
     mining_ospec_getter: F,
 ) -> StatMiningEntry
 where
@@ -80,7 +75,7 @@ where
 {
     let mut mps = NEffectMiningAmount::new();
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
         return StatMiningEntry::from_effect_amount(mps);
     }
     let item = ctx.u_data.items.get(item_uid);

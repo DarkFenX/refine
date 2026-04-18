@@ -21,13 +21,12 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        ignore_state: bool,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_uid)?;
         let mut ocps = PValue::ZERO;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             return Ok(ocps);
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {

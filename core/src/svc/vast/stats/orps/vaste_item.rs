@@ -24,7 +24,6 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        ignore_state: bool,
         projectee_uid: Option<UItemId>,
     ) -> Result<StatOutReps, StatItemCheckError> {
         check_drone_fighter_module(ctx.u_data, item_uid)?;
@@ -35,7 +34,6 @@ impl Vast {
                 calc,
                 item_uid,
                 time_options,
-                ignore_state,
                 projectee_uid,
                 get_getter_shield,
             ),
@@ -45,7 +43,6 @@ impl Vast {
                 calc,
                 item_uid,
                 time_options,
-                ignore_state,
                 projectee_uid,
                 get_getter_armor,
             ),
@@ -55,7 +52,6 @@ impl Vast {
                 calc,
                 item_uid,
                 time_options,
-                ignore_state,
                 projectee_uid,
                 get_getter_hull,
             ),
@@ -70,7 +66,6 @@ fn get_orps<F>(
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,
-    ignore_state: bool,
     projectee_uid: Option<UItemId>,
     rep_ospec_getter: F,
 ) -> PValue
@@ -79,7 +74,7 @@ where
 {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, ignore_state) {
+    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
         return orps;
     }
     for (&effect_rid, cseq) in reuse_cseq_map.iter() {

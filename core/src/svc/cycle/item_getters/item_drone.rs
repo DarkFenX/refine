@@ -1,5 +1,3 @@
-use either::Either;
-
 use super::map::CseqMap;
 use crate::{
     svc::{
@@ -18,17 +16,12 @@ pub(super) fn get_drone_cseq_map(
     calc: &mut Calc,
     item_uid: UItemId,
     drone: &UDrone,
-    ignore_state: bool,
 ) -> bool {
     if !drone.is_loaded() {
         return false;
     };
     reuse_cseq_map.clear();
-    let effect_rids = match ignore_state {
-        true => Either::Left(drone.get_effects().unwrap().keys().copied()),
-        false => Either::Right(drone.get_reffs().unwrap().iter().copied()),
-    };
-    for effect_rid in effect_rids {
+    for &effect_rid in drone.get_reffs().unwrap().iter() {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
         if !effect.is_active_with_duration {
             continue;

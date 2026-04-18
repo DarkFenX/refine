@@ -98,7 +98,7 @@ fn get_local_ancil_hp(
 ) -> PValue {
     let mut total_ancil_hp = PValue::ZERO;
     for (&item_uid, item_data) in ancil_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, ANCIL_CYCLE_OPTIONS, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, ANCIL_CYCLE_OPTIONS) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
@@ -129,14 +129,7 @@ fn get_remote_ancil_hp(
         None => return total_ancil_hp,
     };
     for (&projector_item_uid, projector_data) in incoming_ancils.iter() {
-        if !get_item_cseq_map(
-            reuse_cseq_map,
-            ctx,
-            calc,
-            projector_item_uid,
-            ANCIL_CYCLE_OPTIONS,
-            false,
-        ) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, ANCIL_CYCLE_OPTIONS) {
             continue;
         }
         for (&effect_rid, ospec) in projector_data.iter() {

@@ -127,7 +127,7 @@ fn get_local_rps(
     let mut total_rps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in lrr_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
@@ -173,7 +173,7 @@ fn get_irr_data(
     };
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&projector_item_uid, projector_data) in incoming_reps.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in projector_data.iter() {

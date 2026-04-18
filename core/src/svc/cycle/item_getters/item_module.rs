@@ -1,5 +1,3 @@
-use either::Either;
-
 use super::{
     map::CseqMap,
     shared::{CyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
@@ -38,18 +36,13 @@ pub(super) fn get_module_cseq_map(
     item: &UItem,
     module: &UModule,
     options: CyclingOptions,
-    ignore_state: bool,
 ) -> bool {
     if !module.is_loaded() {
         return false;
     };
     reuse_cseq_map.clear();
     let mut sk_item_info = SelfKillerItemInfo::new();
-    let effect_rids = match ignore_state {
-        true => Either::Left(module.get_effects().unwrap().keys().copied()),
-        false => Either::Right(module.get_reffs().unwrap().iter().copied()),
-    };
-    for effect_rid in effect_rids {
+    for &effect_rid in module.get_reffs().unwrap().iter() {
         fill_module_effect_info(
             reuse_cseq_map,
             &mut sk_item_info,

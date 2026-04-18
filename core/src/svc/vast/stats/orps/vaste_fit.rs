@@ -117,7 +117,7 @@ fn get_orps(
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             continue;
         }
         let u_item = ctx.u_data.items.get(item_uid);

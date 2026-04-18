@@ -1,8 +1,9 @@
-pub(in crate::api) use private::{ItemMutSealed, ItemSealed};
-
-use super::err::{
-    GetItemAttrError, ItemAppliedStatError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
-    IterItemModifiersError,
+use super::{
+    err::{
+        GetItemAttrError, ItemAppliedStatError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
+        IterItemModifiersError,
+    },
+    sealed::{ItemMutSealed, ItemSealed},
 };
 use crate::{
     api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
@@ -20,19 +21,6 @@ use crate::{
     },
     ud::{ItemId, UEffectUpdates},
 };
-
-mod private {
-    use crate::{sol::SolarSystem, ud::UItemId};
-
-    pub(crate) trait ItemSealed: Sized {
-        fn get_sol(&self) -> &SolarSystem;
-        fn get_uid(&self) -> UItemId;
-    }
-
-    pub(crate) trait ItemMutSealed: ItemSealed {
-        fn get_sol_mut(&mut self) -> &mut SolarSystem;
-    }
-}
 
 #[allow(private_bounds)]
 pub trait ItemCommon: ItemSealed {
@@ -141,18 +129,22 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, ItemStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        sol.svc
+        let result = sol
+            .svc
             .get_stat_item_dmg_raw(
                 &mut CseqMap::new(),
                 &sol.u_data,
                 item_uid,
                 time_options,
                 include_charges,
-                ignore_state,
             )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_dmg_applied(
         &mut self,
@@ -161,20 +153,24 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, ItemAppliedStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
-        sol.svc
+        let result = sol
+            .svc
             .get_stat_item_dmg_applied(
                 &mut CseqMap::new(),
                 &sol.u_data,
                 item_uid,
                 time_options,
                 include_charges,
-                ignore_state,
                 projectee_uid,
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_mps(
         &mut self,
@@ -182,18 +178,16 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         mission_ore: bool,
         ignore_state: bool,
     ) -> Result<StatMining, ItemStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_mps(
-                &mut CseqMap::new(),
-                &sol.u_data,
-                item_uid,
-                time_options,
-                ignore_state,
-                mission_ore,
-            )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+        let result = sol
+            .svc
+            .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, mission_ore)
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_outgoing_nps(
         &mut self,
@@ -201,19 +195,23 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<PValue, ItemStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        sol.svc
+        let result = sol
+            .svc
             .get_stat_item_outgoing_nps(
                 &mut CseqMap::new(),
                 &sol.u_data,
                 item_uid,
                 time_options,
                 include_charges,
-                ignore_state,
                 None,
             )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_outgoing_nps_applied(
         &mut self,
@@ -222,38 +220,40 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, ItemAppliedStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
-        sol.svc
+        let result = sol
+            .svc
             .get_stat_item_outgoing_nps(
                 &mut CseqMap::new(),
                 &sol.u_data,
                 item_uid,
                 time_options,
                 include_charges,
-                ignore_state,
                 Some(projectee_uid),
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_outgoing_rps(
         &mut self,
         time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<StatOutReps, ItemStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_outgoing_rps(
-                &mut CseqMap::new(),
-                &sol.u_data,
-                item_uid,
-                time_options,
-                ignore_state,
-                None,
-            )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+        let result = sol
+            .svc
+            .get_stat_item_outgoing_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_outgoing_rps_applied(
         &mut self,
@@ -261,37 +261,39 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, ItemAppliedStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
-        sol.svc
+        let result = sol
+            .svc
             .get_stat_item_outgoing_rps(
                 &mut CseqMap::new(),
                 &sol.u_data,
                 item_uid,
                 time_options,
-                ignore_state,
                 Some(projectee_uid),
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_outgoing_cps(
         &mut self,
         time_options: StatTimeOptions,
         ignore_state: bool,
     ) -> Result<PValue, ItemStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        sol.svc
-            .get_stat_item_outgoing_cps(
-                &mut CseqMap::new(),
-                &sol.u_data,
-                item_uid,
-                time_options,
-                ignore_state,
-                None,
-            )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+        let result = sol
+            .svc
+            .get_stat_item_outgoing_cps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     fn get_stat_outgoing_cps_applied(
         &mut self,
@@ -299,19 +301,23 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, ItemAppliedStatError> {
+        let mut reuse_eupdates = UEffectUpdates::new();
+        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
-        sol.svc
+        let result = sol
+            .svc
             .get_stat_item_outgoing_cps(
                 &mut CseqMap::new(),
                 &sol.u_data,
                 item_uid,
                 time_options,
-                ignore_state,
                 Some(projectee_uid),
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - tank

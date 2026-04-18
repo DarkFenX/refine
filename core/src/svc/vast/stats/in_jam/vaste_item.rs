@@ -39,7 +39,7 @@ impl Vast {
         let mut projectee_unjam_chance = Value::ONE;
         let mut projectee_unjam_uptime = Value::ONE;
         for (&projector_item_uid, projector_data) in incoming_ecms.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, cycling_options, false) {
+            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, cycling_options) {
                 continue;
             }
             for (&effect_rid, ospec) in projector_data.iter() {

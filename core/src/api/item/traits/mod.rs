@@ -3,7 +3,8 @@ pub use err::{
     IterItemModifiersError,
 };
 pub use main::{ItemCommon, ItemMutCommon};
-pub(in crate::api) use main::{ItemMutSealed, ItemSealed};
+pub(in crate::api) use sealed::{ItemMutSealed, ItemSealed};
 
 mod err;
 mod main;
+mod sealed;

@@ -232,7 +232,7 @@ impl VastFitData {
         projectee_uid: Option<UItemId>,
     ) {
         for (&item_uid, item_data) in self.dmg_normal.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
                 continue;
             }
             let item = ctx.u_data.items.get(item_uid);
@@ -291,7 +291,7 @@ impl VastFitData {
         cycling_options: CyclingOptions,
     ) {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
                 continue;
             };
             let item = ctx.u_data.items.get(item_uid);
@@ -319,7 +319,7 @@ impl VastFitData {
         projectee_uid: UItemId,
     ) {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options, false) {
+            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
                 continue;
             }
             let item = ctx.u_data.items.get(item_uid);
