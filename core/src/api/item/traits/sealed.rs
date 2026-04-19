@@ -28,8 +28,45 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
         if !item.is_loaded() {
             return None;
         }
-        // TODO: add autocharge+parent and charge+parent
         match item {
+            // For autocharges, there are two parts:
+            // - autocharge is enabled if it is force-disabled
+            // - parent item is activated according to its rules, if it's not in active
+            UItem::Autocharge(autocharge) => {
+                let parent_uid = autocharge.get_cont_item_uid();
+                let saved_autocharge_state = match autocharge.get_force_disabled() {
+                    true => {
+                        self.get_sol_mut()
+                            .internal_set_autocharge_state(item_uid, true, reuse_eupdates);
+                        Some(false)
+                    }
+                    false => None,
+                };
+                let saved_parent_state = preprocess_charge_parent(self.get_sol_mut(), parent_uid, reuse_eupdates);
+                match saved_autocharge_state.is_some() || saved_parent_state.is_some() {
+                    true => Some(SavedItemState::Autocharge(saved_autocharge_state, saved_parent_state)),
+                    false => None,
+                }
+            }
+            // For charges, there are two parts:
+            // - charge is enabled if it is force-disabled
+            // - parent item is activated according to its rules, if it's not in active
+            UItem::Charge(charge) => {
+                let parent_uid = charge.get_cont_item_uid();
+                let saved_charge_state = match charge.get_force_disabled() {
+                    true => {
+                        self.get_sol_mut()
+                            .internal_set_charge_state(item_uid, true, reuse_eupdates);
+                        Some(false)
+                    }
+                    false => None,
+                };
+                let saved_parent_state = preprocess_charge_parent(self.get_sol_mut(), parent_uid, reuse_eupdates);
+                match saved_charge_state.is_some() || saved_parent_state.is_some() {
+                    true => Some(SavedItemState::Charge(saved_charge_state, saved_parent_state)),
+                    false => None,
+                }
+            }
             // For drones, change state only if they are not in engaging state
             UItem::Drone(drone) => {
                 let drone_state = drone.get_drone_state();
@@ -54,7 +91,7 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
                     for autocharge_uid in fighter.get_autocharges().values() {
                         let autocharge = self.get_sol().u_data.items.get(autocharge_uid).dc_autocharge().unwrap();
                         if autocharge.get_force_disabled() {
-                            saved_autocharge_states.push(BoolItemInfo {
+                            saved_autocharge_states.push(ItemInfo {
                                 uid: autocharge_uid,
                                 state: false,
                             });
@@ -107,17 +144,16 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
                 let saved_charge_state = match (charge_uid, include_charges) {
                     (Some(charge_uid), true) => {
                         let charge = self.get_sol().u_data.items.get(charge_uid).dc_charge().unwrap();
-                        let charge_state = !charge.get_force_disabled();
-                        match charge_state {
-                            true => None,
-                            false => {
+                        match charge.get_force_disabled() {
+                            true => {
                                 self.get_sol_mut()
                                     .internal_set_charge_state(item_uid, true, reuse_eupdates);
-                                Some(BoolItemInfo {
+                                Some(ItemInfo {
                                     uid: charge_uid,
-                                    state: charge_state,
+                                    state: false,
                                 })
                             }
+                            false => None,
                         }
                     }
                     _ => None,
@@ -141,6 +177,24 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
         };
         let item_uid = self.get_uid();
         match saved_state {
+            SavedItemState::Autocharge(autocharge_state, parent_info) => {
+                let sol = self.get_sol_mut();
+                if let Some(autocharge_state) = autocharge_state {
+                    sol.internal_set_autocharge_state(item_uid, autocharge_state, reuse_eupdates);
+                }
+                if let Some(parent_info) = parent_info {
+                    postprocess_charge_parent(sol, parent_info, reuse_eupdates);
+                }
+            }
+            SavedItemState::Charge(charge_state, parent_info) => {
+                let sol = self.get_sol_mut();
+                if let Some(charge_state) = charge_state {
+                    sol.internal_set_charge_state(item_uid, charge_state, reuse_eupdates);
+                }
+                if let Some(parent_info) = parent_info {
+                    postprocess_charge_parent(sol, parent_info, reuse_eupdates);
+                }
+            }
             SavedItemState::Drone(drone_state) => {
                 self.get_sol_mut()
                     .internal_set_drone_state(item_uid, drone_state, reuse_eupdates);
@@ -167,13 +221,75 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Temporary state manipulation for active stats
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::api) enum SavedItemState {
+    Autocharge(Option<bool>, Option<SavedParentInfo>),
+    Charge(Option<bool>, Option<SavedParentInfo>),
     Drone(MinionState),
-    Fighter(Option<MinionState>, Vec<BoolItemInfo>),
-    Module(Option<ModuleState>, Option<BoolItemInfo>),
+    Fighter(Option<MinionState>, Vec<ItemInfo<bool>>),
+    Module(Option<ModuleState>, Option<ItemInfo<bool>>),
 }
 
-pub(in crate::api) struct BoolItemInfo {
+pub(in crate::api) enum SavedParentInfo {
+    Fighter(ItemInfo<MinionState>),
+    Module(ItemInfo<ModuleState>),
+}
+
+pub(in crate::api) struct ItemInfo<T> {
     uid: UItemId,
-    state: bool,
+    state: T,
+}
+
+fn preprocess_charge_parent(
+    sol: &mut SolarSystem,
+    parent_uid: UItemId,
+    reuse_eupdates: &mut UEffectUpdates,
+) -> Option<SavedParentInfo> {
+    match sol.u_data.items.get(parent_uid) {
+        UItem::Fighter(fighter) => {
+            let fighter_state = fighter.get_fighter_state();
+            match fighter_state {
+                MinionState::InBay | MinionState::InSpace => {
+                    sol.internal_set_fighter_state(parent_uid, MinionState::Engaging, reuse_eupdates);
+                    Some(SavedParentInfo::Fighter(ItemInfo {
+                        uid: parent_uid,
+                        state: fighter_state,
+                    }))
+                }
+                MinionState::Engaging => None,
+            }
+        }
+        UItem::Module(module) => {
+            let module_state = module.get_module_state();
+            match module_state {
+                ModuleState::Disabled | ModuleState::Offline | ModuleState::Online => {
+                    match module.get_max_state().unwrap() {
+                        RState::Ghost | RState::Disabled | RState::Offline | RState::Online => None,
+                        RState::Active | RState::Overload => {
+                            sol.internal_set_module_state(parent_uid, ModuleState::Active, reuse_eupdates);
+                            Some(SavedParentInfo::Module(ItemInfo {
+                                uid: parent_uid,
+                                state: module_state,
+                            }))
+                        }
+                    }
+                }
+                ModuleState::Active | ModuleState::Overload => None,
+            }
+        }
+        _ => None,
+    }
+}
+
+fn postprocess_charge_parent(sol: &mut SolarSystem, parent_info: SavedParentInfo, reuse_eupdates: &mut UEffectUpdates) {
+    match parent_info {
+        SavedParentInfo::Fighter(fighter_info) => {
+            sol.internal_set_fighter_state(fighter_info.uid, fighter_info.state, reuse_eupdates)
+        }
+        SavedParentInfo::Module(module_info) => {
+            sol.internal_set_module_state(module_info.uid, module_info.state, reuse_eupdates)
+        }
+    }
 }
