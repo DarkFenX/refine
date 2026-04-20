@@ -1,6 +1,7 @@
 import typing
 from dataclasses import dataclass
 
+from fw.consts import EveAttr
 from fw.util import Absent, Default, conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -9,6 +10,7 @@ if typing.TYPE_CHECKING:
 
 @dataclass(kw_only=True)
 class DmgBasicInfo:
+    # Attrs
     dmg_em_attr_id: int
     dmg_therm_attr_id: int
     dmg_kin_attr_id: int
@@ -53,8 +55,10 @@ class DmgBasicInfo:
     shield_hp_attr_id: int
     armor_hp_attr_id: int
     hull_hp_attr_id: int
-    resist_def_attr_id: int
+    resist_ref_attr_id: int
     neut_resist_attr_id: int
+    max_ftr_count_attr_id: int
+    # Effects
     turret_proj_effect_id: int
     turret_spool_effect_id: int
     tgt_attack_effect_id: int
@@ -76,6 +80,37 @@ class DmgBasicInfo:
     dd_reaper_effect_id: int
     dd_boson_effect_id: int
     dd_vorton_effect_id: int
+    # Fighter "primary" missile attack
+    ftr_abil_atkm_dmg_em_attr_id: int
+    ftr_abil_atkm_dmg_therm_attr_id: int
+    ftr_abil_atkm_dmg_kin_attr_id: int
+    ftr_abil_atkm_dmg_expl_attr_id: int
+    ftr_abil_atkm_dmg_mult_attr_id: int
+    ftr_abil_atkm_cycle_time_attr_id: int
+    ftr_abil_atkm_range_optimal_attr_id: int
+    ftr_abil_atkm_range_falloff_attr_id: int
+    ftr_abil_atkm_exp_radius_attr_id: int
+    ftr_abil_atkm_exp_speed_attr_id: int
+    ftr_abil_atkm_dr_factor_attr_id: int
+    ftr_abil_atkm_dr_sens_attr_id: int
+    ftr_abil_atkm_effect_id: int
+    atkm_abil_id: int
+    # Fighter "secondary" missile attack
+    ftr_abil_missiles_dmg_em_attr_id: int
+    ftr_abil_missiles_dmg_therm_attr_id: int
+    ftr_abil_missiles_dmg_kin_attr_id: int
+    ftr_abil_missiles_dmg_expl_attr_id: int
+    ftr_abil_missiles_dmg_mult_attr_id: int
+    ftr_abil_missiles_cycle_time_attr_id: int
+    ftr_abil_missiles_range_attr_id: int
+    ftr_abil_missiles_exp_radius_attr_id: int
+    ftr_abil_missiles_exp_speed_attr_id: int
+    ftr_abil_missiles_dr_factor_attr_id: int
+    ftr_abil_missiles_dr_sens_attr_id: int
+    ftr_abil_missiles_resist_ref_attr_id: int
+    ftr_abil_missiles_effect_id: int
+    missiles_abil_id: int
+    # Misc
     guided_bomb_group_id: int
 
 
@@ -88,6 +123,7 @@ def setup_dmg_basics(
         effect_falloff: bool = True,
         effect_tracking: bool = True,
 ) -> DmgBasicInfo:
+    # Attrs
     eve_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
     eve_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
     eve_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg)
@@ -134,6 +170,8 @@ def setup_dmg_basics(
     eve_hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
     eve_neut_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
+    eve_max_ftr_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    # Effects
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
@@ -223,30 +261,77 @@ def setup_dmg_basics(
         id_=consts.EveEffect.lightning_weapon,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    # Ensure effects are not cleaned up even if not all of them are used in a test
-    client.mk_eve_item(eff_ids=[
-        eve_turret_proj_effect_id,
-        eve_turret_spool_effect_id,
-        eve_tgt_attack_effect_id,
-        eve_vorton_effect_id,
-        eve_launcher_effect_id,
-        eve_missile_effect_id,
-        eve_missile_fof_effect_id,
-        eve_missile_defender_effect_id,
-        eve_breacher_effect_id,
-        eve_bomb_effect_id,
-        eve_smartbomb_effect_id,
-        eve_pds_effect_id,
-        eve_dd_direct_amarr_effect_id,
-        eve_dd_direct_caldari_effect_id,
-        eve_dd_direct_gallente_effect_id,
-        eve_dd_direct_minmatar_effect_id,
-        eve_dd_lance_effect_id,
-        eve_dd_lance_debuff_effect_id,
-        eve_dd_reaper_effect_id,
-        eve_dd_boson_effect_id,
-        eve_dd_vorton_effect_id])
+    # Fighter "primary" missile attack
+    eve_ftr_abil_atkm_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_em)
+    eve_ftr_abil_atkm_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_therm)
+    eve_ftr_abil_atkm_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_kin)
+    eve_ftr_abil_atkm_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_expl)
+    eve_ftr_abil_atkm_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_mult)
+    eve_ftr_abil_atkm_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_duration)
+    eve_ftr_abil_atkm_range_optimal_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_range_optimal)
+    eve_ftr_abil_atkm_range_falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_range_falloff)
+    eve_ftr_abil_atkm_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_expl_radius)
+    eve_ftr_abil_atkm_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_expl_velocity)
+    eve_ftr_abil_atkm_dr_factor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_reduction_factor)
+    eve_ftr_abil_atkm_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_reduction_sens)
+    eve_ftr_abil_atkm_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ftr_abil_attack_m,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_ftr_abil_atkm_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_ftr_abil_atkm_range_optimal_attr_id,
+        falloff_attr_id=eve_ftr_abil_atkm_range_falloff_attr_id)
+    eve_atkm_abil_id = client.mk_eve_abil(id_=consts.EveAbil.pulse_cannon)
+    # Fighter "secondary" missile attack
+    eve_ftr_abil_missiles_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_em)
+    eve_ftr_abil_missiles_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_therm)
+    eve_ftr_abil_missiles_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_kin)
+    eve_ftr_abil_missiles_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_expl)
+    eve_ftr_abil_missiles_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_mult)
+    eve_ftr_abil_missiles_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_duration)
+    eve_ftr_abil_missiles_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_range)
+    eve_ftr_abil_missiles_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_radius)
+    eve_ftr_abil_missiles_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_velocity)
+    eve_ftr_abil_missiles_dr_factor_attr_id = client.mk_eve_attr(
+        id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_factor)
+    eve_ftr_abil_missiles_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_sens)
+    eve_ftr_abil_missiles_resist_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_resist_id)
+    eve_ftr_abil_missiles_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ftr_abil_missiles,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_ftr_abil_missiles_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=eve_ftr_abil_missiles_range_attr_id)
+    eve_missiles_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
+    # Ensure effects and abilities are not cleaned up even if not all of them are used in a test
+    client.mk_eve_fighter(
+        eff_ids=[
+            eve_turret_proj_effect_id,
+            eve_turret_spool_effect_id,
+            eve_tgt_attack_effect_id,
+            eve_vorton_effect_id,
+            eve_launcher_effect_id,
+            eve_missile_effect_id,
+            eve_missile_fof_effect_id,
+            eve_missile_defender_effect_id,
+            eve_breacher_effect_id,
+            eve_bomb_effect_id,
+            eve_smartbomb_effect_id,
+            eve_pds_effect_id,
+            eve_dd_direct_amarr_effect_id,
+            eve_dd_direct_caldari_effect_id,
+            eve_dd_direct_gallente_effect_id,
+            eve_dd_direct_minmatar_effect_id,
+            eve_dd_lance_effect_id,
+            eve_dd_lance_debuff_effect_id,
+            eve_dd_reaper_effect_id,
+            eve_dd_boson_effect_id,
+            eve_dd_vorton_effect_id,
+            eve_ftr_abil_atkm_effect_id,
+            eve_ftr_abil_missiles_effect_id],
+        abils=[
+            client.mk_eve_item_abil(id_=eve_atkm_abil_id),
+            client.mk_eve_item_abil(id_=eve_missiles_abil_id)])
     return DmgBasicInfo(
+        # Attrs
         dmg_em_attr_id=eve_dmg_em_attr_id,
         dmg_therm_attr_id=eve_dmg_therm_attr_id,
         dmg_kin_attr_id=eve_dmg_kin_attr_id,
@@ -291,8 +376,10 @@ def setup_dmg_basics(
         shield_hp_attr_id=eve_shield_hp_attr_id,
         armor_hp_attr_id=eve_armor_hp_attr_id,
         hull_hp_attr_id=eve_hull_hp_attr_id,
-        resist_def_attr_id=eve_resist_def_attr_id,
+        resist_ref_attr_id=eve_resist_def_attr_id,
         neut_resist_attr_id=eve_neut_resist_attr_id,
+        max_ftr_count_attr_id=eve_max_ftr_count_attr_id,
+        # Effects
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
         tgt_attack_effect_id=eve_tgt_attack_effect_id,
@@ -314,6 +401,37 @@ def setup_dmg_basics(
         dd_reaper_effect_id=eve_dd_reaper_effect_id,
         dd_boson_effect_id=eve_dd_boson_effect_id,
         dd_vorton_effect_id=eve_dd_vorton_effect_id,
+        # Fighter "primary" missile attack
+        ftr_abil_atkm_dmg_em_attr_id=eve_ftr_abil_atkm_dmg_em_attr_id,
+        ftr_abil_atkm_dmg_therm_attr_id=eve_ftr_abil_atkm_dmg_therm_attr_id,
+        ftr_abil_atkm_dmg_kin_attr_id=eve_ftr_abil_atkm_dmg_kin_attr_id,
+        ftr_abil_atkm_dmg_expl_attr_id=eve_ftr_abil_atkm_dmg_expl_attr_id,
+        ftr_abil_atkm_dmg_mult_attr_id=eve_ftr_abil_atkm_dmg_mult_attr_id,
+        ftr_abil_atkm_cycle_time_attr_id=eve_ftr_abil_atkm_cycle_time_attr_id,
+        ftr_abil_atkm_range_optimal_attr_id=eve_ftr_abil_atkm_range_optimal_attr_id,
+        ftr_abil_atkm_range_falloff_attr_id=eve_ftr_abil_atkm_range_falloff_attr_id,
+        ftr_abil_atkm_exp_radius_attr_id=eve_ftr_abil_atkm_exp_radius_attr_id,
+        ftr_abil_atkm_exp_speed_attr_id=eve_ftr_abil_atkm_exp_speed_attr_id,
+        ftr_abil_atkm_dr_factor_attr_id=eve_ftr_abil_atkm_dr_factor_attr_id,
+        ftr_abil_atkm_dr_sens_attr_id=eve_ftr_abil_atkm_dr_sens_attr_id,
+        ftr_abil_atkm_effect_id=eve_ftr_abil_atkm_effect_id,
+        atkm_abil_id=eve_atkm_abil_id,
+        # Fighter "secondary" missile attack
+        ftr_abil_missiles_dmg_em_attr_id=eve_ftr_abil_missiles_dmg_em_attr_id,
+        ftr_abil_missiles_dmg_therm_attr_id=eve_ftr_abil_missiles_dmg_therm_attr_id,
+        ftr_abil_missiles_dmg_kin_attr_id=eve_ftr_abil_missiles_dmg_kin_attr_id,
+        ftr_abil_missiles_dmg_expl_attr_id=eve_ftr_abil_missiles_dmg_expl_attr_id,
+        ftr_abil_missiles_dmg_mult_attr_id=eve_ftr_abil_missiles_dmg_mult_attr_id,
+        ftr_abil_missiles_cycle_time_attr_id=eve_ftr_abil_missiles_cycle_time_attr_id,
+        ftr_abil_missiles_range_attr_id=eve_ftr_abil_missiles_range_attr_id,
+        ftr_abil_missiles_exp_radius_attr_id=eve_ftr_abil_missiles_exp_radius_attr_id,
+        ftr_abil_missiles_exp_speed_attr_id=eve_ftr_abil_missiles_exp_speed_attr_id,
+        ftr_abil_missiles_dr_factor_attr_id=eve_ftr_abil_missiles_dr_factor_attr_id,
+        ftr_abil_missiles_dr_sens_attr_id=eve_ftr_abil_missiles_dr_sens_attr_id,
+        ftr_abil_missiles_resist_ref_attr_id=eve_ftr_abil_missiles_resist_ref_attr_id,
+        ftr_abil_missiles_effect_id=eve_ftr_abil_missiles_effect_id,
+        missiles_abil_id=eve_missiles_abil_id,
+        # Misc
         guided_bomb_group_id=consts.EveItemGrp.guided_bomb)
 
 
@@ -677,7 +795,7 @@ def make_eve_bomb(
     conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=exp_range)
     conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
     if neut_resist_attr:
-        attrs[basic_info.resist_def_attr_id] = basic_info.neut_resist_attr_id
+        attrs[basic_info.resist_ref_attr_id] = basic_info.neut_resist_attr_id
     return client.mk_eve_item(
         attrs=attrs,
         eff_ids=[basic_info.bomb_effect_id],
@@ -751,6 +869,79 @@ def make_eve_drone(
         attrs=attrs,
         eff_ids=[basic_info.tgt_attack_effect_id],
         defeff_id=basic_info.tgt_attack_effect_id)
+
+
+def make_eve_fighter_assault(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        prm_dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        prm_dmg_mult: float | type[Absent] = Absent,
+        prm_cycle_time: float | type[Absent] = Absent,
+        prm_range_optimal: float | type[Absent] = Absent,
+        prm_range_falloff: float | type[Absent] = Absent,
+        prm_exp_radius: float | type[Absent] = Absent,
+        prm_exp_speed: float | type[Absent] = Absent,
+        prm_dr_factor: float | type[Absent] = Absent,
+        prm_dr_sens: float | type[Absent] = Absent,
+        sec_dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        sec_dmg_mult: float | type[Absent] = Absent,
+        sec_cycle_time: float | type[Absent] = Absent,
+        sec_range: float | type[Absent] = Absent,
+        sec_exp_radius: float | type[Absent] = Absent,
+        sec_exp_speed: float | type[Absent] = Absent,
+        sec_dr_factor: float | type[Absent] = Absent,
+        sec_dr_sens: float | type[Absent] = Absent,
+        sec_resist_attr_id: float | type[Absent] = Absent,
+        sec_charge_count: int | type[Absent] = Absent,
+        sec_charge_rearm_time: float | type[Absent] = Absent,
+        sq_size: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        radius: float | type[Absent] = Absent,
+        sig_radius: float | type[Absent] = Absent,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=prm_dmgs, dmg_attr_ids=(
+        basic_info.ftr_abil_atkm_dmg_em_attr_id,
+        basic_info.ftr_abil_atkm_dmg_therm_attr_id,
+        basic_info.ftr_abil_atkm_dmg_kin_attr_id,
+        basic_info.ftr_abil_atkm_dmg_expl_attr_id))
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dmg_mult_attr_id], value=prm_dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_cycle_time_attr_id], value=prm_cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_range_optimal_attr_id], value=prm_range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_range_falloff_attr_id], value=prm_range_falloff)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_exp_radius_attr_id], value=prm_exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_exp_speed_attr_id], value=prm_exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dr_factor_attr_id], value=prm_dr_factor)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dr_sens_attr_id], value=prm_dr_sens)
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=sec_dmgs, dmg_attr_ids=(
+        basic_info.ftr_abil_missiles_dmg_em_attr_id,
+        basic_info.ftr_abil_missiles_dmg_therm_attr_id,
+        basic_info.ftr_abil_missiles_dmg_kin_attr_id,
+        basic_info.ftr_abil_missiles_dmg_expl_attr_id))
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_dmg_mult_attr_id], value=sec_dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_cycle_time_attr_id], value=sec_cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_range_attr_id], value=sec_range)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_exp_radius_attr_id], value=sec_exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_exp_speed_attr_id], value=sec_exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_dr_factor_attr_id], value=sec_dr_factor)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_missiles_dr_sens_attr_id], value=sec_dr_sens)
+    conditional_insert(
+        container=attrs, path=[basic_info.ftr_abil_missiles_resist_ref_attr_id], value=sec_resist_attr_id)
+    conditional_insert(container=attrs, path=[basic_info.max_ftr_count_attr_id], value=sq_size)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
+    return client.mk_eve_fighter(
+        attrs=attrs,
+        eff_ids=[basic_info.ftr_abil_atkm_effect_id, basic_info.ftr_abil_missiles_effect_id],
+        defeff_id=basic_info.ftr_abil_atkm_effect_id,
+        abils=[
+            client.mk_eve_item_abil(id_=basic_info.atkm_abil_id),
+            client.mk_eve_item_abil(
+                id_=basic_info.missiles_abil_id,
+                charge_count=sec_charge_count,
+                charge_rearm_time=sec_charge_rearm_time)])
 
 
 def make_eve_smartbomb(
@@ -992,11 +1183,13 @@ def _add_dmgs(
         basic_info: DmgBasicInfo,
         attrs: dict[int, float],
         dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        dmg_attr_ids: tuple[float, float, float, float] | None = None,
 ) -> None:
     if dmgs is not None:
-        dmg_attr_ids = (
-            basic_info.dmg_em_attr_id,
-            basic_info.dmg_therm_attr_id,
-            basic_info.dmg_kin_attr_id,
-            basic_info.dmg_expl_attr_id)
+        if dmg_attr_ids is None:
+            dmg_attr_ids = (
+                basic_info.dmg_em_attr_id,
+                basic_info.dmg_therm_attr_id,
+                basic_info.dmg_kin_attr_id,
+                basic_info.dmg_expl_attr_id)
         attrs.update({k: v for k, v in zip(dmg_attr_ids, dmgs, strict=True) if v is not None})

@@ -14,6 +14,7 @@ from .support import (
     make_eve_dd_reaper,
     make_eve_dd_vorton,
     make_eve_drone,
+    make_eve_fighter_assault,
     make_eve_launcher,
     make_eve_missile,
     make_eve_missile_defender,
