@@ -220,7 +220,7 @@ def test_range_and_cap_limit(client, consts):
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(25)
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
-    # Verification - cap pool is lower and neut amount, so strength is reduced
+    # Verification - cap pool is lower than neut amount, so strength is reduced
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
     assert api_fleet_stats.outgoing_nps.one() == approx(41.666667)
