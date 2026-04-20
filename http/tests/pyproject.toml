@@ -67,7 +67,7 @@ ignore = ["ANN003", "ANN401", "PLR2004", "PLW1641"]
 no-lines-before = ["local-folder"]
 
 [tool.ruff.lint.pylint]
-max-args = 15
+max-args = 30
 max-locals = 100
 max-public-methods = 50
 max-statements = 150

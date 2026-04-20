@@ -1,7 +1,6 @@
 import typing
 from dataclasses import dataclass
 
-from fw.consts import EveAttr
 from fw.util import Absent, Default, conditional_insert
 
 if typing.TYPE_CHECKING:
