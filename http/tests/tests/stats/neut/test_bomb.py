@@ -39,31 +39,76 @@ def test_state(client, consts):
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
+    # Verification - module is active, charge is not force-disabled, so stats are exposed without
+    # extra flags
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(23.225806)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == approx(23.225806)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(include_charges=True)])))
+    assert api_module_stats.outgoing_nps.one() == approx(23.225806)
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_charge_stats.outgoing_nps.one() == approx(23.225806)
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
-    # Verification
+    # Verification - module not active, charge is not force-disabled - stats are exposed only when
+    # state is ignored
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(include_charges=True),
+        StatsOptionItemOutNps(include_charges=True, ignore_state=True)])))
+    assert api_module_stats.outgoing_nps == [0, approx(23.225806)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)])))
+        StatsOptionItemOutNps(include_charges=True),
+        StatsOptionItemOutNps(include_charges=True, ignore_state=True)])))
+    assert api_charge_stats.outgoing_nps == [0, approx(23.225806)]
+    # Action
+    api_module.charge.change_charge(state=False)
+    # Verification - module not active, charge is force-disabled - stats are exposed only when state
+    # is ignored
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
+    assert api_fleet_stats.outgoing_nps.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
+    assert api_fit_stats.outgoing_nps.one() == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(include_charges=True),
+        StatsOptionItemOutNps(include_charges=True, ignore_state=True)])))
+    assert api_module_stats.outgoing_nps == [0, approx(23.225806)]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(include_charges=True),
+        StatsOptionItemOutNps(include_charges=True, ignore_state=True)])))
     assert api_charge_stats.outgoing_nps == [0, approx(23.225806)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
-    # Verification
+    # Verification - module active, but charge is force-disabled - stats are exposed only when state
+    # is ignored
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
+    assert api_fleet_stats.outgoing_nps.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
+    assert api_fit_stats.outgoing_nps.one() == 0
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(include_charges=True),
+        StatsOptionItemOutNps(include_charges=True, ignore_state=True)])))
+    assert api_module_stats.outgoing_nps == [0, approx(23.225806)]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+        StatsOptionItemOutNps(include_charges=True),
+        StatsOptionItemOutNps(include_charges=True, ignore_state=True)])))
+    assert api_charge_stats.outgoing_nps == [0, approx(23.225806)]
+    # Action
+    api_module.charge.change_charge(state=True)
+    # Verification - module is active, charge is not force-disabled, so stats are exposed without
+    # extra flags
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(23.225806)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == approx(23.225806)
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        outgoing_nps=(True, [StatsOptionItemOutNps(include_charges=True)])))
+    assert api_module_stats.outgoing_nps.one() == approx(23.225806)
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_charge_stats.outgoing_nps.one() == approx(23.225806)
 
