@@ -487,6 +487,7 @@ class EveAttr(IntEnum):
     nullsec_modifier = 2357
     security_modifier = 2358
     can_fit_ship_group10 = 2396
+    ftr_refueling_time = 2426
     max_type_fitted = 2431
     energy_neut_sig_res = 2451
     disallow_cloaking = 2454

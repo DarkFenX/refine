@@ -57,6 +57,7 @@ class DmgBasicInfo:
     resist_ref_attr_id: int
     neut_resist_attr_id: int
     max_ftr_count_attr_id: int
+    refuel_duration_attr_id: int
     # Effects
     turret_proj_effect_id: int
     turret_spool_effect_id: int
@@ -170,6 +171,7 @@ def setup_dmg_basics(
     eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
     eve_neut_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
     eve_max_ftr_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_refuel_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_refueling_time)
     # Effects
     eve_turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
@@ -378,6 +380,7 @@ def setup_dmg_basics(
         resist_ref_attr_id=eve_resist_def_attr_id,
         neut_resist_attr_id=eve_neut_resist_attr_id,
         max_ftr_count_attr_id=eve_max_ftr_count_attr_id,
+        refuel_duration_attr_id=eve_refuel_duration_attr_id,
         # Effects
         turret_proj_effect_id=eve_turret_proj_effect_id,
         turret_spool_effect_id=eve_turret_spool_effect_id,
@@ -895,6 +898,7 @@ def make_eve_fighter_assault(
         sec_charge_count: int | type[Absent] = Absent,
         sec_charge_rearm_time: float | type[Absent] = Absent,
         sq_size: float | type[Absent] = Absent,
+        refuel_duration: float | type[Absent] = Absent,
         speed: float | type[Absent] = Absent,
         radius: float | type[Absent] = Absent,
         sig_radius: float | type[Absent] = Absent,
@@ -928,6 +932,7 @@ def make_eve_fighter_assault(
     conditional_insert(
         container=attrs, path=[basic_info.ftr_abil_missiles_resist_ref_attr_id], value=sec_resist_attr_id)
     conditional_insert(container=attrs, path=[basic_info.max_ftr_count_attr_id], value=sq_size)
+    conditional_insert(container=attrs, path=[basic_info.refuel_duration_attr_id], value=refuel_duration)
     conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
     conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
