@@ -43,14 +43,86 @@ def test_state(client, consts):
     assert api_fighter_dmg_ignored.dps == [approx(303.75), 0, 0, 0]
     assert api_fighter_dmg_ignored.volley == [approx(1518.75), 0, 0, 0]
     # Action
-    api_fighter.change_fighter(state=consts.ApiMinionState.engaging)
+    api_fighter.change_fighter(state=consts.ApiMinionState.engaging, abilities={eve_basic_info.missiles_abil_id: True})
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
-    assert api_fleet_dmg_stats.dps == [approx(303.75), 0, 0, 0]
-    assert api_fleet_dmg_stats.volley == [approx(1518.75), 0, 0, 0]
+    assert api_fleet_dmg_stats.dps == [approx(501.127232), 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [approx(4282.03125), 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
-    assert api_fit_dmg_stats.dps == [approx(303.75), 0, 0, 0]
-    assert api_fit_dmg_stats.volley == [approx(1518.75), 0, 0, 0]
+    assert api_fit_dmg_stats.dps == [approx(501.127232), 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [approx(4282.03125), 0, 0, 0]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
-    assert api_fighter_dmg_stats.dps == [approx(303.75), 0, 0, 0]
-    assert api_fighter_dmg_stats.volley == [approx(1518.75), 0, 0, 0]
+    assert api_fighter_dmg_stats.dps == [approx(501.127232), 0, 0, 0]
+    assert api_fighter_dmg_stats.volley == [approx(4282.03125), 0, 0, 0]
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
+    assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_fighter_dmg_ignored.dps == [approx(501.127232), 0, 0, 0]
+    assert api_fighter_dmg_ignored.volley == [approx(4282.03125), 0, 0, 0]
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.engaging, abilities={eve_basic_info.atkm_abil_id: False})
+    # Verification
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [approx(197.377232), 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [approx(2763.28125), 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [approx(197.377232), 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [approx(2763.28125), 0, 0, 0]
+    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
+    assert api_fighter_dmg_stats.dps == [approx(197.377232), 0, 0, 0]
+    assert api_fighter_dmg_stats.volley == [approx(2763.28125), 0, 0, 0]
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
+    # Verification
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
+    assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_fighter_dmg_ignored.dps == [approx(197.377232), 0, 0, 0]
+    assert api_fighter_dmg_ignored.volley == [approx(2763.28125), 0, 0, 0]
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.engaging, abilities={eve_basic_info.missiles_abil_id: False})
+    # Verification
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
+    assert api_fighter_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_dmg_stats.volley == [0, 0, 0, 0]
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
+    # Verification
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
+    assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_fighter_dmg_ignored.dps == [0, 0, 0, 0]
+    assert api_fighter_dmg_ignored.volley == [0, 0, 0, 0]
