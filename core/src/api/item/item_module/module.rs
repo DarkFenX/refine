@@ -87,7 +87,7 @@ impl<'a> ModuleMut<'a> {
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(false, true, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(false, true, &mut reuse_eupdates);
         let result = match self
             .sol
             .svc
@@ -96,7 +96,7 @@ impl<'a> ModuleMut<'a> {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         };
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {

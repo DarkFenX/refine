@@ -130,7 +130,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
     ) -> Result<StatDmg, ItemStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -143,7 +143,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 include_charges,
             )
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_dmg_applied(
@@ -154,7 +154,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, ItemAppliedStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -169,7 +169,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 projectee_uid,
             )
             .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_mps(
@@ -179,14 +179,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
     ) -> Result<StatMining, ItemStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, mission_ore)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_outgoing_nps(
@@ -196,7 +196,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
     ) -> Result<PValue, ItemStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -210,7 +210,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 None,
             )
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_outgoing_nps_applied(
@@ -221,7 +221,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, ItemAppliedStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(include_charges, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -236,7 +236,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 Some(projectee_uid),
             )
             .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_outgoing_rps(
@@ -245,14 +245,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
     ) -> Result<StatOutReps, ItemStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_outgoing_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_outgoing_rps_applied(
@@ -262,7 +262,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, ItemAppliedStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -276,7 +276,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 Some(projectee_uid),
             )
             .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_outgoing_cps(
@@ -285,14 +285,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         ignore_state: bool,
     ) -> Result<PValue, ItemStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_outgoing_cps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     fn get_stat_outgoing_cps_applied(
@@ -302,7 +302,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, ItemAppliedStatError> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.preprocess_for_active_stat(false, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -316,7 +316,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 Some(projectee_uid),
             )
             .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
-        self.postprocess_for_active_stat(saved_state, &mut reuse_eupdates);
+        self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
