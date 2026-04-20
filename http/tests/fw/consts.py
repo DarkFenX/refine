@@ -135,6 +135,7 @@ class EveEffect(IntEnum):
     service_slot = 6306
     ftr_abil_missiles = 6431
     ftr_abil_energy_neut = 6434
+    ftr_abil_ecm = 6437
     ftr_abil_ab = 6440
     ftr_abil_mwd = 6441
     ftr_abil_mjd = 6442
@@ -256,6 +257,7 @@ class EveAbil(IntEnum):
     launch_bomb = 7
     ab = 9
     energy_neut = 11
+    ecm = 12
     pulse_cannon = 22
     heavy_rocket_salvo = 33
 
@@ -439,6 +441,10 @@ class EveAttr(IntEnum):
     ftr_sq_is_support = 2213
     ftr_sq_is_heavy = 2214
     ftr_sq_max_size = 2215
+    ftr_abil_strength_gravimetric = 2246
+    ftr_abil_strength_ladar = 2247
+    ftr_abil_strength_magnetometric = 2248
+    ftr_abil_strength_radar = 2249
     doomsday_energy_neut_radius = 2259
     doomsday_energy_neut_amount = 2260
     doomsday_energy_neut_sig_radius = 2261
