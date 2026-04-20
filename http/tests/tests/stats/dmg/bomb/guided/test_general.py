@@ -27,25 +27,64 @@ def test_state(client, consts):
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit.id])
-    # Verification
+    # Verification - module is active, charge is not force-disabled, so stats are exposed without
+    # extra flags
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
     assert api_fleet_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
     assert api_fit_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
+    api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(include_charges=True)]))).dmg.one()
+    assert api_module_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_module_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
     assert api_charge_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
-    # Verification
+    # Verification - module not active, charge is not force-disabled - stats are exposed only when
+    # state is ignored
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=(True, [
+        StatsOptionItemDmg(include_charges=True),
+        StatsOptionItemDmg(include_charges=True, ignore_state=True)])))
+    api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
+    assert api_module_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_module_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_module_dmg_ignored.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_module_dmg_ignored.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
+    assert api_charge_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_charge_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_charge_dmg_ignored.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_charge_dmg_ignored.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
+    # Action
+    api_module.charge.change_charge(state=False)
+    # Verification - module not active, charge is force-disabled - stats are exposed only when state
+    # is ignored
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=(True, [
+        StatsOptionItemDmg(include_charges=True),
+        StatsOptionItemDmg(include_charges=True, ignore_state=True)])))
+    api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
+    assert api_module_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_module_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_module_dmg_ignored.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_module_dmg_ignored.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
     api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
@@ -55,13 +94,43 @@ def test_state(client, consts):
     assert api_charge_dmg_ignored.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
-    # Verification
+    # Verification - module active, but charge is force-disabled - stats are exposed only when state
+    # is ignored
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
+    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=(True, [
+        StatsOptionItemDmg(include_charges=True),
+        StatsOptionItemDmg(include_charges=True, ignore_state=True)])))
+    api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
+    assert api_module_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_module_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_module_dmg_ignored.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_module_dmg_ignored.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
+    assert api_charge_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_charge_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_charge_dmg_ignored.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_charge_dmg_ignored.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
+    # Action
+    api_module.charge.change_charge(state=True)
+    # Verification - module is active, charge is not force-disabled, so stats are exposed without
+    # extra flags
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
     assert api_fleet_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
     assert api_fit_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
+    api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(include_charges=True)]))).dmg.one()
+    assert api_module_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
+    assert api_module_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(78.571429), approx(78.571429), approx(78.571429), approx(78.571429)]
     assert api_charge_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]

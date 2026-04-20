@@ -130,7 +130,7 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
                         match charge.get_force_disabled() {
                             true => {
                                 self.get_sol_mut()
-                                    .internal_set_charge_state(item_uid, true, reuse_eupdates);
+                                    .internal_set_charge_state(charge_uid, true, reuse_eupdates);
                                 Some(ItemInfo {
                                     uid: charge_uid,
                                     state: false,
