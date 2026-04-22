@@ -58,6 +58,6 @@ where
         inv_proj.chance_mult,
         cycle_output.get_instance_count(),
     );
-    accum.time += cycle_data.duration;
+    accum.time += cycle_data.active_duration;
     true
 }

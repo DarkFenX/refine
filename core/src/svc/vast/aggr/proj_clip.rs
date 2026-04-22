@@ -93,7 +93,7 @@ where
                     inv_proj.chance_mult,
                     cycle_output.get_instance_count() * remaining_cycles,
                 );
-                accum.time += cycle_part.data.duration * remaining_cycles.into_pvalue();
+                accum.time += cycle_part.data.active_duration * remaining_cycles.into_pvalue();
                 // No interruptions in this branch, no need to do handle reload flag
                 continue 'part;
             }
@@ -108,7 +108,7 @@ where
                 inv_proj.chance_mult,
                 cycle_output.get_instance_count(),
             );
-            accum.time += cycle_part.data.duration;
+            accum.time += cycle_part.data.active_duration;
             // If reload happens after it, set reload flag and quit all the cycling - clip is
             // considered finished upon hitting reload
             if let Some(interrupt) = cycle_part.data.interrupt
@@ -152,7 +152,7 @@ where
                     inv_proj.chance_mult,
                     cycle_output.get_instance_count(),
                 );
-                accum.time += cycle_part.data.duration;
+                accum.time += cycle_part.data.active_duration;
                 break;
             }
             _ => {
@@ -168,7 +168,7 @@ where
                         inv_proj.chance_mult,
                         cycle_output.get_instance_count() * part_cycle_count,
                     );
-                    accum.time += cycle_part.data.duration * part_cycle_count.into_pvalue();
+                    accum.time += cycle_part.data.active_duration * part_cycle_count.into_pvalue();
                 }
             }
         }

@@ -1,5 +1,6 @@
 use super::map::CseqMap;
 use crate::{
+    num::PValue,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -36,7 +37,9 @@ pub(super) fn get_drone_cseq_map(
             effect_rid,
             CycleSeq::Inf(CSeqInf {
                 data: CycleDataFull {
-                    duration: duration_s,
+                    active_duration: duration_s,
+                    soft_dt_duration: PValue::ZERO,
+                    hard_dt_duration: PValue::ZERO,
                     interrupt: None,
                     chargedness: None,
                 },

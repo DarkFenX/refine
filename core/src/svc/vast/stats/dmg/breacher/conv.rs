@@ -32,8 +32,8 @@ pub(super) fn cseq_to_ticks(
     match cseq {
         CycleSeq::LoopLimSin(inner) => {
             let delay_ticks = duration_to_ticks_ceil(output.delay);
-            let cycle_p1_ticks = duration_to_ticks_ceil(inner.p1_data.duration);
-            let cycle_p2_ticks = duration_to_ticks_ceil(inner.p2_data.duration);
+            let cycle_p1_ticks = duration_to_ticks_ceil(inner.p1_data.get_full_duration());
+            let cycle_p2_ticks = duration_to_ticks_ceil(inner.p2_data.get_full_duration());
             match (output_ticks >= cycle_p1_ticks, output_ticks >= cycle_p2_ticks) {
                 (true, true) => Some(AggrBreacherTicks::Infinite(AbtInfinite {
                     initial_delay: delay_ticks,
@@ -55,7 +55,7 @@ pub(super) fn cseq_to_ticks(
         }
         CycleSeq::Inf(inner) => {
             let delay_ticks = duration_to_ticks_ceil(output.delay);
-            let cycle_ticks = duration_to_ticks_ceil(inner.data.duration);
+            let cycle_ticks = duration_to_ticks_ceil(inner.data.get_full_duration());
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::Infinite(AbtInfinite {
                     initial_delay: delay_ticks,

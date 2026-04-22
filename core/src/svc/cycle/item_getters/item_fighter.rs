@@ -50,8 +50,8 @@ pub(super) fn get_fighter_cseq_map(
 #[derive(Copy, Clone)]
 struct EffectInfo {
     kills_item: bool,
-    cycle_duration: PValue,
-    cycle_duration_with_cd: PValue,
+    active_duration: PValue,
+    cooldown_duration: PValue,
     int_cd: bool,
     charge_count: Option<Count>,
     charge_rearm_duration: PValue,
@@ -74,7 +74,7 @@ fn get_effect_info(
         return None;
     }
     // No appropriate duration - effect does not cycle
-    let duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
+    let active_duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let effect_data = fighter.get_effects().unwrap().get(&effect_rid).unwrap();
     // Completely skip effects which can't cycle
     if effect_data.charge_count == Some(Count::ZERO) {
@@ -82,13 +82,13 @@ fn get_effect_info(
     }
     // For fighter abilities, cooldown starts as soon as effect starts cycling. It typically is
     // longer than duration, but data format does not guarantee that
-    let duration_with_cd = duration.max(effect_data.cooldown_s);
+    let cooldown_duration = PValue::from_value_clamped(effect_data.cooldown_s - active_duration);
     // Assume any cooldown interrupts cycling, even if it shorter than ability cycle
     let int_cd = effect_data.cooldown_s > PValue::FLOAT_TOLERANCE;
     Some(EffectInfo {
         kills_item: effect.kills_item,
-        cycle_duration: duration,
-        cycle_duration_with_cd: duration_with_cd,
+        active_duration,
+        cooldown_duration,
         int_cd,
         charge_count: effect_data.charge_count,
         charge_rearm_duration: effect_data.charge_reload_duration,
@@ -138,7 +138,9 @@ fn burst_fill_effect_cseq(
 fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull> {
     CycleSeq::Inf(CSeqInf {
         data: CycleDataFull {
-            duration: effect_info.cycle_duration_with_cd,
+            active_duration: effect_info.active_duration,
+            soft_dt_duration: effect_info.cooldown_duration,
+            hard_dt_duration: PValue::ZERO,
             interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
             chargedness: effect_info.get_chargedness(),
         },
@@ -186,7 +188,9 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
     match effect_info.charge_count {
         Some(charge_count) => CycleSeq::Lim(CSeqLim {
             data: CycleDataFull {
-                duration: effect_info.cycle_duration_with_cd,
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: effect_info.cooldown_duration,
+                hard_dt_duration: PValue::ZERO,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
                 chargedness: effect_info.get_chargedness(),
             },
@@ -194,7 +198,9 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
         }),
         None => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
-                duration: effect_info.cycle_duration_with_cd,
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: effect_info.cooldown_duration,
+                hard_dt_duration: PValue::ZERO,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
                 chargedness: effect_info.get_chargedness(),
             },
@@ -210,13 +216,15 @@ fn fill_sk_effect_data(
 ) {
     sk_item_info.push(SelfKillerEffectInfo {
         effect_rid,
-        duration: effect_info.cycle_duration,
+        active_duration: effect_info.active_duration,
     });
     cseq_map.insert(
         effect_rid,
         CycleSeq::Lim(CSeqLim {
             data: CycleDataFull {
-                duration: effect_info.cycle_duration,
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: PValue::ZERO,
+                hard_dt_duration: PValue::ZERO,
                 interrupt: None,
                 chargedness: effect_info.get_chargedness(),
             },
@@ -262,14 +270,16 @@ fn sim_rearm_process_sks(cseq_map: &mut CseqMap, effect_infos: &RMap<REffectId, 
     match effect_infos
         .iter()
         .filter(|(_, effect_info)| effect_info.kills_item)
-        .min_by_key(|(_, effect_info)| effect_info.cycle_duration)
+        .min_by_key(|(_, effect_info)| effect_info.active_duration)
     {
         Some((&fastest_sk_effect_rid, fastest_sk_info)) => {
             cseq_map.insert(
                 fastest_sk_effect_rid,
                 CycleSeq::Lim(CSeqLim {
                     data: CycleDataFull {
-                        duration: fastest_sk_info.cycle_duration,
+                        active_duration: fastest_sk_info.active_duration,
+                        soft_dt_duration: PValue::ZERO,
+                        hard_dt_duration: PValue::ZERO,
                         interrupt: None,
                         chargedness: fastest_sk_info.get_chargedness(),
                     },
@@ -309,15 +319,15 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
     // refuel, and extra second to launch.
     let in_space_duration = trigger_rearm_info.in_space_duration;
     let refuel_duration = fighter.get_axt().unwrap().fighter_refuel_duration;
-    let downtime_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm_info.rearm_duration;
+    let hard_dt_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm_info.rearm_duration;
     // Fill data for triggering effect
     cseq_map.insert(
         trigger_effect_rid,
-        sim_rearm_trigger_info_to_cseq(trigger_effect_info, trigger_rearm_info, downtime_duration),
+        sim_rearm_trigger_info_to_cseq(trigger_effect_info, trigger_rearm_info, hard_dt_duration),
     );
     // Fill data for the rest of effects
     for (effect_rid, effect_info) in effect_infos.into_iter() {
-        if let Some(cseq) = sim_rearm_other_info_to_cseq(effect_info, in_space_duration, downtime_duration) {
+        if let Some(cseq) = sim_rearm_other_info_to_cseq(effect_info, in_space_duration, hard_dt_duration) {
             cseq_map.insert(effect_rid, cseq);
         }
     }
@@ -325,13 +335,15 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
 fn sim_rearm_trigger_info_to_cseq(
     effect_info: EffectInfo,
     rearm_info: RearmInfo,
-    downtime_duration: PValue,
+    hard_dt_duration: PValue,
 ) -> CycleSeq<CycleDataFull> {
     match rearm_info.charge_count {
         Count::ZERO => unreachable!("0-charged effects are not processed"),
         Count::ONE => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
-                duration: effect_info.cycle_duration + downtime_duration,
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: PValue::ZERO,
+                hard_dt_duration,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
                 chargedness: effect_info.get_chargedness(),
             },
@@ -340,13 +352,17 @@ fn sim_rearm_trigger_info_to_cseq(
             let p1_repeat_count = charge_count - Count::ONE;
             CycleSeq::LoopLimSin(CSeqLoopLimSin {
                 p1_data: CycleDataFull {
-                    duration: effect_info.cycle_duration_with_cd,
+                    active_duration: effect_info.active_duration,
+                    soft_dt_duration: effect_info.cooldown_duration,
+                    hard_dt_duration: PValue::ZERO,
                     interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
                     chargedness: effect_info.get_chargedness(),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
-                    duration: effect_info.cycle_duration + downtime_duration,
+                    active_duration: effect_info.active_duration,
+                    soft_dt_duration: PValue::ZERO,
+                    hard_dt_duration,
                     interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
                     chargedness: effect_info.get_chargedness(),
                 },
@@ -357,41 +373,70 @@ fn sim_rearm_trigger_info_to_cseq(
 fn sim_rearm_other_info_to_cseq(
     effect_info: EffectInfo,
     in_space_duration: PValue,
-    downtime_duration: PValue,
+    hard_dt_duration: PValue,
 ) -> Option<CycleSeq<CycleDataFull>> {
-    let mut cycle_count = Count::from_pvalue_trunced(in_space_duration / effect_info.cycle_duration_with_cd);
-    if in_space_duration % effect_info.cycle_duration_with_cd >= effect_info.cycle_duration {
-        cycle_count += Count::ONE;
+    let active_and_cooldown_duration = effect_info.active_duration + effect_info.cooldown_duration;
+    let full_cycle_count = Count::from_pvalue_trunced(in_space_duration / active_and_cooldown_duration);
+    let mut in_space_duration_left = in_space_duration % active_and_cooldown_duration;
+    let mut extra_cycle = false;
+    if in_space_duration_left >= effect_info.active_duration {
+        extra_cycle = true;
+        in_space_duration_left = PValue::from_value_unchecked(in_space_duration_left - effect_info.active_duration);
     }
-    match cycle_count {
-        Count::ZERO => None,
-        Count::ONE => Some(CycleSeq::Inf(CSeqInf {
+    match (full_cycle_count, extra_cycle) {
+        (Count::ZERO, false) => None,
+        (Count::ZERO, true) => Some(CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
-                duration: in_space_duration + downtime_duration,
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: in_space_duration_left,
+                hard_dt_duration,
                 interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
                 chargedness: effect_info.get_chargedness(),
             },
         })),
-        cycle_count => {
-            let p1_repeat_count = cycle_count - Count::ONE;
-            let p1_duration = effect_info.cycle_duration_with_cd;
-            let p2_duration =
-                PValue::from_value_clamped(in_space_duration - p1_duration * p1_repeat_count.into_pvalue())
-                    + downtime_duration;
-            Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
-                p1_data: CycleDataFull {
-                    duration: p1_duration,
-                    interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
-                    chargedness: effect_info.get_chargedness(),
-                },
-                p1_repeat_count,
-                p2_data: CycleDataFull {
-                    duration: p2_duration,
-                    interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
-                    chargedness: effect_info.get_chargedness(),
-                },
-            }))
-        }
+        (Count::ONE, false) => Some(CycleSeq::Inf(CSeqInf {
+            data: CycleDataFull {
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: effect_info.cooldown_duration + in_space_duration_left,
+                hard_dt_duration,
+                interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
+                chargedness: effect_info.get_chargedness(),
+            },
+        })),
+        (full_cycle_count, false) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
+            p1_data: CycleDataFull {
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: effect_info.cooldown_duration,
+                hard_dt_duration: PValue::ZERO,
+                interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
+                chargedness: effect_info.get_chargedness(),
+            },
+            p1_repeat_count: full_cycle_count - Count::ONE,
+            p2_data: CycleDataFull {
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: effect_info.cooldown_duration + in_space_duration_left,
+                hard_dt_duration,
+                interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
+                chargedness: effect_info.get_chargedness(),
+            },
+        })),
+        (full_cycle_count, true) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
+            p1_data: CycleDataFull {
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: effect_info.cooldown_duration,
+                hard_dt_duration: PValue::ZERO,
+                interrupt: CycleInterrupt::try_new(effect_info.int_cd, false),
+                chargedness: effect_info.get_chargedness(),
+            },
+            p1_repeat_count: full_cycle_count,
+            p2_data: CycleDataFull {
+                active_duration: effect_info.active_duration,
+                soft_dt_duration: in_space_duration_left,
+                hard_dt_duration,
+                interrupt: CycleInterrupt::try_new(effect_info.int_cd, true),
+                chargedness: effect_info.get_chargedness(),
+            },
+        })),
     }
 }
 
@@ -409,13 +454,14 @@ impl RearmInfo {
             Count::ZERO => None,
             Count::ONE => Some(Self {
                 charge_count,
-                in_space_duration: effect_info.cycle_duration,
+                in_space_duration: effect_info.active_duration,
                 rearm_duration: effect_info.charge_rearm_duration,
             }),
             charge_count => Some(Self {
                 charge_count,
-                in_space_duration: effect_info.cycle_duration_with_cd * (charge_count - Count::ONE).into_pvalue()
-                    + effect_info.cycle_duration,
+                in_space_duration: (effect_info.active_duration + effect_info.cooldown_duration)
+                    * (charge_count - Count::ONE).into_pvalue()
+                    + effect_info.active_duration,
                 rearm_duration: effect_info.charge_rearm_duration * charge_count.into_pvalue(),
             }),
         }

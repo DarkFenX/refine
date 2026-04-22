@@ -22,7 +22,7 @@ pub(in crate::svc) struct CycleOptionsSim {
 
 pub(super) struct SelfKillerEffectInfo {
     pub(super) effect_rid: REffectId,
-    pub(super) duration: PValue,
+    pub(super) active_duration: PValue,
 }
 
 pub(super) struct SelfKillerItemInfo {
@@ -35,7 +35,7 @@ impl SelfKillerItemInfo {
     pub(super) fn push(&mut self, effect: SelfKillerEffectInfo) {
         match &self.effect {
             Some(stored) => {
-                if effect.duration < stored.duration {
+                if effect.active_duration < stored.active_duration {
                     self.effect = Some(effect);
                 }
             }

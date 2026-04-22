@@ -77,7 +77,7 @@ where
             input.chargedness,
         );
         AggrPartDataRegular {
-            cycle_duration: input.duration,
+            cycle_duration: input.active_duration,
             output,
         }
     }
@@ -156,7 +156,7 @@ where
         let output_zero_spool = get_proj_spool_cycle_output(self.inv_proj, part_str_mult, Value::ZERO);
         let output_max_spool = get_proj_spool_cycle_output(self.inv_proj, part_str_mult, self.inv_spool.max);
         AggrPartDataSpool {
-            cycle_duration: input.duration,
+            cycle_duration: input.active_duration,
             interrupt: input.interrupt.is_some(),
             str_mult: part_str_mult,
             output_zero_spool,

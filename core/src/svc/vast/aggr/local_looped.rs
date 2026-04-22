@@ -50,7 +50,7 @@ where
             None,
             cycle_output.get_instance_count() * cycle_part.repeat_count,
         );
-        accum.time += cycle_part.data.duration * cycle_part.repeat_count.into_pvalue();
+        accum.time += cycle_part.data.active_duration * cycle_part.repeat_count.into_pvalue();
     }
     true
 }

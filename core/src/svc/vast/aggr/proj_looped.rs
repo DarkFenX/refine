@@ -83,7 +83,7 @@ where
             inv_proj.chance_mult,
             cycle_output.get_instance_count() * cycle_part.repeat_count,
         );
-        accum.time += cycle_part.data.duration * cycle_part.repeat_count.into_pvalue();
+        accum.time += cycle_part.data.active_duration * cycle_part.repeat_count.into_pvalue();
     }
     true
 }
@@ -136,7 +136,7 @@ where
                     inv_proj.chance_mult,
                     cycle_output.get_instance_count() * remaining_cycles,
                 );
-                accum.time += cycle_part.data.duration * remaining_cycles.into_pvalue();
+                accum.time += cycle_part.data.active_duration * remaining_cycles.into_pvalue();
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
@@ -148,7 +148,7 @@ where
                 inv_proj.chance_mult,
                 cycle_output.get_instance_count(),
             );
-            accum.time += cycle_part.data.duration;
+            accum.time += cycle_part.data.active_duration;
             // Update state
             match cycle_part.data.interrupt {
                 Some(_) => uninterrupted_cycles = Count::ZERO,

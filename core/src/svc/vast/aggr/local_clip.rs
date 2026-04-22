@@ -46,7 +46,7 @@ where
             Some(interrupt) if interrupt.reload => {
                 reload = true;
                 accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
-                accum.time += cycle_part.data.duration;
+                accum.time += cycle_part.data.active_duration;
                 break;
             }
             _ => {
@@ -62,7 +62,7 @@ where
                         None,
                         cycle_output.get_instance_count() * part_cycle_count,
                     );
-                    accum.time += cycle_part.data.duration * part_cycle_count.into_pvalue();
+                    accum.time += cycle_part.data.active_duration * part_cycle_count.into_pvalue();
                 }
             }
         }

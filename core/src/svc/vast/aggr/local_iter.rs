@@ -54,7 +54,7 @@ where
             input.chargedness,
         );
         AggrPartDataRegular {
-            cycle_duration: input.duration,
+            cycle_duration: input.active_duration,
             output,
         }
     }

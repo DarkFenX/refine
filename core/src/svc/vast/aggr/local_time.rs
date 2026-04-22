@@ -64,8 +64,8 @@ where
             input.chargedness,
         );
         AggrPartDataTail {
-            cycle_duration: input.duration,
-            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.duration),
+            cycle_duration: input.active_duration,
+            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.active_duration),
             output,
         }
     }
