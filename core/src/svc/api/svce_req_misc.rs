@@ -36,7 +36,7 @@ impl Svc {
         let cycle_parts = reuse_cseq_map.get(&defeff_rid)?.get_cseq_parts();
         for cycle_part in cycle_parts.iter() {
             // Current part uncharged means we're empty by this point
-            if cycle_part.data.chargedness.is_none() {
+            if cycle_part.data.active.chargedness.is_none() {
                 return Some(InfCount::Count(charged_cycles));
             }
             let repeat_count = match cycle_part.repeat_count {
@@ -47,8 +47,8 @@ impl Svc {
             };
             charged_cycles += repeat_count;
             // break sequence only on reloads
-            if let Some(interrupt) = cycle_part.data.interrupt
-                && interrupt.reload
+            if let Some(dt_soft) = cycle_part.data.dt_soft
+                && dt_soft.reason.reload
             {
                 return Some(InfCount::Count(charged_cycles));
             }
