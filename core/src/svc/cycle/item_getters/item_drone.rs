@@ -1,10 +1,9 @@
 use super::map::CseqMap;
 use crate::{
-    num::PValue,
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq, seq_inf::CSeqInf},
+        cycle::{CycleActive, CycleDataFull, CycleSeq, seq_inf::CSeqInf},
         funcs,
     },
     ud::{UDrone, UItemId},
@@ -27,8 +26,8 @@ pub(super) fn get_drone_cseq_map(
         if !effect.is_active_with_duration {
             continue;
         }
-        let duration_s = match funcs::get_effect_duration_s(ctx, calc, item_uid, effect) {
-            Some(duration_s) => duration_s,
+        let duration = match funcs::get_effect_duration_s(ctx, calc, item_uid, effect) {
+            Some(duration) => duration,
             None => continue,
         };
         // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
@@ -37,11 +36,12 @@ pub(super) fn get_drone_cseq_map(
             effect_rid,
             CycleSeq::Inf(CSeqInf {
                 data: CycleDataFull {
-                    active_duration: duration_s,
-                    soft_dt_duration: PValue::ZERO,
-                    hard_dt_duration: PValue::ZERO,
-                    interrupt: None,
-                    chargedness: None,
+                    active: CycleActive {
+                        duration,
+                        chargedness: None,
+                    },
+                    dt_soft: None,
+                    dt_hard: None,
                 },
             }),
         );
