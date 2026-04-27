@@ -25,6 +25,6 @@ tower-http = { version = ">=0.6.8", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
 time = { version = ">=0.3.47", features = ["macros"] }
 tracing = ">=0.1.44"
-tracing-appender = ">=0.2.4"
+tracing-appender = ">=0.2.5"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
 uuid = { version = ">=1.23.1", features = ["v4", "fast-rng"] }
