@@ -47,6 +47,7 @@ where
         };
         duration += dt_hard.duration;
     }
+    // Record results
     accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
     accum.time += duration;
     true

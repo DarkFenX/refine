@@ -43,21 +43,32 @@ where
         None => return false,
     };
     let cycle_data = cseq.get_first_cycle();
-    let cycle_output = if ospec.spoolable
+    // Get output for the cycle
+    let mut cycle_output = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_rids
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_uid, effect, spool, spool_attrs)
     {
         let part_str_mult =
-            get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness);
+            get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.active.chargedness);
         get_proj_spool_cycle_output(&inv_proj, part_str_mult, resolved.mult - Value::ONE)
     } else {
-        get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.chargedness)
+        get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_data.active.chargedness)
     };
+    let mut duration = cycle_data.get_main_duration();
+    // Limit output duration in case first cycle is followed by hard downtime
+    if let Some(dt_hard) = cycle_data.dt_hard {
+        cycle_output = match cycle_output.limit_duration(duration) {
+            Some(cycle_output) => cycle_output,
+            None => return false,
+        };
+        duration += dt_hard.duration;
+    }
+    // Record results
     accum.add_instance(
         cycle_output.get_instance(),
         inv_proj.chance_mult,
         cycle_output.get_instance_count(),
     );
-    accum.time += cycle_data.active_duration;
+    accum.time += duration;
     true
 }
