@@ -37,8 +37,17 @@ where
         None => return false,
     };
     let cycle_data = cseq.get_first_cycle();
-    let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.chargedness);
+    let mut cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.active.chargedness);
+    let mut duration = cycle_data.get_main_duration();
+    // Limit output duration in case first cycle is followed by hard downtime
+    if let Some(dt_hard) = cycle_data.dt_hard {
+        cycle_output = match cycle_output.limit_duration(duration) {
+            Some(cycle_output) => cycle_output,
+            None => return false,
+        };
+        duration += dt_hard.duration;
+    }
     accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
-    accum.time += cycle_data.active_duration;
+    accum.time += duration;
     true
 }
