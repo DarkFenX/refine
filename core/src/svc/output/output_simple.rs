@@ -1,4 +1,4 @@
-use super::{output::Output, shared::OutputInstanceIterItem};
+use super::shared::OutputInstanceIterItem;
 use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -56,12 +56,6 @@ impl<T: Copy> OutputSimple<T> {
         match self.delay {
             PValue::ZERO => Some(self.instance),
             _ => None,
-        }
-    }
-    pub(super) fn limit_duration(&self, duration: PValue) -> Option<Output<T>> {
-        match duration >= self.delay {
-            true => Some(Output::Simple(*self)),
-            false => None,
         }
     }
 }

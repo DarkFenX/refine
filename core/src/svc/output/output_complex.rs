@@ -1,4 +1,4 @@
-use super::{output::Output, output_simple::OutputSimple, shared::OutputInstanceIterItem};
+use super::shared::OutputInstanceIterItem;
 use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -67,29 +67,6 @@ impl<T: Copy> OutputComplex<T> {
         match self.delay {
             PValue::ZERO => Some(self.instance),
             _ => None,
-        }
-    }
-    pub(super) fn limit_duration(&self, duration: PValue) -> Option<Output<T>> {
-        match duration >= self.delay {
-            true => {
-                let post_delay = PValue::from_value_unchecked(duration - self.delay);
-                let repeats = self
-                    .repeats
-                    .min(Count::ONE + Count::from_pvalue_trunced(post_delay / self.interval));
-                match repeats {
-                    Count::ONE => Some(Output::Simple(OutputSimple {
-                        instance: self.instance,
-                        delay: self.delay,
-                    })),
-                    repeats => Some(Output::Complex(OutputComplex {
-                        instance: self.instance,
-                        delay: self.delay,
-                        repeats,
-                        interval: self.interval,
-                    })),
-                }
-            }
-            false => None,
         }
     }
 }

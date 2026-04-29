@@ -41,8 +41,8 @@ pub(super) fn get_drone_cseq_map(
                         chargedness: None,
                     },
                     dt_soft: None,
-                    dt_hard: None,
                 },
+                dt_hard: None,
             }),
         );
     }

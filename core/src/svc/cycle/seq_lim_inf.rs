@@ -26,7 +26,10 @@ impl<T> CSeqLimInf<T> {
         let p1_data_conv = U::from(self.p1_data);
         let p2_data_conv = U::from(self.p2_data);
         match p1_data_conv == p2_data_conv {
-            true => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
+            true => CycleSeq::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
             false => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
@@ -42,7 +45,10 @@ impl<T> CSeqLimInf<T> {
         let p1_data_conv = converter.lib_convert(self.p1_data);
         let p2_data_conv = converter.lib_convert(self.p2_data);
         match p1_data_conv == p2_data_conv {
-            true => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
+            true => CycleSeq::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
             false => CycleSeq::LimInf(CSeqLimInf {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
@@ -62,7 +68,10 @@ where
         CSeqLimInfPartIter::new(self)
     }
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
-        Some(CycleSeqLooped::Inf(CSeqInf { data: self.p2_data }))
+        Some(CycleSeqLooped::Inf(CSeqInf {
+            data: self.p2_data,
+            dt_hard: None,
+        }))
     }
 }
 

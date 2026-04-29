@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
+    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConverter,
 };
 
@@ -15,6 +15,8 @@ pub(in crate::svc) struct CSeqLoopLimSin<T> {
     pub(in crate::svc) p1_data: T,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
+    // Optional hard downtime every loop
+    pub(in crate::svc) dt_hard: Option<CycleDtHard>,
 }
 impl<T> CSeqLoopLimSin<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
@@ -26,12 +28,16 @@ impl<T> CSeqLoopLimSin<T> {
     {
         let p1_data_conv = U::from(self.p1_data);
         let p2_data_conv = U::from(self.p2_data);
-        match p1_data_conv == p2_data_conv {
-            true => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
+        match p1_data_conv == p2_data_conv && self.dt_hard.is_none() {
+            true => CycleSeq::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
             false => CycleSeq::LoopLimSin(CSeqLoopLimSin {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
                 p2_data: p2_data_conv,
+                dt_hard: self.dt_hard,
             }),
         }
     }
@@ -42,12 +48,16 @@ impl<T> CSeqLoopLimSin<T> {
     {
         let p1_data_conv = converter.lib_convert(self.p1_data);
         let p2_data_conv = converter.lib_convert(self.p2_data);
-        match p1_data_conv == p2_data_conv {
-            true => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
+        match p1_data_conv == p2_data_conv && self.dt_hard.is_none() {
+            true => CycleSeq::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
             false => CycleSeq::LoopLimSin(CSeqLoopLimSin {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
                 p2_data: p2_data_conv,
+                dt_hard: self.dt_hard,
             }),
         }
     }

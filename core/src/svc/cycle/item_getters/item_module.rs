@@ -111,7 +111,7 @@ fn fill_module_effect_info(
     if effect.kills_item {
         sk_item_info.push(SelfKillerEffectInfo {
             effect_rid,
-            active_duration: active_duration,
+            active_duration,
         });
         reuse_cseq_map.insert(
             effect_rid,
@@ -122,7 +122,6 @@ fn fill_module_effect_info(
                         chargedness: charge_info.get_first_cycle_chargedness(),
                     },
                     dt_soft: None,
-                    dt_hard: None,
                 },
                 repeat_count: Count::ONE,
             }),
@@ -150,8 +149,8 @@ fn fill_module_effect_info(
                             chargedness: charge_info.get_first_cycle_chargedness(),
                         },
                         dt_soft: CycleDtSoft::try_new(cooldown_duration, dt_soft_cd, false),
-                        dt_hard: None,
                     },
+                    dt_hard: None,
                 }),
             );
             return;
@@ -169,8 +168,8 @@ fn fill_module_effect_info(
                             chargedness: Some(UnitInterval::ONE),
                         },
                         dt_soft: CycleDtSoft::try_new(cooldown_duration, dt_soft_cd, false),
-                        dt_hard: None,
                     },
+                    dt_hard: None,
                 }),
             );
             return;
@@ -191,8 +190,8 @@ fn fill_module_effect_info(
                     chargedness: None,
                 },
                 dt_soft: CycleDtSoft::try_new(cooldown_duration, dt_soft_cd, false),
-                dt_hard: None,
             },
+            dt_hard: None,
         }),
         // Only partially charged, has to reload every cycle
         (false, true, false) => part_r(
@@ -227,7 +226,6 @@ fn fill_module_effect_info(
                             chargedness: charge_info.part_charged,
                         },
                         dt_soft,
-                        dt_hard: None,
                     },
                     p1_repeat_count: Count::ONE,
                     p2_data: CycleDataFull {
@@ -236,7 +234,6 @@ fn fill_module_effect_info(
                             chargedness: None,
                         },
                         dt_soft,
-                        dt_hard: None,
                     },
                 })
             }
@@ -274,7 +271,6 @@ fn fill_module_effect_info(
                             chargedness: Some(UnitInterval::ONE),
                         },
                         dt_soft,
-                        dt_hard: None,
                     },
                     p1_repeat_count: full_count,
                     p2_data: CycleDataFull {
@@ -283,7 +279,6 @@ fn fill_module_effect_info(
                             chargedness: None,
                         },
                         dt_soft,
-                        dt_hard: None,
                     },
                 })
             }
@@ -324,7 +319,6 @@ fn fill_module_effect_info(
                                 chargedness: Some(UnitInterval::ONE),
                             },
                             dt_soft,
-                            dt_hard: None,
                         },
                         p1_repeat_count: full_count,
                         p2_data: CycleDataFull {
@@ -333,7 +327,6 @@ fn fill_module_effect_info(
                                 chargedness: charge_info.part_charged,
                             },
                             dt_soft,
-                            dt_hard: None,
                         },
                         p3_data: CycleDataFull {
                             active: CycleActive {
@@ -341,7 +334,6 @@ fn fill_module_effect_info(
                                 chargedness: None,
                             },
                             dt_soft,
-                            dt_hard: None,
                         },
                     })
                 }
@@ -381,8 +373,8 @@ fn part_r(
                 dt_soft_cd,
                 true,
             ),
-            dt_hard: None,
         },
+        dt_hard: None,
     })
 }
 
@@ -407,8 +399,8 @@ fn full_r(
                     dt_soft_cd,
                     true,
                 ),
-                dt_hard: None,
             },
+            dt_hard: None,
         }),
         _ => CycleSeq::LoopLimSin(CSeqLoopLimSin {
             p1_data: CycleDataFull {
@@ -417,7 +409,6 @@ fn full_r(
                     chargedness: Some(UnitInterval::ONE),
                 },
                 dt_soft: CycleDtSoft::try_new(cooldown_duration, dt_soft_cd, false),
-                dt_hard: None,
             },
             p1_repeat_count: full_count - Count::ONE,
             p2_data: CycleDataFull {
@@ -430,8 +421,8 @@ fn full_r(
                     dt_soft_cd,
                     true,
                 ),
-                dt_hard: None,
             },
+            dt_hard: None,
         }),
     }
 }
@@ -453,7 +444,6 @@ fn both_r(
                 chargedness: Some(UnitInterval::ONE),
             },
             dt_soft: CycleDtSoft::try_new(cooldown_duration, dt_soft_cd, false),
-            dt_hard: None,
         },
         p1_repeat_count: full_count,
         p2_data: CycleDataFull {
@@ -466,7 +456,7 @@ fn both_r(
                 dt_soft_cd,
                 true,
             ),
-            dt_hard: None,
         },
+        dt_hard: None,
     })
 }

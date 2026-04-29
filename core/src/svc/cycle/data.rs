@@ -5,36 +5,24 @@ use crate::num::{PValue, UnitInterval};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
-    // Data about active part of cycle
     pub(in crate::svc) active: CycleActive,
-    // Info about soft downtime between cycles (during which effects can apply their instances)
     pub(in crate::svc) dt_soft: Option<CycleDtSoft>,
-    // Info about hard downtime between cycles (during which effects cannot apply their instances)
-    pub(in crate::svc) dt_hard: Option<CycleDtHard>,
 }
 impl CycleDataFull {
-    pub(in crate::svc) fn get_main_duration(&self) -> PValue {
-        let mut duration = self.active.duration;
-        if let Some(dt_soft) = &self.dt_soft {
-            duration += dt_soft.duration;
-        }
-        duration
-    }
-    pub(in crate::svc) fn get_full_duration(&self) -> PValue {
-        let mut duration = self.active.duration;
-        if let Some(dt_soft) = &self.dt_soft {
-            duration += dt_soft.duration;
-        }
-        if let Some(dt_hard) = &self.dt_hard {
-            duration += dt_hard.duration;
-        }
-        duration
-    }
+    // TODO: uncomment after use is verified
+    // pub(in crate::svc) fn get_full_duration(&self) -> PValue {
+    //     let mut duration = self.active.duration;
+    //     if let Some(dt_soft) = &self.dt_soft {
+    //         duration += dt_soft.duration;
+    //     }
+    //     duration
+    // }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Detail fields
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Data about active part of cycle
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleActive {
     // Duration of effect cycle
@@ -43,6 +31,7 @@ pub(in crate::svc) struct CycleActive {
     pub(in crate::svc) chargedness: Option<UnitInterval>,
 }
 
+// Info about soft downtime between cycles (during which effects can apply their instances)
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDtSoft {
     pub(in crate::svc) duration: PValue,
@@ -68,7 +57,8 @@ impl CycleDtSoftReason {
     }
 }
 
-#[derive(Copy, Clone)]
+// Info about hard downtime between cycles (during which effects cannot apply their instances)
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleDtHard {
     pub(in crate::svc) duration: PValue,
     pub(in crate::svc) reason: CycleDtHardReason,
@@ -79,7 +69,7 @@ impl CycleDtHard {
         Some(Self { duration, reason })
     }
 }
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleDtHardReason {
     pub(in crate::svc) refuel: bool,
 }

@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleSeq, CycleSeqLooped},
+    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped},
     util::LibConverter,
 };
 
@@ -11,6 +11,8 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqInf<T> {
     pub(in crate::svc) data: T,
+    // Optional hard downtime every cycle
+    pub(in crate::svc) dt_hard: Option<CycleDtHard>,
 }
 impl<T> CSeqInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
@@ -20,7 +22,10 @@ impl<T> CSeqInf<T> {
     where
         U: From<T>,
     {
-        CycleSeq::Inf(CSeqInf { data: self.data.into() })
+        CycleSeq::Inf(CSeqInf {
+            data: self.data.into(),
+            dt_hard: self.dt_hard,
+        })
     }
     pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
     where
@@ -28,6 +33,7 @@ impl<T> CSeqInf<T> {
     {
         CycleSeq::Inf(CSeqInf {
             data: converter.lib_convert(self.data),
+            dt_hard: self.dt_hard,
         })
     }
 }

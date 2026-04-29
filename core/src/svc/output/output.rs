@@ -69,12 +69,6 @@ impl<T: Copy> Output<T> {
             Output::Complex(inner) => inner.get_immediate_instance(),
         }
     }
-    pub(in crate::svc) fn limit_duration(&self, duration: PValue) -> Option<Output<T>> {
-        match self {
-            Output::Simple(inner) => inner.limit_duration(duration),
-            Output::Complex(inner) => inner.limit_duration(duration),
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

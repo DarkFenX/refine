@@ -49,7 +49,10 @@ impl<T> CSeqLimSinInf<T> {
                 p2_data: p3_data_conv,
             }),
             // Whole sequence becomes a simple infinity
-            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
+            (true, true) => CycleSeq::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
         }
     }
     pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
@@ -81,7 +84,10 @@ impl<T> CSeqLimSinInf<T> {
                 p2_data: p3_data_conv,
             }),
             // Whole sequence becomes a simple infinity
-            (true, true) => CycleSeq::Inf(CSeqInf { data: p1_data_conv }),
+            (true, true) => CycleSeq::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
         }
     }
 }
@@ -96,7 +102,10 @@ where
         CSeqLimSinInfPartIter::new(self)
     }
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
-        Some(CycleSeqLooped::Inf(CSeqInf { data: self.p3_data }))
+        Some(CycleSeqLooped::Inf(CSeqInf {
+            data: self.p3_data,
+            dt_hard: None,
+        }))
     }
 }
 

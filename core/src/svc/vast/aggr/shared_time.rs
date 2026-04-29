@@ -9,7 +9,7 @@ pub(super) struct AggrPartDataTail<T>
 where
     T: Copy,
 {
-    // Duration it takes per cycle in this part
+    // Time it takes per cycle in this part
     pub(super) cycle_duration: PValue,
     // After duration part is complete, it takes this duration to finish with output
     pub(super) cycle_tail_duration: PValue,
@@ -107,7 +107,7 @@ pub(super) fn aggr_by_time<T, A>(
     }
 }
 
-fn process_single_regular<T, A>(
+pub(super) fn process_single_regular<T, A>(
     accum: &mut A,
     time: &mut Value,
     data: &AggrPartDataTail<T>,
