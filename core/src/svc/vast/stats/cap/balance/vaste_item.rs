@@ -9,7 +9,7 @@ use crate::{
         vast::{
             StatTimeOptions, Vast, VastFitData,
             aggr::{
-                SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
+                SeqAccum, aggr_local_burst, aggr_local_looped, aggr_local_time, aggr_proj_burst, aggr_proj_looped,
                 aggr_proj_time,
             },
             stats::{item_checks::check_ship, shared::calc_regen_for_attrs},
@@ -92,7 +92,7 @@ fn get_cap_injects(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
+                StatTimeOptions::Burst(_) => aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum, time)
@@ -128,7 +128,7 @@ fn get_cap_consumed(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
+                StatTimeOptions::Burst(_) => aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum, time)
@@ -165,7 +165,7 @@ fn get_nosfs(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
                     calc,
                     nosf_item_uid,
@@ -236,7 +236,7 @@ fn get_incoming_cap_transfers(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
                     calc,
                     transfer_item_uid,
@@ -307,7 +307,7 @@ fn get_incoming_neuts(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
                     calc,
                     neut_item_uid,

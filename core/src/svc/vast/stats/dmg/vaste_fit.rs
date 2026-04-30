@@ -9,7 +9,7 @@ use crate::{
         vast::{
             StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatTimeOptions, Vast,
             VastFitData,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
         },
     },
     ud::{UFitId, UItemId},
@@ -247,7 +247,7 @@ impl VastFitData {
                 };
                 let mut accum = SeqAccum::new_stack_max();
                 if match time_options {
-                    StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                    StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                         ctx,
                         calc,
                         item_uid,

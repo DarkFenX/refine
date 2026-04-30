@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
             stats::item_checks::check_drone_fighter_ship,
         },
     },
@@ -51,7 +51,7 @@ impl Vast {
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
                         let mut accum = SeqAccum::new_jam_chance(sensors);
-                        if aggr_proj_first(
+                        if aggr_proj_burst(
                             ctx,
                             calc,
                             projector_item_uid,

@@ -9,14 +9,13 @@ pub(in crate::svc) struct CycleDataFull {
     pub(in crate::svc) dt_soft: Option<CycleDtSoft>,
 }
 impl CycleDataFull {
-    // TODO: uncomment after use is verified
-    // pub(in crate::svc) fn get_full_duration(&self) -> PValue {
-    //     let mut duration = self.active.duration;
-    //     if let Some(dt_soft) = &self.dt_soft {
-    //         duration += dt_soft.duration;
-    //     }
-    //     duration
-    // }
+    pub(in crate::svc) fn get_full_duration(&self) -> PValue {
+        let mut duration = self.active.duration;
+        if let Some(dt_soft) = &self.dt_soft {
+            duration += dt_soft.duration;
+        }
+        duration
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

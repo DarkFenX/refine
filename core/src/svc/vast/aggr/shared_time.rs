@@ -107,7 +107,7 @@ pub(super) fn aggr_by_time<T, A>(
     }
 }
 
-pub(super) fn process_single_regular<T, A>(
+fn process_single_regular<T, A>(
     accum: &mut A,
     time: &mut Value,
     data: &AggrPartDataTail<T>,

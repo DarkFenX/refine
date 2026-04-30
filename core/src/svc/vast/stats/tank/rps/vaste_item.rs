@@ -11,7 +11,7 @@ use crate::{
         vast::{
             StatTimeOptions, Vast,
             aggr::{
-                SeqAccum, aggr_local_first, aggr_local_looped, aggr_local_time, aggr_proj_first, aggr_proj_looped,
+                SeqAccum, aggr_local_burst, aggr_local_looped, aggr_local_time, aggr_proj_burst, aggr_proj_looped,
                 aggr_proj_time,
             },
             stats::{item_checks::check_drone_fighter_ship, shared::calc_regen_for_attrs},
@@ -138,7 +138,7 @@ fn get_local_rps(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(_) => aggr_local_first(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
+                StatTimeOptions::Burst(_) => aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => {
                         aggr_local_time(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum, time)
@@ -185,7 +185,7 @@ fn get_irr_data(
             let mut accum = SeqAccum::new_stack();
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
-                    if aggr_proj_first(
+                    if aggr_proj_burst(
                         ctx,
                         calc,
                         projector_item_uid,

@@ -2,27 +2,27 @@
 //! single-number stats.
 
 pub(in crate::svc::vast) use accum::{SeqAccum, SeqInstanceAccum};
+pub(in crate::svc::vast) use local_burst::aggr_local_burst;
 pub(in crate::svc::vast) use local_clip::aggr_local_clip;
-pub(in crate::svc::vast) use local_first::aggr_local_first;
 pub(in crate::svc::vast) use local_iter::aggr_local_iter;
 pub(in crate::svc::vast) use local_looped::aggr_local_looped;
 pub(in crate::svc::vast) use local_time::aggr_local_time;
+pub(in crate::svc::vast) use proj_burst::aggr_proj_burst;
 pub(in crate::svc::vast) use proj_clip::aggr_proj_clip;
-pub(in crate::svc::vast) use proj_first::aggr_proj_first;
 pub(in crate::svc::vast) use proj_iter::aggr_proj_iter;
 pub(in crate::svc::vast) use proj_looped::aggr_proj_looped;
 pub(in crate::svc::vast) use proj_time::aggr_proj_time;
 pub(in crate::svc::vast) use shared_iter::{AggrIter, AggrIterData, AggrPartDataRegular, AggrPartDataSpool};
 
 mod accum;
+mod local_burst;
 mod local_clip;
-mod local_first;
 mod local_iter;
 mod local_looped;
 mod local_shared;
 mod local_time;
+mod proj_burst;
 mod proj_clip;
-mod proj_first;
 mod proj_iter;
 mod proj_looped;
 mod proj_shared;

@@ -9,7 +9,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
             stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },
@@ -114,7 +114,7 @@ impl Vast {
             if let Some(ospec) = &effect.normal_dmg {
                 let mut accum = SeqAccum::new_stack_max();
                 if match time_options {
-                    StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                    StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                         ctx,
                         calc,
                         item_uid,
@@ -180,7 +180,7 @@ impl Vast {
             if let Some(ospec) = &effect.normal_dmg {
                 let mut accum = SeqAccum::new_stack_max();
                 if match time_options {
-                    StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                    StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                         ctx,
                         calc,
                         item_uid,

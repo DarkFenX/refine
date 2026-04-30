@@ -19,9 +19,9 @@ use crate::{
     ud::UItemId,
 };
 
-// Projected effects, considers only first cycle (for "burst" stats)
+// Projected effects, considers only first cycle and ignores hard downtime (for "burst" stats)
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_first<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -43,8 +43,7 @@ where
         None => return false,
     };
     let cycle_data = cseq.get_first_cycle();
-    // Get output for the cycle
-    let mut cycle_output = if ospec.spoolable
+    let cycle_output = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_rids
         && let Some(resolved) = ResolvedSpool::try_build(ctx, calc, projector_uid, effect, spool, spool_attrs)
     {
@@ -67,21 +66,11 @@ where
             cycle_data.active.chargedness,
         )
     };
-    let mut duration = cycle_data.get_main_duration();
-    // Limit output duration in case first cycle is followed by hard downtime
-    if let Some(dt_hard) = cycle_data.dt_hard {
-        cycle_output = match cycle_output.limit_duration(duration) {
-            Some(cycle_output) => cycle_output,
-            None => return false,
-        };
-        duration += dt_hard.duration;
-    }
-    // Record results
     accum.add_instance(
         cycle_output.get_instance(),
         inv_proj.chance_mult,
         cycle_output.get_instance_count(),
     );
-    accum.time += duration;
+    accum.time += cycle_data.get_full_duration();
     true
 }

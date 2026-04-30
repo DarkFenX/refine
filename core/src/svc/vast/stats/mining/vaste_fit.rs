@@ -12,7 +12,7 @@ use crate::{
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         vast::{
             StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_first, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
         },
     },
     ud::{UFitId, UItemId},
@@ -141,7 +141,7 @@ fn get_mps(
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
             if match time_options {
-                StatTimeOptions::Burst(burst_opts) => aggr_proj_first(
+                StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
                     calc,
                     item_uid,
