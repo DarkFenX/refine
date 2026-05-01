@@ -39,6 +39,6 @@ where
     let cycle_data = cseq.get_first_cycle();
     let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.active.chargedness);
     accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
-    accum.time += cycle_data.get_full_duration();
+    accum.time += cycle_data.get_main_duration();
     true
 }

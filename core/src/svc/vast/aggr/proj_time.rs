@@ -107,7 +107,7 @@ where
             input.chargedness,
         );
         AggrPartDataTail {
-            cycle_duration: input.active_duration,
+            cycle_main_duration: input.active_duration,
             cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.active_duration),
             output,
         }
@@ -372,7 +372,7 @@ fn process_single_spool<BG, T, A>(
             inv_proj.chance_mult,
             cycle_output.get_instance_count(),
         ),
-        false => process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult),
+        false => process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE),
     }
     *time -= cycle_data.active_duration;
     match cycle_data.interrupt {
@@ -424,7 +424,7 @@ fn process_limited_spool<BG, T, A>(
             // Partial repeats
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 repeat_limit -= Count::ONE;
-                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult);
+                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE);
                 *time -= cycle_data.active_duration;
             }
             return;
@@ -451,7 +451,7 @@ fn process_limited_spool<BG, T, A>(
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 repeat_limit -= Count::ONE;
                 *uninterrupted_cycles += Count::ONE;
-                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult);
+                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE);
                 *time -= cycle_data.active_duration;
             }
             return;
@@ -464,7 +464,7 @@ fn process_limited_spool<BG, T, A>(
                     inv_proj.chance_mult,
                     cycle_output.get_instance_count(),
                 ),
-                false => process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult),
+                false => process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE),
             }
             *time -= cycle_data.active_duration;
             match cycle_data.interrupt {
@@ -515,7 +515,7 @@ fn process_infinite_spool<BG, T, A>(
             }
             // Partial repeats
             while *time >= Value::ZERO {
-                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult);
+                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE);
                 *time -= cycle_data.active_duration;
             }
             return;
@@ -536,7 +536,7 @@ fn process_infinite_spool<BG, T, A>(
             // Partial repeats
             while *time >= Value::ZERO {
                 *uninterrupted_cycles += Count::ONE;
-                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult);
+                process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE);
                 *time -= cycle_data.active_duration;
             }
             return;
@@ -550,7 +550,7 @@ fn process_infinite_spool<BG, T, A>(
                     inv_proj.chance_mult,
                     cycle_output.get_instance_count(),
                 ),
-                false => process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult),
+                false => process_incomplete_cycle(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE),
             }
             *time -= cycle_data.active_duration;
             match cycle_data.interrupt {

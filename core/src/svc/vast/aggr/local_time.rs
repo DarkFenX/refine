@@ -6,7 +6,7 @@ use super::{
 };
 use crate::{
     nd::NEffectOutputGetter,
-    num::PValue,
+    num::{PValue, Value},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
         SvcCtx,
@@ -61,11 +61,17 @@ where
             self.item_uid,
             self.ospec,
             self.inv_local,
-            input.chargedness,
+            input.active.chargedness,
         );
+        let main_duration = input.get_main_duration();
+        let tail_duration = output.get_completion_duration() - main_duration;
+        let tail_duration = match tail_duration > Value::ZERO {
+            true => Some(PValue::from_value_unchecked(tail_duration)),
+            false => None,
+        };
         AggrPartDataTail {
-            cycle_duration: input.active_duration,
-            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.active_duration),
+            cycle_main_duration: main_duration,
+            cycle_tail_duration: tail_duration,
             output,
         }
     }

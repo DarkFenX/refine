@@ -71,6 +71,6 @@ where
         inv_proj.chance_mult,
         cycle_output.get_instance_count(),
     );
-    accum.time += cycle_data.get_full_duration();
+    accum.time += cycle_data.get_main_duration();
     true
 }
