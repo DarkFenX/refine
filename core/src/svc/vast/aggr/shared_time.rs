@@ -18,6 +18,18 @@ where
     pub(super) cycle_tail_duration: Option<PValue>,
     pub(super) output: Output<T>,
 }
+impl<T> AggrPartDataTail<T>
+where
+    T: Copy,
+{
+    fn get_duration_with_tail(&self) -> PValue {
+        let mut duration = self.cycle_main_duration;
+        if let Some(tail_duration) = self.cycle_tail_duration {
+            duration += tail_duration;
+        }
+        duration
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
@@ -55,7 +67,7 @@ pub(super) fn aggr_by_time<T, A>(
             process_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
         CycleSeq::LoopLimSin(inner) => {
-            process_loop_lim_sin(
+            process_loop_lim_sin_regular(
                 accum,
                 &mut time,
                 &inner.p1_data,
@@ -80,7 +92,7 @@ fn process_single_regular<T, A>(
         true => return,
         false => PValue::from_value_unchecked(*time),
     };
-    match ptime >= data.cycle_main_duration + data.cycle_tail_duration {
+    match ptime >= data.get_duration_with_tail() {
         true => accum.add_instance(
             data.output.get_instance(),
             chance_mult,
@@ -196,7 +208,7 @@ fn process_infinite_dt_hard<T, A>(
     }
 }
 
-fn process_loop_lim_sin<T, A>(
+fn process_loop_lim_sin_regular<T, A>(
     accum: &mut A,
     time: &mut Value,
     p1_data: &AggrPartDataTail<T>,
@@ -207,12 +219,9 @@ fn process_loop_lim_sin<T, A>(
     T: Copy + InstanceDuration,
     A: SeqInstanceAccum<T>,
 {
-    // Calculate total "tail time" for whole looped sequence. Data format implies that
-    // output can be different, so theoretically tail from first part can be longer than
-    // second part with its tail
-    let full_tail_duration = p2_data
-        .cycle_tail_duration
-        .max_value(p1_data.cycle_tail_duration - p2_data.cycle_main_duration);
+    // Calculate total "tail time" for whole looped sequence. Data format implies that output can be
+    // different, so theoretically tail from first part can be longer than second part with its tail
+    let full_tail_duration = get_loop_lim_sin_full_tail_duration(p1_data, p2_data);
     let full_duration = p1_data.cycle_main_duration * p1_repeat_count.into_pvalue() + p2_data.cycle_main_duration;
     // Process full loop repeats
     let full_repeats = get_full_repeats_count(*time, full_duration, full_tail_duration);
@@ -280,6 +289,32 @@ pub(super) fn get_full_repeats_count(
         false => PValue::from_value_unchecked(time_no_tail),
     };
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
+}
+
+fn get_loop_lim_sin_full_tail_duration<T>(
+    p1_data: &AggrPartDataTail<T>,
+    p2_data: &AggrPartDataTail<T>,
+) -> Option<PValue>
+where
+    T: Copy,
+{
+    match (p1_data.cycle_tail_duration, p2_data.cycle_tail_duration) {
+        (Some(p1_tail_duration), Some(p2_tail_duration)) => {
+            let p2_duration_with_tail = p2_data.cycle_main_duration + p2_tail_duration;
+            match p1_tail_duration > p2_duration_with_tail {
+                true => Some(PValue::from_value_unchecked(p1_tail_duration - p2_duration_with_tail)),
+                false => Some(p2_tail_duration),
+            }
+        }
+        (Some(p1_tail_duration), None) => match p1_tail_duration > p2_data.cycle_main_duration {
+            true => Some(PValue::from_value_unchecked(
+                p1_tail_duration - p2_data.cycle_main_duration,
+            )),
+            false => None,
+        },
+        (None, Some(p2_tail_duration)) => Some(p2_tail_duration),
+        (None, None) => None,
+    }
 }
 
 // Cheap processing works only when cycle + its tail (output / instance durations) fit into time;
