@@ -4,7 +4,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
-    shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeats_count, process_incomplete_cycle},
+    shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeat_count, process_incomplete_cycle},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -327,7 +327,7 @@ fn aggr_spool<BG, T, A>(
                         let loop_tail_duration = PValue::from_value_clamped(
                             inv_proj.base_output.get_completion_duration() - inner.p2_data.active_duration,
                         );
-                        let loop_full_repeat_count = get_full_repeats_count(time, loop_duration, loop_tail_duration);
+                        let loop_full_repeat_count = get_full_repeat_count(time, loop_duration, loop_tail_duration);
                         // Fast-forward by count of full repeating loops remaining time can fit
                         if loop_full_repeat_count > Count::ZERO {
                             accum.merge(&loop_accum, loop_full_repeat_count);
@@ -406,7 +406,7 @@ fn process_limited_spool<BG, T, A>(
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == Count::ZERO {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
             let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, Value::ZERO);
-            let full_repeats = repeat_limit.min(get_full_repeats_count(
+            let full_repeats = repeat_limit.min(get_full_repeat_count(
                 *time,
                 cycle_data.active_duration,
                 cycle_tail_duration,
@@ -431,7 +431,7 @@ fn process_limited_spool<BG, T, A>(
         } else if cycle_data.interrupt.is_none() && *uninterrupted_cycles >= inv_spool.cycles_to_max {
             // Shortcut #2: we're at max spool and sequence is not interruptable
             let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, inv_spool.max);
-            let full_repeats = repeat_limit.min(get_full_repeats_count(
+            let full_repeats = repeat_limit.min(get_full_repeat_count(
                 *time,
                 cycle_data.active_duration,
                 cycle_tail_duration,
@@ -503,7 +503,7 @@ fn process_infinite_spool<BG, T, A>(
         if cycle_data.interrupt.is_some() && *uninterrupted_cycles == Count::ZERO {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
             let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, Value::ZERO);
-            let full_repeats = get_full_repeats_count(*time, cycle_data.active_duration, cycle_tail_duration);
+            let full_repeats = get_full_repeat_count(*time, cycle_data.active_duration, cycle_tail_duration);
             // Full repeats
             if full_repeats > Count::ZERO {
                 accum.add_instance(
@@ -522,7 +522,7 @@ fn process_infinite_spool<BG, T, A>(
         } else if cycle_data.interrupt.is_none() && *uninterrupted_cycles >= inv_spool.cycles_to_max {
             // Shortcut #2: we're at max spool and sequence is not interruptable
             let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, inv_spool.max);
-            let full_repeats = get_full_repeats_count(*time, cycle_data.active_duration, cycle_tail_duration);
+            let full_repeats = get_full_repeat_count(*time, cycle_data.active_duration, cycle_tail_duration);
             // Full repeats
             if full_repeats > Count::ZERO {
                 *uninterrupted_cycles += full_repeats;
