@@ -88,6 +88,9 @@ pub(super) fn aggr_by_time<T, A>(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Simple part processing functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn process_single_regular<T, A>(
     accum: &mut A,
     time: &mut Value,
@@ -217,6 +220,9 @@ fn process_infinite_dt_hard<T, A>(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Composite part processing functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn process_loop_lim_sin_regular<T, A>(
     accum: &mut A,
     ptime: PValue,
@@ -248,36 +254,10 @@ fn process_loop_lim_sin_regular<T, A>(
         );
         time -= full_duration * full_repeat_count.into_pvalue();
     }
+    // While loop instead of if is for cases of really long tails, which never happen in EVE but can
+    // happen in current data format
     while time >= Value::ZERO {
-        let mut p1_remaining_repeat_count = p1_repeat_count;
-        // Process as many full part 1 repeats as time can fit
-        let p1_full_repeat_count = p1_repeat_count.min(get_full_repeat_count(
-            time,
-            p1_data.cycle_main_duration,
-            p1_data.cycle_tail_duration,
-        ));
-        if p1_full_repeat_count > Count::ZERO {
-            accum.add_instance(
-                p1_data.output.get_instance(),
-                chance_mult,
-                p1_data.output.get_instance_count() * p1_full_repeat_count,
-            );
-            time -= p1_data.cycle_main_duration * p1_full_repeat_count.into_pvalue();
-            p1_remaining_repeat_count -= p1_full_repeat_count;
-        }
-        // Process partial part 1 repeats
-        while time >= Value::ZERO && p1_remaining_repeat_count > Count::ZERO {
-            process_incomplete_cycle(accum, time, &p1_data.output, chance_mult, Count::ONE);
-            time -= p1_data.cycle_main_duration;
-            p1_remaining_repeat_count -= Count::ONE;
-        }
-        // Process partial part 2
-        if time >= Value::ZERO {
-            process_incomplete_cycle(accum, time, &p2_data.output, chance_mult, Count::ONE);
-            time -= p2_data.cycle_main_duration;
-        }
-        // Outer while loop is for cases of really long tails, which never happen in EVE but can
-        // happen in current data format
+        process_loop_lim_sin_incomplete(accum, &mut time, p1_data, p1_repeat_count, p2_data, chance_mult);
     }
 }
 
@@ -343,35 +323,49 @@ fn process_loop_lim_sin_dt_hard<T, A>(
             ),
         }
     }
+    // Apply partial loop
     if time >= Value::ZERO {
-        // Apply partial loop
-        let mut p1_remaining_repeat_count = p1_repeat_count;
-        // Process as many full part 1 repeats as time can fit
-        let p1_full_repeat_count = p1_repeat_count.min(get_full_repeat_count(
-            time,
-            p1_data.cycle_main_duration,
-            p1_data.cycle_tail_duration,
-        ));
-        if p1_full_repeat_count > Count::ZERO {
-            accum.add_instance(
-                p1_data.output.get_instance(),
-                chance_mult,
-                p1_data.output.get_instance_count() * p1_full_repeat_count,
-            );
-            time -= p1_data.cycle_main_duration * p1_full_repeat_count.into_pvalue();
-            p1_remaining_repeat_count -= p1_full_repeat_count;
-        }
-        // Process partial part 1 repeats
-        while time >= Value::ZERO && p1_remaining_repeat_count > Count::ZERO {
-            process_incomplete_cycle(accum, time, &p1_data.output, chance_mult, Count::ONE);
-            time -= p1_data.cycle_main_duration;
-            p1_remaining_repeat_count -= Count::ONE;
-        }
-        // Process partial part 2
-        if time >= Value::ZERO {
-            process_incomplete_cycle(accum, time, &p2_data.output, chance_mult, Count::ONE);
-            time -= p2_data.cycle_main_duration;
-        }
+        process_loop_lim_sin_incomplete(accum, &mut time, p1_data, p1_repeat_count, p2_data, chance_mult);
+    }
+}
+
+fn process_loop_lim_sin_incomplete<T, A>(
+    accum: &mut A,
+    time: &mut Value,
+    p1_data: &AggrPartDataTail<T>,
+    p1_repeat_count: Count,
+    p2_data: &AggrPartDataTail<T>,
+    chance_mult: Option<PValue>,
+) where
+    T: Copy + InstanceDuration,
+    A: SeqInstanceAccum<T>,
+{
+    let mut p1_remaining_repeat_count = p1_repeat_count;
+    // Process as many full part 1 repeats as time can fit
+    let p1_full_repeat_count = p1_repeat_count.min(get_full_repeat_count(
+        *time,
+        p1_data.cycle_main_duration,
+        p1_data.cycle_tail_duration,
+    ));
+    if p1_full_repeat_count > Count::ZERO {
+        accum.add_instance(
+            p1_data.output.get_instance(),
+            chance_mult,
+            p1_data.output.get_instance_count() * p1_full_repeat_count,
+        );
+        *time -= p1_data.cycle_main_duration * p1_full_repeat_count.into_pvalue();
+        p1_remaining_repeat_count -= p1_full_repeat_count;
+    }
+    // Process partial part 1 repeats
+    while *time >= Value::ZERO && p1_remaining_repeat_count > Count::ZERO {
+        process_incomplete_cycle(accum, *time, &p1_data.output, chance_mult, Count::ONE);
+        *time -= p1_data.cycle_main_duration;
+        p1_remaining_repeat_count -= Count::ONE;
+    }
+    // Process partial part 2
+    if *time >= Value::ZERO {
+        process_incomplete_cycle(accum, *time, &p2_data.output, chance_mult, Count::ONE);
+        *time -= p2_data.cycle_main_duration;
     }
 }
 
