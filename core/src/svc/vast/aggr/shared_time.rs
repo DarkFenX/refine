@@ -1,7 +1,10 @@
 use super::{accum::SeqInstanceAccum, traits::InstanceDuration};
 use crate::{
     num::{Count, PValue, Value},
-    svc::{cycle::CycleSeq, output::Output},
+    svc::{
+        cycle::{CycleDtHard, CycleSeq},
+        output::Output,
+    },
 };
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -32,112 +35,34 @@ pub(super) fn aggr_by_time<T, A>(
     let mut time = ptime.into_value();
     match cseq {
         CycleSeq::Lim(inner) => {
-            process_limited_regular(accum, &mut time, &inner.data, chance_mult, inner.repeat_count);
+            process_limited_regular(accum, &mut time, &inner.data, inner.repeat_count, chance_mult);
         }
         CycleSeq::Inf(inner) => match inner.dt_hard {
             Some(dt_hard) => {
-                // Calculate how many full durations we can fit into given time, considering hard
-                // downtimes
-                let cycle_full_duration = inner.data.cycle_main_duration + dt_hard.duration;
-                let mut full_repeats = Count::from_value_trunced(time / cycle_full_duration);
-                time -= cycle_full_duration * full_repeats.into_pvalue();
-                if time >= inner.data.cycle_main_duration.into_value() {
-                    full_repeats += Count::ONE;
-                    time -= cycle_full_duration;
-                }
-                if full_repeats > Count::ZERO {
-                    // Hard downtimes cut output tails. If output has a tail (it couldn't be fit
-                    // into main duration), process cycle like partial
-                    match inner.data.cycle_tail_duration {
-                        Some(_) => process_incomplete_cycle(
-                            accum,
-                            inner.data.cycle_main_duration.into_value(),
-                            &inner.data.output,
-                            chance_mult,
-                            full_repeats,
-                        ),
-                        None => accum.add_instance(
-                            inner.data.output.get_instance(),
-                            chance_mult,
-                            inner.data.output.get_instance_count() * full_repeats,
-                        ),
-                    }
-                }
-                // If there is still time left, process cycles which only partially fit
-                while time >= Value::ZERO {
-                    process_incomplete_cycle(accum, time, &inner.data.output, chance_mult, Count::ONE);
-                    time -= inner.data.cycle_main_duration;
-                }
+                process_infinite_dt_hard(accum, &mut time, &inner.data, dt_hard, chance_mult);
             }
             None => {
                 process_infinite_regular(accum, &mut time, &inner.data, chance_mult);
             }
         },
         CycleSeq::LimInf(inner) => {
-            process_limited_regular(accum, &mut time, &inner.p1_data, chance_mult, inner.p1_repeat_count);
+            process_limited_regular(accum, &mut time, &inner.p1_data, inner.p1_repeat_count, chance_mult);
             process_infinite_regular(accum, &mut time, &inner.p2_data, chance_mult);
         }
         CycleSeq::LimSinInf(inner) => {
-            process_limited_regular(accum, &mut time, &inner.p1_data, chance_mult, inner.p1_repeat_count);
+            process_limited_regular(accum, &mut time, &inner.p1_data, inner.p1_repeat_count, chance_mult);
             process_single_regular(accum, &mut time, &inner.p2_data, chance_mult);
             process_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
         CycleSeq::LoopLimSin(inner) => {
-            // Calculate total "tail time" for whole looped sequence. Data format implies that
-            // output can be different, so theoretically tail from first part can be longer than
-            // second part with its tail
-            let full_tail_duration = inner
-                .p2_data
-                .cycle_tail_duration
-                .max_value(inner.p1_data.cycle_tail_duration - inner.p2_data.cycle_main_duration);
-            let full_duration = inner.p1_data.cycle_main_duration * inner.p1_repeat_count.into_pvalue()
-                + inner.p2_data.cycle_main_duration;
-            // Process full loop repeats
-            let full_repeats = get_full_repeats_count(time, full_duration, full_tail_duration);
-            if full_repeats > Count::ZERO {
-                accum.add_instance(
-                    inner.p1_data.output.get_instance(),
-                    chance_mult,
-                    inner.p1_data.output.get_instance_count() * inner.p1_repeat_count * full_repeats,
-                );
-                accum.add_instance(
-                    inner.p2_data.output.get_instance(),
-                    chance_mult,
-                    inner.p2_data.output.get_instance_count() * full_repeats,
-                );
-                time -= full_duration * full_repeats.into_pvalue();
-            }
-            while time >= Value::ZERO {
-                let mut p1_remaining_repeats = inner.p1_repeat_count;
-                // Process as many full part 1 repeats as time can fit
-                let p1_repeats = inner.p1_repeat_count.min(get_full_repeats_count(
-                    time,
-                    inner.p1_data.cycle_main_duration,
-                    inner.p1_data.cycle_tail_duration,
-                ));
-                if p1_repeats > Count::ZERO {
-                    accum.add_instance(
-                        inner.p1_data.output.get_instance(),
-                        chance_mult,
-                        inner.p1_data.output.get_instance_count() * p1_repeats,
-                    );
-                    time -= inner.p1_data.cycle_main_duration * p1_repeats.into_pvalue();
-                    p1_remaining_repeats -= p1_repeats;
-                }
-                // Process partial part 1 repeats
-                while time >= Value::ZERO && p1_remaining_repeats > Count::ZERO {
-                    process_incomplete_cycle(accum, time, &inner.p1_data.output, chance_mult, Count::ONE);
-                    time -= inner.p1_data.cycle_main_duration;
-                    p1_remaining_repeats -= Count::ONE;
-                }
-                // Process partial part 2
-                if time >= Value::ZERO {
-                    process_incomplete_cycle(accum, time, &inner.p2_data.output, chance_mult, Count::ONE);
-                    time -= inner.p2_data.cycle_main_duration;
-                }
-                // Outer while loop is for cases of really long tails, which never happen in EVE
-                // but can happen in current data format
-            }
+            process_loop_lim_sin(
+                accum,
+                &mut time,
+                &inner.p1_data,
+                inner.p1_repeat_count,
+                &inner.p2_data,
+                chance_mult,
+            );
         }
     }
 }
@@ -170,8 +95,8 @@ fn process_limited_regular<T, A>(
     accum: &mut A,
     time: &mut Value,
     data: &AggrPartDataTail<T>,
-    chance_mult: Option<PValue>,
     repeat_limit: Count,
+    chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,
     A: SeqInstanceAccum<T>,
@@ -227,6 +152,119 @@ fn process_infinite_regular<T, A>(
     }
 }
 
+fn process_infinite_dt_hard<T, A>(
+    accum: &mut A,
+    time: &mut Value,
+    data: &AggrPartDataTail<T>,
+    dt_hard: CycleDtHard,
+    chance_mult: Option<PValue>,
+) where
+    T: Copy + InstanceDuration,
+    A: SeqInstanceAccum<T>,
+{
+    // Calculate how many full durations we can fit into given time, considering hard
+    // downtimes
+    let cycle_full_duration = data.cycle_main_duration + dt_hard.duration;
+    let mut full_repeats = Count::from_value_trunced(*time / cycle_full_duration);
+    *time -= cycle_full_duration * full_repeats.into_pvalue();
+    if *time >= data.cycle_main_duration.into_value() {
+        full_repeats += Count::ONE;
+        *time -= cycle_full_duration;
+    }
+    if full_repeats > Count::ZERO {
+        // Hard downtimes cut output tails. If output has a tail (it couldn't be fit
+        // into main duration), process cycle like partial
+        match data.cycle_tail_duration {
+            Some(_) => process_incomplete_cycle(
+                accum,
+                data.cycle_main_duration.into_value(),
+                &data.output,
+                chance_mult,
+                full_repeats,
+            ),
+            None => accum.add_instance(
+                data.output.get_instance(),
+                chance_mult,
+                data.output.get_instance_count() * full_repeats,
+            ),
+        }
+    }
+    // If there is still time left, process cycles which only partially fit
+    while *time >= Value::ZERO {
+        process_incomplete_cycle(accum, *time, &data.output, chance_mult, Count::ONE);
+        *time -= data.cycle_main_duration;
+    }
+}
+
+fn process_loop_lim_sin<T, A>(
+    accum: &mut A,
+    time: &mut Value,
+    p1_data: &AggrPartDataTail<T>,
+    p1_repeat_count: Count,
+    p2_data: &AggrPartDataTail<T>,
+    chance_mult: Option<PValue>,
+) where
+    T: Copy + InstanceDuration,
+    A: SeqInstanceAccum<T>,
+{
+    // Calculate total "tail time" for whole looped sequence. Data format implies that
+    // output can be different, so theoretically tail from first part can be longer than
+    // second part with its tail
+    let full_tail_duration = p2_data
+        .cycle_tail_duration
+        .max_value(p1_data.cycle_tail_duration - p2_data.cycle_main_duration);
+    let full_duration = p1_data.cycle_main_duration * p1_repeat_count.into_pvalue() + p2_data.cycle_main_duration;
+    // Process full loop repeats
+    let full_repeats = get_full_repeats_count(*time, full_duration, full_tail_duration);
+    if full_repeats > Count::ZERO {
+        accum.add_instance(
+            p1_data.output.get_instance(),
+            chance_mult,
+            p1_data.output.get_instance_count() * p1_repeat_count * full_repeats,
+        );
+        accum.add_instance(
+            p2_data.output.get_instance(),
+            chance_mult,
+            p2_data.output.get_instance_count() * full_repeats,
+        );
+        *time -= full_duration * full_repeats.into_pvalue();
+    }
+    while *time >= Value::ZERO {
+        let mut p1_remaining_repeats = p1_repeat_count;
+        // Process as many full part 1 repeats as time can fit
+        let p1_repeats = p1_repeat_count.min(get_full_repeats_count(
+            *time,
+            p1_data.cycle_main_duration,
+            p1_data.cycle_tail_duration,
+        ));
+        if p1_repeats > Count::ZERO {
+            accum.add_instance(
+                p1_data.output.get_instance(),
+                chance_mult,
+                p1_data.output.get_instance_count() * p1_repeats,
+            );
+            *time -= p1_data.cycle_main_duration * p1_repeats.into_pvalue();
+            p1_remaining_repeats -= p1_repeats;
+        }
+        // Process partial part 1 repeats
+        while *time >= Value::ZERO && p1_remaining_repeats > Count::ZERO {
+            process_incomplete_cycle(accum, *time, &p1_data.output, chance_mult, Count::ONE);
+            *time -= p1_data.cycle_main_duration;
+            p1_remaining_repeats -= Count::ONE;
+        }
+        // Process partial part 2
+        if *time >= Value::ZERO {
+            process_incomplete_cycle(accum, *time, &p2_data.output, chance_mult, Count::ONE);
+            *time -= p2_data.cycle_main_duration;
+        }
+        // Outer while loop is for cases of really long tails, which never happen in EVE
+        // but can happen in current data format
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Applicable only to sequences without hard downtime
 pub(super) fn get_full_repeats_count(
     time: Value,
