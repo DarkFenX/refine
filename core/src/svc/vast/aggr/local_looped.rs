@@ -100,17 +100,15 @@ fn process_hard_dt<BG, BX, T, A>(
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     match cseq_conv {
         CycleSeqLooped::Inf(inner) => {
+            process_full_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
             let loop_full_duration = inner.data.cycle_main_duration + hard_dt.duration;
             accum.time += loop_full_duration;
-            process_full_cycle_with_cutoff(accum, &inner.data, None, Count::ONE);
         }
         CycleSeqLooped::LoopLimSin(inner) => {
             let loop_inner_duration = inner.p1_data.cycle_main_duration * inner.p1_repeat_count.into_pvalue()
                 + inner.p2_data.cycle_main_duration;
-            let loop_full_duration = loop_inner_duration + hard_dt.duration;
-            accum.time += loop_full_duration;
             process_full_loop_lim_sin_with_cutoff(
-                accum,
+                &mut accum.instances,
                 &inner.p1_data,
                 inner.p1_repeat_count,
                 &inner.p2_data,
@@ -118,6 +116,8 @@ fn process_hard_dt<BG, BX, T, A>(
                 loop_inner_duration,
                 Count::ONE,
             );
+            let loop_full_duration = loop_inner_duration + hard_dt.duration;
+            accum.time += loop_full_duration;
         }
     }
 }
