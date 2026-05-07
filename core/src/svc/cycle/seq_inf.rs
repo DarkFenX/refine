@@ -18,8 +18,8 @@ impl<T> CSeqInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.data
     }
-    pub(super) fn has_hard_dt(&self) -> bool {
-        self.dt_hard.is_some()
+    pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+        self.dt_hard
     }
     pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
     where

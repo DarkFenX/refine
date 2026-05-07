@@ -4,7 +4,8 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
-    shared_time::{AggrPartDataTail, aggr_by_time, get_full_repeat_count, process_incomplete_cycle},
+    shared::{AggrPartDataTail, get_full_repeat_count, process_incomplete_cycle},
+    shared_time::aggr_by_time,
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{

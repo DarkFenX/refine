@@ -1,7 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared_time::{AggrPartDataTail, aggr_by_time},
+    shared::AggrPartDataTail,
+    shared_time::aggr_by_time,
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{

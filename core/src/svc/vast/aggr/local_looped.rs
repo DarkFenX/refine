@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    local_shared::{AggrLocalInvData, get_local_output},
+    local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
     traits::{HasImpact, InstanceLimit},
 };
 use crate::{
@@ -10,7 +10,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq, CycleSeqLooped},
+        cycle::{CycleDataFull, CycleDtHard, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
 };
@@ -40,9 +40,9 @@ where
         Some(inv_local) => inv_local,
         None => return false,
     };
-    match cseq.has_hard_dt() {
-        true => (),
-        false => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+    match cseq.get_hard_dt() {
+        Some(hard_dt) => process_hard_dt(ctx, calc, item_uid, cseq, ospec, accum, inv_local, hard_dt),
+        None => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
     }
     true
 }
@@ -78,5 +78,27 @@ fn process_regular<BG, BX, T, A>(
             cycle_output.get_instance_count() * cycle_part.repeat_count,
         );
         accum.time += cycle_part.data.get_main_duration() * cycle_part.repeat_count.into_pvalue();
+    }
+}
+
+fn process_hard_dt<BG, BX, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    cseq: CycleSeqLooped<CycleDataFull>,
+    ospec: &REffectLocalOpcSpec<BG>,
+    accum: &mut SeqAccum<A>,
+    inv_local: AggrLocalInvData<T>,
+    hard_dt: CycleDtHard,
+) where
+    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    match cseq_conv {
+        CycleSeqLooped::Inf(inner) => (),
+        CycleSeqLooped::LoopLimSin(inner) => (),
     }
 }
