@@ -1,7 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    traits::{HasImpact, InstanceLimit},
+    shared::{process_full_cycle_with_cutoff, process_full_loop_lim_sin_with_cutoff},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -29,7 +30,7 @@ pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let cseq = match cseq.try_loop_cseq() {
@@ -92,13 +93,31 @@ fn process_hard_dt<BG, BX, T, A>(
     hard_dt: CycleDtHard,
 ) where
     BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     match cseq_conv {
-        CycleSeqLooped::Inf(inner) => (),
-        CycleSeqLooped::LoopLimSin(inner) => (),
+        CycleSeqLooped::Inf(inner) => {
+            let loop_full_duration = inner.data.cycle_main_duration + hard_dt.duration;
+            accum.time += loop_full_duration;
+            process_full_cycle_with_cutoff(accum, &inner.data, None, Count::ONE);
+        }
+        CycleSeqLooped::LoopLimSin(inner) => {
+            let loop_inner_duration = inner.p1_data.cycle_main_duration * inner.p1_repeat_count.into_pvalue()
+                + inner.p2_data.cycle_main_duration;
+            let loop_full_duration = loop_inner_duration + hard_dt.duration;
+            accum.time += loop_full_duration;
+            process_full_loop_lim_sin_with_cutoff(
+                accum,
+                &inner.p1_data,
+                inner.p1_repeat_count,
+                &inner.p2_data,
+                None,
+                loop_inner_duration,
+                Count::ONE,
+            );
+        }
     }
 }

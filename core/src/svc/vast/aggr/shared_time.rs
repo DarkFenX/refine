@@ -178,7 +178,6 @@ fn process_infinite_hard_dt<T, A>(
     // If there is still time left, process cycles which only partially fit
     while time >= Value::ZERO {
         process_incomplete_cycle(accum, time, &data.output, chance_mult, Count::ONE);
-        time -= data.cycle_main_duration;
     }
 }
 
