@@ -15,7 +15,8 @@ use crate::{
     ud::UItemId,
 };
 
-// Local effects, considers only first cycle and ignores hard downtime (for "burst" stats)
+// Local effects, considers only first cycle (for "burst" stats)
+// Hard downtime is ignored, since burst cseqs are supposed not to have it
 #[must_use]
 pub(in crate::svc::vast) fn aggr_local_burst<BG, BX, T, A>(
     ctx: SvcCtx,
