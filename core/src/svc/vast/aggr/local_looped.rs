@@ -40,10 +40,9 @@ where
         Some(inv_local) => inv_local,
         None => return false,
     };
-    match cseq {
-        CycleSeqLooped::Inf(inner) if let Some(dt_hard) = inner.dt_hard => (),
-        CycleSeqLooped::LoopLimSin(inner) if let Some(dt_hard) = inner.dt_hard => (),
-        _ => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+    match cseq.has_hard_dt() {
+        true => (),
+        false => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
     }
     true
 }

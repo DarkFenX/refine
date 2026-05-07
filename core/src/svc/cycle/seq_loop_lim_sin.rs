@@ -22,6 +22,9 @@ impl<T> CSeqLoopLimSin<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
+    pub(super) fn has_hard_dt(&self) -> bool {
+        self.dt_hard.is_some()
+    }
     pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
     where
         U: From<T> + Eq,
@@ -54,6 +57,26 @@ impl<T> CSeqLoopLimSin<T> {
                 dt_hard: None,
             }),
             false => CycleSeq::LoopLimSin(CSeqLoopLimSin {
+                p1_data: p1_data_conv,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data: p2_data_conv,
+                dt_hard: self.dt_hard,
+            }),
+        }
+    }
+    pub(super) fn looped_convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeqLooped<U>
+    where
+        C: LibConverter<T, U>,
+        U: Eq,
+    {
+        let p1_data_conv = converter.lib_convert(self.p1_data);
+        let p2_data_conv = converter.lib_convert(self.p2_data);
+        match p1_data_conv == p2_data_conv && self.dt_hard.is_none() {
+            true => CycleSeqLooped::Inf(CSeqInf {
+                data: p1_data_conv,
+                dt_hard: None,
+            }),
+            false => CycleSeqLooped::LoopLimSin(CSeqLoopLimSin {
                 p1_data: p1_data_conv,
                 p1_repeat_count: self.p1_repeat_count,
                 p2_data: p2_data_conv,

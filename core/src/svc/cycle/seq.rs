@@ -65,11 +65,30 @@ pub(in crate::svc) enum CycleSeqLooped<T> {
     Inf(CSeqInf<T>),
     LoopLimSin(CSeqLoopLimSin<T>),
 }
-impl<T> CycleSeqLooped<T> {
+impl<T> CycleSeqLooped<T>
+where
+    T: Copy,
+{
     pub(in crate::svc) fn get_first_cycle(&self) -> &T {
         match self {
             Self::Inf(inner) => inner.get_first_cycle(),
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
+        }
+    }
+    pub(in crate::svc) fn has_hard_dt(&self) -> bool {
+        match self {
+            Self::Inf(inner) => inner.has_hard_dt(),
+            Self::LoopLimSin(inner) => inner.has_hard_dt(),
+        }
+    }
+    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeqLooped<U>
+    where
+        C: LibConverter<T, U>,
+        U: Eq,
+    {
+        match self {
+            Self::Inf(inner) => inner.looped_convert_with_and_optimize(converter),
+            Self::LoopLimSin(inner) => inner.looped_convert_with_and_optimize(converter),
         }
     }
 }
