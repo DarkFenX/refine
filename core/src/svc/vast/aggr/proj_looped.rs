@@ -64,7 +64,7 @@ fn aggr_regular<BG, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -99,7 +99,7 @@ fn aggr_spool<BG, T, A>(
     accum: &mut SeqAccum<A>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

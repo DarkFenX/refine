@@ -84,7 +84,7 @@ fn aggr_regular<BG, T, A>(
     accum: &mut A,
     time: PValue,
 ) where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -95,7 +95,7 @@ fn aggr_regular<BG, T, A>(
 
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
@@ -129,7 +129,7 @@ fn aggr_spool<BG, T, A>(
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
 ) where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -353,7 +353,7 @@ fn process_single_spool<BG, T, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -395,7 +395,7 @@ fn process_limited_spool<BG, T, A>(
     uninterrupted_cycles: &mut Count,
     mut repeat_limit: Count,
 ) where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -489,7 +489,7 @@ fn process_infinite_spool<BG, T, A>(
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

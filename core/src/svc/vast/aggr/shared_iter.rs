@@ -64,7 +64,7 @@ impl<T: Copy> AggrIterDataSpool<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct AggrIterItem<T: Copy> {
     pub(in crate::svc::vast) output: Output<T>,
-    pub(in crate::svc::vast) cycle_duration: PValue,
+    pub(in crate::svc::vast) cycle_main_duration: PValue,
 }
 
 pub(in crate::svc::vast) enum AggrIter<T: Copy> {
@@ -102,7 +102,7 @@ impl<T: Copy> Iterator for AggrIterRegular<T> {
     fn next(&mut self) -> Option<Self::Item> {
         self.cycle_iter.next().map(|v| AggrIterItem {
             output: v.output,
-            cycle_duration: v.cycle_duration,
+            cycle_main_duration: v.cycle_main_duration,
         })
     }
 }
@@ -110,7 +110,7 @@ impl<T: Copy> Iterator for AggrIterRegular<T> {
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc::vast) struct AggrPartDataRegular<T: Copy> {
     // Duration it takes per cycle in this part
-    pub(in crate::svc::vast) cycle_duration: PValue,
+    pub(in crate::svc::vast) cycle_main_duration: PValue,
     pub(in crate::svc::vast) output: Output<T>,
 }
 
@@ -159,7 +159,7 @@ where
         }
         self.cycle_iter.next().map(|v| AggrIterItem {
             output,
-            cycle_duration: v.cycle_duration,
+            cycle_main_duration: v.cycle_duration,
         })
     }
 }

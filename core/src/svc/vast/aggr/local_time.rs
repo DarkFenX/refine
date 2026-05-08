@@ -52,7 +52,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {

@@ -37,16 +37,44 @@ where
         Some(inv_local) => inv_local,
         None => return false,
     };
+    match cseq.get_hard_dt() {
+        // Consider hard downtime as end of clip
+        Some(hard_dt) => true,
+        None => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+    }
+}
+
+fn process_regular<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    cseq: &CycleSeq<CycleDataFull>,
+    ospec: &REffectLocalOpcSpec<BG>,
+    accum: &mut SeqAccum<A>,
+    inv_local: AggrLocalInvData<T>,
+) -> bool
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_part.data.chargedness);
-        match cycle_part.data.interrupt {
+        let cycle_output = get_local_output(
+            ctx,
+            calc,
+            item_uid,
+            ospec,
+            &inv_local,
+            cycle_part.data.active.chargedness,
+        );
+        match cycle_part.data.dt_soft {
             // Add first cycle after which there is a reload
-            Some(interrupt) if interrupt.reload => {
+            Some(soft_dt) if soft_dt.reason.reload => {
                 reload = true;
                 accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
-                accum.time += cycle_part.data.active_duration;
+                accum.time += cycle_part.data.active.duration + soft_dt.duration;
                 break;
             }
             _ => {
@@ -62,7 +90,7 @@ where
                         None,
                         cycle_output.get_instance_count() * part_cycle_count,
                     );
-                    accum.time += cycle_part.data.active_duration * part_cycle_count.into_pvalue();
+                    accum.time += cycle_part.data.get_main_duration() * part_cycle_count.into_pvalue();
                 }
             }
         }

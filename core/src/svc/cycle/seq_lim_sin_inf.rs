@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
+    svc::cycle::{CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
     util::LibConverter,
 };
 
@@ -20,6 +20,9 @@ pub(in crate::svc) struct CSeqLimSinInf<T> {
 impl<T> CSeqLimSinInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
+    }
+    pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+        None
     }
     pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
     where

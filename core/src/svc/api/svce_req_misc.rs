@@ -33,7 +33,8 @@ impl Svc {
             return None;
         }
         let mut charged_cycles = Count::ZERO;
-        let cycle_parts = reuse_cseq_map.get(&defeff_rid)?.get_cseq_parts();
+        let cseq = reuse_cseq_map.get(&defeff_rid)?;
+        let cycle_parts = cseq.get_cseq_parts();
         for cycle_part in cycle_parts.iter() {
             // Current part uncharged means we're empty by this point
             if cycle_part.data.active.chargedness.is_none() {
@@ -46,16 +47,20 @@ impl Svc {
                 InfCount::Infinite => return Some(InfCount::Infinite),
             };
             charged_cycles += repeat_count;
-            // break sequence only on reloads
-            if let Some(dt_soft) = cycle_part.data.dt_soft
-                && dt_soft.reason.reload
+            // Break sequence only on reloads
+            if let Some(soft_dt) = cycle_part.data.dt_soft
+                && soft_dt.reason.reload
             {
                 return Some(InfCount::Count(charged_cycles));
             }
         }
-        // If we didn't bail early, have charged cycles and sequence is looped, it is never-ending
-        // sequence of charged cycles
-        if cycle_parts.loops && charged_cycles > Count::ZERO {
+        // If we:
+        // - didn't bail early
+        // - have charged cycles
+        // - end of sequence has no hard downtime
+        // - sequence is looped
+        // Then it is a never-ending sequence of charged cycles
+        if cycle_parts.loops && charged_cycles > Count::ZERO && cseq.get_hard_dt().is_none() {
             return Some(InfCount::Infinite);
         }
         Some(InfCount::Count(charged_cycles))

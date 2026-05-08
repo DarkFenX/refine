@@ -41,7 +41,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<BG, T> LibConverter<CycleDataFull, AggrPartDataRegular<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<T> {
@@ -51,10 +51,10 @@ where
             self.item_uid,
             self.ospec,
             self.inv_local,
-            input.chargedness,
+            input.active.chargedness,
         );
         AggrPartDataRegular {
-            cycle_duration: input.active_duration,
+            cycle_main_duration: input.get_main_duration(),
             output,
         }
     }

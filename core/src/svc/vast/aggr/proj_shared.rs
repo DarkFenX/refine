@@ -158,7 +158,7 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'sc1, 'sc2>,
@@ -169,7 +169,7 @@ where
 }
 impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy,
 {
     pub(super) fn new(
@@ -201,7 +201,7 @@ pub(super) fn get_proj_regular_output<BG, T>(
     chargedness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
@@ -232,7 +232,7 @@ pub(super) fn get_proj_spool_part_str_mult<BG, T>(
     chargedness: Option<UnitInterval>,
 ) -> PValue
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy,
 {
     let mut str_mult = inv_proj.str_mult;

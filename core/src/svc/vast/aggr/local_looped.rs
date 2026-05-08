@@ -48,7 +48,7 @@ where
     true
 }
 
-fn process_regular<BG, BX, T, A>(
+fn process_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -57,7 +57,7 @@ fn process_regular<BG, BX, T, A>(
     accum: &mut SeqAccum<A>,
     inv_local: AggrLocalInvData<T>,
 ) where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
@@ -82,7 +82,7 @@ fn process_regular<BG, BX, T, A>(
     }
 }
 
-fn process_hard_dt<BG, BX, T, A>(
+fn process_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -92,7 +92,7 @@ fn process_hard_dt<BG, BX, T, A>(
     inv_local: AggrLocalInvData<T>,
     hard_dt: CycleDtHard,
 ) where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
+    BG: NEffectOutputGetter,
     T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {

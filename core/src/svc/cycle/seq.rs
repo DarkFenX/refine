@@ -25,6 +25,15 @@ where
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
         }
     }
+    pub(in crate::svc) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+        match self {
+            Self::Lim(inner) => inner.get_hard_dt(),
+            Self::Inf(inner) => inner.get_hard_dt(),
+            Self::LimInf(inner) => inner.get_hard_dt(),
+            Self::LimSinInf(inner) => inner.get_hard_dt(),
+            Self::LoopLimSin(inner) => inner.get_hard_dt(),
+        }
+    }
     pub(in crate::svc) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         match self {
             Self::Lim(inner) => inner.try_loop_cseq(),

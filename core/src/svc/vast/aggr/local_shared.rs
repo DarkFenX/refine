@@ -51,7 +51,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy,
 {
     pub(super) ctx: SvcCtx<'u, 'p>,
@@ -62,7 +62,7 @@ where
 }
 impl<'u, 'p, 'c, 'o, 'i, BG, T> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy,
 {
     pub(super) fn new(
@@ -94,7 +94,7 @@ pub(super) fn get_local_output<BG, T>(
     chargeness: Option<UnitInterval>,
 ) -> Output<T>
 where
-    BG: NEffectOutputGetter<Instance = T>,
+    BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_local.output;

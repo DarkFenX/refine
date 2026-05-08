@@ -29,7 +29,7 @@ pub(super) struct CSeqPartTimingKey {
 impl From<AggrPartDataRegular<PValue>> for CSeqPartTimingKey {
     fn from(part_data: AggrPartDataRegular<PValue>) -> Self {
         Self {
-            duration: part_data.cycle_duration.sig_rounded(TIME_ROUND_DIGITS),
+            duration: part_data.cycle_main_duration.sig_rounded(TIME_ROUND_DIGITS),
             output: OutputTimingKey::from_output(&part_data.output),
         }
     }
