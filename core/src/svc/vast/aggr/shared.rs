@@ -2,7 +2,12 @@ use super::{accum::SeqInstanceAccum, traits::InstanceDuration};
 use crate::{
     num::{Count, PValue, Value},
     rd::RAttrId,
-    svc::{SvcCtx, calc::Calc, output::Output},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CSeqInf, CSeqLoopLimSin},
+        output::Output,
+    },
     ud::UItemId,
 };
 
@@ -46,41 +51,56 @@ where
     }
 }
 
+impl<T> CSeqInf<AggrPartDataTail<T>>
+where
+    T: Copy,
+{
+    pub(super) fn get_inner_duration(&self) -> PValue {
+        self.data.cycle_main_duration
+    }
+}
+
+impl<T> CSeqLoopLimSin<AggrPartDataTail<T>>
+where
+    T: Copy,
+{
+    pub(super) fn get_inner_duration(&self) -> PValue {
+        self.p1_data.cycle_main_duration * self.p1_repeat_count.into_pvalue() + self.p2_data.cycle_main_duration
+    }
+}
+
 pub(super) fn process_full_loop_lim_sin_with_cutoff<T, A>(
     accum: &mut A,
-    p1_data: &AggrPartDataTail<T>,
-    p1_repeat_count: Count,
-    p2_data: &AggrPartDataTail<T>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>>,
     chance_mult: Option<PValue>,
-    loop_inner_duration: PValue,
     loop_repeat_count: Count,
 ) where
     T: Copy + InstanceDuration,
     A: SeqInstanceAccum<T>,
 {
     // Once hard downtime starts, instances cannot be applied
-    let mut time = loop_inner_duration.into_value();
-    let p1_full_repeat_count = p1_repeat_count.min(get_full_repeat_count(
+    let mut time = cseq.get_inner_duration().into_value();
+    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_repeat_count(
         time,
-        p1_data.cycle_main_duration,
-        p1_data.cycle_tail_duration,
+        cseq.p1_data.cycle_main_duration,
+        cseq.p1_data.cycle_tail_duration,
     ));
-    let mut p1_remaining_repeat_count = p1_repeat_count;
+    let mut p1_remaining_repeat_count = cseq.p1_repeat_count;
     if p1_full_repeat_count > Count::ZERO {
         accum.add_instance(
-            p1_data.output.get_instance(),
+            cseq.p1_data.output.get_instance(),
             chance_mult,
-            p1_data.output.get_instance_count() * p1_full_repeat_count * loop_repeat_count,
+            cseq.p1_data.output.get_instance_count() * p1_full_repeat_count * loop_repeat_count,
         );
-        time -= p1_data.cycle_main_duration * p1_full_repeat_count.into_pvalue();
+        time -= cseq.p1_data.cycle_main_duration * p1_full_repeat_count.into_pvalue();
         p1_remaining_repeat_count -= p1_full_repeat_count;
     }
     while p1_remaining_repeat_count > Count::ZERO {
-        process_incomplete_cycle(accum, time, &p1_data.output, chance_mult, loop_repeat_count);
-        time -= p1_data.cycle_main_duration;
+        process_incomplete_cycle(accum, time, &cseq.p1_data.output, chance_mult, loop_repeat_count);
+        time -= cseq.p1_data.cycle_main_duration;
         p1_remaining_repeat_count -= Count::ONE;
     }
-    process_full_cycle_with_cutoff(accum, p2_data, chance_mult, loop_repeat_count);
+    process_full_cycle_with_cutoff(accum, &cseq.p2_data, chance_mult, loop_repeat_count);
 }
 
 pub(super) fn get_full_repeat_count(

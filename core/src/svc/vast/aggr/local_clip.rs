@@ -1,7 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    local_shared::{AggrLocalInvData, get_local_output},
-    traits::{HasImpact, InstanceLimit},
+    local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
+    shared::process_full_cycle_with_cutoff,
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     misc::InfCount,
@@ -30,17 +31,17 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
+    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
         Some(inv_local) => inv_local,
         None => return false,
     };
-    match cseq.get_hard_dt() {
+    match cseq.get_hard_dt().is_some() {
         // Consider hard downtime as end of clip
-        Some(hard_dt) => true,
-        None => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+        true => process_hard_dt(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+        false => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
     }
 }
 
@@ -74,7 +75,8 @@ where
             Some(soft_dt) if soft_dt.reason.reload => {
                 reload = true;
                 accum.add_instance(cycle_output.get_instance(), None, cycle_output.get_instance_count());
-                accum.time += cycle_part.data.active.duration + soft_dt.duration;
+                // Record only active duration before reload, ignore soft downtime duration
+                accum.time += cycle_part.data.active.duration;
                 break;
             }
             _ => {
@@ -97,4 +99,32 @@ where
     }
     // If cycles are infinite and have no reload, return no data
     !cycle_parts.loops || reload
+}
+
+fn process_hard_dt<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    cseq: &CycleSeq<CycleDataFull>,
+    ospec: &REffectLocalOpcSpec<BG>,
+    accum: &mut SeqAccum<A>,
+    inv_local: AggrLocalInvData<T>,
+) -> bool
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    match cseq_conv {
+        CycleSeq::Inf(inner) => {
+            process_full_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
+            // Record only active duration before reload, ignore hard downtime duration
+            accum.time += inner.get_inner_duration();
+            true
+        }
+        CycleSeq::LoopLimSin(inner) => true,
+        _ => false,
+    }
 }

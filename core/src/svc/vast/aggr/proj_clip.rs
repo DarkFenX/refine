@@ -152,7 +152,8 @@ where
                     inv_proj.chance_mult,
                     cycle_output.get_instance_count(),
                 );
-                accum.time += cycle_part.data.active_duration;
+                // Record only active duration before reload, ignore soft downtime duration
+                accum.time += cycle_part.data.active.duration;
                 break;
             }
             _ => {
