@@ -1,5 +1,5 @@
 use super::{
-    data::CycleDtHard, seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
+    data::CycleHardDt, seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
     seq_loop_lim_sin::CSeqLoopLimSin,
 };
 use crate::util::LibConverter;
@@ -25,7 +25,7 @@ where
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
         }
     }
-    pub(in crate::svc) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+    pub(in crate::svc) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         match self {
             Self::Lim(inner) => inner.get_hard_dt(),
             Self::Inf(inner) => inner.get_hard_dt(),
@@ -50,7 +50,7 @@ where
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
         }
     }
-    pub(in crate::svc) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+    pub(in crate::svc) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         match self {
             Self::Inf(inner) => inner.get_hard_dt(),
             Self::LoopLimSin(inner) => inner.get_hard_dt(),

@@ -6,14 +6,14 @@ use crate::num::{PValue, UnitInterval};
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
     pub(in crate::svc) active: CycleActive,
-    pub(in crate::svc) dt_soft: Option<CycleDtSoft>,
+    pub(in crate::svc) soft_dt: Option<CycleSoftDt>,
 }
 impl CycleDataFull {
     // Active duration and soft downtime duration combined
     pub(in crate::svc) fn get_main_duration(&self) -> PValue {
         let mut duration = self.active.duration;
-        if let Some(dt_soft) = &self.dt_soft {
-            duration += dt_soft.duration;
+        if let Some(soft_dt) = &self.soft_dt {
+            duration += soft_dt.duration;
         }
         duration
     }
@@ -33,22 +33,22 @@ pub(in crate::svc) struct CycleActive {
 
 // Info about soft downtime between cycles (during which effects can apply their instances)
 #[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleDtSoft {
+pub(in crate::svc) struct CycleSoftDt {
     pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) reason: CycleDtSoftReason,
+    pub(in crate::svc) reason: CycleSoftDtReason,
 }
-impl CycleDtSoft {
+impl CycleSoftDt {
     pub(super) fn try_new(duration: PValue, cooldown: bool, reload: bool) -> Option<Self> {
-        let reason = CycleDtSoftReason::try_new(cooldown, reload)?;
+        let reason = CycleSoftDtReason::try_new(cooldown, reload)?;
         Some(Self { duration, reason })
     }
 }
 #[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleDtSoftReason {
+pub(in crate::svc) struct CycleSoftDtReason {
     pub(in crate::svc) cooldown: bool,
     pub(in crate::svc) reload: bool,
 }
-impl CycleDtSoftReason {
+impl CycleSoftDtReason {
     fn try_new(cooldown: bool, reload: bool) -> Option<Self> {
         match cooldown || reload {
             true => Some(Self { cooldown, reload }),
@@ -59,21 +59,21 @@ impl CycleDtSoftReason {
 
 // Info about hard downtime between cycles (during which effects cannot apply their instances)
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleDtHard {
+pub(in crate::svc) struct CycleHardDt {
     pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) reason: CycleDtHardReason,
+    pub(in crate::svc) reason: CycleHardDtReason,
 }
-impl CycleDtHard {
+impl CycleHardDt {
     pub(super) fn try_new(duration: PValue, rearm: bool) -> Option<Self> {
-        let reason = CycleDtHardReason::try_new(rearm)?;
+        let reason = CycleHardDtReason::try_new(rearm)?;
         Some(Self { duration, reason })
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleDtHardReason {
+pub(in crate::svc) struct CycleHardDtReason {
     pub(in crate::svc) refuel: bool,
 }
-impl CycleDtHardReason {
+impl CycleHardDtReason {
     fn try_new(refuel: bool) -> Option<Self> {
         match refuel {
             true => Some(Self { refuel }),

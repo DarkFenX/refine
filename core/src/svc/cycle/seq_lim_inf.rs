@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
+    svc::cycle::{CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConverter,
 };
 
@@ -19,7 +19,7 @@ impl<T> CSeqLimInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+    pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         None
     }
 }
@@ -66,7 +66,7 @@ impl<T> CSeqLimInf<T> {
         match self.p1_data == self.p2_data {
             true => CycleSeq::Inf(CSeqInf {
                 data: self.p1_data,
-                dt_hard: None,
+                hard_dt: None,
             }),
             false => CycleSeq::LimInf(self),
         }
@@ -79,7 +79,7 @@ where
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(CSeqInf {
             data: self.p2_data,
-            dt_hard: None,
+            hard_dt: None,
         }))
     }
 }

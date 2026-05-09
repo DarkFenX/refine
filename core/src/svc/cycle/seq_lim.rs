@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped},
+    svc::cycle::{CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped},
     util::LibConverter,
 };
 
@@ -17,7 +17,7 @@ impl<T> CSeqLim<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.data
     }
-    pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+    pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         None
     }
 }

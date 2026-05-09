@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
+    svc::cycle::{CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
     util::LibConverter,
 };
 
@@ -21,7 +21,7 @@ impl<T> CSeqLimSinInf<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
+    pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         None
     }
 }
@@ -90,7 +90,7 @@ impl<T> CSeqLimSinInf<T> {
             // Whole sequence becomes a simple infinity
             (true, true) => CycleSeq::Inf(CSeqInf {
                 data: self.p1_data,
-                dt_hard: None,
+                hard_dt: None,
             }),
         }
     }
@@ -102,7 +102,7 @@ where
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(CSeqInf {
             data: self.p3_data,
-            dt_hard: None,
+            hard_dt: None,
         }))
     }
 }

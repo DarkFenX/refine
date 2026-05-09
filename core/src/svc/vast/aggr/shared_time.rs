@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{
     num::{Count, PValue, Value},
-    svc::cycle::{CSeqLoopLimSin, CycleDtHard, CycleSeq},
+    svc::cycle::{CSeqLoopLimSin, CycleHardDt, CycleSeq},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,8 +31,8 @@ pub(super) fn aggr_by_time<T, A>(
             inner.repeat_count,
             chance_mult,
         ),
-        CycleSeq::Inf(inner) => match inner.dt_hard {
-            Some(dt_hard) => process_infinite_hard_dt(accum, ptime, &inner.data, dt_hard, chance_mult),
+        CycleSeq::Inf(inner) => match inner.hard_dt {
+            Some(hard_dt) => process_infinite_hard_dt(accum, ptime, &inner.data, hard_dt, chance_mult),
             None => process_infinite_regular(accum, &mut ptime.into_value(), &inner.data, chance_mult),
         },
         CycleSeq::LimInf(inner) => {
@@ -46,7 +46,7 @@ pub(super) fn aggr_by_time<T, A>(
             process_single_regular(accum, &mut time, &inner.p2_data, chance_mult);
             process_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
-        CycleSeq::LoopLimSin(inner) => match inner.dt_hard {
+        CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
             Some(_) => process_loop_lim_sin_hard_dt(accum, ptime, inner, chance_mult),
             None => process_loop_lim_sin_regular(accum, ptime, inner, chance_mult),
         },
@@ -130,7 +130,7 @@ fn process_infinite_hard_dt<T, A>(
     accum: &mut A,
     ptime: PValue,
     data: &AggrPartDataTail<T>,
-    dt_hard: CycleDtHard,
+    hard_dt: CycleHardDt,
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,
@@ -139,7 +139,7 @@ fn process_infinite_hard_dt<T, A>(
     let mut time = ptime.into_value();
     // Calculate how many full durations we can fit into given time, considering hard downtimes, and
     // calculate remaining time
-    let full_duration = data.cycle_main_duration + dt_hard.duration;
+    let full_duration = data.cycle_main_duration + hard_dt.duration;
     let mut full_repeat_count = Count::from_value_trunced(time / full_duration);
     time -= full_duration * full_repeat_count.into_pvalue();
     if time >= data.cycle_main_duration.into_value() {
@@ -199,7 +199,7 @@ fn process_loop_lim_sin_hard_dt<T, A>(
 {
     let mut time = ptime.into_value();
     let loop_inner_duration = cseq.get_inner_duration();
-    let loop_full_duration = loop_inner_duration + cseq.dt_hard.unwrap().duration;
+    let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
     let mut loop_full_repeat_count = Count::from_value_trunced(time / loop_full_duration);
     time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
     if time >= loop_inner_duration.into_value() {

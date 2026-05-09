@@ -40,9 +40,9 @@ pub(super) fn get_drone_cseq_map(
                         duration,
                         chargedness: None,
                     },
-                    dt_soft: None,
+                    soft_dt: None,
                 },
-                dt_hard: None,
+                hard_dt: None,
             }),
         );
     }

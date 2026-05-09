@@ -9,7 +9,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleDtHard, CycleDtSoft, CycleSeq},
+        cycle::{CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleHardDt, CycleSeq, CycleSoftDt},
         funcs,
     },
     ud::{UFighter, UItemId},
@@ -52,7 +52,7 @@ struct EffectInfo {
     kills_item: bool,
     active_duration: PValue,
     cooldown_duration: PValue,
-    dt_soft_cd: bool,
+    soft_dt_cd: bool,
     charge_count: Option<Count>,
     charge_rearm_duration: PValue,
 }
@@ -84,12 +84,12 @@ fn get_effect_info(
     // longer than duration, but data format does not guarantee that
     let cooldown_duration = PValue::from_value_clamped(effect_data.cooldown_s - active_duration);
     // Assume any cooldown interrupts cycling, even if it shorter than ability cycle
-    let dt_soft_cd = effect_data.cooldown_s > PValue::FLOAT_TOLERANCE;
+    let soft_dt_cd = effect_data.cooldown_s > PValue::FLOAT_TOLERANCE;
     Some(EffectInfo {
         kills_item: effect.kills_item,
         active_duration,
         cooldown_duration,
-        dt_soft_cd,
+        soft_dt_cd,
         charge_count: effect_data.charge_count,
         charge_rearm_duration: effect_data.charge_reload_duration,
     })
@@ -142,9 +142,9 @@ fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull> {
                 duration: effect_info.active_duration,
                 chargedness: effect_info.get_chargedness(),
             },
-            dt_soft: CycleDtSoft::try_new(effect_info.cooldown_duration, effect_info.dt_soft_cd, false),
+            soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false),
         },
-        dt_hard: None,
+        hard_dt: None,
     })
 }
 
@@ -191,7 +191,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        dt_soft: CycleDtSoft::try_new(effect_info.cooldown_duration, effect_info.dt_soft_cd, false),
+        soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false),
     };
     match effect_info.charge_count {
         Some(charge_count) => CycleSeq::Lim(CSeqLim {
@@ -200,7 +200,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
         }),
         None => CycleSeq::Inf(CSeqInf {
             data: cycle_data,
-            dt_hard: None,
+            hard_dt: None,
         }),
     }
 }
@@ -223,7 +223,7 @@ fn fill_sk_effect_data(
                     duration: effect_info.active_duration,
                     chargedness: effect_info.get_chargedness(),
                 },
-                dt_soft: None,
+                soft_dt: None,
             },
             repeat_count: Count::ONE,
         }),
@@ -278,7 +278,7 @@ fn sim_rearm_process_sks(cseq_map: &mut CseqMap, effect_infos: &RMap<REffectId, 
                             duration: fastest_sk_info.active_duration,
                             chargedness: fastest_sk_info.get_chargedness(),
                         },
-                        dt_soft: None,
+                        soft_dt: None,
                     },
                     repeat_count: Count::ONE,
                 }),
@@ -316,15 +316,15 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
     // refuel, and extra second to launch.
     let in_space_duration = trigger_rearm_info.in_space_duration;
     let refuel_duration = fighter.get_axt().unwrap().fighter_refuel_duration;
-    let dt_hard_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm_info.rearm_duration;
+    let hard_dt_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm_info.rearm_duration;
     // Fill data for triggering effect
     cseq_map.insert(
         trigger_effect_rid,
-        sim_rearm_trigger_info_to_cseq(trigger_effect_info, trigger_rearm_info, dt_hard_duration),
+        sim_rearm_trigger_info_to_cseq(trigger_effect_info, trigger_rearm_info, hard_dt_duration),
     );
     // Fill data for the rest of effects
     for (effect_rid, effect_info) in effect_infos.into_iter() {
-        if let Some(cseq) = sim_rearm_other_info_to_cseq(effect_info, in_space_duration, dt_hard_duration) {
+        if let Some(cseq) = sim_rearm_other_info_to_cseq(effect_info, in_space_duration, hard_dt_duration) {
             cseq_map.insert(effect_rid, cseq);
         }
     }
@@ -332,7 +332,7 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
 fn sim_rearm_trigger_info_to_cseq(
     effect_info: EffectInfo,
     rearm_info: RearmInfo,
-    dt_hard_duration: PValue,
+    hard_dt_duration: PValue,
 ) -> CycleSeq<CycleDataFull> {
     match rearm_info.charge_count {
         Count::ZERO => unreachable!("0-charged effects are not processed"),
@@ -342,9 +342,9 @@ fn sim_rearm_trigger_info_to_cseq(
                     duration: effect_info.active_duration,
                     chargedness: effect_info.get_chargedness(),
                 },
-                dt_soft: None,
+                soft_dt: None,
             },
-            dt_hard: CycleDtHard::try_new(dt_hard_duration, true),
+            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
         }),
         charge_count => {
             let p1_repeat_count = charge_count - Count::ONE;
@@ -354,7 +354,7 @@ fn sim_rearm_trigger_info_to_cseq(
                         duration: effect_info.active_duration,
                         chargedness: effect_info.get_chargedness(),
                     },
-                    dt_soft: CycleDtSoft::try_new(effect_info.cooldown_duration, effect_info.dt_soft_cd, false),
+                    soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
@@ -362,9 +362,9 @@ fn sim_rearm_trigger_info_to_cseq(
                         duration: effect_info.active_duration,
                         chargedness: effect_info.get_chargedness(),
                     },
-                    dt_soft: None,
+                    soft_dt: None,
                 },
-                dt_hard: CycleDtHard::try_new(dt_hard_duration, true),
+                hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
             })
         }
     }
@@ -372,7 +372,7 @@ fn sim_rearm_trigger_info_to_cseq(
 fn sim_rearm_other_info_to_cseq(
     effect_info: EffectInfo,
     in_space_duration: PValue,
-    dt_hard_duration: PValue,
+    hard_dt_duration: PValue,
 ) -> Option<CycleSeq<CycleDataFull>> {
     let active_and_cooldown_duration = effect_info.active_duration + effect_info.cooldown_duration;
     let full_cycle_count = Count::from_pvalue_trunced(in_space_duration / active_and_cooldown_duration);
@@ -392,9 +392,9 @@ fn sim_rearm_other_info_to_cseq(
                 },
                 // TODO: waiting for rearm is not recorded as separate reason; either eliminate
                 // TODO: waiting, or add separate reason and record it here
-                dt_soft: CycleDtSoft::try_new(in_space_duration_left, effect_info.dt_soft_cd, false),
+                soft_dt: CycleSoftDt::try_new(in_space_duration_left, effect_info.soft_dt_cd, false),
             },
-            dt_hard: CycleDtHard::try_new(dt_hard_duration, true),
+            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
         })),
         (Count::ONE, false) => Some(CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
@@ -404,13 +404,13 @@ fn sim_rearm_other_info_to_cseq(
                 },
                 // TODO: waiting for rearm is not recorded as separate reason; either eliminate
                 // TODO: waiting, or add separate reason and record it here
-                dt_soft: CycleDtSoft::try_new(
+                soft_dt: CycleSoftDt::try_new(
                     effect_info.cooldown_duration + in_space_duration_left,
-                    effect_info.dt_soft_cd,
+                    effect_info.soft_dt_cd,
                     false,
                 ),
             },
-            dt_hard: CycleDtHard::try_new(dt_hard_duration, true),
+            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
         })),
         (full_cycle_count, false) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
             p1_data: CycleDataFull {
@@ -418,7 +418,7 @@ fn sim_rearm_other_info_to_cseq(
                     duration: effect_info.active_duration,
                     chargedness: effect_info.get_chargedness(),
                 },
-                dt_soft: CycleDtSoft::try_new(effect_info.cooldown_duration, effect_info.dt_soft_cd, false),
+                soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false),
             },
             p1_repeat_count: full_cycle_count - Count::ONE,
             p2_data: CycleDataFull {
@@ -428,13 +428,13 @@ fn sim_rearm_other_info_to_cseq(
                 },
                 // TODO: waiting for rearm is not recorded as separate reason; either eliminate
                 // TODO: waiting, or add separate reason and record it here
-                dt_soft: CycleDtSoft::try_new(
+                soft_dt: CycleSoftDt::try_new(
                     effect_info.cooldown_duration + in_space_duration_left,
-                    effect_info.dt_soft_cd,
+                    effect_info.soft_dt_cd,
                     false,
                 ),
             },
-            dt_hard: CycleDtHard::try_new(dt_hard_duration, true),
+            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
         })),
         (full_cycle_count, true) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
             p1_data: CycleDataFull {
@@ -442,7 +442,7 @@ fn sim_rearm_other_info_to_cseq(
                     duration: effect_info.active_duration,
                     chargedness: effect_info.get_chargedness(),
                 },
-                dt_soft: CycleDtSoft::try_new(effect_info.cooldown_duration, effect_info.dt_soft_cd, false),
+                soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false),
             },
             p1_repeat_count: full_cycle_count,
             p2_data: CycleDataFull {
@@ -452,9 +452,9 @@ fn sim_rearm_other_info_to_cseq(
                 },
                 // TODO: waiting for rearm is not recorded as separate reason; either eliminate
                 // TODO: waiting, or add separate reason and record it here
-                dt_soft: CycleDtSoft::try_new(in_space_duration_left, effect_info.dt_soft_cd, false),
+                soft_dt: CycleSoftDt::try_new(in_space_duration_left, effect_info.soft_dt_cd, false),
             },
-            dt_hard: CycleDtHard::try_new(dt_hard_duration, true),
+            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
         })),
     }
 }

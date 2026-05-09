@@ -70,7 +70,7 @@ where
             &inv_local,
             cycle_part.data.active.chargedness,
         );
-        match cycle_part.data.dt_soft {
+        match cycle_part.data.soft_dt {
             // Add first cycle after which there is a reload
             Some(soft_dt) if soft_dt.reason.reload => {
                 reload = true;
@@ -118,14 +118,14 @@ where
             let inner_conv = inner.convert_with(&mut converter);
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_conv.data, None, Count::ONE);
             // Record time until reload or hard downtime starts
-            match inner.data.dt_soft {
+            match inner.data.soft_dt {
                 Some(soft_dt) if soft_dt.reason.reload => accum.time += inner.data.active.duration,
                 _ => accum.time += inner_conv.data.cycle_main_duration,
             }
             true
         }
         CycleSeq::LoopLimSin(inner) => {
-            if let Some(soft_dt) = inner.p1_data.dt_soft
+            if let Some(soft_dt) = inner.p1_data.soft_dt
                 && soft_dt.reason.reload
             {
                 // Case when there is a reload right after first cycle
@@ -144,7 +144,7 @@ where
                 let inner_conv = inner.convert_with(&mut converter);
                 process_output_of_lls_cseq_with_cutoff(&mut accum.instances, &inner_conv, None, Count::ONE);
                 // Record time until reload or hard downtime starts
-                match inner.p2_data.dt_soft {
+                match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => {
                         accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
                             + inner.p2_data.active.duration;

@@ -1,7 +1,7 @@
 use crate::{
     misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleDtHard, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
+    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConverter,
 };
 
@@ -16,14 +16,14 @@ pub(in crate::svc) struct CSeqLoopLimSin<T> {
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: T,
     // Optional hard downtime every loop
-    pub(in crate::svc) dt_hard: Option<CycleDtHard>,
+    pub(in crate::svc) hard_dt: Option<CycleHardDt>,
 }
 impl<T> CSeqLoopLimSin<T> {
     pub(super) fn get_first_cycle(&self) -> &T {
         &self.p1_data
     }
-    pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
-        self.dt_hard
+    pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
+        self.hard_dt
     }
 }
 impl<T> CSeqLoopLimSin<T>
@@ -53,7 +53,7 @@ impl<T> CSeqLoopLimSin<T> {
             p1_data: U::from(self.p1_data),
             p1_repeat_count: self.p1_repeat_count,
             p2_data: U::from(self.p2_data),
-            dt_hard: self.dt_hard,
+            hard_dt: self.hard_dt,
         }
     }
     pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLoopLimSin<U>
@@ -64,17 +64,17 @@ impl<T> CSeqLoopLimSin<T> {
             p1_data: converter.lib_convert(self.p1_data),
             p1_repeat_count: self.p1_repeat_count,
             p2_data: converter.lib_convert(self.p2_data),
-            dt_hard: self.dt_hard,
+            hard_dt: self.hard_dt,
         }
     }
     pub(super) fn optimize(self) -> CycleSeq<T>
     where
         T: Eq,
     {
-        match self.p1_data == self.p2_data && self.dt_hard.is_none() {
+        match self.p1_data == self.p2_data && self.hard_dt.is_none() {
             true => CycleSeq::Inf(CSeqInf {
                 data: self.p1_data,
-                dt_hard: None,
+                hard_dt: None,
             }),
             false => CycleSeq::LoopLimSin(self),
         }
@@ -83,10 +83,10 @@ impl<T> CSeqLoopLimSin<T> {
     where
         T: Eq,
     {
-        match self.p1_data == self.p2_data && self.dt_hard.is_none() {
+        match self.p1_data == self.p2_data && self.hard_dt.is_none() {
             true => CycleSeqLooped::Inf(CSeqInf {
                 data: self.p1_data,
-                dt_hard: None,
+                hard_dt: None,
             }),
             false => CycleSeqLooped::LoopLimSin(self),
         }

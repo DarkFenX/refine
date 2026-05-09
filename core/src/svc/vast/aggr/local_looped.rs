@@ -96,11 +96,11 @@ fn process_hard_dt<BG, T, A>(
     match cseq_conv {
         CycleSeqLooped::Inf(inner) => {
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
-            accum.time += inner.get_inner_duration() + inner.dt_hard.unwrap().duration;
+            accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
             process_output_of_lls_cseq_with_cutoff(&mut accum.instances, &inner, None, Count::ONE);
-            accum.time += inner.get_inner_duration() + inner.dt_hard.unwrap().duration;
+            accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
         }
     }
 }
