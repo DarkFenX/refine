@@ -19,6 +19,7 @@ pub(super) struct AggrProjInvData<T>
 where
     T: Copy,
 {
+    // TODO: consider if fields can be made private (and check if base output users use it properly)
     pub(super) base_output: Output<T>,
     pub(super) str_mult: PValue,
     instance_limit: Option<PValue>,

@@ -1,8 +1,8 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrPartDataTail, get_full_repeat_count, process_output_of_lls_cseq_with_cutoff,
-        process_output_of_cycle_with_cutoff,
+        AggrPartDataTail, get_full_repeat_count, process_output_of_cycle_with_cutoff,
+        process_output_of_lls_cseq_with_cutoff,
     },
     traits::InstanceDuration,
 };

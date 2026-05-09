@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::{process_output_of_lls_cseq_with_cutoff, process_output_of_cycle_with_cutoff},
+    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_cseq_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -73,11 +73,7 @@ fn process_regular<BG, T, A>(
             &inv_local,
             cycle_part.data.active.chargedness,
         );
-        accum.add_instance(
-            cycle_output.get_instance(),
-            None,
-            cycle_output.get_instance_count() * cycle_part.repeat_count,
-        );
+        accum.add_output_full(&cycle_output, None, cycle_part.repeat_count);
         accum.time += cycle_part.data.get_main_duration() * cycle_part.repeat_count.into_pvalue();
     }
 }

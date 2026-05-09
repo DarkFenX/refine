@@ -44,6 +44,17 @@ impl<T> CSeqLoopLimSin<T> {
             }),
         }
     }
+    pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLoopLimSin<U>
+    where
+        C: LibConverter<T, U>,
+    {
+        CSeqLoopLimSin {
+            p1_data: converter.lib_convert(self.p1_data),
+            p1_repeat_count: self.p1_repeat_count,
+            p2_data: converter.lib_convert(self.p2_data),
+            dt_hard: self.dt_hard,
+        }
+    }
     pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
     where
         C: LibConverter<T, U>,

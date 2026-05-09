@@ -1,6 +1,6 @@
 use super::{
     shared::get_item_ship_limit,
-    traits::{HasImpact, InstanceLimit},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -17,12 +17,14 @@ pub(super) struct AggrLocalInvData<T>
 where
     T: Copy,
 {
+    // Fields are private intentionally; they are supposed to be processed to get an output usable
+    // elsewhere
     output: Output<T>,
     instance_limit: Option<PValue>,
 }
 impl<T> AggrLocalInvData<T>
 where
-    T: Copy + HasImpact,
+    T: Copy,
 {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
@@ -33,6 +35,7 @@ where
         base_xargs: BX,
     ) -> Option<Self>
     where
+        T: HasImpact,
         BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     {
         let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
@@ -43,6 +46,12 @@ where
             output,
             instance_limit: get_item_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
         })
+    }
+    pub(super) fn get_output_completion_duration(&self) -> PValue
+    where
+        T: InstanceDuration,
+    {
+        self.output.get_completion_duration()
     }
 }
 
