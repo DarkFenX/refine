@@ -1,13 +1,12 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::AggrPartDataTail,
+    local_shared::{AggrLocalInvData, LocalConverter},
     shared_time::aggr_by_time,
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
-    num::{PValue, Value},
+    num::PValue,
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
         SvcCtx,
@@ -15,7 +14,6 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
-    util::LibConverter,
 };
 
 // Local effects, aggregates total output by specified time
@@ -45,35 +43,4 @@ where
     aggr_by_time(cseq_conv, None, &mut accum.instances, time);
     accum.time += time;
     true
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Converter
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
-where
-    BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-{
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
-        let output = get_local_output(
-            self.ctx,
-            self.calc,
-            self.item_uid,
-            self.ospec,
-            self.inv_local,
-            input.active.chargedness,
-        );
-        let main_duration = input.get_main_duration();
-        let tail_duration = output.get_completion_duration() - main_duration;
-        let tail_duration = match tail_duration > Value::ZERO {
-            true => Some(PValue::from_value_unchecked(tail_duration)),
-            false => None,
-        };
-        AggrPartDataTail {
-            cycle_main_duration: main_duration,
-            cycle_tail_duration: tail_duration,
-            output,
-        }
-    }
 }

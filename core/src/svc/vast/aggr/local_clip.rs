@@ -15,7 +15,6 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
-    util::LibConverter,
 };
 
 // Local effects, considers only part of sequence until charges are out
@@ -116,12 +115,12 @@ where
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
             let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-            let data_conv = converter.lib_convert(inner.data);
-            process_output_of_cycle_with_cutoff(&mut accum.instances, &data_conv, None, Count::ONE);
+            let inner_conv = inner.convert_with(&mut converter);
+            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_conv.data, None, Count::ONE);
             // Record time until reload or hard downtime starts
             match inner.data.dt_soft {
                 Some(soft_dt) if soft_dt.reason.reload => accum.time += inner.data.active.duration,
-                _ => accum.time += data_conv.cycle_main_duration,
+                _ => accum.time += inner_conv.data.cycle_main_duration,
             }
             true
         }

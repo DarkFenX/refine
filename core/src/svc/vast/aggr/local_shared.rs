@@ -1,13 +1,14 @@
 use super::{
-    shared::get_item_ship_limit,
+    shared::{AggrPartDataTail, get_item_ship_limit},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
-    num::{Count, PValue, UnitInterval},
+    num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectLocalOpcSpec},
-    svc::{SvcCtx, calc::Calc, output::Output},
+    svc::{SvcCtx, calc::Calc, cycle::CycleDataFull, output::Output},
     ud::UItemId,
+    util::LibConverter,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +88,33 @@ where
             item_uid,
             ospec,
             inv_local,
+        }
+    }
+}
+impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
+        let output = get_local_output(
+            self.ctx,
+            self.calc,
+            self.item_uid,
+            self.ospec,
+            self.inv_local,
+            input.active.chargedness,
+        );
+        let main_duration = input.get_main_duration();
+        let tail_duration = output.get_completion_duration() - main_duration;
+        let tail_duration = match tail_duration > Value::ZERO {
+            true => Some(PValue::from_value_unchecked(tail_duration)),
+            false => None,
+        };
+        AggrPartDataTail {
+            cycle_main_duration: main_duration,
+            cycle_tail_duration: tail_duration,
+            output,
         }
     }
 }

@@ -50,7 +50,7 @@ impl<T> CSeqInf<T> {
             dt_hard: self.dt_hard,
         }
     }
-    pub(super) fn convert_with<C, U>(self, converter: &mut C) -> CSeqInf<U>
+    pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqInf<U>
     where
         C: LibConverter<T, U>,
     {
