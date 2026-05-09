@@ -8,7 +8,7 @@ use super::{
 use crate::{
     misc::Spool,
     nd::NEffectOutputGetter,
-    num::{PValue, Value},
+    num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -67,11 +67,7 @@ where
             cycle_data.active.chargedness,
         )
     };
-    accum.add_instance(
-        cycle_output.get_instance(),
-        inv_proj.chance_mult,
-        cycle_output.get_instance_count(),
-    );
+    accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
     accum.time += cycle_data.get_main_duration();
     true
 }
