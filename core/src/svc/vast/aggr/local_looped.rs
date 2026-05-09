@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::{process_full_cycle_with_cutoff, process_full_loop_lim_sin_with_cutoff},
+    shared::{process_output_of_lls_cseq_with_cutoff, process_output_of_cycle_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -99,11 +99,11 @@ fn process_hard_dt<BG, T, A>(
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     match cseq_conv {
         CycleSeqLooped::Inf(inner) => {
-            process_full_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
+            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
             accum.time += inner.get_inner_duration() + inner.dt_hard.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
-            process_full_loop_lim_sin_with_cutoff(&mut accum.instances, &inner, None, Count::ONE);
+            process_output_of_lls_cseq_with_cutoff(&mut accum.instances, &inner, None, Count::ONE);
             accum.time += inner.get_inner_duration() + inner.dt_hard.unwrap().duration;
         }
     }

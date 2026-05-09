@@ -1,8 +1,8 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrPartDataTail, get_full_repeat_count, process_full_cycle_with_cutoff, process_full_loop_lim_sin_with_cutoff,
-        process_incomplete_cycle,
+        AggrPartDataTail, get_full_repeat_count, process_output_of_lls_cseq_with_cutoff,
+        process_output_of_cycle_with_cutoff,
     },
     traits::InstanceDuration,
 };
@@ -67,12 +67,8 @@ fn process_single_regular<T, A>(
         false => PValue::from_value_unchecked(*time),
     };
     match ptime >= data.get_duration_with_tail() {
-        true => accum.add_instance(
-            data.output.get_instance(),
-            chance_mult,
-            data.output.get_instance_count(),
-        ),
-        false => process_incomplete_cycle(accum, *time, &data.output, chance_mult, Count::ONE),
+        true => accum.add_output_full(&data.output, chance_mult, Count::ONE),
+        false => accum.add_output_time_limited(&data.output, chance_mult, Count::ONE, *time),
     }
     *time -= data.cycle_main_duration;
 }
@@ -96,16 +92,12 @@ fn process_limited_regular<T, A>(
         data.cycle_tail_duration,
     ));
     if full_repeat_count > Count::ZERO {
-        accum.add_instance(
-            data.output.get_instance(),
-            chance_mult,
-            data.output.get_instance_count() * full_repeat_count,
-        );
+        accum.add_output_full(&data.output, chance_mult, full_repeat_count);
         *time -= data.cycle_main_duration * full_repeat_count.into_pvalue();
     }
     let mut remaining_repeat_count = repeat_limit - full_repeat_count;
     while *time >= Value::ZERO && remaining_repeat_count > Count::ZERO {
-        process_incomplete_cycle(accum, *time, &data.output, chance_mult, Count::ONE);
+        accum.add_output_time_limited(&data.output, chance_mult, Count::ONE, *time);
         *time -= data.cycle_main_duration;
         remaining_repeat_count -= Count::ONE;
     }
@@ -125,15 +117,11 @@ fn process_infinite_regular<T, A>(
     }
     let full_repeat_count = get_full_repeat_count(*time, data.cycle_main_duration, data.cycle_tail_duration);
     if full_repeat_count > Count::ZERO {
-        accum.add_instance(
-            data.output.get_instance(),
-            chance_mult,
-            data.output.get_instance_count() * full_repeat_count,
-        );
+        accum.add_output_full(&data.output, chance_mult, full_repeat_count);
         *time -= data.cycle_main_duration * full_repeat_count.into_pvalue();
     }
     while *time >= Value::ZERO {
-        process_incomplete_cycle(accum, *time, &data.output, chance_mult, Count::ONE);
+        accum.add_output_time_limited(&data.output, chance_mult, Count::ONE, *time);
         *time -= data.cycle_main_duration;
     }
 }
@@ -149,7 +137,8 @@ fn process_infinite_hard_dt<T, A>(
     A: SeqInstanceAccum<T>,
 {
     let mut time = ptime.into_value();
-    // Calculate how many full durations we can fit into given time, considering hard downtimes
+    // Calculate how many full durations we can fit into given time, considering hard downtimes, and
+    // calculate remaining time
     let full_duration = data.cycle_main_duration + dt_hard.duration;
     let mut full_repeat_count = Count::from_value_trunced(time / full_duration);
     time -= full_duration * full_repeat_count.into_pvalue();
@@ -157,12 +146,13 @@ fn process_infinite_hard_dt<T, A>(
         full_repeat_count += Count::ONE;
         time -= full_duration;
     }
+    // Add full repeats
     if full_repeat_count > Count::ZERO {
-        process_full_cycle_with_cutoff(accum, data, chance_mult, full_repeat_count);
+        process_output_of_cycle_with_cutoff(accum, data, chance_mult, full_repeat_count);
     }
     // If there is still time left, process cycles which only partially fit
     while time >= Value::ZERO {
-        process_incomplete_cycle(accum, time, &data.output, chance_mult, Count::ONE);
+        accum.add_output_time_limited(&data.output, chance_mult, Count::ONE, time);
     }
 }
 
@@ -183,16 +173,12 @@ fn process_loop_lim_sin_regular<T, A>(
     // Process full loop repeats
     let full_repeat_count = get_full_repeat_count(time, full_inner_duration, full_tail_duration);
     if full_repeat_count > Count::ZERO {
-        accum.add_instance(
-            cseq.p1_data.output.get_instance(),
+        accum.add_output_full(
+            &cseq.p1_data.output,
             chance_mult,
-            cseq.p1_data.output.get_instance_count() * cseq.p1_repeat_count * full_repeat_count,
+            full_repeat_count * cseq.p1_repeat_count,
         );
-        accum.add_instance(
-            cseq.p2_data.output.get_instance(),
-            chance_mult,
-            cseq.p2_data.output.get_instance_count() * full_repeat_count,
-        );
+        accum.add_output_full(&cseq.p2_data.output, chance_mult, full_repeat_count);
         time -= full_inner_duration * full_repeat_count.into_pvalue();
     }
     // While loop instead of if is for cases of really long tails, which never happen in EVE but can
@@ -222,7 +208,7 @@ fn process_loop_lim_sin_hard_dt<T, A>(
     }
     // Apply full loops
     if loop_full_repeat_count > Count::ZERO {
-        process_full_loop_lim_sin_with_cutoff(accum, &cseq, chance_mult, loop_full_repeat_count);
+        process_output_of_lls_cseq_with_cutoff(accum, &cseq, chance_mult, loop_full_repeat_count);
     }
     // Apply partial loop
     if time >= Value::ZERO {
@@ -247,23 +233,19 @@ fn process_loop_lim_sin_incomplete<T, A>(
         cseq.p1_data.cycle_tail_duration,
     ));
     if p1_full_repeat_count > Count::ZERO {
-        accum.add_instance(
-            cseq.p1_data.output.get_instance(),
-            chance_mult,
-            cseq.p1_data.output.get_instance_count() * p1_full_repeat_count,
-        );
+        accum.add_output_full(&cseq.p1_data.output, chance_mult, p1_full_repeat_count);
         *time -= cseq.p1_data.cycle_main_duration * p1_full_repeat_count.into_pvalue();
         p1_remaining_repeat_count -= p1_full_repeat_count;
     }
     // Process partial part 1 repeats
     while *time >= Value::ZERO && p1_remaining_repeat_count > Count::ZERO {
-        process_incomplete_cycle(accum, *time, &cseq.p1_data.output, chance_mult, Count::ONE);
+        accum.add_output_time_limited(&cseq.p1_data.output, chance_mult, Count::ONE, *time);
         *time -= cseq.p1_data.cycle_main_duration;
         p1_remaining_repeat_count -= Count::ONE;
     }
     // Process partial part 2
     if *time >= Value::ZERO {
-        process_incomplete_cycle(accum, *time, &cseq.p2_data.output, chance_mult, Count::ONE);
+        accum.add_output_time_limited(&cseq.p2_data.output, chance_mult, Count::ONE, *time);
         *time -= cseq.p2_data.cycle_main_duration;
     }
 }

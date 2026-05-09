@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::process_full_cycle_with_cutoff,
+    shared::{process_output_of_cycle_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -15,6 +15,7 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Local effects, considers only part of sequence until charges are out
@@ -115,16 +116,34 @@ where
     T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
-    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    match cseq_conv {
+    match cseq {
+        // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
-            process_full_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
+            let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
+            let conv_data = converter.lib_convert(inner.data);
+            process_output_of_cycle_with_cutoff(&mut accum.instances, &conv_data, None, Count::ONE);
             // Record only active duration before reload, ignore hard downtime duration
             accum.time += inner.get_inner_duration();
             true
         }
-        CycleSeq::LoopLimSin(inner) => true,
+        CycleSeq::LoopLimSin(inner) => {
+            match inner.p1_data.dt_soft {
+                Some(soft_dt) if soft_dt.reason.reload => {
+                    let loop_inner_duration = inner.get_inner_duration();
+                    match inv_local.output.get_completion_duration() > loop_inner_duration {
+                        true => process_output_time_limited(
+                            accum,
+                            loop_inner_duration.into_value(),
+                            &inv_local.output,
+                            None,
+                            Count::ONE,
+                        ),
+                        false => (),
+                    }
+                }
+            }
+            true
+        }
         _ => false,
     }
 }
