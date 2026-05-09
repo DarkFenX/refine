@@ -34,40 +34,6 @@ where
             Self::LoopLimSin(inner) => inner.get_hard_dt(),
         }
     }
-    pub(in crate::svc) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
-        match self {
-            Self::Lim(inner) => inner.try_loop_cseq(),
-            Self::Inf(inner) => inner.try_loop_cseq(),
-            Self::LimInf(inner) => inner.try_loop_cseq(),
-            Self::LimSinInf(inner) => inner.try_loop_cseq(),
-            Self::LoopLimSin(inner) => inner.try_loop_cseq(),
-        }
-    }
-    pub(in crate::svc) fn convert_and_optimize<U>(self) -> CycleSeq<U>
-    where
-        U: From<T> + Eq,
-    {
-        match self {
-            Self::Lim(inner) => inner.convert_and_optimize(),
-            Self::Inf(inner) => inner.convert_and_optimize(),
-            Self::LimInf(inner) => inner.convert_and_optimize(),
-            Self::LimSinInf(inner) => inner.convert_and_optimize(),
-            Self::LoopLimSin(inner) => inner.convert_and_optimize(),
-        }
-    }
-    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
-    where
-        C: LibConverter<T, U>,
-        U: Eq,
-    {
-        match self {
-            Self::Lim(inner) => inner.convert_with_and_optimize(converter),
-            Self::Inf(inner) => inner.convert_with_and_optimize(converter),
-            Self::LimInf(inner) => inner.convert_with_and_optimize(converter),
-            Self::LimSinInf(inner) => inner.convert_with_and_optimize(converter),
-            Self::LoopLimSin(inner) => inner.convert_with_and_optimize(converter),
-        }
-    }
 }
 
 pub(in crate::svc) enum CycleSeqLooped<T> {
@@ -90,14 +56,63 @@ where
             Self::LoopLimSin(inner) => inner.get_hard_dt(),
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> CycleSeq<T>
+where
+    T: Copy,
+{
+    pub(in crate::svc) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
+        match self {
+            Self::Lim(inner) => inner.try_loop_cseq(),
+            Self::Inf(inner) => inner.try_loop_cseq(),
+            Self::LimInf(inner) => inner.try_loop_cseq(),
+            Self::LimSinInf(inner) => inner.try_loop_cseq(),
+            Self::LoopLimSin(inner) => inner.try_loop_cseq(),
+        }
+    }
+    pub(in crate::svc) fn convert_and_optimize<U>(self) -> CycleSeq<U>
+    where
+        U: From<T> + Eq,
+    {
+        match self {
+            Self::Lim(inner) => inner.convert().optimize(),
+            Self::Inf(inner) => inner.convert().optimize(),
+            Self::LimInf(inner) => inner.convert().optimize(),
+            Self::LimSinInf(inner) => inner.convert().optimize(),
+            Self::LoopLimSin(inner) => inner.convert().optimize(),
+        }
+    }
+    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
+    where
+        C: LibConverter<T, U>,
+        U: Eq,
+    {
+        match self {
+            Self::Lim(inner) => inner.convert_with(converter).optimize(),
+            Self::Inf(inner) => inner.convert_with(converter).optimize(),
+            Self::LimInf(inner) => inner.convert_with(converter).optimize(),
+            Self::LimSinInf(inner) => inner.convert_with(converter).optimize(),
+            Self::LoopLimSin(inner) => inner.convert_with(converter).optimize(),
+        }
+    }
+}
+
+impl<T> CycleSeqLooped<T>
+where
+    T: Copy,
+{
     pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeqLooped<U>
     where
         C: LibConverter<T, U>,
         U: Eq,
     {
         match self {
-            Self::Inf(inner) => inner.looped_convert_with_and_optimize(converter),
-            Self::LoopLimSin(inner) => inner.looped_convert_with_and_optimize(converter),
+            Self::Inf(inner) => inner.convert_with(converter).optimize_looped(),
+            Self::LoopLimSin(inner) => inner.convert_with(converter).optimize_looped(),
         }
     }
 }

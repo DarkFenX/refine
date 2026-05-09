@@ -22,43 +22,6 @@ impl<T> CSeqLimInf<T> {
     pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
         None
     }
-    pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
-    where
-        U: From<T> + Eq,
-    {
-        let p1_data_conv = U::from(self.p1_data);
-        let p2_data_conv = U::from(self.p2_data);
-        match p1_data_conv == p2_data_conv {
-            true => CycleSeq::Inf(CSeqInf {
-                data: p1_data_conv,
-                dt_hard: None,
-            }),
-            false => CycleSeq::LimInf(CSeqLimInf {
-                p1_data: p1_data_conv,
-                p1_repeat_count: self.p1_repeat_count,
-                p2_data: p2_data_conv,
-            }),
-        }
-    }
-    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
-    where
-        C: LibConverter<T, U>,
-        U: Eq,
-    {
-        let p1_data_conv = converter.lib_convert(self.p1_data);
-        let p2_data_conv = converter.lib_convert(self.p2_data);
-        match p1_data_conv == p2_data_conv {
-            true => CycleSeq::Inf(CSeqInf {
-                data: p1_data_conv,
-                dt_hard: None,
-            }),
-            false => CycleSeq::LimInf(CSeqLimInf {
-                p1_data: p1_data_conv,
-                p1_repeat_count: self.p1_repeat_count,
-                p2_data: p2_data_conv,
-            }),
-        }
-    }
 }
 impl<T> CSeqLimInf<T>
 where
@@ -70,6 +33,49 @@ where
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimInfPartIter<'_, T> {
         CSeqLimInfPartIter::new(self)
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> CSeqLimInf<T> {
+    pub(super) fn convert<U>(self) -> CSeqLimInf<U>
+    where
+        U: From<T>,
+    {
+        CSeqLimInf {
+            p1_data: U::from(self.p1_data),
+            p1_repeat_count: self.p1_repeat_count,
+            p2_data: U::from(self.p2_data),
+        }
+    }
+    pub(super) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLimInf<U>
+    where
+        C: LibConverter<T, U>,
+    {
+        CSeqLimInf {
+            p1_data: converter.lib_convert(self.p1_data),
+            p1_repeat_count: self.p1_repeat_count,
+            p2_data: converter.lib_convert(self.p2_data),
+        }
+    }
+    pub(super) fn optimize(self) -> CycleSeq<T>
+    where
+        T: Eq,
+    {
+        match self.p1_data == self.p2_data {
+            true => CycleSeq::Inf(CSeqInf {
+                data: self.p1_data,
+                dt_hard: None,
+            }),
+            false => CycleSeq::LimInf(self),
+        }
+    }
+}
+impl<T> CSeqLimInf<T>
+where
+    T: Copy,
+{
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(CSeqInf {
             data: self.p2_data,

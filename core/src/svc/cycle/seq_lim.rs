@@ -20,27 +20,6 @@ impl<T> CSeqLim<T> {
     pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
         None
     }
-    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
-        None
-    }
-    pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
-    where
-        U: From<T>,
-    {
-        CycleSeq::Lim(CSeqLim {
-            data: self.data.into(),
-            repeat_count: self.repeat_count,
-        })
-    }
-    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
-    where
-        C: LibConverter<T, U>,
-    {
-        CycleSeq::Lim(CSeqLim {
-            data: converter.lib_convert(self.data),
-            repeat_count: self.repeat_count,
-        })
-    }
 }
 impl<T> CSeqLim<T>
 where
@@ -51,6 +30,36 @@ where
     }
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
         CSeqLimPartIter::new(self)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> CSeqLim<T> {
+    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
+        None
+    }
+    pub(super) fn convert<U>(self) -> CSeqLim<U>
+    where
+        U: From<T>,
+    {
+        CSeqLim {
+            data: self.data.into(),
+            repeat_count: self.repeat_count,
+        }
+    }
+    pub(super) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLim<U>
+    where
+        C: LibConverter<T, U>,
+    {
+        CSeqLim {
+            data: converter.lib_convert(self.data),
+            repeat_count: self.repeat_count,
+        }
+    }
+    pub(super) fn optimize(self) -> CycleSeq<T> {
+        CycleSeq::Lim(self)
     }
 }
 

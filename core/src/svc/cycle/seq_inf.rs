@@ -21,33 +21,6 @@ impl<T> CSeqInf<T> {
     pub(super) fn get_hard_dt(&self) -> Option<CycleDtHard> {
         self.dt_hard
     }
-    pub(super) fn convert_and_optimize<U>(self) -> CycleSeq<U>
-    where
-        U: From<T>,
-    {
-        CycleSeq::Inf(CSeqInf {
-            data: self.data.into(),
-            dt_hard: self.dt_hard,
-        })
-    }
-    pub(in crate::svc) fn convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeq<U>
-    where
-        C: LibConverter<T, U>,
-    {
-        CycleSeq::Inf(CSeqInf {
-            data: converter.lib_convert(self.data),
-            dt_hard: self.dt_hard,
-        })
-    }
-    pub(super) fn looped_convert_with_and_optimize<C, U>(self, converter: &mut C) -> CycleSeqLooped<U>
-    where
-        C: LibConverter<T, U>,
-    {
-        CycleSeqLooped::Inf(CSeqInf {
-            data: converter.lib_convert(self.data),
-            dt_hard: self.dt_hard,
-        })
-    }
 }
 impl<T> CSeqInf<T>
 where
@@ -62,6 +35,41 @@ where
     pub(super) fn iter_cseq_parts_looped(&self) -> CSeqLoopedInfPartIter<'_, T> {
         CSeqLoopedInfPartIter::new(self)
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> CSeqInf<T> {
+    pub(super) fn convert<U>(self) -> CSeqInf<U>
+    where
+        U: From<T>,
+    {
+        CSeqInf {
+            data: self.data.into(),
+            dt_hard: self.dt_hard,
+        }
+    }
+    pub(super) fn convert_with<C, U>(self, converter: &mut C) -> CSeqInf<U>
+    where
+        C: LibConverter<T, U>,
+    {
+        CSeqInf {
+            data: converter.lib_convert(self.data),
+            dt_hard: self.dt_hard,
+        }
+    }
+    pub(super) fn optimize(self) -> CycleSeq<T> {
+        CycleSeq::Inf(self)
+    }
+    pub(super) fn optimize_looped(self) -> CycleSeqLooped<T> {
+        CycleSeqLooped::Inf(self)
+    }
+}
+impl<T> CSeqInf<T>
+where
+    T: Copy,
+{
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(*self))
     }
