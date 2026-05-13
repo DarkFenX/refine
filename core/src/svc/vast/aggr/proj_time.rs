@@ -337,23 +337,20 @@ fn process_single_spool<BG, T, A>(
     if *time < Value::ZERO {
         return;
     }
-    let cycle_completion_duration = cycle_data
-        .active_duration
-        .max(inv_proj.base_output.get_completion_duration())
-        .into_value();
-    let part_str_mult = get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, inv_proj, cycle_data.chargedness);
+    let cycle_main_duration = cycle_data.get_main_duration();
+    let part_str_mult =
+        get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, inv_proj, cycle_data.active.chargedness);
     let cycle_spool = inv_spool.calc_cycle_spool(*uninterrupted_cycles);
     let cycle_output = get_proj_spool_cycle_output(inv_proj, part_str_mult, cycle_spool);
+    let cycle_completion_duration = cycle_main_duration
+        .max(cycle_output.get_completion_duration())
+        .into_value();
     match *time >= cycle_completion_duration {
-        true => accum.add_instance(
-            cycle_output.get_instance(),
-            inv_proj.chance_mult,
-            cycle_output.get_instance_count(),
-        ),
-        false => process_output_time_limited(accum, *time, &cycle_output, inv_proj.chance_mult, Count::ONE),
+        true => accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE),
+        false => accum.add_output_time_limited(&cycle_output, inv_proj.chance_mult, Count::ONE, *time),
     }
-    *time -= cycle_data.active_duration;
-    match cycle_data.interrupt {
+    *time -= cycle_main_duration;
+    match cycle_data.soft_dt {
         Some(_) => *uninterrupted_cycles = Count::ZERO,
         None => *uninterrupted_cycles += Count::ONE,
     }
