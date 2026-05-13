@@ -13,7 +13,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataDurCharge, CycleDataFull, CycleSeq, CycleSeqLooped},
+        cycle::{CycleDataFull, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
 };
@@ -42,15 +42,7 @@ where
     };
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        None => aggr_regular(
-            ctx,
-            calc,
-            projector_uid,
-            cseq.convert_and_optimize(),
-            ospec,
-            inv_proj,
-            accum,
-        ),
+        None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
     }
 }
 
@@ -58,7 +50,7 @@ fn aggr_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: CycleSeq<CycleDataDurCharge>,
+    cseq: &CycleSeq<CycleDataFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut SeqAccum<A>,
@@ -76,14 +68,16 @@ where
         if cycle_part.repeat_count == Count::ZERO {
             continue;
         }
-        let cycle_output =
-            get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
-        accum.add_instance(
-            cycle_output.get_instance(),
-            inv_proj.chance_mult,
-            cycle_output.get_instance_count() * cycle_part.repeat_count,
+        let cycle_output = get_proj_regular_output(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            cycle_part.data.active.chargedness,
         );
-        accum.time += cycle_part.data.active_duration * cycle_part.repeat_count.into_pvalue();
+        accum.add_output_full(&cycle_output, inv_proj.chance_mult, cycle_part.repeat_count);
+        accum.time += cycle_part.data.get_main_duration() * cycle_part.repeat_count.into_pvalue();
     }
     true
 }
@@ -161,12 +155,15 @@ where
 
 fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> Count {
     let mut uninterrupted_cycles = Count::ZERO;
-    let mut interruptions = false;
+    if cseq.get_hard_dt().is_some() {
+        return uninterrupted_cycles;
+    }
+    let mut downtimes = false;
     for cycle_part in cseq.iter_cseq_parts() {
-        match cycle_part.data.interrupt {
+        match cycle_part.data.soft_dt {
             Some(_) => {
                 uninterrupted_cycles = Count::ZERO;
-                interruptions = true;
+                downtimes = true;
             }
             None => {
                 uninterrupted_cycles += cycle_part.repeat_count;
@@ -174,7 +171,7 @@ fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &Ag
         }
     }
     // If there are no interruptions at all, just set max possible spool right away
-    if !interruptions {
+    if !downtimes {
         uninterrupted_cycles = inv_spool.cycles_to_max;
     }
     uninterrupted_cycles
