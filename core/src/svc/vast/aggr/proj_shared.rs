@@ -1,14 +1,15 @@
 use super::{
-    shared::get_item_ship_limit,
-    traits::{HasImpact, InstanceLimit},
+    shared::{AggrPartDataTail, get_item_ship_limit},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     misc::{AttrSpec, EffectSpec},
     nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec, REffectResist},
-    svc::{SvcCtx, calc::Calc, funcs, output::Output},
+    svc::{SvcCtx, calc::Calc, cycle::CycleDataFull, funcs, output::Output},
     ud::UItemId,
+    util::LibConverter,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,6 +187,33 @@ where
             projector_uid,
             ospec,
             inv_proj,
+        }
+    }
+}
+impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
+        let output = get_proj_regular_output(
+            self.ctx,
+            self.calc,
+            self.projector_uid,
+            self.ospec,
+            self.inv_proj,
+            input.active.chargedness,
+        );
+        let main_duration = input.get_main_duration();
+        let tail_duration = output.get_completion_duration() - main_duration;
+        let tail_duration = match tail_duration > Value::ZERO {
+            true => Some(PValue::from_value_unchecked(tail_duration)),
+            false => None,
+        };
+        AggrPartDataTail {
+            cycle_main_duration: main_duration,
+            cycle_tail_duration: tail_duration,
+            output,
         }
     }
 }

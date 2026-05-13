@@ -1,10 +1,10 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
+        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
-    shared::{AggrPartDataTail, get_full_repeat_count, process_output_time_limited},
+    shared::get_full_repeat_count,
     shared_time::aggr_by_time,
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -18,7 +18,6 @@ use crate::{
         cycle::{CycleDataFull, CycleSeq},
     },
     ud::UItemId,
-    util::LibConverter,
 };
 
 // Projected effects, aggregates total output by specified time
@@ -91,28 +90,6 @@ fn aggr_regular<BG, T, A>(
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
-}
-
-impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
-where
-    BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-{
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
-        let output = get_proj_regular_output(
-            self.ctx,
-            self.calc,
-            self.projector_uid,
-            self.ospec,
-            self.inv_proj,
-            input.chargedness,
-        );
-        AggrPartDataTail {
-            cycle_main_duration: input.active_duration,
-            cycle_tail_duration: PValue::from_value_clamped(output.get_completion_duration() - input.active_duration),
-            output,
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
