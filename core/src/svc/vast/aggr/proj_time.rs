@@ -112,11 +112,11 @@ fn aggr_spool<BG, T, A>(
 {
     match cseq {
         CycleSeq::Lim(inner) => {
-            match inner.data.interrupt.is_some() {
+            match inner.data.soft_dt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                    let cseq_conv = inner.convert_with_and_optimize(&mut converter);
+                    let cseq_conv = inner.convert_with(&mut converter).optimize();
                     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
@@ -140,11 +140,11 @@ fn aggr_spool<BG, T, A>(
             }
         }
         CycleSeq::Inf(inner) => {
-            match inner.data.interrupt.is_some() {
+            match inner.data.soft_dt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                    let cseq_conv = inner.convert_with_and_optimize(&mut converter);
+                    let cseq_conv = inner.convert_with(&mut converter).optimize();
                     aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 // Spool is considered
@@ -166,11 +166,11 @@ fn aggr_spool<BG, T, A>(
                 }
             }
         }
-        CycleSeq::LimInf(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
+        CycleSeq::LimInf(inner) => match inner.p1_data.soft_dt.is_some() && inner.p2_data.soft_dt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let cseq_conv = inner.convert_with_and_optimize(&mut converter);
+                let cseq_conv = inner.convert_with(&mut converter).optimize();
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
@@ -203,63 +203,63 @@ fn aggr_spool<BG, T, A>(
                 );
             }
         },
-        CycleSeq::LimSinInf(inner) => match inner.p1_data.interrupt.is_some()
-            && inner.p2_data.interrupt.is_some()
-            && inner.p3_data.interrupt.is_some()
-        {
+        CycleSeq::LimSinInf(inner) => {
+            match inner.p1_data.soft_dt.is_some() && inner.p2_data.soft_dt.is_some() && inner.p3_data.soft_dt.is_some()
+            {
+                // Non-spool handling for case when interruptions happen every cycle
+                true => {
+                    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                    let cseq_conv = inner.convert_with(&mut converter).optimize();
+                    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                }
+                false => {
+                    let mut time = ptime.into_value();
+                    let mut uninterrupted_cycles = Count::ZERO;
+                    process_limited_spool(
+                        ctx,
+                        calc,
+                        projector_uid,
+                        ospec,
+                        &inv_proj,
+                        &inv_spool,
+                        inner.p1_data,
+                        accum,
+                        &mut time,
+                        &mut uninterrupted_cycles,
+                        inner.p1_repeat_count,
+                    );
+                    process_single_spool(
+                        ctx,
+                        calc,
+                        projector_uid,
+                        ospec,
+                        &inv_proj,
+                        &inv_spool,
+                        inner.p2_data,
+                        accum,
+                        &mut time,
+                        &mut uninterrupted_cycles,
+                    );
+                    process_infinite_spool(
+                        ctx,
+                        calc,
+                        projector_uid,
+                        ospec,
+                        &inv_proj,
+                        &inv_spool,
+                        inner.p3_data,
+                        accum,
+                        &mut time,
+                        &mut uninterrupted_cycles,
+                    );
+                }
+            }
+        }
+        CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt.is_some() && inner.p2_data.soft_dt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => {
                 let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let cseq_conv = inner.convert_with_and_optimize(&mut converter);
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
-            }
-            false => {
-                let mut time = ptime.into_value();
-                let mut uninterrupted_cycles = Count::ZERO;
-                process_limited_spool(
-                    ctx,
-                    calc,
-                    projector_uid,
-                    ospec,
-                    &inv_proj,
-                    &inv_spool,
-                    inner.p1_data,
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                    inner.p1_repeat_count,
-                );
-                process_single_spool(
-                    ctx,
-                    calc,
-                    projector_uid,
-                    ospec,
-                    &inv_proj,
-                    &inv_spool,
-                    inner.p2_data,
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                );
-                process_infinite_spool(
-                    ctx,
-                    calc,
-                    projector_uid,
-                    ospec,
-                    &inv_proj,
-                    &inv_spool,
-                    inner.p3_data,
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                );
-            }
-        },
-        CycleSeq::LoopLimSin(inner) => match inner.p1_data.interrupt.is_some() && inner.p2_data.interrupt.is_some() {
-            // Non-spool handling for case when interruptions happen every cycle
-            true => {
-                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let cseq_conv = inner.convert_with_and_optimize(&mut converter);
+                let cseq_conv = inner.convert_with(&mut converter).optimize();
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime)
             }
             false => {

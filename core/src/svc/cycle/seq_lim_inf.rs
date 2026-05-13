@@ -49,7 +49,7 @@ impl<T> CSeqLimInf<T> {
             p2_data: U::from(self.p2_data),
         }
     }
-    pub(super) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLimInf<U>
+    pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLimInf<U>
     where
         C: LibConverter<T, U>,
     {
@@ -59,7 +59,7 @@ impl<T> CSeqLimInf<T> {
             p2_data: converter.lib_convert(self.p2_data),
         }
     }
-    pub(super) fn optimize(self) -> CycleSeq<T>
+    pub(in crate::svc) fn optimize(self) -> CycleSeq<T>
     where
         T: Eq,
     {

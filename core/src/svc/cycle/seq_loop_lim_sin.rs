@@ -67,7 +67,7 @@ impl<T> CSeqLoopLimSin<T> {
             hard_dt: self.hard_dt,
         }
     }
-    pub(super) fn optimize(self) -> CycleSeq<T>
+    pub(in crate::svc) fn optimize(self) -> CycleSeq<T>
     where
         T: Eq,
     {

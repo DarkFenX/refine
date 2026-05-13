@@ -49,7 +49,7 @@ impl<T> CSeqLim<T> {
             repeat_count: self.repeat_count,
         }
     }
-    pub(super) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLim<U>
+    pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLim<U>
     where
         C: LibConverter<T, U>,
     {
@@ -58,7 +58,7 @@ impl<T> CSeqLim<T> {
             repeat_count: self.repeat_count,
         }
     }
-    pub(super) fn optimize(self) -> CycleSeq<T> {
+    pub(in crate::svc) fn optimize(self) -> CycleSeq<T> {
         CycleSeq::Lim(self)
     }
 }

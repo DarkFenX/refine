@@ -59,7 +59,7 @@ impl<T> CSeqInf<T> {
             hard_dt: self.hard_dt,
         }
     }
-    pub(super) fn optimize(self) -> CycleSeq<T> {
+    pub(in crate::svc) fn optimize(self) -> CycleSeq<T> {
         CycleSeq::Inf(self)
     }
     pub(super) fn optimize_looped(self) -> CycleSeqLooped<T> {

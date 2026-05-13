@@ -5,10 +5,7 @@ use super::{
 use crate::{
     nd::NEffectBreacherAmount,
     num::Count,
-    svc::{
-        cycle::{CycleDataDur, CycleSeq},
-        output::Output,
-    },
+    svc::{cycle::CycleSeq, output::Output},
 };
 
 // Process breacher module cycle sequence + output per cycle into some kind of aggregated value,
