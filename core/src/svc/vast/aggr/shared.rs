@@ -74,7 +74,18 @@ where
     }
 }
 
-pub(super) fn get_full_repeat_count(
+pub(super) fn get_cycle_tail_duration(
+    cycle_main_duration: PValue,
+    output_completion_duration: PValue,
+) -> Option<PValue> {
+    let tail_duration = output_completion_duration - cycle_main_duration;
+    match tail_duration > Value::ZERO {
+        true => Some(PValue::from_value_unchecked(tail_duration)),
+        false => None,
+    }
+}
+
+pub(super) fn get_full_cycle_repeat_count(
     time: Value,
     cycle_main_duration: PValue,
     cycle_tail_duration: Option<PValue>,
@@ -101,7 +112,7 @@ pub(super) fn process_output_of_lls_cseq_with_cutoff<T, A>(
 {
     // Once hard downtime starts, instances cannot be applied
     let mut time = cseq.get_inner_duration().into_value();
-    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_repeat_count(
+    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_cycle_repeat_count(
         time,
         cseq.p1_data.cycle_main_duration,
         cseq.p1_data.cycle_tail_duration,

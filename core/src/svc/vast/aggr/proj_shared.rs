@@ -1,5 +1,5 @@
 use super::{
-    shared::{AggrPartDataTail, get_item_ship_limit},
+    shared::{AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -205,11 +205,7 @@ where
             input.active.chargedness,
         );
         let main_duration = input.get_main_duration();
-        let tail_duration = output.get_completion_duration() - main_duration;
-        let tail_duration = match tail_duration > Value::ZERO {
-            true => Some(PValue::from_value_unchecked(tail_duration)),
-            false => None,
-        };
+        let tail_duration = get_cycle_tail_duration(main_duration, output.get_completion_duration());
         AggrPartDataTail {
             cycle_main_duration: main_duration,
             cycle_tail_duration: tail_duration,

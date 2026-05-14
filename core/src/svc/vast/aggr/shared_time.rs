@@ -1,7 +1,7 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrPartDataTail, get_full_repeat_count, process_output_of_cycle_with_cutoff,
+        AggrPartDataTail, get_cycle_tail_duration, get_full_cycle_repeat_count, process_output_of_cycle_with_cutoff,
         process_output_of_lls_cseq_with_cutoff,
     },
     traits::InstanceDuration,
@@ -86,7 +86,7 @@ fn process_limited_regular<T, A>(
     if *time < Value::ZERO {
         return;
     }
-    let full_repeat_count = repeat_limit.min(get_full_repeat_count(
+    let full_repeat_count = repeat_limit.min(get_full_cycle_repeat_count(
         *time,
         data.cycle_main_duration,
         data.cycle_tail_duration,
@@ -115,7 +115,7 @@ fn process_infinite_regular<T, A>(
     if *time < Value::ZERO {
         return;
     }
-    let full_repeat_count = get_full_repeat_count(*time, data.cycle_main_duration, data.cycle_tail_duration);
+    let full_repeat_count = get_full_cycle_repeat_count(*time, data.cycle_main_duration, data.cycle_tail_duration);
     if full_repeat_count > Count::ZERO {
         accum.add_output_full(&data.output, chance_mult, full_repeat_count);
         *time -= data.cycle_main_duration * full_repeat_count.into_pvalue();
@@ -168,10 +168,13 @@ fn process_loop_lim_sin_regular<T, A>(
     let mut time = ptime.into_value();
     // Calculate total "tail time" for whole looped sequence. Data format implies that output can be
     // different, so theoretically tail from first part can be longer than second part with its tail
-    let full_tail_duration = get_loop_lim_sin_full_tail_duration(&cseq.p1_data, &cseq.p2_data);
-    let full_inner_duration = cseq.get_inner_duration();
+    let loop_tail_duration = get_cycle_tail_duration(
+        cseq.p2_data.cycle_main_duration,
+        cseq.p2_data.output.get_completion_duration(),
+    );
+    let loop_inner_duration = cseq.get_inner_duration();
     // Process full loop repeats
-    let full_repeat_count = get_full_repeat_count(time, full_inner_duration, full_tail_duration);
+    let full_repeat_count = get_full_cycle_repeat_count(time, loop_inner_duration, loop_tail_duration);
     if full_repeat_count > Count::ZERO {
         accum.add_output_full(
             &cseq.p1_data.output,
@@ -179,7 +182,7 @@ fn process_loop_lim_sin_regular<T, A>(
             full_repeat_count * cseq.p1_repeat_count,
         );
         accum.add_output_full(&cseq.p2_data.output, chance_mult, full_repeat_count);
-        time -= full_inner_duration * full_repeat_count.into_pvalue();
+        time -= loop_inner_duration * full_repeat_count.into_pvalue();
     }
     // While loop instead of if is for cases of really long tails, which never happen in EVE but can
     // happen in current data format
@@ -227,7 +230,7 @@ fn process_loop_lim_sin_incomplete<T, A>(
 {
     let mut p1_remaining_repeat_count = cseq.p1_repeat_count;
     // Process as many full part 1 repeats as time can fit
-    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_repeat_count(
+    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_cycle_repeat_count(
         *time,
         cseq.p1_data.cycle_main_duration,
         cseq.p1_data.cycle_tail_duration,
@@ -247,34 +250,5 @@ fn process_loop_lim_sin_incomplete<T, A>(
     if *time >= Value::ZERO {
         accum.add_output_time_limited(&cseq.p2_data.output, chance_mult, Count::ONE, *time);
         *time -= cseq.p2_data.cycle_main_duration;
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Helpers
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_loop_lim_sin_full_tail_duration<T>(
-    p1_data: &AggrPartDataTail<T>,
-    p2_data: &AggrPartDataTail<T>,
-) -> Option<PValue>
-where
-    T: Copy,
-{
-    match (p1_data.cycle_tail_duration, p2_data.cycle_tail_duration) {
-        (Some(p1_tail_duration), Some(p2_tail_duration)) => {
-            let p2_duration_with_tail = p2_data.cycle_main_duration + p2_tail_duration;
-            match p1_tail_duration > p2_duration_with_tail {
-                true => Some(PValue::from_value_unchecked(p1_tail_duration - p2_duration_with_tail)),
-                false => Some(p2_tail_duration),
-            }
-        }
-        (Some(p1_tail_duration), None) => match p1_tail_duration > p2_data.cycle_main_duration {
-            true => Some(PValue::from_value_unchecked(
-                p1_tail_duration - p2_data.cycle_main_duration,
-            )),
-            false => None,
-        },
-        (None, Some(p2_tail_duration)) => Some(p2_tail_duration),
-        (None, None) => None,
     }
 }
