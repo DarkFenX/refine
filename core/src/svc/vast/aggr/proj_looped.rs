@@ -1,10 +1,11 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, get_proj_regular_output, get_proj_spool_cycle_output,
+        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
-    traits::{HasImpact, InstanceLimit},
+    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_cseq_with_cutoff},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     nd::NEffectOutputGetter,
@@ -14,7 +15,6 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CycleDataFull, CycleSeq, CycleSeqLooped},
-        output::Output,
     },
     ud::UItemId,
 };
@@ -34,37 +34,40 @@ pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
-    A: SeqInstanceAccum<T>,
-{
-    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
-        Some(inv_proj) => inv_proj,
-        None => return false,
-    };
-    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
-    }
-}
-
-fn aggr_regular<BG, T, A>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
-    accum: &mut SeqAccum<A>,
-) -> bool
-where
-    BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let cseq = match cseq.try_loop_cseq() {
         Some(cseq) => cseq,
         None => return false,
     };
+    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
+        Some(inv_proj) => inv_proj,
+        None => return false,
+    };
+    let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
+    match (inv_spool, cseq.get_hard_dt()) {
+        (Some(inv_spool), Some(_)) => return false,
+        (Some(inv_spool), None) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
+        (None, Some(_)) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+        (None, None) => process_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+    }
+    true
+}
+
+fn process_regular<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: CycleSeqLooped<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    inv_proj: AggrProjInvData<T>,
+    accum: &mut SeqAccum<A>,
+) where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
     for cycle_part in cseq.iter_cseq_parts() {
         if cycle_part.repeat_count == Count::ZERO {
             continue;
@@ -80,28 +83,49 @@ where
         accum.add_output_full(&cycle_output, inv_proj.chance_mult, cycle_part.repeat_count);
         accum.time += cycle_part.data.get_main_duration() * cycle_part.repeat_count.into_pvalue();
     }
-    true
 }
 
-fn aggr_spool<BG, T, A>(
+fn process_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: CycleSeqLooped<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    inv_proj: AggrProjInvData<T>,
+    accum: &mut SeqAccum<A>,
+) where
+    BG: NEffectOutputGetter,
+    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    match cseq_conv {
+        CycleSeqLooped::Inf(inner) => {
+            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, inv_proj.chance_mult, Count::ONE);
+            accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
+        }
+        CycleSeqLooped::LoopLimSin(inner) => {
+            process_output_of_lls_cseq_with_cutoff(&mut accum.instances, &inner, inv_proj.chance_mult, Count::ONE);
+            accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
+        }
+    }
+}
+
+fn process_spool<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: CycleSeqLooped<CycleDataFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
     accum: &mut SeqAccum<A>,
-) -> bool
-where
+) where
     BG: NEffectOutputGetter,
     T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
-    let cseq = match cseq.try_loop_cseq() {
-        Some(cseq) => cseq,
-        None => return false,
-    };
     // Do a dry run to set amount of interrupted cycles before we begin
     let mut uninterrupted_cycles = get_uninterrupted_cycles(&cseq, &inv_spool);
     'part: for cycle_part in cseq.iter_cseq_parts() {
@@ -147,15 +171,6 @@ where
             }
         }
     }
-    true
-}
-
-struct CycleData<T>
-where
-    T: Copy,
-{
-    spool: Value,
-    output: Output<T>,
 }
 
 fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> Count {
