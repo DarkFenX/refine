@@ -140,7 +140,7 @@ fn aggr_spool<BG, T, A>(
             }
         }
         CycleSeq::Inf(inner) => {
-            match inner.data.soft_dt.is_some() {
+            match inner.data.soft_dt.is_some() || inner.hard_dt.is_some() {
                 // Non-spool handling for case when interruptions happen every cycle
                 true => {
                     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
