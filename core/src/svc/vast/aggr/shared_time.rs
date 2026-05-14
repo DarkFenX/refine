@@ -166,8 +166,10 @@ fn process_loop_lim_sin_regular<T, A>(
     A: SeqInstanceAccum<T>,
 {
     let mut time = ptime.into_value();
-    // Calculate total "tail time" for whole looped sequence. Data format implies that output can be
-    // different, so theoretically tail from first part can be longer than second part with its tail
+    // Data format implies that completion duration of outputs in different parts can be different,
+    // but here we assume that it's the same. This assumption upholds, since part outputs are just
+    // strength-multiplied copies of base output. If this assumption is broken, need to consider
+    // tail of the first part (which could be longer than main duration + tail of the second part).
     let loop_tail_duration = get_cycle_tail_duration(
         cseq.p2_data.cycle_main_duration,
         cseq.p2_data.output.get_completion_duration(),

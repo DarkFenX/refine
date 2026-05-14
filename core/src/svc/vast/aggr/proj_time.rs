@@ -15,7 +15,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq},
+        cycle::{CSeqLoopLimSin, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
 };
@@ -262,58 +262,17 @@ fn aggr_spool<BG, T, A>(
                 let cseq_conv = inner.convert_with(&mut converter).optimize();
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime)
             }
-            false => {
-                let mut time = ptime.into_value();
-                let mut uninterrupted_cycles = Count::ZERO;
-                while time >= Value::ZERO {
-                    let mut loop_accum = accum.copy_blank();
-                    let saved_interrupted_cycles = uninterrupted_cycles;
-                    process_limited_spool(
-                        ctx,
-                        calc,
-                        projector_uid,
-                        ospec,
-                        &inv_proj,
-                        &inv_spool,
-                        inner.p1_data,
-                        &mut loop_accum,
-                        &mut time,
-                        &mut uninterrupted_cycles,
-                        inner.p1_repeat_count,
-                    );
-                    process_single_spool(
-                        ctx,
-                        calc,
-                        projector_uid,
-                        ospec,
-                        &inv_proj,
-                        &inv_spool,
-                        inner.p2_data,
-                        &mut loop_accum,
-                        &mut time,
-                        &mut uninterrupted_cycles,
-                    );
-                    accum.merge(&loop_accum, Count::ONE);
-                    // We detect if next loop result is going to be the same as previous one by
-                    // tracking uninterrupted cycle count. If they are the same, then output added
-                    // by next loop should be the same, provided there is enough time for full loop
-                    if uninterrupted_cycles == saved_interrupted_cycles && time >= Value::ZERO {
-                        let p1_main_duration = inner.p1_data.get_main_duration();
-                        let p2_main_duration = inner.p2_data.get_main_duration();
-                        let loop_main_duration =
-                            p1_main_duration.mul_add(inner.p1_repeat_count.into_pvalue(), p2_main_duration);
-                        let loop_tail_duration =
-                            get_cycle_tail_duration(p2_main_duration, inv_proj.base_output.get_completion_duration());
-                        let full_repeat_count =
-                            get_full_cycle_repeat_count(time, loop_main_duration, loop_tail_duration);
-                        // Fast-forward by count of full repeating loops remaining time can fit
-                        if full_repeat_count > Count::ZERO {
-                            accum.merge(&loop_accum, full_repeat_count);
-                            time -= loop_main_duration * full_repeat_count.into_pvalue();
-                        }
-                    }
-                }
-            }
+            false => process_loop_lim_sin_spool(
+                ctx,
+                calc,
+                projector_uid,
+                inner,
+                ospec,
+                &inv_proj,
+                &inv_spool,
+                accum,
+                ptime,
+            ),
         },
     }
 }
@@ -511,6 +470,71 @@ fn process_infinite_spool<BG, T, A>(
             match cycle_data.soft_dt {
                 Some(_) => *uninterrupted_cycles = Count::ZERO,
                 None => *uninterrupted_cycles += Count::ONE,
+            }
+        }
+    }
+}
+
+fn process_loop_lim_sin_spool<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: &CSeqLoopLimSin<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    inv_proj: &AggrProjInvData<T>,
+    inv_spool: &AggrSpoolInvData,
+    accum: &mut A,
+    ptime: PValue,
+) where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    let mut time = ptime.into_value();
+    let mut uninterrupted_cycles = Count::ZERO;
+    while time >= Value::ZERO {
+        let mut loop_accum = accum.copy_blank();
+        let saved_interrupted_cycles = uninterrupted_cycles;
+        process_limited_spool(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            &inv_spool,
+            cseq.p1_data,
+            &mut loop_accum,
+            &mut time,
+            &mut uninterrupted_cycles,
+            cseq.p1_repeat_count,
+        );
+        process_single_spool(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            &inv_spool,
+            cseq.p2_data,
+            &mut loop_accum,
+            &mut time,
+            &mut uninterrupted_cycles,
+        );
+        accum.merge(&loop_accum, Count::ONE);
+        // We detect if next loop result is going to be the same as previous one by
+        // tracking uninterrupted cycle count. If they are the same, then output added
+        // by next loop should be the same, provided there is enough time for full loop
+        if uninterrupted_cycles == saved_interrupted_cycles && time >= Value::ZERO {
+            let p1_main_duration = cseq.p1_data.get_main_duration();
+            let p2_main_duration = cseq.p2_data.get_main_duration();
+            let loop_main_duration = p1_main_duration.mul_add(cseq.p1_repeat_count.into_pvalue(), p2_main_duration);
+            let loop_tail_duration =
+                get_cycle_tail_duration(p2_main_duration, inv_proj.base_output.get_completion_duration());
+            let full_repeat_count = get_full_cycle_repeat_count(time, loop_main_duration, loop_tail_duration);
+            // Fast-forward by count of full repeating loops remaining time can fit
+            if full_repeat_count > Count::ZERO {
+                accum.merge(&loop_accum, full_repeat_count);
+                time -= loop_main_duration * full_repeat_count.into_pvalue();
             }
         }
     }
