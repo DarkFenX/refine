@@ -62,7 +62,9 @@ where
 
 impl CSeqLoopLimSin<CycleDataFull> {
     pub(super) fn get_inner_duration(&self) -> PValue {
-        self.p1_data.get_main_duration() * self.p1_repeat_count.into_pvalue() + self.p2_data.get_main_duration()
+        self.p1_data
+            .get_main_duration()
+            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.get_main_duration())
     }
 }
 impl<T> CSeqLoopLimSin<AggrPartDataTail<T>>
@@ -70,7 +72,9 @@ where
     T: Copy,
 {
     pub(super) fn get_inner_duration(&self) -> PValue {
-        self.p1_data.cycle_main_duration * self.p1_repeat_count.into_pvalue() + self.p2_data.cycle_main_duration
+        self.p1_data
+            .cycle_main_duration
+            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.cycle_main_duration)
     }
 }
 
@@ -85,7 +89,7 @@ pub(super) fn get_cycle_tail_duration(
     }
 }
 
-pub(super) fn get_full_cycle_repeat_count(
+pub(super) fn get_tailed_cycle_full_repeat_count(
     time: Value,
     cycle_main_duration: PValue,
     cycle_tail_duration: Option<PValue>,
@@ -112,7 +116,7 @@ pub(super) fn process_output_of_lls_cseq_with_cutoff<T, A>(
 {
     // Once hard downtime starts, instances cannot be applied
     let mut time = cseq.get_inner_duration().into_value();
-    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_cycle_repeat_count(
+    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_tailed_cycle_full_repeat_count(
         time,
         cseq.p1_data.cycle_main_duration,
         cseq.p1_data.cycle_tail_duration,

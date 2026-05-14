@@ -1,8 +1,8 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrPartDataTail, get_cycle_tail_duration, get_full_cycle_repeat_count, process_output_of_cycle_with_cutoff,
-        process_output_of_lls_cseq_with_cutoff,
+        AggrPartDataTail, get_cycle_tail_duration, get_tailed_cycle_full_repeat_count,
+        process_output_of_cycle_with_cutoff, process_output_of_lls_cseq_with_cutoff,
     },
     traits::InstanceDuration,
 };
@@ -86,7 +86,7 @@ fn process_limited_regular<T, A>(
     if *time < Value::ZERO {
         return;
     }
-    let full_repeat_count = repeat_limit.min(get_full_cycle_repeat_count(
+    let full_repeat_count = repeat_limit.min(get_tailed_cycle_full_repeat_count(
         *time,
         data.cycle_main_duration,
         data.cycle_tail_duration,
@@ -115,7 +115,8 @@ fn process_infinite_regular<T, A>(
     if *time < Value::ZERO {
         return;
     }
-    let full_repeat_count = get_full_cycle_repeat_count(*time, data.cycle_main_duration, data.cycle_tail_duration);
+    let full_repeat_count =
+        get_tailed_cycle_full_repeat_count(*time, data.cycle_main_duration, data.cycle_tail_duration);
     if full_repeat_count > Count::ZERO {
         accum.add_output_full(&data.output, chance_mult, full_repeat_count);
         *time -= data.cycle_main_duration * full_repeat_count.into_pvalue();
@@ -176,7 +177,7 @@ fn process_loop_lim_sin_regular<T, A>(
     );
     let loop_inner_duration = cseq.get_inner_duration();
     // Process full loop repeats
-    let full_repeat_count = get_full_cycle_repeat_count(time, loop_inner_duration, loop_tail_duration);
+    let full_repeat_count = get_tailed_cycle_full_repeat_count(time, loop_inner_duration, loop_tail_duration);
     if full_repeat_count > Count::ZERO {
         accum.add_output_full(
             &cseq.p1_data.output,
@@ -205,15 +206,11 @@ fn process_loop_lim_sin_hard_dt<T, A>(
     let mut time = ptime.into_value();
     let loop_inner_duration = cseq.get_inner_duration();
     let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
-    let mut loop_full_repeat_count = Count::from_value_trunced(time / loop_full_duration);
-    time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
-    if time >= loop_inner_duration.into_value() {
-        loop_full_repeat_count += Count::ONE;
-        time -= loop_full_duration;
-    }
+    let loop_full_repeat_count = get_cutoff_cycle_full_repeat_count(time, loop_inner_duration, loop_full_duration);
     // Apply full loops
     if loop_full_repeat_count > Count::ZERO {
         process_output_of_lls_cseq_with_cutoff(accum, &cseq, chance_mult, loop_full_repeat_count);
+        time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
     }
     // Apply partial loop
     if time >= Value::ZERO {
@@ -232,7 +229,7 @@ fn process_loop_lim_sin_incomplete<T, A>(
 {
     let mut p1_remaining_repeat_count = cseq.p1_repeat_count;
     // Process as many full part 1 repeats as time can fit
-    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_full_cycle_repeat_count(
+    let p1_full_repeat_count = cseq.p1_repeat_count.min(get_tailed_cycle_full_repeat_count(
         *time,
         cseq.p1_data.cycle_main_duration,
         cseq.p1_data.cycle_tail_duration,
@@ -253,4 +250,17 @@ fn process_loop_lim_sin_incomplete<T, A>(
         accum.add_output_time_limited(&cseq.p2_data.output, chance_mult, Count::ONE, *time);
         *time -= cseq.p2_data.cycle_main_duration;
     }
+}
+
+pub(super) fn get_cutoff_cycle_full_repeat_count(
+    mut time: Value,
+    cycle_inner_duration: PValue,
+    cycle_full_duration: PValue,
+) -> Count {
+    let mut full_repeat_count = Count::from_value_trunced(time / cycle_full_duration);
+    time -= cycle_full_duration * full_repeat_count.into_pvalue();
+    if time >= cycle_inner_duration.into_value() {
+        full_repeat_count += Count::ONE;
+    }
+    full_repeat_count
 }
