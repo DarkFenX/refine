@@ -114,18 +114,29 @@ where
             &inv_proj,
             cycle_part.data.active.chargedness,
         );
-        let mut prev_cycle_data: Option<CycleData<T>> = None;
         for i in Count::ZERO..cycle_part.repeat_count {
-            let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
-            if let Some(prev_cycle_data) = prev_cycle_data
-                && prev_cycle_data.spool == cycle_spool
-            {
+            // Case when spool multiplier does not change for the rest of cycles of current part
+            let stable_spool = match cycle_part.data.soft_dt {
+                // Current cycle is at 0 spool, and we have an interrupt every cycle
+                Some(_) if uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
+                // Current cycle is at max spool, and we have no interrupts in cycles of current
+                // part
+                None if uninterrupted_cycles >= inv_spool.cycles_to_max => {
+                    let remaining_cycles = cycle_part.repeat_count - i;
+                    uninterrupted_cycles += remaining_cycles;
+                    Some(inv_spool.max)
+                }
+                _ => None,
+            };
+            if let Some(stable_spool) = stable_spool {
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, stable_spool);
                 let remaining_cycles = cycle_part.repeat_count - i;
-                accum.add_output_full(&prev_cycle_data.output, inv_proj.chance_mult, remaining_cycles);
+                accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
                 accum.time += cycle_part.data.get_main_duration() * remaining_cycles.into_pvalue();
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
+            let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, cycle_spool);
             accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
             accum.time += cycle_part.data.get_main_duration();
@@ -134,10 +145,6 @@ where
                 Some(_) => uninterrupted_cycles = Count::ZERO,
                 None => uninterrupted_cycles += Count::ONE,
             }
-            prev_cycle_data = Some(CycleData {
-                spool: cycle_spool,
-                output: cycle_output,
-            });
         }
     }
     true
