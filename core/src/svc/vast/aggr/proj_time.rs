@@ -262,17 +262,30 @@ fn aggr_spool<BG, T, A>(
                 let cseq_conv = inner.convert_with(&mut converter).optimize();
                 aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime)
             }
-            false => process_loop_lim_sin_spool(
-                ctx,
-                calc,
-                projector_uid,
-                inner,
-                ospec,
-                &inv_proj,
-                &inv_spool,
-                accum,
-                ptime,
-            ),
+            false => match inner.hard_dt {
+                Some(_) => process_loop_lim_sin_spool_hard_dt(
+                    ctx,
+                    calc,
+                    projector_uid,
+                    inner,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    accum,
+                    ptime,
+                ),
+                None => process_loop_lim_sin_spool(
+                    ctx,
+                    calc,
+                    projector_uid,
+                    inner,
+                    ospec,
+                    &inv_proj,
+                    &inv_spool,
+                    accum,
+                    ptime,
+                ),
+            },
         },
     }
 }
@@ -494,7 +507,7 @@ fn process_loop_lim_sin_spool<BG, T, A>(
     let mut uninterrupted_cycles = Count::ZERO;
     while time >= Value::ZERO {
         let mut loop_accum = accum.copy_blank();
-        let saved_interrupted_cycles = uninterrupted_cycles;
+        let saved_uninterrupted_cycles = uninterrupted_cycles;
         process_limited_spool(
             ctx,
             calc,
@@ -524,7 +537,7 @@ fn process_loop_lim_sin_spool<BG, T, A>(
         // We detect if next loop result is going to be the same as previous one by
         // tracking uninterrupted cycle count. If they are the same, then output added
         // by next loop should be the same, provided there is enough time for full loop
-        if uninterrupted_cycles == saved_interrupted_cycles && time >= Value::ZERO {
+        if uninterrupted_cycles == saved_uninterrupted_cycles && time >= Value::ZERO {
             let loop_main_duration = cseq.get_inner_duration();
             let loop_tail_duration = get_cycle_tail_duration(
                 cseq.p2_data.get_main_duration(),
@@ -559,4 +572,67 @@ fn process_loop_lim_sin_spool_hard_dt<BG, T, A>(
     let loop_inner_duration = cseq.get_inner_duration();
     let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
     let loop_full_repeat_count = get_cutoff_cycle_full_repeat_count(time, loop_inner_duration, loop_full_duration);
+    // Process full cycles
+    if loop_full_repeat_count > Count::ZERO {
+        let mut loop_accum = accum.copy_blank();
+        // Hard downtime resets uninterrupted cycles, so always start from 0
+        let mut uninterrupted_cycles = Count::ZERO;
+        process_limited_spool(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            &inv_spool,
+            cseq.p1_data,
+            &mut loop_accum,
+            &mut loop_inner_duration.into_value(),
+            &mut uninterrupted_cycles,
+            cseq.p1_repeat_count,
+        );
+        // Tracking time remaining after part 1 would be prone to float calculation errors. Instead,
+        // pass active + soft downtime duration as soft limit, since after that hard downtime hits.
+        process_single_spool(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            &inv_spool,
+            cseq.p2_data,
+            &mut loop_accum,
+            &mut cseq.p2_data.get_main_duration().into_value(),
+            &mut uninterrupted_cycles,
+        );
+        accum.merge(&loop_accum, loop_full_repeat_count);
+        time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
+    }
+    // Process partial cycle
+    // Hard downtime resets uninterrupted cycles, so always start from 0
+    let mut uninterrupted_cycles = Count::ZERO;
+    process_limited_spool(
+        ctx,
+        calc,
+        projector_uid,
+        ospec,
+        &inv_proj,
+        &inv_spool,
+        cseq.p1_data,
+        accum,
+        &mut time,
+        &mut uninterrupted_cycles,
+        cseq.p1_repeat_count,
+    );
+    process_single_spool(
+        ctx,
+        calc,
+        projector_uid,
+        ospec,
+        &inv_proj,
+        &inv_spool,
+        cseq.p2_data,
+        accum,
+        &mut time,
+        &mut uninterrupted_cycles,
+    );
 }
