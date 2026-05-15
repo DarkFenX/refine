@@ -66,7 +66,7 @@ impl BreacherAccum {
             None => return,
         };
         // Cycle sequence conversion
-        let ticks = match cseq_to_ticks(cseq.convert_and_optimize(), output) {
+        let ticks = match cseq_to_ticks(cseq, output) {
             Some(ticks) => ticks,
             None => return,
         };
@@ -289,7 +289,7 @@ impl AppliedBreacherAccum {
             }
         };
         // Cycle sequence conversion
-        let ticks = match cseq_to_ticks(cseq.convert_and_optimize(), output) {
+        let ticks = match cseq_to_ticks(cseq, output) {
             Some(ticks) => ticks,
             None => return,
         };

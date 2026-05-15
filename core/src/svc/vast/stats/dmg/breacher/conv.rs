@@ -5,14 +5,17 @@ use super::{
 use crate::{
     nd::NEffectBreacherAmount,
     num::Count,
-    svc::{cycle::CycleSeq, output::Output},
+    svc::{
+        cycle::{CycleDataFull, CycleSeq},
+        output::Output,
+    },
 };
 
 // Process breacher module cycle sequence + output per cycle into some kind of aggregated value,
 // which discards all overlapping instances and aligns everything to ticks, which is needed for
 // further processing
 pub(super) fn cseq_to_ticks(
-    cseq: CycleSeq<CycleDataDur>,
+    cseq: &CycleSeq<CycleDataFull>,
     output: Output<NEffectBreacherAmount>,
 ) -> Option<AggrBreacherTicks> {
     // Breacher aggregator only supports simple output, and only simple output is used
@@ -25,12 +28,13 @@ pub(super) fn cseq_to_ticks(
         return None;
     }
     // Breacher aggregator supports only 2 cycle sequence types: looped limited-single, and infinite
-    // (which is degenerate case of looped limited-single cycle sequence)
+    // (which is degenerate case of looped limited-single cycle sequence), and does not support hard
+    // downtime
     match cseq {
         CycleSeq::LoopLimSin(inner) => {
             let delay_ticks = duration_to_ticks_ceil(output.delay);
-            let cycle_p1_ticks = duration_to_ticks_ceil(inner.p1_data.get_full_duration());
-            let cycle_p2_ticks = duration_to_ticks_ceil(inner.p2_data.get_full_duration());
+            let cycle_p1_ticks = duration_to_ticks_ceil(inner.p1_data.get_main_duration());
+            let cycle_p2_ticks = duration_to_ticks_ceil(inner.p2_data.get_main_duration());
             match (output_ticks >= cycle_p1_ticks, output_ticks >= cycle_p2_ticks) {
                 (true, true) => Some(AggrBreacherTicks::Infinite(AbtInfinite {
                     initial_delay: delay_ticks,
@@ -52,7 +56,7 @@ pub(super) fn cseq_to_ticks(
         }
         CycleSeq::Inf(inner) => {
             let delay_ticks = duration_to_ticks_ceil(output.delay);
-            let cycle_ticks = duration_to_ticks_ceil(inner.data.get_full_duration());
+            let cycle_ticks = duration_to_ticks_ceil(inner.data.get_main_duration());
             match output_ticks >= cycle_ticks {
                 true => Some(AggrBreacherTicks::Infinite(AbtInfinite {
                     initial_delay: delay_ticks,
