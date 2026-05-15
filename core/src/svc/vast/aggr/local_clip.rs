@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_cseq_with_cutoff},
+    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -142,7 +142,7 @@ where
                 // last cycle
                 let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
                 let inner_conv = inner.convert_with(&mut converter);
-                process_output_of_lls_cseq_with_cutoff(&mut accum.instances, &inner_conv, None, Count::ONE);
+                process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, None, Count::ONE);
                 // Record time until reload or hard downtime starts
                 match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => {

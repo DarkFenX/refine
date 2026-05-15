@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_cseq_with_cutoff},
+    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -99,7 +99,7 @@ fn process_hard_dt<BG, T, A>(
             accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
-            process_output_of_lls_cseq_with_cutoff(&mut accum.instances, &inner, None, Count::ONE);
+            process_output_of_lls_with_cutoff(&mut accum.instances, &inner, None, Count::ONE);
             accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
         }
     }

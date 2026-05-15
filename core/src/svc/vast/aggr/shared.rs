@@ -105,7 +105,7 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
-pub(super) fn process_output_of_lls_cseq_with_cutoff<T, A>(
+pub(super) fn process_output_of_lls_with_cutoff<T, A>(
     accum: &mut A,
     cseq: &CSeqLoopLimSin<AggrPartDataTail<T>>,
     chance_mult: Option<PValue>,

@@ -2,7 +2,7 @@ use super::{
     accum::SeqInstanceAccum,
     shared::{
         AggrPartDataTail, get_cycle_tail_duration, get_tailed_cycle_full_repeat_count,
-        process_output_of_cycle_with_cutoff, process_output_of_lls_cseq_with_cutoff,
+        process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff,
     },
     traits::InstanceDuration,
 };
@@ -47,8 +47,8 @@ pub(super) fn aggr_by_time<T, A>(
             process_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
-            Some(_) => process_loop_lim_sin_hard_dt(accum, ptime, inner, chance_mult),
-            None => process_loop_lim_sin_regular(accum, ptime, inner, chance_mult),
+            Some(_) => process_lls_hard_dt(accum, ptime, inner, chance_mult),
+            None => process_lls_regular(accum, ptime, inner, chance_mult),
         },
     }
 }
@@ -157,7 +157,7 @@ fn process_infinite_hard_dt<T, A>(
     }
 }
 
-fn process_loop_lim_sin_regular<T, A>(
+fn process_lls_regular<T, A>(
     accum: &mut A,
     ptime: PValue,
     cseq: CSeqLoopLimSin<AggrPartDataTail<T>>,
@@ -190,11 +190,11 @@ fn process_loop_lim_sin_regular<T, A>(
     // While loop instead of if is for cases of really long tails, which never happen in EVE but can
     // happen in current data format
     while time >= Value::ZERO {
-        process_loop_lim_sin_incomplete(accum, &mut time, &cseq, chance_mult);
+        process_lls_incomplete(accum, &mut time, &cseq, chance_mult);
     }
 }
 
-fn process_loop_lim_sin_hard_dt<T, A>(
+fn process_lls_hard_dt<T, A>(
     accum: &mut A,
     ptime: PValue,
     cseq: CSeqLoopLimSin<AggrPartDataTail<T>>,
@@ -209,16 +209,16 @@ fn process_loop_lim_sin_hard_dt<T, A>(
     let loop_full_repeat_count = get_cutoff_cycle_full_repeat_count(time, loop_inner_duration, loop_full_duration);
     // Apply full loops
     if loop_full_repeat_count > Count::ZERO {
-        process_output_of_lls_cseq_with_cutoff(accum, &cseq, chance_mult, loop_full_repeat_count);
+        process_output_of_lls_with_cutoff(accum, &cseq, chance_mult, loop_full_repeat_count);
         time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
     }
     // Apply partial loop
     if time >= Value::ZERO {
-        process_loop_lim_sin_incomplete(accum, &mut time, &cseq, chance_mult);
+        process_lls_incomplete(accum, &mut time, &cseq, chance_mult);
     }
 }
 
-fn process_loop_lim_sin_incomplete<T, A>(
+fn process_lls_incomplete<T, A>(
     accum: &mut A,
     time: &mut Value,
     cseq: &CSeqLoopLimSin<AggrPartDataTail<T>>,
