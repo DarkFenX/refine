@@ -9,7 +9,7 @@ use super::{
 use crate::{
     misc::InfCount,
     nd::NEffectOutputGetter,
-    num::{Count, PValue},
+    num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
@@ -50,6 +50,58 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fn aggr_regular<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: &CycleSeq<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    inv_proj: AggrProjInvData<T>,
+    accum: &mut SeqAccum<A>,
+) -> bool
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    let mut reload = false;
+    let cycle_parts = cseq.get_cseq_parts();
+    for cycle_part in cycle_parts.iter() {
+        let cycle_output = get_proj_regular_output(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            cycle_part.data.active.chargedness,
+        );
+        match cycle_part.data.soft_dt {
+            // Add first cycle after which there is a reload
+            Some(soft_dt) if soft_dt.reason.reload => {
+                reload = true;
+                accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
+                // Record only active duration before reload, ignore soft downtime duration
+                accum.time += cycle_part.data.active.duration;
+                break;
+            }
+            _ => {
+                let part_cycle_count = match cycle_part.repeat_count {
+                    InfCount::Count(part_cycle_count) => part_cycle_count,
+                    // If any cycle repeats infinitely without running out, then it does not run out
+                    // of "clip", no clip - no data
+                    InfCount::Infinite => return false,
+                };
+                if part_cycle_count > Count::ZERO {
+                    accum.add_output_full(&cycle_output, inv_proj.chance_mult, part_cycle_count);
+                    accum.time += cycle_part.data.get_main_duration() * part_cycle_count.into_pvalue();
+                }
+            }
+        }
+    }
+    // If cycles are infinite and have no reload, return no data
+    !cycle_parts.loops || reload
+}
+
 fn aggr_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -71,107 +123,76 @@ where
     'part: for cycle_part in cycle_parts.iter() {
         let part_cycle_count = match cycle_part.repeat_count {
             InfCount::Count(part_cycle_count) => part_cycle_count,
-            InfCount::Infinite => match cycle_part.data.interrupt {
+            InfCount::Infinite => match cycle_part.data.soft_dt {
                 // Process 1 cycle if reload happens after every cycle in this part, even if cycles
                 // are infinite
-                Some(interrupt) if interrupt.reload => Count::ONE,
+                Some(soft_dt) if soft_dt.reason.reload => Count::ONE,
                 // No reloads in infinite sequence - sequence is not a clip - no data to return
                 _ => return false,
             },
         };
         // Part-specific strength mult
-        let part_str_mult =
-            get_proj_spool_part_str_mult(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
+        let part_str_mult = get_proj_spool_part_str_mult(
+            ctx,
+            calc,
+            projector_uid,
+            ospec,
+            &inv_proj,
+            cycle_part.data.active.chargedness,
+        );
+        let part_cycle_main_duration = cycle_part.data.get_main_duration();
         for i in Count::ZERO..part_cycle_count {
-            // Case when the rest of cycle part is at full spool
-            if cycle_part.data.interrupt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
-                let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, inv_spool.max);
+            // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
+            if let Some(soft_dt) = cycle_part.data.soft_dt
+                && uninterrupted_cycles == Count::ZERO
+            {
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, Value::ZERO);
+                // For a cycle followed by a reload, consider clip finished - add just it (with only
+                // pre-reload duration recorded), set reload flag and quit processing
+                if soft_dt.reason.reload {
+                    accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
+                    accum.time += cycle_part.data.active.duration;
+                    reload = true;
+                    break 'part;
+                }
                 let remaining_cycles = part_cycle_count - i;
-                uninterrupted_cycles += remaining_cycles;
-                accum.add_instance(
-                    cycle_output.get_instance(),
-                    inv_proj.chance_mult,
-                    cycle_output.get_instance_count() * remaining_cycles,
-                );
-                accum.time += cycle_part.data.active_duration * remaining_cycles.into_pvalue();
-                // No interruptions in this branch, no need to do handle reload flag
+                if remaining_cycles > Count::ZERO {
+                    accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
+                    accum.time += part_cycle_main_duration * remaining_cycles.into_pvalue();
+                }
+                // No interruptions in this branch, no need to handle reload flag and break
                 continue 'part;
             }
+            // Shortcut #2: we're at max spool and sequence is not interruptable
+            if cycle_part.data.soft_dt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, inv_spool.max);
+                let remaining_cycles = part_cycle_count - i;
+                if remaining_cycles > Count::ZERO {
+                    uninterrupted_cycles += remaining_cycles;
+                    accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
+                    accum.time += part_cycle_main_duration * remaining_cycles.into_pvalue();
+                }
+                // No interruptions in this branch, no need to handle reload flag and break
+                continue 'part;
+            }
+            // Case when cycle is at zero spool and will stay at zero spool for the rest of the part
             let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, spool);
-            match cycle_part.data.interrupt {
+            match cycle_part.data.soft_dt {
                 Some(_) => uninterrupted_cycles = Count::ZERO,
                 None => uninterrupted_cycles += Count::ONE,
             }
-            accum.add_instance(
-                cycle_output.get_instance(),
-                inv_proj.chance_mult,
-                cycle_output.get_instance_count(),
-            );
-            accum.time += cycle_part.data.active_duration;
-            // If reload happens after it, set reload flag and quit all the cycling - clip is
-            // considered finished upon hitting reload
-            if let Some(interrupt) = cycle_part.data.interrupt
-                && interrupt.reload
+            accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
+            // For a cycle followed by a reload, consider clip finished - add just it (with only
+            // pre-reload duration recorded), set reload flag and quit processing
+            if let Some(soft_dt) = cycle_part.data.soft_dt
+                && soft_dt.reason.reload
             {
+                accum.time += cycle_part.data.active.duration;
                 reload = true;
                 break 'part;
             }
-        }
-    }
-    // If cycles are infinite and have no reload, return no data
-    !cycle_parts.loops || reload
-}
-
-fn aggr_regular<BG, T, A>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
-    accum: &mut SeqAccum<A>,
-) -> bool
-where
-    BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    A: SeqInstanceAccum<T>,
-{
-    let mut reload = false;
-    let cycle_parts = cseq.get_cseq_parts();
-    for cycle_part in cycle_parts.iter() {
-        let cycle_output =
-            get_proj_regular_output(ctx, calc, projector_uid, ospec, &inv_proj, cycle_part.data.chargedness);
-        // Update total values
-        match cycle_part.data.interrupt {
-            // Add first cycle after which there is a reload
-            Some(interrupt) if interrupt.reload => {
-                reload = true;
-                accum.add_instance(
-                    cycle_output.get_instance(),
-                    inv_proj.chance_mult,
-                    cycle_output.get_instance_count(),
-                );
-                // Record only active duration before reload, ignore soft downtime duration
-                accum.time += cycle_part.data.active.duration;
-                break;
-            }
-            _ => {
-                let part_cycle_count = match cycle_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => part_cycle_count,
-                    // If any cycle repeats infinitely without running out, then it does not run out
-                    // of "clip", no clip - no data
-                    InfCount::Infinite => return false,
-                };
-                if part_cycle_count > Count::ZERO {
-                    accum.add_instance(
-                        cycle_output.get_instance(),
-                        inv_proj.chance_mult,
-                        cycle_output.get_instance_count() * part_cycle_count,
-                    );
-                    accum.time += cycle_part.data.active_duration * part_cycle_count.into_pvalue();
-                }
-            }
+            accum.time += part_cycle_main_duration;
         }
     }
     // If cycles are infinite and have no reload, return no data
