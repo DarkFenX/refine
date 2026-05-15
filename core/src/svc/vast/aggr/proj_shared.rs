@@ -35,7 +35,7 @@ where
 }
 impl<T> AggrProjInvData<T>
 where
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact,
+    T: Copy,
 {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
@@ -47,6 +47,7 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
+        T: std::ops::MulAssign<PValue> + HasImpact,
         BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
     {
         let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
@@ -112,6 +113,12 @@ where
             instance_limit,
             chance_mult: process_mult(chance_mult),
         })
+    }
+    pub(super) fn get_output_completion_duration(&self) -> PValue
+    where
+        T: InstanceDuration,
+    {
+        self.base_output.get_completion_duration()
     }
 }
 

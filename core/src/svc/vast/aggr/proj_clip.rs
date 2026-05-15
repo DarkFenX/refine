@@ -1,10 +1,11 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, get_proj_regular_output, get_proj_spool_cycle_output,
+        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult,
     },
-    traits::{HasImpact, InstanceLimit},
+    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
     misc::InfCount,
@@ -34,23 +35,26 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, T, A>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
+    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     A: SeqInstanceAccum<T>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
         Some(inv_proj) => inv_proj,
         None => return false,
     };
-    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+    let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
+    match (inv_spool, cseq.get_hard_dt().is_some()) {
+        (Some(inv_spool), true) => false,
+        (Some(inv_spool), false) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
+        (None, true) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+        (None, false) => process_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_regular<BG, T, A>(
+fn process_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -102,7 +106,89 @@ where
     !cycle_parts.loops || reload
 }
 
-fn aggr_spool<BG, T, A>(
+fn process_hard_dt<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: &CycleSeq<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    inv_proj: AggrProjInvData<T>,
+    accum: &mut SeqAccum<A>,
+) -> bool
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    match cseq {
+        // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
+        CycleSeq::Inf(inner) => {
+            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+            let inner_conv = inner.convert_with(&mut converter);
+            process_output_of_cycle_with_cutoff(
+                &mut accum.instances,
+                &inner_conv.data,
+                inv_proj.chance_mult,
+                Count::ONE,
+            );
+            // Record time until reload or hard downtime starts
+            match inner.data.soft_dt {
+                Some(soft_dt) if soft_dt.reason.reload => accum.time += inner.data.active.duration,
+                _ => accum.time += inner_conv.data.cycle_main_duration,
+            }
+            true
+        }
+        CycleSeq::LoopLimSin(inner) => {
+            if let Some(soft_dt) = inner.p1_data.soft_dt
+                && soft_dt.reason.reload
+            {
+                // Case when there is a reload right after first cycle
+                let output = get_proj_regular_output(
+                    ctx,
+                    calc,
+                    projector_uid,
+                    ospec,
+                    &inv_proj,
+                    inner.p1_data.active.chargedness,
+                );
+                let loop_inner_duration = inner.get_inner_duration();
+                match inv_proj.get_output_completion_duration() > loop_inner_duration {
+                    true => accum.add_output_time_limited(
+                        &output,
+                        inv_proj.chance_mult,
+                        Count::ONE,
+                        loop_inner_duration.into_value(),
+                    ),
+                    false => accum.add_output_full(&output, inv_proj.chance_mult, Count::ONE),
+                }
+                // Stop counting time at reload, after active cycle is finished
+                accum.time += inner.p1_data.active.duration;
+            } else {
+                // Case when all sequence cycles are allowed to run, possibly with reload after the
+                // last cycle
+                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                let inner_conv = inner.convert_with(&mut converter);
+                process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, inv_proj.chance_mult, Count::ONE);
+                // Record time until reload or hard downtime starts
+                match inner.p2_data.soft_dt {
+                    Some(soft_dt) if soft_dt.reason.reload => {
+                        accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
+                            + inner.p2_data.active.duration;
+                    }
+                    _ => {
+                        accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
+                            + inner.p2_data.get_main_duration();
+                    }
+                }
+            }
+            true
+        }
+        // Other sequence types do not have hard downtime, so this should be unreachable
+        _ => unreachable!(),
+    }
+}
+
+fn process_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
