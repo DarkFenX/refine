@@ -8,12 +8,6 @@ pub(in crate::svc::vast) struct SeqAccum<A> {
     pub(in crate::svc::vast) time: PValue,
 }
 impl<A> SeqAccum<A> {
-    fn add_instance<T>(&mut self, instance: T, chance_mult: Option<PValue>, count: Count)
-    where
-        A: SeqInstanceAccum<T>,
-    {
-        self.instances.add_instance(instance, chance_mult, count);
-    }
     pub(in crate::svc::vast) fn add_output_full<T>(
         &mut self,
         output: &Output<T>,

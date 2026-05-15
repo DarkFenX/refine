@@ -175,7 +175,7 @@ fn process_lls_regular<T, A>(
         cseq.p2_data.cycle_main_duration,
         cseq.p2_data.output.get_completion_duration(),
     );
-    let loop_inner_duration = cseq.get_inner_duration();
+    let loop_inner_duration = cseq.get_full_duration();
     // Process full loop repeats
     let full_repeat_count = get_tailed_cycle_full_repeat_count(time, loop_inner_duration, loop_tail_duration);
     if full_repeat_count > Count::ZERO {
@@ -204,7 +204,7 @@ fn process_lls_hard_dt<T, A>(
     A: SeqInstanceAccum<T>,
 {
     let mut time = ptime.into_value();
-    let loop_inner_duration = cseq.get_inner_duration();
+    let loop_inner_duration = cseq.get_full_duration();
     let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
     let loop_full_repeat_count = get_cutoff_cycle_full_repeat_count(time, loop_inner_duration, loop_full_duration);
     // Apply full loops

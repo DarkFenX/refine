@@ -2,7 +2,7 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
-        get_proj_spool_part_str_mult,
+        get_proj_spool_part_str_mult, process_output_of_spooling_lls_with_cutoff,
     },
     shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
@@ -44,7 +44,9 @@ where
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     match (inv_spool, cseq.get_hard_dt().is_some()) {
-        (Some(inv_spool), true) => false,
+        (Some(inv_spool), true) => {
+            process_spool_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum)
+        }
         (Some(inv_spool), false) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
         (None, true) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
         (None, false) => process_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
@@ -151,7 +153,7 @@ where
                     &inv_proj,
                     inner.p1_data.active.chargedness,
                 );
-                let loop_inner_duration = inner.get_inner_duration();
+                let loop_inner_duration = inner.get_full_duration();
                 match inv_proj.get_output_completion_duration() > loop_inner_duration {
                     true => accum.add_output_time_limited(
                         &output,
@@ -172,13 +174,9 @@ where
                 // Record time until reload or hard downtime starts
                 match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => {
-                        accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
-                            + inner.p2_data.active.duration;
+                        accum.time += inner.get_full_duration_without_p2_soft_dt()
                     }
-                    _ => {
-                        accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
-                            + inner.p2_data.get_main_duration();
-                    }
+                    _ => accum.time += inner.get_full_duration(),
                 }
             }
             true
@@ -283,4 +281,53 @@ where
     }
     // If cycles are infinite and have no reload, return no data
     !cycle_parts.loops || reload
+}
+
+fn process_spool_hard_dt<BG, T, A>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    cseq: &CycleSeq<CycleDataFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    inv_proj: AggrProjInvData<T>,
+    inv_spool: AggrSpoolInvData,
+    accum: &mut SeqAccum<A>,
+) -> bool
+where
+    BG: NEffectOutputGetter,
+    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    A: SeqInstanceAccum<T>,
+{
+    let cseq = match cseq {
+        // Infinite cycle with hard DT never spools up, process it the non-spool way
+        CycleSeq::Inf(_) => return process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+        CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt {
+            // Composite loop with soft downtimes in first part and hard downtime after second also
+            // does not spool up
+            Some(_) => return process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+            None => inner,
+        },
+        // Other sequence types do not have hard downtime, so this should be unreachable
+        _ => unreachable!(),
+    };
+    // No soft downtime in first part in this case, the only variance is having soft downtime in the
+    // second part
+    let loop_inner_duration = cseq.get_full_duration();
+    process_output_of_spooling_lls_with_cutoff(
+        ctx,
+        calc,
+        projector_uid,
+        &cseq,
+        ospec,
+        &inv_proj,
+        &inv_spool,
+        &mut accum.instances,
+        loop_inner_duration,
+    );
+    // Record time until reload or hard downtime starts
+    match cseq.p2_data.soft_dt {
+        Some(soft_dt) if soft_dt.reason.reload => accum.time += cseq.get_full_duration_without_p2_soft_dt(),
+        _ => accum.time += loop_inner_duration,
+    }
+    true
 }

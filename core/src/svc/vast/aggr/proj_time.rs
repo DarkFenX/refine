@@ -338,7 +338,7 @@ fn process_lls_spool<BG, T, A>(
         // tracking uninterrupted cycle count. If they are the same, then output added
         // by next loop should be the same, provided there is enough time for full loop
         if uninterrupted_cycles == saved_uninterrupted_cycles && time >= Value::ZERO {
-            let loop_main_duration = cseq.get_inner_duration();
+            let loop_main_duration = cseq.get_full_duration();
             let loop_tail_duration = get_cycle_tail_duration(
                 cseq.p2_data.get_main_duration(),
                 inv_proj.base_output.get_completion_duration(),
@@ -369,7 +369,7 @@ fn process_lls_spool_hard_dt<BG, T, A>(
     A: SeqInstanceAccum<T>,
 {
     let mut time = ptime.into_value();
-    let loop_inner_duration = cseq.get_inner_duration();
+    let loop_inner_duration = cseq.get_full_duration();
     let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
     let loop_full_repeat_count = get_cutoff_cycle_full_repeat_count(time, loop_inner_duration, loop_full_duration);
     // Process full cycles

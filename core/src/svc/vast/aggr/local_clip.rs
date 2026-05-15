@@ -130,7 +130,7 @@ where
             {
                 // Case when there is a reload right after first cycle
                 let output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p1_data.active.chargedness);
-                let loop_inner_duration = inner.get_inner_duration();
+                let loop_inner_duration = inner.get_full_duration();
                 match inv_local.get_output_completion_duration() > loop_inner_duration {
                     true => accum.add_output_time_limited(&output, None, Count::ONE, loop_inner_duration.into_value()),
                     false => accum.add_output_full(&output, None, Count::ONE),

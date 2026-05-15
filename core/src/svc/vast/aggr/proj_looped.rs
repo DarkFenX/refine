@@ -105,11 +105,11 @@ fn process_hard_dt<BG, T, A>(
     match cseq_conv {
         CycleSeqLooped::Inf(inner) => {
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, inv_proj.chance_mult, Count::ONE);
-            accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
+            accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
             process_output_of_lls_with_cutoff(&mut accum.instances, &inner, inv_proj.chance_mult, Count::ONE);
-            accum.time += inner.get_inner_duration() + inner.hard_dt.unwrap().duration;
+            accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
         }
     }
 }
@@ -205,7 +205,7 @@ fn process_spool_hard_dt<BG, T, A>(
             None => inner,
         },
     };
-    let loop_inner_duration = cseq.get_inner_duration();
+    let loop_inner_duration = cseq.get_full_duration();
     let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
     process_output_of_spooling_lls_with_cutoff(
         ctx,
