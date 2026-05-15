@@ -74,10 +74,10 @@ where
             self.projector_uid,
             self.ospec,
             self.inv_proj,
-            input.chargedness,
+            input.active.chargedness,
         );
         AggrPartDataRegular {
-            cycle_main_duration: input.active_duration,
+            cycle_main_duration: input.get_main_duration(),
             output,
         }
     }
@@ -151,13 +151,13 @@ where
             self.projector_uid,
             self.ospec,
             self.inv_proj,
-            input.chargedness,
+            input.active.chargedness,
         );
         let output_zero_spool = get_proj_spool_cycle_output(self.inv_proj, part_str_mult, Value::ZERO);
         let output_max_spool = get_proj_spool_cycle_output(self.inv_proj, part_str_mult, self.inv_spool.max);
         AggrPartDataSpool {
-            cycle_duration: input.active_duration,
-            interrupt: input.interrupt.is_some(),
+            cycle_duration: input.get_main_duration(),
+            interrupt: input.soft_dt.is_some(),
             str_mult: part_str_mult,
             output_zero_spool,
             output_max_spool,
