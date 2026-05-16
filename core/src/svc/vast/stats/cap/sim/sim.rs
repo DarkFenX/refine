@@ -79,7 +79,7 @@ impl CapSim {
                             );
                             // Schedule next cycle check
                             let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                                time: event.time + cycle_iter_item.cycle_main_duration,
+                                time: event.time + cycle_iter_item.cycle_duration,
                                 cycle_iter: event.cycle_iter,
                                 direction: event.direction,
                             });
@@ -241,7 +241,7 @@ impl CapSim {
             // format used in the lib makes it possible)
             self.schedule_cycle_output(self.time, instance_iter, Direction::Gain);
             // Schedule next cycle
-            injector_event.time = self.time + cycle_iter_item.cycle_main_duration;
+            injector_event.time = self.time + cycle_iter_item.cycle_duration;
             self.events.push(CapSimEvent::InjectorReady(injector_event));
         }
     }

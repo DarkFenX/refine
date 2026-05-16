@@ -6,9 +6,54 @@ use super::{
 use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(crate) enum Output<T: Copy> {
+pub(crate) enum Output<T>
+where
+    T: Copy,
+{
     Simple(OutputSimple<T>),
     Complex(OutputComplex<T>),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// General operations
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> Output<T>
+where
+    T: Copy,
+{
+    pub(in crate::svc) fn get_instance(&self) -> T {
+        match self {
+            Output::Simple(inner) => inner.get_instance(),
+            Output::Complex(inner) => inner.get_instance(),
+        }
+    }
+    pub(in crate::svc) fn get_instance_count(&self) -> Count {
+        match self {
+            Output::Simple(inner) => inner.get_instance_count(),
+            Output::Complex(inner) => inner.get_instance_count(),
+        }
+    }
+    pub(in crate::svc) fn get_immediate_instance(&self) -> Option<T> {
+        match self {
+            Output::Simple(inner) => inner.get_immediate_instance(),
+            Output::Complex(inner) => inner.get_immediate_instance(),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Math
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> Output<T>
+where
+    T: Copy + std::ops::MulAssign<PValue>,
+{
+    pub(crate) fn instance_mul_assign(&mut self, rhs: PValue) {
+        match self {
+            Self::Simple(inner) => inner.instance_mul_assign(rhs),
+            Self::Complex(inner) => inner.instance_mul_assign(rhs),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,45 +88,6 @@ where
         match self {
             Self::Simple(inner) => inner.next(),
             Self::Complex(inner) => inner.next(),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// General operations
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T: Copy> Output<T> {
-    pub(in crate::svc) fn get_instance(&self) -> T {
-        match self {
-            Output::Simple(inner) => inner.get_instance(),
-            Output::Complex(inner) => inner.get_instance(),
-        }
-    }
-    pub(in crate::svc) fn get_instance_count(&self) -> Count {
-        match self {
-            Output::Simple(inner) => inner.get_instance_count(),
-            Output::Complex(inner) => inner.get_instance_count(),
-        }
-    }
-    pub(in crate::svc) fn get_immediate_instance(&self) -> Option<T> {
-        match self {
-            Output::Simple(inner) => inner.get_immediate_instance(),
-            Output::Complex(inner) => inner.get_immediate_instance(),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Math
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> Output<T>
-where
-    T: Copy + std::ops::MulAssign<PValue>,
-{
-    pub(crate) fn instance_mul_assign(&mut self, rhs: PValue) {
-        match self {
-            Self::Simple(inner) => inner.instance_mul_assign(rhs),
-            Self::Complex(inner) => inner.instance_mul_assign(rhs),
         }
     }
 }

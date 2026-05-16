@@ -2,50 +2,21 @@ use super::shared::OutputInstanceIterItem;
 use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(crate) struct OutputSimple<T: Copy> {
+pub(crate) struct OutputSimple<T>
+where
+    T: Copy,
+{
     pub(crate) instance: T,
     pub(crate) delay: PValue,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Instance iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T: Copy> OutputSimple<T> {
-    pub(super) fn into_instance_iter(self) -> OutputInstanceIterSimple<T> {
-        OutputInstanceIterSimple::new(self)
-    }
-}
-
-pub(in crate::svc) struct OutputInstanceIterSimple<T: Copy> {
-    output: OutputSimple<T>,
-    done: bool,
-}
-impl<T: Copy> OutputInstanceIterSimple<T> {
-    fn new(output: OutputSimple<T>) -> Self {
-        Self { output, done: false }
-    }
-}
-impl<T: Copy> Iterator for OutputInstanceIterSimple<T> {
-    type Item = OutputInstanceIterItem<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.done {
-            true => None,
-            false => {
-                self.done = true;
-                Some(OutputInstanceIterItem {
-                    time_passed: self.output.delay,
-                    instance: self.output.instance,
-                })
-            }
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // General operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T: Copy> OutputSimple<T> {
+impl<T> OutputSimple<T>
+where
+    T: Copy,
+{
     pub(super) fn get_instance(&self) -> T {
         self.instance
     }
@@ -69,5 +40,52 @@ where
 {
     pub(super) fn instance_mul_assign(&mut self, rhs: PValue) {
         self.instance.mul_assign(rhs);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Instance iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> OutputSimple<T>
+where
+    T: Copy,
+{
+    pub(super) fn into_instance_iter(self) -> OutputInstanceIterSimple<T> {
+        OutputInstanceIterSimple::new(self)
+    }
+}
+
+pub(in crate::svc) struct OutputInstanceIterSimple<T>
+where
+    T: Copy,
+{
+    output: OutputSimple<T>,
+    done: bool,
+}
+impl<T> OutputInstanceIterSimple<T>
+where
+    T: Copy,
+{
+    fn new(output: OutputSimple<T>) -> Self {
+        Self { output, done: false }
+    }
+}
+impl<T> Iterator for OutputInstanceIterSimple<T>
+where
+    T: Copy,
+{
+    type Item = OutputInstanceIterItem<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.done {
+            true => None,
+            false => {
+                self.done = true;
+                Some(OutputInstanceIterItem {
+                    time_passed: self.output.delay,
+                    instance: self.output.instance,
+                })
+            }
+        }
     }
 }

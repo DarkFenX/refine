@@ -32,14 +32,6 @@ pub struct StatDmgEntryBreacher {
     // can exceed value of 1 if server has more than 1 ticks per second
     pub relative_max: PValue,
 }
-impl StatDmgEntryBreacher {
-    pub(in crate::svc::vast) fn new() -> Self {
-        Self {
-            absolute_max: PValue::ZERO,
-            relative_max: PValue::ZERO,
-        }
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions

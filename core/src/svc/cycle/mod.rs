@@ -9,6 +9,7 @@ pub(in crate::svc) use seq_lim::CSeqLim;
 pub(in crate::svc) use seq_lim_inf::CSeqLimInf;
 pub(in crate::svc) use seq_lim_sin_inf::CSeqLimSinInf;
 pub(in crate::svc) use seq_loop_lim_sin::CSeqLoopLimSin;
+pub(in crate::svc) use traits::GetDuration;
 
 mod data;
 mod effect_charge_info;

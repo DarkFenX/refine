@@ -37,7 +37,7 @@ impl From<AggrPartDataRegular<PValue>> for CSeqPartTimingKey {
 impl From<AggrPartDataSpool<PValue>> for CSeqPartTimingKey {
     fn from(part_data: AggrPartDataSpool<PValue>) -> Self {
         Self {
-            duration: part_data.cycle_duration.sig_rounded(TIME_ROUND_DIGITS),
+            duration: part_data.cycle_main_duration.sig_rounded(TIME_ROUND_DIGITS),
             // This one is based on base output and will yield the same output key
             output: OutputTimingKey::from_output(&part_data.output_zero_spool),
         }

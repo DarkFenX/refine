@@ -31,6 +31,8 @@ where
         if self.repeats < Count::ONE {
             return PValue::ZERO;
         };
-        self.delay + self.interval * (self.repeats - Count::ONE).into_pvalue() + self.instance.get_duration()
+        let interval_count = (self.repeats - Count::ONE).into_pvalue();
+        let instance_duration = self.instance.get_duration();
+        self.delay + self.interval.mul_add(interval_count, instance_duration)
     }
 }
