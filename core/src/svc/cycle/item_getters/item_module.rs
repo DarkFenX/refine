@@ -148,7 +148,7 @@ fn fill_module_effect_info(
                             duration: active_duration,
                             chargedness: charge_info.get_first_cycle_chargedness(),
                         },
-                        soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false),
+                        soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false),
                     },
                     hard_dt: None,
                 }),
@@ -167,7 +167,7 @@ fn fill_module_effect_info(
                             duration: active_duration,
                             chargedness: Some(UnitInterval::ONE),
                         },
-                        soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false),
+                        soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false),
                     },
                     hard_dt: None,
                 }),
@@ -189,7 +189,7 @@ fn fill_module_effect_info(
                     duration: active_duration,
                     chargedness: None,
                 },
-                soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false),
+                soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false),
             },
             hard_dt: None,
         }),
@@ -218,7 +218,7 @@ fn fill_module_effect_info(
                 charge_info.part_charged,
             ),
             OptionalReload::Disabled => {
-                let soft_dt = CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false);
+                let soft_dt = CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false);
                 CycleSeq::LimInf(CSeqLimInf {
                     p1_data: CycleDataFull {
                         active: CycleActive {
@@ -263,7 +263,7 @@ fn fill_module_effect_info(
                 full_count,
             ),
             OptionalReload::Disabled => {
-                let soft_dt = CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false);
+                let soft_dt = CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false);
                 CycleSeq::LimInf(CSeqLimInf {
                     p1_data: CycleDataFull {
                         active: CycleActive {
@@ -311,7 +311,7 @@ fn fill_module_effect_info(
                     charge_info.part_charged,
                 ),
                 OptionalReload::Disabled => {
-                    let soft_dt = CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false);
+                    let soft_dt = CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false);
                     CycleSeq::LimSinInf(CSeqLimSinInf {
                         p1_data: CycleDataFull {
                             active: CycleActive {
@@ -372,6 +372,7 @@ fn part_r(
                 get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
                 soft_dt_cd,
                 true,
+                false,
             ),
         },
         hard_dt: None,
@@ -398,6 +399,7 @@ fn full_r(
                     get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
                     soft_dt_cd,
                     true,
+                    false,
                 ),
             },
             hard_dt: None,
@@ -408,7 +410,7 @@ fn full_r(
                     duration: active_duration,
                     chargedness: Some(UnitInterval::ONE),
                 },
-                soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false),
+                soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false),
             },
             p1_repeat_count: full_count - Count::ONE,
             p2_data: CycleDataFull {
@@ -420,6 +422,7 @@ fn full_r(
                     get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
                     soft_dt_cd,
                     true,
+                    false,
                 ),
             },
             hard_dt: None,
@@ -443,7 +446,7 @@ fn both_r(
                 duration: active_duration,
                 chargedness: Some(UnitInterval::ONE),
             },
-            soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false),
+            soft_dt: CycleSoftDt::try_new(cooldown_duration, soft_dt_cd, false, false),
         },
         p1_repeat_count: full_count,
         p2_data: CycleDataFull {
@@ -455,6 +458,7 @@ fn both_r(
                 get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
                 soft_dt_cd,
                 true,
+                false,
             ),
         },
         hard_dt: None,

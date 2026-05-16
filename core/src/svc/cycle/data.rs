@@ -44,20 +44,29 @@ pub(in crate::svc) struct CycleSoftDt {
     pub(in crate::svc) reason: CycleSoftDtReason,
 }
 impl CycleSoftDt {
-    pub(super) fn try_new(duration: PValue, cooldown: bool, reload: bool) -> Option<Self> {
-        let reason = CycleSoftDtReason::try_new(cooldown, reload)?;
+    pub(super) fn try_new(duration: PValue, cooldown: bool, reload: bool, pre_rearm_idling: bool) -> Option<Self> {
+        let reason = CycleSoftDtReason::try_new(cooldown, reload, pre_rearm_idling)?;
         Some(Self { duration, reason })
     }
 }
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSoftDtReason {
+    // Module reactivation delays & ability cooldowns
     pub(in crate::svc) cooldown: bool,
+    // Module reloads only; fighter rearms are considered as a hard downtime
     pub(in crate::svc) reload: bool,
+    // When there is some, but too little time to fit even partial cycle before fighter rearm, that
+    // time is considered as pre-rearm-idling
+    pub(in crate::svc) pre_rearm_idling: bool,
 }
 impl CycleSoftDtReason {
-    fn try_new(cooldown: bool, reload: bool) -> Option<Self> {
-        match cooldown || reload {
-            true => Some(Self { cooldown, reload }),
+    fn try_new(cooldown: bool, reload: bool, pre_rearm_idling: bool) -> Option<Self> {
+        match cooldown || reload || pre_rearm_idling {
+            true => Some(Self {
+                cooldown,
+                reload,
+                pre_rearm_idling,
+            }),
             false => None,
         }
     }
