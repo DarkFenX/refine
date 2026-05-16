@@ -25,9 +25,6 @@ impl<T> CSeqLim<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_cycles(&self) -> CSeqLimCycleIter<T> {
-        CSeqLimCycleIter::new(*self)
-    }
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
         CSeqLimPartIter::new(self)
     }
@@ -60,36 +57,6 @@ impl<T> CSeqLim<T> {
     }
     pub(in crate::svc) fn optimize(self) -> CycleSeq<T> {
         CycleSeq::Lim(self)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cycle iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLimCycleIter<T> {
-    cseq: CSeqLim<T>,
-    repeats_done: Count,
-}
-impl<T> CSeqLimCycleIter<T> {
-    fn new(cseq: CSeqLim<T>) -> Self {
-        Self {
-            cseq,
-            repeats_done: Count::ZERO,
-        }
-    }
-}
-impl<T> Iterator for CSeqLimCycleIter<T>
-where
-    T: Copy,
-{
-    type Item = T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.repeats_done >= self.cseq.repeat_count {
-            return None;
-        }
-        self.repeats_done += Count::ONE;
-        Some(self.cseq.data)
     }
 }
 

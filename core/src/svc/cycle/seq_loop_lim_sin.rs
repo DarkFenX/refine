@@ -30,9 +30,6 @@ impl<T> CSeqLoopLimSin<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_cycles(&self) -> CSeqLoopLimSinCycleIter<T> {
-        CSeqLoopLimSinCycleIter::new(*self)
-    }
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLoopLimSinPartIter<'_, T> {
         CSeqLoopLimSinPartIter::new(self)
     }
@@ -98,37 +95,6 @@ where
 {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::LoopLimSin(*self))
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cycle iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLoopLimSinCycleIter<T> {
-    cseq: CSeqLoopLimSin<T>,
-    p1_repeats_done: Count,
-}
-impl<T> CSeqLoopLimSinCycleIter<T> {
-    fn new(cseq: CSeqLoopLimSin<T>) -> Self {
-        Self {
-            cseq,
-            p1_repeats_done: Count::ZERO,
-        }
-    }
-}
-impl<T> Iterator for CSeqLoopLimSinCycleIter<T>
-where
-    T: Copy,
-{
-    type Item = T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.p1_repeats_done >= self.cseq.p1_repeat_count {
-            self.p1_repeats_done = Count::ZERO;
-            return Some(self.cseq.p2_data);
-        }
-        self.p1_repeats_done += Count::ONE;
-        Some(self.cseq.p1_data)
     }
 }
 

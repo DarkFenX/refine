@@ -1,3 +1,4 @@
+use super::traits::GetDuration;
 use crate::num::{PValue, UnitInterval};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +17,11 @@ impl CycleDataFull {
             duration += soft_dt.duration;
         }
         duration
+    }
+}
+impl GetDuration for CycleDataFull {
+    fn get_duration(&self) -> PValue {
+        self.get_main_duration()
     }
 }
 

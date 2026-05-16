@@ -21,3 +21,4 @@ mod seq_lim;
 mod seq_lim_inf;
 mod seq_lim_sin_inf;
 mod seq_loop_lim_sin;
+mod traits;

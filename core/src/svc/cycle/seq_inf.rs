@@ -26,9 +26,6 @@ impl<T> CSeqInf<T>
 where
     T: Copy,
 {
-    pub(super) fn iter_cycles(&self) -> CSeqInfCycleIter<T> {
-        CSeqInfCycleIter::new(*self)
-    }
     pub(super) fn iter_cseq_parts_regular(&self) -> CSeqInfPartIter<'_, T> {
         CSeqInfPartIter::new(self)
     }
@@ -72,28 +69,6 @@ where
 {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(*self))
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cycle iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqInfCycleIter<T> {
-    cseq: CSeqInf<T>,
-}
-impl<T> CSeqInfCycleIter<T> {
-    fn new(cseq: CSeqInf<T>) -> Self {
-        Self { cseq }
-    }
-}
-impl<T> Iterator for CSeqInfCycleIter<T>
-where
-    T: Copy,
-{
-    type Item = T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        Some(self.cseq.data)
     }
 }
 
