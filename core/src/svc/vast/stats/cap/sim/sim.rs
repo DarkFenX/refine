@@ -75,6 +75,7 @@ impl CapSim {
                             self.schedule_cycle_output(
                                 event.time,
                                 cycle_iter_item.output.into_instance_iter(),
+                                cycle_iter_item.output_duration_limit,
                                 event.direction,
                             );
                             // Schedule next cycle check
@@ -214,11 +215,17 @@ impl CapSim {
         &mut self,
         base_time: PValue,
         output_iter: OutputInstanceIter<PValue>,
+        output_duration_limit: Option<PValue>,
         direction: Direction,
     ) {
         let mut extra_delay = PValue::ZERO;
         for output_event in output_iter {
             extra_delay += output_event.time_passed;
+            if let Some(output_duration_limit) = output_duration_limit
+                && extra_delay > output_duration_limit
+            {
+                return;
+            }
             let new_event = CapSimEvent::CapChange(CapSimEventCapChange {
                 time: base_time + extra_delay,
                 amount: output_event.instance,
@@ -239,7 +246,12 @@ impl CapSim {
             }
             // Schedule non-immediate cap change events (EVE injectors don't have that, but data
             // format used in the lib makes it possible)
-            self.schedule_cycle_output(self.time, instance_iter, Direction::Gain);
+            self.schedule_cycle_output(
+                self.time,
+                instance_iter,
+                cycle_iter_item.output_duration_limit,
+                Direction::Gain,
+            );
             // Schedule next cycle
             injector_event.time = self.time + cycle_iter_item.cycle_duration;
             self.events.push(CapSimEvent::InjectorReady(injector_event));
