@@ -345,7 +345,7 @@ fn sim_rearm_trigger_info_to_cseq(
                 },
                 soft_dt: None,
             },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            hard_dt: make_hard_dt(hard_dt_duration),
         }),
         charge_count => {
             let p1_repeat_count = charge_count - Count::ONE;
@@ -365,7 +365,7 @@ fn sim_rearm_trigger_info_to_cseq(
                     },
                     soft_dt: None,
                 },
-                hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+                hard_dt: make_hard_dt(hard_dt_duration),
             })
         }
     }
@@ -390,109 +390,86 @@ fn sim_rearm_other_info_to_cseq(
     match (full_cycle_count, extra_cycle) {
         (Count::ZERO, ExtraCycle::None(_)) => None,
         (Count::ZERO, ExtraCycle::ActivePartial(active_duration)) => Some(CycleSeq::Inf(CSeqInf {
-            data: CycleDataFull {
-                active: CycleActive {
-                    duration: active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false),
-            },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            data: make_extra_cycle_active_partial_data(effect_info, active_duration),
+            hard_dt: make_hard_dt(hard_dt_duration),
         })),
         (Count::ZERO, ExtraCycle::ActiveFull(soft_dt_duration)) => Some(CycleSeq::Inf(CSeqInf {
-            data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(
-                    soft_dt_duration,
-                    effect_info.soft_dt_cd,
-                    false,
-                    soft_dt_duration > effect_info.cooldown_duration,
-                ),
-            },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            data: make_extra_cycle_active_full_data(effect_info, soft_dt_duration),
+            hard_dt: make_hard_dt(hard_dt_duration),
         })),
         (Count::ONE, ExtraCycle::None(idle_duration)) => Some(CycleSeq::Inf(CSeqInf {
-            data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(
-                    effect_info.cooldown_duration + idle_duration,
-                    effect_info.soft_dt_cd,
-                    false,
-                    idle_duration > PValue::ZERO,
-                ),
-            },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            data: make_full_cycle_with_extra_idling_data(effect_info, idle_duration),
+            hard_dt: make_hard_dt(hard_dt_duration),
         })),
         (full_cycle_count, ExtraCycle::None(idle_duration)) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
-            p1_data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
-            },
+            p1_data: make_full_cycle_data(effect_info),
             p1_repeat_count: full_cycle_count - Count::ONE,
-            p2_data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(
-                    effect_info.cooldown_duration + idle_duration,
-                    effect_info.soft_dt_cd,
-                    false,
-                    idle_duration > PValue::ZERO,
-                ),
-            },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            p2_data: make_full_cycle_with_extra_idling_data(effect_info, idle_duration),
+            hard_dt: make_hard_dt(hard_dt_duration),
         })),
         (full_cycle_count, ExtraCycle::ActivePartial(active_duration)) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
-            p1_data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
-            },
+            p1_data: make_full_cycle_data(effect_info),
             p1_repeat_count: full_cycle_count,
-            p2_data: CycleDataFull {
-                active: CycleActive {
-                    duration: active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false),
-            },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            p2_data: make_extra_cycle_active_partial_data(effect_info, active_duration),
+            hard_dt: make_hard_dt(hard_dt_duration),
         })),
         (full_cycle_count, ExtraCycle::ActiveFull(soft_dt_duration)) => Some(CycleSeq::LoopLimSin(CSeqLoopLimSin {
-            p1_data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
-            },
+            p1_data: make_full_cycle_data(effect_info),
             p1_repeat_count: full_cycle_count,
-            p2_data: CycleDataFull {
-                active: CycleActive {
-                    duration: effect_info.active_duration,
-                    chargedness: effect_info.get_chargedness(),
-                },
-                soft_dt: CycleSoftDt::try_new(
-                    soft_dt_duration,
-                    effect_info.soft_dt_cd,
-                    false,
-                    soft_dt_duration > effect_info.cooldown_duration,
-                ),
-            },
-            hard_dt: CycleHardDt::try_new(hard_dt_duration, true),
+            p2_data: make_extra_cycle_active_full_data(effect_info, soft_dt_duration),
+            hard_dt: make_hard_dt(hard_dt_duration),
         })),
+    }
+}
+fn make_hard_dt(duration: PValue) -> Option<CycleHardDt> {
+    CycleHardDt::try_new(duration, true)
+}
+fn make_full_cycle_data(effect_info: EffectInfo) -> CycleDataFull {
+    CycleDataFull {
+        active: CycleActive {
+            duration: effect_info.active_duration,
+            chargedness: effect_info.get_chargedness(),
+        },
+        soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+    }
+}
+fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration: PValue) -> CycleDataFull {
+    CycleDataFull {
+        active: CycleActive {
+            duration: effect_info.active_duration,
+            chargedness: effect_info.get_chargedness(),
+        },
+        soft_dt: CycleSoftDt::try_new(
+            effect_info.cooldown_duration + idle_duration,
+            effect_info.soft_dt_cd,
+            false,
+            idle_duration > PValue::ZERO,
+        ),
+    }
+}
+fn make_extra_cycle_active_partial_data(effect_info: EffectInfo, active_duration: PValue) -> CycleDataFull {
+    CycleDataFull {
+        active: CycleActive {
+            duration: active_duration,
+            chargedness: effect_info.get_chargedness(),
+        },
+        // Since we are assuming that any cooldown interrupts cycling, follow that logic here and
+        // make soft downtime if ability has any cooldown, even if its duration is 0
+        soft_dt: CycleSoftDt::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false),
+    }
+}
+fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: PValue) -> CycleDataFull {
+    CycleDataFull {
+        active: CycleActive {
+            duration: effect_info.active_duration,
+            chargedness: effect_info.get_chargedness(),
+        },
+        soft_dt: CycleSoftDt::try_new(
+            soft_dt_duration,
+            effect_info.soft_dt_cd,
+            false,
+            soft_dt_duration > effect_info.cooldown_duration,
+        ),
     }
 }
 
