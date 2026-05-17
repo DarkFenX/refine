@@ -1,4 +1,4 @@
-pub(in crate::svc) use data::{CycleActive, CycleDataFull, CycleHardDt, CycleSoftDt};
+pub(in crate::svc) use data::{CycleActive, CycleDataFull, CycleHardDt, CycleHardDtReason, CycleSoftDt};
 pub(crate) use item_getters::CseqMap;
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};
 pub(in crate::svc) use iter_cycle::CycleIter;
