@@ -317,7 +317,7 @@ where
         ctx,
         calc,
         projector_uid,
-        &cseq,
+        cseq,
         ospec,
         &inv_proj,
         &inv_spool,

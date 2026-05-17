@@ -98,10 +98,11 @@ fn get_cap_consumption_instance(
     cap_consumer: &RItemCapConsumer,
 ) -> Option<PValue> {
     let r_effect = ctx.u_data.src.get_effect_by_rid(cap_consumer.effect_rid);
-    let mut cap_consumed = match cap_consumer.opc_spec.base.get(ctx, calc, item_uid, r_effect, ()) {
-        Some(output) => output.get_instance(),
-        None => return None,
-    };
+    let mut cap_consumed = cap_consumer
+        .opc_spec
+        .base
+        .get(ctx, calc, item_uid, r_effect, ())?
+        .get_instance();
     // Just assume chargedness is 100% when there is a charge for simplicity. The only case it's
     // needed in this case (ASBs) chargedness is ignored anyway.
     if let Some(charge_mult_getter) = cap_consumer.opc_spec.charge_mult

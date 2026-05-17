@@ -151,8 +151,9 @@ fn process_infinite_hard_dt<T, A>(
     if full_repeat_count > Count::ZERO {
         process_output_of_cycle_with_cutoff(accum, data, chance_mult, full_repeat_count);
     }
-    // If there is still time left, process cycles which only partially fit
-    while time >= Value::ZERO {
+    // If there is still time left, process cycle which only partially fits. Multiple cycles cannot
+    // fit in this case, as hard downtime cuts cycle tails
+    if time >= Value::ZERO {
         accum.add_output_time_limited(&data.output, chance_mult, Count::ONE, time);
     }
 }
