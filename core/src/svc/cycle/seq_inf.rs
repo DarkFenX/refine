@@ -1,60 +1,62 @@
-use crate::{
-    svc::cycle::{CycleHardDt, CycleSeq, CycleSeqLooped},
-    util::LibConverter,
+use super::{
+    data::CycleHardDt,
+    seq::{CycleSeq, CycleSeqLooped},
 };
+use crate::util::LibConverter;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: repeats infinitely
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqInf<T> {
-    pub(in crate::svc) data: T,
+pub(in crate::svc) struct CSeqInf<D, HDT = CycleHardDt> {
+    pub(in crate::svc) data: D,
     // Optional hard downtime every cycle
-    pub(in crate::svc) hard_dt: Option<CycleHardDt>,
+    pub(in crate::svc) hard_dt: Option<HDT>,
 }
-impl<T> CSeqInf<T> {
-    pub(super) fn get_first_cycle(&self) -> &T {
+impl<D, HDT> CSeqInf<D, HDT> {
+    pub(super) fn get_first_cycle(&self) -> &D {
         &self.data
     }
-    pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
-        self.hard_dt
+    pub(super) fn get_hard_dt(&self) -> Option<&HDT> {
+        self.hard_dt.as_ref()
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqInf<T> {
-    pub(super) fn convert<U>(self) -> CSeqInf<U>
+impl<D, HDT> CSeqInf<D, HDT> {
+    pub(super) fn convert<D2>(self) -> CSeqInf<D2, HDT>
     where
-        U: From<T>,
+        D2: From<D>,
     {
         CSeqInf {
             data: self.data.into(),
             hard_dt: self.hard_dt,
         }
     }
-    pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqInf<U>
+    pub(in crate::svc) fn convert_with<C, D2>(self, converter: &mut C) -> CSeqInf<D2, HDT>
     where
-        C: LibConverter<T, U>,
+        C: LibConverter<D, D2>,
     {
         CSeqInf {
             data: converter.lib_convert(self.data),
             hard_dt: self.hard_dt,
         }
     }
-    pub(in crate::svc) fn optimize(self) -> CycleSeq<T> {
+    pub(in crate::svc) fn optimize(self) -> CycleSeq<D, HDT> {
         CycleSeq::Inf(self)
     }
-    pub(super) fn optimize_looped(self) -> CycleSeqLooped<T> {
+    pub(super) fn optimize_looped(self) -> CycleSeqLooped<D, HDT> {
         CycleSeqLooped::Inf(self)
     }
 }
-impl<T> CSeqInf<T>
+impl<D, HDT> CSeqInf<D, HDT>
 where
-    T: Copy,
+    D: Copy,
+    HDT: Copy,
 {
-    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
+    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>> {
         Some(CycleSeqLooped::Inf(*self))
     }
 }

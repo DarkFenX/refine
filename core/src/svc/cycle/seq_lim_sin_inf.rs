@@ -1,8 +1,9 @@
-use crate::{
-    num::Count,
-    svc::cycle::{CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
-    util::LibConverter,
+use super::{
+    seq::{CycleSeq, CycleSeqLooped},
+    seq_inf::CSeqInf,
+    seq_lim_inf::CSeqLimInf,
 };
+use crate::{num::Count, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times
@@ -10,39 +11,36 @@ use crate::{
 // Part 3: repeats infinitely
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqLimSinInf<T> {
-    pub(in crate::svc) p1_data: T,
+pub(in crate::svc) struct CSeqLimSinInf<D> {
+    pub(in crate::svc) p1_data: D,
     pub(in crate::svc) p1_repeat_count: Count,
-    pub(in crate::svc) p2_data: T,
-    pub(in crate::svc) p3_data: T,
+    pub(in crate::svc) p2_data: D,
+    pub(in crate::svc) p3_data: D,
 }
-impl<T> CSeqLimSinInf<T> {
-    pub(super) fn get_first_cycle(&self) -> &T {
+impl<D> CSeqLimSinInf<D> {
+    pub(super) fn get_first_cycle(&self) -> &D {
         &self.p1_data
-    }
-    pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
-        None
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqLimSinInf<T> {
-    pub(super) fn convert<U>(self) -> CSeqLimSinInf<U>
+impl<D> CSeqLimSinInf<D> {
+    pub(super) fn convert<D2>(self) -> CSeqLimSinInf<D2>
     where
-        U: From<T>,
+        D2: From<D>,
     {
         CSeqLimSinInf {
-            p1_data: U::from(self.p1_data),
+            p1_data: D2::from(self.p1_data),
             p1_repeat_count: self.p1_repeat_count,
-            p2_data: U::from(self.p2_data),
-            p3_data: U::from(self.p3_data),
+            p2_data: D2::from(self.p2_data),
+            p3_data: D2::from(self.p3_data),
         }
     }
-    pub(in crate::svc) fn convert_with<C, U>(self, converter: &mut C) -> CSeqLimSinInf<U>
+    pub(in crate::svc) fn convert_with<C, D2>(self, converter: &mut C) -> CSeqLimSinInf<D2>
     where
-        C: LibConverter<T, U>,
+        C: LibConverter<D, D2>,
     {
         CSeqLimSinInf {
             p1_data: converter.lib_convert(self.p1_data),
@@ -51,9 +49,9 @@ impl<T> CSeqLimSinInf<T> {
             p3_data: converter.lib_convert(self.p3_data),
         }
     }
-    pub(in crate::svc) fn optimize(self) -> CycleSeq<T>
+    pub(in crate::svc) fn optimize<HDT>(self) -> CycleSeq<D, HDT>
     where
-        T: Eq,
+        D: Eq,
     {
         match (self.p1_data == self.p2_data, self.p2_data == self.p3_data) {
             // Nothing to merge
@@ -83,11 +81,11 @@ impl<T> CSeqLimSinInf<T> {
         }
     }
 }
-impl<T> CSeqLimSinInf<T>
+impl<D> CSeqLimSinInf<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
+    pub(super) fn try_loop_cseq<HDT>(&self) -> Option<CycleSeqLooped<D, HDT>> {
         Some(CycleSeqLooped::Inf(CSeqInf {
             data: self.p3_data,
             hard_dt: None,
