@@ -29,9 +29,9 @@ impl AggrIterData<PValue> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cycle sequence
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cycle sequences do not provide facilities to convert hard downtime info, so process it in-place:
-// round duration, and set consistent reason (which we don't care about here)
 impl CycleSeq<CSeqPartTimingKey> {
+    // Cycle sequences do not provide facilities to convert hard downtime info, so process it
+    // in-place: round duration, and set consistent reason (which we don't care about here)
     fn process_hard_dt(&mut self) {
         let hard_dt = match self {
             CycleSeq::Inf(inner) => inner.hard_dt.as_mut(),
@@ -39,13 +39,10 @@ impl CycleSeq<CSeqPartTimingKey> {
             _ => None,
         };
         if let Some(hard_dt) = hard_dt {
-            process_hard_dt(hard_dt);
+            hard_dt.duration = hard_dt.duration.sig_rounded(TIME_ROUND_DIGITS);
+            hard_dt.reason = CycleHardDtReason { refuel: true }
         }
     }
-}
-fn process_hard_dt(hard_dt: &mut CycleHardDt) {
-    hard_dt.duration = hard_dt.duration.sig_rounded(TIME_ROUND_DIGITS);
-    hard_dt.reason = CycleHardDtReason { refuel: true }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
