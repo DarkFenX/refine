@@ -1,7 +1,7 @@
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CycleHardDt, CycleHardDtReason, CycleSeq},
+        cycle::{CycleHardDtReason, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
         vast::aggr::{AggrIterData, AggrPartDataRegular, AggrPartDataSpool},
     },
