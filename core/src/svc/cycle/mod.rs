@@ -2,7 +2,8 @@ pub(in crate::svc) use data::{CycleActive, CycleDataFull, CycleHardDt, CycleHard
 pub(crate) use item_getters::CseqMap;
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};
 pub(in crate::svc) use iter_cycle::CycleIter;
-pub(in crate::svc) use iter_part::{CSeqLoopedPart, CSeqPart, CSeqPartIter, CSeqParts};
+pub(in crate::svc) use iter_part::CSeqPart;
+pub(in crate::svc) use iter_part_looped::CSeqLoopedPart;
 pub(in crate::svc) use seq::{CycleSeq, CycleSeqLooped};
 pub(in crate::svc) use seq_inf::CSeqInf;
 pub(in crate::svc) use seq_lim::CSeqLim;
@@ -16,6 +17,7 @@ mod effect_charge_info;
 mod item_getters;
 mod iter_cycle;
 mod iter_part;
+mod iter_part_looped;
 mod seq;
 mod seq_inf;
 mod seq_lim;

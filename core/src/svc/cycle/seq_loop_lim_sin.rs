@@ -1,7 +1,6 @@
 use crate::{
-    misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
+    svc::cycle::{CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf},
     util::LibConverter,
 };
 
@@ -24,17 +23,6 @@ impl<T> CSeqLoopLimSin<T> {
     }
     pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         self.hard_dt
-    }
-}
-impl<T> CSeqLoopLimSin<T>
-where
-    T: Copy,
-{
-    pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLoopLimSinPartIter<'_, T> {
-        CSeqLoopLimSinPartIter::new(self)
-    }
-    pub(super) fn iter_cseq_parts_looped(&self) -> CSeqLoopedLoopLimSinPartIter<'_, T> {
-        CSeqLoopedLoopLimSinPartIter::new(self)
     }
 }
 
@@ -95,82 +83,5 @@ where
 {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::LoopLimSin(*self))
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sequence part iterators
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLoopLimSinPartIter<'a, T> {
-    cseq: &'a CSeqLoopLimSin<T>,
-    index: usize,
-}
-impl<'a, T> CSeqLoopLimSinPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLoopLimSin<T>) -> Self {
-        Self { cseq, index: 0 }
-    }
-}
-impl<T> Iterator for CSeqLoopLimSinPartIter<'_, T>
-where
-    T: Copy,
-{
-    type Item = CSeqPart<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
-                Some(CSeqPart {
-                    data: self.cseq.p1_data,
-                    repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
-                })
-            }
-            1 => {
-                self.index = 2;
-                Some(CSeqPart {
-                    data: self.cseq.p2_data,
-                    repeat_count: InfCount::Count(Count::ONE),
-                })
-            }
-            2 => None,
-            _ => unreachable!(),
-        }
-    }
-}
-
-pub(in crate::svc) struct CSeqLoopedLoopLimSinPartIter<'a, T> {
-    cseq: &'a CSeqLoopLimSin<T>,
-    index: usize,
-}
-impl<'a, T> CSeqLoopedLoopLimSinPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLoopLimSin<T>) -> Self {
-        Self { cseq, index: 0 }
-    }
-}
-impl<T> Iterator for CSeqLoopedLoopLimSinPartIter<'_, T>
-where
-    T: Copy,
-{
-    type Item = CSeqLoopedPart<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
-                Some(CSeqLoopedPart {
-                    data: self.cseq.p1_data,
-                    repeat_count: self.cseq.p1_repeat_count,
-                })
-            }
-            1 => {
-                self.index = 2;
-                Some(CSeqLoopedPart {
-                    data: self.cseq.p2_data,
-                    repeat_count: Count::ONE,
-                })
-            }
-            2 => None,
-            _ => unreachable!(),
-        }
     }
 }

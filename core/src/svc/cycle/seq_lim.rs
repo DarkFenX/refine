@@ -1,7 +1,6 @@
 use crate::{
-    misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped},
+    svc::cycle::{CycleHardDt, CycleSeq, CycleSeqLooped},
     util::LibConverter,
 };
 
@@ -19,14 +18,6 @@ impl<T> CSeqLim<T> {
     }
     pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         None
-    }
-}
-impl<T> CSeqLim<T>
-where
-    T: Copy,
-{
-    pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
-        CSeqLimPartIter::new(self)
     }
 }
 
@@ -57,34 +48,5 @@ impl<T> CSeqLim<T> {
     }
     pub(in crate::svc) fn optimize(self) -> CycleSeq<T> {
         CycleSeq::Lim(self)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sequence part iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLimPartIter<'a, T> {
-    cseq: &'a CSeqLim<T>,
-    yielded: bool,
-}
-impl<'a, T> CSeqLimPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLim<T>) -> Self {
-        Self { cseq, yielded: false }
-    }
-}
-impl<T> Iterator for CSeqLimPartIter<'_, T>
-where
-    T: Copy,
-{
-    type Item = CSeqPart<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.yielded {
-            return None;
-        }
-        Some(CSeqPart {
-            data: self.cseq.data,
-            repeat_count: InfCount::Count(self.cseq.repeat_count),
-        })
     }
 }

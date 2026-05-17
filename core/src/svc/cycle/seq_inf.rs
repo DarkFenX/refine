@@ -1,7 +1,5 @@
 use crate::{
-    misc::InfCount,
-    num::Count,
-    svc::cycle::{CSeqLoopedPart, CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped},
+    svc::cycle::{CycleHardDt, CycleSeq, CycleSeqLooped},
     util::LibConverter,
 };
 
@@ -20,17 +18,6 @@ impl<T> CSeqInf<T> {
     }
     pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         self.hard_dt
-    }
-}
-impl<T> CSeqInf<T>
-where
-    T: Copy,
-{
-    pub(super) fn iter_cseq_parts_regular(&self) -> CSeqInfPartIter<'_, T> {
-        CSeqInfPartIter::new(self)
-    }
-    pub(super) fn iter_cseq_parts_looped(&self) -> CSeqLoopedInfPartIter<'_, T> {
-        CSeqLoopedInfPartIter::new(self)
     }
 }
 
@@ -69,62 +56,5 @@ where
 {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<T>> {
         Some(CycleSeqLooped::Inf(*self))
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sequence part iterators
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqInfPartIter<'a, T> {
-    cseq: &'a CSeqInf<T>,
-    yielded: bool,
-}
-impl<'a, T> CSeqInfPartIter<'a, T> {
-    fn new(cseq: &'a CSeqInf<T>) -> Self {
-        Self { cseq, yielded: false }
-    }
-}
-impl<T> Iterator for CSeqInfPartIter<'_, T>
-where
-    T: Copy,
-{
-    type Item = CSeqPart<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.yielded {
-            return None;
-        }
-        self.yielded = true;
-        Some(CSeqPart {
-            data: self.cseq.data,
-            repeat_count: InfCount::Infinite,
-        })
-    }
-}
-
-pub(in crate::svc) struct CSeqLoopedInfPartIter<'a, T> {
-    cseq: &'a CSeqInf<T>,
-    yielded: bool,
-}
-impl<'a, T> CSeqLoopedInfPartIter<'a, T> {
-    fn new(cseq: &'a CSeqInf<T>) -> Self {
-        Self { cseq, yielded: false }
-    }
-}
-impl<T> Iterator for CSeqLoopedInfPartIter<'_, T>
-where
-    T: Copy,
-{
-    type Item = CSeqLoopedPart<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.yielded {
-            return None;
-        }
-        self.yielded = true;
-        Some(CSeqLoopedPart {
-            data: self.cseq.data,
-            repeat_count: Count::ONE,
-        })
     }
 }

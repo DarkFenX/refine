@@ -1,7 +1,6 @@
 use crate::{
-    misc::InfCount,
     num::Count,
-    svc::cycle::{CSeqPart, CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
+    svc::cycle::{CycleHardDt, CycleSeq, CycleSeqLooped, seq_inf::CSeqInf, seq_lim_inf::CSeqLimInf},
     util::LibConverter,
 };
 
@@ -23,14 +22,6 @@ impl<T> CSeqLimSinInf<T> {
     }
     pub(super) fn get_hard_dt(&self) -> Option<CycleHardDt> {
         None
-    }
-}
-impl<T> CSeqLimSinInf<T>
-where
-    T: Copy,
-{
-    pub(super) fn iter_cseq_parts_regular(&self) -> CSeqLimSinInfPartIter<'_, T> {
-        CSeqLimSinInfPartIter::new(self)
     }
 }
 
@@ -101,52 +92,5 @@ where
             data: self.p3_data,
             hard_dt: None,
         }))
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sequence part iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLimSinInfPartIter<'a, T> {
-    cseq: &'a CSeqLimSinInf<T>,
-    index: usize,
-}
-impl<'a, T> CSeqLimSinInfPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLimSinInf<T>) -> Self {
-        Self { cseq, index: 0 }
-    }
-}
-impl<T> Iterator for CSeqLimSinInfPartIter<'_, T>
-where
-    T: Copy,
-{
-    type Item = CSeqPart<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
-                Some(CSeqPart {
-                    data: self.cseq.p1_data,
-                    repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
-                })
-            }
-            1 => {
-                self.index = 2;
-                Some(CSeqPart {
-                    data: self.cseq.p2_data,
-                    repeat_count: InfCount::Count(Count::ONE),
-                })
-            }
-            2 => {
-                self.index = 3;
-                Some(CSeqPart {
-                    data: self.cseq.p3_data,
-                    repeat_count: InfCount::Infinite,
-                })
-            }
-            3 => None,
-            _ => unreachable!(),
-        }
     }
 }
