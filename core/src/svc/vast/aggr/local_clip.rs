@@ -19,7 +19,7 @@ use crate::{
 
 // Local effects, considers only part of sequence until charges are out
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -27,12 +27,12 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
         Some(inv_local) => inv_local,
@@ -45,19 +45,19 @@ where
     }
 }
 
-fn process_regular<BG, T, A>(
+fn process_regular<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
-    accum: &mut SeqAccum<A>,
-    inv_local: AggrLocalInvData<T>,
+    accum: &mut SeqAccum<IA>,
+    inv_local: AggrLocalInvData<I>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
@@ -97,19 +97,19 @@ where
     !cycle_parts.loops || reload
 }
 
-fn process_hard_dt<BG, T, A>(
+fn process_hard_dt<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
-    accum: &mut SeqAccum<A>,
-    inv_local: AggrLocalInvData<T>,
+    accum: &mut SeqAccum<IA>,
+    inv_local: AggrLocalInvData<I>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     match cseq {
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip

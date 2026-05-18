@@ -23,19 +23,19 @@ use crate::{
 // General data which stays the same through projected effect cycling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub(super) struct AggrProjInvData<T>
+pub(super) struct AggrProjInvData<I>
 where
-    T: Copy,
+    I: Copy,
 {
     // TODO: consider if fields can be made private (and check if base output users use it properly)
-    pub(super) base_output: Output<T>,
+    pub(super) base_output: Output<I>,
     pub(super) str_mult: PValue,
     instance_limit: Option<PValue>,
     pub(super) chance_mult: Option<PValue>,
 }
-impl<T> AggrProjInvData<T>
+impl<I> AggrProjInvData<I>
 where
-    T: Copy,
+    I: Copy,
 {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
@@ -47,8 +47,8 @@ where
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
-        T: std::ops::MulAssign<PValue> + HasImpact,
-        BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
+        I: std::ops::MulAssign<PValue> + HasImpact,
+        BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     {
         let base_output = ospec.base.get(ctx, calc, projector_uid, effect, base_xargs)?;
         if !base_output.has_impact() || base_output.get_instance_count() == Count::ZERO {
@@ -116,7 +116,7 @@ where
     }
     pub(super) fn get_output_completion_duration(&self) -> PValue
     where
-        T: InstanceDuration,
+        I: InstanceDuration,
     {
         self.base_output.get_completion_duration()
     }
@@ -172,28 +172,28 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
+pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
-    T: Copy,
+    I: Copy,
 {
     pub(super) ctx: SvcCtx<'sc1, 'sc2>,
     pub(super) calc: &'calc mut Calc,
     pub(super) projector_uid: UItemId,
     pub(super) ospec: &'ospec REffectProjOpcSpec<BG>,
-    pub(super) inv_proj: &'ip AggrProjInvData<T>,
+    pub(super) inv_proj: &'ip AggrProjInvData<I>,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, T>
+impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
-    T: Copy,
+    I: Copy,
 {
     pub(super) fn new(
         ctx: SvcCtx<'sc1, 'sc2>,
         calc: &'calc mut Calc,
         projector_uid: UItemId,
         ospec: &'ospec REffectProjOpcSpec<BG>,
-        inv_proj: &'ip AggrProjInvData<T>,
+        inv_proj: &'ip AggrProjInvData<I>,
     ) -> Self {
         Self {
             ctx,
@@ -204,12 +204,12 @@ where
         }
     }
 }
-impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, T>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<I> {
         let output = get_proj_regular_output(
             self.ctx,
             self.calc,
@@ -231,21 +231,21 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cseq/part/cycle processing functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn process_single_spool<BG, T, A>(
+pub(super) fn process_single_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
-    accum: &mut A,
+    accum: &mut IA,
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     if *time < Value::ZERO {
         return;
@@ -269,22 +269,22 @@ pub(super) fn process_single_spool<BG, T, A>(
     }
 }
 
-pub(super) fn process_limited_spool<BG, T, A>(
+pub(super) fn process_limited_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
-    accum: &mut A,
+    accum: &mut IA,
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
     mut repeat_limit: Count,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let cycle_main_duration = cycle_data.get_main_duration();
     let output_completion_duration = inv_proj.base_output.get_completion_duration();
@@ -354,21 +354,21 @@ pub(super) fn process_limited_spool<BG, T, A>(
     }
 }
 
-pub(super) fn process_infinite_spool<BG, T, A>(
+pub(super) fn process_infinite_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     cycle_data: CycleDataFull,
-    accum: &mut A,
+    accum: &mut IA,
     time: &mut Value,
     uninterrupted_cycles: &mut Count,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     if *time < Value::ZERO {
         return;
@@ -429,20 +429,20 @@ pub(super) fn process_infinite_spool<BG, T, A>(
     }
 }
 
-pub(super) fn process_output_of_spooling_lls_with_cutoff<BG, T, A>(
+pub(super) fn process_output_of_spooling_lls_with_cutoff<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
-    accum: &mut A,
+    accum: &mut IA,
     inner_duration: PValue,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     // Hard downtime resets uninterrupted cycles, so always start from 0
     let mut uninterrupted_cycles = Count::ZERO;
@@ -478,17 +478,17 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<BG, T, A>(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_proj_regular_output<BG, T>(
+pub(super) fn get_proj_regular_output<BG, I>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     chargedness: Option<UnitInterval>,
-) -> Output<T>
+) -> Output<I>
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
     let mut str_mult = inv_proj.str_mult;
@@ -509,17 +509,17 @@ where
     output
 }
 
-pub(super) fn get_proj_spool_part_str_mult<BG, T>(
+pub(super) fn get_proj_spool_part_str_mult<BG, I>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     chargedness: Option<UnitInterval>,
 ) -> PValue
 where
     BG: NEffectOutputGetter,
-    T: Copy,
+    I: Copy,
 {
     let mut str_mult = inv_proj.str_mult;
     // Chargedness
@@ -532,13 +532,13 @@ where
     str_mult
 }
 
-pub(super) fn get_proj_spool_cycle_output<T>(
-    inv_proj: &AggrProjInvData<T>,
+pub(super) fn get_proj_spool_cycle_output<I>(
+    inv_proj: &AggrProjInvData<I>,
     mut str_mult: PValue,
     spool_extra_mult: Value,
-) -> Output<T>
+) -> Output<I>
 where
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_proj.base_output;
     // Spool

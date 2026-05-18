@@ -22,7 +22,7 @@ use crate::{
 // Projected effects, considers only first cycle (for "burst" stats)
 // Hard downtime is ignored, since burst cseqs are supposed not to have it
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -32,12 +32,12 @@ pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, T, A>(
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
     spool: Option<Spool>,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
         Some(inv_proj) => inv_proj,

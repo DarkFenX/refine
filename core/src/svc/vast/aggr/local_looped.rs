@@ -18,7 +18,7 @@ use crate::{
 
 // Local effects, considers only infinite parts of cycles
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -26,12 +26,12 @@ pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, T, A>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let cseq = match cseq.try_loop_cseq() {
         Some(cseq) => cseq,
@@ -48,18 +48,18 @@ where
     true
 }
 
-fn process_regular<BG, T, A>(
+fn process_regular<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
-    accum: &mut SeqAccum<A>,
-    inv_local: AggrLocalInvData<T>,
+    accum: &mut SeqAccum<IA>,
+    inv_local: AggrLocalInvData<I>,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     for cycle_part in cseq.iter_cseq_parts() {
         if cycle_part.repeat_count == Count::ZERO {
@@ -78,18 +78,18 @@ fn process_regular<BG, T, A>(
     }
 }
 
-fn process_hard_dt<BG, T, A>(
+fn process_hard_dt<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
-    accum: &mut SeqAccum<A>,
-    inv_local: AggrLocalInvData<T>,
+    accum: &mut SeqAccum<IA>,
+    inv_local: AggrLocalInvData<I>,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);

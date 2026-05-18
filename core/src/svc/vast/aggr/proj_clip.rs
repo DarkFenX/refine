@@ -22,7 +22,7 @@ use crate::{
 
 // Projected effects, considers only infinite parts of cycles
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -31,12 +31,12 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, T, A>(
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
         Some(inv_proj) => inv_proj,
@@ -56,19 +56,19 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn process_regular<BG, T, A>(
+fn process_regular<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
-    accum: &mut SeqAccum<A>,
+    inv_proj: AggrProjInvData<I>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut reload = false;
     let cycle_parts = cseq.get_cseq_parts();
@@ -108,19 +108,19 @@ where
     !cycle_parts.loops || reload
 }
 
-fn process_hard_dt<BG, T, A>(
+fn process_hard_dt<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
-    accum: &mut SeqAccum<A>,
+    inv_proj: AggrProjInvData<I>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     match cseq {
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
@@ -186,20 +186,20 @@ where
     }
 }
 
-fn process_spool<BG, T, A>(
+fn process_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
+    inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut uninterrupted_cycles = Count::ZERO;
     let mut reload = false;
@@ -283,20 +283,20 @@ where
     !cycle_parts.loops || reload
 }
 
-fn process_spool_hard_dt<BG, T, A>(
+fn process_spool_hard_dt<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
+    inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let cseq = match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way

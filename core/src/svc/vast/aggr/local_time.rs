@@ -18,7 +18,7 @@ use crate::{
 
 // Local effects, aggregates total output by specified time
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_time<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_local_time<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -26,13 +26,13 @@ pub(in crate::svc::vast) fn aggr_local_time<BG, BX, T, A>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
     time: PValue,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
         Some(inv_local) => inv_local,

@@ -14,14 +14,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn aggr_by_time<T, A>(
-    cseq: CycleSeq<AggrPartDataTail<T>, CSeqHardDtFull>,
+pub(super) fn aggr_by_time<I, IA>(
+    cseq: CycleSeq<AggrPartDataTail<I>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
-    accum: &mut A,
+    accum: &mut IA,
     ptime: PValue,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     match cseq {
         CycleSeq::Lim(inner) => process_limited_regular(
@@ -53,14 +53,14 @@ pub(super) fn aggr_by_time<T, A>(
     }
 }
 
-fn process_single_regular<T, A>(
-    accum: &mut A,
+fn process_single_regular<I, IA>(
+    accum: &mut IA,
     time: &mut Value,
-    data: &AggrPartDataTail<T>,
+    data: &AggrPartDataTail<I>,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     let ptime = match *time < Value::ZERO {
         true => return,
@@ -73,15 +73,15 @@ fn process_single_regular<T, A>(
     *time -= data.cycle_main_duration;
 }
 
-fn process_limited_regular<T, A>(
-    accum: &mut A,
+fn process_limited_regular<I, IA>(
+    accum: &mut IA,
     time: &mut Value,
-    data: &AggrPartDataTail<T>,
+    data: &AggrPartDataTail<I>,
     repeat_limit: Count,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     if *time < Value::ZERO {
         return;
@@ -103,14 +103,14 @@ fn process_limited_regular<T, A>(
     }
 }
 
-fn process_infinite_regular<T, A>(
-    accum: &mut A,
+fn process_infinite_regular<I, IA>(
+    accum: &mut IA,
     time: &mut Value,
-    data: &AggrPartDataTail<T>,
+    data: &AggrPartDataTail<I>,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     if *time < Value::ZERO {
         return;
@@ -127,15 +127,15 @@ fn process_infinite_regular<T, A>(
     }
 }
 
-fn process_infinite_hard_dt<T, A>(
-    accum: &mut A,
+fn process_infinite_hard_dt<I, IA>(
+    accum: &mut IA,
     ptime: PValue,
-    data: &AggrPartDataTail<T>,
+    data: &AggrPartDataTail<I>,
     hard_dt: CSeqHardDtFull,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
     // Calculate how many full durations we can fit into given time, considering hard downtimes, and
@@ -158,14 +158,14 @@ fn process_infinite_hard_dt<T, A>(
     }
 }
 
-fn process_lls_regular<T, A>(
-    accum: &mut A,
+fn process_lls_regular<I, IA>(
+    accum: &mut IA,
     ptime: PValue,
-    cseq: CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
+    cseq: CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
     // Data format implies that completion duration of outputs in different parts can be different,
@@ -195,14 +195,14 @@ fn process_lls_regular<T, A>(
     }
 }
 
-fn process_lls_hard_dt<T, A>(
-    accum: &mut A,
+fn process_lls_hard_dt<I, IA>(
+    accum: &mut IA,
     ptime: PValue,
-    cseq: CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
+    cseq: CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
     let loop_inner_duration = cseq.get_full_duration();
@@ -219,14 +219,14 @@ fn process_lls_hard_dt<T, A>(
     }
 }
 
-fn process_lls_incomplete<T, A>(
-    accum: &mut A,
+fn process_lls_incomplete<I, IA>(
+    accum: &mut IA,
     time: &mut Value,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
 {
     let mut p1_remaining_repeat_count = cseq.p1_repeat_count;
     // Process as many full part 1 repeats as time can fit

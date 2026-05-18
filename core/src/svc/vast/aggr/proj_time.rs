@@ -22,7 +22,7 @@ use crate::{
 
 // Projected effects, aggregates total output by specified time
 #[must_use]
-pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, T, A>(
+pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -31,13 +31,13 @@ pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, T, A>(
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
-    accum: &mut SeqAccum<A>,
+    accum: &mut SeqAccum<IA>,
     time: PValue,
 ) -> bool
 where
-    BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
         Some(inv_proj) => inv_proj,
@@ -73,19 +73,19 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-spool
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_regular<BG, T, A>(
+fn aggr_regular<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
-    accum: &mut A,
+    inv_proj: AggrProjInvData<I>,
+    accum: &mut IA,
     time: PValue,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
@@ -95,20 +95,20 @@ fn aggr_regular<BG, T, A>(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<BG, T, A>(
+fn aggr_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<T>,
-    accum: &mut A,
+    inv_proj: AggrProjInvData<I>,
+    accum: &mut IA,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     match cseq {
         CycleSeq::Lim(inner) => match inner.data.soft_dt.is_some() {
@@ -288,20 +288,20 @@ fn aggr_spool<BG, T, A>(
     }
 }
 
-fn process_lls_spool<BG, T, A>(
+fn process_lls_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
-    accum: &mut A,
+    accum: &mut IA,
     ptime: PValue,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
     let mut uninterrupted_cycles = Count::ZERO;
@@ -353,20 +353,20 @@ fn process_lls_spool<BG, T, A>(
     }
 }
 
-fn process_lls_spool_hard_dt<BG, T, A>(
+fn process_lls_spool_hard_dt<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: &AggrProjInvData<T>,
+    inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
-    accum: &mut A,
+    accum: &mut IA,
     ptime: PValue,
 ) where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    A: SeqInstanceAccum<T>,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
     let loop_inner_duration = cseq.get_full_duration();

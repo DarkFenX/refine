@@ -116,14 +116,14 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
-pub(super) fn process_output_of_lls_with_cutoff<I, A>(
-    accum: &mut A,
+pub(super) fn process_output_of_lls_with_cutoff<I, IA>(
+    accum: &mut IA,
     cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     loop_repeat_count: Count,
 ) where
     I: Copy + InstanceDuration,
-    A: SeqInstanceAccum<I>,
+    IA: SeqInstanceAccum<I>,
 {
     // Once hard downtime starts, instances cannot be applied
     let mut time = cseq.get_full_duration().into_value();
@@ -150,14 +150,14 @@ pub(super) fn process_output_of_lls_with_cutoff<I, A>(
     process_output_of_cycle_with_cutoff(accum, &cseq.p2_data, chance_mult, loop_repeat_count);
 }
 
-pub(super) fn process_output_of_cycle_with_cutoff<I, A>(
-    accum: &mut A,
+pub(super) fn process_output_of_cycle_with_cutoff<I, IA>(
+    accum: &mut IA,
     data: &AggrPartDataTail<I>,
     chance_mult: Option<PValue>,
     repeat_count: Count,
 ) where
     I: Copy + InstanceDuration,
-    A: SeqInstanceAccum<I>,
+    IA: SeqInstanceAccum<I>,
 {
     // Hard downtimes cut output tails. If output has a tail (it couldn't be fit into main
     // duration), process cycle like partial
