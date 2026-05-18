@@ -7,30 +7,30 @@ pub(crate) trait HasImpact {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Output impls
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> Output<T>
-where
-    T: Copy + HasImpact,
-{
-    pub(in crate::svc::vast::aggr) fn has_impact(&self) -> bool {
+impl<I> Output<I> {
+    pub(in crate::svc::vast::aggr) fn has_impact(&self) -> bool
+    where
+        I: HasImpact,
+    {
         match self {
             Self::Simple(inner) => inner.has_impact(),
             Self::Complex(inner) => inner.has_impact(),
         }
     }
 }
-impl<T> OutputSimple<T>
-where
-    T: Copy + HasImpact,
-{
-    fn has_impact(&self) -> bool {
+impl<I> OutputSimple<I> {
+    fn has_impact(&self) -> bool
+    where
+        I: HasImpact,
+    {
         self.instance.has_impact()
     }
 }
-impl<T> OutputComplex<T>
-where
-    T: Copy + HasImpact,
-{
-    fn has_impact(&self) -> bool {
+impl<I> OutputComplex<I> {
+    fn has_impact(&self) -> bool
+    where
+        I: HasImpact,
+    {
         self.instance.has_impact()
     }
 }

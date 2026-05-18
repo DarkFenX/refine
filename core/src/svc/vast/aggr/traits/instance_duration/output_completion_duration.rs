@@ -4,30 +4,30 @@ use crate::{
     svc::output::{Output, OutputComplex, OutputSimple},
 };
 
-impl<T> Output<T>
-where
-    T: Copy + InstanceDuration,
-{
-    pub(in crate::svc::vast) fn get_completion_duration(&self) -> PValue {
+impl<I> Output<I> {
+    pub(in crate::svc::vast) fn get_completion_duration(&self) -> PValue
+    where
+        I: InstanceDuration,
+    {
         match self {
             Output::Simple(inner) => inner.get_completion_duration(),
             Output::Complex(inner) => inner.get_completion_duration(),
         }
     }
 }
-impl<T> OutputSimple<T>
-where
-    T: Copy + InstanceDuration,
-{
-    pub(super) fn get_completion_duration(&self) -> PValue {
+impl<I> OutputSimple<I> {
+    pub(super) fn get_completion_duration(&self) -> PValue
+    where
+        I: InstanceDuration,
+    {
         self.delay + self.instance.get_duration()
     }
 }
-impl<T> OutputComplex<T>
-where
-    T: Copy + InstanceDuration,
-{
-    pub(super) fn get_completion_duration(&self) -> PValue {
+impl<I> OutputComplex<I> {
+    pub(super) fn get_completion_duration(&self) -> PValue
+    where
+        I: InstanceDuration,
+    {
         if self.repeats < Count::ONE {
             return PValue::ZERO;
         };

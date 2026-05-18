@@ -3,44 +3,44 @@ use crate::{
     svc::{output::Output, vast::aggr::traits::InstanceDuration},
 };
 
-pub(in crate::svc::vast) struct SeqAccum<A> {
-    pub(in crate::svc::vast) instances: A,
+pub(in crate::svc::vast) struct SeqAccum<IA> {
+    pub(in crate::svc::vast) instances: IA,
     pub(in crate::svc::vast) time: PValue,
 }
-impl<A> SeqAccum<A> {
-    pub(in crate::svc::vast) fn add_output_full<T>(
+impl<IA> SeqAccum<IA> {
+    pub(in crate::svc::vast) fn add_output_full<I>(
         &mut self,
-        output: &Output<T>,
+        output: &Output<I>,
         chance_mult: Option<PValue>,
         repeat_count: Count,
     ) where
-        A: SeqInstanceAccum<T>,
-        T: Copy,
+        IA: SeqInstanceAccum<I>,
+        I: Copy,
     {
         self.instances.add_output_full(output, chance_mult, repeat_count);
     }
-    pub(in crate::svc::vast) fn add_output_time_limited<T>(
+    pub(in crate::svc::vast) fn add_output_time_limited<I>(
         &mut self,
-        output: &Output<T>,
+        output: &Output<I>,
         chance_mult: Option<PValue>,
         repeat_count: Count,
         time_limit: Value,
     ) where
-        A: SeqInstanceAccum<T>,
-        T: Copy + InstanceDuration,
+        IA: SeqInstanceAccum<I>,
+        I: Copy + InstanceDuration,
     {
         self.instances
             .add_output_time_limited(output, chance_mult, repeat_count, time_limit);
     }
 }
 
-pub(in crate::svc::vast) trait SeqInstanceAccum<T> {
-    fn add_instance(&mut self, instance: T, chance_mult: Option<PValue>, count: Count);
+pub(in crate::svc::vast) trait SeqInstanceAccum<I> {
+    fn add_instance(&mut self, instance: I, chance_mult: Option<PValue>, count: Count);
     fn copy_blank(&self) -> Self;
     fn merge(&mut self, other: &Self, count: Count);
-    fn add_output_full(&mut self, output: &Output<T>, chance_mult: Option<PValue>, repeat_count: Count)
+    fn add_output_full(&mut self, output: &Output<I>, chance_mult: Option<PValue>, repeat_count: Count)
     where
-        T: Copy,
+        I: Copy,
     {
         self.add_instance(
             output.get_instance(),
@@ -50,12 +50,12 @@ pub(in crate::svc::vast) trait SeqInstanceAccum<T> {
     }
     fn add_output_time_limited(
         &mut self,
-        output: &Output<T>,
+        output: &Output<I>,
         chance_mult: Option<PValue>,
         repeat_count: Count,
         time_limit: Value,
     ) where
-        T: Copy + InstanceDuration,
+        I: Copy + InstanceDuration,
     {
         let mut remaining_time = time_limit;
         for mut instance_data in output.into_instance_iter() {

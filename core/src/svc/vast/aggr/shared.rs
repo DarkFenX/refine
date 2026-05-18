@@ -28,20 +28,14 @@ pub(super) fn get_item_ship_limit(
 // Time-limited processing (time-limited aggregators, or hard downtime processing)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartDataTail<T>
-where
-    T: Copy,
-{
-    // Cycle duration + soft downtime duration
+pub(super) struct AggrPartDataTail<I> {
+    // Cycle active duration + soft downtime duration
     pub(super) cycle_main_duration: PValue,
     // After main duration part is complete, it takes this duration to finish with output
     pub(super) cycle_tail_duration: Option<PValue>,
-    pub(super) output: Output<T>,
+    pub(super) output: Output<I>,
 }
-impl<T> AggrPartDataTail<T>
-where
-    T: Copy,
-{
+impl<I> AggrPartDataTail<I> {
     pub(super) fn get_duration_with_tail(&self) -> PValue {
         let mut duration = self.cycle_main_duration;
         if let Some(tail_duration) = self.cycle_tail_duration {
@@ -51,10 +45,7 @@ where
     }
 }
 
-impl<T> CSeqInf<AggrPartDataTail<T>, CSeqHardDtFull>
-where
-    T: Copy,
-{
+impl<I> CSeqInf<AggrPartDataTail<I>, CSeqHardDtFull> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.data.cycle_main_duration
     }
@@ -72,10 +63,7 @@ impl CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull> {
             .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.active.duration)
     }
 }
-impl<T> CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>
-where
-    T: Copy,
-{
+impl<I> CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.p1_data
             .cycle_main_duration
@@ -110,14 +98,14 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
-pub(super) fn process_output_of_lls_with_cutoff<T, A>(
+pub(super) fn process_output_of_lls_with_cutoff<I, A>(
     accum: &mut A,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     loop_repeat_count: Count,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    A: SeqInstanceAccum<I>,
 {
     // Once hard downtime starts, instances cannot be applied
     let mut time = cseq.get_full_duration().into_value();
@@ -144,14 +132,14 @@ pub(super) fn process_output_of_lls_with_cutoff<T, A>(
     process_output_of_cycle_with_cutoff(accum, &cseq.p2_data, chance_mult, loop_repeat_count);
 }
 
-pub(super) fn process_output_of_cycle_with_cutoff<T, A>(
+pub(super) fn process_output_of_cycle_with_cutoff<I, A>(
     accum: &mut A,
-    data: &AggrPartDataTail<T>,
+    data: &AggrPartDataTail<I>,
     chance_mult: Option<PValue>,
     repeat_count: Count,
 ) where
-    T: Copy + InstanceDuration,
-    A: SeqInstanceAccum<T>,
+    I: Copy + InstanceDuration,
+    A: SeqInstanceAccum<I>,
 {
     // Hard downtimes cut output tails. If output has a tail (it couldn't be fit into main
     // duration), process cycle like partial

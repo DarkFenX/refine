@@ -10,30 +10,30 @@ pub(crate) trait InstanceLimit {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Output impls
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> Output<T>
-where
-    T: Copy + InstanceLimit,
-{
-    pub(in crate::svc::vast::aggr) fn instance_limit(&mut self, limit: PValue) {
+impl<I> Output<I> {
+    pub(in crate::svc::vast::aggr) fn instance_limit(&mut self, limit: PValue)
+    where
+        I: InstanceLimit,
+    {
         match self {
             Self::Simple(inner) => inner.instance_limit(limit),
             Self::Complex(inner) => inner.instance_limit(limit),
         }
     }
 }
-impl<T> OutputSimple<T>
-where
-    T: Copy + InstanceLimit,
-{
-    fn instance_limit(&mut self, limit: PValue) {
+impl<I> OutputSimple<I> {
+    fn instance_limit(&mut self, limit: PValue)
+    where
+        I: InstanceLimit,
+    {
         self.instance.instance_limit(limit);
     }
 }
-impl<T> OutputComplex<T>
-where
-    T: Copy + InstanceLimit,
-{
-    fn instance_limit(&mut self, limit: PValue) {
+impl<I> OutputComplex<I> {
+    fn instance_limit(&mut self, limit: PValue)
+    where
+        I: InstanceLimit,
+    {
         self.instance.instance_limit(limit);
     }
 }

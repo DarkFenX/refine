@@ -7,19 +7,19 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Top-level accumulator interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> SeqAccum<SeqInstanceAccumStackMax<T>> {
+impl<I> SeqAccum<SeqInstanceAccumStackMax<I>> {
     pub(in crate::svc::vast) fn new_stack_max() -> Self
     where
-        T: LibDefault,
+        I: LibDefault,
     {
         SeqAccum {
             instances: SeqInstanceAccumStackMax::new(),
             time: PValue::ZERO,
         }
     }
-    pub(in crate::svc::vast) fn get_per_second(self) -> T
+    pub(in crate::svc::vast) fn get_per_second(self) -> I
     where
-        T: std::ops::Div<PValue, Output = T>,
+        I: std::ops::Div<PValue, Output = I>,
     {
         self.instances.stacked / self.time
     }
@@ -28,31 +28,31 @@ impl<T> SeqAccum<SeqInstanceAccumStackMax<T>> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sequence accumulator implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct SeqInstanceAccumStackMax<T> {
-    pub(in crate::svc::vast) stacked: T,
-    pub(in crate::svc::vast) max: T,
+pub(in crate::svc::vast) struct SeqInstanceAccumStackMax<I> {
+    pub(in crate::svc::vast) stacked: I,
+    pub(in crate::svc::vast) max: I,
 }
-impl<T> SeqInstanceAccumStackMax<T>
+impl<I> SeqInstanceAccumStackMax<I>
 where
-    T: LibDefault,
+    I: LibDefault,
 {
     pub(in crate::svc::vast) fn new() -> Self {
         Self {
-            stacked: T::lib_default(),
-            max: T::lib_default(),
+            stacked: I::lib_default(),
+            max: I::lib_default(),
         }
     }
 }
-impl<T> SeqInstanceAccum<T> for SeqInstanceAccumStackMax<T>
+impl<I> SeqInstanceAccum<I> for SeqInstanceAccumStackMax<I>
 where
-    T: Copy
-        + std::ops::AddAssign<T>
-        + std::ops::Mul<PValue, Output = T>
+    I: Copy
+        + std::ops::AddAssign<I>
+        + std::ops::Mul<PValue, Output = I>
         + std::ops::MulAssign<PValue>
         + LibDefault
         + LibMax,
 {
-    fn add_instance(&mut self, mut instance: T, chance_mult: Option<PValue>, count: Count) {
+    fn add_instance(&mut self, mut instance: I, chance_mult: Option<PValue>, count: Count) {
         if let Some(chance_mult) = chance_mult {
             instance *= chance_mult;
         }
