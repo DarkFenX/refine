@@ -7,11 +7,11 @@ use crate::{misc::InfCount, num::Count};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CycleSeq<T>
+impl<D> CycleSeq<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    pub(in crate::svc) fn get_cseq_parts(&self) -> CSeqParts<'_, T> {
+    pub(in crate::svc) fn get_cseq_parts(&self) -> CSeqParts<'_, D> {
         let loops = match self {
             Self::Lim(_) | Self::Inf(_) | Self::LimInf(_) | Self::LimSinInf(_) => false,
             Self::LoopLimSin(_) => true,
@@ -20,15 +20,15 @@ where
     }
 }
 
-pub(crate) struct CSeqParts<'a, T> {
-    cseq: &'a CycleSeq<T>,
+pub(crate) struct CSeqParts<'a, D> {
+    cseq: &'a CycleSeq<D>,
     pub(crate) loops: bool,
 }
-impl<'a, T> CSeqParts<'a, T>
+impl<'a, D> CSeqParts<'a, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    pub(crate) fn iter(&self) -> CSeqPartIter<'a, T> {
+    pub(crate) fn iter(&self) -> CSeqPartIter<'a, D> {
         match self.cseq {
             CycleSeq::Lim(inner) => CSeqPartIter::Lim(inner.iter_cseq_parts_regular()),
             CycleSeq::Inf(inner) => CSeqPartIter::Inf(inner.iter_cseq_parts_regular()),
@@ -39,18 +39,18 @@ where
     }
 }
 
-pub(in crate::svc) enum CSeqPartIter<'a, T> {
-    Lim(CSeqLimPartIter<'a, T>),
-    Inf(CSeqInfPartIter<'a, T>),
-    LimInf(CSeqLimInfPartIter<'a, T>),
-    LimSinInf(CSeqLimSinInfPartIter<'a, T>),
-    LoopLimSin(CSeqLoopLimSinPartIter<'a, T>),
+pub(in crate::svc) enum CSeqPartIter<'a, D> {
+    Lim(CSeqLimPartIter<'a, D>),
+    Inf(CSeqInfPartIter<'a, D>),
+    LimInf(CSeqLimInfPartIter<'a, D>),
+    LimSinInf(CSeqLimSinInfPartIter<'a, D>),
+    LoopLimSin(CSeqLoopLimSinPartIter<'a, D>),
 }
-impl<T> Iterator for CSeqPartIter<'_, T>
+impl<D> Iterator for CSeqPartIter<'_, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CSeqPart<T>;
+    type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
@@ -63,37 +63,37 @@ where
     }
 }
 
-pub(crate) struct CSeqPart<T> {
-    pub(crate) data: T,
+pub(crate) struct CSeqPart<D> {
+    pub(crate) data: D,
     pub(crate) repeat_count: InfCount,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Lim
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqLim<T>
+impl<D> CSeqLim<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, T> {
+    fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, D> {
         CSeqLimPartIter::new(self)
     }
 }
 
-pub(in crate::svc) struct CSeqLimPartIter<'a, T> {
-    cseq: &'a CSeqLim<T>,
+pub(in crate::svc) struct CSeqLimPartIter<'a, D> {
+    cseq: &'a CSeqLim<D>,
     yielded: bool,
 }
-impl<'a, T> CSeqLimPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLim<T>) -> Self {
+impl<'a, D> CSeqLimPartIter<'a, D> {
+    fn new(cseq: &'a CSeqLim<D>) -> Self {
         Self { cseq, yielded: false }
     }
 }
-impl<T> Iterator for CSeqLimPartIter<'_, T>
+impl<D> Iterator for CSeqLimPartIter<'_, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CSeqPart<T>;
+    type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.yielded {
@@ -109,29 +109,29 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqInf<T>
+impl<D> CSeqInf<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn iter_cseq_parts_regular(&self) -> CSeqInfPartIter<'_, T> {
+    fn iter_cseq_parts_regular(&self) -> CSeqInfPartIter<'_, D> {
         CSeqInfPartIter::new(self)
     }
 }
 
-pub(in crate::svc) struct CSeqInfPartIter<'a, T> {
-    cseq: &'a CSeqInf<T>,
+pub(in crate::svc) struct CSeqInfPartIter<'a, D> {
+    cseq: &'a CSeqInf<D>,
     yielded: bool,
 }
-impl<'a, T> CSeqInfPartIter<'a, T> {
-    fn new(cseq: &'a CSeqInf<T>) -> Self {
+impl<'a, D> CSeqInfPartIter<'a, D> {
+    fn new(cseq: &'a CSeqInf<D>) -> Self {
         Self { cseq, yielded: false }
     }
 }
-impl<T> Iterator for CSeqInfPartIter<'_, T>
+impl<D> Iterator for CSeqInfPartIter<'_, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CSeqPart<T>;
+    type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.yielded {
@@ -148,29 +148,29 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LimInf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqLimInf<T>
+impl<D> CSeqLimInf<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn iter_cseq_parts_regular(&self) -> CSeqLimInfPartIter<'_, T> {
+    fn iter_cseq_parts_regular(&self) -> CSeqLimInfPartIter<'_, D> {
         CSeqLimInfPartIter::new(self)
     }
 }
 
-pub(in crate::svc) struct CSeqLimInfPartIter<'a, T> {
-    cseq: &'a CSeqLimInf<T>,
+pub(in crate::svc) struct CSeqLimInfPartIter<'a, D> {
+    cseq: &'a CSeqLimInf<D>,
     index: usize,
 }
-impl<'a, T> CSeqLimInfPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLimInf<T>) -> Self {
+impl<'a, D> CSeqLimInfPartIter<'a, D> {
+    fn new(cseq: &'a CSeqLimInf<D>) -> Self {
         Self { cseq, index: 0 }
     }
 }
-impl<T> Iterator for CSeqLimInfPartIter<'_, T>
+impl<D> Iterator for CSeqLimInfPartIter<'_, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CSeqPart<T>;
+    type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
@@ -197,29 +197,29 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LimSinInf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqLimSinInf<T>
+impl<D> CSeqLimSinInf<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn iter_cseq_parts_regular(&self) -> CSeqLimSinInfPartIter<'_, T> {
+    fn iter_cseq_parts_regular(&self) -> CSeqLimSinInfPartIter<'_, D> {
         CSeqLimSinInfPartIter::new(self)
     }
 }
 
-pub(in crate::svc) struct CSeqLimSinInfPartIter<'a, T> {
-    cseq: &'a CSeqLimSinInf<T>,
+pub(in crate::svc) struct CSeqLimSinInfPartIter<'a, D> {
+    cseq: &'a CSeqLimSinInf<D>,
     index: usize,
 }
-impl<'a, T> CSeqLimSinInfPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLimSinInf<T>) -> Self {
+impl<'a, D> CSeqLimSinInfPartIter<'a, D> {
+    fn new(cseq: &'a CSeqLimSinInf<D>) -> Self {
         Self { cseq, index: 0 }
     }
 }
-impl<T> Iterator for CSeqLimSinInfPartIter<'_, T>
+impl<D> Iterator for CSeqLimSinInfPartIter<'_, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CSeqPart<T>;
+    type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
@@ -253,29 +253,29 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LoopLimSin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> CSeqLoopLimSin<T>
+impl<D> CSeqLoopLimSin<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn iter_cseq_parts_regular(&self) -> CSeqLoopLimSinPartIter<'_, T> {
+    fn iter_cseq_parts_regular(&self) -> CSeqLoopLimSinPartIter<'_, D> {
         CSeqLoopLimSinPartIter::new(self)
     }
 }
 
-pub(in crate::svc) struct CSeqLoopLimSinPartIter<'a, T> {
-    cseq: &'a CSeqLoopLimSin<T>,
+pub(in crate::svc) struct CSeqLoopLimSinPartIter<'a, D> {
+    cseq: &'a CSeqLoopLimSin<D>,
     index: usize,
 }
-impl<'a, T> CSeqLoopLimSinPartIter<'a, T> {
-    fn new(cseq: &'a CSeqLoopLimSin<T>) -> Self {
+impl<'a, D> CSeqLoopLimSinPartIter<'a, D> {
+    fn new(cseq: &'a CSeqLoopLimSin<D>) -> Self {
         Self { cseq, index: 0 }
     }
 }
-impl<T> Iterator for CSeqLoopLimSinPartIter<'_, T>
+impl<D> Iterator for CSeqLoopLimSinPartIter<'_, D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CSeqPart<T>;
+    type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {

@@ -2,8 +2,6 @@ pub(in crate::svc) use data::{CycleActive, CycleDataFull, CycleHardDt, CycleHard
 pub(crate) use item_getters::CseqMap;
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};
 pub(in crate::svc) use iter_cycle::CycleIter;
-pub(in crate::svc) use iter_part::CSeqPart;
-pub(in crate::svc) use iter_part_looped::CSeqLoopedPart;
 pub(in crate::svc) use seq::{CycleSeq, CycleSeqLooped};
 pub(in crate::svc) use seq_inf::CSeqInf;
 pub(in crate::svc) use seq_lim::CSeqLim;

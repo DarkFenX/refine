@@ -8,30 +8,30 @@ use crate::num::{Count, PValue};
 // High-level interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleIterItem<T>
+pub(in crate::svc) struct CycleIterItem<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    pub(in crate::svc) data: T,
+    pub(in crate::svc) data: D,
     pub(in crate::svc) time_until_hard_dt: Option<PValue>,
     pub(in crate::svc) hard_dt_duration: Option<PValue>,
 }
 
-pub(in crate::svc) enum CycleIter<T>
+pub(in crate::svc) enum CycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    Lim(CSeqLimCycleIter<T>),
-    Inf(CSeqInfCycleIter<T>),
-    LimInf(CSeqLimInfCycleIter<T>),
-    LimSinInf(CSeqLimSinInfCycleIter<T>),
-    LoopLimSin(CSeqLoopLimSinCycleIter<T>),
+    Lim(CSeqLimCycleIter<D>),
+    Inf(CSeqInfCycleIter<D>),
+    LimInf(CSeqLimInfCycleIter<D>),
+    LimSinInf(CSeqLimSinInfCycleIter<D>),
+    LoopLimSin(CSeqLoopLimSinCycleIter<D>),
 }
-impl<T> Iterator for CycleIter<T>
+impl<D> Iterator for CycleIter<D>
 where
-    T: Copy + GetDuration,
+    D: Copy + GetDuration,
 {
-    type Item = CycleIterItem<T>;
+    type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
@@ -44,11 +44,11 @@ where
     }
 }
 
-impl<T> CycleSeq<T>
+impl<D> CycleSeq<D>
 where
-    T: Copy + GetDuration,
+    D: Copy + GetDuration,
 {
-    pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<T> {
+    pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<D> {
         match self {
             Self::Lim(inner) => CycleIter::Lim(CSeqLimCycleIter::new(inner)),
             Self::Inf(inner) => CycleIter::Inf(CSeqInfCycleIter::new(inner)),
@@ -62,20 +62,20 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Lim
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLimCycleIter<T>
+pub(in crate::svc) struct CSeqLimCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    item: CycleIterItem<T>,
+    item: CycleIterItem<D>,
     repeats_limit: Count,
     // State
     repeats_done: Count,
 }
-impl<T> CSeqLimCycleIter<T>
+impl<D> CSeqLimCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn new(cseq: &CSeqLim<T>) -> Self {
+    fn new(cseq: &CSeqLim<D>) -> Self {
         Self {
             item: CycleIterItem {
                 data: cseq.data,
@@ -87,11 +87,11 @@ where
         }
     }
 }
-impl<T> Iterator for CSeqLimCycleIter<T>
+impl<D> Iterator for CSeqLimCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CycleIterItem<T>;
+    type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.repeats_done >= self.repeats_limit {
@@ -105,17 +105,17 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqInfCycleIter<T>
+pub(in crate::svc) struct CSeqInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    item: CycleIterItem<T>,
+    item: CycleIterItem<D>,
 }
-impl<T> CSeqInfCycleIter<T>
+impl<D> CSeqInfCycleIter<D>
 where
-    T: Copy + GetDuration,
+    D: Copy + GetDuration,
 {
-    fn new(cseq: &CSeqInf<T>) -> Self {
+    fn new(cseq: &CSeqInf<D>) -> Self {
         let time_until_hard_dt = match cseq.hard_dt.is_some() {
             true => Some(cseq.data.get_duration()),
             false => None,
@@ -129,11 +129,11 @@ where
         }
     }
 }
-impl<T> Iterator for CSeqInfCycleIter<T>
+impl<D> Iterator for CSeqInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CycleIterItem<T>;
+    type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         Some(self.item)
@@ -143,22 +143,22 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LimInf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLimInfCycleIter<T>
+pub(in crate::svc) struct CSeqLimInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    p1_item: CycleIterItem<T>,
+    p1_item: CycleIterItem<D>,
     p1_repeats_limit: Count,
-    p2_item: CycleIterItem<T>,
+    p2_item: CycleIterItem<D>,
     // State
     p1_repeats_done: Count,
     p1_done: bool,
 }
-impl<T> CSeqLimInfCycleIter<T>
+impl<D> CSeqLimInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn new(cseq: &CSeqLimInf<T>) -> Self {
+    fn new(cseq: &CSeqLimInf<D>) -> Self {
         Self {
             p1_item: CycleIterItem {
                 data: cseq.p1_data,
@@ -176,11 +176,11 @@ where
         }
     }
 }
-impl<T> Iterator for CSeqLimInfCycleIter<T>
+impl<D> Iterator for CSeqLimInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CycleIterItem<T>;
+    type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.p1_done {
@@ -200,23 +200,23 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LimSinInf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLimSinInfCycleIter<T>
+pub(in crate::svc) struct CSeqLimSinInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    p1_item: CycleIterItem<T>,
+    p1_item: CycleIterItem<D>,
     p1_repeats_limit: Count,
-    p2_item: CycleIterItem<T>,
-    p3_item: CycleIterItem<T>,
+    p2_item: CycleIterItem<D>,
+    p3_item: CycleIterItem<D>,
     // State
     p1_repeats_done: Count,
     index: u8,
 }
-impl<T> CSeqLimSinInfCycleIter<T>
+impl<D> CSeqLimSinInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    fn new(cseq: &CSeqLimSinInf<T>) -> Self {
+    fn new(cseq: &CSeqLimSinInf<D>) -> Self {
         Self {
             p1_item: CycleIterItem {
                 data: cseq.p1_data,
@@ -239,11 +239,11 @@ where
         }
     }
 }
-impl<T> Iterator for CSeqLimSinInfCycleIter<T>
+impl<D> Iterator for CSeqLimSinInfCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    type Item = CycleIterItem<T>;
+    type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
@@ -264,21 +264,21 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LoopLimSin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqLoopLimSinCycleIter<T>
+pub(in crate::svc) struct CSeqLoopLimSinCycleIter<D>
 where
-    T: Copy,
+    D: Copy,
 {
-    p1_item_draft: CycleIterItem<T>,
+    p1_item_draft: CycleIterItem<D>,
     p1_repeats_limit: Count,
-    p2_item: CycleIterItem<T>,
+    p2_item: CycleIterItem<D>,
     // State
     p1_repeats_done: Count,
 }
-impl<T> CSeqLoopLimSinCycleIter<T>
+impl<D> CSeqLoopLimSinCycleIter<D>
 where
-    T: Copy + GetDuration,
+    D: Copy + GetDuration,
 {
-    fn new(cseq: &CSeqLoopLimSin<T>) -> Self {
+    fn new(cseq: &CSeqLoopLimSin<D>) -> Self {
         let (p2_time_until_hard_dt, hard_dt_duration) = match cseq.hard_dt {
             Some(hard_dt) => (Some(cseq.p2_data.get_duration()), Some(hard_dt.duration)),
             None => (None, None),
@@ -299,11 +299,11 @@ where
         }
     }
 }
-impl<T> Iterator for CSeqLoopLimSinCycleIter<T>
+impl<D> Iterator for CSeqLoopLimSinCycleIter<D>
 where
-    T: Copy + GetDuration,
+    D: Copy + GetDuration,
 {
-    type Item = CycleIterItem<T>;
+    type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.p1_repeats_done >= self.p1_repeats_limit {
