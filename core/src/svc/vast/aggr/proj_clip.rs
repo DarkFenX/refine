@@ -15,7 +15,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqInf, CycleDataFull, CycleHardDtFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CSeqInf, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
 };
@@ -27,7 +27,7 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, T, A>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
@@ -60,7 +60,7 @@ fn process_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut SeqAccum<A>,
@@ -112,7 +112,7 @@ fn process_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut SeqAccum<A>,
@@ -126,7 +126,7 @@ where
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
             let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            let inner_conv: CSeqInf<_, CycleHardDtFull> = inner.convert_with(&mut converter);
+            let inner_conv: CSeqInf<_, CSeqHardDtFull> = inner.convert_with(&mut converter);
             process_output_of_cycle_with_cutoff(
                 &mut accum.instances,
                 &inner_conv.data,
@@ -190,7 +190,7 @@ fn process_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
@@ -287,7 +287,7 @@ fn process_spool_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,

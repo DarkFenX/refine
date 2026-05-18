@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqInf, CSeqLoopLimSin, CycleDataFull},
+        cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin, CycleDataFull},
         output::Output,
     },
     ud::UItemId,
@@ -51,7 +51,7 @@ where
     }
 }
 
-impl<T> CSeqInf<AggrPartDataTail<T>>
+impl<T> CSeqInf<AggrPartDataTail<T>, CSeqHardDtFull>
 where
     T: Copy,
 {
@@ -60,7 +60,7 @@ where
     }
 }
 
-impl CSeqLoopLimSin<CycleDataFull> {
+impl CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.p1_data
             .get_main_duration()
@@ -72,7 +72,7 @@ impl CSeqLoopLimSin<CycleDataFull> {
             .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.active.duration)
     }
 }
-impl<T> CSeqLoopLimSin<AggrPartDataTail<T>>
+impl<T> CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>
 where
     T: Copy,
 {
@@ -112,7 +112,7 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
 
 pub(super) fn process_output_of_lls_with_cutoff<T, A>(
     accum: &mut A,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     loop_repeat_count: Count,
 ) where

@@ -11,7 +11,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqLoopLimSin, CycleDataFull},
+        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull},
         funcs,
         output::Output,
     },
@@ -433,7 +433,7 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: &CSeqLoopLimSin<CycleDataFull>,
+    cseq: &CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: &AggrProjInvData<T>,
     inv_spool: &AggrSpoolInvData,

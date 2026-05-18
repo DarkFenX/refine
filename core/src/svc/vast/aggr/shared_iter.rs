@@ -5,7 +5,7 @@ use super::{
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CycleIter, CycleSeq, GetDuration},
+        cycle::{CSeqHardDtFull, CycleIter, CycleSeq, GetDuration},
         output::Output,
     },
 };
@@ -37,13 +37,13 @@ pub(in crate::svc::vast) struct AggrIterDataRegular<T>
 where
     T: Copy,
 {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataRegular<T>>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataRegular<T>, CSeqHardDtFull>,
 }
 impl<T> AggrIterDataRegular<T>
 where
     T: Copy,
 {
-    pub(super) fn new(cseq: CycleSeq<AggrPartDataRegular<T>>) -> Self {
+    pub(super) fn new(cseq: CycleSeq<AggrPartDataRegular<T>, CSeqHardDtFull>) -> Self {
         Self { cseq }
     }
     fn iter(&self) -> AggrIterRegular<T> {
@@ -55,7 +55,7 @@ pub(in crate::svc::vast) struct AggrIterDataSpool<T>
 where
     T: Copy,
 {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpool<T>>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpool<T>, CSeqHardDtFull>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
 }
@@ -64,7 +64,7 @@ where
     T: Copy,
 {
     pub(super) fn new(
-        cseq: CycleSeq<AggrPartDataSpool<T>>,
+        cseq: CycleSeq<AggrPartDataSpool<T>, CSeqHardDtFull>,
         inv_proj: AggrProjInvData<T>,
         inv_spool: AggrSpoolInvData,
     ) -> Self {

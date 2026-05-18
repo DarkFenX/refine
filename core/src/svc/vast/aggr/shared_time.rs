@@ -8,14 +8,14 @@ use super::{
 };
 use crate::{
     num::{Count, PValue, Value},
-    svc::cycle::{CSeqLoopLimSin, CycleHardDtFull, CycleSeq},
+    svc::cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleSeq},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn aggr_by_time<T, A>(
-    cseq: CycleSeq<AggrPartDataTail<T>>,
+    cseq: CycleSeq<AggrPartDataTail<T>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     accum: &mut A,
     ptime: PValue,
@@ -131,7 +131,7 @@ fn process_infinite_hard_dt<T, A>(
     accum: &mut A,
     ptime: PValue,
     data: &AggrPartDataTail<T>,
-    hard_dt: CycleHardDtFull,
+    hard_dt: CSeqHardDtFull,
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,
@@ -161,7 +161,7 @@ fn process_infinite_hard_dt<T, A>(
 fn process_lls_regular<T, A>(
     accum: &mut A,
     ptime: PValue,
-    cseq: CSeqLoopLimSin<AggrPartDataTail<T>>,
+    cseq: CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,
@@ -198,7 +198,7 @@ fn process_lls_regular<T, A>(
 fn process_lls_hard_dt<T, A>(
     accum: &mut A,
     ptime: PValue,
-    cseq: CSeqLoopLimSin<AggrPartDataTail<T>>,
+    cseq: CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,
@@ -222,7 +222,7 @@ fn process_lls_hard_dt<T, A>(
 fn process_lls_incomplete<T, A>(
     accum: &mut A,
     time: &mut Value,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<T>, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,

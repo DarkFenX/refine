@@ -14,7 +14,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq, CycleSeqLooped},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, T, A>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
@@ -61,7 +61,7 @@ fn process_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull>,
+    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut SeqAccum<A>,
@@ -91,7 +91,7 @@ fn process_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull>,
+    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     accum: &mut SeqAccum<A>,
@@ -118,7 +118,7 @@ fn process_spool<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull>,
+    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
@@ -179,7 +179,7 @@ fn process_spool_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull>,
+    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<T>,
     inv_spool: AggrSpoolInvData,
@@ -221,7 +221,10 @@ fn process_spool_hard_dt<BG, T, A>(
     accum.time += loop_full_duration;
 }
 
-fn get_uninterrupted_cycles(cseq: &CycleSeqLooped<CycleDataFull>, inv_spool: &AggrSpoolInvData) -> Count {
+fn get_uninterrupted_cycles(
+    cseq: &CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
+    inv_spool: &AggrSpoolInvData,
+) -> Count {
     let mut uninterrupted_cycles = Count::ZERO;
     if cseq.get_hard_dt().is_some() {
         return uninterrupted_cycles;

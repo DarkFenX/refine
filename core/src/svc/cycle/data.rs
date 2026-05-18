@@ -72,28 +72,28 @@ impl CycleSoftDtReason {
     }
 }
 
-// Info about hard downtime between cycles (during which effects cannot apply their instances)
+// Info about cycle sequence hard downtime (during which effects cannot apply their instances)
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleHardDtFull {
+pub(in crate::svc) struct CSeqHardDtFull {
     pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) reason: CycleHardDtReason,
+    pub(in crate::svc) reason: CSeqHardDtReason,
 }
-impl CycleHardDtFull {
+impl CSeqHardDtFull {
     pub(super) fn try_new(duration: PValue, rearm: bool) -> Option<Self> {
-        let reason = CycleHardDtReason::try_new(rearm)?;
+        let reason = CSeqHardDtReason::try_new(rearm)?;
         Some(Self { duration, reason })
     }
 }
-impl GetDuration for CycleHardDtFull {
+impl GetDuration for CSeqHardDtFull {
     fn get_duration(&self) -> PValue {
         self.duration
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleHardDtReason {
+pub(in crate::svc) struct CSeqHardDtReason {
     pub(in crate::svc) refuel: bool,
 }
-impl CycleHardDtReason {
+impl CSeqHardDtReason {
     fn try_new(refuel: bool) -> Option<Self> {
         match refuel {
             true => Some(Self { refuel }),

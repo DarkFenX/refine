@@ -13,7 +13,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
         spool::ResolvedSpool,
     },
     ud::UItemId,
@@ -27,7 +27,7 @@ pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, T, A>(
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,

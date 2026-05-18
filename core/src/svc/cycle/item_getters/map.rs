@@ -1,10 +1,10 @@
 use crate::{
     rd::REffectId,
-    svc::cycle::{CycleDataFull, CycleSeq},
+    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     util::RMap,
 };
 
-pub(crate) struct CseqMap(RMap<REffectId, CycleSeq<CycleDataFull>>);
+pub(crate) struct CseqMap(RMap<REffectId, CycleSeq<CycleDataFull, CSeqHardDtFull>>);
 impl CseqMap {
     pub(crate) fn new() -> Self {
         Self(RMap::new())
@@ -15,20 +15,25 @@ impl CseqMap {
     pub(in crate::svc) fn insert(
         &mut self,
         key: REffectId,
-        value: CycleSeq<CycleDataFull>,
-    ) -> Option<CycleSeq<CycleDataFull>> {
+        value: CycleSeq<CycleDataFull, CSeqHardDtFull>,
+    ) -> Option<CycleSeq<CycleDataFull, CSeqHardDtFull>> {
         self.0.insert(key, value)
     }
-    pub(in crate::svc) fn get(&self, key: &REffectId) -> Option<&CycleSeq<CycleDataFull>> {
+    pub(in crate::svc) fn get(&self, key: &REffectId) -> Option<&CycleSeq<CycleDataFull, CSeqHardDtFull>> {
         self.0.get(key)
     }
-    pub(in crate::svc) fn iter(&self) -> impl ExactSizeIterator<Item = (&REffectId, &CycleSeq<CycleDataFull>)> {
+    pub(in crate::svc) fn iter(
+        &self,
+    ) -> impl ExactSizeIterator<Item = (&REffectId, &CycleSeq<CycleDataFull, CSeqHardDtFull>)> {
         self.0.iter()
     }
-    pub(in crate::svc) fn retain(&mut self, func: impl FnMut(&REffectId, &mut CycleSeq<CycleDataFull>) -> bool) {
+    pub(in crate::svc) fn retain(
+        &mut self,
+        func: impl FnMut(&REffectId, &mut CycleSeq<CycleDataFull, CSeqHardDtFull>) -> bool,
+    ) {
         self.0.retain(func)
     }
-    pub(in crate::svc) fn remove(&mut self, key: &REffectId) -> Option<CycleSeq<CycleDataFull>> {
+    pub(in crate::svc) fn remove(&mut self, key: &REffectId) -> Option<CycleSeq<CycleDataFull, CSeqHardDtFull>> {
         self.0.remove(key)
     }
     pub(in crate::svc) fn clear(&mut self) {

@@ -4,7 +4,7 @@ use super::timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey, TIME_ROUND_DIGIT
 use crate::{
     num::PValue,
     svc::{
-        cycle::{CSeqInf, CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CycleSeq},
+        cycle::{CSeqHardDtFull, CSeqInf, CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
         vast::{
             aggr::{AggrIterData, AggrPartDataRegular},
@@ -147,7 +147,7 @@ impl OutputComplex<PValue> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Necessary cycle sequence impls
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CycleSeq<AggrPartDataRegular<PValue>> {
+impl CycleSeq<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
     fn try_merge_instances(&mut self, other: &Self) -> bool {
         match (self, other) {
             (CycleSeq::Lim(inner1), CycleSeq::Lim(inner2)) => {
@@ -179,7 +179,7 @@ impl CSeqLim<AggrPartDataRegular<PValue>> {
         self.data.output.increase_instance(other.data.output.get_instance());
     }
 }
-impl CSeqInf<AggrPartDataRegular<PValue>> {
+impl CSeqInf<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
     fn merge_instances(&mut self, other: &Self) {
         self.data.output.increase_instance(other.data.output.get_instance());
     }
@@ -207,7 +207,7 @@ impl CSeqLimSinInf<AggrPartDataRegular<PValue>> {
             .increase_instance(other.p3_data.output.get_instance());
     }
 }
-impl CSeqLoopLimSin<AggrPartDataRegular<PValue>> {
+impl CSeqLoopLimSin<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
     fn merge_instances(&mut self, other: &Self) {
         self.p1_data
             .output

@@ -6,7 +6,7 @@ use crate::{
     nd::NEffectBreacherAmount,
     num::Count,
     svc::{
-        cycle::{CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
         output::Output,
     },
 };
@@ -15,7 +15,7 @@ use crate::{
 // which discards all overlapping instances and aligns everything to ticks, which is needed for
 // further processing
 pub(super) fn cseq_to_ticks(
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     output: Output<NEffectBreacherAmount>,
 ) -> Option<AggrBreacherTicks> {
     // Breacher aggregator only supports simple output, and only simple output is used

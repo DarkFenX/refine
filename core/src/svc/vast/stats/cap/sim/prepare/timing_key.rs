@@ -1,7 +1,7 @@
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CycleHardDtFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
         vast::aggr::{AggrIterData, AggrPartDataRegular, AggrPartDataSpool},
     },
@@ -48,8 +48,8 @@ impl From<AggrPartDataSpool<PValue>> for CSeqPartTimingKey {
 pub(super) struct CSeqHardDtTimingKey {
     duration: PValue,
 }
-impl From<CycleHardDtFull> for CSeqHardDtTimingKey {
-    fn from(hard_dt: CycleHardDtFull) -> Self {
+impl From<CSeqHardDtFull> for CSeqHardDtTimingKey {
+    fn from(hard_dt: CSeqHardDtFull) -> Self {
         Self {
             duration: hard_dt.duration.sig_rounded(TIME_ROUND_DIGITS),
         }

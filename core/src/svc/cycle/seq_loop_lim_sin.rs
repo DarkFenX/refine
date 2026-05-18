@@ -1,5 +1,5 @@
 use super::{
-    data::CycleHardDtFull,
+    data::CSeqHardDtFull,
     seq::{CycleSeq, CycleSeqLooped},
     seq_inf::CSeqInf,
 };
@@ -11,7 +11,7 @@ use crate::{num::Count, util::LibConverter};
 // Part 2: runs once
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqLoopLimSin<D, HDT = CycleHardDtFull> {
+pub(in crate::svc) struct CSeqLoopLimSin<D, HDT> {
     pub(in crate::svc) p1_data: D,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: D,

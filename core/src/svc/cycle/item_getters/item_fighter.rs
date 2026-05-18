@@ -10,7 +10,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleHardDtFull, CycleSeq, CycleSoftDtFull,
+            CSeqHardDtFull, CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
         },
         funcs,
     },
@@ -138,7 +138,7 @@ fn burst_fill_effect_cseq(
     }
     cseq_map.insert(effect_rid, burst_info_to_cseq(effect_info));
 }
-fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull> {
+fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     CycleSeq::Inf(CSeqInf {
         data: CycleDataFull {
             active: CycleActive {
@@ -188,7 +188,7 @@ fn sim_no_rearm_fill_effect_cseq(
     }
     cseq_map.insert(effect_rid, sim_no_rearm_info_to_cseq(effect_info));
 }
-fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull> {
+fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     let cycle_data = CycleDataFull {
         active: CycleActive {
             duration: effect_info.active_duration,
@@ -336,7 +336,7 @@ fn sim_rearm_trigger_info_to_cseq(
     effect_info: EffectInfo,
     rearm_info: RearmInfo,
     hard_dt_duration: PValue,
-) -> CycleSeq<CycleDataFull> {
+) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     match rearm_info.charge_count {
         Count::ZERO => unreachable!("0-charged effects are not processed"),
         Count::ONE => CycleSeq::Inf(CSeqInf {
@@ -381,7 +381,7 @@ fn sim_rearm_other_info_to_cseq(
     effect_info: EffectInfo,
     in_space_duration: PValue,
     hard_dt_duration: PValue,
-) -> Option<CycleSeq<CycleDataFull>> {
+) -> Option<CycleSeq<CycleDataFull, CSeqHardDtFull>> {
     let active_and_cooldown_duration = effect_info.active_duration + effect_info.cooldown_duration;
     let full_cycle_count = Count::from_pvalue_trunced(in_space_duration / active_and_cooldown_duration);
     let in_space_duration_left = in_space_duration % active_and_cooldown_duration;
@@ -428,8 +428,8 @@ fn sim_rearm_other_info_to_cseq(
         })),
     }
 }
-fn make_hard_dt(duration: PValue) -> Option<CycleHardDtFull> {
-    CycleHardDtFull::try_new(duration, true)
+fn make_hard_dt(duration: PValue) -> Option<CSeqHardDtFull> {
+    CSeqHardDtFull::try_new(duration, true)
 }
 fn make_full_cycle_data(effect_info: EffectInfo) -> CycleDataFull {
     CycleDataFull {

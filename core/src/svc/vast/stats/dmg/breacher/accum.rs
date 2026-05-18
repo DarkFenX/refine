@@ -25,7 +25,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
         vast::StatDmgEntryBreacher,
     },
     ud::UItemId,
@@ -57,7 +57,7 @@ impl BreacherAccum {
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        cseq: &CycleSeq<CycleDataFull>,
+        cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
         ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
     ) {
         // Base output
@@ -245,7 +245,7 @@ impl AppliedBreacherAccum {
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
-        cseq: &CycleSeq<CycleDataFull>,
+        cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
         ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
         projectee_uid: UItemId,
     ) {

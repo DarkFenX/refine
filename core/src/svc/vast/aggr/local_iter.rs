@@ -10,7 +10,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
     util::LibConverter,
@@ -22,7 +22,7 @@ pub(in crate::svc::vast) fn aggr_local_iter<BG, BX, T>(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
 ) -> Option<AggrIterData<T>>

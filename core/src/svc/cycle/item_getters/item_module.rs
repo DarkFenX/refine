@@ -12,7 +12,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
+            CSeqHardDtFull, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
             effect_charge_info::{
                 get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
             },
@@ -361,7 +361,7 @@ fn part_r(
     cooldown_duration: PValue,
     soft_dt_cd: bool,
     chargedness: Option<UnitInterval>,
-) -> CycleSeq<CycleDataFull> {
+) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     CycleSeq::Inf(CSeqInf {
         data: CycleDataFull {
             active: CycleActive {
@@ -387,7 +387,7 @@ fn full_r(
     cooldown_duration: PValue,
     soft_dt_cd: bool,
     full_count: Count,
-) -> CycleSeq<CycleDataFull> {
+) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     match full_count {
         Count::ONE => CycleSeq::Inf(CSeqInf {
             data: CycleDataFull {
@@ -439,7 +439,7 @@ fn both_r(
     soft_dt_cd: bool,
     full_count: Count,
     chargedness: Option<UnitInterval>,
-) -> CycleSeq<CycleDataFull> {
+) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     CycleSeq::LoopLimSin(CSeqLoopLimSin {
         p1_data: CycleDataFull {
             active: CycleActive {

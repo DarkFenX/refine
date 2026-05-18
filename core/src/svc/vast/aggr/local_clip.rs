@@ -12,7 +12,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqInf, CycleDataFull, CycleHardDtFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CSeqInf, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
 };
@@ -24,7 +24,7 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, T, A>(
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
     accum: &mut SeqAccum<A>,
@@ -49,7 +49,7 @@ fn process_regular<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     accum: &mut SeqAccum<A>,
     inv_local: AggrLocalInvData<T>,
@@ -101,7 +101,7 @@ fn process_hard_dt<BG, T, A>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull>,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     accum: &mut SeqAccum<A>,
     inv_local: AggrLocalInvData<T>,
@@ -115,7 +115,7 @@ where
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
             let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-            let inner_conv: CSeqInf<_, CycleHardDtFull> = inner.convert_with(&mut converter);
+            let inner_conv: CSeqInf<_, CSeqHardDtFull> = inner.convert_with(&mut converter);
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_conv.data, None, Count::ONE);
             // Record time until reload or hard downtime starts
             match inner.data.soft_dt {
