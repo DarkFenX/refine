@@ -1,11 +1,11 @@
 use super::{
-    data::CycleHardDt, seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
+    data::CycleHardDtFull, seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
     seq_loop_lim_sin::CSeqLoopLimSin,
 };
 use crate::util::LibConverter;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) enum CycleSeq<D, HDT = CycleHardDt> {
+pub(in crate::svc) enum CycleSeq<D, HDT = CycleHardDtFull> {
     Lim(CSeqLim<D>),
     Inf(CSeqInf<D, HDT>),
     LimInf(CSeqLimInf<D>),
@@ -36,7 +36,7 @@ where
     }
 }
 
-pub(in crate::svc) enum CycleSeqLooped<D, HDT = CycleHardDt> {
+pub(in crate::svc) enum CycleSeqLooped<D, HDT = CycleHardDtFull> {
     Inf(CSeqInf<D, HDT>),
     LoopLimSin(CSeqLoopLimSin<D, HDT>),
 }

@@ -9,7 +9,9 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleHardDt, CycleSeq, CycleSoftDt},
+        cycle::{
+            CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleHardDtFull, CycleSeq, CycleSoftDtFull,
+        },
         funcs,
     },
     ud::{UFighter, UItemId},
@@ -143,7 +145,7 @@ fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull> {
                 duration: effect_info.active_duration,
                 chargedness: effect_info.get_chargedness(),
             },
-            soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+            soft_dt: CycleSoftDtFull::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
         },
         hard_dt: None,
     })
@@ -192,7 +194,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull>
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+        soft_dt: CycleSoftDtFull::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
     };
     match effect_info.charge_count {
         Some(charge_count) => CycleSeq::Lim(CSeqLim {
@@ -355,7 +357,12 @@ fn sim_rearm_trigger_info_to_cseq(
                         duration: effect_info.active_duration,
                         chargedness: effect_info.get_chargedness(),
                     },
-                    soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+                    soft_dt: CycleSoftDtFull::try_new(
+                        effect_info.cooldown_duration,
+                        effect_info.soft_dt_cd,
+                        false,
+                        false,
+                    ),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
@@ -421,8 +428,8 @@ fn sim_rearm_other_info_to_cseq(
         })),
     }
 }
-fn make_hard_dt(duration: PValue) -> Option<CycleHardDt> {
-    CycleHardDt::try_new(duration, true)
+fn make_hard_dt(duration: PValue) -> Option<CycleHardDtFull> {
+    CycleHardDtFull::try_new(duration, true)
 }
 fn make_full_cycle_data(effect_info: EffectInfo) -> CycleDataFull {
     CycleDataFull {
@@ -430,7 +437,7 @@ fn make_full_cycle_data(effect_info: EffectInfo) -> CycleDataFull {
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDt::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+        soft_dt: CycleSoftDtFull::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
     }
 }
 fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration: PValue) -> CycleDataFull {
@@ -439,7 +446,7 @@ fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDt::try_new(
+        soft_dt: CycleSoftDtFull::try_new(
             effect_info.cooldown_duration + idle_duration,
             effect_info.soft_dt_cd,
             false,
@@ -455,7 +462,7 @@ fn make_extra_cycle_active_partial_data(effect_info: EffectInfo, active_duration
         },
         // Since we are assuming that any cooldown interrupts cycling, follow that logic here and
         // make soft downtime if ability has any cooldown, even if its duration is 0
-        soft_dt: CycleSoftDt::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false),
+        soft_dt: CycleSoftDtFull::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false),
     }
 }
 fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: PValue) -> CycleDataFull {
@@ -464,7 +471,7 @@ fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: 
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDt::try_new(
+        soft_dt: CycleSoftDtFull::try_new(
             soft_dt_duration,
             effect_info.soft_dt_cd,
             false,

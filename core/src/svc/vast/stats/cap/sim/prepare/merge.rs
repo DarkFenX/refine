@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use super::timing_key::{CSeqPartTimingKey, TIME_ROUND_DIGITS};
+use super::timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey, TIME_ROUND_DIGITS};
 use crate::{
     num::PValue,
     svc::{
@@ -90,7 +90,7 @@ impl Merger {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 struct MergeKey {
     start_delay: PValue,
-    cseq: CycleSeq<CSeqPartTimingKey>,
+    cseq: CycleSeq<CSeqPartTimingKey, CSeqHardDtTimingKey>,
 }
 impl MergeKey {
     fn try_new(start_delay: PValue, iter_data: &AggrIterData<PValue>) -> Option<Self> {

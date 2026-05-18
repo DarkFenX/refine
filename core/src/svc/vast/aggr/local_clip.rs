@@ -12,7 +12,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqInf, CycleDataFull, CycleHardDt, CycleSeq},
+        cycle::{CSeqInf, CycleDataFull, CycleHardDtFull, CycleSeq},
     },
     ud::UItemId,
 };
@@ -115,7 +115,7 @@ where
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
             let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-            let inner_conv: CSeqInf<_, CycleHardDt> = inner.convert_with(&mut converter);
+            let inner_conv: CSeqInf<_, CycleHardDtFull> = inner.convert_with(&mut converter);
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_conv.data, None, Count::ONE);
             // Record time until reload or hard downtime starts
             match inner.data.soft_dt {

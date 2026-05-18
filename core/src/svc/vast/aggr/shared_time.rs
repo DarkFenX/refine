@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{
     num::{Count, PValue, Value},
-    svc::cycle::{CSeqLoopLimSin, CycleHardDt, CycleSeq},
+    svc::cycle::{CSeqLoopLimSin, CycleHardDtFull, CycleSeq},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ fn process_infinite_hard_dt<T, A>(
     accum: &mut A,
     ptime: PValue,
     data: &AggrPartDataTail<T>,
-    hard_dt: CycleHardDt,
+    hard_dt: CycleHardDtFull,
     chance_mult: Option<PValue>,
 ) where
     T: Copy + InstanceDuration,

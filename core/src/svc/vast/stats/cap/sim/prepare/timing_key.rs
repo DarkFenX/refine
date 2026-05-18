@@ -1,7 +1,7 @@
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CycleHardDtReason, CycleSeq},
+        cycle::{CycleHardDtFull, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
         vast::aggr::{AggrIterData, AggrPartDataRegular, AggrPartDataSpool},
     },
@@ -10,18 +10,10 @@ use crate::{
 pub(super) const TIME_ROUND_DIGITS: u32 = 10;
 
 impl AggrIterData<PValue> {
-    pub(super) fn extract_cseq_timing_key(&self) -> CycleSeq<CSeqPartTimingKey> {
+    pub(super) fn extract_cseq_timing_key(&self) -> CycleSeq<CSeqPartTimingKey, CSeqHardDtTimingKey> {
         match self {
-            Self::Regular(inner) => {
-                let mut cseq = inner.cseq.convert_and_optimize();
-                cseq.process_hard_dt();
-                cseq
-            }
-            Self::Spool(inner) => {
-                let mut cseq = inner.cseq.convert_and_optimize();
-                cseq.process_hard_dt();
-                cseq
-            }
+            Self::Regular(inner) => inner.cseq.convert_and_optimize(),
+            Self::Spool(inner) => inner.cseq.convert_and_optimize(),
         }
     }
 }
@@ -29,22 +21,6 @@ impl AggrIterData<PValue> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cycle sequence
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CycleSeq<CSeqPartTimingKey> {
-    // Cycle sequences do not provide facilities to convert hard downtime info, so process it
-    // in-place: round duration, and set consistent reason (which we don't care about here)
-    fn process_hard_dt(&mut self) {
-        let hard_dt = match self {
-            CycleSeq::Inf(inner) => inner.hard_dt.as_mut(),
-            CycleSeq::LoopLimSin(inner) => inner.hard_dt.as_mut(),
-            _ => None,
-        };
-        if let Some(hard_dt) = hard_dt {
-            hard_dt.duration = hard_dt.duration.sig_rounded(TIME_ROUND_DIGITS);
-            hard_dt.reason = CycleHardDtReason { refuel: true }
-        }
-    }
-}
-
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) struct CSeqPartTimingKey {
     pub(super) duration: PValue,
@@ -64,6 +40,18 @@ impl From<AggrPartDataSpool<PValue>> for CSeqPartTimingKey {
             duration: part_data.cycle_main_duration.sig_rounded(TIME_ROUND_DIGITS),
             // This one is based on base output and will yield the same output key
             output: OutputTimingKey::from_output(&part_data.output_zero_spool),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub(super) struct CSeqHardDtTimingKey {
+    duration: PValue,
+}
+impl From<CycleHardDtFull> for CSeqHardDtTimingKey {
+    fn from(hard_dt: CycleHardDtFull) -> Self {
+        Self {
+            duration: hard_dt.duration.sig_rounded(TIME_ROUND_DIGITS),
         }
     }
 }

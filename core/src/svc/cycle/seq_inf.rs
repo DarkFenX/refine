@@ -1,5 +1,5 @@
 use super::{
-    data::CycleHardDt,
+    data::CycleHardDtFull,
     seq::{CycleSeq, CycleSeqLooped},
 };
 use crate::util::LibConverter;
@@ -8,7 +8,7 @@ use crate::util::LibConverter;
 // Part 1: repeats infinitely
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqInf<D, HDT = CycleHardDt> {
+pub(in crate::svc) struct CSeqInf<D, HDT = CycleHardDtFull> {
     pub(in crate::svc) data: D,
     // Optional hard downtime every cycle
     pub(in crate::svc) hard_dt: Option<HDT>,

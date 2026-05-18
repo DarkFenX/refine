@@ -7,7 +7,7 @@ use crate::num::{PValue, UnitInterval};
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleDataFull {
     pub(in crate::svc) active: CycleActive,
-    pub(in crate::svc) soft_dt: Option<CycleSoftDt>,
+    pub(in crate::svc) soft_dt: Option<CycleSoftDtFull>,
 }
 impl CycleDataFull {
     // Active duration and soft downtime duration combined
@@ -39,11 +39,11 @@ pub(in crate::svc) struct CycleActive {
 
 // Info about soft downtime between cycles (during which effects can apply their instances)
 #[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleSoftDt {
+pub(in crate::svc) struct CycleSoftDtFull {
     pub(in crate::svc) duration: PValue,
     pub(in crate::svc) reason: CycleSoftDtReason,
 }
-impl CycleSoftDt {
+impl CycleSoftDtFull {
     pub(super) fn try_new(duration: PValue, cooldown: bool, reload: bool, pre_rearm_idle: bool) -> Option<Self> {
         let reason = CycleSoftDtReason::try_new(cooldown, reload, pre_rearm_idle)?;
         Some(Self { duration, reason })
@@ -74,17 +74,17 @@ impl CycleSoftDtReason {
 
 // Info about hard downtime between cycles (during which effects cannot apply their instances)
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CycleHardDt {
+pub(in crate::svc) struct CycleHardDtFull {
     pub(in crate::svc) duration: PValue,
     pub(in crate::svc) reason: CycleHardDtReason,
 }
-impl CycleHardDt {
+impl CycleHardDtFull {
     pub(super) fn try_new(duration: PValue, rearm: bool) -> Option<Self> {
         let reason = CycleHardDtReason::try_new(rearm)?;
         Some(Self { duration, reason })
     }
 }
-impl GetDuration for CycleHardDt {
+impl GetDuration for CycleHardDtFull {
     fn get_duration(&self) -> PValue {
         self.duration
     }
