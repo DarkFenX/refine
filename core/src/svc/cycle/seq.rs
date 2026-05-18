@@ -75,9 +75,10 @@ impl<D, HDT> CycleSeq<D, HDT> {
             Self::LoopLimSin(inner) => inner.try_loop_cseq(),
         }
     }
-    pub(in crate::svc) fn convert_and_optimize<D2>(self) -> CycleSeq<D2, HDT>
+    pub(in crate::svc) fn convert_and_optimize<D2, HDT2>(self) -> CycleSeq<D2, HDT2>
     where
         D2: From<D> + Eq,
+        HDT2: From<HDT>,
     {
         match self {
             Self::Lim(inner) => inner.convert().optimize(),
@@ -87,10 +88,11 @@ impl<D, HDT> CycleSeq<D, HDT> {
             Self::LoopLimSin(inner) => inner.convert().optimize(),
         }
     }
-    pub(in crate::svc) fn convert_with_and_optimize<C, D2>(self, converter: &mut C) -> CycleSeq<D2, HDT>
+    pub(in crate::svc) fn convert_with_and_optimize<C, D2, HDT2>(self, converter: &mut C) -> CycleSeq<D2, HDT2>
     where
         C: LibConverter<D, D2>,
         D2: Eq,
+        HDT2: From<HDT>,
     {
         match self {
             Self::Lim(inner) => inner.convert_with(converter).optimize(),
@@ -103,10 +105,11 @@ impl<D, HDT> CycleSeq<D, HDT> {
 }
 
 impl<D, HDT> CycleSeqLooped<D, HDT> {
-    pub(in crate::svc) fn convert_with_and_optimize<C, D2>(self, converter: &mut C) -> CycleSeqLooped<D2, HDT>
+    pub(in crate::svc) fn convert_with_and_optimize<C, D2, HDT2>(self, converter: &mut C) -> CycleSeqLooped<D2, HDT2>
     where
         C: LibConverter<D, D2>,
         D2: Eq,
+        HDT2: From<HDT>,
     {
         match self {
             Self::Inf(inner) => inner.convert_with(converter).optimize_looped(),

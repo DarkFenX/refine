@@ -38,26 +38,28 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
     {
         Some(CycleSeqLooped::LoopLimSin(*self))
     }
-    pub(super) fn convert<D2>(self) -> CSeqLoopLimSin<D2, HDT>
+    pub(super) fn convert<D2, HDT2>(self) -> CSeqLoopLimSin<D2, HDT2>
     where
         D2: From<D>,
+        HDT2: From<HDT>,
     {
         CSeqLoopLimSin {
             p1_data: D2::from(self.p1_data),
             p1_repeat_count: self.p1_repeat_count,
             p2_data: D2::from(self.p2_data),
-            hard_dt: self.hard_dt,
+            hard_dt: self.hard_dt.map(Into::into),
         }
     }
-    pub(in crate::svc) fn convert_with<C, D2>(self, converter: &mut C) -> CSeqLoopLimSin<D2, HDT>
+    pub(in crate::svc) fn convert_with<C, D2, HDT2>(self, converter: &mut C) -> CSeqLoopLimSin<D2, HDT2>
     where
         C: LibConverter<D, D2>,
+        HDT2: From<HDT>,
     {
         CSeqLoopLimSin {
             p1_data: converter.lib_convert(self.p1_data),
             p1_repeat_count: self.p1_repeat_count,
             p2_data: converter.lib_convert(self.p2_data),
-            hard_dt: self.hard_dt,
+            hard_dt: self.hard_dt.map(Into::into),
         }
     }
     pub(in crate::svc) fn optimize(self) -> CycleSeq<D, HDT>

@@ -33,22 +33,24 @@ impl<D, HDT> CSeqInf<D, HDT> {
     {
         Some(CycleSeqLooped::Inf(*self))
     }
-    pub(super) fn convert<D2>(self) -> CSeqInf<D2, HDT>
+    pub(super) fn convert<D2, HDT2>(self) -> CSeqInf<D2, HDT2>
     where
         D2: From<D>,
+        HDT2: From<HDT>,
     {
         CSeqInf {
             data: self.data.into(),
-            hard_dt: self.hard_dt,
+            hard_dt: self.hard_dt.map(Into::into),
         }
     }
-    pub(in crate::svc) fn convert_with<C, D2>(self, converter: &mut C) -> CSeqInf<D2, HDT>
+    pub(in crate::svc) fn convert_with<C, D2, HDT2>(self, converter: &mut C) -> CSeqInf<D2, HDT2>
     where
         C: LibConverter<D, D2>,
+        HDT2: From<HDT>,
     {
         CSeqInf {
             data: converter.lib_convert(self.data),
-            hard_dt: self.hard_dt,
+            hard_dt: self.hard_dt.map(Into::into),
         }
     }
     pub(in crate::svc) fn optimize(self) -> CycleSeq<D, HDT> {
