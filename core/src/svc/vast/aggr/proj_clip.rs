@@ -15,7 +15,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqInf, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
 };
@@ -169,7 +169,7 @@ where
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
                 let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let inner_conv = inner.convert_with(&mut converter);
+                let inner_conv: CSeqLoopLimSin<_, CSeqHardDtFull> = inner.convert_with(&mut converter);
                 process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, inv_proj.chance_mult, Count::ONE);
                 // Record time until reload or hard downtime starts
                 match inner.p2_data.soft_dt {

@@ -1,7 +1,10 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    local_shared::{AggrLocalInvData, LocalConverter},
+    shared::{
+        AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_of_cycle_with_cutoff,
+        process_output_of_lls_with_cutoff,
+    },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -41,59 +44,31 @@ where
         Some(inv_local) => inv_local,
         None => return false,
     };
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
-        true => process_hard_dt(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
-        false => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+        true => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
+        false => process_regular(cseq.convert_with_and_optimize(&mut converter), accum),
     }
     true
 }
 
-fn process_regular<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectLocalOpcSpec<BG>,
-    accum: &mut SeqAccum<IA>,
-    inv_local: AggrLocalInvData<I>,
-) where
-    BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+fn process_regular<I, IA>(cseq: CycleSeqLooped<AggrPartData<I>, AggrHardDtNull>, accum: &mut SeqAccum<IA>)
+where
+    I: Copy,
     IA: SeqInstanceAccum<I>,
 {
     for cycle_part in cseq.iter_cseq_parts() {
-        if cycle_part.repeat_count == Count::ZERO {
-            continue;
-        }
-        let cycle_output = get_local_output(
-            ctx,
-            calc,
-            item_uid,
-            ospec,
-            &inv_local,
-            cycle_part.data.active.chargedness,
-        );
-        accum.add_output_full(&cycle_output, None, cycle_part.repeat_count);
-        accum.time += cycle_part.data.get_main_duration() * cycle_part.repeat_count.into_pvalue();
+        accum.add_output_full(&cycle_part.data.output, None, cycle_part.repeat_count);
+        accum.time += cycle_part.data.cycle_main_duration * cycle_part.repeat_count.into_pvalue();
     }
 }
 
-fn process_hard_dt<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectLocalOpcSpec<BG>,
-    accum: &mut SeqAccum<IA>,
-    inv_local: AggrLocalInvData<I>,
-) where
-    BG: NEffectOutputGetter,
-    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+fn process_hard_dt<I, IA>(cseq: CycleSeqLooped<AggrPartDataTail<I>, AggrHardDtSimple>, accum: &mut SeqAccum<IA>)
+where
+    I: Copy + InstanceDuration,
     IA: SeqInstanceAccum<I>,
 {
-    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    match cseq_conv {
+    match cseq {
         CycleSeqLooped::Inf(inner) => {
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, None, Count::ONE);
             accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;

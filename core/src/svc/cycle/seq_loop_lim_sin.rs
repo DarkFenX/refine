@@ -1,5 +1,4 @@
 use super::{
-    data::CSeqHardDtFull,
     seq::{CycleSeq, CycleSeqLooped},
     seq_inf::CSeqInf,
 };

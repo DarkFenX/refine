@@ -1,7 +1,4 @@
-use super::{
-    data::CSeqHardDtFull,
-    seq::{CycleSeq, CycleSeqLooped},
-};
+use super::seq::{CycleSeq, CycleSeqLooped};
 use crate::util::LibConverter;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

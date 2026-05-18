@@ -38,7 +38,7 @@ pub(super) struct AggrPartData<I> {
 pub(super) struct AggrHardDtNull {}
 impl From<CSeqHardDtFull> for AggrHardDtNull {
     fn from(_hard_dt: CSeqHardDtFull) -> Self {
-        AggrHardDtNull {}
+        Self {}
     }
 }
 
@@ -63,7 +63,20 @@ impl<I> AggrPartDataTail<I> {
     }
 }
 
-impl<I> CSeqInf<AggrPartDataTail<I>, CSeqHardDtFull> {
+#[derive(Copy, Clone)]
+pub(super) struct AggrHardDtSimple {
+    pub(super) duration: PValue,
+}
+impl From<CSeqHardDtFull> for AggrHardDtSimple {
+    fn from(hard_dt: CSeqHardDtFull) -> Self {
+        Self {
+            duration: hard_dt.duration,
+        }
+    }
+}
+
+// TODO: review what needs to be removed
+impl<I, HDT> CSeqInf<AggrPartDataTail<I>, HDT> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.data.cycle_main_duration
     }
@@ -81,7 +94,7 @@ impl CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull> {
             .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.active.duration)
     }
 }
-impl<I> CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull> {
+impl<I, HDT> CSeqLoopLimSin<AggrPartDataTail<I>, HDT> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.p1_data
             .cycle_main_duration
@@ -116,9 +129,9 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
-pub(super) fn process_output_of_lls_with_cutoff<I, IA>(
+pub(super) fn process_output_of_lls_with_cutoff<I, IA, HDT>(
     accum: &mut IA,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, HDT>,
     chance_mult: Option<PValue>,
     loop_repeat_count: Count,
 ) where

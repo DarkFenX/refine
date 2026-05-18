@@ -101,7 +101,7 @@ fn process_hard_dt<BG, I, IA>(
     IA: SeqInstanceAccum<I>,
 {
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+    let cseq_conv: CycleSeqLooped<_, CSeqHardDtFull> = cseq.convert_with_and_optimize(&mut converter);
     match cseq_conv {
         CycleSeqLooped::Inf(inner) => {
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, inv_proj.chance_mult, Count::ONE);
