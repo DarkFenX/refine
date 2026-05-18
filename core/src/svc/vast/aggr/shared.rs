@@ -25,6 +25,24 @@ pub(super) fn get_item_ship_limit(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Simple combined data container
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub(super) struct AggrPartData<I> {
+    // Cycle active duration + soft downtime duration
+    pub(super) cycle_main_duration: PValue,
+    pub(super) output: Output<I>,
+}
+
+#[derive(Copy, Clone)]
+pub(super) struct AggrHardDtNull {}
+impl From<CSeqHardDtFull> for AggrHardDtNull {
+    fn from(_hard_dt: CSeqHardDtFull) -> Self {
+        AggrHardDtNull {}
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Time-limited processing (time-limited aggregators, or hard downtime processing)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq)]

@@ -1,5 +1,5 @@
 use super::{
-    shared::{AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit},
+    shared::{AggrPartData, AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -14,19 +14,13 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Data which stays the same through local effect cycles
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct AggrLocalInvData<T>
-where
-    T: Copy,
-{
+pub(super) struct AggrLocalInvData<I> {
     // Fields are private intentionally; they are supposed to be processed to get an output usable
     // elsewhere
-    output: Output<T>,
+    output: Output<I>,
     instance_limit: Option<PValue>,
 }
-impl<T> AggrLocalInvData<T>
-where
-    T: Copy,
-{
+impl<I> AggrLocalInvData<I> {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -36,8 +30,8 @@ where
         base_xargs: BX,
     ) -> Option<Self>
     where
-        T: HasImpact,
-        BG: NEffectOutputGetter<Instance = T, XArgs = BX>,
+        I: HasImpact,
+        BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     {
         let output = ospec.base.get(ctx, calc, item_uid, effect, base_xargs)?;
         if !output.has_impact() || output.get_instance_count() == Count::ZERO {
@@ -50,7 +44,7 @@ where
     }
     pub(super) fn get_output_completion_duration(&self) -> PValue
     where
-        T: InstanceDuration,
+        I: InstanceDuration,
     {
         self.output.get_completion_duration()
     }
@@ -59,28 +53,26 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
+pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, I>
 where
     BG: NEffectOutputGetter,
-    T: Copy,
 {
     pub(super) ctx: SvcCtx<'u, 'p>,
     pub(super) calc: &'c mut Calc,
     pub(super) item_uid: UItemId,
     pub(super) ospec: &'o REffectLocalOpcSpec<BG>,
-    pub(super) inv_local: &'i AggrLocalInvData<T>,
+    pub(super) inv_local: &'i AggrLocalInvData<I>,
 }
-impl<'u, 'p, 'c, 'o, 'i, BG, T> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, T>
+impl<'u, 'p, 'c, 'o, 'i, BG, I> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, I>
 where
     BG: NEffectOutputGetter,
-    T: Copy,
 {
     pub(super) fn new(
         ctx: SvcCtx<'u, 'p>,
         calc: &'c mut Calc,
         item_uid: UItemId,
         ospec: &'o REffectLocalOpcSpec<BG>,
-        inv_local: &'i AggrLocalInvData<T>,
+        inv_local: &'i AggrLocalInvData<I>,
     ) -> Self {
         Self {
             ctx,
@@ -91,12 +83,32 @@ where
         }
     }
 }
-impl<BG, T> LibConverter<CycleDataFull, AggrPartDataTail<T>> for LocalConverter<'_, '_, '_, '_, '_, BG, T>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for LocalConverter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<T> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<I> {
+        let output = get_local_output(
+            self.ctx,
+            self.calc,
+            self.item_uid,
+            self.ospec,
+            self.inv_local,
+            input.active.chargedness,
+        );
+        AggrPartData {
+            cycle_main_duration: input.get_main_duration(),
+            output,
+        }
+    }
+}
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for LocalConverter<'_, '_, '_, '_, '_, BG, I>
+where
+    BG: NEffectOutputGetter,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataTail<I> {
         let output = get_local_output(
             self.ctx,
             self.calc,
@@ -118,17 +130,17 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_local_output<BG, T>(
+pub(super) fn get_local_output<BG, I>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectLocalOpcSpec<BG>,
-    inv_local: &AggrLocalInvData<T>,
+    inv_local: &AggrLocalInvData<I>,
     chargeness: Option<UnitInterval>,
-) -> Output<T>
+) -> Output<I>
 where
     BG: NEffectOutputGetter,
-    T: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     let mut output = inv_local.output;
     // Chargedness
