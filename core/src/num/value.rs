@@ -4,7 +4,7 @@ use crate::{
     ad::AValue,
     dbg::{DebugError, DebugResult},
     def::AU,
-    num::{Count, PValue},
+    num::PValue,
     util::{FLOAT_TOLERANCE, round, sig_round},
 };
 

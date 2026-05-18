@@ -1,29 +1,28 @@
-use super::shared::OutputInstanceIterItem;
 use crate::num::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(crate) struct OutputSimple<T>
-where
-    T: Copy,
-{
-    pub(crate) instance: T,
+pub(crate) struct OutputSimple<I> {
+    pub(crate) instance: I,
     pub(crate) delay: PValue,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // General operations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> OutputSimple<T>
-where
-    T: Copy,
-{
-    pub(super) fn get_instance(&self) -> T {
+impl<I> OutputSimple<I> {
+    pub(super) fn get_instance(&self) -> I
+    where
+        I: Copy,
+    {
         self.instance
     }
     pub(super) fn get_instance_count(&self) -> Count {
         Count::ONE
     }
-    pub(super) fn get_immediate_instance(&self) -> Option<T> {
+    pub(super) fn get_immediate_instance(&self) -> Option<I>
+    where
+        I: Copy,
+    {
         match self.delay {
             PValue::ZERO => Some(self.instance),
             _ => None,
@@ -34,58 +33,11 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Math
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> OutputSimple<T>
+impl<I> OutputSimple<I>
 where
-    T: Copy + std::ops::MulAssign<PValue>,
+    I: std::ops::MulAssign<PValue>,
 {
     pub(super) fn instance_mul_assign(&mut self, rhs: PValue) {
         self.instance.mul_assign(rhs);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Instance iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> OutputSimple<T>
-where
-    T: Copy,
-{
-    pub(super) fn into_instance_iter(self) -> OutputInstanceIterSimple<T> {
-        OutputInstanceIterSimple::new(self)
-    }
-}
-
-pub(in crate::svc) struct OutputInstanceIterSimple<T>
-where
-    T: Copy,
-{
-    output: OutputSimple<T>,
-    done: bool,
-}
-impl<T> OutputInstanceIterSimple<T>
-where
-    T: Copy,
-{
-    fn new(output: OutputSimple<T>) -> Self {
-        Self { output, done: false }
-    }
-}
-impl<T> Iterator for OutputInstanceIterSimple<T>
-where
-    T: Copy,
-{
-    type Item = OutputInstanceIterItem<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.done {
-            true => None,
-            false => {
-                self.done = true;
-                Some(OutputInstanceIterItem {
-                    time_passed: self.output.delay,
-                    instance: self.output.instance,
-                })
-            }
-        }
     }
 }

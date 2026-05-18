@@ -7,6 +7,22 @@ use crate::num::{Count, PValue};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<D, HDT> CycleSeq<D, HDT>
+where
+    D: Copy + GetDuration,
+    HDT: GetDuration,
+{
+    pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<D> {
+        match self {
+            Self::Lim(inner) => CycleIter::Lim(CSeqLimCycleIter::new(inner)),
+            Self::Inf(inner) => CycleIter::Inf(CSeqInfCycleIter::new(inner)),
+            Self::LimInf(inner) => CycleIter::LimInf(CSeqLimInfCycleIter::new(inner)),
+            Self::LimSinInf(inner) => CycleIter::LimSinInf(CSeqLimSinInfCycleIter::new(inner)),
+            Self::LoopLimSin(inner) => CycleIter::LoopLimSin(CSeqLoopLimSinCycleIter::new(inner)),
+        }
+    }
+}
+
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleIterItem<D> {
     pub(in crate::svc) data: D,
@@ -34,22 +50,6 @@ where
             Self::LimInf(inner) => inner.next(),
             Self::LimSinInf(inner) => inner.next(),
             Self::LoopLimSin(inner) => inner.next(),
-        }
-    }
-}
-
-impl<D, HDT> CycleSeq<D, HDT>
-where
-    D: Copy + GetDuration,
-    HDT: GetDuration,
-{
-    pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<D> {
-        match self {
-            Self::Lim(inner) => CycleIter::Lim(CSeqLimCycleIter::new(inner)),
-            Self::Inf(inner) => CycleIter::Inf(CSeqInfCycleIter::new(inner)),
-            Self::LimInf(inner) => CycleIter::LimInf(CSeqLimInfCycleIter::new(inner)),
-            Self::LimSinInf(inner) => CycleIter::LimSinInf(CSeqLimSinInfCycleIter::new(inner)),
-            Self::LoopLimSin(inner) => CycleIter::LoopLimSin(CSeqLoopLimSinCycleIter::new(inner)),
         }
     }
 }
