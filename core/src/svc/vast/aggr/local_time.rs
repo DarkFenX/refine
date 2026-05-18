@@ -39,8 +39,12 @@ where
         None => return false,
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    aggr_by_time(cseq_conv, None, &mut accum.instances, time);
+    aggr_by_time(
+        cseq.convert_with_and_optimize(&mut converter),
+        None,
+        &mut accum.instances,
+        time,
+    );
     accum.time += time;
     true
 }

@@ -1,21 +1,21 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrPartDataTail, get_cycle_tail_duration, get_tailed_cycle_full_repeat_count,
+        AggrHardDtSimple, AggrPartDataTail, get_cycle_tail_duration, get_tailed_cycle_full_repeat_count,
         process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff,
     },
     traits::InstanceDuration,
 };
 use crate::{
     num::{Count, PValue, Value},
-    svc::cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleSeq},
+    svc::cycle::{CSeqLoopLimSin, CycleSeq},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Precalculated data processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn aggr_by_time<I, IA>(
-    cseq: CycleSeq<AggrPartDataTail<I>, CSeqHardDtFull>,
+    cseq: CycleSeq<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
     accum: &mut IA,
     ptime: PValue,
@@ -131,7 +131,7 @@ fn process_infinite_hard_dt<I, IA>(
     accum: &mut IA,
     ptime: PValue,
     data: &AggrPartDataTail<I>,
-    hard_dt: CSeqHardDtFull,
+    hard_dt: AggrHardDtSimple,
     chance_mult: Option<PValue>,
 ) where
     I: Copy + InstanceDuration,
@@ -161,7 +161,7 @@ fn process_infinite_hard_dt<I, IA>(
 fn process_lls_regular<I, IA>(
     accum: &mut IA,
     ptime: PValue,
-    cseq: CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
+    cseq: CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
 ) where
     I: Copy + InstanceDuration,
@@ -198,7 +198,7 @@ fn process_lls_regular<I, IA>(
 fn process_lls_hard_dt<I, IA>(
     accum: &mut IA,
     ptime: PValue,
-    cseq: CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
+    cseq: CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
 ) where
     I: Copy + InstanceDuration,
@@ -222,7 +222,7 @@ fn process_lls_hard_dt<I, IA>(
 fn process_lls_incomplete<I, IA>(
     accum: &mut IA,
     time: &mut Value,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, CSeqHardDtFull>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
 ) where
     I: Copy + InstanceDuration,
