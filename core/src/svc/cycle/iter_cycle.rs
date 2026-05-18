@@ -44,9 +44,10 @@ where
     }
 }
 
-impl<D> CycleSeq<D>
+impl<D, HDT> CycleSeq<D, HDT>
 where
     D: Copy + GetDuration,
+    HDT: GetDuration,
 {
     pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<D> {
         match self {
@@ -113,9 +114,13 @@ where
 }
 impl<D> CSeqInfCycleIter<D>
 where
-    D: Copy + GetDuration,
+    D: Copy,
 {
-    fn new(cseq: &CSeqInf<D>) -> Self {
+    fn new<HDT>(cseq: &CSeqInf<D, HDT>) -> Self
+    where
+        D: GetDuration,
+        HDT: GetDuration,
+    {
         let time_until_hard_dt = match cseq.hard_dt.is_some() {
             true => Some(cseq.data.get_duration()),
             false => None,
@@ -124,7 +129,7 @@ where
             item: CycleIterItem {
                 data: cseq.data,
                 time_until_hard_dt,
-                hard_dt_duration: cseq.hard_dt.map(|v| v.duration),
+                hard_dt_duration: cseq.hard_dt.as_ref().map(|v| v.get_duration()),
             },
         }
     }
@@ -276,11 +281,15 @@ where
 }
 impl<D> CSeqLoopLimSinCycleIter<D>
 where
-    D: Copy + GetDuration,
+    D: Copy,
 {
-    fn new(cseq: &CSeqLoopLimSin<D>) -> Self {
-        let (p2_time_until_hard_dt, hard_dt_duration) = match cseq.hard_dt {
-            Some(hard_dt) => (Some(cseq.p2_data.get_duration()), Some(hard_dt.duration)),
+    fn new<HDT>(cseq: &CSeqLoopLimSin<D, HDT>) -> Self
+    where
+        D: GetDuration,
+        HDT: GetDuration,
+    {
+        let (p2_time_until_hard_dt, hard_dt_duration) = match &cseq.hard_dt {
+            Some(hard_dt) => (Some(cseq.p2_data.get_duration()), Some(hard_dt.get_duration())),
             None => (None, None),
         };
         Self {

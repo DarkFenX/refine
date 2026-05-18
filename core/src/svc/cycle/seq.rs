@@ -61,12 +61,12 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<D, HDT> CycleSeq<D, HDT>
-where
-    D: Copy,
-    HDT: Copy,
-{
-    pub(in crate::svc) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>> {
+impl<D, HDT> CycleSeq<D, HDT> {
+    pub(in crate::svc) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>>
+    where
+        D: Copy,
+        HDT: Copy,
+    {
         match self {
             Self::Lim(inner) => inner.try_loop_cseq(),
             Self::Inf(inner) => inner.try_loop_cseq(),
@@ -102,10 +102,7 @@ where
     }
 }
 
-impl<D, HDT> CycleSeqLooped<D, HDT>
-where
-    D: Copy,
-{
+impl<D, HDT> CycleSeqLooped<D, HDT> {
     pub(in crate::svc) fn convert_with_and_optimize<C, D2>(self, converter: &mut C) -> CycleSeqLooped<D2, HDT>
     where
         C: LibConverter<D, D2>,

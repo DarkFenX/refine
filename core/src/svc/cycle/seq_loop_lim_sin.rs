@@ -31,6 +31,13 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CSeqLoopLimSin<D, HDT> {
+    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>>
+    where
+        D: Copy,
+        HDT: Copy,
+    {
+        Some(CycleSeqLooped::LoopLimSin(*self))
+    }
     pub(super) fn convert<D2>(self) -> CSeqLoopLimSin<D2, HDT>
     where
         D2: From<D>,
@@ -76,14 +83,5 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
             }),
             false => CycleSeqLooped::LoopLimSin(self),
         }
-    }
-}
-impl<D, HDT> CSeqLoopLimSin<D, HDT>
-where
-    D: Copy,
-    HDT: Copy,
-{
-    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>> {
-        Some(CycleSeqLooped::LoopLimSin(*self))
     }
 }

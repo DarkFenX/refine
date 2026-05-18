@@ -84,6 +84,11 @@ impl CycleHardDt {
         Some(Self { duration, reason })
     }
 }
+impl GetDuration for CycleHardDt {
+    fn get_duration(&self) -> PValue {
+        self.duration
+    }
+}
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CycleHardDtReason {
     pub(in crate::svc) refuel: bool,

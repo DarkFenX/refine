@@ -24,6 +24,15 @@ impl<D> CSeqLimInf<D> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D> CSeqLimInf<D> {
+    pub(super) fn try_loop_cseq<HDT>(&self) -> Option<CycleSeqLooped<D, HDT>>
+    where
+        D: Copy,
+    {
+        Some(CycleSeqLooped::Inf(CSeqInf {
+            data: self.p2_data,
+            hard_dt: None,
+        }))
+    }
     pub(super) fn convert<D2>(self) -> CSeqLimInf<D2>
     where
         D2: From<D>,
@@ -55,16 +64,5 @@ impl<D> CSeqLimInf<D> {
             }),
             false => CycleSeq::LimInf(self),
         }
-    }
-}
-impl<D> CSeqLimInf<D>
-where
-    D: Copy,
-{
-    pub(super) fn try_loop_cseq<HDT>(&self) -> Option<CycleSeqLooped<D, HDT>> {
-        Some(CycleSeqLooped::Inf(CSeqInf {
-            data: self.p2_data,
-            hard_dt: None,
-        }))
     }
 }

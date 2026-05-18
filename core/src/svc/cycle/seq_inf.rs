@@ -26,6 +26,13 @@ impl<D, HDT> CSeqInf<D, HDT> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CSeqInf<D, HDT> {
+    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>>
+    where
+        D: Copy,
+        HDT: Copy,
+    {
+        Some(CycleSeqLooped::Inf(*self))
+    }
     pub(super) fn convert<D2>(self) -> CSeqInf<D2, HDT>
     where
         D2: From<D>,
@@ -49,14 +56,5 @@ impl<D, HDT> CSeqInf<D, HDT> {
     }
     pub(super) fn optimize_looped(self) -> CycleSeqLooped<D, HDT> {
         CycleSeqLooped::Inf(self)
-    }
-}
-impl<D, HDT> CSeqInf<D, HDT>
-where
-    D: Copy,
-    HDT: Copy,
-{
-    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>> {
-        Some(CycleSeqLooped::Inf(*self))
     }
 }
