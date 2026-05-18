@@ -1,5 +1,7 @@
-use super::traits::GetDuration;
-use crate::num::{PValue, UnitInterval};
+use crate::{
+    num::{PValue, UnitInterval},
+    svc::traits::GetDuration,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cycle data containers
@@ -19,6 +21,7 @@ impl CycleDataFull {
         duration
     }
 }
+// TODO: try removing after refactoring aggregators
 impl GetDuration for CycleDataFull {
     fn get_duration(&self) -> PValue {
         self.get_main_duration()
@@ -82,11 +85,6 @@ impl CSeqHardDtFull {
     pub(super) fn try_new(duration: PValue, rearm: bool) -> Option<Self> {
         let reason = CSeqHardDtReason::try_new(rearm)?;
         Some(Self { duration, reason })
-    }
-}
-impl GetDuration for CSeqHardDtFull {
-    fn get_duration(&self) -> PValue {
-        self.duration
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]

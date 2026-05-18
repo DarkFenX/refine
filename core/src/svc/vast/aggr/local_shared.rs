@@ -86,7 +86,7 @@ where
 impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for LocalConverter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
 {
     fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<I> {
         let output = get_local_output(

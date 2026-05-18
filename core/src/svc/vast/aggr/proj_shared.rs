@@ -1,6 +1,9 @@
 use super::{
     accum::SeqInstanceAccum,
-    shared::{AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit, get_tailed_cycle_full_repeat_count},
+    shared::{
+        AggrPartData, AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit,
+        get_tailed_cycle_full_repeat_count,
+    },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -201,6 +204,26 @@ where
             projector_uid,
             ospec,
             inv_proj,
+        }
+    }
+}
+impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
+where
+    BG: NEffectOutputGetter,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartData<I> {
+        let output = get_proj_regular_output(
+            self.ctx,
+            self.calc,
+            self.projector_uid,
+            self.ospec,
+            self.inv_proj,
+            input.active.chargedness,
+        );
+        AggrPartData {
+            cycle_main_duration: input.get_main_duration(),
+            output,
         }
     }
 }

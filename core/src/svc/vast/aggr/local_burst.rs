@@ -1,6 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    local_shared::{AggrLocalInvData, get_local_output},
+    local_shared::{AggrLocalInvData, LocalConverter},
+    shared::{AggrHardDtNull, AggrPartData},
     traits::{HasImpact, InstanceLimit},
 };
 use crate::{
@@ -30,16 +31,24 @@ pub(in crate::svc::vast) fn aggr_local_burst<BG, BX, I, IA>(
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
-    I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
     let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
         Some(inv_local) => inv_local,
         None => return false,
     };
-    let cycle_data = cseq.get_first_cycle();
-    let cycle_output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, cycle_data.active.chargedness);
-    accum.add_output_full(&cycle_output, None, Count::ONE);
-    accum.time += cycle_data.get_main_duration();
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
+    process_regular(cseq.convert_with_and_optimize(&mut converter), accum);
     true
+}
+
+fn process_regular<I, IA>(cseq: CycleSeq<AggrPartData<I>, AggrHardDtNull>, accum: &mut SeqAccum<IA>)
+where
+    I: Copy,
+    IA: SeqInstanceAccum<I>,
+{
+    let first_cycle = cseq.get_first_cycle();
+    accum.add_output_full(&first_cycle.output, None, Count::ONE);
+    accum.time += first_cycle.cycle_main_duration;
 }

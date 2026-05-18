@@ -1,6 +1,6 @@
 use super::{
-    local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared_iter::{AggrIterData, AggrIterDataRegular, AggrPartDataRegular},
+    local_shared::{AggrLocalInvData, LocalConverter},
+    shared_iter::{AggrIterData, AggrIterDataRegular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -13,7 +13,6 @@ use crate::{
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
-    util::LibConverter,
 };
 
 // Local effects, iterator over cycles (cycle time + instance iter)
@@ -34,28 +33,4 @@ where
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     Some(AggrIterData::Regular(AggrIterDataRegular::new(cseq_conv)))
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Converter
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataRegular<I>> for LocalConverter<'_, '_, '_, '_, '_, BG, I>
-where
-    BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-{
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<I> {
-        let output = get_local_output(
-            self.ctx,
-            self.calc,
-            self.item_uid,
-            self.ospec,
-            self.inv_local,
-            input.active.chargedness,
-        );
-        AggrPartDataRegular {
-            cycle_main_duration: input.get_main_duration(),
-            output,
-        }
-    }
 }

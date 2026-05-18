@@ -1,9 +1,9 @@
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CSeqHardDtFull, CycleSeq},
+        cycle::CycleSeq,
         output::{Output, OutputComplex, OutputSimple},
-        vast::aggr::{AggrIterData, AggrPartDataRegular, AggrPartDataSpool},
+        vast::aggr::{AggrHardDtSimple, AggrIterData, AggrPartData, AggrPartDataSpool},
     },
 };
 
@@ -26,8 +26,8 @@ pub(super) struct CSeqPartTimingKey {
     pub(super) duration: PValue,
     output: OutputTimingKey,
 }
-impl From<AggrPartDataRegular<PValue>> for CSeqPartTimingKey {
-    fn from(part_data: AggrPartDataRegular<PValue>) -> Self {
+impl From<AggrPartData<PValue>> for CSeqPartTimingKey {
+    fn from(part_data: AggrPartData<PValue>) -> Self {
         Self {
             duration: part_data.cycle_main_duration.sig_rounded(TIME_ROUND_DIGITS),
             output: OutputTimingKey::from_output(&part_data.output),
@@ -48,8 +48,8 @@ impl From<AggrPartDataSpool<PValue>> for CSeqPartTimingKey {
 pub(super) struct CSeqHardDtTimingKey {
     duration: PValue,
 }
-impl From<CSeqHardDtFull> for CSeqHardDtTimingKey {
-    fn from(hard_dt: CSeqHardDtFull) -> Self {
+impl From<AggrHardDtSimple> for CSeqHardDtTimingKey {
+    fn from(hard_dt: AggrHardDtSimple) -> Self {
         Self {
             duration: hard_dt.duration.sig_rounded(TIME_ROUND_DIGITS),
         }

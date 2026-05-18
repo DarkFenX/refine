@@ -1,12 +1,14 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, get_proj_spool_cycle_output},
+    shared::{AggrHardDtSimple, AggrPartData},
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CSeqHardDtFull, CycleIter, CycleSeq, GetDuration},
+        cycle::{CycleIter, CycleSeq},
         output::Output,
+        traits::GetDuration,
     },
 };
 
@@ -37,13 +39,13 @@ pub(in crate::svc::vast) struct AggrIterDataRegular<I>
 where
     I: Copy,
 {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataRegular<I>, CSeqHardDtFull>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartData<I>, AggrHardDtSimple>,
 }
 impl<I> AggrIterDataRegular<I>
 where
     I: Copy,
 {
-    pub(super) fn new(cseq: CycleSeq<AggrPartDataRegular<I>, CSeqHardDtFull>) -> Self {
+    pub(super) fn new(cseq: CycleSeq<AggrPartData<I>, AggrHardDtSimple>) -> Self {
         Self { cseq }
     }
     fn iter(&self) -> AggrIterRegular<I> {
@@ -55,7 +57,7 @@ pub(in crate::svc::vast) struct AggrIterDataSpool<I>
 where
     I: Copy,
 {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpool<I>, CSeqHardDtFull>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpool<I>, AggrHardDtSimple>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
 }
@@ -64,7 +66,7 @@ where
     I: Copy,
 {
     pub(super) fn new(
-        cseq: CycleSeq<AggrPartDataSpool<I>, CSeqHardDtFull>,
+        cseq: CycleSeq<AggrPartDataSpool<I>, AggrHardDtSimple>,
         inv_proj: AggrProjInvData<I>,
         inv_spool: AggrSpoolInvData,
     ) -> Self {
@@ -120,13 +122,13 @@ pub(in crate::svc::vast) struct AggrIterRegular<I>
 where
     I: Copy,
 {
-    cycle_iter: CycleIter<AggrPartDataRegular<I>>,
+    cycle_iter: CycleIter<AggrPartData<I>>,
 }
 impl<I> AggrIterRegular<I>
 where
     I: Copy,
 {
-    fn new(cycle_iter: CycleIter<AggrPartDataRegular<I>>) -> Self {
+    fn new(cycle_iter: CycleIter<AggrPartData<I>>) -> Self {
         Self { cycle_iter }
     }
 }
@@ -146,24 +148,6 @@ where
                 cycle_duration,
             }
         })
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc::vast) struct AggrPartDataRegular<I>
-where
-    I: Copy,
-{
-    // Active + soft downtime duration combined
-    pub(in crate::svc::vast) cycle_main_duration: PValue,
-    pub(in crate::svc::vast) output: Output<I>,
-}
-impl<I> GetDuration for AggrPartDataRegular<I>
-where
-    I: Copy,
-{
-    fn get_duration(&self) -> PValue {
-        self.cycle_main_duration
     }
 }
 

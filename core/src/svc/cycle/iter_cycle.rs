@@ -1,8 +1,11 @@
 use super::{
     seq::CycleSeq, seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
-    seq_loop_lim_sin::CSeqLoopLimSin, traits::GetDuration,
+    seq_loop_lim_sin::CSeqLoopLimSin,
 };
-use crate::num::{Count, PValue};
+use crate::{
+    num::{Count, PValue},
+    svc::traits::GetDuration,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface

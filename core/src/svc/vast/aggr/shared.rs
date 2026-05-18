@@ -7,6 +7,7 @@ use crate::{
         calc::Calc,
         cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin, CycleDataFull},
         output::Output,
+        traits::GetDuration,
     },
     ud::UItemId,
 };
@@ -28,10 +29,15 @@ pub(super) fn get_item_ship_limit(
 // Simple combined data container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartData<I> {
-    // Cycle active duration + soft downtime duration
-    pub(super) cycle_main_duration: PValue,
-    pub(super) output: Output<I>,
+pub(in crate::svc::vast) struct AggrPartData<I> {
+    // Active + soft downtime duration combined
+    pub(in crate::svc::vast) cycle_main_duration: PValue,
+    pub(in crate::svc::vast) output: Output<I>,
+}
+impl<I> GetDuration for AggrPartData<I> {
+    fn get_duration(&self) -> PValue {
+        self.cycle_main_duration
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -64,14 +70,19 @@ impl<I> AggrPartDataTail<I> {
 }
 
 #[derive(Copy, Clone)]
-pub(super) struct AggrHardDtSimple {
-    pub(super) duration: PValue,
+pub(in crate::svc::vast) struct AggrHardDtSimple {
+    pub(in crate::svc::vast) duration: PValue,
 }
 impl From<CSeqHardDtFull> for AggrHardDtSimple {
     fn from(hard_dt: CSeqHardDtFull) -> Self {
         Self {
             duration: hard_dt.duration,
         }
+    }
+}
+impl GetDuration for AggrHardDtSimple {
+    fn get_duration(&self) -> PValue {
+        self.duration
     }
 }
 

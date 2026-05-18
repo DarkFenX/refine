@@ -4,10 +4,10 @@ use super::timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey, TIME_ROUND_DIGIT
 use crate::{
     num::PValue,
     svc::{
-        cycle::{CSeqHardDtFull, CSeqInf, CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CycleSeq},
+        cycle::{CSeqInf, CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
         vast::{
-            aggr::{AggrIterData, AggrPartDataRegular},
+            aggr::{AggrHardDtSimple, AggrIterData, AggrPartData},
             stats::cap::sim::{
                 event::{CapSimEvent, CapSimEventCycleCheck},
                 shared::Direction,
@@ -147,7 +147,7 @@ impl OutputComplex<PValue> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Necessary cycle sequence impls
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CycleSeq<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
+impl CycleSeq<AggrPartData<PValue>, AggrHardDtSimple> {
     fn try_merge_instances(&mut self, other: &Self) -> bool {
         match (self, other) {
             (CycleSeq::Lim(inner1), CycleSeq::Lim(inner2)) => {
@@ -174,17 +174,17 @@ impl CycleSeq<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
         }
     }
 }
-impl CSeqLim<AggrPartDataRegular<PValue>> {
+impl CSeqLim<AggrPartData<PValue>> {
     fn merge_instances(&mut self, other: &Self) {
         self.data.output.increase_instance(other.data.output.get_instance());
     }
 }
-impl CSeqInf<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
+impl CSeqInf<AggrPartData<PValue>, AggrHardDtSimple> {
     fn merge_instances(&mut self, other: &Self) {
         self.data.output.increase_instance(other.data.output.get_instance());
     }
 }
-impl CSeqLimInf<AggrPartDataRegular<PValue>> {
+impl CSeqLimInf<AggrPartData<PValue>> {
     fn merge_instances(&mut self, other: &Self) {
         self.p1_data
             .output
@@ -194,7 +194,7 @@ impl CSeqLimInf<AggrPartDataRegular<PValue>> {
             .increase_instance(other.p2_data.output.get_instance());
     }
 }
-impl CSeqLimSinInf<AggrPartDataRegular<PValue>> {
+impl CSeqLimSinInf<AggrPartData<PValue>> {
     fn merge_instances(&mut self, other: &Self) {
         self.p1_data
             .output
@@ -207,7 +207,7 @@ impl CSeqLimSinInf<AggrPartDataRegular<PValue>> {
             .increase_instance(other.p3_data.output.get_instance());
     }
 }
-impl CSeqLoopLimSin<AggrPartDataRegular<PValue>, CSeqHardDtFull> {
+impl CSeqLoopLimSin<AggrPartData<PValue>, AggrHardDtSimple> {
     fn merge_instances(&mut self, other: &Self) {
         self.p1_data
             .output

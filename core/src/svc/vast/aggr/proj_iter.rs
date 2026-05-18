@@ -1,8 +1,6 @@
 use super::{
-    proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_part_str_mult,
-    },
-    shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataRegular, AggrPartDataSpool},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_part_str_mult},
+    shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataSpool},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -60,27 +58,6 @@ where
     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     AggrIterData::Regular(AggrIterDataRegular::new(cseq_conv))
-}
-
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataRegular<I>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
-where
-    BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-{
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataRegular<I> {
-        let output = get_proj_regular_output(
-            self.ctx,
-            self.calc,
-            self.projector_uid,
-            self.ospec,
-            self.inv_proj,
-            input.active.chargedness,
-        );
-        AggrPartDataRegular {
-            cycle_main_duration: input.get_main_duration(),
-            output,
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
