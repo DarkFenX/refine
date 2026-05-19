@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     ud::{UAutocharge, UData},
 };
 
@@ -19,7 +19,7 @@ impl UAutocharge {
             .unwrap()
             .contains_key(&self.get_cont_effect_rid())
         {
-            return Err(DebugError {});
+            return Err(Default::default());
         }
         self.get_projs().consistency_check(u_data)?;
         Ok(())

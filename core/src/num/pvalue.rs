@@ -2,7 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     def::{SERVER_TICK_HZ, SERVER_TICK_S},
     num::{Count, Value},
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
@@ -216,7 +216,7 @@ impl PValue {
     pub(crate) fn consistency_check(&self) -> DebugResult {
         match self.0.is_finite() {
             true => Ok(()),
-            false => Err(DebugError {}),
+            false => Err(Default::default()),
         }
     }
 }

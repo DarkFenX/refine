@@ -1,8 +1,5 @@
 use super::main::EffProjs;
-use crate::{
-    dbg::{DebugError, DebugResult},
-    ud::UData,
-};
+use crate::{dbg::DebugResult, ud::UData};
 
 impl EffProjs {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
@@ -12,18 +9,18 @@ impl EffProjs {
             projectee_uid.consistency_check(u_data, false)?;
             svc_proj_data.consistency_check()?;
             let Some(projector_projs) = u_data.items.get(projector_espec.item_uid).get_projs() else {
-                return Err(DebugError {});
+                return Err(Default::default());
             };
             let Some(Some(u_proj_data)) = projector_projs.get(projectee_uid) else {
                 // Error in either of cases:
                 // - when user data item has no projection data - since projection register is
                 // supposed to track only relations with projection data
                 // - no projection defined on user data item
-                return Err(DebugError {});
+                return Err(Default::default());
             };
             // If datas are defined on both, data mismatch is an error
             if u_proj_data != *svc_proj_data {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         Ok(())

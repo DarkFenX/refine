@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     ud::{UData, UProjEffect},
 };
 
@@ -10,7 +10,7 @@ impl UProjEffect {
         // All projections are supposed to be without range on projected effect
         for (_projectee_uid, proj_data) in self.get_projs().iter() {
             if proj_data.is_some() {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         Ok(())

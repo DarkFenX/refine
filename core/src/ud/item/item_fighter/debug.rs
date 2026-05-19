@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     ud::{UData, UFighter},
 };
 
@@ -16,13 +16,13 @@ impl UFighter {
         let fighter_radius = self.get_radius();
         for (projectee_uid, proj_data) in self.get_projs().iter() {
             let Some(proj_data) = proj_data else {
-                return Err(DebugError {});
+                return Err(Default::default());
             };
             if proj_data.get_src_radius() != fighter_radius {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
             if proj_data.get_tgt_radius() != u_data.items.get(projectee_uid).get_direct_radius() {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         // If fighter has autocharges, make sure projections on them match
@@ -39,7 +39,7 @@ impl UFighter {
                     .sorted()
                     .collect_vec();
                 if fighter_projs != autocharge_projs {
-                    return Err(DebugError {});
+                    return Err(Default::default());
                 }
             }
         }

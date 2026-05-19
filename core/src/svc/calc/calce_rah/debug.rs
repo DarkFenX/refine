@@ -1,8 +1,5 @@
 use super::RahSim;
-use crate::{
-    dbg::{DebugError, DebugResult},
-    ud::UData,
-};
+use crate::{dbg::DebugResult, ud::UData};
 
 impl RahSim {
     pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
@@ -10,7 +7,7 @@ impl RahSim {
             item_uid.consistency_check(u_data, true)?;
             // RAH sim should never be running during debug requests
             if self.sim_running {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         Ok(())

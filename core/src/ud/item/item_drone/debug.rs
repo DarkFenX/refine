@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     ud::{UData, UDrone},
 };
 
@@ -13,13 +13,13 @@ impl UDrone {
         let drone_radius = self.get_radius();
         for (projectee_uid, proj_data) in self.get_projs().iter() {
             let Some(proj_data) = proj_data else {
-                return Err(DebugError {});
+                return Err(Default::default());
             };
             if proj_data.get_src_radius() != drone_radius {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
             if proj_data.get_tgt_radius() != u_data.items.get(projectee_uid).get_direct_radius() {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         Ok(())

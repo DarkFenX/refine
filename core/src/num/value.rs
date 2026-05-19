@@ -2,7 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     def::AU,
     num::PValue,
     util::{FLOAT_TOLERANCE, round, sig_round},
@@ -235,7 +235,7 @@ impl Value {
     pub(crate) fn consistency_check(&self) -> DebugResult {
         match self.0.is_finite() {
             true => Ok(()),
-            false => Err(DebugError {}),
+            false => Err(Default::default()),
         }
     }
 }

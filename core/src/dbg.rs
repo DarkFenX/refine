@@ -6,6 +6,11 @@ use crate::{
 #[derive(thiserror::Error, Debug)]
 #[error("debug error")]
 pub(crate) struct DebugError {}
+impl Default for DebugError {
+    fn default() -> Self {
+        Self {}
+    }
+}
 
 pub(crate) type DebugResult = Result<(), DebugError>;
 
@@ -15,7 +20,7 @@ pub(crate) type DebugResult = Result<(), DebugError>;
 impl UFitId {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         if u_data.fits.try_get(*self).is_none() {
-            return Err(DebugError {});
+            return Err(Default::default());
         }
         Ok(())
     }
@@ -24,10 +29,10 @@ impl UFitId {
 impl UItemId {
     pub(crate) fn consistency_check(&self, u_data: &UData, check_load: bool) -> DebugResult {
         let Some(item) = u_data.items.try_get(*self) else {
-            return Err(DebugError {});
+            return Err(Default::default());
         };
         if check_load && !item.is_loaded() {
-            return Err(DebugError {});
+            return Err(Default::default());
         }
         Ok(())
     }

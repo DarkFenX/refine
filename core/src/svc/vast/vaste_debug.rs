@@ -1,6 +1,6 @@
 use super::{Vast, VastFitData};
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     num::Count,
     ud::{UData, UFitId},
 };
@@ -398,7 +398,7 @@ impl VastFitData {
             }
         }
         if self.mods_fitted_cloaks != cloak_count {
-            return Err(DebugError {});
+            return Err(Default::default());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - damage output

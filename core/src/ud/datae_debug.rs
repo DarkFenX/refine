@@ -1,5 +1,5 @@
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     ud::{UData, UItemId, item::UItem},
     util::RSet,
 };
@@ -19,10 +19,10 @@ impl UData {
         for &sw_effect_uid in self.sw_effects.iter() {
             seen_items.push(sw_effect_uid);
             let Some(item) = self.items.try_get(sw_effect_uid) else {
-                return Err(DebugError {});
+                return Err(Default::default());
             };
             if !matches!(item, UItem::SwEffect(_)) {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
             item.consistency_check(self)?;
         }
@@ -31,20 +31,20 @@ impl UData {
             seen_items.push(proj_effect_uid);
             let item = match self.items.try_get(proj_effect_uid) {
                 Some(item) => item,
-                None => return Err(DebugError {}),
+                None => return Err(Default::default()),
             };
             if !matches!(item, UItem::ProjEffect(_)) {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
             item.consistency_check(self)?;
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {
-            return Err(DebugError {});
+            return Err(Default::default());
         }
         // Check if we have any unreferenced items
         if !self.items.keys().all(|item_uid| seen_items.contains(&item_uid)) {
-            return Err(DebugError {});
+            return Err(Default::default());
         }
         // Checks for internal container consistency
         self.items.consistency_check()?;

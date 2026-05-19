@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    dbg::{DebugError, DebugResult},
+    dbg::DebugResult,
     ud::{UData, UModule},
 };
 
@@ -18,13 +18,13 @@ impl UModule {
         let ship_radius = u_data.get_fit_ship_radius(self.get_fit_uid());
         for (projectee_uid, proj_data) in self.get_projs().iter() {
             let Some(proj_data) = proj_data else {
-                return Err(DebugError {});
+                return Err(Default::default());
             };
             if proj_data.get_src_radius() != ship_radius {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
             if proj_data.get_tgt_radius() != u_data.items.get(projectee_uid).get_direct_radius() {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         // If module has a charge, make sure projections on them match
@@ -40,7 +40,7 @@ impl UModule {
                 .sorted()
                 .collect_vec();
             if module_projs != charge_projs {
-                return Err(DebugError {});
+                return Err(Default::default());
             }
         }
         Ok(())
