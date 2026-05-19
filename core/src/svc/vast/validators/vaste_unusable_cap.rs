@@ -25,9 +25,8 @@ impl VastFitData {
         calc: &mut Calc,
         ship_uid: Option<UItemId>,
     ) -> bool {
-        let ship_uid = match ship_uid {
-            Some(ship_uid) => ship_uid,
-            None => return true,
+        let Some(ship_uid) = ship_uid else {
+            return true;
         };
         if self.mods_cap_consumers.is_empty() {
             return true;
@@ -40,9 +39,8 @@ impl VastFitData {
         for &item_uid in self.mods_cap_consumers.iter() {
             let u_item = ctx.u_data.items.get(item_uid);
             for cap_consumer in u_item.get_cap_consumers().unwrap().iter() {
-                let cap_consumed = match get_cap_consumption_instance(ctx, calc, item_uid, u_item, cap_consumer) {
-                    Some(cap_consumed) => cap_consumed,
-                    None => continue,
+                let Some(cap_consumed) = get_cap_consumption_instance(ctx, calc, item_uid, u_item, cap_consumer) else {
+                    continue;
                 };
                 if cap_consumed > max_cap && !kfs.contains(&item_uid) {
                     return false;
@@ -69,15 +67,14 @@ impl VastFitData {
         let mut items = HashMap::new();
         for &item_uid in self.mods_cap_consumers.iter() {
             let u_item = ctx.u_data.items.get(item_uid);
-            let max_item_use = match u_item
+            let Some(max_item_use) = u_item
                 .get_cap_consumers()
                 .unwrap()
                 .iter()
                 .filter_map(|cap_consumer| get_cap_consumption_instance(ctx, calc, item_uid, u_item, cap_consumer))
                 .max()
-            {
-                Some(max_item_use) => max_item_use,
-                None => continue,
+            else {
+                continue;
             };
             if max_item_use > max_cap && !kfs.contains(&item_uid) {
                 items.insert(ctx.u_data.items.xid_by_iid(item_uid), max_item_use);

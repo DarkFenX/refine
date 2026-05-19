@@ -33,12 +33,9 @@ fn add_effect(a_data: &mut AData, n_effect: &NEffect) {
 
 fn update_effect(a_data: &mut AData, n_effect: &NEffect) {
     if let Some(effect_updater) = n_effect.adg_update_effect_fn {
-        let a_effect = match a_data.effects.data.get_mut(&n_effect.aid) {
-            Some(a_effect) => a_effect,
-            None => {
-                tracing::info!("effect {}: not found for customization", n_effect.aid);
-                return;
-            }
+        let Some(a_effect) = a_data.effects.data.get_mut(&n_effect.aid) else {
+            tracing::info!("effect {}: not found for customization", n_effect.aid);
+            return;
         };
         effect_updater(a_effect);
     }

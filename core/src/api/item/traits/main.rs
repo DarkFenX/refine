@@ -60,9 +60,8 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let attr_aid = attr_id.into_aid();
-        let attr_rid = match sol.u_data.src.get_attr_rid_by_aid(&attr_aid) {
-            Some(attr_rid) => attr_rid,
-            None => return Err(AttrFoundError { attr_id: *attr_id }.into()),
+        let Some(attr_rid) = sol.u_data.src.get_attr_rid_by_aid(&attr_aid) else {
+            return Err(AttrFoundError { attr_id: *attr_id }.into());
         };
         match sol.internal_get_item_attr(item_uid, attr_rid) {
             Ok(calc_vals) => Ok(AttrVals::from_calc_attr_vals(calc_vals)),

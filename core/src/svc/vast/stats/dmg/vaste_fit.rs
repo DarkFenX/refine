@@ -241,9 +241,8 @@ impl VastFitData {
                 if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
-                let cseq = match reuse_cseq_map.get(&effect_rid) {
-                    Some(cseq) => cseq,
-                    None => continue,
+                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                    continue;
                 };
                 let mut accum = SeqAccum::new_stack_max();
                 if match time_options {
@@ -300,9 +299,8 @@ impl VastFitData {
                 if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
-                let cseq = match reuse_cseq_map.get(&effect_rid) {
-                    Some(cseq) => cseq,
-                    None => continue,
+                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                    continue;
                 };
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);
             }
@@ -328,9 +326,8 @@ impl VastFitData {
                 if !item_kinds.resolve(ctx, item, effect) {
                     continue;
                 }
-                let cseq = match reuse_cseq_map.get(&effect_rid) {
-                    Some(cseq) => cseq,
-                    None => continue,
+                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                    continue;
                 };
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid);
             }

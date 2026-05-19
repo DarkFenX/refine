@@ -11,22 +11,19 @@ impl EffProjs {
             // Projectees are not necessarily loaded
             projectee_uid.consistency_check(u_data, false)?;
             svc_proj_data.consistency_check()?;
-            let projector_projs = match u_data.items.get(projector_espec.item_uid).get_projs() {
-                Some(projector_projs) => projector_projs,
-                None => return Err(DebugError {}),
+            let Some(projector_projs) = u_data.items.get(projector_espec.item_uid).get_projs() else {
+                return Err(DebugError {});
             };
-            match projector_projs.get(projectee_uid) {
-                Some(Some(u_proj_data)) => {
-                    // If datas are defined on both, data mismatch is an error
-                    if u_proj_data != *svc_proj_data {
-                        return Err(DebugError {});
-                    }
-                }
+            let Some(Some(u_proj_data)) = projector_projs.get(projectee_uid) else {
                 // Error in either of cases:
                 // - when user data item has no projection data - since projection register is
                 // supposed to track only relations with projection data
                 // - no projection defined on user data item
-                _ => return Err(DebugError {}),
+                return Err(DebugError {});
+            };
+            // If datas are defined on both, data mismatch is an error
+            if u_proj_data != *svc_proj_data {
+                return Err(DebugError {});
             }
         }
         Ok(())

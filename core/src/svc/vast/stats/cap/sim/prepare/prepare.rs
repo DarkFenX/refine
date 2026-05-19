@@ -98,14 +98,12 @@ fn fill_consumers(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) {
-                Some(iter_data) => iter_data,
-                None => continue,
+            let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
+                continue;
             };
             match stagger.is_staggered(item_uid) {
                 true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
@@ -133,15 +131,13 @@ fn fill_nosfs(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), projectee_item_uid)
-            {
-                Some(iter_data) => iter_data,
-                None => continue,
+            let Some(iter_data) = aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), projectee_item_uid)
+            else {
+                continue;
             };
             match stagger.is_staggered(nosf_item_uid) {
                 true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
@@ -162,9 +158,8 @@ fn fill_incoming_neuts(
     vast: &Vast,
     cap_item_uid: UItemId,
 ) {
-    let neut_data = match vast.in_neuts.get_l1(&cap_item_uid) {
-        Some(neut_data) => neut_data,
-        None => return,
+    let Some(neut_data) = vast.in_neuts.get_l1(&cap_item_uid) else {
+        return;
     };
     let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
@@ -173,15 +168,13 @@ fn fill_incoming_neuts(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, (), Some(cap_item_uid))
-            {
-                Some(iter_data) => iter_data,
-                None => continue,
+            let Some(iter_data) = aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, (), Some(cap_item_uid))
+            else {
+                continue;
             };
             match stagger.is_staggered(neut_item_uid) {
                 true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
@@ -202,9 +195,8 @@ fn fill_incoming_transfers(
     vast: &Vast,
     cap_item_uid: UItemId,
 ) {
-    let transfer_data = match vast.in_cap.get_l1(&cap_item_uid) {
-        Some(transfer_data) => transfer_data,
-        None => return,
+    let Some(transfer_data) = vast.in_cap.get_l1(&cap_item_uid) else {
+        return;
     };
     let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
@@ -213,12 +205,11 @@ fn fill_incoming_transfers(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_proj_iter(
+            let Some(iter_data) = aggr_proj_iter(
                 ctx,
                 calc,
                 transfer_item_uid,
@@ -227,9 +218,8 @@ fn fill_incoming_transfers(
                 ospec,
                 (),
                 Some(cap_item_uid),
-            ) {
-                Some(iter_data) => iter_data,
-                None => continue,
+            ) else {
+                continue;
             };
             match stagger.is_staggered(transfer_item_uid) {
                 true => stagger_map.add_entry(StaggerKey::new(&iter_data), iter_data),
@@ -253,14 +243,12 @@ fn fill_injectors(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let iter_data = match aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) {
-                Some(iter_data) => iter_data,
-                None => continue,
+            let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
+                continue;
             };
             events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
                 time: PValue::ZERO,

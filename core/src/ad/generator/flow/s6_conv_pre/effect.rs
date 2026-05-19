@@ -96,9 +96,8 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
     let lowsec_ban_map = extract_ability_map(e_data, EAbil::get_disallow_lowsec);
     for a_effect in a_effects.values_mut() {
         // Hisec flag
-        match hisec_ban_map.get(&a_effect.id) {
-            None => (),
-            Some(flags) => match flags.len() {
+        if let Some(flags) = hisec_ban_map.get(&a_effect.id) {
+            match flags.len() {
                 1 => {
                     a_effect.banned_in_hisec = *flags.iter().next().unwrap();
                 }
@@ -110,12 +109,11 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
                     );
                     tracing::warn!("{msg}");
                 }
-            },
+            }
         }
         // Lowsec flag
-        match lowsec_ban_map.get(&a_effect.id) {
-            None => (),
-            Some(flags) => match flags.len() {
+        if let Some(flags) = lowsec_ban_map.get(&a_effect.id) {
+            match flags.len() {
                 1 => {
                     a_effect.banned_in_lowsec = *flags.iter().next().unwrap();
                 }
@@ -127,7 +125,7 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
                     );
                     tracing::warn!("{msg}");
                 }
-            },
+            }
         }
     }
     AEffects { data: a_effects }
@@ -315,13 +313,11 @@ where
 {
     let mut map = RMap::new();
     for e_abil in e_data.abils.data.iter() {
-        match get_abil_effect(e_abil.id) {
-            None => continue,
-            Some(effect_id) => map
-                .entry(AEffectId::from_eid(effect_id))
+        if let Some(effect_id) = get_abil_effect(e_abil.id) {
+            map.entry(AEffectId::from_eid(effect_id))
                 .or_insert_with(RSet::new)
-                .insert(getter(e_abil)),
-        };
+                .insert(getter(e_abil));
+        }
     }
     map
 }

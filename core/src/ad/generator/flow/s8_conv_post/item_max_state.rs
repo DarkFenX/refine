@@ -12,9 +12,8 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_max_state(a_data: &mut 
 fn get_max_state<'a>(item_effects: impl Iterator<Item = &'a AEffectId>, effects: &RMap<AEffectId, AEffect>) -> AState {
     let mut max_state = AState::Offline;
     for effect_aid in item_effects {
-        let a_effect = match effects.get(effect_aid) {
-            Some(effect) => effect,
-            None => continue,
+        let Some(a_effect) = effects.get(effect_aid) else {
+            continue;
         };
         if a_effect.state > max_state {
             max_state = a_effect.state;

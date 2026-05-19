@@ -20,19 +20,17 @@ pub(in crate::svc::cycle) fn get_eci_crystal(
 }
 
 fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCount {
-    let charge_count = match module.get_charge_count(ctx.u_data) {
-        Some(charge_count) => charge_count,
-        None => return InfCount::Count(Count::ZERO),
+    let Some(charge_count) = module.get_charge_count(ctx.u_data) else {
+        return InfCount::Count(Count::ZERO);
     };
     if charge_count == Count::ZERO {
         return InfCount::Count(Count::ZERO);
     }
     let charge_uid = module.get_charge_uid().unwrap();
     let charge_item = ctx.u_data.items.get(charge_uid);
-    let charge_attrs = match charge_item.get_attrs() {
-        Some(attrs) => attrs,
+    let Some(charge_attrs) = charge_item.get_attrs() else {
         // Charge is not loaded - can't use it
-        None => return InfCount::Count(Count::ZERO),
+        return InfCount::Count(Count::ZERO);
     };
     let attr_consts = ctx.ac();
     if charge_attrs

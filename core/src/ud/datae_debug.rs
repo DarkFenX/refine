@@ -18,9 +18,8 @@ impl UData {
         // System-wide effects
         for &sw_effect_uid in self.sw_effects.iter() {
             seen_items.push(sw_effect_uid);
-            let item = match self.items.try_get(sw_effect_uid) {
-                Some(item) => item,
-                None => return Err(DebugError {}),
+            let Some(item) = self.items.try_get(sw_effect_uid) else {
+                return Err(DebugError {});
             };
             if !matches!(item, UItem::SwEffect(_)) {
                 return Err(DebugError {});

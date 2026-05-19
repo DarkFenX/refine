@@ -23,13 +23,11 @@ impl SolarSystem {
         let u_physics = UPhysics::default();
         let chargeable_module_uids = get_chargeable_modules(&self.u_data, fit_uid);
         for type_aid in type_aids {
-            let r_item = match self.u_data.src.get_item_by_aid(type_aid) {
-                Some(a_item) => a_item,
-                None => continue,
+            let Some(r_item) = self.u_data.src.get_item_by_aid(type_aid) else {
+                continue;
             };
-            let item_kind = match r_item.axt.kind {
-                Some(item_kind) => item_kind,
-                None => continue,
+            let Some(item_kind) = r_item.axt.kind else {
+                continue;
             };
             match item_kind {
                 ItemKind::Booster => {
@@ -181,9 +179,8 @@ fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
             continue;
         }
         seen_type_aids.push(type_aid);
-        let item_axt = match u_item.get_axt() {
-            Some(item_axt) => item_axt,
-            None => continue,
+        let Some(item_axt) = u_item.get_axt() else {
+            continue;
         };
         if item_axt.capacity > PValue::ZERO {
             module_uids.push(module_uid);

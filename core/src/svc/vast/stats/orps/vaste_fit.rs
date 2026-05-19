@@ -125,9 +125,8 @@ fn get_orps(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();

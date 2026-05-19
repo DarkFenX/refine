@@ -26,9 +26,8 @@ impl BreacherProfile {
             true => PValue::from_value_unchecked(absolute_max),
             false => return Err(BreacherDmgError::Absolute(absolute_max).into()),
         };
-        let relative_max = match UnitInterval::from_f64_checked(relative_max.into_f64()) {
-            Ok(relative_max) => relative_max,
-            Err(_) => return Err(BreacherDmgError::Relative(relative_max).into()),
+        let Ok(relative_max) = UnitInterval::from_f64_checked(relative_max.into_f64()) else {
+            return Err(BreacherDmgError::Relative(relative_max).into());
         };
         Ok(Self::new(absolute_max, relative_max))
     }

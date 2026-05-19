@@ -12,9 +12,8 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn item_loaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
-        let fit_uid = match item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return,
+        let Some(fit_uid) = item.get_fit_uid() else {
+            return;
         };
         let fit_data = self.get_fit_data_mut(&fit_uid);
         // Skill requirements
@@ -328,9 +327,8 @@ impl Vast {
         }
     }
     pub(in crate::svc) fn item_unloaded(&mut self, item_uid: &UItemId, item: &UItem) {
-        let fit_uid = match item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return,
+        let Some(fit_uid) = item.get_fit_uid() else {
+            return;
         };
         let fit_data = self.get_fit_data_mut(&fit_uid);
         // Skill requirements
@@ -591,9 +589,8 @@ fn item_vs_ship_kind_add(
     fit_uid: UFitId,
 ) {
     let fit = u_data.fits.get(fit_uid);
-    let ship_uid = match fit.ship {
-        Some(ship_id) => ship_id,
-        None => return,
+    let Some(ship_uid) = fit.ship else {
+        return;
     };
     match item_cat {
         AItemCatId::MODULE => match fit.ship_kind {

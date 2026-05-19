@@ -26,9 +26,8 @@ impl SolarSystem {
             return;
         }
         // Add autocharge items themselves, and record which have been added
-        let fit_uid = match u_item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return,
+        let Some(fit_uid) = u_item.get_fit_uid() else {
+            return;
         };
         let effects_with_ac_type_aids = u_item
             .get_effects()

@@ -17,13 +17,10 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
     let mut a_items = RMap::new();
     for e_item in e_data.items.data.iter() {
         // Item category ID
-        let cat_eid = match g_supp.grp_cat_map.get(&e_item.group_id) {
-            Some(&cat_eid) => cat_eid,
-            None => {
-                let msg = format!("unable to find category ID for {e_item}");
-                tracing::warn!("{msg}");
-                continue;
-            }
+        let Some(&cat_eid) = g_supp.grp_cat_map.get(&e_item.group_id) else {
+            let msg = format!("unable to find category ID for {e_item}");
+            tracing::warn!("{msg}");
+            continue;
         };
         // Item default effect
         let defeff_eid = defeff_map.get(&e_item.id).copied();
@@ -70,17 +67,14 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_items(e_data: &EData, g_
         }
     }
     for e_item_abil in e_data.item_abils.data.iter() {
-        let a_item = match a_items.get_mut(&AItemId::from_eid(e_item_abil.item_id)) {
-            Some(a_item) => a_item,
-            None => continue,
+        let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_abil.item_id)) else {
+            continue;
         };
-        let effect_eid = match get_abil_effect(e_item_abil.abil_id) {
-            Some(effect_eid) => effect_eid,
-            None => continue,
+        let Some(effect_eid) = get_abil_effect(e_item_abil.abil_id) else {
+            continue;
         };
-        let a_item_eff_data = match a_item.effects.get_mut(&AEffectId::from_eid(effect_eid)) {
-            Some(a_item_eff_data) => a_item_eff_data,
-            None => continue,
+        let Some(a_item_eff_data) = a_item.effects.get_mut(&AEffectId::from_eid(effect_eid)) else {
+            continue;
         };
         a_item_eff_data.data.cooldown = e_item_abil.cooldown.map(AValue::from_efloat);
         a_item_eff_data.data.charge_count = e_item_abil.charge_count.map(ACount::from_eint_clamped);

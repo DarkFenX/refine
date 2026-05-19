@@ -69,12 +69,9 @@ impl JsonZfileAdc {
                 return;
             }
         };
-        match write!(file, "{fingerprint}") {
-            Ok(_) => (),
-            Err(e) => {
-                tracing::error!("unable to write fingerprint file: {e}")
-            }
-        };
+        if let Err(e) = write!(file, "{fingerprint}") {
+            tracing::error!("unable to write fingerprint file: {e}");
+        }
     }
 }
 impl fmt::Debug for JsonZfileAdc {

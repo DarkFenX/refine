@@ -23,9 +23,8 @@ impl UFitId {
 
 impl UItemId {
     pub(crate) fn consistency_check(&self, u_data: &UData, check_load: bool) -> DebugResult {
-        let item = match u_data.items.try_get(*self) {
-            Some(item) => item,
-            None => return Err(DebugError {}),
+        let Some(item) = u_data.items.try_get(*self) else {
+            return Err(DebugError {});
         };
         if check_load && !item.is_loaded() {
             return Err(DebugError {});

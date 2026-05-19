@@ -12,13 +12,11 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
     mutator_type_aid: &AItemId,
     values: &[(AAttrId, Value)],
 ) -> Vec<UAttrMutationRequest> {
-    let r_mutator = match src.get_mutator_by_aid(mutator_type_aid) {
-        Some(r_mutator) => r_mutator,
-        None => return Vec::new(),
+    let Some(r_mutator) = src.get_mutator_by_aid(mutator_type_aid) else {
+        return Vec::new();
     };
-    let mutated_type_aid = match r_mutator.item_map.get(base_type_aid) {
-        Some(&mutated_type_aid) => mutated_type_aid,
-        None => return Vec::new(),
+    let Some(&mutated_type_aid) = r_mutator.item_map.get(base_type_aid) else {
+        return Vec::new();
     };
     let base_r_item = src.get_item_by_aid(base_type_aid);
     let mutated_r_item = src.get_item_by_aid(&mutated_type_aid);
@@ -55,17 +53,14 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
 ) -> Vec<UAttrMutationRequest> {
     let mut result = Vec::with_capacity(values.len());
     for (attr_aid, absolute_value) in values {
-        let attr_rid = match src.get_attr_rid_by_aid(attr_aid) {
-            Some(attr_rid) => attr_rid,
-            None => continue,
+        let Some(attr_rid) = src.get_attr_rid_by_aid(attr_aid) else {
+            continue;
         };
-        let unmutated_value = match unmutated_attrs.get(&attr_rid) {
-            Some(unmutated_value) => unmutated_value,
-            None => continue,
+        let Some(unmutated_value) = unmutated_attrs.get(&attr_rid) else {
+            continue;
         };
-        let mutation_range = match r_mutator.attr_mods.get(&attr_rid) {
-            Some(mutation_range) => mutation_range,
-            None => continue,
+        let Some(mutation_range) = r_mutator.attr_mods.get(&attr_rid) else {
+            continue;
         };
         if let Some(roll) = resolve_absolute_into_roll(*absolute_value, *unmutated_value, mutation_range) {
             result.push(UAttrMutationRequest {

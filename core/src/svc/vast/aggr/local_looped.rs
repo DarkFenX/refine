@@ -36,13 +36,11 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let cseq = match cseq.try_loop_cseq() {
-        Some(cseq) => cseq,
-        None => return false,
+    let Some(cseq) = cseq.try_loop_cseq() else {
+        return false;
     };
-    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
-        Some(inv_local) => inv_local,
-        None => return false,
+    let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
+        return false;
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {

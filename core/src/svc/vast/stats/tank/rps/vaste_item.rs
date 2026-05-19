@@ -131,9 +131,8 @@ fn get_local_rps(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -167,9 +166,8 @@ fn get_irr_data(
     time_options: StatTimeOptions,
     irr_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
 ) {
-    let incoming_reps = match irr_data.get_l1(&projectee_item_uid) {
-        Some(incoming_reps) => incoming_reps,
-        None => return,
+    let Some(incoming_reps) = irr_data.get_l1(&projectee_item_uid) else {
+        return;
     };
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&projector_item_uid, projector_data) in incoming_reps.iter() {
@@ -177,9 +175,8 @@ fn get_irr_data(
             continue;
         }
         for (&effect_rid, ospec) in projector_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -269,9 +266,8 @@ fn irr_data_to_penalized(irr_data: &[IrrEntry]) -> PValue {
     let total_adjusted_rps: PValue = irr_data.iter().filter_map(get_adjusted_rps).sum();
     let mut result = PValue::ZERO;
     for entry in irr_data.iter() {
-        let adjusted_rps = match get_adjusted_rps(entry) {
-            Some(adjusted_rps) => adjusted_rps,
-            None => continue,
+        let Some(adjusted_rps) = get_adjusted_rps(entry) else {
+            continue;
         };
         let modified_rps = adjusted_rps.mul_add(RR_PEN_MULTIPLIER, RR_PEN_ADDITION);
         let mult = PValue::from_value_clamped(

@@ -97,12 +97,11 @@ mod effect_mod {
     }
 
     fn extract_string<E: Error>(map: &mut Map<String, Value>, key: &'static str) -> Result<String, E> {
-        let func = match map.remove(key) {
-            Some(v) => v,
-            None => return Err(Error::missing_field(key)),
+        let Some(value) = map.remove(key) else {
+            return Err(Error::missing_field(key));
         };
-        match func {
-            Value::String(s) => Ok(s.to_owned()),
+        match value {
+            Value::String(string) => Ok(string),
             _ => Err(Error::custom(format!("unexpected type of {key} value"))),
         }
     }

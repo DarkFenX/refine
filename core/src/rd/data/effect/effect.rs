@@ -73,9 +73,8 @@ impl REffect {
         self.state == RState::Active
     }
     pub(crate) fn activates_charge(&self) -> bool {
-        let charge_info = match &self.charge {
-            Some(charge_info) => charge_info,
-            None => return false,
+        let Some(charge_info) = &self.charge else {
+            return false;
         };
         if !charge_info.activates_charge {
             return false;
@@ -87,16 +86,14 @@ impl REffect {
             return false;
         }
         // Only default effects can activate regular charge
-        let defeff_rid = match item.defeff_rid {
-            Some(defeff_rid) => defeff_rid,
-            None => return false,
+        let Some(defeff_rid) = item.defeff_rid else {
+            return false;
         };
         defeff_rid == self.rid
     }
     pub(crate) fn activates_autocharge(&self) -> bool {
-        let charge_info = match &self.charge {
-            Some(charge_info) => charge_info,
-            None => return false,
+        let Some(charge_info) = &self.charge else {
+            return false;
         };
         if !charge_info.activates_charge {
             return false;

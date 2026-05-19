@@ -74,9 +74,8 @@ impl UData {
     }
     // Projection-related
     pub(crate) fn get_fit_ship_radius(&self, fit_uid: UFitId) -> PValue {
-        let ship_uid = match self.fits.get(fit_uid).ship {
-            Some(ship_uid) => ship_uid,
-            None => return PValue::ZERO,
+        let Some(ship_uid) = self.fits.get(fit_uid).ship else {
+            return PValue::ZERO;
         };
         self.items.get(ship_uid).get_direct_radius()
     }

@@ -25,14 +25,11 @@ impl Vast {
         time_options: StatTimeOptions,
     ) -> Result<StatInJam, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, projectee_item_uid)?;
-        let incoming_ecms = match self.in_ecm.get_l1(&projectee_item_uid) {
-            Some(incoming_ecms) => incoming_ecms,
-            None => {
-                return Ok(StatInJam {
-                    chance: UnitInterval::ZERO,
-                    uptime: UnitInterval::ZERO,
-                });
-            }
+        let Some(incoming_ecms) = self.in_ecm.get_l1(&projectee_item_uid) else {
+            return Ok(StatInJam {
+                chance: UnitInterval::ZERO,
+                uptime: UnitInterval::ZERO,
+            });
         };
         let sensors = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_uid);
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -43,9 +40,8 @@ impl Vast {
                 continue;
             }
             for (&effect_rid, ospec) in projector_data.iter() {
-                let cseq = match reuse_cseq_map.get(&effect_rid) {
-                    Some(cseq) => cseq,
-                    None => continue,
+                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                    continue;
                 };
                 let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
                 match time_options {

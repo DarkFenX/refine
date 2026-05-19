@@ -15,9 +15,8 @@ impl UFighter {
         // projectee items
         let fighter_radius = self.get_radius();
         for (projectee_uid, proj_data) in self.get_projs().iter() {
-            let proj_data = match proj_data {
-                Some(proj_data) => proj_data,
-                None => return Err(DebugError {}),
+            let Some(proj_data) = proj_data else {
+                return Err(DebugError {});
             };
             if proj_data.get_src_radius() != fighter_radius {
                 return Err(DebugError {});

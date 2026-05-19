@@ -61,14 +61,12 @@ impl BreacherAccum {
         ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
     ) {
         // Base output
-        let output = match ospec.base.get(ctx, calc, item_uid, effect, ()) {
-            Some(output) => output,
-            None => return,
+        let Some(output) = ospec.base.get(ctx, calc, item_uid, effect, ()) else {
+            return;
         };
         // Cycle sequence conversion
-        let ticks = match cseq_to_ticks(cseq, output) {
-            Some(ticks) => ticks,
-            None => return,
+        let Some(ticks) = cseq_to_ticks(cseq, output) else {
+            return;
         };
         let accum_entry = BreacherData {
             absolute_max: output.get_instance().absolute_max,
@@ -250,9 +248,8 @@ impl AppliedBreacherAccum {
         projectee_uid: UItemId,
     ) {
         // Base output
-        let output = match ospec.base.get(ctx, calc, item_uid, effect, ()) {
-            Some(output) => output,
-            None => return,
+        let Some(output) = ospec.base.get(ctx, calc, item_uid, effect, ()) else {
+            return;
         };
         // Applied output against target HP
         let projectee_hp = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
@@ -289,9 +286,8 @@ impl AppliedBreacherAccum {
             }
         };
         // Cycle sequence conversion
-        let ticks = match cseq_to_ticks(cseq, output) {
-            Some(ticks) => ticks,
-            None => return,
+        let Some(ticks) = cseq_to_ticks(cseq, output) else {
+            return;
         };
         let accum_entry = AppliedBreacherData { dmg: applied, ticks };
         match self.data.entry(accum_entry) {

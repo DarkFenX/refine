@@ -79,9 +79,8 @@ where
     }
     for (&effect_rid, cseq) in reuse_cseq_map.iter() {
         let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-        let ospec = match rep_ospec_getter(effect) {
-            Some(ospec) => ospec,
-            None => continue,
+        let Some(ospec) = rep_ospec_getter(effect) else {
+            continue;
         };
         let mut accum = SeqAccum::new_stack();
         if match time_options {

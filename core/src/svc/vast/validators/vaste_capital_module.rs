@@ -54,9 +54,8 @@ impl VastFitData {
 }
 
 fn is_ship_subcap(ship: Option<&UShip>) -> bool {
-    let ship = match ship {
-        Some(ship) => ship,
-        None => return false,
+    let Some(ship) = ship else {
+        return false;
     };
     matches!(ship.get_r_kind(), Some(RShipKind::Ship))
 }

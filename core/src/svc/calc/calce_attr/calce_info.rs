@@ -77,9 +77,8 @@ impl Calc {
             .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
             .iter()
         {
-            let val = match cmod.raw.get_mod_val(self, ctx) {
-                Some(val) => val,
-                None => continue,
+            let Some(val) = cmod.raw.get_mod_val(self, ctx) else {
+                continue;
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();

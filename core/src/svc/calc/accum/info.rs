@@ -400,9 +400,8 @@ impl AttrAggr {
         D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
         R: Fn(Value) -> Value,
     {
-        let normalized_val = match normalize_func(initial_val) {
-            Some(val) => val,
-            None => return,
+        let Some(normalized_val) = normalize_func(initial_val) else {
+            return;
         };
         let diminished_val = diminish_func(normalized_val, proj_mult, res_mult);
         let info = Modification {

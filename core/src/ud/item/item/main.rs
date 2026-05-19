@@ -630,9 +630,8 @@ impl UItem {
         }
     }
     pub(crate) fn get_oattr_ffb(&self, attr_rid: Option<RAttrId>, fallback: Value) -> Value {
-        let attr_rid = match attr_rid {
-            Some(attr_rid) => attr_rid,
-            None => return fallback,
+        let Some(attr_rid) = attr_rid else {
+            return fallback;
         };
         self.get_attr(attr_rid).unwrap_or(fallback)
     }

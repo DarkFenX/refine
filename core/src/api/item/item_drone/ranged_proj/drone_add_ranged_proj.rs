@@ -23,15 +23,12 @@ impl SolarSystem {
             .into());
         }
         // Check if projectee can receive projections by getting its user physics
-        let projectee_physics = match projectee_u_item.get_direct_physics() {
-            Some(projectee_physics) => *projectee_physics,
-            None => {
-                return Err(ItemReceiveProjError {
-                    item_id: projectee_u_item.get_item_id(),
-                    item_kind: projectee_u_item.lib_get_name(),
-                }
-                .into());
+        let Some(&projectee_physics) = projectee_u_item.get_direct_physics() else {
+            return Err(ItemReceiveProjError {
+                item_id: projectee_u_item.get_item_id(),
+                item_kind: projectee_u_item.lib_get_name(),
             }
+            .into());
         };
         let drone_physics = *u_drone.get_physics();
         let u_proj_data = Some(UProjData::from_physics_with_axt(

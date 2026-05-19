@@ -70,12 +70,9 @@ impl HSolMgr {
     async fn cleanup_sols(&self, lifetime: u64) {
         tracing::debug!("starting cleanup");
         let now = chrono::Utc::now();
-        let lifetime = match chrono::TimeDelta::try_seconds(lifetime as i64) {
-            Some(lifetime) => lifetime,
-            None => {
-                tracing::warn!("unable to initialize timedelta with {lifetime}, cleanup failed");
-                return;
-            }
+        let Some(lifetime) = chrono::TimeDelta::try_seconds(lifetime as i64) else {
+            tracing::warn!("unable to initialize timedelta with {lifetime}, cleanup failed");
+            return;
         };
         let to_clean: Vec<_> = self
             .id_sol_map

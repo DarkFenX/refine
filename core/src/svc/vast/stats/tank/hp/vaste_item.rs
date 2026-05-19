@@ -102,9 +102,8 @@ fn get_local_ancil_hp(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -124,18 +123,16 @@ fn get_remote_ancil_hp(
     ancil_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
 ) -> PValue {
     let mut total_ancil_hp = PValue::ZERO;
-    let incoming_ancils = match ancil_data.get_l1(&projectee_item_uid) {
-        Some(incoming_ancils) => incoming_ancils,
-        None => return total_ancil_hp,
+    let Some(incoming_ancils) = ancil_data.get_l1(&projectee_item_uid) else {
+        return total_ancil_hp;
     };
     for (&projector_item_uid, projector_data) in incoming_ancils.iter() {
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, ANCIL_CYCLE_OPTIONS) {
             continue;
         }
         for (&effect_rid, ospec) in projector_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();

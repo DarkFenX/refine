@@ -17,9 +17,8 @@ pub(super) fn check_character(u_data: &UData, item_uid: UItemId) -> Result<(), S
 
 pub(super) fn check_ship(u_data: &UData, item_uid: UItemId) -> Result<&UShip, StatItemCheckError> {
     let item = u_data.items.get(item_uid);
-    let ship = match item {
-        UItem::Ship(ship) => ship,
-        _ => return Err(UItemKindVsStatError { item_uid }.into()),
+    let UItem::Ship(ship) = item else {
+        return Err(UItemKindVsStatError { item_uid }.into());
     };
     match ship.is_loaded() {
         true => Ok(ship),

@@ -150,9 +150,8 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
         }
     }
     fn active_stat_rollback(&mut self, saved_state: Option<SavedItemState>, reuse_eupdates: &mut UEffectUpdates) {
-        let saved_state = match saved_state {
-            Some(saved_state) => saved_state,
-            None => return,
+        let Some(saved_state) = saved_state else {
+            return;
         };
         let item_uid = self.get_uid();
         match saved_state {

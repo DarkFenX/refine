@@ -9,24 +9,18 @@ use crate::{
 
 impl<'a> FitMut<'a> {
     pub(super) fn get_character_for_stats(&mut self) -> Result<CharacterMut<'_>, FitHasCharacterError> {
-        let char_uid = match self.sol.u_data.fits.get(self.uid).character {
-            Some(char_uid) => char_uid,
-            None => {
-                return Err(FitHasCharacterError {
-                    fit_id: self.sol.u_data.fits.xid_by_iid(self.uid),
-                });
-            }
+        let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
+            return Err(FitHasCharacterError {
+                fit_id: self.sol.u_data.fits.xid_by_iid(self.uid),
+            });
         };
         Ok(CharacterMut::new(self.sol, char_uid))
     }
     pub(super) fn get_ship_for_stats(&mut self) -> Result<ShipMut<'_>, FitHasShipError> {
-        let ship_uid = match self.sol.u_data.fits.get(self.uid).ship {
-            Some(ship_uid) => ship_uid,
-            None => {
-                return Err(FitHasShipError {
-                    fit_id: self.sol.u_data.fits.xid_by_iid(self.uid),
-                });
-            }
+        let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
+            return Err(FitHasShipError {
+                fit_id: self.sol.u_data.fits.xid_by_iid(self.uid),
+            });
         };
         Ok(ShipMut::new(self.sol, ship_uid))
     }

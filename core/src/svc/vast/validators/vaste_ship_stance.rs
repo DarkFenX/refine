@@ -19,13 +19,11 @@ impl VastFitData {
         fit: &UFit,
         ship: Option<&UShip>,
     ) -> bool {
-        let stance_uid = match fit.stance {
-            Some(stance_uid) => stance_uid,
-            None => return true,
+        let Some(stance_uid) = fit.stance else {
+            return true;
         };
-        let ship = match ship {
-            Some(ship) => ship,
-            None => return false,
+        let Some(ship) = ship else {
+            return false;
         };
         stanceable_matcher(ship) || kfs.contains(&stance_uid)
     }
@@ -38,13 +36,10 @@ impl VastFitData {
         ship: Option<&UShip>,
     ) -> Option<ValShipStanceFail> {
         let stance_uid = fit.stance?;
-        let ship = match ship {
-            Some(ship) => ship,
-            None => {
-                return Some(ValShipStanceFail {
-                    stance_item_id: ctx.u_data.items.xid_by_iid(stance_uid),
-                });
-            }
+        let Some(ship) = ship else {
+            return Some(ValShipStanceFail {
+                stance_item_id: ctx.u_data.items.xid_by_iid(stance_uid),
+            });
         };
         if stanceable_matcher(ship) {
             return None;

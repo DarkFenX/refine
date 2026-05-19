@@ -43,14 +43,11 @@ impl ValShipLimitItemInfo {
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast) fn validate_ship_limit_fast(&self, kfs: &RSet<UItemId>, ship: Option<&UShip>) -> bool {
-        let ship = match ship {
-            Some(ship) => ship,
-            None => {
-                return match kfs.is_empty() {
-                    true => self.ship_limited_items.is_empty(),
-                    false => self.ship_limited_items.difference(kfs).next().is_none(),
-                };
-            }
+        let Some(ship) = ship else {
+            return match kfs.is_empty() {
+                true => self.ship_limited_items.is_empty(),
+                false => self.ship_limited_items.difference(kfs).next().is_none(),
+            };
         };
         let ship_type_aid = ship.get_type_aid();
         let ship_group_aid = ship.get_group_id();

@@ -128,9 +128,8 @@ fn burst_fill_effect_cseq(
     fighter: &UFighter,
     effect_rid: REffectId,
 ) {
-    let effect_info = match get_effect_info(ctx, calc, item_uid, fighter, effect_rid) {
-        Some(effect_info) => effect_info,
-        None => return,
+    let Some(effect_info) = get_effect_info(ctx, calc, item_uid, fighter, effect_rid) else {
+        return;
     };
     if effect_info.kills_item {
         fill_sk_effect_data(cseq_map, sk_item_info, effect_rid, effect_info);
@@ -178,9 +177,8 @@ fn sim_no_rearm_fill_effect_cseq(
     fighter: &UFighter,
     effect_rid: REffectId,
 ) {
-    let effect_info = match get_effect_info(ctx, calc, item_uid, fighter, effect_rid) {
-        Some(effect_info) => effect_info,
-        None => return,
+    let Some(effect_info) = get_effect_info(ctx, calc, item_uid, fighter, effect_rid) else {
+        return;
     };
     if effect_info.kills_item {
         fill_sk_effect_data(cseq_map, sk_item_info, effect_rid, effect_info);

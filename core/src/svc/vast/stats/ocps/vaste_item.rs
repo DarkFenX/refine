@@ -31,9 +31,8 @@ impl Vast {
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let ospec = match effect.outgoing_cap {
-                Some(ospec) => ospec,
-                None => continue,
+            let Some(ospec) = effect.outgoing_cap else {
+                continue;
             };
             let mut accum = SeqAccum::new_stack();
             if match time_options {

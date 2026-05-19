@@ -20,9 +20,8 @@ pub(super) fn get_autocharge_cseq_map(
         return false;
     }
     // If effect controlling the autocharge doesn't cycle, autocharge doesn't cycle either
-    let cont_effect_cycle = match reuse_cseq_map.remove(&autocharge.get_cont_effect_rid()) {
-        Some(cont_effect_cycle) => cont_effect_cycle,
-        None => return false,
+    let Some(cont_effect_cycle) = reuse_cseq_map.remove(&autocharge.get_cont_effect_rid()) else {
+        return false;
     };
     reuse_cseq_map.clear();
     let effect_rids = autocharge.get_reffs().unwrap().iter();

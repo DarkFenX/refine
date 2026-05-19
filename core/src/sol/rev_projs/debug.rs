@@ -14,13 +14,11 @@ impl RevProjs {
             }
             // Check that projector item exists, and has projectee in its projections
             for projector_uid in projector_uids {
-                let projector_u_item = match u_data.items.try_get(*projector_uid) {
-                    Some(projector_u_item) => projector_u_item,
-                    None => return Err(DebugError {}),
+                let Some(projector_u_item) = u_data.items.try_get(*projector_uid) else {
+                    return Err(DebugError {});
                 };
-                let projector_projections = match projector_u_item.get_projs() {
-                    Some(projector_projections) => projector_projections,
-                    None => return Err(DebugError {}),
+                let Some(projector_projections) = projector_u_item.get_projs() else {
+                    return Err(DebugError {});
                 };
                 if !projector_projections.contains(projectee_uid) {
                     return Err(DebugError {});

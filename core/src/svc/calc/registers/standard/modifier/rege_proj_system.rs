@@ -15,9 +15,8 @@ pub(super) fn proj_system_mod(
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
     {
-        let projectee_ship = match projectee_item {
-            UItem::Ship(projectee_ship) => projectee_ship,
-            _ => return None,
+        let UItem::Ship(projectee_ship) = projectee_item else {
+            return None;
         };
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {
@@ -64,9 +63,8 @@ pub(super) fn unproj_system_mod(
     rmod: RawModifier,
     projectee_item: &UItem,
 ) -> Option<CtxModifier> {
-    let projectee_ship = match projectee_item {
-        UItem::Ship(projectee_ship) => projectee_ship,
-        _ => return None,
+    let UItem::Ship(projectee_ship) = projectee_item else {
+        return None;
     };
     match rmod.affectee_filter {
         AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {

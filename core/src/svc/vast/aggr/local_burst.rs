@@ -34,9 +34,8 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
-        Some(inv_local) => inv_local,
-        None => return false,
+    let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
+        return false;
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     process_regular(cseq.convert_with_and_optimize(&mut converter), accum);

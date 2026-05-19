@@ -154,12 +154,11 @@ impl StandardRegister {
             }
         }
         // Indirect changes can be applied only via ships
-        let loc_kind = match ship {
-            Some(ship) => match ship.get_kind().try_into() {
-                Ok(loc_kind) => loc_kind,
-                Err(_) => return,
-            },
-            None => return,
+        let Some(ship) = ship else {
+            return;
+        };
+        let Ok(loc_kind) = ship.get_kind().try_into() else {
+            return;
         };
         for rmod in self.rmods_fw_buff.get(&fit_uid) {
             match rmod.affectee_filter {
@@ -205,12 +204,11 @@ impl StandardRegister {
             }
         }
         // Indirect changes can be applied only via ships
-        let loc_kind = match ship {
-            Some(ship) => match ship.get_kind().try_into() {
-                Ok(loc_kind) => loc_kind,
-                Err(_) => return,
-            },
-            None => return,
+        let Some(ship) = ship else {
+            return;
+        };
+        let Ok(loc_kind) = ship.get_kind().try_into() else {
+            return;
         };
         for rmod in self.rmods_fw_buff.get(&fit_uid) {
             match rmod.affectee_filter {

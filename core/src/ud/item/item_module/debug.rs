@@ -17,9 +17,8 @@ impl UModule {
         // projectee items
         let ship_radius = u_data.get_fit_ship_radius(self.get_fit_uid());
         for (projectee_uid, proj_data) in self.get_projs().iter() {
-            let proj_data = match proj_data {
-                Some(proj_data) => proj_data,
-                None => return Err(DebugError {}),
+            let Some(proj_data) = proj_data else {
+                return Err(DebugError {});
             };
             if proj_data.get_src_radius() != ship_radius {
                 return Err(DebugError {});

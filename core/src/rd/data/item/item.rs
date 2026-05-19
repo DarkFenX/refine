@@ -166,9 +166,8 @@ fn has_effect(
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
     effect_id: &AEffectId,
 ) -> bool {
-    let effect_rid = match effect_aid_rid_map.get(effect_id) {
-        Some(effect_rid) => effect_rid,
-        None => return false,
+    let Some(effect_rid) = effect_aid_rid_map.get(effect_id) else {
+        return false;
     };
     item_effects.contains_key(effect_rid)
 }

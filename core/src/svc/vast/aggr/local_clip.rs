@@ -34,9 +34,8 @@ where
     I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let inv_local = match AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) {
-        Some(inv_local) => inv_local,
-        None => return false,
+    let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
+        return false;
     };
     match cseq.get_hard_dt().is_some() {
         // Consider hard downtime as end of clip

@@ -83,9 +83,8 @@ fn get_nps(
             if !item_kinds.resolve(effect) {
                 continue;
             }
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let mut accum = SeqAccum::new_stack();
             if match time_options {

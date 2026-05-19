@@ -15,9 +15,8 @@ impl FsdMerge<rc::ed::EItemAbil> for PItemFighterAbils {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemAbil> {
         let mut vec = Vec::new();
         for (slot, p_abil_data) in [self.abil0, self.abil1, self.abil2].into_iter().enumerate() {
-            let p_abil_data = match p_abil_data {
-                Some(p_abil_data) => p_abil_data,
-                None => continue,
+            let Some(p_abil_data) = p_abil_data else {
+                continue;
             };
             let (charge_count, charge_rearm_duration) = p_abil_data
                 .charges

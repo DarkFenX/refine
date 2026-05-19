@@ -35,15 +35,13 @@ fn get_grp_mutations(a_data: &AData) -> RMapRSet<AItemGrpId, AItemGrpId> {
     let mut mutations = RMapRSet::new();
     for a_muta in a_data.mutas.data.values() {
         for a_item_conv in a_muta.item_map.iter() {
-            let base_grp_aid = match a_data.items.data.get(&a_item_conv.base_item_id) {
-                Some(base_item) => base_item.grp_id,
-                None => continue,
+            let Some(base_item) = a_data.items.data.get(&a_item_conv.base_item_id) else {
+                continue;
             };
-            let mutated_grp_aid = match a_data.items.data.get(&a_item_conv.mutated_item_id) {
-                Some(mutated_item) => mutated_item.grp_id,
-                None => continue,
+            let Some(mutated_item) = a_data.items.data.get(&a_item_conv.mutated_item_id) else {
+                continue;
             };
-            mutations.add_entry(base_grp_aid, mutated_grp_aid);
+            mutations.add_entry(base_item.grp_id, mutated_item.grp_id);
         }
     }
     mutations

@@ -162,9 +162,8 @@ impl Calc {
     ) -> Result<CalcAttrVals, GetOAttrError> {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
-        let attr_rid = match attr_rid {
-            Some(attr_rid) => attr_rid,
-            None => return Err(NoAttrError {}.into()),
+        let Some(attr_rid) = attr_rid else {
+            return Err(NoAttrError {}.into());
         };
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
@@ -259,9 +258,8 @@ impl Calc {
             .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
             .iter()
         {
-            let val = match cmod.raw.get_mod_val(self, ctx) {
-                Some(val) => val,
-                None => continue,
+            let Some(val) = cmod.raw.get_mod_val(self, ctx) else {
+                continue;
             };
             let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
             let affector_item_cat_id = affector_item.get_category_id().unwrap();

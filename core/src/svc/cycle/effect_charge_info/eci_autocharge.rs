@@ -9,12 +9,9 @@ pub(in crate::svc::cycle) fn get_eci_autocharge(item: &UItem, effect_rid: REffec
 }
 
 fn internal_cycle_count(item: &UItem, effect_rid: REffectId) -> InfCount {
-    let autocharges = match item.get_autocharges() {
-        Some(autocharges) => autocharges,
+    let Some(autocharges) = item.get_autocharges() else {
         // Effect wants autocharge, but item does not support autocharges -> can't cycle
-        None => {
-            return InfCount::Count(Count::ZERO);
-        }
+        return InfCount::Count(Count::ZERO);
     };
     if !autocharges.contains_ac_for_effect(&effect_rid) {
         // Effect wants autocharge, but no autocharge in the item - can't cycle. Since autocharges

@@ -32,14 +32,11 @@ impl<'a> EffectiveMutationMut<'a> {
 
 fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Result<(), GetFullMAttrError> {
     let u_item = sol.u_data.items.get(item_uid);
-    let attr_rid = match sol.u_data.src.get_attr_rid_by_aid(attr_aid) {
-        Some(attr_rid) => attr_rid,
-        None => {
-            return Err(AttrFoundError {
-                attr_id: AttrId::from_aid(*attr_aid),
-            }
-            .into());
+    let Some(attr_rid) = sol.u_data.src.get_attr_rid_by_aid(attr_aid) else {
+        return Err(AttrFoundError {
+            attr_id: AttrId::from_aid(*attr_aid),
         }
+        .into());
     };
     let mutation_cache = u_item.get_mutation_data().unwrap().get_cache().unwrap();
     if !mutation_cache.get_r_mutator().attr_mods.contains_key(&attr_rid) {

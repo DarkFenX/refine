@@ -53,9 +53,8 @@ fn process_buffs(
     item_aid: AItemId,
     effect_aid: AEffectId,
 ) {
-    let e_sc_buff_data = match e_sc_buff_data {
-        Some(e_sc_buff_data) => e_sc_buff_data,
-        None => return,
+    let Some(e_sc_buff_data) = e_sc_buff_data else {
+        return;
     };
     let valid_buffs = e_sc_buff_data
         .buffs

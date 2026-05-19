@@ -274,9 +274,8 @@ impl AttrAggr {
         N: Fn(Value) -> Option<Value>,
         D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
     {
-        let mut val = match normalize_func(val) {
-            Some(val) => val,
-            None => return,
+        let Some(mut val) = normalize_func(val) else {
+            return;
         };
         val = diminish_func(val, proj_mult, res_mult);
         self.add_processed_val(val, aggr_mode);

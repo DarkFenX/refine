@@ -290,16 +290,15 @@ impl CapSim {
         while !self.injectors.is_empty() && self.cap < self.max_cap {
             let max_injection = PValue::from_value_clamped(self.max_cap - self.cap);
             // Find an injector which does not overshoot and has the highest injection value
-            let idx = match self
+            let Some(idx) = self
                 .injectors
                 .iter()
                 .enumerate()
                 .filter(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO) <= max_injection)
                 .max_by_key(|(_, v)| v.get_immediate_instance().unwrap_or(PValue::ZERO))
                 .map(|(i, _)| i)
-            {
-                Some(idx) => idx,
-                None => return,
+            else {
+                return;
             };
             let injector = self.injectors.remove(idx);
             self.use_injector(injector);

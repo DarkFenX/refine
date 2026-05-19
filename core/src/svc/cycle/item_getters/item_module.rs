@@ -79,9 +79,8 @@ fn fill_module_effect_info(
         return;
     }
     // No appropriate duration - no info
-    let active_duration = match funcs::get_effect_duration_s(ctx, calc, item_uid, effect) {
-        Some(duration) => duration,
-        None => return,
+    let Some(active_duration) = funcs::get_effect_duration_s(ctx, calc, item_uid, effect) else {
+        return;
     };
     // Charge count info
     let charge_info = match &effect.charge {

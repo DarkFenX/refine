@@ -28,15 +28,12 @@ const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {
 impl Calc {
     pub(super) fn rah_run_simulation(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
         let fit = ctx.u_data.fits.get(fit_uid);
-        let ship_uid = match fit.ship {
-            Some(ship_uid) => ship_uid,
-            None => {
-                // Since there were no calculated values stored in sim prior to simulation, and we
-                // are setting unadapted values - effectively values of resonances do not change,
-                // and no updates needed
-                self.set_fit_rahs_unadapted(ctx, &fit_uid, false);
-                return;
-            }
+        let Some(ship_uid) = fit.ship else {
+            // Since there were no calculated values stored in sim prior to simulation, and we are
+            // setting unadapted values - effectively values of resonances do not change, and no
+            // updates needed
+            self.set_fit_rahs_unadapted(ctx, &fit_uid, false);
+            return;
         };
         // Keys in this map have to be sorted, since it defines RAH order in simulation history,
         // which hashes vectors with history entries
@@ -64,16 +61,13 @@ impl Calc {
         let mut tick_iter = RahSimTickIter::new(sim_datas.iter());
         while let Some(tick_data) = tick_iter.next() {
             // For each RAH, calculate damage received during this tick
-            let ship_stats = match self.get_ship_stats(ctx, ship_uid) {
-                Some(ship_stats) => ship_stats,
-                None => {
-                    for &item_uid in sim_datas.keys() {
-                        // Any issues with ship resonance fetch should happen on the very first sim
-                        // tick, so results should coincide to default state
-                        self.set_rah_unadapted(ctx, item_uid, false);
-                    }
-                    return;
+            let Some(ship_stats) = self.get_ship_stats(ctx, ship_uid) else {
+                for &item_uid in sim_datas.keys() {
+                    // Any issues with ship resonance fetch should happen on the very first sim
+                    // tick, so results should coincide to default state
+                    self.set_rah_unadapted(ctx, item_uid, false);
                 }
+                return;
             };
             for item_sim_data in sim_datas.values_mut() {
                 item_sim_data.taken_dmg.em += dps_profile.get_em() * ship_stats.resos.em * tick_data.time_passed;
@@ -182,15 +176,12 @@ impl Calc {
     fn get_fit_rah_sim_datas(&mut self, ctx: SvcCtx, fit_uid: &UFitId) -> BTreeMap<UItemId, RahDataSim> {
         let mut rah_datas = BTreeMap::new();
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
-            let rah_attrs = match self.get_rah_sim_data(ctx, item_uid) {
-                Some(rah_attrs) => rah_attrs,
+            let Some(rah_attrs) = self.get_rah_sim_data(ctx, item_uid) else {
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
                 // don't add it to the map. No updates needed, since this method should be called
-                // before sim makes any changes
-                None => {
-                    self.set_rah_unadapted(ctx, item_uid, false);
-                    continue;
-                }
+                // before sim makes any change
+                self.set_rah_unadapted(ctx, item_uid, false);
+                continue;
             };
             rah_datas.insert(item_uid, rah_attrs);
         }

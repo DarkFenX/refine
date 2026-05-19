@@ -11,16 +11,16 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_projectee_filter
             {
                 let item_list_aid = match n_projectee_filter {
                     NEffectProjecteeFilter::ItemList(item_list_aid) => *item_list_aid,
-                    NEffectProjecteeFilter::ItemListAttr(attr_aid) => match a_item.attrs.get(attr_aid) {
-                        Some(a_item_attr) => {
-                            let eve_item_list_aid = AEveItemListId::from_f64_rounded(a_item_attr.value.into_f64());
-                            if eve_item_list_aid == AEveItemListId::from_i32(0) {
-                                continue;
-                            }
-                            AItemListId::Eve(eve_item_list_aid)
+                    NEffectProjecteeFilter::ItemListAttr(attr_aid) => {
+                        let Some(a_item_attr) = a_item.attrs.get(attr_aid) else {
+                            continue;
+                        };
+                        let eve_item_list_aid = AEveItemListId::from_f64_rounded(a_item_attr.value.into_f64());
+                        if eve_item_list_aid == AEveItemListId::from_i32(0) {
+                            continue;
                         }
-                        None => continue,
-                    },
+                        AItemListId::Eve(eve_item_list_aid)
+                    }
                 };
                 a_item_effect.data.projectee_filter = Some(item_list_aid);
             }

@@ -11,15 +11,12 @@ pub(in crate::svc::cycle) fn get_eci_charge_rate(
     module: &UModule,
     n_charge_rate: NEffectChargeDeplChargeRate,
 ) -> EffectChargeInfo {
-    let charge_count = match module.get_charge_count(ctx.u_data) {
-        Some(charge_count) => charge_count,
-        None => {
-            return EffectChargeInfo {
-                fully_charged: InfCount::Count(Count::ZERO),
-                part_charged: None,
-                can_run_uncharged: n_charge_rate.can_run_uncharged,
-            };
-        }
+    let Some(charge_count) = module.get_charge_count(ctx.u_data) else {
+        return EffectChargeInfo {
+            fully_charged: InfCount::Count(Count::ZERO),
+            part_charged: None,
+            can_run_uncharged: n_charge_rate.can_run_uncharged,
+        };
     };
     if charge_count == Count::ZERO {
         return EffectChargeInfo {

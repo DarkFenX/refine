@@ -21,9 +21,8 @@ impl StandardRegister {
         self.load_affectee_for_proj(item_uid, item);
         let mut cmods = Vec::new();
         // Past this point we process data only for fit-related items
-        let fit_uid = match item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return cmods,
+        let Some(fit_uid) = item.get_fit_uid() else {
+            return cmods;
         };
         let root_loc_kind = item.get_root_loc_kind();
         let item_grp_id = item.get_group_id().unwrap();
@@ -91,9 +90,8 @@ impl StandardRegister {
         // Let existing projections know their projectee got updated
         self.unload_affectee_for_proj(item_uid, item);
         // Past this point we process data only for fit-related items
-        let fit_uid = match item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return cmods,
+        let Some(fit_uid) = item.get_fit_uid() else {
+            return cmods;
         };
         let root_loc_kind = item.get_root_loc_kind();
         let item_grp_id = item.get_group_id().unwrap();

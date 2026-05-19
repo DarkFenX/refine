@@ -125,9 +125,8 @@ fn validate_fast(
     max_group_limited: &RMap<UItemId, AItemGrpId>,
     attr_rid: Option<RAttrId>,
 ) -> bool {
-    let attr_rid = match attr_rid {
-        Some(attr_rid) => attr_rid,
-        None => return true,
+    let Some(attr_rid) = attr_rid else {
+        return true;
     };
     for (&item_uid, item_grp_aid) in max_group_limited.iter() {
         let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);

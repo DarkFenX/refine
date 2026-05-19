@@ -26,9 +26,8 @@ pub(super) fn get_charge_cseq_map(
         return false;
     }
     // If controlling effect is not cycling, charge is not cycling either
-    let cont_effect_cycle = match reuse_cseq_map.remove(&cont_effect_rid) {
-        Some(cont_effect_cycle) => cont_effect_cycle,
-        None => return false,
+    let Some(cont_effect_cycle) = reuse_cseq_map.remove(&cont_effect_rid) else {
+        return false;
     };
     reuse_cseq_map.clear();
     let effect_rids = charge.get_reffs().unwrap().iter();

@@ -118,9 +118,8 @@ fn validate_fast(
     blockable: &RMapRSet<UItemId, EffectSpec>,
     attr_rid: Option<RAttrId>,
 ) -> bool {
-    let attr_rid = match attr_rid {
-        Some(attr_rid) => attr_rid,
-        None => return true,
+    let Some(attr_rid) = attr_rid else {
+        return true;
     };
     for (&projectee_uid, mut projector_especs) in blockable.iter() {
         if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) {

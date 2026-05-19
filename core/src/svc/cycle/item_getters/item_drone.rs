@@ -26,9 +26,8 @@ pub(super) fn get_drone_cseq_map(
         if !effect.is_active_with_duration {
             continue;
         }
-        let duration = match funcs::get_effect_duration_s(ctx, calc, item_uid, effect) {
-            Some(duration) => duration,
-            None => continue,
+        let Some(duration) = funcs::get_effect_duration_s(ctx, calc, item_uid, effect) else {
+            continue;
         };
         // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
         // flags, limited charges & reloads

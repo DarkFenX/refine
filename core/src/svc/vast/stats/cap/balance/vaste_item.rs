@@ -85,9 +85,8 @@ fn get_cap_injects(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -121,9 +120,8 @@ fn get_cap_consumed(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -158,9 +156,8 @@ fn get_nosfs(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -220,18 +217,16 @@ fn get_incoming_cap_transfers(
 ) -> PValue {
     let mut cps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    let transfer_data = match vast.in_cap.get_l1(&cap_item_uid) {
-        Some(transfer_data) => transfer_data,
-        None => return cps,
+    let Some(transfer_data) = vast.in_cap.get_l1(&cap_item_uid) else {
+        return cps;
     };
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, transfer_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();
@@ -291,18 +286,16 @@ fn get_incoming_neuts(
 ) -> PValue {
     let mut nps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    let neut_data = match vast.in_neuts.get_l1(&cap_item_uid) {
-        Some(neut_data) => neut_data,
-        None => return nps,
+    let Some(neut_data) = vast.in_neuts.get_l1(&cap_item_uid) else {
+        return nps;
     };
     for (&neut_item_uid, item_data) in neut_data.iter() {
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, neut_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let cseq = match reuse_cseq_map.get(&effect_rid) {
-                Some(cseq) => cseq,
-                None => continue,
+            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             let mut accum = SeqAccum::new_stack();

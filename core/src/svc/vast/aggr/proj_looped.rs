@@ -37,13 +37,12 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let cseq = match cseq.try_loop_cseq() {
-        Some(cseq) => cseq,
-        None => return false,
+    let Some(cseq) = cseq.try_loop_cseq() else {
+        return false;
     };
-    let inv_proj = match AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid) {
-        Some(inv_proj) => inv_proj,
-        None => return false,
+    let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
+    else {
+        return false;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     match (inv_spool, cseq.get_hard_dt().is_some()) {

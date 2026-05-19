@@ -21,9 +21,8 @@ struct HAttrMutationInfo {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HItemMutationInfo {
     pub(in crate::info::item) fn try_from_core(core_mutation: rc::Mutation) -> Option<Self> {
-        let core_mutation = match core_mutation {
-            rc::Mutation::Effective(core_mutation) => core_mutation,
-            rc::Mutation::Incomplete(_) => return None,
+        let rc::Mutation::Effective(core_mutation) = core_mutation else {
+            return None;
         };
         Some(Self {
             base_type_id: core_mutation.get_base_type_id().into_i32(),

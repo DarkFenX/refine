@@ -22,9 +22,8 @@ impl StandardRegister {
         rmod: RawModifier,
     ) -> bool {
         reuse_cmods.clear();
-        let fit_uid = match item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return false,
+        let Some(fit_uid) = item.get_fit_uid() else {
+            return false;
         };
         // Check validity and apply buffs to fit which carries it
         let valid = apply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod, fit_uid);
@@ -53,9 +52,8 @@ impl StandardRegister {
         rmod: RawModifier,
     ) {
         reuse_cmods.clear();
-        let fit_uid = match item.get_fit_uid() {
-            Some(fit_uid) => fit_uid,
-            None => return,
+        let Some(fit_uid) = item.get_fit_uid() else {
+            return;
         };
         // Modifiers received by this function are assumed to be valid, so just unapply all
         // modifications and remove modifier from helper container
