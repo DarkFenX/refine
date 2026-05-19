@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared::{AggrHardDtNull, AggrPartData},
+    shared::AggrPartData,
     traits::{HasImpact, InstanceLimit},
 };
 use crate::{
@@ -14,6 +14,7 @@ use crate::{
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Local effects, considers only first cycle (for "burst" stats)
@@ -37,17 +38,17 @@ where
     let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
         return false;
     };
+    let &first_cycle = cseq.get_first_cycle();
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    process_regular(cseq.convert_with_and_optimize(&mut converter), accum);
+    process_regular(converter.lib_convert(first_cycle), accum);
     true
 }
 
-fn process_regular<I, IA>(cseq: CycleSeq<AggrPartData<I>, AggrHardDtNull>, accum: &mut SeqAccum<IA>)
+fn process_regular<I, IA>(cycle_data: AggrPartData<I>, accum: &mut SeqAccum<IA>)
 where
     I: Copy,
     IA: SeqInstanceAccum<I>,
 {
-    let first_cycle = cseq.get_first_cycle();
-    accum.add_output_full(&first_cycle.output, None, Count::ONE);
-    accum.time += first_cycle.cycle_main_duration;
+    accum.add_output_full(&cycle_data.output, None, Count::ONE);
+    accum.time += cycle_data.cycle_main_duration;
 }
