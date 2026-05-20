@@ -51,11 +51,11 @@ pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, I>
 where
     BG: NEffectOutputGetter,
 {
-    pub(super) ctx: SvcCtx<'u, 'p>,
-    pub(super) calc: &'c mut Calc,
-    pub(super) item_uid: UItemId,
-    pub(super) ospec: &'o REffectLocalOpcSpec<BG>,
-    pub(super) inv_local: &'i AggrLocalInvData<I>,
+    ctx: SvcCtx<'u, 'p>,
+    calc: &'c mut Calc,
+    item_uid: UItemId,
+    ospec: &'o REffectLocalOpcSpec<BG>,
+    inv_local: &'i AggrLocalInvData<I>,
 }
 impl<'u, 'p, 'c, 'o, 'i, BG, I> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, I>
 where
