@@ -141,6 +141,7 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
+// TODO: replace HDT generic with specific type for better type inference, and check all call sites
 pub(super) fn process_output_of_lls_with_cutoff<I, IA, HDT>(
     accum: &mut IA,
     cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, HDT>,

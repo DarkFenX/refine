@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    local_shared::{AggrLocalInvData, LocalConverter, get_local_output},
-    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    local_shared::{AggrLocalInvData, LocalConverter},
+    shared::{AggrHardDtSimple, AggrPartData, process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -12,9 +12,10 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Local effects, considers only part of sequence until charges are out
@@ -59,21 +60,15 @@ where
     IA: SeqInstanceAccum<I>,
 {
     let mut reload = false;
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cycle_parts = cseq.get_cseq_parts();
     for cycle_part in cycle_parts.iter() {
-        let cycle_output = get_local_output(
-            ctx,
-            calc,
-            item_uid,
-            ospec,
-            &inv_local,
-            cycle_part.data.active.chargedness,
-        );
         match cycle_part.data.soft_dt {
             // Add first cycle after which there is a reload
             Some(soft_dt) if soft_dt.reason.reload => {
                 reload = true;
-                accum.add_output_full(&cycle_output, None, Count::ONE);
+                let cycle_part_data_conv = converter.lib_convert(cycle_part.data);
+                accum.add_output_full(&cycle_part_data_conv.output, None, Count::ONE);
                 // Record only active duration before reload, ignore soft downtime duration
                 accum.time += cycle_part.data.active.duration;
                 break;
@@ -86,8 +81,9 @@ where
                     InfCount::Infinite => return false,
                 };
                 if part_cycle_count > Count::ZERO {
-                    accum.add_output_full(&cycle_output, None, part_cycle_count);
-                    accum.time += cycle_part.data.get_main_duration() * part_cycle_count.into_pvalue();
+                    let cycle_part_data_conv = converter.lib_convert(cycle_part.data);
+                    accum.add_output_full(&cycle_part_data_conv.output, None, part_cycle_count);
+                    accum.time += cycle_part_data_conv.cycle_main_duration * part_cycle_count.into_pvalue();
                 }
             }
         }
@@ -110,17 +106,18 @@ where
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq {
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
-            let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-            let inner_conv: CSeqInf<_, CSeqHardDtFull> = inner.convert_with(&mut converter);
-            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_conv.data, None, Count::ONE);
+            let inner_data_conv = converter.lib_convert(inner.data);
+            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_data_conv, None, Count::ONE);
             // Record time until reload or hard downtime starts
-            match inner.data.soft_dt {
-                Some(soft_dt) if soft_dt.reason.reload => accum.time += inner.data.active.duration,
-                _ => accum.time += inner_conv.data.cycle_main_duration,
-            }
+            let p1_final_cycle_duration = match inner.data.soft_dt {
+                Some(soft_dt) if soft_dt.reason.reload => inner.data.active.duration,
+                _ => inner_data_conv.cycle_main_duration,
+            };
+            accum.time += p1_final_cycle_duration;
             true
         }
         CycleSeq::LoopLimSin(inner) => {
@@ -128,31 +125,35 @@ where
                 && soft_dt.reason.reload
             {
                 // Case when there is a reload right after first cycle
-                let output = get_local_output(ctx, calc, item_uid, ospec, &inv_local, inner.p1_data.active.chargedness);
-                let loop_inner_duration = inner.get_full_duration();
-                match inv_local.get_output_completion_duration() > loop_inner_duration {
-                    true => accum.add_output_time_limited(&output, None, Count::ONE, loop_inner_duration.into_value()),
-                    false => accum.add_output_full(&output, None, Count::ONE),
+                let inner_p1_data_conv: AggrPartData<_> = converter.lib_convert(inner.p1_data);
+                let loop_inner_duration = inner_p1_data_conv
+                    .cycle_main_duration
+                    .mul_add(inner.p1_repeat_count.into_pvalue(), inner.p2_data.get_main_duration());
+                match inner_p1_data_conv.output.get_completion_duration() > loop_inner_duration {
+                    true => accum.add_output_time_limited(
+                        &inner_p1_data_conv.output,
+                        None,
+                        Count::ONE,
+                        loop_inner_duration.into_value(),
+                    ),
+                    false => accum.add_output_full(&inner_p1_data_conv.output, None, Count::ONE),
                 }
                 // Stop counting time at reload, after active cycle is finished
                 accum.time += inner.p1_data.active.duration;
             } else {
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
-                let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-                let inner_conv: CSeqLoopLimSin<_, CSeqHardDtFull> = inner.convert_with(&mut converter);
+                let inner_conv: CSeqLoopLimSin<_, AggrHardDtSimple> = inner.convert_with(&mut converter);
                 process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, None, Count::ONE);
                 // Record time until reload or hard downtime starts
-                match inner.p2_data.soft_dt {
-                    Some(soft_dt) if soft_dt.reason.reload => {
-                        accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
-                            + inner.p2_data.active.duration;
-                    }
-                    _ => {
-                        accum.time += inner.p1_data.get_main_duration() * inner.p1_repeat_count.into_pvalue()
-                            + inner.p2_data.get_main_duration();
-                    }
-                }
+                let p2_final_cycle_duration = match inner.p2_data.soft_dt {
+                    Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,
+                    _ => inner_conv.p2_data.cycle_main_duration,
+                };
+                accum.time += inner_conv
+                    .p1_data
+                    .cycle_main_duration
+                    .mul_add(inner_conv.p1_repeat_count.into_pvalue(), p2_final_cycle_duration);
             }
             true
         }

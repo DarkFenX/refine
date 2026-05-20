@@ -42,12 +42,6 @@ impl<I> AggrLocalInvData<I> {
             instance_limit: get_item_ship_limit(ctx, calc, item_uid, ospec.limit_attr_rid),
         })
     }
-    pub(super) fn get_output_completion_duration(&self) -> PValue
-    where
-        I: InstanceDuration,
-    {
-        self.output.get_completion_duration()
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +124,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn get_local_output<BG, I>(
+fn get_local_output<BG, I>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
