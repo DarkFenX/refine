@@ -57,7 +57,7 @@ pub(in crate::svc::vast) struct AggrIterDataSpool<I>
 where
     I: Copy,
 {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpool<I>, AggrHardDtSimple>,
+    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpoolIter<I>, AggrHardDtSimple>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
 }
@@ -66,7 +66,7 @@ where
     I: Copy,
 {
     pub(super) fn new(
-        cseq: CycleSeq<AggrPartDataSpool<I>, AggrHardDtSimple>,
+        cseq: CycleSeq<AggrPartDataSpoolIter<I>, AggrHardDtSimple>,
         inv_proj: AggrProjInvData<I>,
         inv_spool: AggrSpoolInvData,
     ) -> Self {
@@ -158,7 +158,7 @@ pub(in crate::svc::vast) struct AggrIterSpool<I>
 where
     I: Copy,
 {
-    cycle_iter: CycleIter<AggrPartDataSpool<I>>,
+    cycle_iter: CycleIter<AggrPartDataSpoolIter<I>>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
     uninterrupted_cycles: Count,
@@ -168,7 +168,7 @@ where
     I: Copy,
 {
     fn new(
-        cycle_iter: CycleIter<AggrPartDataSpool<I>>,
+        cycle_iter: CycleIter<AggrPartDataSpoolIter<I>>,
         inv_proj: AggrProjInvData<I>,
         inv_spool: AggrSpoolInvData,
     ) -> Self {
@@ -211,7 +211,7 @@ where
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(in crate::svc::vast) struct AggrPartDataSpool<I>
+pub(in crate::svc::vast) struct AggrPartDataSpoolIter<I>
 where
     I: Copy,
 {
@@ -224,7 +224,7 @@ where
     pub(in crate::svc::vast) output_zero_spool: Output<I>,
     pub(super) output_max_spool: Output<I>,
 }
-impl<I> GetDuration for AggrPartDataSpool<I>
+impl<I> GetDuration for AggrPartDataSpoolIter<I>
 where
     I: Copy,
 {

@@ -3,7 +3,7 @@ use crate::{
     svc::{
         cycle::CycleSeq,
         output::{Output, OutputComplex, OutputSimple},
-        vast::aggr::{AggrHardDtSimple, AggrIterData, AggrPartData, AggrPartDataSpool},
+        vast::aggr::{AggrHardDtSimple, AggrIterData, AggrPartData, AggrPartDataSpoolIter},
     },
 };
 
@@ -34,8 +34,8 @@ impl From<AggrPartData<PValue>> for CSeqPartTimingKey {
         }
     }
 }
-impl From<AggrPartDataSpool<PValue>> for CSeqPartTimingKey {
-    fn from(part_data: AggrPartDataSpool<PValue>) -> Self {
+impl From<AggrPartDataSpoolIter<PValue>> for CSeqPartTimingKey {
+    fn from(part_data: AggrPartDataSpoolIter<PValue>) -> Self {
         Self {
             duration: part_data.cycle_main_duration.sig_rounded(TIME_ROUND_DIGITS),
             // This one is based on base output and will yield the same output key

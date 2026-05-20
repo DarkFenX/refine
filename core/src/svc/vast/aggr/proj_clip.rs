@@ -71,27 +71,27 @@ where
     IA: SeqInstanceAccum<I>,
 {
     let mut reload = false;
-    let cycle_parts = cseq.get_cseq_parts();
-    for cycle_part in cycle_parts.iter() {
+    let cseq_parts = cseq.get_cseq_parts();
+    for cseq_part in cseq_parts.iter() {
         let cycle_output = get_proj_regular_output(
             ctx,
             calc,
             projector_uid,
             ospec,
             &inv_proj,
-            cycle_part.data.active.chargedness,
+            cseq_part.data.active.chargedness,
         );
-        match cycle_part.data.soft_dt {
+        match cseq_part.data.soft_dt {
             // Add first cycle after which there is a reload
             Some(soft_dt) if soft_dt.reason.reload => {
                 reload = true;
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
                 // Record only active duration before reload, ignore soft downtime duration
-                accum.time += cycle_part.data.active.duration;
+                accum.time += cseq_part.data.active.duration;
                 break;
             }
             _ => {
-                let part_cycle_count = match cycle_part.repeat_count {
+                let part_cycle_count = match cseq_part.repeat_count {
                     InfCount::Count(part_cycle_count) => part_cycle_count,
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
@@ -99,13 +99,13 @@ where
                 };
                 if part_cycle_count > Count::ZERO {
                     accum.add_output_full(&cycle_output, inv_proj.chance_mult, part_cycle_count);
-                    accum.time += cycle_part.data.get_main_duration() * part_cycle_count.into_pvalue();
+                    accum.time += cseq_part.data.get_main_duration() * part_cycle_count.into_pvalue();
                 }
             }
         }
     }
     // If cycles are infinite and have no reload, return no data
-    !cycle_parts.loops || reload
+    !cseq_parts.loops || reload
 }
 
 fn process_hard_dt<BG, I, IA>(
@@ -203,11 +203,11 @@ where
 {
     let mut uninterrupted_cycles = Count::ZERO;
     let mut reload = false;
-    let cycle_parts = cseq.get_cseq_parts();
-    'part: for cycle_part in cycle_parts.iter() {
-        let part_cycle_count = match cycle_part.repeat_count {
+    let cseq_parts = cseq.get_cseq_parts();
+    'part: for cseq_part in cseq_parts.iter() {
+        let part_cycle_count = match cseq_part.repeat_count {
             InfCount::Count(part_cycle_count) => part_cycle_count,
-            InfCount::Infinite => match cycle_part.data.soft_dt {
+            InfCount::Infinite => match cseq_part.data.soft_dt {
                 // Process 1 cycle if reload happens after every cycle in this part, even if cycles
                 // are infinite
                 Some(soft_dt) if soft_dt.reason.reload => Count::ONE,
@@ -222,12 +222,12 @@ where
             projector_uid,
             ospec,
             &inv_proj,
-            cycle_part.data.active.chargedness,
+            cseq_part.data.active.chargedness,
         );
-        let part_cycle_main_duration = cycle_part.data.get_main_duration();
+        let part_cycle_main_duration = cseq_part.data.get_main_duration();
         for i in Count::ZERO..part_cycle_count {
             // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
-            if let Some(soft_dt) = cycle_part.data.soft_dt
+            if let Some(soft_dt) = cseq_part.data.soft_dt
                 && uninterrupted_cycles == Count::ZERO
             {
                 let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, Value::ZERO);
@@ -235,7 +235,7 @@ where
                 // pre-reload duration recorded), set reload flag and quit processing
                 if soft_dt.reason.reload {
                     accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
-                    accum.time += cycle_part.data.active.duration;
+                    accum.time += cseq_part.data.active.duration;
                     reload = true;
                     break 'part;
                 }
@@ -248,7 +248,7 @@ where
                 continue 'part;
             }
             // Shortcut #2: we're at max spool and sequence is not interruptable
-            if cycle_part.data.soft_dt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
+            if cseq_part.data.soft_dt.is_none() && uninterrupted_cycles >= inv_spool.cycles_to_max {
                 let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, inv_spool.max);
                 let remaining_cycles = part_cycle_count - i;
                 if remaining_cycles > Count::ZERO {
@@ -262,17 +262,17 @@ where
             // Case when cycle is at zero spool and will stay at zero spool for the rest of the part
             let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_spool_cycle_output(&inv_proj, part_str_mult, spool);
-            match cycle_part.data.soft_dt {
+            match cseq_part.data.soft_dt {
                 Some(_) => uninterrupted_cycles = Count::ZERO,
                 None => uninterrupted_cycles += Count::ONE,
             }
             accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
             // For a cycle followed by a reload, consider clip finished - add just it (with only
             // pre-reload duration recorded), set reload flag and quit processing
-            if let Some(soft_dt) = cycle_part.data.soft_dt
+            if let Some(soft_dt) = cseq_part.data.soft_dt
                 && soft_dt.reason.reload
             {
-                accum.time += cycle_part.data.active.duration;
+                accum.time += cseq_part.data.active.duration;
                 reload = true;
                 break 'part;
             }
@@ -280,7 +280,7 @@ where
         }
     }
     // If cycles are infinite and have no reload, return no data
-    !cycle_parts.loops || reload
+    !cseq_parts.loops || reload
 }
 
 fn process_spool_hard_dt<BG, I, IA>(

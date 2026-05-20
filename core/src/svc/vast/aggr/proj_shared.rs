@@ -1,7 +1,7 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrPartData, AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit,
+        AggrPartData, AggrPartDataSpool, AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit,
         get_tailed_cycle_full_repeat_count,
     },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
@@ -26,20 +26,14 @@ use crate::{
 // General data which stays the same through projected effect cycling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub(super) struct AggrProjInvData<I>
-where
-    I: Copy,
-{
+pub(super) struct AggrProjInvData<I> {
     // TODO: consider if fields can be made private (and check if base output users use it properly)
     pub(super) base_output: Output<I>,
     pub(super) str_mult: PValue,
     instance_limit: Option<PValue>,
     pub(super) chance_mult: Option<PValue>,
 }
-impl<I> AggrProjInvData<I>
-where
-    I: Copy,
-{
+impl<I> AggrProjInvData<I> {
     pub(super) fn try_make<BG, BX>(
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -178,7 +172,6 @@ impl AggrSpoolInvData {
 pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
-    I: Copy,
 {
     pub(super) ctx: SvcCtx<'sc1, 'sc2>,
     pub(super) calc: &'calc mut Calc,
@@ -189,7 +182,6 @@ where
 impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
-    I: Copy,
 {
     pub(super) fn new(
         ctx: SvcCtx<'sc1, 'sc2>,
@@ -247,6 +239,27 @@ where
             cycle_main_duration: main_duration,
             cycle_tail_duration: tail_duration,
             output,
+        }
+    }
+}
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpool> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
+where
+    BG: NEffectOutputGetter,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+{
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool {
+        let str_mult = get_proj_spool_part_str_mult(
+            self.ctx,
+            self.calc,
+            self.projector_uid,
+            self.ospec,
+            self.inv_proj,
+            input.active.chargedness,
+        );
+        AggrPartDataSpool {
+            cycle_main_duration: input.get_main_duration(),
+            soft_dt: input.soft_dt.is_some(),
+            str_mult,
         }
     }
 }
@@ -532,6 +545,7 @@ where
     output
 }
 
+// TODO: reconsider visibility
 pub(super) fn get_proj_spool_part_str_mult<BG, I>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -542,7 +556,6 @@ pub(super) fn get_proj_spool_part_str_mult<BG, I>(
 ) -> PValue
 where
     BG: NEffectOutputGetter,
-    I: Copy,
 {
     let mut str_mult = inv_proj.str_mult;
     // Chargedness

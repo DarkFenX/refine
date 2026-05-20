@@ -1,6 +1,6 @@
 use super::{
     proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_part_str_mult},
-    shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataSpool},
+    shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataSpoolIter},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -116,12 +116,12 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpool<I>> for ProjConverterSpool<'_, '_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolIter<I>> for ProjConverterSpool<'_, '_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
-    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpool<I> {
+    fn lib_convert(&mut self, input: CycleDataFull) -> AggrPartDataSpoolIter<I> {
         let part_str_mult = get_proj_spool_part_str_mult(
             self.ctx,
             self.calc,
@@ -132,7 +132,7 @@ where
         );
         let output_zero_spool = get_proj_spool_cycle_output(self.inv_proj, part_str_mult, Value::ZERO);
         let output_max_spool = get_proj_spool_cycle_output(self.inv_proj, part_str_mult, self.inv_spool.max);
-        AggrPartDataSpool {
+        AggrPartDataSpoolIter {
             cycle_main_duration: input.get_main_duration(),
             interrupt: input.soft_dt.is_some(),
             str_mult: part_str_mult,

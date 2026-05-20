@@ -13,9 +13,9 @@ where
     I: Copy,
     IA: SeqInstanceAccum<I>,
 {
-    for cycle_part in cseq.iter_cseq_parts() {
-        accum.add_output_full(&cycle_part.data.output, None, cycle_part.repeat_count);
-        accum.time += cycle_part.data.cycle_main_duration * cycle_part.repeat_count.into_pvalue();
+    for cseq_part in cseq.iter_cseq_parts() {
+        accum.add_output_full(&cseq_part.data.output, None, cseq_part.repeat_count);
+        accum.time += cseq_part.data.cycle_main_duration * cseq_part.repeat_count.into_pvalue();
     }
 }
 

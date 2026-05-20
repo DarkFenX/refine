@@ -13,7 +13,7 @@ pub(in crate::svc::vast) use proj_iter::aggr_proj_iter;
 pub(in crate::svc::vast) use proj_looped::aggr_proj_looped;
 pub(in crate::svc::vast) use proj_time::aggr_proj_time;
 pub(in crate::svc::vast) use shared::{AggrHardDtSimple, AggrPartData};
-pub(in crate::svc::vast) use shared_iter::{AggrIter, AggrIterData, AggrPartDataSpool};
+pub(in crate::svc::vast) use shared_iter::{AggrIter, AggrIterData, AggrPartDataSpoolIter};
 
 mod accum;
 mod local_burst;

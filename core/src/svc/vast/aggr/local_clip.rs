@@ -61,35 +61,35 @@ where
 {
     let mut reload = false;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    let cycle_parts = cseq.get_cseq_parts();
-    for cycle_part in cycle_parts.iter() {
-        match cycle_part.data.soft_dt {
+    let cseq_parts = cseq.get_cseq_parts();
+    for cseq_part in cseq_parts.iter() {
+        match cseq_part.data.soft_dt {
             // Add first cycle after which there is a reload
             Some(soft_dt) if soft_dt.reason.reload => {
                 reload = true;
-                let cycle_part_data_conv = converter.lib_convert(cycle_part.data);
-                accum.add_output_full(&cycle_part_data_conv.output, None, Count::ONE);
+                let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
+                accum.add_output_full(&cseq_part_data_conv.output, None, Count::ONE);
                 // Record only active duration before reload, ignore soft downtime duration
-                accum.time += cycle_part.data.active.duration;
+                accum.time += cseq_part.data.active.duration;
                 break;
             }
             _ => {
-                let part_cycle_count = match cycle_part.repeat_count {
+                let part_cycle_count = match cseq_part.repeat_count {
                     InfCount::Count(part_cycle_count) => part_cycle_count,
                     // If any cycle repeats infinitely without running out, then it does not run out
                     // of "clip", no clip - no data
                     InfCount::Infinite => return false,
                 };
                 if part_cycle_count > Count::ZERO {
-                    let cycle_part_data_conv = converter.lib_convert(cycle_part.data);
-                    accum.add_output_full(&cycle_part_data_conv.output, None, part_cycle_count);
-                    accum.time += cycle_part_data_conv.cycle_main_duration * part_cycle_count.into_pvalue();
+                    let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
+                    accum.add_output_full(&cseq_part_data_conv.output, None, part_cycle_count);
+                    accum.time += cseq_part_data_conv.cycle_main_duration * part_cycle_count.into_pvalue();
                 }
             }
         }
     }
     // If cycles are infinite and have no reload, return no data
-    !cycle_parts.loops || reload
+    !cseq_parts.loops || reload
 }
 
 fn process_hard_dt<BG, I, IA>(
