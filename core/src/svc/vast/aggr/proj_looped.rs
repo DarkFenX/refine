@@ -44,19 +44,17 @@ where
     else {
         return false;
     };
-    let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
-    match (inv_spool, cseq.get_hard_dt().is_some()) {
-        (Some(inv_spool), true) => {
-            process_spool_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum)
-        }
-        (Some(inv_spool), false) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        (None, true) => {
+    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
+        Some(inv_spool) => match cseq.get_hard_dt() {
+            Some(_) => process_spool_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
+            None => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
+        },
+        None => {
             let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum)
-        }
-        (None, false) => {
-            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            process_regular(cseq.convert_with_and_optimize(&mut converter), accum)
+            match cseq.get_hard_dt() {
+                Some(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
+                None => process_regular(cseq.convert_with_and_optimize(&mut converter), accum),
+            }
         }
     }
     true
