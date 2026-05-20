@@ -30,5 +30,6 @@ mod proj_shared;
 mod proj_time;
 mod shared;
 mod shared_iter;
+mod shared_looped;
 mod shared_time;
 mod traits;

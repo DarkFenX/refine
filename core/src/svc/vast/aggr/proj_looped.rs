@@ -1,10 +1,10 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
+        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_cycle_output,
         get_proj_spool_part_str_mult, process_output_of_spooling_lls_with_cutoff,
     },
-    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    shared_looped::{process_hard_dt, process_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -50,67 +50,16 @@ where
             process_spool_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum)
         }
         (Some(inv_spool), false) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        (None, true) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
-        (None, false) => process_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+        (None, true) => {
+            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+            process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum)
+        }
+        (None, false) => {
+            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+            process_regular(cseq.convert_with_and_optimize(&mut converter), accum)
+        }
     }
     true
-}
-
-fn process_regular<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<I>,
-    accum: &mut SeqAccum<IA>,
-) where
-    BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    IA: SeqInstanceAccum<I>,
-{
-    for cycle_part in cseq.iter_cseq_parts() {
-        if cycle_part.repeat_count == Count::ZERO {
-            continue;
-        }
-        let cycle_output = get_proj_regular_output(
-            ctx,
-            calc,
-            projector_uid,
-            ospec,
-            &inv_proj,
-            cycle_part.data.active.chargedness,
-        );
-        accum.add_output_full(&cycle_output, inv_proj.chance_mult, cycle_part.repeat_count);
-        accum.time += cycle_part.data.get_main_duration() * cycle_part.repeat_count.into_pvalue();
-    }
-}
-
-fn process_hard_dt<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<I>,
-    accum: &mut SeqAccum<IA>,
-) where
-    BG: NEffectOutputGetter,
-    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    IA: SeqInstanceAccum<I>,
-{
-    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-    let cseq_conv: CycleSeqLooped<_, CSeqHardDtFull> = cseq.convert_with_and_optimize(&mut converter);
-    match cseq_conv {
-        CycleSeqLooped::Inf(inner) => {
-            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, inv_proj.chance_mult, Count::ONE);
-            accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
-        }
-        CycleSeqLooped::LoopLimSin(inner) => {
-            process_output_of_lls_with_cutoff(&mut accum.instances, &inner, inv_proj.chance_mult, Count::ONE);
-            accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
-        }
-    }
 }
 
 fn process_spool<BG, I, IA>(
@@ -191,14 +140,16 @@ fn process_spool_hard_dt<BG, I, IA>(
     let cseq = match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
         CycleSeqLooped::Inf(_) => {
-            process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum);
+            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+            process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum);
             return;
         }
         CycleSeqLooped::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
             Some(_) => {
-                process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum);
+                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+                process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum);
                 return;
             }
             None => inner,
