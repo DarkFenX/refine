@@ -3,14 +3,9 @@ use crate::{
     ud::{UData, UFitId, UItemId},
 };
 
-#[derive(thiserror::Error, Debug)]
+#[derive(thiserror::Error, Default, Debug)]
 #[error("debug error")]
 pub(crate) struct DebugError {}
-impl Default for DebugError {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 pub(crate) type DebugResult = Result<(), DebugError>;
 
