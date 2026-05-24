@@ -12,9 +12,9 @@ use crate::{
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Precalculated data processing
+// Non-spool processing (includes hard downtime processing)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn aggr_by_time<I, IA>(
+pub(super) fn process_regular<I, IA>(
     cseq: CycleSeq<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
     accum: &mut IA,

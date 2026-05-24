@@ -5,7 +5,7 @@ use super::{
         process_output_of_spooling_lls_with_cutoff, process_single_spool,
     },
     shared::{get_cycle_tail_duration, get_tailed_cycle_full_repeat_count},
-    shared_time::{aggr_by_time, get_cutoff_cycle_full_repeat_count},
+    shared_time::{get_cutoff_cycle_full_repeat_count, process_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -44,7 +44,7 @@ where
         return false;
     };
     match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        Some(inv_spool) => aggr_spool(
+        Some(inv_spool) => process_spool(
             ctx,
             calc,
             projector_uid,
@@ -55,47 +55,20 @@ where
             time,
             inv_spool,
         ),
-        None => aggr_regular(
-            ctx,
-            calc,
-            projector_uid,
-            cseq,
-            ospec,
-            inv_proj,
-            &mut accum.instances,
-            time,
-        ),
+        None => {
+            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+            let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
+            process_regular(cseq_conv, inv_proj.chance_mult, accum, time);
+        }
     }
     accum.time += time;
     true
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Non-spool
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_regular<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<I>,
-    accum: &mut IA,
-    time: PValue,
-) where
-    BG: NEffectOutputGetter,
-    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    IA: SeqInstanceAccum<I>,
-{
-    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-    let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, time);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn aggr_spool<BG, I, IA>(
+fn process_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -116,7 +89,7 @@ fn aggr_spool<BG, I, IA>(
             true => {
                 let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let cseq_conv = inner.convert_with(&mut converter).optimize();
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                process_regular(cseq_conv, inv_proj.chance_mult, accum, ptime);
             }
             // Spool is considered
             false => {
@@ -142,7 +115,7 @@ fn aggr_spool<BG, I, IA>(
             true => {
                 let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let cseq_conv = inner.convert_with(&mut converter).optimize();
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                process_regular(cseq_conv, inv_proj.chance_mult, accum, ptime);
             }
             // Spool is considered
             false => {
@@ -167,7 +140,7 @@ fn aggr_spool<BG, I, IA>(
             true => {
                 let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let cseq_conv = inner.convert_with(&mut converter).optimize();
-                aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                process_regular(cseq_conv, inv_proj.chance_mult, accum, ptime);
             }
             false => {
                 let mut time = ptime.into_value();
@@ -206,7 +179,7 @@ fn aggr_spool<BG, I, IA>(
                 true => {
                     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                     let cseq_conv = inner.convert_with(&mut converter).optimize();
-                    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime);
+                    process_regular(cseq_conv, inv_proj.chance_mult, accum, ptime);
                 }
                 false => {
                     let mut time = ptime.into_value();
@@ -257,7 +230,7 @@ fn aggr_spool<BG, I, IA>(
                 true => {
                     let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                     let cseq_conv = inner.convert_with(&mut converter).optimize();
-                    aggr_by_time(cseq_conv, inv_proj.chance_mult, accum, ptime)
+                    process_regular(cseq_conv, inv_proj.chance_mult, accum, ptime)
                 }
                 false => match inner.hard_dt {
                     Some(_) => process_lls_spool_hard_dt(
