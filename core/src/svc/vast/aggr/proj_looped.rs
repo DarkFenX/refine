@@ -4,7 +4,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_cycle_output,
         process_output_of_spooling_lls_with_cutoff,
     },
-    shared::{AggrHardDtNull, AggrPartDataSpool},
+    shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail},
     shared_looped::{process_hard_dt, process_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -15,7 +15,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, CycleSeqLooped},
+        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
 };
@@ -130,38 +130,30 @@ fn process_spool_hard_dt<BG, I, IA>(
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let cseq = match cseq {
+    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeqLooped::Inf(_) => {
-            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum);
-            return;
-        }
+        CycleSeqLooped::Inf(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
         CycleSeqLooped::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => {
-                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum);
-                return;
+            Some(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
+            None => {
+                let inner_conv: CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple> =
+                    inner.convert_with(&mut converter);
+                let loop_inner_duration = inner_conv.get_full_duration();
+                let loop_full_duration = loop_inner_duration + inner_conv.hard_dt.unwrap().duration;
+                process_output_of_spooling_lls_with_cutoff(
+                    &inner_conv,
+                    &inv_proj,
+                    &inv_spool,
+                    &mut accum.instances,
+                    loop_inner_duration,
+                );
+                accum.time += loop_full_duration;
             }
-            None => inner,
         },
     };
-    let loop_inner_duration = cseq.get_full_duration();
-    let loop_full_duration = loop_inner_duration + cseq.hard_dt.unwrap().duration;
-    process_output_of_spooling_lls_with_cutoff(
-        ctx,
-        calc,
-        projector_uid,
-        &cseq,
-        ospec,
-        &inv_proj,
-        &inv_spool,
-        &mut accum.instances,
-        loop_inner_duration,
-    );
-    accum.time += loop_full_duration;
 }
 
 fn get_starting_uninterrupted_cycles(

@@ -100,6 +100,23 @@ pub(super) struct AggrPartDataSpool {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// CSeq data container - spool + time-limited processing (time-limited aggregators, or hard downtime
+// processing
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub(super) struct AggrPartDataSpoolTail {
+    // Active + soft downtime duration combined
+    pub(super) cycle_main_duration: PValue,
+    // TODO: check if it's needed in all places which use this struct
+    // Active + soft downtime duration, or output completion duration, whichever is longer
+    pub(super) cycle_completion_duration: Value,
+    pub(super) cycle_tail_duration: Option<PValue>,
+    pub(super) soft_dt: bool,
+    // Includes both invariant str mult and part-specific str mult
+    pub(super) str_mult: PValue,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: review what needs to be removed
@@ -122,6 +139,13 @@ impl CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull> {
     }
 }
 impl<I, HDT> CSeqLoopLimSin<AggrPartDataTail<I>, HDT> {
+    pub(super) fn get_full_duration(&self) -> PValue {
+        self.p1_data
+            .cycle_main_duration
+            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.cycle_main_duration)
+    }
+}
+impl<HDT> CSeqLoopLimSin<AggrPartDataSpoolTail, HDT> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.p1_data
             .cycle_main_duration

@@ -111,11 +111,11 @@ where
             self.inv_local,
             input.active.chargedness,
         );
-        let main_duration = input.get_main_duration();
-        let tail_duration = get_cycle_tail_duration(main_duration, output.get_completion_duration());
+        let cycle_main_duration = input.get_main_duration();
+        let cycle_tail_duration = get_cycle_tail_duration(cycle_main_duration, output.get_completion_duration());
         AggrPartDataTail {
-            cycle_main_duration: main_duration,
-            cycle_tail_duration: tail_duration,
+            cycle_main_duration,
+            cycle_tail_duration,
             output,
         }
     }
