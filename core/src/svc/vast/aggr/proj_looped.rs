@@ -45,26 +45,22 @@ where
     else {
         return false;
     };
-    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
+    let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
+    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    match inv_spool {
         Some(inv_spool) => match cseq.get_hard_dt() {
-            Some(_) => process_spool_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-            None => {
-                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                process_spool(
-                    cseq.convert_with_and_optimize(&mut converter),
-                    inv_proj,
-                    inv_spool,
-                    accum,
-                );
-            }
+            Some(_) => process_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
+            None => process_spool(
+                cseq.convert_with_and_optimize(&mut converter),
+                inv_proj,
+                inv_spool,
+                accum,
+            ),
         },
-        None => {
-            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            match cseq.get_hard_dt() {
-                Some(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
-                None => process_regular(cseq.convert_with_and_optimize(&mut converter), accum),
-            }
-        }
+        None => match cseq.get_hard_dt() {
+            Some(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
+            None => process_regular(cseq.convert_with_and_optimize(&mut converter), accum),
+        },
     }
     true
 }
@@ -117,20 +113,16 @@ fn process_spool<I, IA>(
 }
 
 fn process_spool_hard_dt<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
     accum: &mut SeqAccum<IA>,
+    mut converter: ProjConverterRegular<BG, I>,
 ) where
     BG: NEffectOutputGetter,
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
         CycleSeqLooped::Inf(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
