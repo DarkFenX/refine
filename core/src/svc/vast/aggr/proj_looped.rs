@@ -111,6 +111,32 @@ fn process_spool<I, IA>(
         }
     }
 }
+fn get_starting_uninterrupted_cycles(
+    cseq: &CycleSeqLooped<AggrPartDataSpool, AggrHardDtNull>,
+    inv_spool: &AggrSpoolInvData,
+) -> Count {
+    let mut uninterrupted_cycles = Count::ZERO;
+    if cseq.get_hard_dt().is_some() {
+        return uninterrupted_cycles;
+    }
+    let mut downtimes = false;
+    for cseq_part in cseq.iter_cseq_parts() {
+        match cseq_part.data.soft_dt {
+            true => {
+                uninterrupted_cycles = Count::ZERO;
+                downtimes = true;
+            }
+            false => {
+                uninterrupted_cycles += cseq_part.repeat_count;
+            }
+        }
+    }
+    // If there are no interruptions at all, just set max possible spool right away
+    if !downtimes {
+        uninterrupted_cycles = inv_spool.cycles_to_max;
+    }
+    uninterrupted_cycles
+}
 
 fn process_spool_hard_dt<BG, I, IA>(
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
@@ -146,31 +172,4 @@ fn process_spool_hard_dt<BG, I, IA>(
             }
         },
     };
-}
-
-fn get_starting_uninterrupted_cycles(
-    cseq: &CycleSeqLooped<AggrPartDataSpool, AggrHardDtNull>,
-    inv_spool: &AggrSpoolInvData,
-) -> Count {
-    let mut uninterrupted_cycles = Count::ZERO;
-    if cseq.get_hard_dt().is_some() {
-        return uninterrupted_cycles;
-    }
-    let mut downtimes = false;
-    for cseq_part in cseq.iter_cseq_parts() {
-        match cseq_part.data.soft_dt {
-            true => {
-                uninterrupted_cycles = Count::ZERO;
-                downtimes = true;
-            }
-            false => {
-                uninterrupted_cycles += cseq_part.repeat_count;
-            }
-        }
-    }
-    // If there are no interruptions at all, just set max possible spool right away
-    if !downtimes {
-        uninterrupted_cycles = inv_spool.cycles_to_max;
-    }
-    uninterrupted_cycles
 }

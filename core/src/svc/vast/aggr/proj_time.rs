@@ -44,47 +44,36 @@ where
     else {
         return false;
     };
-    match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
-        Some(inv_spool) => process_spool(
-            ctx,
-            calc,
-            projector_uid,
-            cseq,
-            ospec,
-            inv_proj,
+    let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
+    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    match inv_spool {
+        Some(inv_spool) => process_spool(cseq, inv_proj, &mut accum.instances, time, inv_spool, converter),
+        None => process_regular(
+            cseq.convert_with_and_optimize(&mut converter),
+            inv_proj.chance_mult,
             &mut accum.instances,
             time,
-            inv_spool,
         ),
-        None => {
-            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
-            process_regular(cseq_conv, inv_proj.chance_mult, &mut accum.instances, time);
-        }
     }
     accum.time += time;
     true
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Spool-specific
+// Spool-specific processing (includes hard downtime logic)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn process_spool<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
     inv_proj: AggrProjInvData<I>,
     accum: &mut IA,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
+    mut converter: ProjConverterRegular<BG, I>,
 ) where
     BG: NEffectOutputGetter,
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match cseq {
         CycleSeq::Lim(inner) => match inner.data.soft_dt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
