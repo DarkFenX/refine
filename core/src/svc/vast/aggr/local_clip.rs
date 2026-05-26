@@ -38,21 +38,18 @@ where
     let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
         return false;
     };
+    let converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
         // Consider hard downtime as end of clip
-        true => process_hard_dt(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
-        false => process_regular(ctx, calc, item_uid, cseq, ospec, accum, inv_local),
+        true => process_hard_dt(cseq, accum, converter),
+        false => process_regular(cseq, accum, converter),
     }
 }
 
 fn process_regular<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectLocalOpcSpec<BG>,
     accum: &mut SeqAccum<IA>,
-    inv_local: AggrLocalInvData<I>,
+    mut converter: LocalConverter<BG, I>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
@@ -60,7 +57,6 @@ where
     IA: SeqInstanceAccum<I>,
 {
     let mut reload = false;
-    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq_parts = cseq.get_cseq_parts();
     for cseq_part in cseq_parts.iter() {
         match cseq_part.data.soft_dt {
@@ -93,20 +89,15 @@ where
 }
 
 fn process_hard_dt<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectLocalOpcSpec<BG>,
     accum: &mut SeqAccum<IA>,
-    inv_local: AggrLocalInvData<I>,
+    mut converter: LocalConverter<BG, I>,
 ) -> bool
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq {
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::Inf(inner) => {
