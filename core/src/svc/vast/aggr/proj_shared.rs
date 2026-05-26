@@ -325,9 +325,17 @@ pub(super) fn process_limited_spool<I, IA>(
     IA: SeqInstanceAccum<I>,
 {
     while *time >= Value::ZERO && repeat_limit > Count::ZERO {
-        // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
-        if part_data.soft_dt && *uninterrupted_cycles == Count::ZERO {
-            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, Value::ZERO);
+        // Case when spool multiplier does not change for the rest of cycles of current part
+        let stable_spool = match part_data.soft_dt {
+            // Current cycle is at 0 spool, and we have an interrupt every cycle
+            true if *uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
+            // Current cycle is at max spool, and we have no interrupts in cycles of current
+            // part
+            false if *uninterrupted_cycles >= inv_spool.cycles_to_max => Some(inv_spool.max),
+            _ => None,
+        };
+        if let Some(stable_spool) = stable_spool {
+            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, stable_spool);
             let full_repeat_count = repeat_limit.min(get_tailed_cycle_full_repeat_count(
                 *time,
                 part_data.cycle_main_duration,
@@ -337,36 +345,18 @@ pub(super) fn process_limited_spool<I, IA>(
             if full_repeat_count > Count::ZERO {
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, full_repeat_count);
                 *time -= part_data.cycle_main_duration * full_repeat_count.into_pvalue();
+                if !part_data.soft_dt {
+                    *uninterrupted_cycles += full_repeat_count;
+                }
                 repeat_limit -= full_repeat_count;
             }
             // Partial repeats
             while *time >= Value::ZERO && repeat_limit > Count::ZERO {
                 accum.add_output_time_limited(&cycle_output, inv_proj.chance_mult, Count::ONE, *time);
                 *time -= part_data.cycle_main_duration;
-                repeat_limit -= Count::ONE;
-            }
-            return;
-        }
-        // Shortcut #2: we're at max spool and sequence is not interruptable
-        if !part_data.soft_dt && *uninterrupted_cycles >= inv_spool.cycles_to_max {
-            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, inv_spool.max);
-            let full_repeat_count = repeat_limit.min(get_tailed_cycle_full_repeat_count(
-                *time,
-                part_data.cycle_main_duration,
-                part_data.cycle_tail_duration,
-            ));
-            // Full repeats
-            if full_repeat_count > Count::ZERO {
-                accum.add_output_full(&cycle_output, inv_proj.chance_mult, full_repeat_count);
-                *time -= part_data.cycle_main_duration * full_repeat_count.into_pvalue();
-                *uninterrupted_cycles += full_repeat_count;
-                repeat_limit -= full_repeat_count;
-            }
-            // Partial repeats
-            while *time >= Value::ZERO && repeat_limit > Count::ZERO {
-                accum.add_output_time_limited(&cycle_output, inv_proj.chance_mult, Count::ONE, *time);
-                *time -= part_data.cycle_main_duration;
-                *uninterrupted_cycles += Count::ONE;
+                if !part_data.soft_dt {
+                    *uninterrupted_cycles += Count::ONE;
+                }
                 repeat_limit -= Count::ONE;
             }
             return;
@@ -401,39 +391,34 @@ pub(super) fn process_infinite_spool<I, IA>(
         return;
     }
     while *time >= Value::ZERO {
-        // Shortcut #1: we're at 0 spool and can't spool for the rest of the sequence
-        if part_data.soft_dt && *uninterrupted_cycles == Count::ZERO {
-            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, Value::ZERO);
+        // Case when spool multiplier does not change for the rest of cycles of current part
+        let stable_spool = match part_data.soft_dt {
+            // Current cycle is at 0 spool, and we have an interrupt every cycle
+            true if *uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
+            // Current cycle is at max spool, and we have no interrupts in cycles of current
+            // part
+            false if *uninterrupted_cycles >= inv_spool.cycles_to_max => Some(inv_spool.max),
+            _ => None,
+        };
+        if let Some(stable_spool) = stable_spool {
+            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, stable_spool);
             let full_repeat_count =
                 get_tailed_cycle_full_repeat_count(*time, part_data.cycle_main_duration, part_data.cycle_tail_duration);
             // Full repeats
             if full_repeat_count > Count::ZERO {
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, full_repeat_count);
                 *time -= part_data.cycle_main_duration * full_repeat_count.into_pvalue();
+                if !part_data.soft_dt {
+                    *uninterrupted_cycles += full_repeat_count;
+                }
             }
             // Partial repeats
             while *time >= Value::ZERO {
                 accum.add_output_time_limited(&cycle_output, inv_proj.chance_mult, Count::ONE, *time);
                 *time -= part_data.cycle_main_duration;
-            }
-            return;
-        }
-        // Shortcut #2: we're at max spool and sequence is not interruptable
-        if !part_data.soft_dt && *uninterrupted_cycles >= inv_spool.cycles_to_max {
-            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, inv_spool.max);
-            let full_repeat_count =
-                get_tailed_cycle_full_repeat_count(*time, part_data.cycle_main_duration, part_data.cycle_tail_duration);
-            // Full repeats
-            if full_repeat_count > Count::ZERO {
-                accum.add_output_full(&cycle_output, inv_proj.chance_mult, full_repeat_count);
-                *time -= part_data.cycle_main_duration * full_repeat_count.into_pvalue();
-                *uninterrupted_cycles += full_repeat_count;
-            }
-            // Partial repeats
-            while *time >= Value::ZERO {
-                accum.add_output_time_limited(&cycle_output, inv_proj.chance_mult, Count::ONE, *time);
-                *time -= part_data.cycle_main_duration;
-                *uninterrupted_cycles += Count::ONE;
+                if !part_data.soft_dt {
+                    *uninterrupted_cycles += Count::ONE;
+                }
             }
             return;
         }

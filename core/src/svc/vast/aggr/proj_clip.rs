@@ -73,7 +73,8 @@ where
     let cseq_parts = cseq.get_cseq_parts();
     'part: for cseq_part in cseq_parts.iter() {
         let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
-        // Add first cycle after which there is a reload
+        // Add first cycle after which there is a reload. Here we assume every part has 1+ cycle
+        // count, which is something cseq creating functions uphold
         if let Some(soft_dt) = cseq_part.data.soft_dt
             && soft_dt.reason.reload
         {
@@ -97,18 +98,17 @@ where
                 true if uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
                 // Current cycle is at max spool, and we have no interrupts in cycles of current
                 // part
-                false if uninterrupted_cycles >= inv_spool.cycles_to_max => {
-                    let remaining_cycles = part_cycle_count - i;
-                    uninterrupted_cycles += remaining_cycles;
-                    Some(inv_spool.max)
-                }
+                false if uninterrupted_cycles >= inv_spool.cycles_to_max => Some(inv_spool.max),
                 _ => None,
             };
             if let Some(stable_spool) = stable_spool {
-                let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part_data_conv.str_mult, stable_spool);
                 let remaining_cycles = part_cycle_count - i;
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part_data_conv.str_mult, stable_spool);
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
                 accum.time += cseq_part_data_conv.cycle_main_duration * remaining_cycles.into_pvalue();
+                if !cseq_part_data_conv.soft_dt {
+                    uninterrupted_cycles += remaining_cycles;
+                }
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }
