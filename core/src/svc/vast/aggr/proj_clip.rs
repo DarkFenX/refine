@@ -47,9 +47,7 @@ where
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match (inv_spool, cseq.get_hard_dt().is_some()) {
-        (Some(inv_spool), true) => {
-            process_spool_hard_dt(cseq, inv_proj.chance_mult, accum, converter, &inv_proj, &inv_spool)
-        }
+        (Some(inv_spool), true) => process_spool_hard_dt(cseq, &inv_proj, &inv_spool, accum, converter),
         (Some(inv_spool), false) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
         (None, true) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
         (None, false) => process_regular(cseq, inv_proj.chance_mult, accum, converter),
@@ -158,11 +156,10 @@ where
 
 fn process_spool_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    chance_mult: Option<PValue>,
-    accum: &mut SeqAccum<IA>,
-    mut converter: C,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
+    accum: &mut SeqAccum<IA>,
+    mut converter: C,
 ) -> bool
 where
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -173,11 +170,11 @@ where
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeq::Inf(_) => process_hard_dt(cseq, chance_mult, accum, converter),
+        CycleSeq::Inf(_) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => process_hard_dt(cseq, chance_mult, accum, converter),
+            Some(_) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
             None => {
                 let inner_conv = inner.convert_with(&mut converter);
                 // No soft downtime in first part in this case, the only variance is having soft

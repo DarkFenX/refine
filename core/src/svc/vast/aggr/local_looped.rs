@@ -41,8 +41,8 @@ where
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
-        true => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
-        false => process_regular(cseq.convert_with_and_optimize(&mut converter), accum),
+        true => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum),
+        false => process_regular(cseq.convert_with_and_optimize(&mut converter), None, accum),
     }
     true
 }

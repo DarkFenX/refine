@@ -59,8 +59,16 @@ where
             ),
         },
         None => match cseq.get_hard_dt() {
-            Some(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
-            None => process_regular(cseq.convert_with_and_optimize(&mut converter), accum),
+            Some(_) => process_hard_dt(
+                cseq.convert_with_and_optimize(&mut converter),
+                inv_proj.chance_mult,
+                accum,
+            ),
+            None => process_regular(
+                cseq.convert_with_and_optimize(&mut converter),
+                inv_proj.chance_mult,
+                accum,
+            ),
         },
     }
     true
@@ -152,11 +160,19 @@ fn process_spool_hard_dt<I, IA, C>(
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeqLooped::Inf(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
+        CycleSeqLooped::Inf(_) => process_hard_dt(
+            cseq.convert_with_and_optimize(&mut converter),
+            inv_proj.chance_mult,
+            accum,
+        ),
         CycleSeqLooped::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), accum),
+            Some(_) => process_hard_dt(
+                cseq.convert_with_and_optimize(&mut converter),
+                inv_proj.chance_mult,
+                accum,
+            ),
             None => {
                 let inner_conv: CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple> =
                     inner.convert_with(&mut converter);
