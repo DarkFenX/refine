@@ -27,9 +27,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(super) struct AggrProjInvData<I> {
-    // TODO: consider if fields can be made private (and check if base output users use it properly)
-    pub(super) base_output: Output<I>,
-    pub(super) str_mult: PValue,
+    base_output: Output<I>,
+    str_mult: PValue,
     instance_limit: Option<PValue>,
     pub(super) chance_mult: Option<PValue>,
 }
@@ -442,7 +441,6 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<I, IA>(
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     accum: &mut IA,
-    inner_duration: PValue,
 ) where
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
@@ -454,7 +452,7 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<I, IA>(
         inv_spool,
         cseq.p1_data,
         accum,
-        &mut inner_duration.into_value(),
+        &mut cseq.get_full_duration().into_value(),
         &mut uninterrupted_cycles,
         cseq.p1_repeat_count,
     );
@@ -504,7 +502,6 @@ where
     output
 }
 
-// TODO: reconsider visibility
 pub(super) fn get_proj_spool_part_str_mult<BG, I>(
     ctx: SvcCtx,
     calc: &mut Calc,

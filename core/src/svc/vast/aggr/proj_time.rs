@@ -281,7 +281,7 @@ fn process_lls_spool_hard_dt<I, IA>(
     // Process full cycles
     if loop_full_repeat_count > Count::ZERO {
         let mut inner_accum = accum.copy_blank();
-        process_output_of_spooling_lls_with_cutoff(cseq, inv_proj, inv_spool, &mut inner_accum, loop_inner_duration);
+        process_output_of_spooling_lls_with_cutoff(cseq, inv_proj, inv_spool, &mut inner_accum);
         accum.merge(&inner_accum, loop_full_repeat_count);
         time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
     }

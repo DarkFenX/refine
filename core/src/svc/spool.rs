@@ -6,13 +6,13 @@ use crate::{
     ud::UItemId,
 };
 
-pub(super) struct ResolvedSpool {
-    pub(super) cycles: Count,
-    pub(super) cycles_max: Count,
-    pub(super) mult: Value,
+pub(in crate::svc) struct ResolvedSpool {
+    pub(in crate::svc) cycles: Count,
+    pub(in crate::svc) cycles_max: Count,
+    pub(in crate::svc) mult: Value,
 }
 impl ResolvedSpool {
-    pub(super) fn try_build(
+    pub(in crate::svc) fn try_build(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

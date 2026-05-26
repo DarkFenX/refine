@@ -1,15 +1,12 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    shared::{
-        AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_of_cycle_with_cutoff,
-        process_output_of_lls_with_cutoff,
-    },
+    shared::{AggrPartData, AggrPartDataTail, process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
     misc::InfCount,
     num::{Count, PValue},
-    svc::cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq},
+    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     util::LibConverter,
 };
 
@@ -98,7 +95,7 @@ where
             } else {
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
-                let inner_conv: CSeqLoopLimSin<_, AggrHardDtSimple> = inner.convert_with(&mut converter);
+                let inner_conv = inner.convert_with(&mut converter);
                 process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, chance_mult, Count::ONE);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {

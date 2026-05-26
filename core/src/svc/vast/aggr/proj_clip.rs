@@ -150,24 +150,19 @@ where
             // does not spool up
             Some(_) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
             None => {
+                // Case when all sequence cycles are allowed to run, possibly with reload after the
+                // last cycle
                 let inner_conv = inner.convert_with(&mut converter);
-                // No soft downtime in first part in this case, the only variance is having soft
-                // downtime in the second part
-                let loop_inner_duration = inner.get_full_duration();
-                process_output_of_spooling_lls_with_cutoff(
-                    &inner_conv,
-                    inv_proj,
-                    inv_spool,
-                    &mut accum.instances,
-                    loop_inner_duration,
-                );
+                process_output_of_spooling_lls_with_cutoff(&inner_conv, inv_proj, inv_spool, &mut accum.instances);
                 // Record time until reload or hard downtime starts
-                match inner.p2_data.soft_dt {
-                    Some(soft_dt) if soft_dt.reason.reload => {
-                        accum.time += inner.get_full_duration_without_p2_soft_dt()
-                    }
-                    _ => accum.time += loop_inner_duration,
-                }
+                let p2_final_cycle_duration = match inner.p2_data.soft_dt {
+                    Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,
+                    _ => inner_conv.p2_data.cycle_main_duration,
+                };
+                accum.time += inner_conv
+                    .p1_data
+                    .cycle_main_duration
+                    .mul_add(inner_conv.p1_repeat_count.into_pvalue(), p2_final_cycle_duration);
                 true
             }
         },

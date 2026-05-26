@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin, CycleDataFull},
+        cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin},
         output::Output,
         traits::GetDuration,
     },
@@ -107,7 +107,6 @@ pub(super) struct AggrPartDataSpool {
 pub(super) struct AggrPartDataSpoolTail {
     // Active + soft downtime duration combined
     pub(super) cycle_main_duration: PValue,
-    // TODO: check if it's needed in all places which use this struct
     // Active + soft downtime duration, or output completion duration, whichever is longer
     pub(super) cycle_completion_duration: Value,
     pub(super) cycle_tail_duration: Option<PValue>,
@@ -119,25 +118,12 @@ pub(super) struct AggrPartDataSpoolTail {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: review what needs to be removed
 impl<I, HDT> CSeqInf<AggrPartDataTail<I>, HDT> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.data.cycle_main_duration
     }
 }
 
-impl CSeqLoopLimSin<CycleDataFull, CSeqHardDtFull> {
-    pub(super) fn get_full_duration(&self) -> PValue {
-        self.p1_data
-            .get_main_duration()
-            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.get_main_duration())
-    }
-    pub(super) fn get_full_duration_without_p2_soft_dt(&self) -> PValue {
-        self.p1_data
-            .get_main_duration()
-            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.active.duration)
-    }
-}
 impl<I, HDT> CSeqLoopLimSin<AggrPartDataTail<I>, HDT> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.p1_data
@@ -180,10 +166,9 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
-// TODO: replace HDT generic with specific type for better type inference, and check all call sites
-pub(super) fn process_output_of_lls_with_cutoff<I, IA, HDT>(
+pub(super) fn process_output_of_lls_with_cutoff<I, IA>(
     accum: &mut IA,
-    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, HDT>,
+    cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
     loop_repeat_count: Count,
 ) where
