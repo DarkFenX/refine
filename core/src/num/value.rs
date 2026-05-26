@@ -89,9 +89,6 @@ impl Value {
     pub(crate) fn abs(self) -> PValue {
         PValue::from_f64_unchecked(self.0.abs())
     }
-    pub(crate) fn ceil(self) -> Self {
-        Self(self.0.ceil())
-    }
     pub(crate) fn exp(self) -> PValue {
         PValue::from_f64_unchecked(self.0.exp())
     }

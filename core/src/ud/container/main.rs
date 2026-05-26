@@ -79,9 +79,6 @@ where
             .values()
             .map(|&slab_key| (slab_key.into(), self.data.get(slab_key).unwrap()))
     }
-    pub(crate) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (IntId, &mut T)> {
-        self.data.iter_mut().map(|(slab_key, entity)| (slab_key.into(), entity))
-    }
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
         self.xid_to_slab_key.values().map(|&key| key.into())
     }

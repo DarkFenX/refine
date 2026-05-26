@@ -10,13 +10,10 @@ impl AItemGrpId {
     pub(crate) const FREIGHTER: Self = Self::from_eid(EItemGrpId::FREIGHTER);
     pub(crate) const EXHUMER: Self = Self::from_eid(EItemGrpId::EXHUMER);
     pub(crate) const JUMP_FREIGHTER: Self = Self::from_eid(EItemGrpId::JUMP_FREIGHTER);
-    pub(crate) const EFFECT_BEACON: Self = Self::from_eid(EItemGrpId::EFFECT_BEACON);
     pub(crate) const INDUSTRIAL_COMMAND_SHIP: Self = Self::from_eid(EItemGrpId::INDUSTRIAL_COMMAND_SHIP);
     pub(crate) const STRATEGIC_CRUISER: Self = Self::from_eid(EItemGrpId::STRATEGIC_CRUISER);
     pub(crate) const BLOCKADE_RUNNER: Self = Self::from_eid(EItemGrpId::BLOCKADE_RUNNER);
     pub(crate) const EXPEDITION_FRIGATE: Self = Self::from_eid(EItemGrpId::EXPEDITION_FRIGATE);
     pub(crate) const SHIP_MODIFIER: Self = Self::from_eid(EItemGrpId::SHIP_MODIFIER);
     pub(crate) const GUIDED_BOMB: Self = Self::from_eid(EItemGrpId::GUIDED_BOMB);
-    pub(crate) const SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES: Self =
-        Self::from_eid(EItemGrpId::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES);
 }
