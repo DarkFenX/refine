@@ -1,10 +1,11 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_regular_output, get_proj_spool_cycle_output,
-        get_proj_spool_part_str_mult, process_output_of_spooling_lls_with_cutoff,
+        AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output, get_proj_spool_part_str_mult,
+        process_output_of_spooling_lls_with_cutoff,
     },
-    shared::{process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    shared::{AggrPartData, AggrPartDataSpoolTail, AggrPartDataTail},
+    shared_clip::{process_hard_dt, process_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -15,7 +16,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
     util::LibConverter,
@@ -44,149 +45,20 @@ where
         return false;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
+    let converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match (inv_spool, cseq.get_hard_dt().is_some()) {
         (Some(inv_spool), true) => {
-            process_spool_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum)
+            process_spool_hard_dt(cseq, inv_proj.chance_mult, accum, converter, &inv_proj, &inv_spool)
         }
         (Some(inv_spool), false) => process_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool, accum),
-        (None, true) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
-        (None, false) => process_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+        (None, true) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+        (None, false) => process_regular(cseq, inv_proj.chance_mult, accum, converter),
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn process_regular<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<I>,
-    accum: &mut SeqAccum<IA>,
-) -> bool
-where
-    BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
-    IA: SeqInstanceAccum<I>,
-{
-    let mut reload = false;
-    let cseq_parts = cseq.get_cseq_parts();
-    for cseq_part in cseq_parts.iter() {
-        let cycle_output = get_proj_regular_output(
-            ctx,
-            calc,
-            projector_uid,
-            ospec,
-            &inv_proj,
-            cseq_part.data.active.chargedness,
-        );
-        match cseq_part.data.soft_dt {
-            // Add first cycle after which there is a reload
-            Some(soft_dt) if soft_dt.reason.reload => {
-                reload = true;
-                accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
-                // Record only active duration before reload, ignore soft downtime duration
-                accum.time += cseq_part.data.active.duration;
-                break;
-            }
-            _ => {
-                let part_cycle_count = match cseq_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => part_cycle_count,
-                    // If any cycle repeats infinitely without running out, then it does not run out
-                    // of "clip", no clip - no data
-                    InfCount::Infinite => return false,
-                };
-                if part_cycle_count > Count::ZERO {
-                    accum.add_output_full(&cycle_output, inv_proj.chance_mult, part_cycle_count);
-                    accum.time += cseq_part.data.get_main_duration() * part_cycle_count.into_pvalue();
-                }
-            }
-        }
-    }
-    // If cycles are infinite and have no reload, return no data
-    !cseq_parts.loops || reload
-}
-
-fn process_hard_dt<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
-    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<I>,
-    accum: &mut SeqAccum<IA>,
-) -> bool
-where
-    BG: NEffectOutputGetter,
-    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
-    IA: SeqInstanceAccum<I>,
-{
-    match cseq {
-        // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
-        CycleSeq::Inf(inner) => {
-            let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-            let inner_conv_data = converter.lib_convert(inner.data);
-            process_output_of_cycle_with_cutoff(
-                &mut accum.instances,
-                &inner_conv_data,
-                inv_proj.chance_mult,
-                Count::ONE,
-            );
-            // Record time until reload or hard downtime starts
-            match inner.data.soft_dt {
-                Some(soft_dt) if soft_dt.reason.reload => accum.time += inner.data.active.duration,
-                _ => accum.time += inner_conv_data.cycle_main_duration,
-            }
-            true
-        }
-        CycleSeq::LoopLimSin(inner) => {
-            if let Some(soft_dt) = inner.p1_data.soft_dt
-                && soft_dt.reason.reload
-            {
-                // Case when there is a reload right after first cycle
-                let output = get_proj_regular_output(
-                    ctx,
-                    calc,
-                    projector_uid,
-                    ospec,
-                    &inv_proj,
-                    inner.p1_data.active.chargedness,
-                );
-                let loop_inner_duration = inner.get_full_duration();
-                match inv_proj.get_output_completion_duration() > loop_inner_duration {
-                    true => accum.add_output_time_limited(
-                        &output,
-                        inv_proj.chance_mult,
-                        Count::ONE,
-                        loop_inner_duration.into_value(),
-                    ),
-                    false => accum.add_output_full(&output, inv_proj.chance_mult, Count::ONE),
-                }
-                // Stop counting time at reload, after active cycle is finished
-                accum.time += inner.p1_data.active.duration;
-            } else {
-                // Case when all sequence cycles are allowed to run, possibly with reload after the
-                // last cycle
-                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
-                let inner_conv: CSeqLoopLimSin<_, CSeqHardDtFull> = inner.convert_with(&mut converter);
-                process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, inv_proj.chance_mult, Count::ONE);
-                // Record time until reload or hard downtime starts
-                match inner.p2_data.soft_dt {
-                    Some(soft_dt) if soft_dt.reason.reload => {
-                        accum.time += inner.get_full_duration_without_p2_soft_dt()
-                    }
-                    _ => accum.time += inner.get_full_duration(),
-                }
-            }
-            true
-        }
-        // Other sequence types do not have hard downtime, so this should be unreachable
-        _ => unreachable!(),
-    }
-}
-
 fn process_spool<BG, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -284,38 +156,37 @@ where
     !cseq_parts.loops || reload
 }
 
-fn process_spool_hard_dt<BG, I, IA>(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_uid: UItemId,
+fn process_spool_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
-    ospec: &REffectProjOpcSpec<BG>,
-    inv_proj: AggrProjInvData<I>,
-    inv_spool: AggrSpoolInvData,
+    chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,
+    mut converter: C,
+    inv_proj: &AggrProjInvData<I>,
+    inv_spool: &AggrSpoolInvData,
 ) -> bool
 where
-    BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartData<I>>
+        + LibConverter<CycleDataFull, AggrPartDataTail<I>>
+        + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeq::Inf(_) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+        CycleSeq::Inf(_) => process_hard_dt(cseq, chance_mult, accum, converter),
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => process_hard_dt(ctx, calc, projector_uid, cseq, ospec, inv_proj, accum),
+            Some(_) => process_hard_dt(cseq, chance_mult, accum, converter),
             None => {
-                let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
                 let inner_conv = inner.convert_with(&mut converter);
                 // No soft downtime in first part in this case, the only variance is having soft
                 // downtime in the second part
                 let loop_inner_duration = inner.get_full_duration();
                 process_output_of_spooling_lls_with_cutoff(
                     &inner_conv,
-                    &inv_proj,
-                    &inv_spool,
+                    inv_proj,
+                    inv_spool,
                     &mut accum.instances,
                     loop_inner_duration,
                 );

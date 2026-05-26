@@ -1,5 +1,5 @@
 use super::{
-    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_part_str_mult},
+    proj_shared::{AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_part_str_mult},
     shared_iter::{AggrIterData, AggrIterDataRegular, AggrIterDataSpool, AggrPartDataSpoolIter},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -55,7 +55,7 @@ where
     BG: NEffectOutputGetter,
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
-    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     AggrIterData::Regular(AggrIterDataRegular::new(cseq_conv))
 }

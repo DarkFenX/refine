@@ -111,12 +111,6 @@ impl<I> AggrProjInvData<I> {
             chance_mult: process_mult(chance_mult),
         })
     }
-    pub(super) fn get_output_completion_duration(&self) -> PValue
-    where
-        I: InstanceDuration,
-    {
-        self.base_output.get_completion_duration()
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +163,7 @@ impl AggrSpoolInvData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
+pub(super) struct ProjConverter<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
 {
@@ -179,7 +173,7 @@ where
     pub(super) ospec: &'ospec REffectProjOpcSpec<BG>,
     pub(super) inv_proj: &'ip AggrProjInvData<I>,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I> ProjConverterRegular<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
+impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I> ProjConverter<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
 {
@@ -199,7 +193,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -219,7 +213,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -241,7 +235,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpool> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpool> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -262,7 +256,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolTail> for ProjConverterRegular<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolTail> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,

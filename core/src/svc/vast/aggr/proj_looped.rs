@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_cycle_output,
+        AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
         process_output_of_spooling_lls_with_cutoff,
     },
     shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
@@ -47,7 +47,7 @@ where
         return false;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
-    let mut converter = ProjConverterRegular::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {
         Some(inv_spool) => match cseq.get_hard_dt() {
             Some(_) => process_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
