@@ -195,13 +195,21 @@ where
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(in crate::svc::vast) struct AggrPartDataSpoolIter<I> {
     // Active + soft downtime duration combined
-    pub(in crate::svc::vast) cycle_main_duration: PValue,
+    pub(super) cycle_main_duration: PValue,
     // Are there interrupts of any kind every cycle in this part
     pub(super) interrupt: bool,
     // Part-specific strength multiplier, which does not include spool factor
     pub(super) str_mult: PValue,
-    pub(in crate::svc::vast) output_zero_spool: Output<I>,
+    pub(super) output_zero_spool: Output<I>,
     pub(super) output_max_spool: Output<I>,
+}
+impl<I> AggrPartDataSpoolIter<I> {
+    pub(in crate::svc::vast) fn get_cycle_main_duration(&self) -> PValue {
+        self.cycle_main_duration
+    }
+    pub(in crate::svc::vast) fn get_output_zero_spool(&self) -> &Output<I> {
+        &self.output_zero_spool
+    }
 }
 impl<I> GetDuration for AggrPartDataSpoolIter<I> {
     fn get_duration(&self) -> PValue {

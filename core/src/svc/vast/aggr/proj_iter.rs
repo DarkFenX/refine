@@ -76,15 +76,14 @@ where
     BG: NEffectOutputGetter,
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
 {
-    let mut converter = ProjConverterSpool::new(ctx, calc, projector_uid, ospec, &inv_proj, &inv_spool);
+    let mut converter = ProjConverterSpoolIter::new(ctx, calc, projector_uid, ospec, &inv_proj, &inv_spool);
     let cseq_conv = cseq.convert_with_and_optimize(&mut converter);
     AggrIterData::Spool(AggrIterDataSpool::new(cseq_conv, inv_proj, inv_spool))
 }
 
-struct ProjConverterSpool<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I>
+struct ProjConverterSpoolIter<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I>
 where
     BG: NEffectOutputGetter,
-    I: Copy,
 {
     ctx: SvcCtx<'sc1, 'sc2>,
     calc: &'calc mut Calc,
@@ -93,10 +92,9 @@ where
     inv_proj: &'ip AggrProjInvData<I>,
     inv_spool: &'is AggrSpoolInvData,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I> ProjConverterSpool<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I>
+impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I> ProjConverterSpoolIter<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I>
 where
     BG: NEffectOutputGetter,
-    I: Copy,
 {
     pub(super) fn new(
         ctx: SvcCtx<'sc1, 'sc2>,
@@ -116,7 +114,8 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolIter<I>> for ProjConverterSpool<'_, '_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolIter<I>>
+    for ProjConverterSpoolIter<'_, '_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
