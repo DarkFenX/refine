@@ -4,7 +4,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, get_proj_spool_cycle_output,
         process_output_of_spooling_lls_with_cutoff,
     },
-    shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail},
+    shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
     shared_looped::{process_hard_dt, process_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -18,6 +18,7 @@ use crate::{
         cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq, CycleSeqLooped},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Projected effects, considers only infinite parts of cycles
@@ -138,16 +139,16 @@ fn get_starting_uninterrupted_cycles(
     uninterrupted_cycles
 }
 
-fn process_spool_hard_dt<BG, I, IA>(
+fn process_spool_hard_dt<I, IA, C>(
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
     accum: &mut SeqAccum<IA>,
-    mut converter: ProjConverterRegular<BG, I>,
+    mut converter: C,
 ) where
-    BG: NEffectOutputGetter,
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartDataTail<I>> + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way

@@ -1,7 +1,10 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared::{AggrHardDtSimple, AggrPartData, process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    shared::{
+        AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_of_cycle_with_cutoff,
+        process_output_of_lls_with_cutoff,
+    },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -46,15 +49,15 @@ where
     }
 }
 
-fn process_regular<BG, I, IA>(
+fn process_regular<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     accum: &mut SeqAccum<IA>,
-    mut converter: LocalConverter<BG, I>,
+    mut converter: C,
 ) -> bool
 where
-    BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartData<I>>,
 {
     let mut reload = false;
     let cseq_parts = cseq.get_cseq_parts();
@@ -88,15 +91,15 @@ where
     !cseq_parts.loops || reload
 }
 
-fn process_hard_dt<BG, I, IA>(
+fn process_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     accum: &mut SeqAccum<IA>,
-    mut converter: LocalConverter<BG, I>,
+    mut converter: C,
 ) -> bool
 where
-    BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartData<I>> + LibConverter<CycleDataFull, AggrPartDataTail<I>>,
 {
     match cseq {
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip

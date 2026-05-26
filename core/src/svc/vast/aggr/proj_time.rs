@@ -4,7 +4,7 @@ use super::{
         AggrProjInvData, AggrSpoolInvData, ProjConverterRegular, process_infinite_spool, process_limited_spool,
         process_output_of_spooling_lls_with_cutoff, process_single_spool,
     },
-    shared::{AggrHardDtSimple, AggrPartDataSpoolTail, get_tailed_cycle_full_repeat_count},
+    shared::{AggrHardDtSimple, AggrPartDataSpoolTail, AggrPartDataTail, get_tailed_cycle_full_repeat_count},
     shared_time::{get_cutoff_cycle_full_repeat_count, process_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -62,17 +62,17 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific processing (includes hard downtime logic)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn process_spool<BG, I, IA>(
+fn process_spool<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     inv_proj: AggrProjInvData<I>,
     accum: &mut IA,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
-    mut converter: ProjConverterRegular<BG, I>,
+    mut converter: C,
 ) where
-    BG: NEffectOutputGetter,
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartDataTail<I>> + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
     match cseq {
         CycleSeq::Lim(inner) => match inner.data.soft_dt.is_some() {
