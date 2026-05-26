@@ -33,11 +33,17 @@ impl<I> AggrIterData<I> {
 }
 
 pub(in crate::svc::vast) struct AggrIterDataRegular<I> {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartData<I>, AggrHardDtSimple>,
+    cseq: CycleSeq<AggrPartData<I>, AggrHardDtSimple>,
 }
 impl<I> AggrIterDataRegular<I> {
     pub(super) fn new(cseq: CycleSeq<AggrPartData<I>, AggrHardDtSimple>) -> Self {
         Self { cseq }
+    }
+    pub(in crate::svc::vast) fn get_cseq(&self) -> &CycleSeq<AggrPartData<I>, AggrHardDtSimple> {
+        &self.cseq
+    }
+    pub(in crate::svc::vast) fn get_cseq_mut(&mut self) -> &mut CycleSeq<AggrPartData<I>, AggrHardDtSimple> {
+        &mut self.cseq
     }
     fn iter(&self) -> AggrIterRegular<I>
     where
@@ -48,7 +54,7 @@ impl<I> AggrIterDataRegular<I> {
 }
 
 pub(in crate::svc::vast) struct AggrIterDataSpool<I> {
-    pub(in crate::svc::vast) cseq: CycleSeq<AggrPartDataSpoolIter<I>, AggrHardDtSimple>,
+    cseq: CycleSeq<AggrPartDataSpoolIter<I>, AggrHardDtSimple>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
 }
@@ -63,6 +69,9 @@ impl<I> AggrIterDataSpool<I> {
             inv_proj,
             inv_spool,
         }
+    }
+    pub(in crate::svc::vast) fn get_cseq(&self) -> &CycleSeq<AggrPartDataSpoolIter<I>, AggrHardDtSimple> {
+        &self.cseq
     }
     fn iter(&self) -> AggrIterSpool<I>
     where

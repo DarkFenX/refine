@@ -12,8 +12,8 @@ pub(super) const TIME_ROUND_DIGITS: u32 = 10;
 impl AggrIterData<PValue> {
     pub(super) fn extract_cseq_timing_key(&self) -> CycleSeq<CSeqPartTimingKey, CSeqHardDtTimingKey> {
         match self {
-            Self::Regular(inner) => inner.cseq.convert_and_optimize(),
-            Self::Spool(inner) => inner.cseq.convert_and_optimize(),
+            Self::Regular(inner) => inner.get_cseq().convert_and_optimize(),
+            Self::Spool(inner) => inner.get_cseq().convert_and_optimize(),
         }
     }
 }

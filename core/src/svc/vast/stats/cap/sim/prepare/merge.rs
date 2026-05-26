@@ -115,7 +115,7 @@ impl MergeEntry {
     fn try_merge_instances(&mut self, other: &Self) -> bool {
         match (&mut self.iter_data, &other.iter_data) {
             (AggrIterData::Regular(inner1), AggrIterData::Regular(inner2)) => {
-                inner1.cseq.try_merge_instances(&inner2.cseq)
+                inner1.get_cseq_mut().try_merge_instances(inner2.get_cseq())
             }
             _ => false,
         }
