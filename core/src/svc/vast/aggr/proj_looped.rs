@@ -93,18 +93,17 @@ fn process_spool<I, IA>(
                 true if uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
                 // Current cycle is at max spool, and we have no interrupts in cycles of current
                 // part
-                false if uninterrupted_cycles >= inv_spool.cycles_to_max => {
-                    let remaining_cycles = cseq_part.repeat_count - i;
-                    uninterrupted_cycles += remaining_cycles;
-                    Some(inv_spool.max)
-                }
+                false if uninterrupted_cycles >= inv_spool.cycles_to_max => Some(inv_spool.max),
                 _ => None,
             };
             if let Some(stable_spool) = stable_spool {
-                let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part.data.str_mult, stable_spool);
                 let remaining_cycles = cseq_part.repeat_count - i;
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part.data.str_mult, stable_spool);
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
                 accum.time += cseq_part.data.cycle_main_duration * remaining_cycles.into_pvalue();
+                if !cseq_part.data.soft_dt {
+                    uninterrupted_cycles += remaining_cycles;
+                }
                 // We've processed all the remaining cycles of current part, go next
                 continue 'part;
             }

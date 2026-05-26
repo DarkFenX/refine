@@ -335,12 +335,12 @@ pub(super) fn process_limited_spool<I, IA>(
             _ => None,
         };
         if let Some(stable_spool) = stable_spool {
-            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, stable_spool);
             let full_repeat_count = repeat_limit.min(get_tailed_cycle_full_repeat_count(
                 *time,
                 part_data.cycle_main_duration,
                 part_data.cycle_tail_duration,
             ));
+            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, stable_spool);
             // Full repeats
             if full_repeat_count > Count::ZERO {
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, full_repeat_count);
@@ -401,9 +401,9 @@ pub(super) fn process_infinite_spool<I, IA>(
             _ => None,
         };
         if let Some(stable_spool) = stable_spool {
-            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, stable_spool);
             let full_repeat_count =
                 get_tailed_cycle_full_repeat_count(*time, part_data.cycle_main_duration, part_data.cycle_tail_duration);
+            let cycle_output = get_proj_spool_cycle_output(inv_proj, part_data.str_mult, stable_spool);
             // Full repeats
             if full_repeat_count > Count::ZERO {
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, full_repeat_count);
