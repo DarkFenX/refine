@@ -24,36 +24,30 @@ where
     IA: SeqInstanceAccum<I>,
     C: LibConverter<CycleDataFull, AggrPartData<I>>,
 {
-    let mut reload = false;
     let cseq_parts = cseq.get_cseq_parts();
     for cseq_part in cseq_parts.iter() {
-        match cseq_part.data.soft_dt {
-            // Add first cycle after which there is a reload
-            Some(soft_dt) if soft_dt.reason.reload => {
-                reload = true;
-                let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
-                accum.add_output_full(&cseq_part_data_conv.output, chance_mult, Count::ONE);
-                // Record only active duration before reload, ignore soft downtime duration
-                accum.time += cseq_part.data.active.duration;
-                break;
-            }
-            _ => {
-                let part_cycle_count = match cseq_part.repeat_count {
-                    InfCount::Count(part_cycle_count) => part_cycle_count,
-                    // If any cycle repeats infinitely without running out, then it does not run out
-                    // of "clip", no clip - no data
-                    InfCount::Infinite => return false,
-                };
-                if part_cycle_count > Count::ZERO {
-                    let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
-                    accum.add_output_full(&cseq_part_data_conv.output, chance_mult, part_cycle_count);
-                    accum.time += cseq_part_data_conv.cycle_main_duration * part_cycle_count.into_pvalue();
-                }
-            }
+        let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
+        // Add first cycle after which there is a reload
+        if let Some(soft_dt) = cseq_part.data.soft_dt
+            && soft_dt.reason.reload
+        {
+            accum.add_output_full(&cseq_part_data_conv.output, chance_mult, Count::ONE);
+            // Record only active duration before reload, ignore soft downtime duration
+            accum.time += cseq_part.data.active.duration;
+            return true;
         }
+        let part_cycle_count = match cseq_part.repeat_count {
+            InfCount::Count(part_cycle_count) => part_cycle_count,
+            // If any cycle repeats infinitely without running out, then it does not run out of
+            // "clip", no clip - no data
+            InfCount::Infinite => return false,
+        };
+        accum.add_output_full(&cseq_part_data_conv.output, chance_mult, part_cycle_count);
+        accum.time += cseq_part_data_conv.cycle_main_duration * part_cycle_count.into_pvalue();
     }
-    // If cycles are infinite and have no reload, return no data
-    !cseq_parts.loops || reload
+    // If we went through all parts without reloads, and they loop, return marker that data should
+    // be ignored
+    !cseq_parts.loops
 }
 
 pub(super) fn process_hard_dt<I, IA, C>(
