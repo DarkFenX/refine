@@ -79,7 +79,7 @@ where
             && soft_dt.reason.reload
         {
             let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
-            let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part_data_conv.str_mult, spool);
+            let cycle_output = get_proj_spool_cycle_output(inv_proj, cseq_part_data_conv.str_mult, spool);
             accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
             // Record only active duration before reload, ignore soft downtime duration
             accum.time += cseq_part.data.active.duration;
@@ -103,7 +103,7 @@ where
             };
             if let Some(stable_spool) = stable_spool {
                 let remaining_cycles = part_cycle_count - i;
-                let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part_data_conv.str_mult, stable_spool);
+                let cycle_output = get_proj_spool_cycle_output(inv_proj, cseq_part_data_conv.str_mult, stable_spool);
                 accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
                 accum.time += cseq_part_data_conv.cycle_main_duration * remaining_cycles.into_pvalue();
                 if !cseq_part_data_conv.soft_dt {
@@ -114,7 +114,7 @@ where
             }
             // Case when cycle is at zero spool and will stay at zero spool for the rest of the part
             let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
-            let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part_data_conv.str_mult, spool);
+            let cycle_output = get_proj_spool_cycle_output(inv_proj, cseq_part_data_conv.str_mult, spool);
             accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
             accum.time += cseq_part_data_conv.cycle_main_duration;
             match cseq_part_data_conv.soft_dt {
