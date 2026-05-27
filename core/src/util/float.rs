@@ -64,6 +64,3 @@ pub(crate) fn ceil_f64_to_u32(value: f64) -> u32 {
 pub(crate) fn round_f64_to_i32(value: f64) -> i32 {
     value.clamp(i32::MIN as f64, i32::MAX as f64).round() as i32
 }
-pub(crate) fn ceil_f64_to_usize(value: f64) -> usize {
-    trunc_unerr(value.clamp(usize::MIN as f64, usize::MAX as f64)) as usize
-}

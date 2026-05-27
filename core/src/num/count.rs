@@ -34,12 +34,6 @@ impl Count {
     pub(crate) fn into_usize(self) -> usize {
         self.0 as usize
     }
-    pub(crate) fn from_f64_trunced(value: f64) -> Self {
-        Self(trunc_f64_to_u32(value))
-    }
-    pub(crate) fn from_f64_rounded(value: f64) -> Self {
-        Self(round_f64_to_u32(value))
-    }
     pub(crate) fn from_value_trunced(value: Value) -> Self {
         Self(trunc_f64_to_u32(value.into_f64()))
     }
@@ -51,9 +45,6 @@ impl Count {
     }
     pub(crate) fn from_pvalue_trunced(value: PValue) -> Self {
         Self(trunc_f64_to_u32(value.into_f64()))
-    }
-    pub(crate) fn from_pvalue_rounded(value: PValue) -> Self {
-        Self(round_f64_to_u32(value.into_f64()))
     }
     pub(crate) fn from_pvalue_ceiled(value: PValue) -> Self {
         Self(ceil_f64_to_u32(value.into_f64()))
