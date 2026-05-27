@@ -279,8 +279,8 @@ def setup_dmg_basics(
         id_=consts.EveEffect.ftr_abil_attack_m,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_ftr_abil_atkm_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_ftr_abil_atkm_range_optimal_attr_id,
-        falloff_attr_id=eve_ftr_abil_atkm_range_falloff_attr_id)
+        range_attr_id=eve_ftr_abil_atkm_range_optimal_attr_id if effect_range else Default,
+        falloff_attr_id=eve_ftr_abil_atkm_range_falloff_attr_id if effect_falloff else Default)
     eve_atkm_abil_id = client.mk_eve_abil(id_=consts.EveAbil.pulse_cannon)
     # Fighter "secondary" missile attack
     eve_ftr_abil_missiles_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_em)
@@ -300,7 +300,7 @@ def setup_dmg_basics(
         id_=consts.EveEffect.ftr_abil_missiles,
         cat_id=consts.EveEffCat.target,
         duration_attr_id=eve_ftr_abil_missiles_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_ftr_abil_missiles_range_attr_id)
+        range_attr_id=eve_ftr_abil_missiles_range_attr_id if effect_range else Default)
     eve_missiles_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
     # Ensure effects and abilities are not cleaned up even if not all of them are used in a test
     client.mk_eve_fighter(
