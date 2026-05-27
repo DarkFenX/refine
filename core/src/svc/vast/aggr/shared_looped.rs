@@ -34,7 +34,7 @@ pub(super) fn process_hard_dt<I, IA>(
     IA: SeqInstanceAccum<I>,
 {
     match cseq {
-        CycleSeqLooped::Inf(inner) => {
+        CycleSeqLooped::LoopSin(inner) => {
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, chance_mult, Count::ONE);
             accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
         }

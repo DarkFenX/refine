@@ -2,15 +2,17 @@ use super::seq::{CycleSeq, CycleSeqLooped};
 use crate::util::LibConverter;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Part 1: repeats infinitely
+// Following parts are lopped:
+// Part 1: runs once
+// Optional hard downtime
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqInf<D, HDT> {
+pub(in crate::svc) struct CSeqLoopSin<D, HDT> {
     pub(in crate::svc) data: D,
     // Optional hard downtime every cycle
     pub(in crate::svc) hard_dt: Option<HDT>,
 }
-impl<D, HDT> CSeqInf<D, HDT> {
+impl<D, HDT> CSeqLoopSin<D, HDT> {
     pub(super) fn get_first_cycle(&self) -> &D {
         &self.data
     }
@@ -22,38 +24,38 @@ impl<D, HDT> CSeqInf<D, HDT> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<D, HDT> CSeqInf<D, HDT> {
+impl<D, HDT> CSeqLoopSin<D, HDT> {
     pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>>
     where
         D: Copy,
         HDT: Copy,
     {
-        Some(CycleSeqLooped::Inf(*self))
+        Some(CycleSeqLooped::LoopSin(*self))
     }
-    pub(super) fn convert<D2, HDT2>(self) -> CSeqInf<D2, HDT2>
+    pub(super) fn convert<D2, HDT2>(self) -> CSeqLoopSin<D2, HDT2>
     where
         D2: From<D>,
         HDT2: From<HDT>,
     {
-        CSeqInf {
+        CSeqLoopSin {
             data: self.data.into(),
             hard_dt: self.hard_dt.map(Into::into),
         }
     }
-    pub(in crate::svc) fn convert_with<C, D2, HDT2>(self, converter: &mut C) -> CSeqInf<D2, HDT2>
+    pub(in crate::svc) fn convert_with<C, D2, HDT2>(self, converter: &mut C) -> CSeqLoopSin<D2, HDT2>
     where
         C: LibConverter<D, D2>,
         HDT2: From<HDT>,
     {
-        CSeqInf {
+        CSeqLoopSin {
             data: converter.lib_convert(self.data),
             hard_dt: self.hard_dt.map(Into::into),
         }
     }
     pub(in crate::svc) fn optimize(self) -> CycleSeq<D, HDT> {
-        CycleSeq::Inf(self)
+        CycleSeq::LoopSin(self)
     }
     pub(super) fn optimize_looped(self) -> CycleSeqLooped<D, HDT> {
-        CycleSeqLooped::Inf(self)
+        CycleSeqLooped::LoopSin(self)
     }
 }

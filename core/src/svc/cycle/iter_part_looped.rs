@@ -1,4 +1,4 @@
-use super::{seq::CycleSeqLooped, seq_inf::CSeqInf, seq_loop_lim_sin::CSeqLoopLimSin};
+use super::{seq::CycleSeqLooped, seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin};
 use crate::num::Count;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -7,14 +7,14 @@ use crate::num::Count;
 impl<D, HDT> CycleSeqLooped<D, HDT> {
     pub(in crate::svc) fn iter_cseq_parts(&self) -> CSeqLoopedPartIter<'_, D, HDT> {
         match self {
-            Self::Inf(inner) => CSeqLoopedPartIter::Inf(inner.iter_cseq_parts_looped()),
+            Self::LoopSin(inner) => CSeqLoopedPartIter::LoopSin(inner.iter_cseq_parts_looped()),
             Self::LoopLimSin(inner) => CSeqLoopedPartIter::LoopLimSin(inner.iter_cseq_parts_looped()),
         }
     }
 }
 
 pub(in crate::svc) enum CSeqLoopedPartIter<'a, D, HDT> {
-    Inf(CSeqLoopedInfPartIter<'a, D, HDT>),
+    LoopSin(CSeqLoopedLoopSinPartIter<'a, D, HDT>),
     LoopLimSin(CSeqLoopedLoopLimSinPartIter<'a, D, HDT>),
 }
 impl<D, HDT> Iterator for CSeqLoopedPartIter<'_, D, HDT>
@@ -25,7 +25,7 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
-            Self::Inf(inner) => inner.next(),
+            Self::LoopSin(inner) => inner.next(),
             Self::LoopLimSin(inner) => inner.next(),
         }
     }
@@ -37,24 +37,24 @@ pub(crate) struct CSeqLoopedPart<D> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Inf
+// LoopSin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<D, HDT> CSeqInf<D, HDT> {
-    fn iter_cseq_parts_looped(&self) -> CSeqLoopedInfPartIter<'_, D, HDT> {
-        CSeqLoopedInfPartIter::new(self)
+impl<D, HDT> CSeqLoopSin<D, HDT> {
+    fn iter_cseq_parts_looped(&self) -> CSeqLoopedLoopSinPartIter<'_, D, HDT> {
+        CSeqLoopedLoopSinPartIter::new(self)
     }
 }
 
-pub(in crate::svc) struct CSeqLoopedInfPartIter<'a, D, HDT> {
-    cseq: &'a CSeqInf<D, HDT>,
+pub(in crate::svc) struct CSeqLoopedLoopSinPartIter<'a, D, HDT> {
+    cseq: &'a CSeqLoopSin<D, HDT>,
     yielded: bool,
 }
-impl<'a, D, HDT> CSeqLoopedInfPartIter<'a, D, HDT> {
-    fn new(cseq: &'a CSeqInf<D, HDT>) -> Self {
+impl<'a, D, HDT> CSeqLoopedLoopSinPartIter<'a, D, HDT> {
+    fn new(cseq: &'a CSeqLoopSin<D, HDT>) -> Self {
         Self { cseq, yielded: false }
     }
 }
-impl<D, HDT> Iterator for CSeqLoopedInfPartIter<'_, D, HDT>
+impl<D, HDT> Iterator for CSeqLoopedLoopSinPartIter<'_, D, HDT>
 where
     D: Copy,
 {

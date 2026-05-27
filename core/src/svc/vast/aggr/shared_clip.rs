@@ -61,7 +61,7 @@ where
 {
     match cseq {
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
-        CycleSeq::Inf(inner) => {
+        CycleSeq::LoopSin(inner) => {
             let inner_data_conv = converter.lib_convert(inner.data);
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_data_conv, chance_mult, Count::ONE);
             // Record time until reload or hard downtime starts

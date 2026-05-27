@@ -159,7 +159,7 @@ fn process_spool_hard_dt<I, IA, C>(
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeqLooped::Inf(_) => process_hard_dt(
+        CycleSeqLooped::LoopSin(_) => process_hard_dt(
             cseq.convert_with_and_optimize(&mut converter),
             inv_proj.chance_mult,
             accum,

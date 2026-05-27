@@ -1,6 +1,6 @@
 use super::{
-    seq::CycleSeq, seq_inf::CSeqInf, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
-    seq_loop_lim_sin::CSeqLoopLimSin,
+    seq::CycleSeq, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
+    seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin,
 };
 use crate::{
     num::{Count, PValue},
@@ -18,9 +18,9 @@ where
     pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<D> {
         match self {
             Self::Lim(inner) => CycleIter::Lim(CSeqLimCycleIter::new(inner)),
-            Self::Inf(inner) => CycleIter::Inf(CSeqInfCycleIter::new(inner)),
             Self::LimInf(inner) => CycleIter::LimInf(CSeqLimInfCycleIter::new(inner)),
             Self::LimSinInf(inner) => CycleIter::LimSinInf(CSeqLimSinInfCycleIter::new(inner)),
+            Self::LoopSin(inner) => CycleIter::LoopSin(CSeqLoopSinCycleIter::new(inner)),
             Self::LoopLimSin(inner) => CycleIter::LoopLimSin(CSeqLoopLimSinCycleIter::new(inner)),
         }
     }
@@ -35,9 +35,9 @@ pub(in crate::svc) struct CycleIterItem<D> {
 
 pub(in crate::svc) enum CycleIter<D> {
     Lim(CSeqLimCycleIter<D>),
-    Inf(CSeqInfCycleIter<D>),
     LimInf(CSeqLimInfCycleIter<D>),
     LimSinInf(CSeqLimSinInfCycleIter<D>),
+    LoopSin(CSeqLoopSinCycleIter<D>),
     LoopLimSin(CSeqLoopLimSinCycleIter<D>),
 }
 impl<D> Iterator for CycleIter<D>
@@ -49,9 +49,9 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         match self {
             Self::Lim(inner) => inner.next(),
-            Self::Inf(inner) => inner.next(),
             Self::LimInf(inner) => inner.next(),
             Self::LimSinInf(inner) => inner.next(),
+            Self::LoopSin(inner) => inner.next(),
             Self::LoopLimSin(inner) => inner.next(),
         }
     }
@@ -93,42 +93,6 @@ where
             return None;
         }
         self.repeats_done += Count::ONE;
-        Some(self.item)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Inf
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc) struct CSeqInfCycleIter<D> {
-    item: CycleIterItem<D>,
-}
-impl<D> CSeqInfCycleIter<D> {
-    fn new<HDT>(cseq: &CSeqInf<D, HDT>) -> Self
-    where
-        D: Copy + GetDuration,
-        HDT: GetDuration,
-    {
-        let time_until_hard_dt = match cseq.hard_dt.is_some() {
-            true => Some(cseq.data.get_duration()),
-            false => None,
-        };
-        Self {
-            item: CycleIterItem {
-                data: cseq.data,
-                time_until_hard_dt,
-                hard_dt_duration: cseq.hard_dt.as_ref().map(|v| v.get_duration()),
-            },
-        }
-    }
-}
-impl<D> Iterator for CSeqInfCycleIter<D>
-where
-    D: Copy,
-{
-    type Item = CycleIterItem<D>;
-
-    fn next(&mut self) -> Option<Self::Item> {
         Some(self.item)
     }
 }
@@ -245,6 +209,42 @@ where
             1 => Some(self.p3_item),
             _ => unreachable!(),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// LoopSin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc) struct CSeqLoopSinCycleIter<D> {
+    item: CycleIterItem<D>,
+}
+impl<D> CSeqLoopSinCycleIter<D> {
+    fn new<HDT>(cseq: &CSeqLoopSin<D, HDT>) -> Self
+    where
+        D: Copy + GetDuration,
+        HDT: GetDuration,
+    {
+        let time_until_hard_dt = match cseq.hard_dt.is_some() {
+            true => Some(cseq.data.get_duration()),
+            false => None,
+        };
+        Self {
+            item: CycleIterItem {
+                data: cseq.data,
+                time_until_hard_dt,
+                hard_dt_duration: cseq.hard_dt.as_ref().map(|v| v.get_duration()),
+            },
+        }
+    }
+}
+impl<D> Iterator for CSeqLoopSinCycleIter<D>
+where
+    D: Copy,
+{
+    type Item = CycleIterItem<D>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(self.item)
     }
 }
 

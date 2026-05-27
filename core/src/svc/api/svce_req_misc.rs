@@ -36,7 +36,7 @@ impl Svc {
         let cseq = reuse_cseq_map.get(&defeff_rid)?;
         let cycle_parts = cseq.get_cseq_parts();
         for cycle_part in cycle_parts.iter() {
-            // Current part uncharged means we're empty by this point
+            // Current part uncharged means item is empty by this point
             if cycle_part.data.active.chargedness.is_none() {
                 return Some(InfCount::Count(charged_cycles));
             }

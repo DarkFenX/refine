@@ -144,7 +144,7 @@ where
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeq::Inf(_) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+        CycleSeq::LoopSin(_) => process_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up

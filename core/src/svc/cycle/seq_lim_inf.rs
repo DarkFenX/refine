@@ -1,6 +1,6 @@
 use super::{
     seq::{CycleSeq, CycleSeqLooped},
-    seq_inf::CSeqInf,
+    seq_loop_sin::CSeqLoopSin,
 };
 use crate::{num::Count, util::LibConverter};
 
@@ -28,7 +28,7 @@ impl<D> CSeqLimInf<D> {
     where
         D: Copy,
     {
-        Some(CycleSeqLooped::Inf(CSeqInf {
+        Some(CycleSeqLooped::LoopSin(CSeqLoopSin {
             data: self.p2_data,
             hard_dt: None,
         }))
@@ -58,7 +58,7 @@ impl<D> CSeqLimInf<D> {
         D: Eq,
     {
         match self.p1_data == self.p2_data {
-            true => CycleSeq::Inf(CSeqInf {
+            true => CycleSeq::LoopSin(CSeqLoopSin {
                 data: self.p1_data,
                 hard_dt: None,
             }),

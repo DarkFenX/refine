@@ -4,7 +4,7 @@ use super::timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey, TIME_ROUND_DIGIT
 use crate::{
     num::PValue,
     svc::{
-        cycle::{CSeqInf, CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CycleSeq},
+        cycle::{CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CSeqLoopSin, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},
         vast::{
             aggr::{AggrHardDtSimple, AggrIterData, AggrPartData},
@@ -154,15 +154,15 @@ impl CycleSeq<AggrPartData<PValue>, AggrHardDtSimple> {
                 inner1.merge_instances(inner2);
                 true
             }
-            (CycleSeq::Inf(inner1), CycleSeq::Inf(inner2)) => {
-                inner1.merge_instances(inner2);
-                true
-            }
             (CycleSeq::LimInf(inner1), CycleSeq::LimInf(inner2)) => {
                 inner1.merge_instances(inner2);
                 true
             }
             (CycleSeq::LimSinInf(inner1), CycleSeq::LimSinInf(inner2)) => {
+                inner1.merge_instances(inner2);
+                true
+            }
+            (CycleSeq::LoopSin(inner1), CycleSeq::LoopSin(inner2)) => {
                 inner1.merge_instances(inner2);
                 true
             }
@@ -175,11 +175,6 @@ impl CycleSeq<AggrPartData<PValue>, AggrHardDtSimple> {
     }
 }
 impl CSeqLim<AggrPartData<PValue>> {
-    fn merge_instances(&mut self, other: &Self) {
-        self.data.output.increase_instance(other.data.output.get_instance());
-    }
-}
-impl CSeqInf<AggrPartData<PValue>, AggrHardDtSimple> {
     fn merge_instances(&mut self, other: &Self) {
         self.data.output.increase_instance(other.data.output.get_instance());
     }
@@ -205,6 +200,11 @@ impl CSeqLimSinInf<AggrPartData<PValue>> {
         self.p3_data
             .output
             .increase_instance(other.p3_data.output.get_instance());
+    }
+}
+impl CSeqLoopSin<AggrPartData<PValue>, AggrHardDtSimple> {
+    fn merge_instances(&mut self, other: &Self) {
+        self.data.output.increase_instance(other.data.output.get_instance());
     }
 }
 impl CSeqLoopLimSin<AggrPartData<PValue>, AggrHardDtSimple> {

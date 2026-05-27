@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleActive, CycleDataFull, CycleSeq, seq_inf::CSeqInf},
+        cycle::{CycleActive, CycleDataFull, CycleSeq, seq_loop_sin::CSeqLoopSin},
         funcs,
     },
     ud::{UDrone, UItemId},
@@ -33,7 +33,7 @@ pub(super) fn get_drone_cseq_map(
         // flags, limited charges & reloads
         reuse_cseq_map.insert(
             effect_rid,
-            CycleSeq::Inf(CSeqInf {
+            CycleSeq::LoopSin(CSeqLoopSin {
                 data: CycleDataFull {
                     active: CycleActive {
                         duration,

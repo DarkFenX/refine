@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqInf, CSeqLoopLimSin},
+        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CSeqLoopSin},
         output::Output,
         traits::GetDuration,
     },
@@ -118,7 +118,7 @@ pub(super) struct AggrPartDataSpoolTail {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I, HDT> CSeqInf<AggrPartDataTail<I>, HDT> {
+impl<I, HDT> CSeqLoopSin<AggrPartDataTail<I>, HDT> {
     pub(super) fn get_full_duration(&self) -> PValue {
         self.data.cycle_main_duration
     }

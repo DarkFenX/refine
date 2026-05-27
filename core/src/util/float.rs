@@ -53,7 +53,7 @@ pub(crate) fn ceil_tick(val: f64) -> f64 {
 // Casts
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Explicit truncation (when it's the desired behavior) and clamping are not needed, float-to-int
-// "as" is a saturating cast, and performs rounding towards 0
+// "as" is a saturating cast, and performs rounding towards 0, see link below for more info:
 // https://doc.rust-lang.org/reference/expressions/operator-expr.html#r-expr.as.numeric.float-as-int
 pub(crate) fn round_f64_to_u32(value: f64) -> u32 {
     value.round() as u32

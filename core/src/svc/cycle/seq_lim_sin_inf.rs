@@ -1,7 +1,7 @@
 use super::{
     seq::{CycleSeq, CycleSeqLooped},
-    seq_inf::CSeqInf,
     seq_lim_inf::CSeqLimInf,
+    seq_loop_sin::CSeqLoopSin,
 };
 use crate::{num::Count, util::LibConverter};
 
@@ -31,7 +31,7 @@ impl<D> CSeqLimSinInf<D> {
     where
         D: Copy,
     {
-        Some(CycleSeqLooped::Inf(CSeqInf {
+        Some(CycleSeqLooped::LoopSin(CSeqLoopSin {
             data: self.p3_data,
             hard_dt: None,
         }))
@@ -83,7 +83,7 @@ impl<D> CSeqLimSinInf<D> {
                 p2_data: self.p3_data,
             }),
             // Whole sequence becomes a simple infinity
-            (true, true) => CycleSeq::Inf(CSeqInf {
+            (true, true) => CycleSeq::LoopSin(CSeqLoopSin {
                 data: self.p1_data,
                 hard_dt: None,
             }),

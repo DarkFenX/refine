@@ -98,28 +98,6 @@ fn process_spool<I, IA, C>(
                 );
             }
         },
-        CycleSeq::Inf(inner) => match inner.data.soft_dt.is_some() || inner.hard_dt.is_some() {
-            // Non-spool handling for case when interruptions happen every cycle
-            true => process_regular(
-                inner.convert_with(&mut converter).optimize(),
-                inv_proj.chance_mult,
-                accum,
-                ptime,
-            ),
-            // Spool is considered
-            false => {
-                let mut time = ptime.into_value();
-                let mut uninterrupted_cycles = Count::ZERO;
-                process_infinite_spool(
-                    &inv_proj,
-                    &inv_spool,
-                    converter.lib_convert(inner.data),
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                );
-            }
-        },
         CycleSeq::LimInf(inner) => match inner.p1_data.soft_dt.is_some() && inner.p2_data.soft_dt.is_some() {
             // Non-spool handling for case when interruptions happen every cycle
             true => process_regular(
@@ -191,6 +169,29 @@ fn process_spool<I, IA, C>(
                 }
             }
         }
+        CycleSeq::LoopSin(inner) => match inner.data.soft_dt.is_some() || inner.hard_dt.is_some() {
+            // Non-spool handling for case when interruptions happen every cycle
+            true => process_regular(
+                inner.convert_with(&mut converter).optimize(),
+                inv_proj.chance_mult,
+                accum,
+                ptime,
+            ),
+            // Spool is considered - without hard downtime loop of a single cycle can be considered
+            // as an infinite sequence
+            false => {
+                let mut time = ptime.into_value();
+                let mut uninterrupted_cycles = Count::ZERO;
+                process_infinite_spool(
+                    &inv_proj,
+                    &inv_spool,
+                    converter.lib_convert(inner.data),
+                    accum,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                );
+            }
+        },
         CycleSeq::LoopLimSin(inner) => {
             match inner.p1_data.soft_dt.is_some() && (inner.p2_data.soft_dt.is_some() || inner.hard_dt.is_some()) {
                 // Non-spool handling for case when interruptions happen every cycle

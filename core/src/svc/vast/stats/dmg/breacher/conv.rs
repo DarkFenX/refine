@@ -27,9 +27,9 @@ pub(super) fn cseq_to_ticks(
     if output_ticks < Count::ONE {
         return None;
     }
-    // Breacher aggregator supports only 2 cycle sequence types: looped limited-single, and infinite
-    // (which is degenerate case of looped limited-single cycle sequence), and does not support hard
-    // downtime
+    // Breacher aggregator supports only 2 cycle sequence types: looped limited-single, and looped
+    // single (which is degenerate case of looped limited-single cycle sequence), and does not
+    // support hard downtime
     match cseq {
         CycleSeq::LoopLimSin(inner) => {
             let delay_ticks = duration_to_ticks_ceil(output.delay);
@@ -54,7 +54,7 @@ pub(super) fn cseq_to_ticks(
                 })),
             }
         }
-        CycleSeq::Inf(inner) => {
+        CycleSeq::LoopSin(inner) => {
             let delay_ticks = duration_to_ticks_ceil(output.delay);
             let cycle_ticks = duration_to_ticks_ceil(inner.data.get_main_duration());
             match output_ticks >= cycle_ticks {

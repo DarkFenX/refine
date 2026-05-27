@@ -16,11 +16,11 @@ use crate::{
             effect_charge_info::{
                 get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
             },
-            seq_inf::CSeqInf,
             seq_lim::CSeqLim,
             seq_lim_inf::CSeqLimInf,
             seq_lim_sin_inf::CSeqLimSinInf,
             seq_loop_lim_sin::CSeqLoopLimSin,
+            seq_loop_sin::CSeqLoopSin,
         },
         funcs,
     },
@@ -141,7 +141,7 @@ fn fill_module_effect_info(
         CyclingOptions::Burst => {
             reuse_cseq_map.insert(
                 effect_rid,
-                CycleSeq::Inf(CSeqInf {
+                CycleSeq::LoopSin(CSeqLoopSin {
                     data: CycleDataFull {
                         active: CycleActive {
                             duration: active_duration,
@@ -160,7 +160,7 @@ fn fill_module_effect_info(
         InfCount::Infinite => {
             reuse_cseq_map.insert(
                 effect_rid,
-                CycleSeq::Inf(CSeqInf {
+                CycleSeq::LoopSin(CSeqLoopSin {
                     data: CycleDataFull {
                         active: CycleActive {
                             duration: active_duration,
@@ -182,7 +182,7 @@ fn fill_module_effect_info(
         // Can't cycle at all, should've been handled earlier
         (false, false, false) => return,
         // Infinitely cycling modules without charge
-        (false, false, true) => CycleSeq::Inf(CSeqInf {
+        (false, false, true) => CycleSeq::LoopSin(CSeqLoopSin {
             data: CycleDataFull {
                 active: CycleActive {
                     duration: active_duration,
@@ -361,7 +361,7 @@ fn part_r(
     soft_dt_cd: bool,
     chargedness: Option<UnitInterval>,
 ) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
-    CycleSeq::Inf(CSeqInf {
+    CycleSeq::LoopSin(CSeqLoopSin {
         data: CycleDataFull {
             active: CycleActive {
                 duration: active_duration,
@@ -388,7 +388,7 @@ fn full_r(
     full_count: Count,
 ) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     match full_count {
-        Count::ONE => CycleSeq::Inf(CSeqInf {
+        Count::ONE => CycleSeq::LoopSin(CSeqLoopSin {
             data: CycleDataFull {
                 active: CycleActive {
                     duration: active_duration,

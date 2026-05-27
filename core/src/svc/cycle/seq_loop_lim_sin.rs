@@ -1,6 +1,6 @@
 use super::{
     seq::{CycleSeq, CycleSeqLooped},
-    seq_inf::CSeqInf,
+    seq_loop_sin::CSeqLoopSin,
 };
 use crate::{num::Count, util::LibConverter};
 
@@ -8,6 +8,7 @@ use crate::{num::Count, util::LibConverter};
 // Following parts are lopped:
 // Part 1: runs specified number of times
 // Part 2: runs once
+// Optional hard downtime
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqLoopLimSin<D, HDT> {
@@ -66,7 +67,7 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
         D: Eq,
     {
         match self.p1_data == self.p2_data && self.hard_dt.is_none() {
-            true => CycleSeq::Inf(CSeqInf {
+            true => CycleSeq::LoopSin(CSeqLoopSin {
                 data: self.p1_data,
                 hard_dt: None,
             }),
@@ -78,7 +79,7 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
         D: Eq,
     {
         match self.p1_data == self.p2_data && self.hard_dt.is_none() {
-            true => CycleSeqLooped::Inf(CSeqInf {
+            true => CycleSeqLooped::LoopSin(CSeqLoopSin {
                 data: self.p1_data,
                 hard_dt: None,
             }),

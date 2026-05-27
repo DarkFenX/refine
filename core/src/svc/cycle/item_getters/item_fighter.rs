@@ -10,7 +10,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            CSeqHardDtFull, CSeqInf, CSeqLim, CSeqLoopLimSin, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
+            CSeqHardDtFull, CSeqLim, CSeqLoopLimSin, CSeqLoopSin, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
         },
         funcs,
     },
@@ -138,7 +138,7 @@ fn burst_fill_effect_cseq(
     cseq_map.insert(effect_rid, burst_info_to_cseq(effect_info));
 }
 fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
-    CycleSeq::Inf(CSeqInf {
+    CycleSeq::LoopSin(CSeqLoopSin {
         data: CycleDataFull {
             active: CycleActive {
                 duration: effect_info.active_duration,
@@ -199,7 +199,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull,
             data: cycle_data,
             repeat_count: charge_count,
         }),
-        None => CycleSeq::Inf(CSeqInf {
+        None => CycleSeq::LoopSin(CSeqLoopSin {
             data: cycle_data,
             hard_dt: None,
         }),
@@ -337,7 +337,7 @@ fn sim_rearm_trigger_info_to_cseq(
 ) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     match rearm_info.charge_count {
         Count::ZERO => unreachable!("0-charged effects are not processed"),
-        Count::ONE => CycleSeq::Inf(CSeqInf {
+        Count::ONE => CycleSeq::LoopSin(CSeqLoopSin {
             data: CycleDataFull {
                 active: CycleActive {
                     duration: effect_info.active_duration,
@@ -394,15 +394,15 @@ fn sim_rearm_other_info_to_cseq(
     };
     match (full_cycle_count, extra_cycle) {
         (Count::ZERO, ExtraCycle::None(_)) => None,
-        (Count::ZERO, ExtraCycle::ActivePartial(active_duration)) => Some(CycleSeq::Inf(CSeqInf {
+        (Count::ZERO, ExtraCycle::ActivePartial(active_duration)) => Some(CycleSeq::LoopSin(CSeqLoopSin {
             data: make_extra_cycle_active_partial_data(effect_info, active_duration),
             hard_dt: make_hard_dt(hard_dt_duration),
         })),
-        (Count::ZERO, ExtraCycle::ActiveFull(soft_dt_duration)) => Some(CycleSeq::Inf(CSeqInf {
+        (Count::ZERO, ExtraCycle::ActiveFull(soft_dt_duration)) => Some(CycleSeq::LoopSin(CSeqLoopSin {
             data: make_extra_cycle_active_full_data(effect_info, soft_dt_duration),
             hard_dt: make_hard_dt(hard_dt_duration),
         })),
-        (Count::ONE, ExtraCycle::None(idle_duration)) => Some(CycleSeq::Inf(CSeqInf {
+        (Count::ONE, ExtraCycle::None(idle_duration)) => Some(CycleSeq::LoopSin(CSeqLoopSin {
             data: make_full_cycle_with_extra_idling_data(effect_info, idle_duration),
             hard_dt: make_hard_dt(hard_dt_duration),
         })),

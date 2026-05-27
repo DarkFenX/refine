@@ -31,10 +31,6 @@ pub(super) fn process_regular<I, IA>(
             inner.repeat_count,
             chance_mult,
         ),
-        CycleSeq::Inf(inner) => match inner.hard_dt {
-            Some(hard_dt) => process_infinite_hard_dt(accum, ptime, &inner.data, hard_dt, chance_mult),
-            None => process_infinite_regular(accum, &mut ptime.into_value(), &inner.data, chance_mult),
-        },
         CycleSeq::LimInf(inner) => {
             let mut time = ptime.into_value();
             process_limited_regular(accum, &mut time, &inner.p1_data, inner.p1_repeat_count, chance_mult);
@@ -46,6 +42,10 @@ pub(super) fn process_regular<I, IA>(
             process_single_regular(accum, &mut time, &inner.p2_data, chance_mult);
             process_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
+        CycleSeq::LoopSin(inner) => match inner.hard_dt {
+            Some(hard_dt) => process_ls_hard_dt(accum, ptime, &inner.data, hard_dt, chance_mult),
+            None => process_infinite_regular(accum, &mut ptime.into_value(), &inner.data, chance_mult),
+        },
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
             Some(_) => process_lls_hard_dt(accum, ptime, inner, chance_mult),
             None => process_lls_regular(accum, ptime, inner, chance_mult),
@@ -127,7 +127,7 @@ fn process_infinite_regular<I, IA>(
     }
 }
 
-fn process_infinite_hard_dt<I, IA>(
+fn process_ls_hard_dt<I, IA>(
     accum: &mut IA,
     ptime: PValue,
     data: &AggrPartDataTail<I>,
@@ -138,8 +138,6 @@ fn process_infinite_hard_dt<I, IA>(
     IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
-    // Calculate how many full durations we can fit into given time, considering hard downtimes, and
-    // calculate remaining time
     let full_duration = data.cycle_main_duration + hard_dt.duration;
     let mut full_repeat_count = Count::from_value_trunced(time / full_duration);
     time -= full_duration * full_repeat_count.into_pvalue();
@@ -147,12 +145,11 @@ fn process_infinite_hard_dt<I, IA>(
         full_repeat_count += Count::ONE;
         time -= full_duration;
     }
-    // Add full repeats
+    // Apply full loops
     if full_repeat_count > Count::ZERO {
         process_output_of_cycle_with_cutoff(accum, data, chance_mult, full_repeat_count);
     }
-    // If there is still time left, process cycle which only partially fits. Multiple cycles cannot
-    // fit in this case, as hard downtime cuts cycle tails
+    // Apply partial loop
     if time >= Value::ZERO {
         accum.add_output_time_limited(&data.output, chance_mult, Count::ONE, time);
     }
