@@ -7,6 +7,7 @@ pub struct StatDmgItemKinds {
     pub missile: bool,
     pub breacher: bool,
     pub vorton: bool,
+    /// LR fighter bomb damage is triggered by this flag as well
     pub bomb: bool,
     pub smartbomb: bool,
     pub superweapon: bool,
@@ -44,10 +45,6 @@ impl StatDmgItemKinds {
     }
     pub(in crate::svc::vast) fn resolve(&self, ctx: SvcCtx, u_item: &UItem, r_effect: &REffect) -> bool {
         match u_item {
-            UItem::Autocharge(autocharge) => {
-                let cont_u_item = ctx.u_data.items.get(autocharge.get_cont_item_uid());
-                return self.resolve(ctx, cont_u_item, r_effect);
-            }
             UItem::Drone(drone) => {
                 return match drone.get_axt().unwrap().is_mobile {
                     true => self.minion_mobile,
