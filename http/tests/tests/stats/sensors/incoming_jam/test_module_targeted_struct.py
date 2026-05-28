@@ -42,7 +42,7 @@ def setup_targeted_test(client, consts):
     return eve_module_id, eve_src_struct_id, eve_tgt_ship1_id, eve_tgt_ship2_id, eve_tgt_ship3_id, eve_tgt_ship4_id
 
 
-def test_projection_and_resists(client, consts):
+def test_projection_range_and_resists(client, consts):
     # Also check jam / sensor ratio > 1
     (eve_module_id,
      eve_src_struct_id,

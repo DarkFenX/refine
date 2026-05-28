@@ -45,7 +45,7 @@ def setup_fighter_test(client, consts):
     return eve_fighter_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, eve_tgt_ship3_id
 
 
-def test_projection_and_resists(client, consts):
+def test_projection_range_and_resists(client, consts):
     eve_fighter_id, eve_src_ship_id, eve_tgt_ship1_id, eve_tgt_ship2_id, eve_tgt_ship3_id = setup_fighter_test(
         client=client, consts=consts)
     api_sol = client.create_sol()

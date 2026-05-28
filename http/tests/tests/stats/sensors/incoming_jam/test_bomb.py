@@ -65,7 +65,7 @@ def setup_bomb_test(client, consts):
         eve_tgt_ship4_id)
 
 
-def test_projection_and_resists(client, consts):
+def test_projection_range_and_resists(client, consts):
     # Lockbreaker bombs ignore explosion radius of a bomb and signature radius of a target. Tested
     # on 2025-09-07 on Thunderdome by repeatedly bombing a Stiletto, 20+ runs broke lock
     (eve_module_id,

@@ -3,7 +3,7 @@ from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOp
 from tests.stats.dmg import make_eve_drone, make_eve_fighter_assault, make_eve_ship, setup_dmg_basics
 
 
-def test_projection(client, consts):
+def test_range(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(
         client=client, basic_info=eve_basic_info,
