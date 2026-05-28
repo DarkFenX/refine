@@ -33,7 +33,6 @@ def test_state(client, consts):
     api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
     assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
-    # TODO: autocharge with ignore state should deal DPS
     assert api_autocharge_dmg_ignored.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_ignored.volley == [0, 0, 0, 0]
     # Action
@@ -45,24 +44,43 @@ def test_state(client, consts):
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=(True, [
+        StatsOptionItemDmg(include_charges=True),
+        StatsOptionItemDmg(include_charges=True, ignore_state=True)])))
     api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
     assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
     assert api_fighter_dmg_ignored.dps == [0, 0, 0, approx(698.730469)]
     assert api_fighter_dmg_ignored.volley == [0, 0, 0, approx(5589.84375)]
+    api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
+    assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_autocharge_dmg_ignored.dps == [0, 0, 0, 0]
+    assert api_autocharge_dmg_ignored.volley == [0, 0, 0, 0]
     # Action
-    api_fighter.change_fighter(state=consts.ApiMinionState.engaging, abilities={eve_basic_info.bomb_abil_id: True})
+    api_fighter.change_fighter(abilities={eve_basic_info.bomb_abil_id: True})
     # Verification
-    # TODO: autocharge DPS should scale with fighter count
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
-    assert api_fleet_dmg_stats.dps == [0, 0, 0, approx(709.397135)]
-    assert api_fleet_dmg_stats.volley == [0, 0, 0, approx(6229.84375)]
+    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
-    assert api_fit_dmg_stats.dps == [0, 0, 0, approx(709.397135)]
-    assert api_fit_dmg_stats.volley == [0, 0, 0, approx(6229.84375)]
-    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(include_charges=True)]))).dmg.one()
-    assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(709.397135)]
-    assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(6229.84375)]
+    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=(True, [
+        StatsOptionItemDmg(include_charges=True),
+        StatsOptionItemDmg(include_charges=True, ignore_state=True)])))
+    # TODO: bomb damage should scale with fighter count
+    api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
+    assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_fighter_dmg_ignored.dps == [0, 0, 0, approx(709.397135)]
+    assert api_fighter_dmg_ignored.volley == [0, 0, 0, approx(6229.84375)]
+    api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)])))
+    api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
+    assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
+    assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
+    assert api_autocharge_dmg_ignored.dps == [0, 0, 0, approx(10.666667)]
+    assert api_autocharge_dmg_ignored.volley == [0, 0, 0, approx(640)]
