@@ -136,10 +136,16 @@ fn get_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEf
 }
 
 fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
-    let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
+    let (mut radar, mut magnetometric, mut gravimetric, mut ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     // Do not return ECM stats for non-ecm bombs
     if radar <= PValue::ZERO && magnetometric <= PValue::ZERO && gravimetric <= PValue::ZERO && ladar <= PValue::ZERO {
         return None;
+    }
+    if let Some(mult) = ctx.u_data.get_charge_mult(item_uid) {
+        radar *= mult;
+        magnetometric *= mult;
+        gravimetric *= mult;
+        ladar *= mult;
     }
     Some(Output::Simple(OutputSimple {
         instance: NEffectEcmAmount {

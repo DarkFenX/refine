@@ -5,6 +5,9 @@ use crate::{
     ud::{ItemId, UData, UFit, UFitId, UItem, UItemId, UPhysics},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Some basic/uncategorized access methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UData {
     pub(crate) fn get_item_fit_ship_uid(&self, item_uid: UItemId) -> Option<UItemId> {
         let item = self.items.get(item_uid);
@@ -12,6 +15,23 @@ impl UData {
         let fit = self.fits.get(fit_uid);
         fit.ship
     }
+    pub(crate) fn get_charge_mult(&self, item_uid: UItemId) -> Option<PValue> {
+        let cont_item_uid = match self.items.get(item_uid) {
+            UItem::Autocharge(autocharge) => autocharge.get_cont_item_uid(),
+            UItem::Charge(charge) => charge.get_cont_item_uid(),
+            _ => return None,
+        };
+        match self.items.get(cont_item_uid) {
+            UItem::Fighter(fighter) => fighter.get_count().map(|v| v.into_pvalue()),
+            _ => None,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Multi-tiered data fetchers (with priorities override > on-item/on-fit > on-sol)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UData {
     pub(crate) fn get_fit_uid_rah_incoming_dps(&self, fit_uid: UFitId) -> DpsProfile {
         let fit = self.fits.get(fit_uid);
         self.get_fit_rah_incoming_dps(fit)
@@ -22,8 +42,8 @@ impl UData {
             None => self.default_incoming_dps,
         }
     }
-    pub(crate) fn get_item_spool(&self, item_uid: UItemId, spool: Option<Spool>) -> Spool {
-        match spool {
+    pub(crate) fn get_item_spool(&self, item_uid: UItemId, spool_override: Option<Spool>) -> Spool {
+        match spool_override {
             Some(spool) => spool,
             None => {
                 let u_item = self.items.get(item_uid);
@@ -72,7 +92,12 @@ impl UData {
             }
         }
     }
-    // Projection-related
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Projection-related
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UData {
     pub(crate) fn get_fit_ship_radius(&self, fit_uid: UFitId) -> PValue {
         let Some(ship_uid) = self.fits.get(fit_uid).ship else {
             return PValue::ZERO;

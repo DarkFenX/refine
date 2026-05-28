@@ -14,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         dmg_kind: Some(NEffectDmgKindGetter::Bomb),
         normal_dmg: Some(NEffectProjOpcSpec {
-            base: NEffectDmgOutputGetter::Regular,
+            base: NEffectDmgOutputGetter::Bomb,
             proj_mult_str: Some(NEffectProjGetter::BombApplication),
             proj_mult_chance: Some(NEffectProjGetter::BombRange),
             ..

@@ -24,6 +24,7 @@ pub(crate) enum NEffectDmgOutputGetter {
     DotDelay,
     // Variants specific to a single effect
     TargetAttack,
+    Bomb,
     FtrAbilAttackM,
     FtrAbilMissiles,
     FtrAbilKamikaze,
@@ -48,6 +49,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
             Self::DotDelay => get_dot_delay(ctx, calc, item_uid),
             // Variants specific to a single effect
             Self::TargetAttack => get_target_attack(ctx, calc, item_uid),
+            Self::Bomb => get_bomb(ctx, calc, item_uid),
             Self::FtrAbilAttackM => get_ftr_abil_attack_m(ctx, calc, item_uid),
             Self::FtrAbilMissiles => get_ftr_abil_missiles(ctx, calc, item_uid),
             Self::FtrAbilKamikaze => get_ftr_abil_kamikaze(ctx, calc, item_uid, effect),
@@ -136,6 +138,21 @@ fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
     dmg.thermal *= dmg_mult;
     dmg.kinetic *= dmg_mult;
     dmg.explosive *= dmg_mult;
+    Some(Output::Simple(OutputSimple {
+        instance: dmg,
+        delay: PValue::ZERO,
+    }))
+}
+
+// The only difference from regular getter is that bomb damage can be modified by fighter count
+fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+    let mut dmg = get_dmg_values_standard(ctx, calc, item_uid)?;
+    if let Some(mult) = ctx.u_data.get_charge_mult(item_uid) {
+        dmg.em *= mult;
+        dmg.thermal *= mult;
+        dmg.kinetic *= mult;
+        dmg.explosive *= mult;
+    }
     Some(Output::Simple(OutputSimple {
         instance: dmg,
         delay: PValue::ZERO,

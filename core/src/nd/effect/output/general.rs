@@ -107,11 +107,14 @@ fn get_neut_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outpu
 
 fn get_neut_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
     let instance = calc.get_item_oattr_afb_odogma(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO)?;
-    let instance = match instance > Value::ZERO {
+    let mut instance = match instance > Value::ZERO {
         true => PValue::from_value_unchecked(instance),
         // Do not return neut output for non-neut bombs
         false => return None,
     };
+    if let Some(mult) = ctx.u_data.get_charge_mult(item_uid) {
+        instance *= mult;
+    }
     Some(Output::Simple(OutputSimple {
         instance,
         delay: PValue::ZERO,
