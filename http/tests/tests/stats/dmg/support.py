@@ -110,6 +110,11 @@ class DmgBasicInfo:
     ftr_abil_missiles_resist_ref_attr_id: int
     ftr_abil_missiles_effect_id: int
     missiles_abil_id: int
+    # Fighter bomb attack
+    ftr_abil_bomb_type_attr_id: int
+    ftr_abil_bomb_cycle_time_attr_id: int
+    ftr_abil_bomb_effect_id: int
+    bomb_abil_id: int
     # Misc
     guided_bomb_group_id: int
 
@@ -302,6 +307,14 @@ def setup_dmg_basics(
         duration_attr_id=eve_ftr_abil_missiles_cycle_time_attr_id if effect_duration else Default,
         range_attr_id=eve_ftr_abil_missiles_range_attr_id if effect_range else Default)
     eve_missiles_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
+    # Fighter bomb attack
+    eve_ftr_abil_bomb_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_ftr_abil_bomb_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_duration)
+    eve_ftr_abil_bomb_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_ftr_abil_bomb_cycle_time_attr_id if effect_duration else Default)
+    eve_bomb_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
     # Ensure effects and abilities are not cleaned up even if not all of them are used in a test
     client.mk_eve_fighter(
         eff_ids=[
@@ -327,10 +340,12 @@ def setup_dmg_basics(
             eve_dd_boson_effect_id,
             eve_dd_vorton_effect_id,
             eve_ftr_abil_atkm_effect_id,
-            eve_ftr_abil_missiles_effect_id],
+            eve_ftr_abil_missiles_effect_id,
+            eve_ftr_abil_bomb_effect_id],
         abils=[
             client.mk_eve_item_abil(id_=eve_atkm_abil_id),
-            client.mk_eve_item_abil(id_=eve_missiles_abil_id)])
+            client.mk_eve_item_abil(id_=eve_missiles_abil_id),
+            client.mk_eve_item_abil(id_=eve_bomb_abil_id)])
     return DmgBasicInfo(
         # Attrs
         dmg_em_attr_id=eve_dmg_em_attr_id,
@@ -433,6 +448,11 @@ def setup_dmg_basics(
         ftr_abil_missiles_resist_ref_attr_id=eve_ftr_abil_missiles_resist_ref_attr_id,
         ftr_abil_missiles_effect_id=eve_ftr_abil_missiles_effect_id,
         missiles_abil_id=eve_missiles_abil_id,
+        # Fighter bomb attack
+        ftr_abil_bomb_type_attr_id=eve_ftr_abil_bomb_type_attr_id,
+        ftr_abil_bomb_cycle_time_attr_id=eve_ftr_abil_bomb_cycle_time_attr_id,
+        ftr_abil_bomb_effect_id=eve_ftr_abil_bomb_effect_id,
+        bomb_abil_id=eve_bomb_abil_id,
         # Misc
         guided_bomb_group_id=consts.EveItemGrp.guided_bomb)
 
@@ -944,6 +964,62 @@ def make_eve_fighter_assault(
             client.mk_eve_item_abil(id_=basic_info.atkm_abil_id),
             client.mk_eve_item_abil(
                 id_=basic_info.missiles_abil_id,
+                charge_count=sec_charge_count,
+                charge_rearm_time=sec_charge_rearm_time)])
+
+
+def make_eve_fighter_lr(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        prm_dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        prm_dmg_mult: float | type[Absent] = Absent,
+        prm_cycle_time: float | type[Absent] = Absent,
+        prm_range_optimal: float | type[Absent] = Absent,
+        prm_range_falloff: float | type[Absent] = Absent,
+        prm_exp_radius: float | type[Absent] = Absent,
+        prm_exp_speed: float | type[Absent] = Absent,
+        prm_dr_factor: float | type[Absent] = Absent,
+        prm_dr_sens: float | type[Absent] = Absent,
+        sec_bomb_type_id: float | type[Absent] = Absent,
+        sec_cycle_time: float | type[Absent] = Absent,
+        sec_charge_count: int | type[Absent] = Absent,
+        sec_charge_rearm_time: float | type[Absent] = Absent,
+        sq_size: float | type[Absent] = Absent,
+        refuel_duration: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        radius: float | type[Absent] = Absent,
+        sig_radius: float | type[Absent] = Absent,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=prm_dmgs, dmg_attr_ids=(
+        basic_info.ftr_abil_atkm_dmg_em_attr_id,
+        basic_info.ftr_abil_atkm_dmg_therm_attr_id,
+        basic_info.ftr_abil_atkm_dmg_kin_attr_id,
+        basic_info.ftr_abil_atkm_dmg_expl_attr_id))
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dmg_mult_attr_id], value=prm_dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_cycle_time_attr_id], value=prm_cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_range_optimal_attr_id], value=prm_range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_range_falloff_attr_id], value=prm_range_falloff)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_exp_radius_attr_id], value=prm_exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_exp_speed_attr_id], value=prm_exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dr_factor_attr_id], value=prm_dr_factor)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dr_sens_attr_id], value=prm_dr_sens)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_bomb_type_attr_id], value=sec_bomb_type_id)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_bomb_cycle_time_attr_id], value=sec_cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.max_ftr_count_attr_id], value=sq_size)
+    conditional_insert(container=attrs, path=[basic_info.refuel_duration_attr_id], value=refuel_duration)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
+    return client.mk_eve_fighter(
+        attrs=attrs,
+        eff_ids=[basic_info.ftr_abil_atkm_effect_id, basic_info.ftr_abil_bomb_effect_id],
+        defeff_id=basic_info.ftr_abil_atkm_effect_id,
+        abils=[
+            client.mk_eve_item_abil(id_=basic_info.atkm_abil_id),
+            client.mk_eve_item_abil(
+                id_=basic_info.bomb_abil_id,
                 charge_count=sec_charge_count,
                 charge_rearm_time=sec_charge_rearm_time)])
 
