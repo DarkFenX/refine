@@ -7,7 +7,6 @@ pub(super) const SIG_ROUND_DIGITS: u32 = 10;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // RAH-specific, but still general data container, which is optimized for storing 1 entry
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: check if it's actually shared, move if necessary
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub(super) struct ItemDataVec<T> {
     data: SmallVec<[T; 1]>,
