@@ -4,12 +4,9 @@
 //! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
 //! THEM TO BOTH.
 
-use std::collections::hash_map::Entry;
+use std::{cmp::Ordering, collections::hash_map::Entry};
 
-use super::shared::{
-    PENALTY_MULTS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
-    preprocess_assign_diminish_mult,
-};
+use super::shared::{PENALTY_MULTS, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc};
 use crate::{
     ad::AItemCatId,
     num::{PValue, Value},
@@ -18,7 +15,7 @@ use crate::{
 };
 
 pub(in crate::svc::calc) struct ModAccumFast {
-    pre_assign: AttrAggr,
+    pre_assign: ModAccumAssign,
     pre_mul: AttrStack,
     pre_div: AttrStack,
     add: ModAccumAdd,
@@ -26,7 +23,7 @@ pub(in crate::svc::calc) struct ModAccumFast {
     post_mul: AttrStack,
     post_div: AttrStack,
     post_perc: AttrStack,
-    post_assign: AttrAggr,
+    post_assign: ModAccumAssign,
     extra_add: ModAccumAdd,
     extra_mul: AttrAggr,
     reuse_pen_chains: PenChains,
@@ -34,7 +31,7 @@ pub(in crate::svc::calc) struct ModAccumFast {
 impl ModAccumFast {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            pre_assign: AttrAggr::new(),
+            pre_assign: ModAccumAssign::new(),
             pre_mul: AttrStack::new(),
             pre_div: AttrStack::new(),
             add: ModAccumAdd::new(),
@@ -42,7 +39,7 @@ impl ModAccumFast {
             post_mul: AttrStack::new(),
             post_div: AttrStack::new(),
             post_perc: AttrStack::new(),
-            post_assign: AttrAggr::new(),
+            post_assign: ModAccumAssign::new(),
             extra_add: ModAccumAdd::new(),
             extra_mul: AttrAggr::new(),
             reuse_pen_chains: PenChains::new(),
@@ -51,30 +48,24 @@ impl ModAccumFast {
     pub(in crate::svc::calc) fn add_val(
         &mut self,
         val: Value,
+        op: CalcOp,
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
-        op: &CalcOp,
         attr_pen: bool,
-        item_cat: &AItemCatId,
-        aggr_mode: &AggrMode,
+        item_cat: AItemCatId,
+        aggr_mode: AggrMode,
+        attr_hig: bool,
     ) {
         match op {
-            CalcOp::PreAssign => {
-                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
-                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
-                {
-                    self.pre_assign
-                        .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
-                }
-            }
+            CalcOp::PreAssign => self.pre_assign.add_val(val, proj_mult, res_mult, aggr_mode, attr_hig),
             CalcOp::PreMul => self.pre_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_noop,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
             ),
             CalcOp::PreDiv => self.pre_div.add_val(
                 val,
@@ -82,8 +73,8 @@ impl ModAccumFast {
                 res_mult,
                 normalize_div,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
             ),
             CalcOp::Add => self.add.add_val(val, proj_mult, res_mult, aggr_mode),
             CalcOp::Sub => self.sub.add_val(val, proj_mult, res_mult, aggr_mode),
@@ -93,21 +84,26 @@ impl ModAccumFast {
                 res_mult,
                 normalize_noop,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
             ),
-            CalcOp::PostMulImmune => {
-                self.post_mul
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, false, aggr_mode)
-            }
+            CalcOp::PostMulImmune => self.post_mul.add_val(
+                val,
+                proj_mult,
+                res_mult,
+                normalize_noop,
+                diminish_mul,
+                false,
+                &aggr_mode,
+            ),
             CalcOp::PostDiv => self.post_div.add_val(
                 val,
                 proj_mult,
                 res_mult,
                 normalize_div,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
             ),
             CalcOp::PostPerc => self.post_perc.add_val(
                 val,
@@ -115,66 +111,56 @@ impl ModAccumFast {
                 res_mult,
                 normalize_perc,
                 diminish_mul,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
             ),
-            CalcOp::PostPercImmune => {
-                self.post_perc
-                    .add_val(val, proj_mult, res_mult, normalize_perc, diminish_mul, false, aggr_mode)
-            }
-            CalcOp::PostAssign => {
-                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
-                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
-                {
-                    self.post_assign
-                        .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
-                }
-            }
+            CalcOp::PostPercImmune => self.post_perc.add_val(
+                val,
+                proj_mult,
+                res_mult,
+                normalize_perc,
+                diminish_mul,
+                false,
+                &aggr_mode,
+            ),
+            CalcOp::PostAssign => self.post_assign.add_val(val, proj_mult, res_mult, aggr_mode, attr_hig),
             CalcOp::ExtraAdd => self.extra_add.add_val(val, proj_mult, res_mult, aggr_mode),
             CalcOp::ExtraMul => {
                 self.extra_mul
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, &aggr_mode)
             }
         };
     }
-    pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: Value, hig: bool) -> Value {
-        let val = apply_assign(
-            base_val,
-            self.pre_assign
-                .get_comb_val(combine_assigns, hig, &mut self.reuse_pen_chains),
-        );
+    pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: Value, attr_hig: bool) -> Value {
+        let val = self.pre_assign.calc_val(base_val, attr_hig);
         let val = apply_mul(
             val,
             self.pre_mul
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, attr_hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.pre_div
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, attr_hig, &mut self.reuse_pen_chains),
         );
         let val = self.add.calc_val(val);
         let val = self.sub.calc_val(val);
         let val = apply_mul(
             val,
             self.post_mul
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, attr_hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.post_div
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, attr_hig, &mut self.reuse_pen_chains),
         );
         let val = apply_mul(
             val,
             self.post_perc
-                .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
+                .get_comb_val(combine_muls, combine_muls_pen, attr_hig, &mut self.reuse_pen_chains),
         );
-        apply_assign(
-            val,
-            self.post_assign
-                .get_comb_val(combine_assigns, hig, &mut self.reuse_pen_chains),
-        )
+        self.post_assign.calc_val(val, attr_hig)
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: Value, hig: bool) -> Value {
         let val = self.extra_add.calc_val(val);
@@ -272,7 +258,7 @@ impl AttrAggr {
             AggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
         }
     }
-    fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool, reuse_pen_chains: &mut PenChains) -> Option<Value>
+    fn get_comb_val<F>(&mut self, comb_func: F, attr_hig: bool, reuse_pen_chains: &mut PenChains) -> Option<Value>
     where
         F: Fn(&[Value], bool, &mut PenChains) -> Option<Value>,
     {
@@ -287,7 +273,7 @@ impl AttrAggr {
                 self.stack.push(val);
             }
         }
-        comb_func(&self.stack, high_is_good, reuse_pen_chains)
+        comb_func(&self.stack, attr_hig, reuse_pen_chains)
     }
 }
 
@@ -312,9 +298,6 @@ impl PenChains {
 }
 
 // Application functions
-fn apply_assign(base_val: Value, other_val: Option<Value>) -> Value {
-    other_val.unwrap_or(base_val)
-}
 fn apply_mul(base_val: Value, other_val: Option<Value>) -> Value {
     match other_val {
         Some(other_val) => base_val * other_val,
@@ -323,12 +306,6 @@ fn apply_mul(base_val: Value, other_val: Option<Value>) -> Value {
 }
 
 // Regular combination functions
-fn combine_assigns(vals: &[Value], high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
-    match high_is_good {
-        true => get_max(vals),
-        false => get_min(vals),
-    }
-}
 fn combine_muls(vals: &[Value], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
     if vals.is_empty() {
         return None;
@@ -379,20 +356,78 @@ fn get_max(vals: &[Value]) -> Option<Value> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Operation-specific containers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+struct ModAccumAssign {
+    main: Option<Value>,
+    aggr_min: AggrMin,
+    aggr_max: AggrMax,
+}
+impl ModAccumAssign {
+    fn new() -> Self {
+        Self {
+            main: None,
+            aggr_min: AggrMin::new(),
+            aggr_max: AggrMax::new(),
+        }
+    }
+    fn add_val(
+        &mut self,
+        val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
+        aggr_mode: AggrMode,
+        attr_hig: bool,
+    ) {
+        // Multipliers affect assign operations differently: if any of multipliers is 0.0, then
+        // modification is not applied altogether, otherwise it is applied fully. There are no such
+        // modifiers in EVE, but the lib makes it to work this way.
+        if proj_mult == Some(PValue::ZERO) || res_mult == Some(PValue::ZERO) {
+            return;
+        };
+        match aggr_mode {
+            // Overwrite main value only if there is no value yet, or if passed value is "better",
+            // according to high-is-good flag
+            AggrMode::Stack => match &self.main {
+                Some(main) => {
+                    if let (Ordering::Greater, true) | (Ordering::Less, false) = (val.cmp(main), attr_hig) {
+                        self.main = Some(val)
+                    }
+                }
+                None => self.main = Some(val),
+            },
+            AggrMode::Min(key) => self.aggr_min.add_val(key, val),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, val),
+        }
+    }
+    fn calc_val(&mut self, mut val: Value, attr_hig: bool) -> Value {
+        let iter_main = self.main.into_iter();
+        let iter_min = self.aggr_min.drain_values();
+        let iter_max = self.aggr_max.drain_values();
+        let chain = iter_main.chain(iter_min).chain(iter_max);
+        // Pick best value across all containers, and use it
+        if let Some(best_assignment) = match attr_hig {
+            true => chain.max(),
+            false => chain.min(),
+        } {
+            val = best_assignment;
+        }
+        val
+    }
+}
+
 struct ModAccumAdd {
-    stack: Value,
+    main: Value,
     aggr_min: AggrMin,
     aggr_max: AggrMax,
 }
 impl ModAccumAdd {
     fn new() -> Self {
         Self {
-            stack: Value::ZERO,
+            main: Value::ZERO,
             aggr_min: AggrMin::new(),
             aggr_max: AggrMax::new(),
         }
     }
-    fn add_val(&mut self, mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: &AggrMode) {
+    fn add_val(&mut self, mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: AggrMode) {
         if let Some(proj_mult) = proj_mult {
             val *= proj_mult;
         }
@@ -400,30 +435,30 @@ impl ModAccumAdd {
             val *= res_mult;
         }
         match aggr_mode {
-            AggrMode::Stack => self.stack += val,
-            AggrMode::Min(key) => self.aggr_min.add_val(*key, val),
-            AggrMode::Max(key) => self.aggr_max.add_val(*key, val),
+            AggrMode::Stack => self.main += val,
+            AggrMode::Min(key) => self.aggr_min.add_val(key, val),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
-        val + self.stack + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum()
+        val + self.main + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum()
     }
 }
 
 struct ModAccumSub {
-    stack: Value,
+    main: Value,
     aggr_min: AggrMin,
     aggr_max: AggrMax,
 }
 impl ModAccumSub {
     fn new() -> Self {
         Self {
-            stack: Value::ZERO,
+            main: Value::ZERO,
             aggr_min: AggrMin::new(),
             aggr_max: AggrMax::new(),
         }
     }
-    fn add_val(&mut self, mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: &AggrMode) {
+    fn add_val(&mut self, mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: AggrMode) {
         if let Some(proj_mult) = proj_mult {
             val *= proj_mult;
         }
@@ -431,13 +466,13 @@ impl ModAccumSub {
             val *= res_mult;
         }
         match aggr_mode {
-            AggrMode::Stack => self.stack += val,
-            AggrMode::Min(key) => self.aggr_min.add_val(*key, val),
-            AggrMode::Max(key) => self.aggr_max.add_val(*key, val),
+            AggrMode::Stack => self.main += val,
+            AggrMode::Min(key) => self.aggr_min.add_val(key, val),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
-        val - (self.stack + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum())
+        val - (self.main + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum())
     }
 }
 

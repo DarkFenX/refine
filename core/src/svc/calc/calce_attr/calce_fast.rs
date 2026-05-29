@@ -284,12 +284,13 @@ impl Calc {
         for modification in self.iter_modifications(ctx, &item_uid, item, attr_rid) {
             accumulator.add_val(
                 modification.val,
+                modification.op,
                 modification.proj_mult,
                 modification.res_mult,
-                &modification.op,
                 attr.penalizable,
-                &modification.affector_item_cat_id,
-                &modification.aggr_mode,
+                modification.affector_item_cat_id,
+                modification.aggr_mode,
+                attr.hig,
             );
         }
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
