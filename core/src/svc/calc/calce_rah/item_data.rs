@@ -1,12 +1,12 @@
-use super::rah_info::RahInfo;
+use super::item_info::ItemInfo;
 use crate::{misc::DmgKinds, num::Value};
 
-pub(super) struct RahDataSim {
-    pub(super) info: RahInfo,
+pub(super) struct ItemData {
+    pub(super) info: ItemInfo,
     pub(super) taken_dmg: DmgKinds<Value>,
 }
-impl RahDataSim {
-    pub(super) fn new(info: RahInfo) -> Self {
+impl ItemData {
+    pub(super) fn new(info: ItemInfo) -> Self {
         Self {
             info,
             taken_dmg: DmgKinds {

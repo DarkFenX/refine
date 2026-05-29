@@ -1678,6 +1678,7 @@ dependencies = [
  "angle-sc",
  "derive_more",
  "either",
+ "indexmap 2.14.0",
  "itertools",
  "lender",
  "num-integer",

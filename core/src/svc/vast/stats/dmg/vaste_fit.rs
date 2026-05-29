@@ -238,7 +238,7 @@ impl VastFitData {
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
                 let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-                if !item_kinds.resolve(ctx, item, effect) {
+                if !item_kinds.resolve(item, effect) {
                     continue;
                 }
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
@@ -296,7 +296,7 @@ impl VastFitData {
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
                 let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-                if !item_kinds.resolve(ctx, item, effect) {
+                if !item_kinds.resolve(item, effect) {
                     continue;
                 }
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
@@ -323,7 +323,7 @@ impl VastFitData {
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
                 let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-                if !item_kinds.resolve(ctx, item, effect) {
+                if !item_kinds.resolve(item, effect) {
                     continue;
                 }
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {

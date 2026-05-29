@@ -1,4 +1,4 @@
-use crate::{nd::NEffectDmgKind, rd::REffect, svc::SvcCtx, ud::UItem};
+use crate::{nd::NEffectDmgKind, rd::REffect, ud::UItem};
 
 /// Items which will be included in damage stats.
 #[derive(Copy, Clone)]
@@ -43,7 +43,7 @@ impl StatDmgItemKinds {
             minion_static: false,
         }
     }
-    pub(in crate::svc::vast) fn resolve(&self, ctx: SvcCtx, u_item: &UItem, r_effect: &REffect) -> bool {
+    pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem, r_effect: &REffect) -> bool {
         match u_item {
             UItem::Drone(drone) => {
                 return match drone.get_axt().unwrap().is_mobile {
