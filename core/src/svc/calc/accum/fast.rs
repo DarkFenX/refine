@@ -300,6 +300,9 @@ impl ModAccumDiv {
         }
     }
     fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, penalizable: bool) {
+        if val == Value::ZERO {
+            return;
+        }
         if let Some(comb_mult) = comb_mult {
             val = Value::ONE / (Value::ONE / val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
