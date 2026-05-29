@@ -4,9 +4,11 @@
 //! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
 //! THEM TO BOTH.
 
+use std::collections::hash_map::Entry;
+
 use super::shared::{
     PENALTY_MULTS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
-    normalize_sub, preprocess_assign_diminish_mult,
+    preprocess_assign_diminish_mult,
 };
 use crate::{
     ad::AItemCatId,
@@ -19,13 +21,13 @@ pub(in crate::svc::calc) struct ModAccumFast {
     pre_assign: AttrAggr,
     pre_mul: AttrStack,
     pre_div: AttrStack,
-    add: AttrAggr,
-    sub: AttrAggr,
+    add: ModAccumAdd,
+    sub: ModAccumSub,
     post_mul: AttrStack,
     post_div: AttrStack,
     post_perc: AttrStack,
     post_assign: AttrAggr,
-    extra_add: AttrAggr,
+    extra_add: ModAccumAdd,
     extra_mul: AttrAggr,
     reuse_pen_chains: PenChains,
 }
@@ -35,13 +37,13 @@ impl ModAccumFast {
             pre_assign: AttrAggr::new(),
             pre_mul: AttrStack::new(),
             pre_div: AttrStack::new(),
-            add: AttrAggr::new(),
-            sub: AttrAggr::new(),
+            add: ModAccumAdd::new(),
+            sub: ModAccumSub::new(),
             post_mul: AttrStack::new(),
             post_div: AttrStack::new(),
             post_perc: AttrStack::new(),
             post_assign: AttrAggr::new(),
-            extra_add: AttrAggr::new(),
+            extra_add: ModAccumAdd::new(),
             extra_mul: AttrAggr::new(),
             reuse_pen_chains: PenChains::new(),
         }
@@ -83,12 +85,8 @@ impl ModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            CalcOp::Add => self
-                .add
-                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
-            CalcOp::Sub => self
-                .sub
-                .add_val(val, proj_mult, res_mult, normalize_sub, diminish_basic, aggr_mode),
+            CalcOp::Add => self.add.add_val(val, proj_mult, res_mult, aggr_mode),
+            CalcOp::Sub => self.sub.add_val(val, proj_mult, res_mult, aggr_mode),
             CalcOp::PostMul => self.post_mul.add_val(
                 val,
                 proj_mult,
@@ -132,10 +130,7 @@ impl ModAccumFast {
                         .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
                 }
             }
-            CalcOp::ExtraAdd => {
-                self.extra_add
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode)
-            }
+            CalcOp::ExtraAdd => self.extra_add.add_val(val, proj_mult, res_mult, aggr_mode),
             CalcOp::ExtraMul => {
                 self.extra_mul
                     .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
@@ -158,14 +153,8 @@ impl ModAccumFast {
             self.pre_div
                 .get_comb_val(combine_muls, combine_muls_pen, hig, &mut self.reuse_pen_chains),
         );
-        let val = apply_add(
-            val,
-            self.add.get_comb_val(combine_adds, hig, &mut self.reuse_pen_chains),
-        );
-        let val = apply_add(
-            val,
-            self.sub.get_comb_val(combine_adds, hig, &mut self.reuse_pen_chains),
-        );
+        let val = self.add.calc_val(val);
+        let val = self.sub.calc_val(val);
         let val = apply_mul(
             val,
             self.post_mul
@@ -188,11 +177,7 @@ impl ModAccumFast {
         )
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: Value, hig: bool) -> Value {
-        let val = apply_add(
-            val,
-            self.extra_add
-                .get_comb_val(combine_adds, hig, &mut self.reuse_pen_chains),
-        );
+        let val = self.extra_add.calc_val(val);
         apply_mul(
             val,
             self.extra_mul
@@ -330,12 +315,6 @@ impl PenChains {
 fn apply_assign(base_val: Value, other_val: Option<Value>) -> Value {
     other_val.unwrap_or(base_val)
 }
-fn apply_add(base_val: Value, other_val: Option<Value>) -> Value {
-    match other_val {
-        Some(other_val) => base_val + other_val,
-        None => base_val,
-    }
-}
 fn apply_mul(base_val: Value, other_val: Option<Value>) -> Value {
     match other_val {
         Some(other_val) => base_val * other_val,
@@ -349,12 +328,6 @@ fn combine_assigns(vals: &[Value], high_is_good: bool, _reuse_pen_chains: &mut P
         true => get_max(vals),
         false => get_min(vals),
     }
-}
-fn combine_adds(vals: &[Value], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
-    if vals.is_empty() {
-        return None;
-    }
-    Some(vals.iter().sum())
 }
 fn combine_muls(vals: &[Value], _high_is_good: bool, _reuse_pen_chains: &mut PenChains) -> Option<Value> {
     if vals.is_empty() {
@@ -396,4 +369,125 @@ fn get_min(vals: &[Value]) -> Option<Value> {
 }
 fn get_max(vals: &[Value]) -> Option<Value> {
     vals.iter().max().copied()
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// NEW IMPL AHEAD
+// TODO: check if iterating over values + copying is better than draining
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Operation-specific containers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+struct ModAccumAdd {
+    stack: Value,
+    aggr_min: AggrMin,
+    aggr_max: AggrMax,
+}
+impl ModAccumAdd {
+    fn new() -> Self {
+        Self {
+            stack: Value::ZERO,
+            aggr_min: AggrMin::new(),
+            aggr_max: AggrMax::new(),
+        }
+    }
+    fn add_val(&mut self, mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: &AggrMode) {
+        if let Some(proj_mult) = proj_mult {
+            val *= proj_mult;
+        }
+        if let Some(res_mult) = res_mult {
+            val *= res_mult;
+        }
+        match aggr_mode {
+            AggrMode::Stack => self.stack += val,
+            AggrMode::Min(key) => self.aggr_min.add_val(*key, val),
+            AggrMode::Max(key) => self.aggr_max.add_val(*key, val),
+        }
+    }
+    fn calc_val(&mut self, val: Value) -> Value {
+        val + self.stack + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum()
+    }
+}
+
+struct ModAccumSub {
+    stack: Value,
+    aggr_min: AggrMin,
+    aggr_max: AggrMax,
+}
+impl ModAccumSub {
+    fn new() -> Self {
+        Self {
+            stack: Value::ZERO,
+            aggr_min: AggrMin::new(),
+            aggr_max: AggrMax::new(),
+        }
+    }
+    fn add_val(&mut self, mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: &AggrMode) {
+        if let Some(proj_mult) = proj_mult {
+            val *= proj_mult;
+        }
+        if let Some(res_mult) = res_mult {
+            val *= res_mult;
+        }
+        match aggr_mode {
+            AggrMode::Stack => self.stack += val,
+            AggrMode::Min(key) => self.aggr_min.add_val(*key, val),
+            AggrMode::Max(key) => self.aggr_max.add_val(*key, val),
+        }
+    }
+    fn calc_val(&mut self, val: Value) -> Value {
+        val - (self.stack + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Key-based aggregation maps
+////////////////////////////////////////////////////////////////////////////////////////////////////
+struct AggrMin {
+    data: RMap<AggrKey, Value>,
+}
+impl AggrMin {
+    fn new() -> Self {
+        Self { data: RMap::new() }
+    }
+    fn add_val(&mut self, aggr_key: AggrKey, val: Value) {
+        match self.data.entry(aggr_key) {
+            Entry::Occupied(mut entry) => {
+                if val < *entry.get() {
+                    entry.insert(val);
+                }
+            }
+            Entry::Vacant(entry) => {
+                entry.insert(val);
+            }
+        }
+    }
+    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = Value> {
+        self.data.drain().map(|v| v.1)
+    }
+}
+
+struct AggrMax {
+    data: RMap<AggrKey, Value>,
+}
+impl AggrMax {
+    fn new() -> Self {
+        Self { data: RMap::new() }
+    }
+    fn add_val(&mut self, aggr_key: AggrKey, val: Value) {
+        match self.data.entry(aggr_key) {
+            Entry::Occupied(mut entry) => {
+                if val > *entry.get() {
+                    entry.insert(val);
+                }
+            }
+            Entry::Vacant(entry) => {
+                entry.insert(val);
+            }
+        }
+    }
+    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = Value> {
+        self.data.drain().map(|v| v.1)
+    }
 }
