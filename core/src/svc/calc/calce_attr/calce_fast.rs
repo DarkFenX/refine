@@ -312,7 +312,7 @@ impl Calc {
             dogma_val.round_to_digits(2);
         }
         // Post-dogma calculations
-        let extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
+        let extra_val = accumulator.apply_extra_mods(dogma_val);
         CalcAttrVals {
             base: base_val,
             dogma: dogma_val,

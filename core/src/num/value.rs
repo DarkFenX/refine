@@ -202,6 +202,11 @@ impl std::ops::Div<PValue> for Value {
         Value(self.0 / rhs.into_f64())
     }
 }
+impl std::ops::DivAssign<Value> for Value {
+    fn div_assign(&mut self, rhs: Value) {
+        self.0 /= rhs.0;
+    }
+}
 // Sum
 impl std::iter::Sum<Value> for Value {
     fn sum<I: Iterator<Item = Value>>(iter: I) -> Self {
