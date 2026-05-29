@@ -38,7 +38,7 @@ pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<
     })
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
+pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Affector; 1]> {
     let mut info = SmallVec::new();
     if let Some(ship_uid) = ctx.u_data.get_item_fit_ship_uid(item_uid)
         && let Some(speed_factor_rid) = ctx.ac().speed_factor

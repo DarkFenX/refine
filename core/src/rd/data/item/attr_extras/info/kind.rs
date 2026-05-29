@@ -16,7 +16,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
 ) -> Option<ItemKind> {
-    let mut kinds: SmallVec<ItemKind, 1> = SmallVec::new();
+    let mut kinds: SmallVec<[ItemKind; 1]> = SmallVec::new();
     match item_cat_id {
         // Ship & structure modules
         AItemCatId::MODULE | AItemCatId::STRUCTURE_MODULE => {

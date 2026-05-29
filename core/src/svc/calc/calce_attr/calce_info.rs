@@ -20,7 +20,7 @@ use crate::{
 
 struct Affection {
     modification: CalcModification,
-    affectors: SmallVec<Affector, 1>,
+    affectors: SmallVec<[Affector; 1]>,
 }
 
 impl Calc {

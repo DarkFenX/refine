@@ -867,7 +867,7 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
- "smallvec 1.15.1",
+ "smallvec",
  "tokio",
  "want",
 ]
@@ -973,7 +973,7 @@ dependencies = [
  "icu_normalizer_data",
  "icu_properties",
  "icu_provider",
- "smallvec 1.15.1",
+ "smallvec",
  "zerovec",
 ]
 
@@ -1037,7 +1037,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b0875f23caa03898994f6ddc501886a45c7d3d62d04d2d90788d47be1b1e4de"
 dependencies = [
  "idna_adapter",
- "smallvec 1.15.1",
+ "smallvec",
  "utf8_iter",
 ]
 
@@ -1370,7 +1370,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "redox_syscall",
- "smallvec 1.15.1",
+ "smallvec",
  "windows-link",
 ]
 
@@ -1685,7 +1685,7 @@ dependencies = [
  "ordered-float",
  "rustc-hash",
  "slab",
- "smallvec 2.0.0-alpha.12",
+ "smallvec",
  "thiserror",
  "tracing",
 ]
@@ -2221,12 +2221,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
 
 [[package]]
-name = "smallvec"
-version = "2.0.0-alpha.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef784004ca8777809dcdad6ac37629f0a97caee4c685fcea805278d81dd8b857"
-
-[[package]]
 name = "socket2"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2628,7 +2622,7 @@ checksum = "cb7f578e5945fb242538965c2d0b04418d38ec25c79d160cd279bf0731c8d319"
 dependencies = [
  "nu-ansi-term",
  "sharded-slab",
- "smallvec 1.15.1",
+ "smallvec",
  "thread_local",
  "time",
  "tracing-core",

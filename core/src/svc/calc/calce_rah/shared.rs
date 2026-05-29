@@ -10,7 +10,7 @@ pub(super) const SIG_ROUND_DIGITS: u32 = 10;
 // TODO: check if it's actually shared, move if necessary
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub(super) struct ItemDataVec<T> {
-    data: SmallVec<T, 1>,
+    data: SmallVec<[T; 1]>,
 }
 impl<T> ItemDataVec<T> {
     pub(super) fn new() -> Self {

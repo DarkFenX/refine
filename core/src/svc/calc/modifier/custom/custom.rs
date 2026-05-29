@@ -58,7 +58,7 @@ impl CalcCustomModStrength {
         &self,
         ctx: SvcCtx,
         item_uid: UItemId,
-    ) -> SmallVec<Affector, 1> {
+    ) -> SmallVec<[Affector; 1]> {
         match &self.kind {
             CalcCustomModifier::PropSpeed => prop_speed::get_affector_info(ctx, item_uid),
             CalcCustomModifier::AarPaste => aar_paste::get_affector_info(ctx, item_uid),

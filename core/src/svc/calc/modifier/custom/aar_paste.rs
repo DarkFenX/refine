@@ -44,7 +44,7 @@ pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Op
     Some(Value::ONE)
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
+pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Affector; 1]> {
     let mut info = SmallVec::new();
     if let Some(mult_attr_rid) = ctx.ac().charged_armor_dmg_mult {
         info.push(Affector {

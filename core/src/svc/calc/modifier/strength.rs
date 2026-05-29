@@ -32,7 +32,7 @@ impl ModStrength {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
+    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Affector; 1]> {
         match self {
             Self::Attr(attr_rid) => smallvec![Affector {
                 item_id: ctx.u_data.items.xid_by_iid(item_uid),

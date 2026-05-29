@@ -92,7 +92,7 @@ impl ModAccumInfo {
         attr_pen: bool,
         item_cat: &AItemCatId,
         aggr_mode: &AggrMode,
-        affectors: SmallVec<Affector, 1>,
+        affectors: SmallVec<[Affector; 1]>,
     ) {
         match op {
             CalcOp::PreAssign => {
@@ -330,7 +330,7 @@ impl AttrStack {
         revert_func: &R,
         penalizable: bool,
         aggr_mode: &AggrMode,
-        affectors: SmallVec<Affector, 1>,
+        affectors: SmallVec<[Affector; 1]>,
     ) where
         N: Fn(Value) -> Option<Value>,
         D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,
@@ -394,7 +394,7 @@ impl AttrAggr {
         diminish_func: &D,
         revert_func: &R,
         aggr_mode: &AggrMode,
-        affectors: SmallVec<Affector, 1>,
+        affectors: SmallVec<[Affector; 1]>,
     ) where
         N: Fn(Value) -> Option<Value>,
         D: Fn(Value, Option<PValue>, Option<PValue>) -> Value,

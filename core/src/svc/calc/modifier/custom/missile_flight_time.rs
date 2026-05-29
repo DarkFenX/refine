@@ -49,7 +49,7 @@ pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Op
     Some(val)
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<Affector, 1> {
+pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Affector; 1]> {
     let mut info = SmallVec::new();
     if let Some(ship_uid) = ctx.u_data.get_item_fit_ship_uid(item_uid)
         && let Some(max_velocity_rid) = ctx.ac().max_velocity
