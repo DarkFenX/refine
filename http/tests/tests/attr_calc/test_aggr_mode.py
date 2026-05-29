@@ -275,6 +275,108 @@ def test_postassign_min(client, consts):
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
+def test_pen_immune_preference_max(client, consts):
+    # When modification value is equal, non-penalizable value should be preferred
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=False)
+    eve_affectee_attr_id = client.mk_eve_attr(high_is_good=False, stackable=False)
+    eve_buff1_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_buff2_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
+    eve_sw_effect1_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 30},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_sw_effect2_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.ship,
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 30},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_sw_effect3_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff2_id, eve_buff_val_attr_id: 50},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
+    api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
+    api_sw_effect3 = api_sol.add_sw_effect(type_id=eve_sw_effect3_id)
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(292.5)
+    api_mods = api_ship.mods[eve_affectee_attr_id]
+    assert len(api_mods) == 2
+    api_sw2_mod = api_mods.find_by_affector_item(affector_item_id=api_sw_effect2.id).one()
+    assert api_sw2_mod.op == consts.ApiModOp.post_percent
+    assert api_sw2_mod.initial_str == approx(30)
+    assert api_sw2_mod.stacking_mult is None
+    assert api_sw2_mod.applied_str == approx(30)
+    assert api_sw2_mod.affectors.one().attr_id == eve_buff_val_attr_id
+    api_sw3_mod = api_mods.find_by_affector_item(affector_item_id=api_sw_effect3.id).one()
+    assert api_sw3_mod.op == consts.ApiModOp.post_percent
+    assert api_sw3_mod.initial_str == approx(50)
+    assert api_sw3_mod.stacking_mult is None
+    assert api_sw3_mod.applied_str == approx(50)
+    assert api_sw3_mod.affectors.one().attr_id == eve_buff_val_attr_id
+
+
+def test_pen_immune_preference_min(client, consts):
+    # When modification value is equal, non-penalizable value should be preferred
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=True)
+    eve_affectee_attr_id = client.mk_eve_attr(high_is_good=True, stackable=False)
+    eve_buff1_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_buff2_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_everything, cat_id=consts.EveEffCat.active)
+    eve_sw_effect1_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: -30},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_sw_effect2_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.ship,
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: -30},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_sw_effect3_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff2_id, eve_buff_val_attr_id: -50},
+        eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sol.add_sw_effect(type_id=eve_sw_effect1_id)
+    api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2_id)
+    api_sw_effect3 = api_sol.add_sw_effect(type_id=eve_sw_effect3_id)
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr_id].modified == approx(52.5)
+    api_mods = api_ship.mods[eve_affectee_attr_id]
+    assert len(api_mods) == 2
+    api_sw2_mod = api_mods.find_by_affector_item(affector_item_id=api_sw_effect2.id).one()
+    assert api_sw2_mod.op == consts.ApiModOp.post_percent
+    assert api_sw2_mod.initial_str == approx(-30)
+    assert api_sw2_mod.stacking_mult is None
+    assert api_sw2_mod.applied_str == approx(-30)
+    assert api_sw2_mod.affectors.one().attr_id == eve_buff_val_attr_id
+    api_sw3_mod = api_mods.find_by_affector_item(affector_item_id=api_sw_effect3.id).one()
+    assert api_sw3_mod.op == consts.ApiModOp.post_percent
+    assert api_sw3_mod.initial_str == approx(-50)
+    assert api_sw3_mod.stacking_mult is None
+    assert api_sw3_mod.applied_str == approx(-50)
+    assert api_sw3_mod.affectors.one().attr_id == eve_buff_val_attr_id
+
+
 def test_different_buffs(client, consts):
     # Different buffs should stack instead of overriding each other
     eve_buff_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
