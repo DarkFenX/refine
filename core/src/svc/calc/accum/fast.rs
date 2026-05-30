@@ -236,12 +236,12 @@ impl ModAccumMul {
             aggr_max: AggrPenMax::new(),
         }
     }
-    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, penalizable: bool) {
+    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         if let Some(comb_mult) = comb_mult {
             val = (val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
         match aggr_mode {
-            AggrMode::Stack => match penalizable {
+            AggrMode::Stack => match pen {
                 true => {
                     val -= Value::ONE;
                     match val.cmp(&Value::ZERO) {
@@ -252,8 +252,8 @@ impl ModAccumMul {
                 }
                 false => self.main *= val,
             },
-            AggrMode::Min(key) => self.aggr_min.add_val(key, val, penalizable),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, val, penalizable),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenalizableEntry { val, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenalizableEntry { val, pen }),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
@@ -261,16 +261,16 @@ impl ModAccumMul {
         let iter_min = self.aggr_min.drain_values();
         let iter_max = self.aggr_max.drain_values();
         for aggr_entry in iter_min.chain(iter_max) {
-            match aggr_entry.penalizable {
+            match aggr_entry.pen {
                 true => {
-                    let aggr_val = aggr_entry.value - Value::ONE;
+                    let aggr_val = aggr_entry.val - Value::ONE;
                     match aggr_val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(aggr_val),
                         Ordering::Less => self.pen_neg.push(aggr_val),
                         _ => (),
                     }
                 }
-                false => self.main *= aggr_entry.value,
+                false => self.main *= aggr_entry.val,
             }
         }
         // Resolve penalization chains
@@ -300,7 +300,7 @@ impl ModAccumDiv {
             aggr_max: AggrPenMax::new(),
         }
     }
-    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, penalizable: bool) {
+    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         if val == Value::ZERO {
             return;
         }
@@ -308,7 +308,7 @@ impl ModAccumDiv {
             val = Value::ONE / (Value::ONE / val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
         match aggr_mode {
-            AggrMode::Stack => match penalizable {
+            AggrMode::Stack => match pen {
                 true => {
                     val = Value::ONE / val - Value::ONE;
                     match val.cmp(&Value::ZERO) {
@@ -319,8 +319,8 @@ impl ModAccumDiv {
                 }
                 false => self.main *= val,
             },
-            AggrMode::Min(key) => self.aggr_min.add_val(key, val, penalizable),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, val, penalizable),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenalizableEntry { val, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenalizableEntry { val, pen }),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
@@ -328,16 +328,16 @@ impl ModAccumDiv {
         let iter_min = self.aggr_min.drain_values();
         let iter_max = self.aggr_max.drain_values();
         for aggr_entry in iter_min.chain(iter_max) {
-            match aggr_entry.penalizable {
+            match aggr_entry.pen {
                 true => {
-                    let aggr_val = aggr_entry.value - Value::ONE;
+                    let aggr_val = aggr_entry.val - Value::ONE;
                     match aggr_val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(aggr_val),
                         Ordering::Less => self.pen_neg.push(aggr_val),
                         _ => (),
                     }
                 }
-                false => self.main *= aggr_entry.value,
+                false => self.main *= aggr_entry.val,
             }
         }
         // Resolve penalization chains
@@ -367,12 +367,12 @@ impl ModAccumPerc {
             aggr_max: AggrPenMax::new(),
         }
     }
-    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, penalizable: bool) {
+    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         if let Some(comb_mult) = comb_mult {
             val *= comb_mult;
         }
         match aggr_mode {
-            AggrMode::Stack => match penalizable {
+            AggrMode::Stack => match pen {
                 true => {
                     val *= Value::HUNDREDTH;
                     match val.cmp(&Value::ZERO) {
@@ -383,8 +383,8 @@ impl ModAccumPerc {
                 }
                 false => self.main *= val.mul_add(Value::HUNDREDTH, Value::ONE),
             },
-            AggrMode::Min(key) => self.aggr_min.add_val(key, val, penalizable),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, val, penalizable),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenalizableEntry { val, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenalizableEntry { val, pen }),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
@@ -392,16 +392,16 @@ impl ModAccumPerc {
         let iter_min = self.aggr_min.drain_values();
         let iter_max = self.aggr_max.drain_values();
         for aggr_entry in iter_min.chain(iter_max) {
-            match aggr_entry.penalizable {
+            match aggr_entry.pen {
                 true => {
-                    let aggr_val = aggr_entry.value * Value::HUNDREDTH;
+                    let aggr_val = aggr_entry.val * Value::HUNDREDTH;
                     match aggr_val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(aggr_val),
                         Ordering::Less => self.pen_neg.push(aggr_val),
                         _ => (),
                     }
                 }
-                false => self.main *= aggr_entry.value.mul_add(Value::HUNDREDTH, Value::ONE),
+                false => self.main *= aggr_entry.val.mul_add(Value::HUNDREDTH, Value::ONE),
             }
         }
         // Resolve penalization chains
@@ -429,15 +429,15 @@ impl AggrMin {
     fn new() -> Self {
         Self { data: RMap::new() }
     }
-    fn add_val(&mut self, aggr_key: AggrKey, val: Value) {
+    fn add_val(&mut self, aggr_key: AggrKey, added: Value) {
         match self.data.entry(aggr_key) {
             Entry::Occupied(mut entry) => {
-                if val < *entry.get() {
-                    entry.insert(val);
+                if added < *entry.get() {
+                    entry.insert(added);
                 }
             }
             Entry::Vacant(entry) => {
-                entry.insert(val);
+                entry.insert(added);
             }
         }
     }
@@ -453,15 +453,15 @@ impl AggrMax {
     fn new() -> Self {
         Self { data: RMap::new() }
     }
-    fn add_val(&mut self, aggr_key: AggrKey, val: Value) {
+    fn add_val(&mut self, aggr_key: AggrKey, added: Value) {
         match self.data.entry(aggr_key) {
             Entry::Occupied(mut entry) => {
-                if val > *entry.get() {
-                    entry.insert(val);
+                if added > *entry.get() {
+                    entry.insert(added);
                 }
             }
             Entry::Vacant(entry) => {
-                entry.insert(val);
+                entry.insert(added);
             }
         }
     }
@@ -471,8 +471,8 @@ impl AggrMax {
 }
 
 struct PenalizableEntry {
-    value: Value,
-    penalizable: bool,
+    val: Value,
+    pen: bool,
 }
 
 struct AggrPenMin {
@@ -482,23 +482,23 @@ impl AggrPenMin {
     fn new() -> Self {
         Self { data: RMap::new() }
     }
-    fn add_val(&mut self, aggr_key: AggrKey, value: Value, penalizable: bool) {
+    fn add_val(&mut self, aggr_key: AggrKey, added: PenalizableEntry) {
         match self.data.entry(aggr_key) {
             Entry::Occupied(mut entry) => {
                 let stored = entry.get();
                 // Lesser values, or equal but non-penalizable values have priority
-                match value.cmp(&stored.value) {
+                match added.val.cmp(&stored.val) {
                     Ordering::Less => {
-                        entry.insert(PenalizableEntry { value, penalizable });
+                        entry.insert(added);
                     }
-                    Ordering::Equal if !penalizable && stored.penalizable => {
-                        entry.insert(PenalizableEntry { value, penalizable });
+                    Ordering::Equal if !added.pen && stored.pen => {
+                        entry.insert(added);
                     }
                     _ => (),
                 }
             }
             Entry::Vacant(entry) => {
-                entry.insert(PenalizableEntry { value, penalizable });
+                entry.insert(added);
             }
         }
     }
@@ -514,23 +514,23 @@ impl AggrPenMax {
     fn new() -> Self {
         Self { data: RMap::new() }
     }
-    fn add_val(&mut self, aggr_key: AggrKey, value: Value, penalizable: bool) {
+    fn add_val(&mut self, aggr_key: AggrKey, added: PenalizableEntry) {
         match self.data.entry(aggr_key) {
             Entry::Occupied(mut entry) => {
                 let stored = entry.get();
                 // Greater values, or equal but non-penalizable values have priority
-                match value.cmp(&stored.value) {
+                match added.val.cmp(&stored.val) {
                     Ordering::Greater => {
-                        entry.insert(PenalizableEntry { value, penalizable });
+                        entry.insert(added);
                     }
-                    Ordering::Equal if !penalizable && stored.penalizable => {
-                        entry.insert(PenalizableEntry { value, penalizable });
+                    Ordering::Equal if !added.pen && stored.pen => {
+                        entry.insert(added);
                     }
                     _ => (),
                 }
             }
             Entry::Vacant(entry) => {
-                entry.insert(PenalizableEntry { value, penalizable });
+                entry.insert(added);
             }
         }
     }
