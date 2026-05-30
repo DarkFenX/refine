@@ -709,10 +709,16 @@ impl ModAccumAssign {
         // Projection/resist multipliers affect assign operations differently: if any of multipliers
         // is 0.0, then modification is not applied altogether, otherwise it is applied fully. There
         // are no such modifiers in EVE, but the lib makes it to work this way.
-        if proj_mult == Some(PValue::ZERO) || res_mult == Some(PValue::ZERO) {
-            return;
+        let proj_mult = match proj_mult {
+            Some(PValue::ZERO) => return,
+            Some(_) => Some(PValue::ONE),
+            None => None,
         };
-        // TODO: make multipliers always none/one regardless of what requested multipliers were
+        let res_mult = match res_mult {
+            Some(PValue::ZERO) => return,
+            Some(_) => Some(PValue::ONE),
+            None => None,
+        };
         let mod_info = Modification {
             op: Op::from_calc_op(op),
             initial_str: val,
@@ -731,6 +737,46 @@ impl ModAccumAssign {
         }
     }
     fn process_attr_info(&mut self, attr_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
-        attr_info
+        // Resolve aggregations
+        for attr_infos in self.aggr_min.values_mut() {
+            if let Some(mut attr_info) = extract_min(attr_infos) {
+                for other_attr_info in attr_infos.extract_if(.., |_| true) {
+                    attr_info.merge_ineffective(other_attr_info)
+                }
+                self.stack.push(attr_info);
+            }
+        }
+        for attr_infos in self.aggr_max.values_mut() {
+            if let Some(mut attr_info) = extract_max(attr_infos) {
+                for other_attr_info in attr_infos.extract_if(.., |_| true) {
+                    attr_info.merge_ineffective(other_attr_info)
+                }
+                self.stack.push(attr_info);
+            }
+        }
+        // Combine assigns
+        let effective = match attr_hig {
+            true => extract_max(&mut self.stack),
+            false => extract_min(&mut self.stack),
+        };
+        let combined = match effective {
+            // Only one assign is considered effective, the rest are not
+            Some(mut attr_info) => {
+                for other_attr_info in self.stack.extract_if(.., |_| true) {
+                    attr_info.merge_ineffective(other_attr_info)
+                }
+                Some(attr_info)
+            }
+            None => None,
+        };
+        // Apply assign
+        match combined {
+            // If there are any assignments, they dismiss left side as ineffective
+            Some(mut other_attr_info) => {
+                other_attr_info.merge_ineffective(attr_info);
+                other_attr_info
+            }
+            None => attr_info,
+        }
     }
 }
