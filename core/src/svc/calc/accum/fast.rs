@@ -104,7 +104,9 @@ impl ModAccumFast {
 // Assignment
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ModAccumAssign {
+    // Best seen non-aggregable assignment
     main: Option<Value>,
+    // Aggregable assignments
     aggr_min: AggrMin,
     aggr_max: AggrMax,
 }
@@ -117,15 +119,15 @@ impl ModAccumAssign {
         }
     }
     fn add_val(&mut self, val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, attr_hig: bool) {
-        // Multipliers affect assign operations differently: if any of multipliers is 0.0, then
-        // modification is not applied altogether, otherwise it is applied fully. There are no such
-        // modifiers in EVE, but the lib makes it to work this way.
+        // Projection/resist multipliers affect assign operations differently: if any of multipliers
+        // is 0.0, then modification is not applied altogether, otherwise it is applied fully. There
+        // are no such modifiers in EVE, but the lib makes it to work this way.
         if comb_mult == Some(PValue::ZERO) {
             return;
         };
         match aggr_mode {
-            // Overwrite main value only if there is no value yet, or if passed value is "better",
-            // according to high-is-good flag
+            // Overwrite main value only if there is no stored assignment yet, or if passed
+            // assignment is "better", according to the high-is-good flag
             AggrMode::Stack => match &self.main {
                 Some(main) => {
                     if let (Ordering::Greater, true) | (Ordering::Less, false) = (val.cmp(main), attr_hig) {
@@ -134,6 +136,7 @@ impl ModAccumAssign {
                 }
                 None => self.main = Some(val),
             },
+            // Store asignment in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, val),
             AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
@@ -143,12 +146,12 @@ impl ModAccumAssign {
         let iter_min = self.aggr_min.drain_values();
         let iter_max = self.aggr_max.drain_values();
         let chain = iter_main.chain(iter_min).chain(iter_max);
-        // Pick best value across all containers, and use it
-        if let Some(best_assignment) = match attr_hig {
+        // Pick best assignment across all containers, and use it
+        if let Some(best_value) = match attr_hig {
             true => chain.max(),
             false => chain.min(),
         } {
-            val = best_assignment;
+            val = best_value;
         }
         val
     }
@@ -158,7 +161,9 @@ impl ModAccumAssign {
 // Addition/subtraction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ModAccumAdd {
+    // Non-aggregable, folded sum of increases
     main: Value,
+    // Aggregable, increases
     aggr_min: AggrMin,
     aggr_max: AggrMax,
 }
@@ -176,6 +181,7 @@ impl ModAccumAdd {
         }
         match aggr_mode {
             AggrMode::Stack => self.main += val,
+            // Store addition in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, val),
             AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
@@ -186,7 +192,9 @@ impl ModAccumAdd {
 }
 
 struct ModAccumSub {
+    // Non-aggregable, folded sum of decreases
     main: Value,
+    // Aggregable, decreases
     aggr_min: AggrMin,
     aggr_max: AggrMax,
 }
@@ -204,11 +212,14 @@ impl ModAccumSub {
         }
         match aggr_mode {
             AggrMode::Stack => self.main += val,
+            // Store decrease in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, val),
             AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
+        // Since all the values were stored/folded in original format of decreases/subtractions,
+        // subtract their sum from passed value
         val - (self.main + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum())
     }
 }
@@ -238,20 +249,25 @@ impl ModAccumMul {
     }
     fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         if let Some(comb_mult) = comb_mult {
+            // Convert multiplier into increase relatively zero before applying multiplier, and then
+            // convert back
             val = (val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
         match aggr_mode {
             AggrMode::Stack => match pen {
                 true => {
+                    // Convert mult into mult - 1 to store in penalizable value containers
                     val -= Value::ONE;
                     match val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(val),
+                        Ordering::Equal => (),
                         Ordering::Less => self.pen_neg.push(val),
-                        _ => (),
                     }
                 }
+                // Store in main multiplier in case of stacked & unpenalized modification
                 false => self.main *= val,
             },
+            // Store multiplier in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
@@ -263,20 +279,22 @@ impl ModAccumMul {
         for aggr_entry in iter_min.chain(iter_max) {
             match aggr_entry.pen {
                 true => {
+                    // Convert mult into mult - 1 to store in penalizable value containers
                     let aggr_val = aggr_entry.val - Value::ONE;
                     match aggr_val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(aggr_val),
+                        Ordering::Equal => (),
                         Ordering::Less => self.pen_neg.push(aggr_val),
-                        _ => (),
                     }
                 }
+                // Fold into main value in case value coming from aggregators is not penalizable
                 false => self.main *= aggr_entry.val,
             }
         }
-        // Resolve penalization chains
+        // Resolve penalization chains & calculate final value
         self.pen_pos.sort_unstable_by_key(|&v| -v);
         self.pen_neg.sort_unstable();
-        val * self.main * get_penalty_chain_val(&self.pen_pos) * get_penalty_chain_val(&self.pen_neg)
+        val * self.main * get_penalty_chain_mult(&self.pen_pos) * get_penalty_chain_mult(&self.pen_neg)
     }
 }
 
@@ -301,24 +319,30 @@ impl ModAccumDiv {
         }
     }
     fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
+        // Ignore division by zero early
         if val == Value::ZERO {
             return;
         }
         if let Some(comb_mult) = comb_mult {
+            // Convert divisor into increase relatively zero before applying multiplier, and then
+            // convert back
             val = Value::ONE / (Value::ONE / val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
         match aggr_mode {
             AggrMode::Stack => match pen {
                 true => {
+                    // Convert divisor into mult - 1 to store in penalizable value containers
                     val = Value::ONE / val - Value::ONE;
                     match val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(val),
+                        Ordering::Equal => (),
                         Ordering::Less => self.pen_neg.push(val),
-                        _ => (),
                     }
                 }
+                // Store in main divisor in case of stacked & unpenalized modification
                 false => self.main *= val,
             },
+            // Store divisor in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
@@ -330,20 +354,22 @@ impl ModAccumDiv {
         for aggr_entry in iter_min.chain(iter_max) {
             match aggr_entry.pen {
                 true => {
-                    let aggr_val = aggr_entry.val - Value::ONE;
+                    // Convert divisor into mult - 1 to store in penalizable value containers
+                    let aggr_val = Value::ONE / aggr_entry.val - Value::ONE;
                     match aggr_val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(aggr_val),
+                        Ordering::Equal => (),
                         Ordering::Less => self.pen_neg.push(aggr_val),
-                        _ => (),
                     }
                 }
+                // Unpenalizable divisors are folded into main value
                 false => self.main *= aggr_entry.val,
             }
         }
-        // Resolve penalization chains
+        // Resolve penalization chains & calculate final value
         self.pen_pos.sort_unstable_by_key(|&v| -v);
         self.pen_neg.sort_unstable();
-        val / self.main * get_penalty_chain_val(&self.pen_pos) * get_penalty_chain_val(&self.pen_neg)
+        val / self.main * get_penalty_chain_mult(&self.pen_pos) * get_penalty_chain_mult(&self.pen_neg)
     }
 }
 
@@ -353,7 +379,7 @@ struct ModAccumPerc {
     // Non-aggregable penalizable values, multiplier - 1
     pen_pos: Vec<Value>,
     pen_neg: Vec<Value>,
-    // Aggregable values, percent
+    // Aggregable values, percent change
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
 }
@@ -374,15 +400,17 @@ impl ModAccumPerc {
         match aggr_mode {
             AggrMode::Stack => match pen {
                 true => {
+                    // Convert percent change into mult - 1 to store in penalizable value containers
                     val *= Value::HUNDREDTH;
                     match val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(val),
+                        Ordering::Equal => (),
                         Ordering::Less => self.pen_neg.push(val),
-                        _ => (),
                     }
                 }
                 false => self.main *= val.mul_add(Value::HUNDREDTH, Value::ONE),
             },
+            // Store percent change in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
@@ -394,24 +422,26 @@ impl ModAccumPerc {
         for aggr_entry in iter_min.chain(iter_max) {
             match aggr_entry.pen {
                 true => {
+                    // Convert percent change into mult - 1 to store in penalizable value containers
                     let aggr_val = aggr_entry.val * Value::HUNDREDTH;
                     match aggr_val.cmp(&Value::ZERO) {
                         Ordering::Greater => self.pen_pos.push(aggr_val),
+                        Ordering::Equal => (),
                         Ordering::Less => self.pen_neg.push(aggr_val),
-                        _ => (),
                     }
                 }
                 false => self.main *= aggr_entry.val.mul_add(Value::HUNDREDTH, Value::ONE),
             }
         }
-        // Resolve penalization chains
+        // Resolve penalization chains & calculate final value
         self.pen_pos.sort_unstable_by_key(|&v| -v);
         self.pen_neg.sort_unstable();
-        val * self.main * get_penalty_chain_val(&self.pen_pos) * get_penalty_chain_val(&self.pen_neg)
+        val * self.main * get_penalty_chain_mult(&self.pen_pos) * get_penalty_chain_mult(&self.pen_neg)
     }
 }
 
-fn get_penalty_chain_val(vals: &[Value]) -> Value {
+// Take a slice of mult - 1's, return mult
+fn get_penalty_chain_mult(vals: &[Value]) -> Value {
     let mut val = Value::ONE;
     for (&mod_val, &mult) in std::iter::zip(vals.iter(), PENALTY_MULTS.iter()) {
         val *= mod_val.mul_add(mult.into_value(), Value::ONE);
