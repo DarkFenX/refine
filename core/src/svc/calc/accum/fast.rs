@@ -248,8 +248,7 @@ struct ModAccumMul {
     // Non-aggregable non-penalizable, folded multiplier
     main: Value,
     // Non-aggregable penalizable values, multiplier - 1
-    pen_pos: Vec<Value>,
-    pen_neg: Vec<Value>,
+    pens: Pens,
     // Aggregable values, multiplier
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
@@ -258,8 +257,7 @@ impl ModAccumMul {
     fn new() -> Self {
         Self {
             main: Value::ONE,
-            pen_pos: Vec::new(),
-            pen_neg: Vec::new(),
+            pens: Pens::new(),
             aggr_min: AggrPenMin::new(),
             aggr_max: AggrPenMax::new(),
         }
@@ -272,15 +270,8 @@ impl ModAccumMul {
         }
         match aggr_mode {
             AggrMode::Stack => match pen {
-                true => {
-                    // Convert mult into mult - 1 to store in penalizable value containers
-                    val -= Value::ONE;
-                    match val.cmp(&Value::ZERO) {
-                        Ordering::Greater => self.pen_pos.push(val),
-                        Ordering::Equal => (),
-                        Ordering::Less => self.pen_neg.push(val),
-                    }
-                }
+                // Convert mult into mult - 1 to store in penalizable value containers
+                true => self.pens.add_val(val - Value::ONE),
                 // Store in main multiplier in case of stacked & unpenalized modification
                 false => self.main *= val,
             },
@@ -289,31 +280,22 @@ impl ModAccumMul {
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
-    fn calc_val(&mut self, val: Value) -> Value {
+    fn calc_val(&mut self, mut val: Value) -> Value {
         // Distribute aggregable values first
         if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
             let iter_min = self.aggr_min.drain_values();
             let iter_max = self.aggr_max.drain_values();
             for aggr_entry in iter_min.chain(iter_max) {
                 match aggr_entry.pen {
-                    true => {
-                        // Convert mult into mult - 1 to store in penalizable value containers
-                        let aggr_val = aggr_entry.val - Value::ONE;
-                        match aggr_val.cmp(&Value::ZERO) {
-                            Ordering::Greater => self.pen_pos.push(aggr_val),
-                            Ordering::Equal => (),
-                            Ordering::Less => self.pen_neg.push(aggr_val),
-                        }
-                    }
+                    // Convert mult into mult - 1 to store in penalizable value containers
+                    true => self.pens.add_val(aggr_entry.val - Value::ONE),
                     // Fold into main value in case value coming from aggregators is not penalizable
                     false => self.main *= aggr_entry.val,
                 }
             }
         }
-        // Resolve penalization chains & calculate final value
-        self.pen_pos.sort_unstable_by_key(|&v| -v);
-        self.pen_neg.sort_unstable();
-        val * self.main * get_penalty_chain_mult(&self.pen_pos) * get_penalty_chain_mult(&self.pen_neg)
+        val *= self.main;
+        self.pens.calc_val(val)
     }
 }
 
@@ -321,8 +303,7 @@ struct ModAccumDiv {
     // Non-aggregable non-penalizable, folded divisor
     main: Value,
     // Non-aggregable penalizable values, multiplier - 1
-    pen_pos: Vec<Value>,
-    pen_neg: Vec<Value>,
+    pens: Pens,
     // Aggregable values, divisor
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
@@ -331,8 +312,7 @@ impl ModAccumDiv {
     fn new() -> Self {
         Self {
             main: Value::ONE,
-            pen_pos: Vec::new(),
-            pen_neg: Vec::new(),
+            pens: Pens::new(),
             aggr_min: AggrPenMin::new(),
             aggr_max: AggrPenMax::new(),
         }
@@ -349,15 +329,8 @@ impl ModAccumDiv {
         }
         match aggr_mode {
             AggrMode::Stack => match pen {
-                true => {
-                    // Convert divisor into mult - 1 to store in penalizable value containers
-                    val = Value::ONE / val - Value::ONE;
-                    match val.cmp(&Value::ZERO) {
-                        Ordering::Greater => self.pen_pos.push(val),
-                        Ordering::Equal => (),
-                        Ordering::Less => self.pen_neg.push(val),
-                    }
-                }
+                // Convert divisor into mult - 1 to store in penalizable value containers
+                true => self.pens.add_val(Value::ONE / val - Value::ONE),
                 // Store in main divisor in case of stacked & unpenalized modification
                 false => self.main *= val,
             },
@@ -366,31 +339,22 @@ impl ModAccumDiv {
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
-    fn calc_val(&mut self, val: Value) -> Value {
+    fn calc_val(&mut self, mut val: Value) -> Value {
         // Distribute aggregable values first
         if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
             let iter_min = self.aggr_min.drain_values();
             let iter_max = self.aggr_max.drain_values();
             for aggr_entry in iter_min.chain(iter_max) {
                 match aggr_entry.pen {
-                    true => {
-                        // Convert divisor into mult - 1 to store in penalizable value containers
-                        let aggr_val = Value::ONE / aggr_entry.val - Value::ONE;
-                        match aggr_val.cmp(&Value::ZERO) {
-                            Ordering::Greater => self.pen_pos.push(aggr_val),
-                            Ordering::Equal => (),
-                            Ordering::Less => self.pen_neg.push(aggr_val),
-                        }
-                    }
+                    // Convert divisor into mult - 1 to store in penalizable value containers
+                    true => self.pens.add_val(Value::ONE / aggr_entry.val - Value::ONE),
                     // Unpenalizable divisors are folded into main value
                     false => self.main *= aggr_entry.val,
                 }
             }
         }
-        // Resolve penalization chains & calculate final value
-        self.pen_pos.sort_unstable_by_key(|&v| -v);
-        self.pen_neg.sort_unstable();
-        val / self.main * get_penalty_chain_mult(&self.pen_pos) * get_penalty_chain_mult(&self.pen_neg)
+        val /= self.main;
+        self.pens.calc_val(val)
     }
 }
 
@@ -398,8 +362,7 @@ struct ModAccumPerc {
     // Non-aggregable non-penalizable, folded multiplier
     main: Value,
     // Non-aggregable penalizable values, multiplier - 1
-    pen_pos: Vec<Value>,
-    pen_neg: Vec<Value>,
+    pens: Pens,
     // Aggregable values, percent change
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
@@ -408,8 +371,7 @@ impl ModAccumPerc {
     fn new() -> Self {
         Self {
             main: Value::ONE,
-            pen_pos: Vec::new(),
-            pen_neg: Vec::new(),
+            pens: Pens::new(),
             aggr_min: AggrPenMin::new(),
             aggr_max: AggrPenMax::new(),
         }
@@ -420,15 +382,8 @@ impl ModAccumPerc {
         }
         match aggr_mode {
             AggrMode::Stack => match pen {
-                true => {
-                    // Convert percent change into mult - 1 to store in penalizable value containers
-                    val *= Value::HUNDREDTH;
-                    match val.cmp(&Value::ZERO) {
-                        Ordering::Greater => self.pen_pos.push(val),
-                        Ordering::Equal => (),
-                        Ordering::Less => self.pen_neg.push(val),
-                    }
-                }
+                // Convert percent change into mult - 1 to store in penalizable value containers
+                true => self.pens.add_val(val * Value::HUNDREDTH),
                 false => self.main *= val.mul_add(Value::HUNDREDTH, Value::ONE),
             },
             // Store percent change in its original format for aggregation
@@ -436,31 +391,55 @@ impl ModAccumPerc {
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
-    fn calc_val(&mut self, val: Value) -> Value {
+    fn calc_val(&mut self, mut val: Value) -> Value {
         // Distribute aggregable values first
         if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
             let iter_min = self.aggr_min.drain_values();
             let iter_max = self.aggr_max.drain_values();
             for aggr_entry in iter_min.chain(iter_max) {
                 match aggr_entry.pen {
-                    true => {
-                        // Convert percent change into mult - 1 to store in penalizable value
-                        // containers
-                        let aggr_val = aggr_entry.val * Value::HUNDREDTH;
-                        match aggr_val.cmp(&Value::ZERO) {
-                            Ordering::Greater => self.pen_pos.push(aggr_val),
-                            Ordering::Equal => (),
-                            Ordering::Less => self.pen_neg.push(aggr_val),
-                        }
-                    }
+                    // Convert percent change into mult - 1 to store in penalizable value containers
+                    true => self.pens.add_val(aggr_entry.val * Value::HUNDREDTH),
                     false => self.main *= aggr_entry.val.mul_add(Value::HUNDREDTH, Value::ONE),
                 }
             }
         }
-        // Resolve penalization chains & calculate final value
-        self.pen_pos.sort_unstable_by_key(|&v| -v);
-        self.pen_neg.sort_unstable();
-        val * self.main * get_penalty_chain_mult(&self.pen_pos) * get_penalty_chain_mult(&self.pen_neg)
+        val *= self.main;
+        self.pens.calc_val(val)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Penalizable values
+////////////////////////////////////////////////////////////////////////////////////////////////////
+struct Pens {
+    pos: Vec<Value>,
+    neg: Vec<Value>,
+}
+impl Pens {
+    fn new() -> Self {
+        Self {
+            pos: Vec::new(),
+            neg: Vec::new(),
+        }
+    }
+    fn add_val(&mut self, added: Value) {
+        match added.cmp(&Value::ZERO) {
+            Ordering::Greater => self.pos.push(added),
+            Ordering::Equal => (),
+            Ordering::Less => self.neg.push(added),
+        }
+    }
+    fn calc_val(&mut self, mut val: Value) -> Value {
+        if !self.pos.is_empty() {
+            self.pos.sort_unstable_by_key(|&v| -v);
+            val *= get_penalty_chain_mult(&self.pos);
+        }
+        if !self.neg.is_empty() {
+            self.neg.sort_unstable();
+            val *= get_penalty_chain_mult(&self.neg);
+        }
+        val
     }
 }
 
