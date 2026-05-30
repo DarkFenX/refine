@@ -262,6 +262,14 @@ impl ModAccumMul {
             aggr_max: AggrPenMax::new(),
         }
     }
+    fn add_stacking_val(main: &mut Value, pens: &mut Pens, val: Value, pen: bool) {
+        match pen {
+            // Convert mult into mult - 1 to store in penalizable value containers
+            true => pens.add_val(val - Value::ONE),
+            // Store in main multiplier in case of stacked & unpenalized modification
+            false => *main *= val,
+        }
+    }
     fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         if let Some(comb_mult) = comb_mult {
             // Convert multiplier into increase relatively zero before applying multiplier, and then
@@ -269,12 +277,7 @@ impl ModAccumMul {
             val = (val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
         match aggr_mode {
-            AggrMode::Stack => match pen {
-                // Convert mult into mult - 1 to store in penalizable value containers
-                true => self.pens.add_val(val - Value::ONE),
-                // Store in main multiplier in case of stacked & unpenalized modification
-                false => self.main *= val,
-            },
+            AggrMode::Stack => Self::add_stacking_val(&mut self.main, &mut self.pens, val, pen),
             // Store multiplier in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
@@ -282,18 +285,17 @@ impl ModAccumMul {
     }
     fn calc_val(&mut self, mut val: Value) -> Value {
         // Distribute aggregable values first
-        if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
-            let iter_min = self.aggr_min.drain_values();
-            let iter_max = self.aggr_max.drain_values();
-            for aggr_entry in iter_min.chain(iter_max) {
-                match aggr_entry.pen {
-                    // Convert mult into mult - 1 to store in penalizable value containers
-                    true => self.pens.add_val(aggr_entry.val - Value::ONE),
-                    // Fold into main value in case value coming from aggregators is not penalizable
-                    false => self.main *= aggr_entry.val,
-                }
+        if !self.aggr_min.is_empty() {
+            for aggr_entry in self.aggr_min.drain_values() {
+                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
             }
         }
+        if !self.aggr_max.is_empty() {
+            for aggr_entry in self.aggr_max.drain_values() {
+                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
+            }
+        }
+        // Using unpenalized and penalized values, calculate final result
         val *= self.main;
         self.pens.calc_val(val)
     }
@@ -317,6 +319,14 @@ impl ModAccumDiv {
             aggr_max: AggrPenMax::new(),
         }
     }
+    fn add_stacking_val(main: &mut Value, pens: &mut Pens, val: Value, pen: bool) {
+        match pen {
+            // Convert divisor into mult - 1 to store in penalizable value containers
+            true => pens.add_val(Value::ONE / val - Value::ONE),
+            // Store in main divisor in case of stacked & unpenalized modification
+            false => *main *= val,
+        }
+    }
     fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         // Ignore division by zero early
         if val == Value::ZERO {
@@ -328,12 +338,7 @@ impl ModAccumDiv {
             val = Value::ONE / (Value::ONE / val - Value::ONE).mul_add(comb_mult.into_value(), Value::ONE);
         }
         match aggr_mode {
-            AggrMode::Stack => match pen {
-                // Convert divisor into mult - 1 to store in penalizable value containers
-                true => self.pens.add_val(Value::ONE / val - Value::ONE),
-                // Store in main divisor in case of stacked & unpenalized modification
-                false => self.main *= val,
-            },
+            AggrMode::Stack => Self::add_stacking_val(&mut self.main, &mut self.pens, val, pen),
             // Store divisor in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
@@ -341,18 +346,17 @@ impl ModAccumDiv {
     }
     fn calc_val(&mut self, mut val: Value) -> Value {
         // Distribute aggregable values first
-        if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
-            let iter_min = self.aggr_min.drain_values();
-            let iter_max = self.aggr_max.drain_values();
-            for aggr_entry in iter_min.chain(iter_max) {
-                match aggr_entry.pen {
-                    // Convert divisor into mult - 1 to store in penalizable value containers
-                    true => self.pens.add_val(Value::ONE / aggr_entry.val - Value::ONE),
-                    // Unpenalizable divisors are folded into main value
-                    false => self.main *= aggr_entry.val,
-                }
+        if !self.aggr_min.is_empty() {
+            for aggr_entry in self.aggr_min.drain_values() {
+                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
             }
         }
+        if !self.aggr_max.is_empty() {
+            for aggr_entry in self.aggr_max.drain_values() {
+                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
+            }
+        }
+        // Using unpenalized and penalized values, calculate final result
         val /= self.main;
         self.pens.calc_val(val)
     }
@@ -376,16 +380,20 @@ impl ModAccumPerc {
             aggr_max: AggrPenMax::new(),
         }
     }
+    fn add_stacking_val(main: &mut Value, pens: &mut Pens, val: Value, pen: bool) {
+        match pen {
+            // Convert percent change into mult - 1 to store in penalizable value containers
+            true => pens.add_val(val * Value::HUNDREDTH),
+            // Store in main muultiplier in case of stacked & unpenalized modification
+            false => *main *= val.mul_add(Value::HUNDREDTH, Value::ONE),
+        }
+    }
     fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode, pen: bool) {
         if let Some(comb_mult) = comb_mult {
             val *= comb_mult;
         }
         match aggr_mode {
-            AggrMode::Stack => match pen {
-                // Convert percent change into mult - 1 to store in penalizable value containers
-                true => self.pens.add_val(val * Value::HUNDREDTH),
-                false => self.main *= val.mul_add(Value::HUNDREDTH, Value::ONE),
-            },
+            AggrMode::Stack => Self::add_stacking_val(&mut self.main, &mut self.pens, val, pen),
             // Store percent change in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
@@ -393,17 +401,17 @@ impl ModAccumPerc {
     }
     fn calc_val(&mut self, mut val: Value) -> Value {
         // Distribute aggregable values first
-        if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
-            let iter_min = self.aggr_min.drain_values();
-            let iter_max = self.aggr_max.drain_values();
-            for aggr_entry in iter_min.chain(iter_max) {
-                match aggr_entry.pen {
-                    // Convert percent change into mult - 1 to store in penalizable value containers
-                    true => self.pens.add_val(aggr_entry.val * Value::HUNDREDTH),
-                    false => self.main *= aggr_entry.val.mul_add(Value::HUNDREDTH, Value::ONE),
-                }
+        if !self.aggr_min.is_empty() {
+            for aggr_entry in self.aggr_min.drain_values() {
+                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
             }
         }
+        if !self.aggr_max.is_empty() {
+            for aggr_entry in self.aggr_max.drain_values() {
+                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
+            }
+        }
+        // Using unpenalized and penalized values, calculate final result
         val *= self.main;
         self.pens.calc_val(val)
     }
