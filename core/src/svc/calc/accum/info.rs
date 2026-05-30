@@ -5,10 +5,7 @@
 
 use smallvec::SmallVec;
 
-use super::shared::{
-    PENALTY_MULTS, diminish_basic, diminish_mul, is_penal, normalize_div, normalize_noop, normalize_perc,
-    normalize_sub, preprocess_assign_diminish_mult,
-};
+use super::shared::{PENALTY_MULTS, is_penal};
 use crate::{
     ad::AItemCatId,
     api::Op,
@@ -670,4 +667,51 @@ where
         }
     }
     attr_info
+}
+
+// TODO: code moved from shared module, might need to clean up
+// Normalization functions
+fn normalize_noop(val: Value) -> Option<Value> {
+    Some(val)
+}
+fn normalize_sub(val: Value) -> Option<Value> {
+    Some(-val)
+}
+fn normalize_div(val: Value) -> Option<Value> {
+    if val == Value::ZERO {
+        return None;
+    }
+    Some(Value::ONE / val)
+}
+fn normalize_perc(val: Value) -> Option<Value> {
+    Some(Value::ONE + val / Value::HUNDRED)
+}
+
+// Apply diminishing factors (resistance- and projection-related reductions)
+fn diminish_basic(mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+    if let Some(proj_mult) = proj_mult {
+        val *= proj_mult;
+    }
+    if let Some(res_mult) = res_mult {
+        val *= res_mult;
+    }
+    val
+}
+fn diminish_mul(val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+    if res_mult.is_none() && proj_mult.is_none() {
+        return val;
+    }
+    diminish_basic(val - Value::ONE, res_mult, proj_mult) + Value::ONE
+}
+
+// Multipliers affect assign operations differently: if any of multipliers is 0.0, then modification
+// is not applied altogether, otherwise it is applied fully. There are no such modifiers in EVE,
+// but the lib makes it to work this way.
+fn preprocess_assign_diminish_mult(mult: Option<PValue>) -> Option<Option<PValue>> {
+    match mult {
+        // None means modification shouldn't be added
+        Some(PValue::ZERO) => None,
+        Some(_) => Some(Some(PValue::ONE)),
+        None => Some(None),
+    }
 }
