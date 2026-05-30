@@ -89,7 +89,7 @@ impl HChangeShipViaFitIdCmd {
 }
 
 #[derive(Deserialize)]
-pub(crate) struct HRemoveShipCmd {}
+pub(crate) struct HRemoveShipCmd;
 impl HRemoveShipCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;

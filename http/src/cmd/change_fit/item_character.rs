@@ -81,7 +81,7 @@ impl HChangeCharacterViaFitIdCmd {
 }
 
 #[derive(Deserialize)]
-pub(crate) struct HRemoveCharacterCmd {}
+pub(crate) struct HRemoveCharacterCmd;
 impl HRemoveCharacterCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;

@@ -252,8 +252,8 @@ impl ModAccumMul {
                 }
                 false => self.main *= val,
             },
-            AggrMode::Min(key) => self.aggr_min.add_val(key, PenalizableEntry { val, pen }),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, PenalizableEntry { val, pen }),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
@@ -319,8 +319,8 @@ impl ModAccumDiv {
                 }
                 false => self.main *= val,
             },
-            AggrMode::Min(key) => self.aggr_min.add_val(key, PenalizableEntry { val, pen }),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, PenalizableEntry { val, pen }),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
@@ -383,8 +383,8 @@ impl ModAccumPerc {
                 }
                 false => self.main *= val.mul_add(Value::HUNDREDTH, Value::ONE),
             },
-            AggrMode::Min(key) => self.aggr_min.add_val(key, PenalizableEntry { val, pen }),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, PenalizableEntry { val, pen }),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
     fn calc_val(&mut self, val: Value) -> Value {
@@ -422,79 +422,35 @@ fn get_penalty_chain_val(vals: &[Value]) -> Value {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Key-based aggregation maps
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct AggrMin {
-    data: RMap<AggrKey, Value>,
-}
-impl AggrMin {
-    fn new() -> Self {
-        Self { data: RMap::new() }
-    }
-    fn add_val(&mut self, aggr_key: AggrKey, added: Value) {
-        match self.data.entry(aggr_key) {
-            Entry::Occupied(mut entry) => {
-                if added < *entry.get() {
-                    entry.insert(added);
-                }
-            }
-            Entry::Vacant(entry) => {
-                entry.insert(added);
-            }
-        }
-    }
-    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = Value> {
-        self.data.drain().map(|v| v.1)
-    }
-}
+type AggrMin = AggrStore<Value, AggrArbiterValMin>;
+type AggrMax = AggrStore<Value, AggrArbiterValMax>;
+type AggrPenMin = AggrStore<PenEntry, AggrArbiterPenMin>;
+type AggrPenMax = AggrStore<PenEntry, AggrArbiterPenMax>;
 
-struct AggrMax {
-    data: RMap<AggrKey, Value>,
-}
-impl AggrMax {
-    fn new() -> Self {
-        Self { data: RMap::new() }
-    }
-    fn add_val(&mut self, aggr_key: AggrKey, added: Value) {
-        match self.data.entry(aggr_key) {
-            Entry::Occupied(mut entry) => {
-                if added > *entry.get() {
-                    entry.insert(added);
-                }
-            }
-            Entry::Vacant(entry) => {
-                entry.insert(added);
-            }
-        }
-    }
-    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = Value> {
-        self.data.drain().map(|v| v.1)
-    }
-}
-
-struct PenalizableEntry {
+struct PenEntry {
     val: Value,
     pen: bool,
 }
 
-struct AggrPenMin {
-    data: RMap<AggrKey, PenalizableEntry>,
+struct AggrStore<T, R> {
+    data: RMap<AggrKey, T>,
+    arbiter: std::marker::PhantomData<R>,
 }
-impl AggrPenMin {
+impl<T, R> AggrStore<T, R> {
     fn new() -> Self {
-        Self { data: RMap::new() }
+        Self {
+            data: RMap::new(),
+            arbiter: std::marker::PhantomData,
+        }
     }
-    fn add_val(&mut self, aggr_key: AggrKey, added: PenalizableEntry) {
+    fn add_val(&mut self, aggr_key: AggrKey, added: T)
+    where
+        R: AggrArbiter<Item = T>,
+    {
         match self.data.entry(aggr_key) {
             Entry::Occupied(mut entry) => {
-                let stored = entry.get();
-                // Lesser values, or equal but non-penalizable values have priority
-                match added.val.cmp(&stored.val) {
-                    Ordering::Less => {
-                        entry.insert(added);
-                    }
-                    Ordering::Equal if !added.pen && stored.pen => {
-                        entry.insert(added);
-                    }
-                    _ => (),
+                if R::is_added_better(entry.get(), &added) {
+                    entry.insert(added);
                 }
             }
             Entry::Vacant(entry) => {
@@ -502,39 +458,49 @@ impl AggrPenMin {
             }
         }
     }
-    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = PenalizableEntry> {
+    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = T> {
         self.data.drain().map(|v| v.1)
     }
 }
 
-struct AggrPenMax {
-    data: RMap<AggrKey, PenalizableEntry>,
+trait AggrArbiter {
+    type Item;
+    fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool;
 }
-impl AggrPenMax {
-    fn new() -> Self {
-        Self { data: RMap::new() }
+
+struct AggrArbiterValMin;
+impl AggrArbiter for AggrArbiterValMin {
+    type Item = Value;
+    fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool {
+        added < stored
     }
-    fn add_val(&mut self, aggr_key: AggrKey, added: PenalizableEntry) {
-        match self.data.entry(aggr_key) {
-            Entry::Occupied(mut entry) => {
-                let stored = entry.get();
-                // Greater values, or equal but non-penalizable values have priority
-                match added.val.cmp(&stored.val) {
-                    Ordering::Greater => {
-                        entry.insert(added);
-                    }
-                    Ordering::Equal if !added.pen && stored.pen => {
-                        entry.insert(added);
-                    }
-                    _ => (),
-                }
-            }
-            Entry::Vacant(entry) => {
-                entry.insert(added);
-            }
+}
+struct AggrArbiterValMax;
+impl AggrArbiter for AggrArbiterValMax {
+    type Item = Value;
+    fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool {
+        added > stored
+    }
+}
+struct AggrArbiterPenMin;
+impl AggrArbiter for AggrArbiterPenMin {
+    type Item = PenEntry;
+    fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool {
+        match added.val.cmp(&stored.val) {
+            Ordering::Greater => false,
+            Ordering::Equal => !added.pen && stored.pen,
+            Ordering::Less => true,
         }
     }
-    fn drain_values(&mut self) -> impl ExactSizeIterator<Item = PenalizableEntry> {
-        self.data.drain().map(|v| v.1)
+}
+struct AggrArbiterPenMax;
+impl AggrArbiter for AggrArbiterPenMax {
+    type Item = PenEntry;
+    fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool {
+        match added.val.cmp(&stored.val) {
+            Ordering::Greater => true,
+            Ordering::Equal => !added.pen && stored.pen,
+            Ordering::Less => false,
+        }
     }
 }

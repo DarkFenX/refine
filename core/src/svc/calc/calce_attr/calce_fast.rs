@@ -346,7 +346,7 @@ impl Calc {
 
 #[derive(thiserror::Error, Debug)]
 #[error("no attribute in request")]
-struct NoAttrError {}
+struct NoAttrError;
 
 #[derive(thiserror::Error, Debug)]
 enum GetOAttrError {

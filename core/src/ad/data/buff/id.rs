@@ -8,7 +8,6 @@ pub enum ABuffId {
     Eve(AEveBuffId),
     Custom(ACustomBuffId),
 }
-impl ABuffId {}
 impl std::fmt::Display for ABuffId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

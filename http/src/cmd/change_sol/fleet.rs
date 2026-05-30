@@ -7,7 +7,7 @@ use crate::{
 };
 
 #[derive(Deserialize)]
-pub(crate) struct HAddFleetCmd {}
+pub(crate) struct HAddFleetCmd;
 impl HAddFleetCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HFleetIdResp {
         let core_fleet = core_sol.add_fleet();

@@ -82,7 +82,7 @@ impl HChangeStanceViaFitIdCmd {
 }
 
 #[derive(Deserialize)]
-pub(crate) struct HRemoveStanceCmd {}
+pub(crate) struct HRemoveStanceCmd;
 impl HRemoveStanceCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;

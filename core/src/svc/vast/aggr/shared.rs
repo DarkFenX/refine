@@ -41,7 +41,7 @@ impl<I> GetDuration for AggrPartData<I> {
 }
 
 #[derive(Copy, Clone)]
-pub(super) struct AggrHardDtNull {}
+pub(super) struct AggrHardDtNull;
 impl From<CSeqHardDtFull> for AggrHardDtNull {
     fn from(_hard_dt: CSeqHardDtFull) -> Self {
         Self {}
