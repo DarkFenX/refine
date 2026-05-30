@@ -107,12 +107,12 @@ impl Calc {
         for affection in self.iter_affections(ctx, &item_uid, item, attr_rid) {
             accumulator.add_val(
                 affection.modification.val,
+                affection.modification.op,
                 affection.modification.proj_mult,
                 affection.modification.res_mult,
-                &affection.modification.op,
                 attr.penalizable,
-                &affection.modification.affector_item_cat_id,
-                &affection.modification.aggr_mode,
+                affection.modification.affector_item_cat_id,
+                affection.modification.aggr_mode,
                 affection.affectors,
             );
         }

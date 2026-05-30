@@ -52,7 +52,7 @@ impl AttrValInfo {
 }
 
 pub(in crate::svc::calc) struct ModAccumInfo {
-    pre_assign: AttrAggr,
+    pre_assign: ModAccumAssign,
     pre_mul: AttrStack,
     pre_div: AttrStack,
     add: AttrAggr,
@@ -60,14 +60,14 @@ pub(in crate::svc::calc) struct ModAccumInfo {
     post_mul: AttrStack,
     post_div: AttrStack,
     post_perc: AttrStack,
-    post_assign: AttrAggr,
+    post_assign: ModAccumAssign,
     extra_add: AttrAggr,
     extra_mul: AttrAggr,
 }
 impl ModAccumInfo {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            pre_assign: AttrAggr::new(),
+            pre_assign: ModAccumAssign::new(),
             pre_mul: AttrStack::new(),
             pre_div: AttrStack::new(),
             add: AttrAggr::new(),
@@ -75,7 +75,7 @@ impl ModAccumInfo {
             post_mul: AttrStack::new(),
             post_div: AttrStack::new(),
             post_perc: AttrStack::new(),
-            post_assign: AttrAggr::new(),
+            post_assign: ModAccumAssign::new(),
             extra_add: AttrAggr::new(),
             extra_mul: AttrAggr::new(),
         }
@@ -83,32 +83,18 @@ impl ModAccumInfo {
     pub(in crate::svc::calc) fn add_val(
         &mut self,
         val: Value,
+        op: CalcOp,
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
-        op: &CalcOp,
         attr_pen: bool,
-        item_cat: &AItemCatId,
-        aggr_mode: &AggrMode,
+        item_cat: AItemCatId,
+        aggr_mode: AggrMode,
         affectors: SmallVec<[Affector; 1]>,
     ) {
         match op {
-            CalcOp::PreAssign => {
-                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
-                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
-                {
-                    self.pre_assign.add_val(
-                        CalcOp::PreAssign,
-                        val,
-                        proj_mult,
-                        res_mult,
-                        &normalize_noop,
-                        &diminish_basic,
-                        &revert_noop,
-                        aggr_mode,
-                        affectors,
-                    )
-                }
-            }
+            CalcOp::PreAssign => self
+                .pre_assign
+                .add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::PreMul => self.pre_mul.add_val(
                 CalcOp::PreMul,
                 val,
@@ -117,8 +103,8 @@ impl ModAccumInfo {
                 &normalize_noop,
                 &diminish_mul,
                 &revert_noop,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::PreDiv => self.pre_div.add_val(
@@ -129,8 +115,8 @@ impl ModAccumInfo {
                 &normalize_div,
                 &diminish_mul,
                 &revert_div,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::Add => self.add.add_val(
@@ -141,7 +127,7 @@ impl ModAccumInfo {
                 &normalize_noop,
                 &diminish_basic,
                 &revert_noop,
-                aggr_mode,
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::Sub => self.sub.add_val(
@@ -152,7 +138,7 @@ impl ModAccumInfo {
                 &normalize_sub,
                 &diminish_basic,
                 &revert_sub,
-                aggr_mode,
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::PostMul => self.post_mul.add_val(
@@ -163,8 +149,8 @@ impl ModAccumInfo {
                 &normalize_noop,
                 &diminish_mul,
                 &revert_noop,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::PostMulImmune => self.post_mul.add_val(
@@ -176,7 +162,7 @@ impl ModAccumInfo {
                 &diminish_mul,
                 &revert_noop,
                 false,
-                aggr_mode,
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::PostDiv => self.post_div.add_val(
@@ -187,8 +173,8 @@ impl ModAccumInfo {
                 &normalize_div,
                 &diminish_mul,
                 &revert_div,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::PostPerc => self.post_perc.add_val(
@@ -199,8 +185,8 @@ impl ModAccumInfo {
                 &normalize_perc,
                 &diminish_mul,
                 &revert_perc,
-                is_penal(attr_pen, item_cat),
-                aggr_mode,
+                is_penal(attr_pen, &item_cat),
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::PostPercImmune => self.post_perc.add_val(
@@ -212,26 +198,12 @@ impl ModAccumInfo {
                 &diminish_mul,
                 &revert_perc,
                 false,
-                aggr_mode,
+                &aggr_mode,
                 affectors,
             ),
-            CalcOp::PostAssign => {
-                if let Some(proj_mult) = preprocess_assign_diminish_mult(proj_mult)
-                    && let Some(res_mult) = preprocess_assign_diminish_mult(res_mult)
-                {
-                    self.post_assign.add_val(
-                        CalcOp::PostAssign,
-                        val,
-                        proj_mult,
-                        res_mult,
-                        &normalize_noop,
-                        &diminish_basic,
-                        &revert_noop,
-                        aggr_mode,
-                        affectors,
-                    )
-                }
-            }
+            CalcOp::PostAssign => self
+                .post_assign
+                .add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::ExtraAdd => self.extra_add.add_val(
                 CalcOp::ExtraAdd,
                 val,
@@ -240,7 +212,7 @@ impl ModAccumInfo {
                 &normalize_noop,
                 &diminish_basic,
                 &revert_noop,
-                aggr_mode,
+                &aggr_mode,
                 affectors,
             ),
             CalcOp::ExtraMul => self.extra_mul.add_val(
@@ -251,16 +223,13 @@ impl ModAccumInfo {
                 &normalize_noop,
                 &diminish_mul,
                 &revert_noop,
-                aggr_mode,
+                &aggr_mode,
                 affectors,
             ),
         };
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, attr_info: AttrValInfo, hig: bool) -> AttrValInfo {
-        let attr_info = apply_assign(
-            attr_info,
-            self.pre_assign.get_comb_attr_info(&combine_assigns, &revert_noop, hig),
-        );
+        let attr_info = self.pre_assign.process_attr_info(attr_info, hig);
         let attr_info = apply_mul(
             attr_info,
             self.pre_mul
@@ -288,10 +257,7 @@ impl ModAccumInfo {
             self.post_perc
                 .get_comb_attr_info(&combine_muls, &combine_muls_pen, &revert_perc, hig),
         );
-        apply_assign(
-            attr_info,
-            self.post_assign.get_comb_attr_info(&combine_assigns, &revert_noop, hig),
-        )
+        self.post_assign.process_attr_info(attr_info, hig)
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, attr_info: AttrValInfo, hig: bool) -> AttrValInfo {
         let attr_info = apply_add(
@@ -713,5 +679,58 @@ fn preprocess_assign_diminish_mult(mult: Option<PValue>) -> Option<Option<PValue
         Some(PValue::ZERO) => None,
         Some(_) => Some(Some(PValue::ONE)),
         None => Some(None),
+    }
+}
+
+// TODO: new implementation ahead, remove things above & refactor new code when done
+struct ModAccumAssign {
+    stack: Vec<AttrValInfo>,
+    // Aggregable assignments
+    aggr_min: RMap<AggrKey, Vec<AttrValInfo>>,
+    aggr_max: RMap<AggrKey, Vec<AttrValInfo>>,
+}
+impl ModAccumAssign {
+    fn new() -> Self {
+        Self {
+            stack: Vec::new(),
+            aggr_min: RMap::new(),
+            aggr_max: RMap::new(),
+        }
+    }
+    fn add_val(
+        &mut self,
+        op: CalcOp,
+        val: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<PValue>,
+        aggr_mode: AggrMode,
+        affectors: SmallVec<[Affector; 1]>,
+    ) {
+        // Projection/resist multipliers affect assign operations differently: if any of multipliers
+        // is 0.0, then modification is not applied altogether, otherwise it is applied fully. There
+        // are no such modifiers in EVE, but the lib makes it to work this way.
+        if proj_mult == Some(PValue::ZERO) || res_mult == Some(PValue::ZERO) {
+            return;
+        };
+        // TODO: make multipliers always none/one regardless of what requested multipliers were
+        let mod_info = Modification {
+            op: Op::from_calc_op(op),
+            initial_str: val,
+            range_mult: proj_mult,
+            resist_mult: res_mult,
+            stacking_mult: None,
+            applied_str: val,
+            affectors: affectors.into_vec(),
+        };
+        let attr_info = AttrValInfo::from_effective_info(val, mod_info);
+        match aggr_mode {
+            AggrMode::Stack => self.stack.push(attr_info),
+            // Store asignment in its original format for aggregation
+            AggrMode::Min(key) => self.aggr_min.entry(key).or_default().push(attr_info),
+            AggrMode::Max(key) => self.aggr_max.entry(key).or_default().push(attr_info),
+        }
+    }
+    fn process_attr_info(&mut self, attr_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
+        attr_info
     }
 }
