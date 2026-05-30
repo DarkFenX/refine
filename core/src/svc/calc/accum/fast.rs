@@ -142,16 +142,19 @@ impl ModAccumAssign {
         }
     }
     fn calc_val(&mut self, mut val: Value, attr_hig: bool) -> Value {
-        let iter_main = self.main.into_iter();
-        let iter_min = self.aggr_min.drain_values();
-        let iter_max = self.aggr_max.drain_values();
-        let chain = iter_main.chain(iter_min).chain(iter_max);
-        // Pick best assignment across all containers, and use it
-        if let Some(best_value) = match attr_hig {
-            true => chain.max(),
-            false => chain.min(),
-        } {
-            val = best_value;
+        // TODO: maybe split main processing from aggr processing
+        if self.main.is_some() || !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
+            let iter_main = self.main.into_iter();
+            let iter_min = self.aggr_min.drain_values();
+            let iter_max = self.aggr_max.drain_values();
+            let chain = iter_main.chain(iter_min).chain(iter_max);
+            // Pick best assignment across all containers, and use it
+            if let Some(best_value) = match attr_hig {
+                true => chain.max(),
+                false => chain.min(),
+            } {
+                val = best_value;
+            }
         }
         val
     }
@@ -186,8 +189,15 @@ impl ModAccumAdd {
             AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
     }
-    fn calc_val(&mut self, val: Value) -> Value {
-        val + self.main + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum()
+    fn calc_val(&mut self, mut val: Value) -> Value {
+        val += self.main;
+        if !self.aggr_min.is_empty() {
+            val += self.aggr_min.drain_values().sum::<Value>();
+        }
+        if !self.aggr_max.is_empty() {
+            val += self.aggr_max.drain_values().sum::<Value>();
+        }
+        val
     }
 }
 
@@ -217,10 +227,17 @@ impl ModAccumSub {
             AggrMode::Max(key) => self.aggr_max.add_val(key, val),
         }
     }
-    fn calc_val(&mut self, val: Value) -> Value {
+    fn calc_val(&mut self, mut val: Value) -> Value {
         // Since all the values were stored/folded in original format of decreases/subtractions,
         // subtract their sum from passed value
-        val - (self.main + self.aggr_min.drain_values().sum() + self.aggr_max.drain_values().sum())
+        val -= self.main;
+        if !self.aggr_min.is_empty() {
+            val -= self.aggr_min.drain_values().sum::<Value>();
+        }
+        if !self.aggr_max.is_empty() {
+            val -= self.aggr_max.drain_values().sum::<Value>();
+        }
+        val
     }
 }
 
@@ -274,21 +291,23 @@ impl ModAccumMul {
     }
     fn calc_val(&mut self, val: Value) -> Value {
         // Distribute aggregable values first
-        let iter_min = self.aggr_min.drain_values();
-        let iter_max = self.aggr_max.drain_values();
-        for aggr_entry in iter_min.chain(iter_max) {
-            match aggr_entry.pen {
-                true => {
-                    // Convert mult into mult - 1 to store in penalizable value containers
-                    let aggr_val = aggr_entry.val - Value::ONE;
-                    match aggr_val.cmp(&Value::ZERO) {
-                        Ordering::Greater => self.pen_pos.push(aggr_val),
-                        Ordering::Equal => (),
-                        Ordering::Less => self.pen_neg.push(aggr_val),
+        if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
+            let iter_min = self.aggr_min.drain_values();
+            let iter_max = self.aggr_max.drain_values();
+            for aggr_entry in iter_min.chain(iter_max) {
+                match aggr_entry.pen {
+                    true => {
+                        // Convert mult into mult - 1 to store in penalizable value containers
+                        let aggr_val = aggr_entry.val - Value::ONE;
+                        match aggr_val.cmp(&Value::ZERO) {
+                            Ordering::Greater => self.pen_pos.push(aggr_val),
+                            Ordering::Equal => (),
+                            Ordering::Less => self.pen_neg.push(aggr_val),
+                        }
                     }
+                    // Fold into main value in case value coming from aggregators is not penalizable
+                    false => self.main *= aggr_entry.val,
                 }
-                // Fold into main value in case value coming from aggregators is not penalizable
-                false => self.main *= aggr_entry.val,
             }
         }
         // Resolve penalization chains & calculate final value
@@ -349,21 +368,23 @@ impl ModAccumDiv {
     }
     fn calc_val(&mut self, val: Value) -> Value {
         // Distribute aggregable values first
-        let iter_min = self.aggr_min.drain_values();
-        let iter_max = self.aggr_max.drain_values();
-        for aggr_entry in iter_min.chain(iter_max) {
-            match aggr_entry.pen {
-                true => {
-                    // Convert divisor into mult - 1 to store in penalizable value containers
-                    let aggr_val = Value::ONE / aggr_entry.val - Value::ONE;
-                    match aggr_val.cmp(&Value::ZERO) {
-                        Ordering::Greater => self.pen_pos.push(aggr_val),
-                        Ordering::Equal => (),
-                        Ordering::Less => self.pen_neg.push(aggr_val),
+        if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
+            let iter_min = self.aggr_min.drain_values();
+            let iter_max = self.aggr_max.drain_values();
+            for aggr_entry in iter_min.chain(iter_max) {
+                match aggr_entry.pen {
+                    true => {
+                        // Convert divisor into mult - 1 to store in penalizable value containers
+                        let aggr_val = Value::ONE / aggr_entry.val - Value::ONE;
+                        match aggr_val.cmp(&Value::ZERO) {
+                            Ordering::Greater => self.pen_pos.push(aggr_val),
+                            Ordering::Equal => (),
+                            Ordering::Less => self.pen_neg.push(aggr_val),
+                        }
                     }
+                    // Unpenalizable divisors are folded into main value
+                    false => self.main *= aggr_entry.val,
                 }
-                // Unpenalizable divisors are folded into main value
-                false => self.main *= aggr_entry.val,
             }
         }
         // Resolve penalization chains & calculate final value
@@ -417,20 +438,23 @@ impl ModAccumPerc {
     }
     fn calc_val(&mut self, val: Value) -> Value {
         // Distribute aggregable values first
-        let iter_min = self.aggr_min.drain_values();
-        let iter_max = self.aggr_max.drain_values();
-        for aggr_entry in iter_min.chain(iter_max) {
-            match aggr_entry.pen {
-                true => {
-                    // Convert percent change into mult - 1 to store in penalizable value containers
-                    let aggr_val = aggr_entry.val * Value::HUNDREDTH;
-                    match aggr_val.cmp(&Value::ZERO) {
-                        Ordering::Greater => self.pen_pos.push(aggr_val),
-                        Ordering::Equal => (),
-                        Ordering::Less => self.pen_neg.push(aggr_val),
+        if !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
+            let iter_min = self.aggr_min.drain_values();
+            let iter_max = self.aggr_max.drain_values();
+            for aggr_entry in iter_min.chain(iter_max) {
+                match aggr_entry.pen {
+                    true => {
+                        // Convert percent change into mult - 1 to store in penalizable value
+                        // containers
+                        let aggr_val = aggr_entry.val * Value::HUNDREDTH;
+                        match aggr_val.cmp(&Value::ZERO) {
+                            Ordering::Greater => self.pen_pos.push(aggr_val),
+                            Ordering::Equal => (),
+                            Ordering::Less => self.pen_neg.push(aggr_val),
+                        }
                     }
+                    false => self.main *= aggr_entry.val.mul_add(Value::HUNDREDTH, Value::ONE),
                 }
-                false => self.main *= aggr_entry.val.mul_add(Value::HUNDREDTH, Value::ONE),
             }
         }
         // Resolve penalization chains & calculate final value
@@ -487,6 +511,9 @@ impl<T, R> AggrStore<T, R> {
                 entry.insert(added);
             }
         }
+    }
+    fn is_empty(&self) -> bool {
+        self.data.is_empty()
     }
     fn drain_values(&mut self) -> impl ExactSizeIterator<Item = T> {
         self.data.drain().map(|v| v.1)
