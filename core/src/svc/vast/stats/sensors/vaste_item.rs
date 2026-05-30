@@ -68,7 +68,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<StatSensors, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        Ok(Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid))
+        Ok(Self::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid))
     }
     pub(in crate::svc::vast::stats) fn internal_get_stat_item_sensors_unchecked(
         ctx: SvcCtx,
@@ -129,8 +129,8 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<Option<PValue>, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        let sensor_str = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid).strength;
-        let sig_radius = Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid);
+        let sensor_str = Self::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid).strength;
+        let sig_radius = Self::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid);
         let ratio = sig_radius / sensor_str;
         let probing_size = match ratio.is_finite() {
             true => Some(ratio.max(PValue::from_f64_unchecked(1.08))),

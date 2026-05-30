@@ -26,7 +26,7 @@ impl Vast {
     ) -> Result<StatEhp, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let hp = self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item);
-        let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid);
+        let resists = Self::get_stat_item_resists_unchecked(ctx, calc, item_uid);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(resists.shield, incoming_dps);
         let armor_mult = get_tanking_efficiency(resists.armor, incoming_dps);
@@ -43,7 +43,7 @@ impl Vast {
     ) -> Result<StatEhp, StatItemCheckError> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let hp = self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item);
-        let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid);
+        let resists = Self::get_stat_item_resists_unchecked(ctx, calc, item_uid);
         let shield_mult = get_worst_case_tanking_efficiency(resists.shield);
         let armor_mult = get_worst_case_tanking_efficiency(resists.armor);
         let hull_mult = get_worst_case_tanking_efficiency(resists.hull);

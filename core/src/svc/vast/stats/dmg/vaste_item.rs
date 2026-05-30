@@ -28,7 +28,7 @@ impl Vast {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
-        Vast::internal_get_stat_item_dmg_checked(
+        Self::internal_get_stat_item_dmg_checked(
             reuse_cseq_map,
             ctx,
             calc,
@@ -66,7 +66,7 @@ impl Vast {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new();
-        Vast::internal_get_stat_item_dmg_applied_checked(
+        Self::internal_get_stat_item_dmg_applied_checked(
             reuse_cseq_map,
             ctx,
             calc,
@@ -143,7 +143,7 @@ impl Vast {
         }
         if include_charges {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
-                let _ = Vast::internal_get_stat_item_dmg_checked(
+                let _ = Self::internal_get_stat_item_dmg_checked(
                     reuse_cseq_map,
                     ctx,
                     calc,
@@ -228,7 +228,7 @@ impl Vast {
         }
         if include_charges {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
-                let _ = Vast::internal_get_stat_item_dmg_applied_checked(
+                let _ = Self::internal_get_stat_item_dmg_applied_checked(
                     reuse_cseq_map,
                     ctx,
                     calc,

@@ -72,7 +72,7 @@ impl Vast {
         }
         if include_charges {
             for charge_uid in u_item.iter_charges() {
-                if let Ok(charge_nps) = Vast::get_stat_item_outgoing_nps(
+                if let Ok(charge_nps) = Self::get_stat_item_outgoing_nps(
                     reuse_cseq_map,
                     ctx,
                     calc,

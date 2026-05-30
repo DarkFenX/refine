@@ -33,7 +33,7 @@ impl Vast {
         nosf_projectee_item_uid: Option<UItemId>,
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
-        let max_cap = Vast::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
+        let max_cap = Self::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
         let recharge_time_ms = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO)
             .unwrap();

@@ -34,7 +34,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<Option<PValue>, StatItemCheckError> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
-        Ok(Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid))
+        Ok(Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid))
     }
     fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
         let attr_consts = ctx.ac();
@@ -60,7 +60,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<Option<PValue>, StatItemCheckError> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
-        let agility = Vast::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid);
+        let agility = Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid);
         let align_time = agility.map(PValue::ceil_tick);
         Ok(align_time)
     }
@@ -70,7 +70,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        Ok(Vast::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid))
+        Ok(Self::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid))
     }
     pub(in crate::svc::vast::stats) fn internal_get_stat_item_sig_radius_unchecked(
         ctx: SvcCtx,
@@ -85,7 +85,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        Ok(Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid))
+        Ok(Self::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid))
     }
     fn internal_get_stat_item_mass_unchecked(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
         let mass = calc
@@ -114,8 +114,8 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<Option<PValue>, StatItemCheckError> {
         check_ship_no_struct(ctx.u_data, item_uid)?;
-        let cap = Vast::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
-        let mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);
+        let cap = Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
+        let mass = Self::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);
         let cap_need = PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_capacitor_need, Value::ZERO)
                 .unwrap(),

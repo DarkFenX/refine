@@ -18,7 +18,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<StatResists, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        Ok(Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid))
+        Ok(Self::get_stat_item_resists_unchecked(ctx, calc, item_uid))
     }
     pub(in crate::svc::vast::stats::tank) fn get_stat_item_resists_unchecked(
         ctx: SvcCtx,
@@ -26,9 +26,9 @@ impl Vast {
         item_uid: UItemId,
     ) -> StatResists {
         StatResists {
-            shield: Vast::get_item_shield_resists(ctx, calc, item_uid),
-            armor: Vast::get_item_armor_resists(ctx, calc, item_uid),
-            hull: Vast::get_item_hull_resists(ctx, calc, item_uid),
+            shield: Self::get_item_shield_resists(ctx, calc, item_uid),
+            armor: Self::get_item_armor_resists(ctx, calc, item_uid),
+            hull: Self::get_item_hull_resists(ctx, calc, item_uid),
         }
     }
     fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {

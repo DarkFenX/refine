@@ -29,7 +29,7 @@ impl Vast {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let rps =
             self.get_stat_item_rps_unchecked(reuse_cseq_map, ctx, calc, item_uid, item, time_options, shield_perc);
-        let resists = Vast::get_stat_item_resists_unchecked(ctx, calc, item_uid);
+        let resists = Self::get_stat_item_resists_unchecked(ctx, calc, item_uid);
         let incoming_dps = incoming_dps.unwrap_or(ctx.u_data.default_incoming_dps);
         let shield_mult = get_tanking_efficiency(resists.shield, incoming_dps);
         let armor_mult = get_tanking_efficiency(resists.armor, incoming_dps);

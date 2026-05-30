@@ -16,7 +16,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_ship(ctx.u_data, item_uid)?;
-        Ok(Vast::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid))
+        Ok(Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid))
     }
     pub(in crate::svc::vast::stats) fn internal_get_stat_item_cap_amount_unchecked(
         ctx: SvcCtx,

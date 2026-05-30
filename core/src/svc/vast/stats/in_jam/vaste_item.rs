@@ -31,7 +31,7 @@ impl Vast {
                 uptime: UnitInterval::ZERO,
             });
         };
-        let sensors = Vast::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_uid);
+        let sensors = Self::internal_get_stat_item_sensors_unchecked(ctx, calc, projectee_item_uid);
         let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut projectee_unjam_chance = Value::ONE;
         let mut projectee_unjam_uptime = Value::ONE;

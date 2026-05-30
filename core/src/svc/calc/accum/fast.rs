@@ -142,7 +142,6 @@ impl ModAccumAssign {
         }
     }
     fn calc_val(&mut self, mut val: Value, attr_hig: bool) -> Value {
-        // TODO: maybe split main processing from aggr processing
         if self.main.is_some() || !self.aggr_min.is_empty() || !self.aggr_max.is_empty() {
             let iter_main = self.main.into_iter();
             let iter_min = self.aggr_min.drain_values();
