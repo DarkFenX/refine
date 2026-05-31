@@ -3,7 +3,7 @@ use crate::{ad::AOp, svc::calc::CalcOp};
 /// Defines what kind of operation will be applied to an attribute being modified.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum Op {
     /// Uses value of other attribute as a base value. Works same way as PreAssign, but is
     /// calculated earlier, thus gets overridden by any PreAssign. Used only in a few niche

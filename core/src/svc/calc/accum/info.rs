@@ -393,7 +393,7 @@ impl AttrAggr {
     {
         // Resolve aggregations
         for attr_infos in self.aggr_min.values_mut() {
-            if let Some(mut attr_info) = extract_min(attr_infos) {
+            if let Some(mut attr_info) = extract_min_old(attr_infos) {
                 for other_attr_info in attr_infos.extract_if(.., |_| true) {
                     attr_info.merge_ineffective(other_attr_info)
                 }
@@ -401,7 +401,7 @@ impl AttrAggr {
             }
         }
         for attr_infos in self.aggr_max.values_mut() {
-            if let Some(mut attr_info) = extract_max(attr_infos) {
+            if let Some(mut attr_info) = extract_max_old(attr_infos) {
                 for other_attr_info in attr_infos.extract_if(.., |_| true) {
                     attr_info.merge_ineffective(other_attr_info)
                 }
@@ -470,8 +470,8 @@ fn apply_mul(mut base_attr_info: AttrValInfo, other_attr_info: Option<AttrValInf
 // Combination functions - they treat all values equally
 fn combine_assigns<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, high_is_good: bool) -> Option<AttrValInfo> {
     let effective = match high_is_good {
-        true => extract_max(attr_infos),
-        false => extract_min(attr_infos),
+        true => extract_max_old(attr_infos),
+        false => extract_min_old(attr_infos),
     };
     match effective {
         // Only one assign is considered effective, the rest are not
@@ -577,7 +577,7 @@ where
 }
 
 // Misc functions
-fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
+fn extract_min_old(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
     let index = attr_infos
         .iter()
         .enumerate()
@@ -585,7 +585,7 @@ fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
         .map(|(index, _)| index);
     index.map(|index| attr_infos.remove(index))
 }
-fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
+fn extract_max_old(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
     let index = attr_infos
         .iter()
         .enumerate()
@@ -737,27 +737,10 @@ impl ModAccumAssign {
         }
     }
     fn process_attr_info(&mut self, attr_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
-        // Resolve aggregations
-        for attr_infos in self.aggr_min.values_mut() {
-            if let Some(mut attr_info) = extract_min(attr_infos) {
-                for other_attr_info in attr_infos.extract_if(.., |_| true) {
-                    attr_info.merge_ineffective(other_attr_info)
-                }
-                self.stack.push(attr_info);
-            }
-        }
-        for attr_infos in self.aggr_max.values_mut() {
-            if let Some(mut attr_info) = extract_max(attr_infos) {
-                for other_attr_info in attr_infos.extract_if(.., |_| true) {
-                    attr_info.merge_ineffective(other_attr_info)
-                }
-                self.stack.push(attr_info);
-            }
-        }
         // Combine assigns
         let effective = match attr_hig {
-            true => extract_max(&mut self.stack),
-            false => extract_min(&mut self.stack),
+            true => extract_max_old(&mut self.stack),
+            false => extract_min_old(&mut self.stack),
         };
         let combined = match effective {
             // Only one assign is considered effective, the rest are not
@@ -779,4 +762,39 @@ impl ModAccumAssign {
             None => attr_info,
         }
     }
+    fn resolve_aggrs(&mut self) {
+        for attr_infos in self.aggr_min.values_mut() {
+            if let Some(mut attr_info) = extract_min(attr_infos) {
+                for other_attr_info in attr_infos.extract_if(.., |_| true) {
+                    attr_info.merge_ineffective(other_attr_info)
+                }
+                self.stack.push(attr_info);
+            }
+        }
+        for attr_infos in self.aggr_max.values_mut() {
+            if let Some(mut attr_info) = extract_max(attr_infos) {
+                for other_attr_info in attr_infos.extract_if(.., |_| true) {
+                    attr_info.merge_ineffective(other_attr_info)
+                }
+                self.stack.push(attr_info);
+            }
+        }
+    }
+}
+
+fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
+    let min_value = attr_infos.iter().map(|v| v.value).min()?;
+    let mut new_info = AttrValInfo::new(min_value);
+    for other_info in attr_infos.extract_if(.., |v| v.value == min_value) {
+        new_info.merge(other_info);
+    }
+    Some(new_info)
+}
+fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
+    let max_value = attr_infos.iter().map(|v| v.value).max()?;
+    let mut new_info = AttrValInfo::new(max_value);
+    for other_info in attr_infos.extract_if(.., |v| v.value == max_value) {
+        new_info.merge(other_info);
+    }
+    Some(new_info)
 }
