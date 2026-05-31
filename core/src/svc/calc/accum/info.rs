@@ -427,16 +427,6 @@ fn revert_perc(val: Value) -> Value {
 }
 
 // Application functions - they treat left side and right side differently
-fn apply_assign(base_attr_info: AttrValInfo, other_attr_info: Option<AttrValInfo>) -> AttrValInfo {
-    match other_attr_info {
-        // If there are any assignments, they dismiss left side as ineffective
-        Some(mut other_attr_info) => {
-            other_attr_info.merge_ineffective(base_attr_info);
-            other_attr_info
-        }
-        None => base_attr_info,
-    }
-}
 fn apply_add(mut base_attr_info: AttrValInfo, other_attr_info: Option<AttrValInfo>) -> AttrValInfo {
     if let Some(other_attr_info) = other_attr_info {
         base_attr_info.value += other_attr_info.value;
@@ -468,22 +458,6 @@ fn apply_mul(mut base_attr_info: AttrValInfo, other_attr_info: Option<AttrValInf
 }
 
 // Combination functions - they treat all values equally
-fn combine_assigns<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, high_is_good: bool) -> Option<AttrValInfo> {
-    let effective = match high_is_good {
-        true => extract_max_old(attr_infos),
-        false => extract_min_old(attr_infos),
-    };
-    match effective {
-        // Only one assign is considered effective, the rest are not
-        Some(mut attr_info) => {
-            for other_attr_info in attr_infos.extract_if(.., |_| true) {
-                attr_info.merge_ineffective(other_attr_info)
-            }
-            Some(attr_info)
-        }
-        None => None,
-    }
-}
 fn combine_adds<R>(attr_infos: &mut Vec<AttrValInfo>, _revert_func: &R, _high_is_good: bool) -> Option<AttrValInfo> {
     if attr_infos.is_empty() {
         return None;
@@ -670,18 +644,6 @@ fn diminish_mul(val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>)
     diminish_basic(val - Value::ONE, res_mult, proj_mult) + Value::ONE
 }
 
-// Multipliers affect assign operations differently: if any of multipliers is 0.0, then modification
-// is not applied altogether, otherwise it is applied fully. There are no such modifiers in EVE,
-// but the lib makes it to work this way.
-fn preprocess_assign_diminish_mult(mult: Option<PValue>) -> Option<Option<PValue>> {
-    match mult {
-        // None means modification shouldn't be added
-        Some(PValue::ZERO) => None,
-        Some(_) => Some(Some(PValue::ONE)),
-        None => Some(None),
-    }
-}
-
 // TODO: new implementation ahead, remove things above & refactor new code when done
 struct ModAccumAssign {
     stack: Vec<AttrValInfo>,
@@ -736,31 +698,10 @@ impl ModAccumAssign {
             AggrMode::Max(key) => self.aggr_max.entry(key).or_default().push(attr_info),
         }
     }
-    fn process_attr_info(&mut self, attr_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
-        // Combine assigns
-        let effective = match attr_hig {
-            true => extract_max_old(&mut self.stack),
-            false => extract_min_old(&mut self.stack),
-        };
-        let combined = match effective {
-            // Only one assign is considered effective, the rest are not
-            Some(mut attr_info) => {
-                for other_attr_info in self.stack.extract_if(.., |_| true) {
-                    attr_info.merge_ineffective(other_attr_info)
-                }
-                Some(attr_info)
-            }
-            None => None,
-        };
-        // Apply assign
-        match combined {
-            // If there are any assignments, they dismiss left side as ineffective
-            Some(mut other_attr_info) => {
-                other_attr_info.merge_ineffective(attr_info);
-                other_attr_info
-            }
-            None => attr_info,
-        }
+    fn process_attr_info(&mut self, base_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
+        self.resolve_aggrs();
+        let combined_info = self.combine(attr_hig);
+        Self::apply(base_info, combined_info)
     }
     fn resolve_aggrs(&mut self) {
         for attr_infos in self.aggr_min.values_mut() {
@@ -780,9 +721,30 @@ impl ModAccumAssign {
             }
         }
     }
+    fn combine(&mut self, attr_hig: bool) -> Option<AttrValInfo> {
+        let mut new_info = match attr_hig {
+            true => extract_max(&mut self.stack),
+            false => extract_min(&mut self.stack),
+        }?;
+        for other_info in self.stack.extract_if(.., |_| true) {
+            new_info.merge_ineffective(other_info)
+        }
+        Some(new_info)
+    }
+    fn apply(base_info: AttrValInfo, combined_info: Option<AttrValInfo>) -> AttrValInfo {
+        match combined_info {
+            // If there are any assignments, they dismiss left side as ineffective
+            Some(mut combined_info) => {
+                combined_info.merge_ineffective(base_info);
+                combined_info
+            }
+            None => base_info,
+        }
+    }
 }
 
 fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
+    // Merge all infos which have min value into one
     let min_value = attr_infos.iter().map(|v| v.value).min()?;
     let mut new_info = AttrValInfo::new(min_value);
     for other_info in attr_infos.extract_if(.., |v| v.value == min_value) {
@@ -791,6 +753,7 @@ fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
     Some(new_info)
 }
 fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
+    // Merge all infos which have max value into one
     let max_value = attr_infos.iter().map(|v| v.value).max()?;
     let mut new_info = AttrValInfo::new(max_value);
     for other_info in attr_infos.extract_if(.., |v| v.value == max_value) {
