@@ -35,16 +35,12 @@ impl AttrValInfo {
         }
     }
     fn merge(&mut self, mut other: AttrValInfo) {
-        self.effective_infos
-            .extend(other.effective_infos.extract_if(.., |_| true));
-        self.filtered_infos
-            .extend(other.filtered_infos.extract_if(.., |_| true));
+        self.effective_infos.extend(other.effective_infos.into_iter());
+        self.filtered_infos.extend(other.filtered_infos.into_iter());
     }
     fn merge_ineffective(&mut self, mut other: AttrValInfo) {
-        self.filtered_infos
-            .extend(other.effective_infos.extract_if(.., |_| true));
-        self.filtered_infos
-            .extend(other.filtered_infos.extract_if(.., |_| true));
+        self.filtered_infos.extend(other.effective_infos.into_iter());
+        self.filtered_infos.extend(other.filtered_infos.into_iter());
     }
     fn is_single_effective(&self) -> bool {
         self.effective_infos.len() <= 1
@@ -610,6 +606,7 @@ where
 }
 
 // TODO: code moved from shared module, might need to clean up
+// TODO: check extract_if vs drain vs into_iter once refactoring is done
 // Normalization functions
 fn normalize_noop(val: Value) -> Option<Value> {
     Some(val)
@@ -704,17 +701,17 @@ impl ModAccumAssign {
         Self::apply(base_info, combined_info)
     }
     fn resolve_aggrs(&mut self) {
-        for attr_infos in self.aggr_min.values_mut() {
-            if let Some(mut attr_info) = extract_min(attr_infos) {
-                for other_attr_info in attr_infos.extract_if(.., |_| true) {
+        for (_aggr_key, mut attr_infos) in self.aggr_min.drain() {
+            if let Some(mut attr_info) = extract_min(&mut attr_infos) {
+                for other_attr_info in attr_infos.into_iter() {
                     attr_info.merge_ineffective(other_attr_info)
                 }
                 self.stack.push(attr_info);
             }
         }
-        for attr_infos in self.aggr_max.values_mut() {
-            if let Some(mut attr_info) = extract_max(attr_infos) {
-                for other_attr_info in attr_infos.extract_if(.., |_| true) {
+        for (_aggr_key, mut attr_infos) in self.aggr_max.drain() {
+            if let Some(mut attr_info) = extract_max(&mut attr_infos) {
+                for other_attr_info in attr_infos.into_iter() {
                     attr_info.merge_ineffective(other_attr_info)
                 }
                 self.stack.push(attr_info);
@@ -726,7 +723,7 @@ impl ModAccumAssign {
             true => extract_max(&mut self.stack),
             false => extract_min(&mut self.stack),
         }?;
-        for other_info in self.stack.extract_if(.., |_| true) {
+        for other_info in self.stack.drain(..) {
             new_info.merge_ineffective(other_info)
         }
         Some(new_info)
