@@ -4,7 +4,6 @@ use crate::{
     svc::calc::Affector,
 };
 
-#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct Modification {
     pub op: Op,
     pub initial_str: Value,
