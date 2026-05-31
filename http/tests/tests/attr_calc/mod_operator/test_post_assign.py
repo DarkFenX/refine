@@ -43,16 +43,12 @@ def test_high_is_good(client, consts):
      api_item_affector_high2) = setup_hig_test(client=client, consts=consts, high_is_good=True)
     # Verification
     assert attr_val == approx(53.02)
-    attr_mod_high1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector_high1.id).one()
-    assert attr_mod_high1.op == consts.ApiModOp.post_assign
-    assert attr_mod_high1.initial_str == approx(53.02)
-    assert attr_mod_high1.stacking_mult is None
-    assert attr_mod_high1.applied_str == approx(53.02)
-    attr_mod_high2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector_high2.id).one()
-    assert attr_mod_high2.op == consts.ApiModOp.post_assign
-    assert attr_mod_high2.initial_str == approx(53.02)
-    assert attr_mod_high2.stacking_mult is None
-    assert attr_mod_high2.applied_str == approx(53.02)
+    attr_mod = attr_mods.one()
+    assert attr_mod.op == consts.ApiModOp.post_assign
+    assert attr_mod.initial_str == approx(53.02)
+    assert attr_mod.stacking_mult is None
+    assert attr_mod.applied_str == approx(53.02)
+    assert attr_mod.affectors.one().item_id in (api_item_affector_high1.id, api_item_affector_high2.id)
 
 
 def test_high_is_bad(client, consts):
@@ -64,16 +60,12 @@ def test_high_is_bad(client, consts):
      _) = setup_hig_test(client=client, consts=consts, high_is_good=False)
     # Verification
     assert attr_val == approx(-20)
-    attr_mod_low1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector_low1.id).one()
-    assert attr_mod_low1.op == consts.ApiModOp.post_assign
-    assert attr_mod_low1.initial_str == approx(-20)
-    assert attr_mod_low1.stacking_mult is None
-    assert attr_mod_low1.applied_str == approx(-20)
-    attr_mod_low2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector_low2.id).one()
-    assert attr_mod_low2.op == consts.ApiModOp.post_assign
-    assert attr_mod_low2.initial_str == approx(-20)
-    assert attr_mod_low2.stacking_mult is None
-    assert attr_mod_low2.applied_str == approx(-20)
+    attr_mod = attr_mods.one()
+    assert attr_mod.op == consts.ApiModOp.post_assign
+    assert attr_mod.initial_str == approx(-20)
+    assert attr_mod.stacking_mult is None
+    assert attr_mod.applied_str == approx(-20)
+    assert attr_mod.affectors.one().item_id in (api_item_affector_low1.id, api_item_affector_low2.id)
 
 
 def test_insignificant_earlier_ops(client, consts):

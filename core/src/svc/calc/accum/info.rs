@@ -744,20 +744,10 @@ impl ModAccumAssign {
 }
 
 fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
-    // Merge all infos which have min value into one
-    let min_value = attr_infos.iter().map(|v| v.value).min()?;
-    let mut new_info = AttrValInfo::new(min_value);
-    for other_info in attr_infos.extract_if(.., |v| v.value == min_value) {
-        new_info.merge(other_info);
-    }
-    Some(new_info)
+    let index = attr_infos.iter().enumerate().min_by_key(|(_, v)| v.value)?.0;
+    Some(attr_infos.swap_remove(index))
 }
 fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
-    // Merge all infos which have max value into one
-    let max_value = attr_infos.iter().map(|v| v.value).max()?;
-    let mut new_info = AttrValInfo::new(max_value);
-    for other_info in attr_infos.extract_if(.., |v| v.value == max_value) {
-        new_info.merge(other_info);
-    }
-    Some(new_info)
+    let index = attr_infos.iter().enumerate().max_by_key(|(_, v)| v.value)?.0;
+    Some(attr_infos.swap_remove(index))
 }
