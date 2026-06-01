@@ -31,23 +31,66 @@ pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatI
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Value conversion / manipulation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: check which are actually shared, if not - decide if they need to be moved
-pub(super) fn mul_to_mul_change(mul: Value) -> Value {
-    mul - Value::ONE
+pub(super) trait MultiplicativeConv {
+    fn diminish(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value;
+    fn apply_raw(base: &mut Value, raw: Value);
+    fn raw_to_mul_change(raw: Value) -> Value;
+    fn mul_to_raw(mul: Value) -> Value;
 }
 
-pub(super) fn mul_change_to_mul(mul_change: Value) -> Value {
-    mul_change + Value::ONE
+pub(super) struct MulConv;
+impl MultiplicativeConv for MulConv {
+    fn diminish(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+        match proj_mult.reduce(res_mult, |x, y| x * y) {
+            Some(mult) => Self::raw_to_mul_change(raw).mul_add(mult.into_value(), Value::ONE),
+            None => raw,
+        }
+    }
+    fn apply_raw(base: &mut Value, raw: Value) {
+        *base *= raw;
+    }
+    fn raw_to_mul_change(raw: Value) -> Value {
+        raw - Value::ONE
+    }
+    fn mul_to_raw(mul: Value) -> Value {
+        mul
+    }
 }
 
-pub(super) fn div_to_mul_change(div: Value) -> Value {
-    Value::ONE / div - Value::ONE
+pub(super) struct DivConv;
+impl MultiplicativeConv for DivConv {
+    fn diminish(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+        match proj_mult.reduce(res_mult, |x, y| x * y) {
+            Some(mult) => Value::ONE / Self::raw_to_mul_change(raw).mul_add(mult.into_value(), Value::ONE),
+            None => raw,
+        }
+    }
+    fn apply_raw(base: &mut Value, raw: Value) {
+        *base /= raw;
+    }
+    fn raw_to_mul_change(raw: Value) -> Value {
+        Value::ONE / raw - Value::ONE
+    }
+    fn mul_to_raw(mul: Value) -> Value {
+        Value::ONE / mul
+    }
 }
 
-pub(super) fn perc_change_to_mul_change(perc_change: Value) -> Value {
-    perc_change * Value::HUNDREDTH
-}
-
-pub(super) fn perc_change_to_mul(perc_change: Value) -> Value {
-    perc_change.mul_add(Value::HUNDREDTH, Value::ONE)
+pub(super) struct PercConv;
+impl MultiplicativeConv for PercConv {
+    fn diminish(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+        match proj_mult.reduce(res_mult, |x, y| x * y) {
+            Some(mult) => raw * mult,
+            None => raw,
+        }
+    }
+    fn apply_raw(base: &mut Value, raw: Value) {
+        *base *= raw.mul_add(Value::HUNDREDTH, Value::ONE);
+    }
+    fn raw_to_mul_change(raw: Value) -> Value {
+        raw * Value::HUNDREDTH
+    }
+    fn mul_to_raw(mul: Value) -> Value {
+        mul.mul_add(Value::HUNDRED, Value::HUNDRED)
+    }
 }

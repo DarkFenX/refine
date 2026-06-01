@@ -1011,11 +1011,9 @@ fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
 }
 
 fn diminish(mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
-    if let Some(proj_mult) = proj_mult {
-        val *= proj_mult;
-    }
-    if let Some(res_mult) = res_mult {
-        val *= res_mult;
+    // Follow the same order of operations as in fast accum: multiply multipliers first, then apply
+    if let Some(comb_mult) = proj_mult.reduce(res_mult, |x, y| x * y) {
+        val *= comb_mult;
     }
     val
 }
