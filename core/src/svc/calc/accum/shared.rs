@@ -1,4 +1,7 @@
-use crate::{ad::AItemCatId, num::PValue};
+use crate::{
+    ad::AItemCatId,
+    num::{PValue, Value},
+};
 
 const PENALTY_IMMUNE_ITEM_CATS: [AItemCatId; 5] = [
     AItemCatId::SHIP,
@@ -21,6 +24,30 @@ pub(super) const PENALTY_MULTS: [PValue; 8] = [
     PValue::ONE / PValue::from_f64_clamped(f64::from_bits(0x408e320fff24307e)),
 ];
 
-pub(in crate::svc::calc) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatId) -> bool {
+pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatId) -> bool {
     attr_penalizable && !PENALTY_IMMUNE_ITEM_CATS.contains(affector_item_cat_aid)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Value conversion / manipulation
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: check which are actually shared, if not - decide if they need to be moved
+pub(super) fn mul_to_mul_change(mul: Value) -> Value {
+    mul - Value::ONE
+}
+
+pub(super) fn mul_change_to_mul(mul_change: Value) -> Value {
+    mul_change + Value::ONE
+}
+
+pub(super) fn div_to_mul_change(div: Value) -> Value {
+    Value::ONE / div - Value::ONE
+}
+
+pub(super) fn perc_change_to_mul_change(perc_change: Value) -> Value {
+    perc_change * Value::HUNDREDTH
+}
+
+pub(super) fn perc_change_to_mul(perc_change: Value) -> Value {
+    perc_change.mul_add(Value::HUNDREDTH, Value::ONE)
 }

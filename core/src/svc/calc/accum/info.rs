@@ -3,6 +3,8 @@
 //! Whenever regular calculator changes, those changes have to be carried over here, to keep actual
 //! calculation process and modification info consistent.
 
+use std::cmp::Ordering;
+
 use smallvec::SmallVec;
 
 use super::shared::{PENALTY_MULTS, is_penal};
@@ -862,6 +864,139 @@ impl ModAccumSub {
         base_info
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Multiplication/division
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// struct PenEntry {
+//     val: AttrValInfo,
+//     pen: bool,
+// }
+//
+// struct ModAccumMul {
+//     // Non-aggregable increases
+//     stack: Vec<AttrValInfo>,
+//     // Aggregable increases
+//     aggr_min: RMap<AggrKey, Vec<PenEntry>>,
+//     aggr_max: RMap<AggrKey, Vec<PenEntry>>,
+// }
+// impl ModAccumMul {
+//     fn new() -> Self {
+//         Self {
+//             stack: Vec::new(),
+//             aggr_min: RMap::new(),
+//             aggr_max: RMap::new(),
+//         }
+//     }
+//     fn add_val(
+//         &mut self,
+//         op: CalcOp,
+//         val: Value,
+//         proj_mult: Option<PValue>,
+//         res_mult: Option<PValue>,
+//         aggr_mode: AggrMode,
+//         affectors: SmallVec<[Affector; 1]>,
+//     ) {
+//         let diminished_val = diminish(val, proj_mult, res_mult);
+//         let mod_info = Modification {
+//             op: Op::from_calc_op(op),
+//             initial_str: val,
+//             range_mult: proj_mult,
+//             resist_mult: res_mult,
+//             stacking_mult: None,
+//             applied_str: diminished_val,
+//             affectors: affectors.into_vec(),
+//         };
+//         let attr_info = AttrValInfo::from_effective_info(diminished_val, mod_info);
+//         match aggr_mode {
+//             AggrMode::Stack => self.stack.push(attr_info),
+//             // Store asignment in its original format for aggregation
+//             AggrMode::Min(key) => self.aggr_min.entry(key).or_default().push(attr_info),
+//             AggrMode::Max(key) => self.aggr_max.entry(key).or_default().push(attr_info),
+//         }
+//     }
+//     fn process_attr_info(&mut self, base_info: AttrValInfo) -> AttrValInfo {
+//         self.resolve_aggrs();
+//         let combined_info = self.combine();
+//         Self::apply(base_info, combined_info)
+//     }
+//     fn resolve_aggrs(&mut self) {
+//         for (_aggr_key, mut attr_infos) in self.aggr_min.drain() {
+//             if let Some(mut attr_info) = extract_min(&mut attr_infos) {
+//                 for other_attr_info in attr_infos.into_iter() {
+//                     attr_info.merge_ineffective(other_attr_info)
+//                 }
+//                 self.stack.push(attr_info);
+//             }
+//         }
+//         for (_aggr_key, mut attr_infos) in self.aggr_max.drain() {
+//             if let Some(mut attr_info) = extract_max(&mut attr_infos) {
+//                 for other_attr_info in attr_infos.into_iter() {
+//                     attr_info.merge_ineffective(other_attr_info)
+//                 }
+//                 self.stack.push(attr_info);
+//             }
+//         }
+//     }
+//     fn combine(&mut self) -> Option<AttrValInfo> {
+//         if self.stack.is_empty() {
+//             return None;
+//         }
+//         let combined_value = self.stack.iter().map(|v| v.value).sum();
+//         let mut new_info = AttrValInfo::new(combined_value);
+//         for other_info in self.stack.drain(..) {
+//             match other_info.value {
+//                 // Adding 0 is not changing the result
+//                 Value::ZERO => new_info.merge_ineffective(other_info),
+//                 _ => new_info.merge(other_info),
+//             }
+//         }
+//         Some(new_info)
+//     }
+//     fn apply(mut base_info: AttrValInfo, combined_info: Option<AttrValInfo>) -> AttrValInfo {
+//         if let Some(combined_info) = combined_info {
+//             base_info.value += combined_info.value;
+//             base_info.merge(combined_info);
+//         }
+//         base_info
+//     }
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Penalizable values
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// struct Pens {
+//     pos: Vec<AttrValInfo>,
+//     neut: Vec<AttrValInfo>,
+//     neg: Vec<AttrValInfo>,
+// }
+// impl Pens {
+//     fn new() -> Self {
+//         Self {
+//             pos: Vec::new(),
+//             neut: Vec::new(),
+//             neg: Vec::new(),
+//         }
+//     }
+//     fn add_val(&mut self, added: AttrValInfo) {
+//         match added.cmp(&Value::ZERO) {
+//             Ordering::Greater => self.pos.push(added),
+//             Ordering::Equal => self.neut.push(added),
+//             Ordering::Less => self.neg.push(added),
+//         }
+//     }
+//     fn calc_val(&mut self, mut val: AttrValInfo) -> AttrValInfo {
+//         if !self.pos.is_empty() {
+//             self.pos.sort_unstable_by_key(|&v| -v);
+//             val *= get_penalty_chain_mult(&self.pos);
+//         }
+//         if !self.neg.is_empty() {
+//             self.neg.sort_unstable();
+//             val *= get_penalty_chain_mult(&self.neg);
+//         }
+//         val
+//     }
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
