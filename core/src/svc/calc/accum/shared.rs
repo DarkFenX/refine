@@ -42,8 +42,8 @@ pub(super) struct MulConv;
 impl MultiplicativeConv for MulConv {
     fn diminish(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
         match proj_mult.reduce(res_mult, |x, y| x * y) {
+            Some(PValue::ONE) | None => raw,
             Some(mult) => Self::raw_to_mul_change(raw).mul_add(mult.into_value(), Value::ONE),
-            None => raw,
         }
     }
     fn apply_raw(base: &mut Value, raw: Value) {
@@ -61,8 +61,8 @@ pub(super) struct DivConv;
 impl MultiplicativeConv for DivConv {
     fn diminish(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
         match proj_mult.reduce(res_mult, |x, y| x * y) {
+            Some(PValue::ONE) | None => raw,
             Some(mult) => Value::ONE / Self::raw_to_mul_change(raw).mul_add(mult.into_value(), Value::ONE),
-            None => raw,
         }
     }
     fn apply_raw(base: &mut Value, raw: Value) {
