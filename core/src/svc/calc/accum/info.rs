@@ -870,7 +870,7 @@ impl ModAccumMul {
         pen: bool,
         affectors: SmallVec<[Affector; 1]>,
     ) {
-        let diminished_val = diminish(val, proj_mult, res_mult);
+        let diminished_val = MulConv::diminish(val, proj_mult, res_mult);
         let info = AttrValInfo::from_effective_info(
             diminished_val,
             Modification {
@@ -1131,6 +1131,7 @@ fn extract_pen_max(attr_infos: &mut Vec<PenEntry>) -> Option<PenEntry> {
     Some(attr_infos.swap_remove(index))
 }
 
+// TODO: consider movind to add/sub converters in shared code
 fn diminish(mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
     // Follow the same order of operations as in fast accum: multiply multipliers first, then apply
     if let Some(comb_mult) = proj_mult.reduce(res_mult, |x, y| x * y) {
