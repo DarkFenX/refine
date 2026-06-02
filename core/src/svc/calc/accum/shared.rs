@@ -33,7 +33,7 @@ pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatI
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) trait AddMath {
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value;
-    fn apply_raw(base: &mut Value, raw: Value);
+    fn apply_raw(base: Value, raw: Value) -> Value;
 }
 
 pub(super) struct AddMathAdd;
@@ -41,8 +41,8 @@ impl AddMath for AddMathAdd {
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
         diminish_normal(raw, proj_mult, res_mult)
     }
-    fn apply_raw(base: &mut Value, raw: Value) {
-        *base += raw;
+    fn apply_raw(base: Value, raw: Value) -> Value {
+        base + raw
     }
 }
 
@@ -51,8 +51,8 @@ impl AddMath for AddMathSub {
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
         diminish_normal(raw, proj_mult, res_mult)
     }
-    fn apply_raw(base: &mut Value, raw: Value) {
-        *base -= raw;
+    fn apply_raw(base: Value, raw: Value) -> Value {
+        base - raw
     }
 }
 
@@ -62,7 +62,7 @@ impl AddMath for AddMathSub {
 pub(super) trait MultMath {
     fn check_raw(raw: Value) -> bool;
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value;
-    fn apply_raw(base: &mut Value, raw: Value);
+    fn apply_raw(base: Value, raw: Value) -> Value;
     fn raw_to_mult_change(raw: Value) -> Value;
     fn mult_to_raw(mul: Value) -> Value;
 }
@@ -78,8 +78,8 @@ impl MultMath for MultMathMul {
             Some(mult) => Self::raw_to_mult_change(raw).mul_add(mult.into_value(), Value::ONE),
         }
     }
-    fn apply_raw(base: &mut Value, raw: Value) {
-        *base *= raw;
+    fn apply_raw(base: Value, raw: Value) -> Value {
+        base * raw
     }
     fn raw_to_mult_change(raw: Value) -> Value {
         raw - Value::ONE
@@ -100,8 +100,8 @@ impl MultMath for MultMathDiv {
             Some(mult) => Value::ONE / Self::raw_to_mult_change(raw).mul_add(mult.into_value(), Value::ONE),
         }
     }
-    fn apply_raw(base: &mut Value, raw: Value) {
-        *base /= raw;
+    fn apply_raw(base: Value, raw: Value) -> Value {
+        base / raw
     }
     fn raw_to_mult_change(raw: Value) -> Value {
         Value::ONE / raw - Value::ONE
@@ -119,8 +119,8 @@ impl MultMath for MultMathPerc {
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
         diminish_normal(raw, proj_mult, res_mult)
     }
-    fn apply_raw(base: &mut Value, raw: Value) {
-        *base *= raw.mul_add(Value::HUNDREDTH, Value::ONE);
+    fn apply_raw(base: Value, raw: Value) -> Value {
+        base * raw.mul_add(Value::HUNDREDTH, Value::ONE)
     }
     fn raw_to_mult_change(raw: Value) -> Value {
         raw * Value::HUNDREDTH
