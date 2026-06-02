@@ -7,7 +7,7 @@ use std::cmp::Ordering;
 
 use smallvec::SmallVec;
 
-use super::shared::{MultMath, MultMathMul, PENALTY_MULTS, is_penal};
+use super::shared::{AddMath, AddMathAdd, AddMathSub, MultMath, MultMathMul, PENALTY_MULTS, is_penal};
 use crate::{
     ad::AItemCatId,
     api::Op,
@@ -50,31 +50,31 @@ impl AttrValInfo {
 }
 
 pub(in crate::svc::calc) struct ModAccumInfo {
-    pre_assign: ModAccumAssign,
+    pre_assign: AccumAssign,
     pre_mul: ModAccumMul,
     pre_div: AttrStack,
-    add: ModAccumAdd,
-    sub: ModAccumSub,
+    add: AccumAdd,
+    sub: AccumSub,
     post_mul: ModAccumMul,
     post_div: AttrStack,
     post_perc: AttrStack,
-    post_assign: ModAccumAssign,
-    extra_add: ModAccumAdd,
+    post_assign: AccumAssign,
+    extra_add: AccumAdd,
     extra_mul: ModAccumMul,
 }
 impl ModAccumInfo {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            pre_assign: ModAccumAssign::new(),
+            pre_assign: AccumAssign::new(),
             pre_mul: ModAccumMul::new(),
             pre_div: AttrStack::new(),
-            add: ModAccumAdd::new(),
-            sub: ModAccumSub::new(),
+            add: AccumAdd::new(),
+            sub: AccumSub::new(),
             post_mul: ModAccumMul::new(),
             post_div: AttrStack::new(),
             post_perc: AttrStack::new(),
-            post_assign: ModAccumAssign::new(),
-            extra_add: ModAccumAdd::new(),
+            post_assign: AccumAssign::new(),
+            extra_add: AccumAdd::new(),
             extra_mul: ModAccumMul::new(),
         }
     }
@@ -114,8 +114,8 @@ impl ModAccumInfo {
                 &aggr_mode,
                 affectors,
             ),
-            CalcOp::Add => self.add.add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
-            CalcOp::Sub => self.sub.add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
+            CalcOp::Add => self.add.add_raw_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
+            CalcOp::Sub => self.sub.add_raw_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::PostMul => self.post_mul.add_val(
                 op,
                 val,
@@ -169,7 +169,7 @@ impl ModAccumInfo {
                 .add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::ExtraAdd => self
                 .extra_add
-                .add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::ExtraMul => self
                 .extra_mul
                 .add_val(op, val, proj_mult, res_mult, aggr_mode, false, affectors),
@@ -183,8 +183,8 @@ impl ModAccumInfo {
             self.pre_div
                 .get_comb_attr_info(&combine_muls, &combine_muls_pen, &revert_div, hig),
         );
-        let attr_info = self.add.process_attr_info(attr_info);
-        let attr_info = self.sub.process_attr_info(attr_info);
+        let attr_info = self.add.modify_info(attr_info);
+        let attr_info = self.sub.modify_info(attr_info);
         let attr_info = self.post_mul.process_attr_info(attr_info);
         let attr_info = apply_mul(
             attr_info,
@@ -199,7 +199,7 @@ impl ModAccumInfo {
         self.post_assign.process_attr_info(attr_info, hig)
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, attr_info: AttrValInfo) -> AttrValInfo {
-        let attr_info = self.extra_add.process_attr_info(attr_info);
+        let attr_info = self.extra_add.modify_info(attr_info);
         self.extra_mul.process_attr_info(attr_info)
     }
 }
@@ -548,13 +548,13 @@ fn diminish_mul(val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Assignment
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct ModAccumAssign {
+struct AccumAssign {
     stack: Vec<AttrValInfo>,
     // Aggregable assignments
     aggr_min: RMap<AggrKey, Vec<AttrValInfo>>,
     aggr_max: RMap<AggrKey, Vec<AttrValInfo>>,
 }
-impl ModAccumAssign {
+impl AccumAssign {
     fn new() -> Self {
         Self {
             stack: Vec::new(),
@@ -638,7 +638,7 @@ impl ModAccumAssign {
         Some(new_info)
     }
     fn apply_comb_to_base(base_info: AttrValInfo, comb_info: Option<AttrValInfo>) -> AttrValInfo {
-        // If there are any assignments, they dismiss left side as ineffective
+        // If there are any assignments, they dismiss base info as ineffective
         if let Some(mut comb_info) = comb_info {
             comb_info.merge_ineffective(base_info);
             return comb_info;
@@ -650,143 +650,59 @@ impl ModAccumAssign {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Addition/subtraction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct ModAccumAdd {
-    // Non-aggregable increases
-    stack: Vec<AttrValInfo>,
-    // Aggregable increases
-    aggr_min: RMap<AggrKey, Vec<AttrValInfo>>,
-    aggr_max: RMap<AggrKey, Vec<AttrValInfo>>,
-}
-impl ModAccumAdd {
-    fn new() -> Self {
-        Self {
-            stack: Vec::new(),
-            aggr_min: RMap::new(),
-            aggr_max: RMap::new(),
-        }
-    }
-    fn add_val(
-        &mut self,
-        op: CalcOp,
-        val: Value,
-        proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
-        aggr_mode: AggrMode,
-        affectors: SmallVec<[Affector; 1]>,
-    ) {
-        let diminished_val = diminish(val, proj_mult, res_mult);
-        let info = AttrValInfo::from_effective_info(
-            diminished_val,
-            Modification {
-                op: Op::from_calc_op(op),
-                initial_str: val,
-                range_mult: proj_mult,
-                resist_mult: res_mult,
-                stacking_mult: None,
-                applied_str: diminished_val,
-                affectors: affectors.into_vec(),
-            },
-        );
-        match aggr_mode {
-            AggrMode::Stack => self.stack.push(info),
-            // Store asignment in its original format for aggregation
-            AggrMode::Min(key) => self.aggr_min.entry(key).or_default().push(info),
-            AggrMode::Max(key) => self.aggr_max.entry(key).or_default().push(info),
-        }
-    }
-    fn process_attr_info(&mut self, base_info: AttrValInfo) -> AttrValInfo {
-        self.resolve_aggrs();
-        let comb_info = self.get_comb_info();
-        Self::apply_comb_to_base(base_info, comb_info)
-    }
-    // Functions which are not part of public interface
-    fn resolve_aggrs(&mut self) {
-        for (_aggr_key, mut grouped_infos) in self.aggr_min.drain() {
-            if let Some(mut min_info) = extract_min(&mut grouped_infos) {
-                for other_info in grouped_infos.into_iter() {
-                    min_info.merge_ineffective(other_info)
-                }
-                self.stack.push(min_info);
-            }
-        }
-        for (_aggr_key, mut grouped_infos) in self.aggr_max.drain() {
-            if let Some(mut max_info) = extract_max(&mut grouped_infos) {
-                for other_info in grouped_infos.into_iter() {
-                    max_info.merge_ineffective(other_info)
-                }
-                self.stack.push(max_info);
-            }
-        }
-    }
-    fn get_comb_info(&mut self) -> Option<AttrValInfo> {
-        if self.stack.is_empty() {
-            return None;
-        }
-        let comb_value = self.stack.iter().map(|v| v.value).sum();
-        let mut comb_info = AttrValInfo::new(comb_value);
-        for other_info in self.stack.drain(..) {
-            match other_info.value {
-                // Adding 0 is not changing the result
-                Value::ZERO => comb_info.merge_ineffective(other_info),
-                _ => comb_info.merge(other_info),
-            }
-        }
-        Some(comb_info)
-    }
-    fn apply_comb_to_base(mut base_info: AttrValInfo, comb_info: Option<AttrValInfo>) -> AttrValInfo {
-        if let Some(comb_info) = comb_info {
-            base_info.value += comb_info.value;
-            base_info.merge(comb_info);
-        }
-        base_info
-    }
-}
+type AccumAdd = AddAccum<AddMathAdd>;
+type AccumSub = AddAccum<AddMathSub>;
 
-struct ModAccumSub {
-    // Non-aggregable decreases
+struct AddAccum<M>
+where
+    M: AddMath,
+{
     stack: Vec<AttrValInfo>,
-    // Aggregable decreases
     aggr_min: RMap<AggrKey, Vec<AttrValInfo>>,
     aggr_max: RMap<AggrKey, Vec<AttrValInfo>>,
+    math: std::marker::PhantomData<M>,
 }
-impl ModAccumSub {
+impl<M> AddAccum<M>
+where
+    M: AddMath,
+{
     fn new() -> Self {
         Self {
             stack: Vec::new(),
             aggr_min: RMap::new(),
             aggr_max: RMap::new(),
+            math: std::marker::PhantomData,
         }
     }
-    fn add_val(
+    fn add_raw_val(
         &mut self,
         op: CalcOp,
-        val: Value,
+        added_raw: Value,
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
         aggr_mode: AggrMode,
         affectors: SmallVec<[Affector; 1]>,
     ) {
-        let diminished_val = diminish(val, proj_mult, res_mult);
+        let diminished_raw = M::diminish_raw(added_raw, proj_mult, res_mult);
         let info = AttrValInfo::from_effective_info(
-            diminished_val,
+            diminished_raw,
             Modification {
                 op: Op::from_calc_op(op),
-                initial_str: val,
+                initial_str: added_raw,
                 range_mult: proj_mult,
                 resist_mult: res_mult,
                 stacking_mult: None,
-                applied_str: diminished_val,
+                applied_str: diminished_raw,
                 affectors: affectors.into_vec(),
             },
         );
         match aggr_mode {
             AggrMode::Stack => self.stack.push(info),
-            // Store asignment in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.entry(key).or_default().push(info),
             AggrMode::Max(key) => self.aggr_max.entry(key).or_default().push(info),
         }
     }
-    fn process_attr_info(&mut self, base_info: AttrValInfo) -> AttrValInfo {
+    fn modify_info(&mut self, base_info: AttrValInfo) -> AttrValInfo {
         self.resolve_aggrs();
         let comb_info = self.get_comb_info();
         Self::apply_comb_to_base(base_info, comb_info)
@@ -818,7 +734,7 @@ impl ModAccumSub {
         let mut comb_info = AttrValInfo::new(comb_value);
         for other_info in self.stack.drain(..) {
             match other_info.value {
-                // Subtracting 0 is not changing the result
+                // Adding/subtracting 0 is not changing the result
                 Value::ZERO => comb_info.merge_ineffective(other_info),
                 _ => comb_info.merge(other_info),
             }
@@ -827,7 +743,7 @@ impl ModAccumSub {
     }
     fn apply_comb_to_base(mut base_info: AttrValInfo, comb_info: Option<AttrValInfo>) -> AttrValInfo {
         if let Some(comb_info) = comb_info {
-            base_info.value -= comb_info.value;
+            base_info.value = M::apply_raw(base_info.value, comb_info.value);
             base_info.merge(comb_info);
         }
         base_info
@@ -1129,13 +1045,4 @@ fn extract_pen_max(attr_infos: &mut Vec<PenEntry>) -> Option<PenEntry> {
         .max_by_key(|(_, v)| (v.info.value, !v.pen))?
         .0;
     Some(attr_infos.swap_remove(index))
-}
-
-// TODO: consider movind to add/sub converters in shared code
-fn diminish(mut val: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
-    // Follow the same order of operations as in fast accum: multiply multipliers first, then apply
-    if let Some(comb_mult) = proj_mult.reduce(res_mult, |x, y| x * y) {
-        val *= comb_mult;
-    }
-    val
 }
