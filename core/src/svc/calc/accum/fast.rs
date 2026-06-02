@@ -167,7 +167,7 @@ impl ModAccumAssign {
 // Addition/subtraction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ModAccumAdd {
-    // Non-aggregable, folded sum of increases
+    // Folded sum of increases
     main: Value,
     // Aggregable, increases
     aggr_min: AggrMin,
@@ -204,7 +204,7 @@ impl ModAccumAdd {
 }
 
 struct ModAccumSub {
-    // Non-aggregable, folded sum of decreases
+    // Folded sum of decreases
     main: Value,
     // Aggregable, decreases
     aggr_min: AggrMin,
@@ -246,11 +246,11 @@ impl ModAccumSub {
 // Multiplication/division
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ModAccumMul {
-    // Non-aggregable non-penalizable, folded multiplier
+    // Non-penalizable, folded multiplier
     main: Value,
-    // Non-aggregable penalizable values, multiplier change
-    pens: Pens,
-    // Aggregable values, multiplier
+    // Penalizable values, multiplier change
+    pens: Pens<MulConv>,
+    // Aggregable, multiplier
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
 }
@@ -295,21 +295,21 @@ impl ModAccumMul {
         val * self.pens.calc_val(self.main)
     }
     // Functions which are not part of public interface
-    fn add_stacking_val(main: &mut Value, pens: &mut Pens, val: Value, pen: bool) {
+    fn add_stacking_val(main: &mut Value, pens: &mut Pens<MulConv>, raw: Value, pen: bool) {
         match pen {
-            true => pens.add_val(MulConv::raw_to_mul_change(val)),
+            true => pens.add_val(raw),
             // Store in main multiplier in case of stacked & unpenalized modification
-            false => *main *= val,
+            false => *main *= raw,
         }
     }
 }
 
 struct ModAccumDiv {
-    // Non-aggregable non-penalizable, folded divisor
+    // Non-penalizable, folded divisor
     main: Value,
-    // Non-aggregable penalizable values, multiplier change
-    pens: Pens,
-    // Aggregable values, divisor
+    // Penalizable, multiplier change
+    pens: Pens<DivConv>,
+    // Aggregable, divisor
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
 }
@@ -359,22 +359,22 @@ impl ModAccumDiv {
         self.pens.calc_val(val)
     }
     // Functions which are not part of public interface
-    fn add_stacking_val(main: &mut Value, pens: &mut Pens, val: Value, pen: bool) {
+    fn add_stacking_val(main: &mut Value, pens: &mut Pens<DivConv>, raw: Value, pen: bool) {
         match pen {
             // Convert divisor into mult change to store in penalizable value containers
-            true => pens.add_val(DivConv::raw_to_mul_change(val)),
+            true => pens.add_val(raw),
             // Store in main divisor in case of stacked & unpenalized modification
-            false => *main *= val,
+            false => *main *= raw,
         }
     }
 }
 
 struct ModAccumPerc {
-    // Non-aggregable non-penalizable, folded multiplier
+    // Non-penalizable, folded multiplier
     main: Value,
-    // Non-aggregable penalizable values, multiplier change
-    pens: Pens,
-    // Aggregable values, percent change
+    // Penalizable, multiplier change
+    pens: Pens<PercConv>,
+    // Aggregable, percent change
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
 }
@@ -403,7 +403,7 @@ impl ModAccumPerc {
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
         }
     }
-    fn calc_val(&mut self, mut val: Value) -> Value {
+    fn calc_val(&mut self, val: Value) -> Value {
         // Distribute aggregable values first
         if !self.aggr_min.is_empty() {
             for aggr_entry in self.aggr_min.drain_values() {
@@ -419,12 +419,12 @@ impl ModAccumPerc {
         val * self.pens.calc_val(self.main)
     }
     // Functions which are not part of public interface
-    fn add_stacking_val(main: &mut Value, pens: &mut Pens, val: Value, pen: bool) {
+    fn add_stacking_val(main: &mut Value, pens: &mut Pens<PercConv>, raw: Value, pen: bool) {
         match pen {
             // Convert percent change into mult change to store in penalizable value containers
-            true => pens.add_val(PercConv::raw_to_mul_change(val)),
+            true => pens.add_val(raw),
             // Store in main multiplier in case of stacked & unpenalized modification
-            false => PercConv::apply_raw(main, val),
+            false => PercConv::apply_raw(main, raw),
         }
     }
 }
@@ -432,38 +432,45 @@ impl ModAccumPerc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Penalizable values
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct Pens {
-    pos: Vec<Value>,
+struct Pens<C> {
     neg: Vec<Value>,
+    pos: Vec<Value>,
+    conv: std::marker::PhantomData<C>,
 }
-impl Pens {
+impl<C> Pens<C> {
     fn new() -> Self {
         Self {
-            pos: Vec::new(),
             neg: Vec::new(),
+            pos: Vec::new(),
+            conv: std::marker::PhantomData,
         }
     }
-    fn add_val(&mut self, added: Value) {
-        match added.cmp(&Value::ZERO) {
-            Ordering::Greater => self.pos.push(added),
+    fn add_val(&mut self, raw: Value)
+    where
+        C: MultiplicativeConv,
+    {
+        let mul_change = C::raw_to_mul_change(raw);
+        match mul_change.cmp(&Value::ZERO) {
+            Ordering::Less => self.neg.push(mul_change),
             Ordering::Equal => (),
-            Ordering::Less => self.neg.push(added),
+            Ordering::Greater => self.pos.push(mul_change),
         }
     }
     fn calc_val(&mut self, mut val: Value) -> Value {
-        if !self.pos.is_empty() {
-            self.pos.sort_unstable_by_key(|&v| -v);
-            val *= get_penalty_chain_mult(&self.pos);
-        }
         if !self.neg.is_empty() {
             self.neg.sort_unstable();
             val *= get_penalty_chain_mult(&self.neg);
+        }
+        if !self.pos.is_empty() {
+            self.pos.sort_unstable_by_key(|&v| -v);
+            val *= get_penalty_chain_mult(&self.pos);
         }
         val
     }
 }
 
 // Take a slice of mult changes, return mult
+// TODO: consider draining vec instead of iterating
 fn get_penalty_chain_mult(vals: &[Value]) -> Value {
     let mut val = Value::ONE;
     for (&mod_val, &mult) in std::iter::zip(vals.iter(), PENALTY_MULTS.iter()) {
