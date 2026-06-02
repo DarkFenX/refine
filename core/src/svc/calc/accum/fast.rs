@@ -6,7 +6,7 @@
 
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
-use super::shared::{DivConv, MulConv, MultiplicativeConv, PENALTY_MULTS, PercConv, is_penal};
+use super::shared::{MultMath, MultMathDiv, MultMathMul, MultMathPerc, PENALTY_MULTS, is_penal};
 use crate::{
     ad::AItemCatId,
     num::{PValue, Value},
@@ -57,50 +57,52 @@ impl ModAccumFast {
         let comb_mult = proj_mult.reduce(res_mult, |x, y| x * y);
         match op {
             CalcOp::PreAssign => self.pre_assign.add_val(val, comb_mult, aggr_mode, attr_hig),
-            CalcOp::PreMul => self
-                .pre_mul
-                .add_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat)),
-            CalcOp::PreDiv => self
-                .pre_div
-                .add_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat)),
+            CalcOp::PreMul => {
+                self.pre_mul
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
+            CalcOp::PreDiv => {
+                self.pre_div
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
             CalcOp::Add => self.add.add_val(val, comb_mult, aggr_mode),
             CalcOp::Sub => self.sub.add_val(val, comb_mult, aggr_mode),
             CalcOp::PostMul => {
                 self.post_mul
-                    .add_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
-            CalcOp::PostMulImmune => self.post_mul.add_val(val, proj_mult, res_mult, aggr_mode, false),
+            CalcOp::PostMulImmune => self.post_mul.add_raw_val(val, proj_mult, res_mult, aggr_mode, false),
             CalcOp::PostDiv => {
                 self.post_div
-                    .add_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
             CalcOp::PostPerc => {
                 self.post_perc
-                    .add_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
-            CalcOp::PostPercImmune => self.post_perc.add_val(val, proj_mult, res_mult, aggr_mode, false),
+            CalcOp::PostPercImmune => self.post_perc.add_raw_val(val, proj_mult, res_mult, aggr_mode, false),
             CalcOp::PostAssign => self.post_assign.add_val(val, comb_mult, aggr_mode, attr_hig),
             CalcOp::ExtraAdd => self.extra_add.add_val(val, comb_mult, aggr_mode),
             CalcOp::ExtraMul => {
                 self.extra_mul
-                    .add_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
         };
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: Value, attr_hig: bool) -> Value {
         let val = self.pre_assign.calc_val(base_val, attr_hig);
-        let val = self.pre_mul.calc_val(val);
-        let val = self.pre_div.calc_val(val);
+        let val = self.pre_mul.modify_val(val);
+        let val = self.pre_div.modify_val(val);
         let val = self.add.calc_val(val);
         let val = self.sub.calc_val(val);
-        let val = self.post_mul.calc_val(val);
-        let val = self.post_div.calc_val(val);
-        let val = self.post_perc.calc_val(val);
+        let val = self.post_mul.modify_val(val);
+        let val = self.post_div.modify_val(val);
+        let val = self.post_perc.modify_val(val);
         self.post_assign.calc_val(val, attr_hig)
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: Value) -> Value {
         let val = self.extra_add.calc_val(val);
-        self.extra_mul.calc_val(val)
+        self.extra_mul.modify_val(val)
     }
 }
 
@@ -243,77 +245,28 @@ impl ModAccumSub {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Multiplication/division
+// Multiplicative accumulator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct ModAccumMul {
-    // Non-penalizable, folded multiplier
-    main: Value,
-    // Penalizable values, multiplier change
-    pens: Pens<MulConv>,
-    // Aggregable, multiplier
-    aggr_min: AggrPenMin,
-    aggr_max: AggrPenMax,
-}
-impl ModAccumMul {
-    fn new() -> Self {
-        Self {
-            main: Value::ONE,
-            pens: Pens::new(),
-            aggr_min: AggrPenMin::new(),
-            aggr_max: AggrPenMax::new(),
-        }
-    }
-    fn add_val(
-        &mut self,
-        val: Value,
-        proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
-        aggr_mode: AggrMode,
-        pen: bool,
-    ) {
-        let val = MulConv::diminish(val, proj_mult, res_mult);
-        match aggr_mode {
-            AggrMode::Stack => Self::add_stacking_val(&mut self.main, &mut self.pens, val, pen),
-            // Store multiplier in its original format for aggregation
-            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
-        }
-    }
-    fn calc_val(&mut self, val: Value) -> Value {
-        // Distribute aggregable values first
-        if !self.aggr_min.is_empty() {
-            for aggr_entry in self.aggr_min.drain_values() {
-                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
-            }
-        }
-        if !self.aggr_max.is_empty() {
-            for aggr_entry in self.aggr_max.drain_values() {
-                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
-            }
-        }
-        // Using unpenalized and penalized values, calculate final result
-        val * self.pens.calc_val(self.main)
-    }
-    // Functions which are not part of public interface
-    fn add_stacking_val(main: &mut Value, pens: &mut Pens<MulConv>, raw: Value, pen: bool) {
-        match pen {
-            true => pens.add_val(raw),
-            // Store in main multiplier in case of stacked & unpenalized modification
-            false => *main *= raw,
-        }
-    }
-}
+type ModAccumMul = ModAccumMult<MultMathMul>;
+type ModAccumDiv = ModAccumMult<MultMathDiv>;
+type ModAccumPerc = ModAccumMult<MultMathPerc>;
 
-struct ModAccumDiv {
-    // Non-penalizable, folded divisor
+struct ModAccumMult<M>
+where
+    M: MultMath,
+{
+    // Folded multiplier
     main: Value,
-    // Penalizable, multiplier change
-    pens: Pens<DivConv>,
-    // Aggregable, divisor
+    // Penalizable, internally stored in form of mult change
+    pens: Pens<M>,
+    // Aggregable, stored in raw form of value with penalization flag
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
 }
-impl ModAccumDiv {
+impl<M> ModAccumMult<M>
+where
+    M: MultMath,
+{
     fn new() -> Self {
         Self {
             main: Value::ONE,
@@ -322,122 +275,67 @@ impl ModAccumDiv {
             aggr_max: AggrPenMax::new(),
         }
     }
-    fn add_val(
+    fn add_raw_val(
         &mut self,
-        val: Value,
+        raw: Value,
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
         aggr_mode: AggrMode,
         pen: bool,
     ) {
-        // Ignore division by zero early
-        if val == Value::ZERO {
+        if !M::check_raw(raw) {
             return;
         }
-        let val = DivConv::diminish(val, proj_mult, res_mult);
+        let raw = M::diminish_raw(raw, proj_mult, res_mult);
         match aggr_mode {
-            AggrMode::Stack => Self::add_stacking_val(&mut self.main, &mut self.pens, val, pen),
-            // Store divisor in its original format for aggregation
-            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
+            AggrMode::Stack => add_raw_stacking(&mut self.main, &mut self.pens, raw, pen),
+            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { raw, pen }),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { raw, pen }),
         }
     }
-    fn calc_val(&mut self, mut val: Value) -> Value {
+    fn modify_val(&mut self, base: Value) -> Value {
         // Distribute aggregable values first
         if !self.aggr_min.is_empty() {
             for aggr_entry in self.aggr_min.drain_values() {
-                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
+                add_raw_stacking(&mut self.main, &mut self.pens, aggr_entry.raw, aggr_entry.pen);
             }
         }
         if !self.aggr_max.is_empty() {
             for aggr_entry in self.aggr_max.drain_values() {
-                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
+                add_raw_stacking(&mut self.main, &mut self.pens, aggr_entry.raw, aggr_entry.pen);
             }
         }
-        // Using unpenalized and penalized values, calculate final result
-        val /= self.main;
-        self.pens.calc_val(val)
-    }
-    // Functions which are not part of public interface
-    fn add_stacking_val(main: &mut Value, pens: &mut Pens<DivConv>, raw: Value, pen: bool) {
-        match pen {
-            // Convert divisor into mult change to store in penalizable value containers
-            true => pens.add_val(raw),
-            // Store in main divisor in case of stacked & unpenalized modification
-            false => *main *= raw,
-        }
+        self.main *= self.pens.get_mult();
+        base * self.main
     }
 }
 
-struct ModAccumPerc {
-    // Non-penalizable, folded multiplier
-    main: Value,
-    // Penalizable, multiplier change
-    pens: Pens<PercConv>,
-    // Aggregable, percent change
-    aggr_min: AggrPenMin,
-    aggr_max: AggrPenMax,
-}
-impl ModAccumPerc {
-    fn new() -> Self {
-        Self {
-            main: Value::ONE,
-            pens: Pens::new(),
-            aggr_min: AggrPenMin::new(),
-            aggr_max: AggrPenMax::new(),
-        }
-    }
-    fn add_val(
-        &mut self,
-        val: Value,
-        proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
-        aggr_mode: AggrMode,
-        pen: bool,
-    ) {
-        let val = PercConv::diminish(val, proj_mult, res_mult);
-        match aggr_mode {
-            AggrMode::Stack => Self::add_stacking_val(&mut self.main, &mut self.pens, val, pen),
-            // Store percent change in its original format for aggregation
-            AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { val, pen }),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { val, pen }),
-        }
-    }
-    fn calc_val(&mut self, val: Value) -> Value {
-        // Distribute aggregable values first
-        if !self.aggr_min.is_empty() {
-            for aggr_entry in self.aggr_min.drain_values() {
-                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
-            }
-        }
-        if !self.aggr_max.is_empty() {
-            for aggr_entry in self.aggr_max.drain_values() {
-                Self::add_stacking_val(&mut self.main, &mut self.pens, aggr_entry.val, aggr_entry.pen);
-            }
-        }
-        // Using unpenalized and penalized values, calculate final result
-        val * self.pens.calc_val(self.main)
-    }
-    // Functions which are not part of public interface
-    fn add_stacking_val(main: &mut Value, pens: &mut Pens<PercConv>, raw: Value, pen: bool) {
-        match pen {
-            // Convert percent change into mult change to store in penalizable value containers
-            true => pens.add_val(raw),
-            // Store in main multiplier in case of stacked & unpenalized modification
-            false => PercConv::apply_raw(main, raw),
-        }
+fn add_raw_stacking<M>(main: &mut Value, pens: &mut Pens<M>, raw: Value, pen: bool)
+where
+    M: MultMath,
+{
+    match pen {
+        true => pens.add_raw(raw),
+        // Store in main multiplier in case of stacked & unpenalized modification
+        false => M::apply_raw(main, raw),
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Penalizable values
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct Pens<C> {
+struct Pens<M>
+where
+    M: MultMath,
+{
     neg: Vec<Value>,
     pos: Vec<Value>,
-    conv: std::marker::PhantomData<C>,
+    conv: std::marker::PhantomData<M>,
 }
-impl<C> Pens<C> {
+impl<M> Pens<M>
+where
+    M: MultMath,
+{
     fn new() -> Self {
         Self {
             neg: Vec::new(),
@@ -445,27 +343,25 @@ impl<C> Pens<C> {
             conv: std::marker::PhantomData,
         }
     }
-    fn add_val(&mut self, raw: Value)
-    where
-        C: MultiplicativeConv,
-    {
-        let mul_change = C::raw_to_mul_change(raw);
-        match mul_change.cmp(&Value::ZERO) {
-            Ordering::Less => self.neg.push(mul_change),
+    fn add_raw(&mut self, raw: Value) {
+        let mult_change = M::raw_to_mult_change(raw);
+        match mult_change.cmp(&Value::ZERO) {
+            Ordering::Less => self.neg.push(mult_change),
             Ordering::Equal => (),
-            Ordering::Greater => self.pos.push(mul_change),
+            Ordering::Greater => self.pos.push(mult_change),
         }
     }
-    fn calc_val(&mut self, mut val: Value) -> Value {
+    fn get_mult(&mut self) -> Value {
+        let mut mult = Value::ONE;
         if !self.neg.is_empty() {
             self.neg.sort_unstable();
-            val *= get_penalty_chain_mult(&self.neg);
+            mult *= get_penalty_chain_mult(&self.neg);
         }
         if !self.pos.is_empty() {
             self.pos.sort_unstable_by_key(|&v| -v);
-            val *= get_penalty_chain_mult(&self.pos);
+            mult *= get_penalty_chain_mult(&self.pos);
         }
-        val
+        mult
     }
 }
 
@@ -488,7 +384,7 @@ type AggrPenMin = AggrStore<PenEntry, AggrArbiterPenMin>;
 type AggrPenMax = AggrStore<PenEntry, AggrArbiterPenMax>;
 
 struct PenEntry {
-    val: Value,
+    raw: Value,
     pen: bool,
 }
 
@@ -549,7 +445,7 @@ struct AggrArbiterPenMin;
 impl AggrArbiter for AggrArbiterPenMin {
     type Item = PenEntry;
     fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool {
-        match added.val.cmp(&stored.val) {
+        match added.raw.cmp(&stored.raw) {
             Ordering::Greater => false,
             Ordering::Equal => !added.pen && stored.pen,
             Ordering::Less => true,
@@ -560,7 +456,7 @@ struct AggrArbiterPenMax;
 impl AggrArbiter for AggrArbiterPenMax {
     type Item = PenEntry;
     fn is_added_better(stored: &Self::Item, added: &Self::Item) -> bool {
-        match added.val.cmp(&stored.val) {
+        match added.raw.cmp(&stored.raw) {
             Ordering::Greater => true,
             Ordering::Equal => !added.pen && stored.pen,
             Ordering::Less => false,

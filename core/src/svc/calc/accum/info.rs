@@ -7,7 +7,7 @@ use std::cmp::Ordering;
 
 use smallvec::SmallVec;
 
-use super::shared::{MulConv, MultiplicativeConv, PENALTY_MULTS, is_penal};
+use super::shared::{MultMath, MultMathMul, PENALTY_MULTS, is_penal};
 use crate::{
     ad::AItemCatId,
     api::Op,
@@ -846,7 +846,7 @@ struct ModAccumMul {
     // Non-aggregable multiplications
     stack: Vec<AttrValInfo>,
     // Penalizable multiplications
-    pens: Pens<MulConv>,
+    pens: Pens<MultMathMul>,
     // Aggregable increases
     aggr_min: RMap<AggrKey, Vec<PenEntry>>,
     aggr_max: RMap<AggrKey, Vec<PenEntry>>,
@@ -870,7 +870,7 @@ impl ModAccumMul {
         pen: bool,
         affectors: SmallVec<[Affector; 1]>,
     ) {
-        let diminished_val = MulConv::diminish(val, proj_mult, res_mult);
+        let diminished_val = MultMathMul::diminish_raw(val, proj_mult, res_mult);
         let info = AttrValInfo::from_effective_info(
             diminished_val,
             Modification {
@@ -896,7 +896,7 @@ impl ModAccumMul {
         Self::apply_comb_to_base(base_info, comb_info)
     }
     // Functions which are not part of public interface
-    fn add_stacking_val(stack: &mut Vec<AttrValInfo>, pens: &mut Pens<MulConv>, info: AttrValInfo, pen: bool) {
+    fn add_stacking_val(stack: &mut Vec<AttrValInfo>, pens: &mut Pens<MultMathMul>, info: AttrValInfo, pen: bool) {
         match pen {
             true => pens.add_val(info),
             false => stack.push(info),
@@ -985,27 +985,27 @@ impl ModAccumMul {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Penalizable values
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct Pens<C> {
+struct Pens<M> {
     // Multiplier change in all the fields
     pos: Vec<AttrValInfo>,
     neut: Vec<AttrValInfo>,
     neg: Vec<AttrValInfo>,
-    conv: std::marker::PhantomData<C>,
+    math: std::marker::PhantomData<M>,
 }
-impl<C> Pens<C> {
+impl<M> Pens<M> {
     fn new() -> Self {
         Self {
             pos: Vec::new(),
             neut: Vec::new(),
             neg: Vec::new(),
-            conv: std::marker::PhantomData,
+            math: std::marker::PhantomData,
         }
     }
     fn add_val(&mut self, mut added_info: AttrValInfo)
     where
-        C: MultiplicativeConv,
+        M: MultMath,
     {
-        let mul_change_value = C::raw_to_mul_change(added_info.value);
+        let mul_change_value = M::raw_to_mult_change(added_info.value);
         match mul_change_value.cmp(&Value::ZERO) {
             Ordering::Greater => {
                 added_info.value = mul_change_value;
@@ -1021,7 +1021,7 @@ impl<C> Pens<C> {
     }
     fn get_comb_info(&mut self) -> Option<AttrValInfo>
     where
-        C: MultiplicativeConv,
+        M: MultMath,
     {
         if self.neg.is_empty() && self.neut.is_empty() && self.pos.is_empty() {
             return None;
@@ -1052,13 +1052,13 @@ impl<C> Pens<C> {
                 comb_info.merge_ineffective(other_info);
             }
         }
-        comb_info.value = C::mul_to_raw(comb_info.value);
+        comb_info.value = M::mult_to_raw(comb_info.value);
         Some(comb_info)
     }
     // Take a slice of mult changes, return mult
     fn get_penalty_chain_info(chain_infos: &mut Vec<AttrValInfo>) -> AttrValInfo
     where
-        C: MultiplicativeConv,
+        M: MultMath,
     {
         let mut new_info = AttrValInfo::new(Value::ONE);
         // Special case for when first element of chain is a multiplier by 0, for the same reason as
@@ -1076,7 +1076,7 @@ impl<C> Pens<C> {
                     let val_mult = other_info.value.mul_add(pen_mult.into_value(), Value::ONE);
                     for other_info_mod in other_info.effective_infos.iter_mut() {
                         other_info_mod.stacking_mult = Some(pen_mult);
-                        other_info_mod.applied_str = C::mul_to_raw(val_mult);
+                        other_info_mod.applied_str = M::mult_to_raw(val_mult);
                     }
                     match first_zeroing && i > 0 {
                         true => new_info.merge_ineffective(other_info),
@@ -1090,7 +1090,7 @@ impl<C> Pens<C> {
                 None => {
                     for other_info_mod in other_info.effective_infos.iter_mut() {
                         other_info_mod.stacking_mult = Some(PValue::ZERO);
-                        other_info_mod.applied_str = C::mul_to_raw(Value::ONE);
+                        other_info_mod.applied_str = M::mult_to_raw(Value::ONE);
                     }
                     new_info.merge_ineffective(other_info);
                 }
