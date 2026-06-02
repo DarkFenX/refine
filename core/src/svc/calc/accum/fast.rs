@@ -6,7 +6,9 @@
 
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
-use super::shared::{MultMath, MultMathDiv, MultMathMul, MultMathPerc, PENALTY_MULTS, is_penal};
+use super::shared::{
+    AddMath, AddMathAdd, AddMathSub, MultMath, MultMathDiv, MultMathMul, MultMathPerc, PENALTY_MULTS, is_penal,
+};
 use crate::{
     ad::AItemCatId,
     num::{PValue, Value},
@@ -16,31 +18,31 @@ use crate::{
 
 pub(in crate::svc::calc) struct ModAccumFast {
     pre_assign: ModAccumAssign,
-    pre_mul: ModAccumMul,
-    pre_div: ModAccumDiv,
-    add: ModAccumAdd,
-    sub: ModAccumSub,
-    post_mul: ModAccumMul,
-    post_div: ModAccumDiv,
-    post_perc: ModAccumPerc,
+    pre_mul: AccumMul,
+    pre_div: AccumDiv,
+    add: AccumAdd,
+    sub: AccumSub,
+    post_mul: AccumMul,
+    post_div: AccumDiv,
+    post_perc: AccumPerc,
     post_assign: ModAccumAssign,
-    extra_add: ModAccumAdd,
-    extra_mul: ModAccumMul,
+    extra_add: AccumAdd,
+    extra_mul: AccumMul,
 }
 impl ModAccumFast {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
             pre_assign: ModAccumAssign::new(),
-            pre_mul: ModAccumMul::new(),
-            pre_div: ModAccumDiv::new(),
-            add: ModAccumAdd::new(),
-            sub: ModAccumSub::new(),
-            post_mul: ModAccumMul::new(),
-            post_div: ModAccumDiv::new(),
-            post_perc: ModAccumPerc::new(),
+            pre_mul: AccumMul::new(),
+            pre_div: AccumDiv::new(),
+            add: AccumAdd::new(),
+            sub: AccumSub::new(),
+            post_mul: AccumMul::new(),
+            post_div: AccumDiv::new(),
+            post_perc: AccumPerc::new(),
             post_assign: ModAccumAssign::new(),
-            extra_add: ModAccumAdd::new(),
-            extra_mul: ModAccumMul::new(),
+            extra_add: AccumAdd::new(),
+            extra_mul: AccumMul::new(),
         }
     }
     pub(in crate::svc::calc) fn add_val(
@@ -65,8 +67,8 @@ impl ModAccumFast {
                 self.pre_div
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
-            CalcOp::Add => self.add.add_val(val, comb_mult, aggr_mode),
-            CalcOp::Sub => self.sub.add_val(val, comb_mult, aggr_mode),
+            CalcOp::Add => self.add.add_raw_val(val, proj_mult, res_mult, aggr_mode),
+            CalcOp::Sub => self.sub.add_raw_val(val, proj_mult, res_mult, aggr_mode),
             CalcOp::PostMul => {
                 self.post_mul
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
@@ -82,7 +84,7 @@ impl ModAccumFast {
             }
             CalcOp::PostPercImmune => self.post_perc.add_raw_val(val, proj_mult, res_mult, aggr_mode, false),
             CalcOp::PostAssign => self.post_assign.add_val(val, comb_mult, aggr_mode, attr_hig),
-            CalcOp::ExtraAdd => self.extra_add.add_val(val, comb_mult, aggr_mode),
+            CalcOp::ExtraAdd => self.extra_add.add_raw_val(val, proj_mult, res_mult, aggr_mode),
             CalcOp::ExtraMul => {
                 self.extra_mul
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
@@ -93,15 +95,15 @@ impl ModAccumFast {
         let val = self.pre_assign.calc_val(base_val, attr_hig);
         let val = self.pre_mul.modify_val(val);
         let val = self.pre_div.modify_val(val);
-        let val = self.add.calc_val(val);
-        let val = self.sub.calc_val(val);
+        let val = self.add.modify_val(val);
+        let val = self.sub.modify_val(val);
         let val = self.post_mul.modify_val(val);
         let val = self.post_div.modify_val(val);
         let val = self.post_perc.modify_val(val);
         self.post_assign.calc_val(val, attr_hig)
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: Value) -> Value {
-        let val = self.extra_add.calc_val(val);
+        let val = self.extra_add.modify_val(val);
         self.extra_mul.modify_val(val)
     }
 }
@@ -166,92 +168,63 @@ impl ModAccumAssign {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Addition/subtraction
+// Additive accumulator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-struct ModAccumAdd {
-    // Folded sum of increases
-    main: Value,
-    // Aggregable, increases
-    aggr_min: AggrMin,
-    aggr_max: AggrMax,
-}
-impl ModAccumAdd {
-    fn new() -> Self {
-        Self {
-            main: Value::ZERO,
-            aggr_min: AggrMin::new(),
-            aggr_max: AggrMax::new(),
-        }
-    }
-    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode) {
-        if let Some(comb_mult) = comb_mult {
-            val *= comb_mult;
-        }
-        match aggr_mode {
-            AggrMode::Stack => self.main += val,
-            // Store addition in its original format for aggregation
-            AggrMode::Min(key) => self.aggr_min.add_val(key, val),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, val),
-        }
-    }
-    fn calc_val(&mut self, val: Value) -> Value {
-        if !self.aggr_min.is_empty() {
-            self.main += self.aggr_min.drain_values().sum::<Value>();
-        }
-        if !self.aggr_max.is_empty() {
-            self.main += self.aggr_max.drain_values().sum::<Value>();
-        }
-        val + self.main
-    }
-}
+type AccumAdd = AddAccum<AddMathAdd>;
+type AccumSub = AddAccum<AddMathSub>;
 
-struct ModAccumSub {
-    // Folded sum of decreases
+struct AddAccum<M>
+where
+    M: AddMath,
+{
+    // Folded sum of raw values
     main: Value,
-    // Aggregable, decreases
+    // Aggregable, raw
     aggr_min: AggrMin,
     aggr_max: AggrMax,
+    math: std::marker::PhantomData<M>,
 }
-impl ModAccumSub {
+impl<M> AddAccum<M>
+where
+    M: AddMath,
+{
     fn new() -> Self {
         Self {
             main: Value::ZERO,
             aggr_min: AggrMin::new(),
             aggr_max: AggrMax::new(),
+            math: std::marker::PhantomData,
         }
     }
-    fn add_val(&mut self, mut val: Value, comb_mult: Option<PValue>, aggr_mode: AggrMode) {
-        if let Some(comb_mult) = comb_mult {
-            val *= comb_mult;
-        }
+    fn add_raw_val(&mut self, raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: AggrMode) {
+        let raw = M::diminish_raw(raw, proj_mult, res_mult);
         match aggr_mode {
-            AggrMode::Stack => self.main += val,
-            // Store decrease in its original format for aggregation
-            AggrMode::Min(key) => self.aggr_min.add_val(key, val),
-            AggrMode::Max(key) => self.aggr_max.add_val(key, val),
+            AggrMode::Stack => self.main += raw,
+            // Store addition in its original format for aggregation
+            AggrMode::Min(key) => self.aggr_min.add_val(key, raw),
+            AggrMode::Max(key) => self.aggr_max.add_val(key, raw),
         }
     }
-    fn calc_val(&mut self, val: Value) -> Value {
-        // Since all the values were stored/folded in original format of decreases/subtractions,
-        // subtract their sum from passed value
+    fn modify_val(&mut self, mut base: Value) -> Value {
         if !self.aggr_min.is_empty() {
             self.main += self.aggr_min.drain_values().sum::<Value>();
         }
         if !self.aggr_max.is_empty() {
             self.main += self.aggr_max.drain_values().sum::<Value>();
         }
-        val - self.main
+        M::apply_raw(&mut base, self.main);
+        base
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Multiplicative accumulator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-type ModAccumMul = ModAccumMult<MultMathMul>;
-type ModAccumDiv = ModAccumMult<MultMathDiv>;
-type ModAccumPerc = ModAccumMult<MultMathPerc>;
+type AccumMul = MultAccum<MultMathMul>;
+type AccumDiv = MultAccum<MultMathDiv>;
+type AccumPerc = MultAccum<MultMathPerc>;
 
-struct ModAccumMult<M>
+struct MultAccum<M>
 where
     M: MultMath,
 {
@@ -263,7 +236,7 @@ where
     aggr_min: AggrPenMin,
     aggr_max: AggrPenMax,
 }
-impl<M> ModAccumMult<M>
+impl<M> MultAccum<M>
 where
     M: MultMath,
 {
@@ -330,7 +303,7 @@ where
 {
     neg: Vec<Value>,
     pos: Vec<Value>,
-    conv: std::marker::PhantomData<M>,
+    math: std::marker::PhantomData<M>,
 }
 impl<M> Pens<M>
 where
@@ -340,7 +313,7 @@ where
         Self {
             neg: Vec::new(),
             pos: Vec::new(),
-            conv: std::marker::PhantomData,
+            math: std::marker::PhantomData,
         }
     }
     fn add_raw(&mut self, raw: Value) {

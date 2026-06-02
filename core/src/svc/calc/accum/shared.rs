@@ -29,6 +29,34 @@ pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatI
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Additive math
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) trait AddMath {
+    fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value;
+    fn apply_raw(base: &mut Value, raw: Value);
+}
+
+pub(super) struct AddMathAdd;
+impl AddMath for AddMathAdd {
+    fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+        diminish_normal(raw, proj_mult, res_mult)
+    }
+    fn apply_raw(base: &mut Value, raw: Value) {
+        *base += raw;
+    }
+}
+
+pub(super) struct AddMathSub;
+impl AddMath for AddMathSub {
+    fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+        diminish_normal(raw, proj_mult, res_mult)
+    }
+    fn apply_raw(base: &mut Value, raw: Value) {
+        *base -= raw;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Multiplicative math
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) trait MultMath {
@@ -89,10 +117,7 @@ impl MultMath for MultMathPerc {
         true
     }
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
-        match proj_mult.reduce(res_mult, |x, y| x * y) {
-            Some(mult) => raw * mult,
-            None => raw,
-        }
+        diminish_normal(raw, proj_mult, res_mult)
     }
     fn apply_raw(base: &mut Value, raw: Value) {
         *base *= raw.mul_add(Value::HUNDREDTH, Value::ONE);
@@ -102,5 +127,15 @@ impl MultMath for MultMathPerc {
     }
     fn mult_to_raw(mul: Value) -> Value {
         mul.mul_add(Value::HUNDRED, Value::HUNDRED)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn diminish_normal(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value {
+    match proj_mult.reduce(res_mult, |x, y| x * y) {
+        Some(mult) => raw * mult,
+        None => raw,
     }
 }
