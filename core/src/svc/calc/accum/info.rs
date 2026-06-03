@@ -94,7 +94,7 @@ impl ModAccumInfo {
         match op {
             CalcOp::PreAssign => self
                 .pre_assign
-                .add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::PreMul => self.pre_mul.add_raw_val(
                 op,
                 val,
@@ -150,7 +150,7 @@ impl ModAccumInfo {
                 .add_raw_val(op, val, proj_mult, res_mult, aggr_mode, false, affectors),
             CalcOp::PostAssign => self
                 .post_assign
-                .add_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::ExtraAdd => self
                 .extra_add
                 .add_raw_val(op, val, proj_mult, res_mult, aggr_mode, affectors),
@@ -160,7 +160,7 @@ impl ModAccumInfo {
         };
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, attr_info: AttrValInfo, hig: bool) -> AttrValInfo {
-        let attr_info = self.pre_assign.process_attr_info(attr_info, hig);
+        let attr_info = self.pre_assign.modify_info(attr_info, hig);
         let attr_info = self.pre_mul.modify_info(attr_info);
         let attr_info = self.pre_div.modify_info(attr_info);
         let attr_info = self.add.modify_info(attr_info);
@@ -168,7 +168,7 @@ impl ModAccumInfo {
         let attr_info = self.post_mul.modify_info(attr_info);
         let attr_info = self.post_div.modify_info(attr_info);
         let attr_info = self.post_perc.modify_info(attr_info);
-        self.post_assign.process_attr_info(attr_info, hig)
+        self.post_assign.modify_info(attr_info, hig)
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, attr_info: AttrValInfo) -> AttrValInfo {
         let attr_info = self.extra_add.modify_info(attr_info);
@@ -176,14 +176,11 @@ impl ModAccumInfo {
     }
 }
 
-// TODO: new implementation ahead, remove things above & refactor new code when done
-// TODO: check extract_if vs drain vs into_iter once refactoring is done
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Assignment
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct AccumAssign {
     stack: Vec<AttrValInfo>,
-    // Aggregable assignments
     aggr_min: RMap<AggrKey, Vec<AttrValInfo>>,
     aggr_max: RMap<AggrKey, Vec<AttrValInfo>>,
 }
@@ -195,10 +192,10 @@ impl AccumAssign {
             aggr_max: RMap::new(),
         }
     }
-    fn add_val(
+    fn add_raw_val(
         &mut self,
         op: CalcOp,
-        val: Value,
+        added_raw: Value,
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
         aggr_mode: AggrMode,
@@ -218,48 +215,30 @@ impl AccumAssign {
             None => None,
         };
         let info = AttrValInfo::from_effective_info(
-            val,
+            added_raw,
             Modification {
                 op: Op::from_calc_op(op),
-                initial_str: val,
+                initial_str: added_raw,
                 range_mult: proj_mult,
                 resist_mult: res_mult,
                 stacking_mult: None,
-                applied_str: val,
+                applied_str: added_raw,
                 affectors: affectors.into_vec(),
             },
         );
         match aggr_mode {
             AggrMode::Stack => self.stack.push(info),
-            // Store asignment in its original format for aggregation
             AggrMode::Min(key) => self.aggr_min.entry(key).or_default().push(info),
             AggrMode::Max(key) => self.aggr_max.entry(key).or_default().push(info),
         }
     }
-    fn process_attr_info(&mut self, base_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
-        self.resolve_aggrs();
+    fn modify_info(&mut self, base_info: AttrValInfo, attr_hig: bool) -> AttrValInfo {
+        resolve_aggr_min(&mut self.stack, &mut self.aggr_min);
+        resolve_aggr_max(&mut self.stack, &mut self.aggr_max);
         let comb_info = self.get_comb_info(attr_hig);
         Self::apply_comb_to_base(base_info, comb_info)
     }
     // Functions which are not part of public interface
-    fn resolve_aggrs(&mut self) {
-        for (_aggr_key, mut grouped_infos) in self.aggr_min.drain() {
-            if let Some(mut min_info) = extract_min(&mut grouped_infos) {
-                for other_info in grouped_infos.into_iter() {
-                    min_info.merge_ineffective(other_info)
-                }
-                self.stack.push(min_info);
-            }
-        }
-        for (_aggr_key, mut grouped_infos) in self.aggr_max.drain() {
-            if let Some(mut max_info) = extract_max(&mut grouped_infos) {
-                for other_info in grouped_infos.into_iter() {
-                    max_info.merge_ineffective(other_info)
-                }
-                self.stack.push(max_info);
-            }
-        }
-    }
     fn get_comb_info(&mut self, attr_hig: bool) -> Option<AttrValInfo> {
         let mut new_info = match attr_hig {
             true => extract_max(&mut self.stack),
@@ -336,29 +315,12 @@ where
         }
     }
     fn modify_info(&mut self, base_info: AttrValInfo) -> AttrValInfo {
-        self.resolve_aggrs();
+        resolve_aggr_min(&mut self.stack, &mut self.aggr_min);
+        resolve_aggr_max(&mut self.stack, &mut self.aggr_max);
         let comb_info = self.get_comb_info();
         Self::apply_comb_to_base(base_info, comb_info)
     }
     // Functions which are not part of public interface
-    fn resolve_aggrs(&mut self) {
-        for (_aggr_key, mut grouped_infos) in self.aggr_min.drain() {
-            if let Some(mut min_info) = extract_min(&mut grouped_infos) {
-                for other_info in grouped_infos.into_iter() {
-                    min_info.merge_ineffective(other_info)
-                }
-                self.stack.push(min_info);
-            }
-        }
-        for (_aggr_key, mut grouped_infos) in self.aggr_max.drain() {
-            if let Some(mut max_info) = extract_max(&mut grouped_infos) {
-                for other_info in grouped_infos.into_iter() {
-                    max_info.merge_ineffective(other_info)
-                }
-                self.stack.push(max_info);
-            }
-        }
-    }
     fn get_comb_info(&mut self) -> Option<AttrValInfo> {
         if self.stack.is_empty() {
             return None;
@@ -671,6 +633,27 @@ fn extract_min(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
 fn extract_max(attr_infos: &mut Vec<AttrValInfo>) -> Option<AttrValInfo> {
     let index = attr_infos.iter().enumerate().max_by_key(|(_, v)| v.value)?.0;
     Some(attr_infos.swap_remove(index))
+}
+
+fn resolve_aggr_min(stack: &mut Vec<AttrValInfo>, aggr_min: &mut RMap<AggrKey, Vec<AttrValInfo>>) {
+    for (_aggr_key, mut grouped_infos) in aggr_min.drain() {
+        if let Some(mut min_info) = extract_min(&mut grouped_infos) {
+            for other_info in grouped_infos.into_iter() {
+                min_info.merge_ineffective(other_info)
+            }
+            stack.push(min_info);
+        }
+    }
+}
+fn resolve_aggr_max(stack: &mut Vec<AttrValInfo>, aggr_max: &mut RMap<AggrKey, Vec<AttrValInfo>>) {
+    for (_aggr_key, mut grouped_infos) in aggr_max.drain() {
+        if let Some(mut max_info) = extract_max(&mut grouped_infos) {
+            for other_info in grouped_infos.into_iter() {
+                max_info.merge_ineffective(other_info)
+            }
+            stack.push(max_info);
+        }
+    }
 }
 
 fn extract_pen_min(attr_infos: &mut Vec<PenEntry>) -> Option<PenEntry> {
