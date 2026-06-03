@@ -63,8 +63,9 @@ pub(super) trait MultMath {
     fn check_raw(raw: Value) -> bool;
     fn diminish_raw(raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>) -> Value;
     fn apply_raw(base: Value, raw: Value) -> Value;
+    fn raw_to_mult(raw: Value) -> Value;
     fn raw_to_mult_change(raw: Value) -> Value;
-    fn mult_to_raw(mul: Value) -> Value;
+    fn mult_to_raw(mult: Value) -> Value;
 }
 
 pub(super) struct MultMathMul;
@@ -81,11 +82,14 @@ impl MultMath for MultMathMul {
     fn apply_raw(base: Value, raw: Value) -> Value {
         base * raw
     }
+    fn raw_to_mult(raw: Value) -> Value {
+        raw
+    }
     fn raw_to_mult_change(raw: Value) -> Value {
         raw - Value::ONE
     }
-    fn mult_to_raw(mul: Value) -> Value {
-        mul
+    fn mult_to_raw(mult: Value) -> Value {
+        mult
     }
 }
 
@@ -103,11 +107,14 @@ impl MultMath for MultMathDiv {
     fn apply_raw(base: Value, raw: Value) -> Value {
         base / raw
     }
+    fn raw_to_mult(raw: Value) -> Value {
+        Value::ONE / raw
+    }
     fn raw_to_mult_change(raw: Value) -> Value {
         Value::ONE / raw - Value::ONE
     }
-    fn mult_to_raw(mul: Value) -> Value {
-        Value::ONE / mul
+    fn mult_to_raw(mult: Value) -> Value {
+        Value::ONE / mult
     }
 }
 
@@ -122,11 +129,14 @@ impl MultMath for MultMathPerc {
     fn apply_raw(base: Value, raw: Value) -> Value {
         base * raw.mul_add(Value::HUNDREDTH, Value::ONE)
     }
+    fn raw_to_mult(raw: Value) -> Value {
+        raw.mul_add(Value::HUNDREDTH, Value::ONE)
+    }
     fn raw_to_mult_change(raw: Value) -> Value {
         raw * Value::HUNDREDTH
     }
-    fn mult_to_raw(mul: Value) -> Value {
-        mul.mul_add(Value::HUNDRED, Value::HUNDRED)
+    fn mult_to_raw(mult: Value) -> Value {
+        mult.mul_add(Value::HUNDRED, Value::HUNDRED)
     }
 }
 

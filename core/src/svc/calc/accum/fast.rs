@@ -266,7 +266,7 @@ where
         }
         let raw = M::diminish_raw(raw, proj_mult, res_mult);
         match aggr_mode {
-            AggrMode::Stack => add_raw_stacking(&mut self.main, &mut self.pens, raw, pen),
+            AggrMode::Stack => Self::add_raw_stacking(&mut self.main, &mut self.pens, raw, pen),
             AggrMode::Min(key) => self.aggr_min.add_val(key, PenEntry { raw, pen }),
             AggrMode::Max(key) => self.aggr_max.add_val(key, PenEntry { raw, pen }),
         }
@@ -275,27 +275,23 @@ where
         // Distribute aggregable values first
         if !self.aggr_min.is_empty() {
             for aggr_entry in self.aggr_min.drain_values() {
-                add_raw_stacking(&mut self.main, &mut self.pens, aggr_entry.raw, aggr_entry.pen);
+                Self::add_raw_stacking(&mut self.main, &mut self.pens, aggr_entry.raw, aggr_entry.pen);
             }
         }
         if !self.aggr_max.is_empty() {
             for aggr_entry in self.aggr_max.drain_values() {
-                add_raw_stacking(&mut self.main, &mut self.pens, aggr_entry.raw, aggr_entry.pen);
+                Self::add_raw_stacking(&mut self.main, &mut self.pens, aggr_entry.raw, aggr_entry.pen);
             }
         }
         self.main *= self.pens.get_mult();
         base * self.main
     }
-}
-
-fn add_raw_stacking<M>(main: &mut Value, pens: &mut Pens<M>, raw: Value, pen: bool)
-where
-    M: MultMath,
-{
-    match pen {
-        true => pens.add_raw(raw),
-        // Store in main multiplier in case of stacked & unpenalized modification
-        false => *main = M::apply_raw(*main, raw),
+    fn add_raw_stacking(main: &mut Value, pens: &mut Pens<M>, raw: Value, pen: bool) {
+        match pen {
+            true => pens.add_raw(raw),
+            // Store in main multiplier in case of stacked & unpenalized modification
+            false => *main = M::apply_raw(*main, raw),
+        }
     }
 }
 
