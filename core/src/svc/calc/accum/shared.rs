@@ -136,7 +136,7 @@ impl MultMath for MultMathPerc {
         raw * Value::HUNDREDTH
     }
     fn mult_to_raw(mult: Value) -> Value {
-        mult.mul_add(Value::HUNDRED, Value::HUNDRED)
+        mult.mul_add(Value::HUNDRED, -Value::HUNDRED)
     }
 }
 
