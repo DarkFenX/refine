@@ -466,6 +466,7 @@ def make_eve_ship(
         sig_radius: float | type[Absent] = Absent,
         neut_resist: float | type[Absent] = Absent,
         radius: float | type[Absent] = Absent,
+        extra_attrs: dict[int, float] | None = None,
 ) -> int:
     attrs = {}
     if hps is not None:
@@ -478,6 +479,8 @@ def make_eve_ship(
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
     conditional_insert(container=attrs, path=[basic_info.neut_resist_attr_id], value=neut_resist)
     conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
+    if extra_attrs:
+        attrs.update(extra_attrs)
     return client.mk_eve_ship(attrs=attrs)
 
 
