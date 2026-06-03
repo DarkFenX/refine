@@ -300,6 +300,7 @@ def test_pen_immune_preference_max(client, consts):
         attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_sw_effect3_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
         attrs={eve_buff_type_attr_id: eve_buff2_id, eve_buff_val_attr_id: 50},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
@@ -323,7 +324,7 @@ def test_pen_immune_preference_max(client, consts):
     api_sw3_mod = api_mods.find_by_affector_item(affector_item_id=api_sw_effect3.id).one()
     assert api_sw3_mod.op == consts.ApiModOp.post_percent
     assert api_sw3_mod.initial_str == approx(50)
-    assert api_sw3_mod.stacking_mult is None
+    assert api_sw3_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_sw3_mod.applied_str == approx(50)
     assert api_sw3_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
@@ -351,6 +352,7 @@ def test_pen_immune_preference_min(client, consts):
         attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: -30},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_sw_effect3_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
         attrs={eve_buff_type_attr_id: eve_buff2_id, eve_buff_val_attr_id: -50},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150})
@@ -374,7 +376,7 @@ def test_pen_immune_preference_min(client, consts):
     api_sw3_mod = api_mods.find_by_affector_item(affector_item_id=api_sw_effect3.id).one()
     assert api_sw3_mod.op == consts.ApiModOp.post_percent
     assert api_sw3_mod.initial_str == approx(-50)
-    assert api_sw3_mod.stacking_mult is None
+    assert api_sw3_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_sw3_mod.applied_str == approx(-50)
     assert api_sw3_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
