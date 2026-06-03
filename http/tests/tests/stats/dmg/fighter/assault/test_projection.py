@@ -992,7 +992,7 @@ def test_tgt_attr_speed(client, consts):
 
 
 def test_tgt_attr_sig_radius(client, consts):
-    # Absent/negative values are the same as 0 value, which means speed has no effect
+    # Absent/negative values are the same as 0 value, which means zero application
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(
         client=client, basic_info=eve_basic_info,
