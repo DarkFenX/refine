@@ -799,6 +799,381 @@ def test_ftr_prm_attr_drs(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(4118.832237)]
 
 
+def test_ftr_sec_attr_speed_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_bomb_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 0, 640), volume=10,
+        flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
+    eve_fighter_id = make_eve_fighter_lr(
+        client=client, basic_info=eve_basic_info,
+        sec_bomb_type_id=eve_bomb_id, sec_cycle_time=60000, sec_charge_count=5, sec_charge_rearm_time=20,
+        radius=35, sq_size=6)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=0, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fighter_proj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_src_fighter_nonproj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, -15551, 0), movement=(0, 0, 0))
+    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, -15549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 15549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 15551, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+
+
+def test_ftr_sec_attr_flight_time_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_bomb_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 0, 640), volume=10,
+        speed=2500, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
+    eve_fighter_id = make_eve_fighter_lr(
+        client=client, basic_info=eve_basic_info,
+        sec_bomb_type_id=eve_bomb_id, sec_cycle_time=60000, sec_charge_count=5, sec_charge_rearm_time=20,
+        radius=35, sq_size=6)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=0, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fighter_proj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_src_fighter_nonproj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, -15551, 0), movement=(0, 0, 0))
+    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, -15549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 15549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 15551, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+
+
+def test_ftr_sec_attr_mass_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_bomb_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 0, 640), volume=10,
+        speed=2500, flight_time=12000, agility=0.0275, exp_range=15000, exp_radius=400)
+    eve_fighter_id = make_eve_fighter_lr(
+        client=client, basic_info=eve_basic_info,
+        sec_bomb_type_id=eve_bomb_id, sec_cycle_time=60000, sec_charge_count=5, sec_charge_rearm_time=20,
+        radius=35, sq_size=6)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=0, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fighter_proj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_src_fighter_nonproj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14449, 0), movement=(0, 0, 0))
+    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 14451, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 45549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 45551, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+
+
+def test_ftr_sec_attr_ability_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_bomb_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 0, 640), volume=10,
+        speed=2500, flight_time=12000, mass=1000, exp_range=15000, exp_radius=400)
+    eve_fighter_id = make_eve_fighter_lr(
+        client=client, basic_info=eve_basic_info,
+        sec_bomb_type_id=eve_bomb_id, sec_cycle_time=60000, sec_charge_count=5, sec_charge_rearm_time=20,
+        radius=35, sq_size=6)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=0, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fighter_proj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_src_fighter_nonproj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14449, 0), movement=(0, 0, 0))
+    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 14451, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 45549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 45551, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+
+
+def test_ftr_sec_attr_exp_range_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_bomb_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 0, 640), volume=10,
+        speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_radius=400)
+    eve_fighter_id = make_eve_fighter_lr(
+        client=client, basic_info=eve_basic_info,
+        sec_bomb_type_id=eve_bomb_id, sec_cycle_time=60000, sec_charge_count=5, sec_charge_rearm_time=20,
+        radius=35, sq_size=6)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=0, sig_radius=1000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fighter_proj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_src_fighter_nonproj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 29449, 0), movement=(0, 0, 0))
+    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 29451, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 30549, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 30551, 0))
+    # Verification
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, 0]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
+
+
+def test_ftr_sec_attr_exp_radius_absent(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_bomb_id = make_eve_bomb(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 0, 640), volume=10,
+        speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000)
+    eve_fighter_id = make_eve_fighter_lr(
+        client=client, basic_info=eve_basic_info,
+        sec_bomb_type_id=eve_bomb_id, sec_cycle_time=60000, sec_charge_count=5, sec_charge_rearm_time=20,
+        radius=35, sq_size=6)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=0, sig_radius=100)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fighter_proj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_src_fighter_nonproj = api_src_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 30000, 0), movement=(0, 0, 0))
+    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification - full damage is taken
+    api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_proj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_proj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+    api_fighter_nonproj_dmg_stats = api_src_fighter_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id, include_charges=True)]))).dmg.one()
+    assert api_fighter_nonproj_dmg_stats.dps == [0, 0, 0, approx(64)]
+    assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, approx(3840)]
+
+
 def test_tgt_attr_speed(client, consts):
     # Absent/negative values are the same as 0 value, which means speed has no effect
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
