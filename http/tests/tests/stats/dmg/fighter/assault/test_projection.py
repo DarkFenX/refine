@@ -409,7 +409,7 @@ def test_npc_prop_mode(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [approx(889.430869), 0, 0, 0]
 
 
-def test_fighter_effect_range_optimal_absent(client, consts):
+def test_ftr_effect_range_optimal_absent(client, consts):
     # No optimal range defined - it is considered equal to 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
     eve_fighter_id = make_eve_fighter_assault(
@@ -458,7 +458,7 @@ def test_fighter_effect_range_optimal_absent(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [approx(835.3125), 0, 0, 0]
 
 
-def test_fighter_effect_range_falloff_absent(client, consts):
+def test_ftr_effect_range_falloff_absent(client, consts):
     # No falloff range defined - it is considered equal to 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_falloff=False)
     eve_fighter_id = make_eve_fighter_assault(
@@ -529,7 +529,7 @@ def test_fighter_effect_range_falloff_absent(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
 
 
-def test_fighter_attr_range_optimal_absent(client, consts):
+def test_ftr_attr_range_optimal_absent(client, consts):
     # No optimal range defined - it is considered equal to 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(
@@ -577,7 +577,7 @@ def test_fighter_attr_range_optimal_absent(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [approx(835.3125), 0, 0, 0]
 
 
-def test_fighter_attr_range_falloff_absent(client, consts):
+def test_ftr_attr_range_falloff_absent(client, consts):
     # No falloff range defined - it is considered equal to 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(
@@ -648,7 +648,7 @@ def test_fighter_attr_range_falloff_absent(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
 
 
-def test_fighter_attr_exp_radius(client, consts):
+def test_ftr_attr_exp_radius(client, consts):
     # Absent/negative values are the same as 0 value, which means perfect application
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_absent_id = make_eve_fighter_assault(
@@ -728,7 +728,7 @@ def test_fighter_attr_exp_radius(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [approx(4710.234375), 0, 0, 0]
 
 
-def test_fighter_attr_exp_speed(client, consts):
+def test_ftr_attr_exp_speed(client, consts):
     # Absent/negative values are the same as 0 value, which means zero application
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_absent_id = make_eve_fighter_assault(
@@ -843,7 +843,7 @@ def test_fighter_attr_exp_speed(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [0, 0, 0, 0]
 
 
-def test_fighter_attr_drf(client, consts):
+def test_ftr_attr_drf(client, consts):
     # Absent/negative/zero value of first part of composite DRF results in zero value of DRF
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_absent_id = make_eve_fighter_assault(
@@ -923,7 +923,7 @@ def test_fighter_attr_drf(client, consts):
     assert api_fighter_nonproj_dmg_stats.volley == [approx(532.141723), 0, 0, 0]
 
 
-def test_fighter_attr_drs(client, consts):
+def test_ftr_attr_drs(client, consts):
     # Absent/negative/zero value of second part of composite DRF results in zero value of DRF
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_absent_id = make_eve_fighter_assault(
