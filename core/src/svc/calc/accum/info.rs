@@ -39,12 +39,12 @@ impl AttrValInfo {
         }
     }
     fn merge(&mut self, other: AttrValInfo) {
-        self.effective_infos.extend(other.effective_infos.into_iter());
-        self.filtered_infos.extend(other.filtered_infos.into_iter());
+        self.effective_infos.extend(other.effective_infos);
+        self.filtered_infos.extend(other.filtered_infos);
     }
     fn merge_ineffective(&mut self, other: AttrValInfo) {
-        self.filtered_infos.extend(other.effective_infos.into_iter());
-        self.filtered_infos.extend(other.filtered_infos.into_iter());
+        self.filtered_infos.extend(other.effective_infos);
+        self.filtered_infos.extend(other.filtered_infos);
     }
     fn is_single_effective(&self) -> bool {
         self.effective_infos.len() <= 1

@@ -48,7 +48,7 @@ def test_high_is_good(client, consts):
     assert attr_mod.initial_str == approx(53.02)
     assert attr_mod.stacking_mult is None
     assert attr_mod.applied_str == approx(53.02)
-    assert attr_mod.affectors.one().item_id in (api_item_affector_high1.id, api_item_affector_high2.id)
+    assert attr_mod.affectors.one().item_id in {api_item_affector_high1.id, api_item_affector_high2.id}
 
 
 def test_high_is_bad(client, consts):
@@ -65,7 +65,7 @@ def test_high_is_bad(client, consts):
     assert attr_mod.initial_str == approx(-20)
     assert attr_mod.stacking_mult is None
     assert attr_mod.applied_str == approx(-20)
-    assert attr_mod.affectors.one().item_id in (api_item_affector_low1.id, api_item_affector_low2.id)
+    assert attr_mod.affectors.one().item_id in {api_item_affector_low1.id, api_item_affector_low2.id}
 
 
 def test_insignificant_earlier_ops(client, consts):

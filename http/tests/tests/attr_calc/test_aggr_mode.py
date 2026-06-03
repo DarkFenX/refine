@@ -238,7 +238,7 @@ def test_postassign_max(client, consts):
     assert api_mod.initial_str == approx(30)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_str == approx(30)
-    assert api_mod.affectors.one().item_id in (api_sw_effect_high1.id, api_sw_effect_high2.id)
+    assert api_mod.affectors.one().item_id in {api_sw_effect_high1.id, api_sw_effect_high2.id}
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
@@ -273,7 +273,7 @@ def test_postassign_min(client, consts):
     assert api_mod.initial_str == approx(-40)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_str == approx(-40)
-    assert api_mod.affectors.one().item_id in (api_sw_effect_low1.id, api_sw_effect_low2.id)
+    assert api_mod.affectors.one().item_id in {api_sw_effect_low1.id, api_sw_effect_low2.id}
     assert api_mod.affectors.one().attr_id == eve_buff_val_attr_id
 
 
