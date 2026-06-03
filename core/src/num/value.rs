@@ -29,7 +29,6 @@ impl Value {
     pub(crate) const TWO: Self = Self(2.0);
     pub(crate) const HUNDRED: Self = Self(100.0);
     pub(crate) const THOUSAND: Self = Self(1000.0);
-    pub(crate) const HUNDREDTH: Self = Self(0.01);
     pub(crate) const FLOAT_TOLERANCE: Self = Self(FLOAT_TOLERANCE);
     pub(crate) const AU: Self = Self(AU);
 }
@@ -118,6 +117,9 @@ impl Value {
     }
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self(self.0.mul_add(a.0, b.0))
+    }
+    pub(crate) fn perc_change_to_mult(self) -> Self {
+        Self(self.0 / 100.0 + 1.0)
     }
 }
 impl std::ops::Neg for Value {

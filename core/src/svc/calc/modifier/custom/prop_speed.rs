@@ -75,11 +75,10 @@ pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Op
     if !perc.is_finite() {
         return None;
     }
-    let val = perc.mul_add(Value::HUNDREDTH, Value::ONE);
     // Register dependencies, so that affectee attribute is properly cleared up when any of affector
     // attributes change
     reg_dependencies(calc, ctx.ac(), ship_uid, espec);
-    Some(val)
+    Some(perc.perc_change_to_mult())
 }
 
 fn reg_dependencies(calc: &mut Calc, attr_consts: &RAttrConsts, ship_uid: UItemId, prop_espec: EffectSpec) {

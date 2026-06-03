@@ -127,13 +127,13 @@ impl MultMath for MultMathPerc {
         diminish_normal(raw, proj_mult, res_mult)
     }
     fn apply_raw(base: Value, raw: Value) -> Value {
-        base * raw.mul_add(Value::HUNDREDTH, Value::ONE)
+        base * raw.perc_change_to_mult()
     }
     fn raw_to_mult(raw: Value) -> Value {
-        raw.mul_add(Value::HUNDREDTH, Value::ONE)
+        raw.perc_change_to_mult()
     }
     fn raw_to_mult_change(raw: Value) -> Value {
-        raw * Value::HUNDREDTH
+        raw / Value::HUNDRED
     }
     fn mult_to_raw(mult: Value) -> Value {
         mult.mul_add(Value::HUNDRED, -Value::HUNDRED)
