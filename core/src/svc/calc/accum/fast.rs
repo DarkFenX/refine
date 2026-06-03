@@ -337,7 +337,6 @@ where
 }
 
 // Take a slice of mult changes, return mult
-// TODO: consider draining vec instead of iterating
 fn get_penalty_chain_mult(vals: &[Value]) -> Value {
     let mut val = Value::ONE;
     for (&mod_val, &mult) in std::iter::zip(vals.iter(), PENALTY_MULTS.iter()) {
