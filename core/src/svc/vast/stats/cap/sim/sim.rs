@@ -282,7 +282,7 @@ impl CapSim {
                     .map(|(i, _)| i)
                     .unwrap(),
             };
-            let injector = self.injectors.remove(idx);
+            let injector = self.injectors.swap_remove(idx);
             self.use_injector(injector);
         }
     }
@@ -300,7 +300,7 @@ impl CapSim {
             else {
                 return;
             };
-            let injector = self.injectors.remove(idx);
+            let injector = self.injectors.swap_remove(idx);
             self.use_injector(injector);
         }
     }
