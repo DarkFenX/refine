@@ -1,4 +1,4 @@
-use super::{seq_enum::CycleSeq, seq_enum_looped::CycleSeqLooped, seq_loop_sin::CSeqLoopSin};
+use super::{seq::CycleSeq, seq_looped::CycleSeqLooped, seq_var_loop_sin::CSeqLoopSin};
 use crate::{num::Count, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

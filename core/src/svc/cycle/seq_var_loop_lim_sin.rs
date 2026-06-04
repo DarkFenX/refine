@@ -1,4 +1,4 @@
-use super::{seq_enum::CycleSeq, seq_enum_looped::CycleSeqLooped, seq_loop_sin::CSeqLoopSin};
+use super::{seq::CycleSeq, seq_looped::CycleSeqLooped, seq_var_loop_sin::CSeqLoopSin};
 use crate::{num::Count, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,9 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
     where
         D: Eq,
     {
+        // Have to check for no hard downtime not to make it occur every cycle instead of every N
+        // cycles; if we had a LoopLim container, could optimize into it, but just this optimization
+        // is not sufficient to introduce it and complicate things elsewhere.
         match self.p1_data == self.p2_data && self.hard_dt.is_none() {
             true => CycleSeq::LoopSin(CSeqLoopSin {
                 data: self.p1_data,

@@ -1,4 +1,4 @@
-use super::{seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin};
+use super::{seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin};
 use crate::util::LibConverter;
 
 pub(in crate::svc) enum CycleSeqLooped<D, HDT> {

@@ -1,6 +1,6 @@
 use super::{
-    seq_enum_looped::CycleSeqLooped, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
-    seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin,
+    seq_looped::CycleSeqLooped, seq_var_lim::CSeqLim, seq_var_lim_inf::CSeqLimInf, seq_var_lim_sin_inf::CSeqLimSinInf,
+    seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
 };
 use crate::util::LibConverter;
 

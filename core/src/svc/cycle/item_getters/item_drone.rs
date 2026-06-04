@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CycleActive, CycleDataFull, CycleSeq, seq_loop_sin::CSeqLoopSin},
+        cycle::{CycleActive, CycleDataFull, CycleSeq, seq_var_loop_sin::CSeqLoopSin},
         funcs,
     },
     ud::{UDrone, UItemId},

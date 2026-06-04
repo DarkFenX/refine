@@ -1,0 +1,12 @@
+use crate::num::Count;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Part 1: runs specified number of times
+// Part 2: runs once
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub(in crate::svc) struct CSeqLimSin<D> {
+    pub(in crate::svc) p1_data: D,
+    pub(in crate::svc) p1_repeat_count: Count,
+    pub(in crate::svc) p2_data: D,
+}
