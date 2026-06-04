@@ -227,7 +227,7 @@ def test_npc_prop_mode(client, consts):
 
 
 def test_dd_attr_range_absent(client, consts):
-    # No optimal range defined - it is considered equal to 0
+    # No optimal range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_dd_lance(
         client=client,

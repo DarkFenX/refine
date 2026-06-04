@@ -410,7 +410,7 @@ def test_npc_prop_mode(client, consts):
 
 
 def test_ftr_effect_range_optimal_absent(client, consts):
-    # No optimal range defined - it is considered equal to 0
+    # No optimal range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
     eve_fighter_id = make_eve_fighter_assault(
         client=client, basic_info=eve_basic_info,
@@ -459,7 +459,7 @@ def test_ftr_effect_range_optimal_absent(client, consts):
 
 
 def test_ftr_effect_range_falloff_absent(client, consts):
-    # No falloff range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_falloff=False)
     eve_fighter_id = make_eve_fighter_assault(
         client=client, basic_info=eve_basic_info,
@@ -530,7 +530,7 @@ def test_ftr_effect_range_falloff_absent(client, consts):
 
 
 def test_ftr_attr_range_optimal_absent(client, consts):
-    # No optimal range defined - it is considered equal to 0
+    # No optimal range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(
         client=client, basic_info=eve_basic_info,
@@ -578,7 +578,7 @@ def test_ftr_attr_range_optimal_absent(client, consts):
 
 
 def test_ftr_attr_range_falloff_absent(client, consts):
-    # No falloff range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(
         client=client, basic_info=eve_basic_info,

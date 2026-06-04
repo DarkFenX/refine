@@ -365,7 +365,7 @@ def test_tgt_npc_prop_mode(client, consts):
 
 
 def test_drone_effect_range_optimal_absent(client, consts):
-    # No falloff range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_range=False)
     eve_drone_id = make_eve_drone(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 64, 0), dmg_mult=8.6, cycle_time=4000,
@@ -404,7 +404,7 @@ def test_drone_effect_range_optimal_absent(client, consts):
 
 
 def test_drone_effect_range_falloff_absent(client, consts):
-    # No falloff range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts, effect_falloff=False)
     eve_drone_id = make_eve_drone(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 64, 0), dmg_mult=8.6, cycle_time=4000,
@@ -480,7 +480,7 @@ def test_drone_effect_tracking_absent(client, consts):
 
 
 def test_drone_attr_range_optimal_absent(client, consts):
-    # No falloff range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_drone_id = make_eve_drone(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 64, 0), dmg_mult=8.6, cycle_time=4000,
@@ -519,7 +519,7 @@ def test_drone_attr_range_optimal_absent(client, consts):
 
 
 def test_drone_attr_range_falloff_absent(client, consts):
-    # No falloff range defined - it is considered equal to 0
+    # No falloff range defined - it is considered equal to be 0
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_drone_id = make_eve_drone(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 64, 0), dmg_mult=8.6, cycle_time=4000,
