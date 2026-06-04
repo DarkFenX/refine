@@ -23,7 +23,7 @@ pub(in crate::ad::generator) fn get_abil_effect(abil_id: EAbilId) -> Option<EEff
         | EAbilId::TORP_KIN
         | EAbilId::TORP_EXP => Some(EEffectId::FTR_ABIL_MISSILES),
         EAbilId::BOMB => Some(EEffectId::FTR_ABIL_BOMB),
-        EAbilId::KAMIKAZE => Some(EEffectId::FTR_ABIL_KAMIKAZE),
+        EAbilId::TRUE_SACRIFICE => Some(EEffectId::FTR_ABIL_KAMIKAZE),
         EAbilId::POINT => Some(EEffectId::FTR_ABIL_POINT),
         EAbilId::WEB => Some(EEffectId::FTR_ABIL_WEB),
         EAbilId::TACKLE => Some(EEffectId::FTR_ABIL_TACKLE),

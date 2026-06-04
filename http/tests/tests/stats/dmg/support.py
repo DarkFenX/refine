@@ -371,8 +371,9 @@ def setup_dmg_basics(
         abils=[
             client.mk_eve_item_abil(id_=atkm_abil_id),
             client.mk_eve_item_abil(id_=missiles_abil_id),
-            client.mk_eve_item_abil(id_=bomb_abil_id),
-            client.mk_eve_item_abil(id_=kamikaze_abil_id)])
+            client.mk_eve_item_abil(id_=bomb_abil_id)])
+    # Can't have more than 3 abilities per fighter, so some are spilt over to 2nd one
+    client.mk_eve_fighter(abils=[client.mk_eve_item_abil(id_=kamikaze_abil_id)])
     return DmgBasicInfo(
         # Attrs
         dmg_em_attr_id=dmg_em_attr_id,
@@ -1063,6 +1064,68 @@ def make_eve_fighter_lr(
                 id_=basic_info.bomb_abil_id,
                 charge_count=sec_charge_count,
                 charge_rearm_time=sec_charge_rearm_time)])
+
+
+def make_eve_fighter_shadow(
+        *,
+        client: TestClient,
+        basic_info: DmgBasicInfo,
+        prm_dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        prm_dmg_mult: float | type[Absent] = Absent,
+        prm_cycle_time: float | type[Absent] = Absent,
+        prm_range_optimal: float | type[Absent] = Absent,
+        prm_range_falloff: float | type[Absent] = Absent,
+        prm_exp_radius: float | type[Absent] = Absent,
+        prm_exp_speed: float | type[Absent] = Absent,
+        prm_dr_factor: float | type[Absent] = Absent,
+        prm_dr_sens: float | type[Absent] = Absent,
+        sec_dmgs: tuple[float | None, float | None, float | None, float | None] | None = None,
+        sec_cycle_time: float | type[Absent] = Absent,
+        sec_range: float | type[Absent] = Absent,
+        sec_sig_radius: float | type[Absent] = Absent,
+        sec_resist_attr_id: float | type[Absent] = Absent,
+        sq_size: float | type[Absent] = Absent,
+        refuel_duration: float | type[Absent] = Absent,
+        speed: float | type[Absent] = Absent,
+        radius: float | type[Absent] = Absent,
+        sig_radius: float | type[Absent] = Absent,
+) -> int:
+    attrs = {}
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=prm_dmgs, dmg_attr_ids=(
+        basic_info.ftr_abil_atkm_dmg_em_attr_id,
+        basic_info.ftr_abil_atkm_dmg_therm_attr_id,
+        basic_info.ftr_abil_atkm_dmg_kin_attr_id,
+        basic_info.ftr_abil_atkm_dmg_expl_attr_id))
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dmg_mult_attr_id], value=prm_dmg_mult)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_cycle_time_attr_id], value=prm_cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_range_optimal_attr_id], value=prm_range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_range_falloff_attr_id], value=prm_range_falloff)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_exp_radius_attr_id], value=prm_exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_exp_speed_attr_id], value=prm_exp_speed)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dr_factor_attr_id], value=prm_dr_factor)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_atkm_dr_sens_attr_id], value=prm_dr_sens)
+    _add_dmgs(basic_info=basic_info, attrs=attrs, dmgs=sec_dmgs, dmg_attr_ids=(
+        basic_info.ftr_abil_kamikaze_dmg_em_attr_id,
+        basic_info.ftr_abil_kamikaze_dmg_therm_attr_id,
+        basic_info.ftr_abil_kamikaze_dmg_kin_attr_id,
+        basic_info.ftr_abil_kamikaze_dmg_expl_attr_id))
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_kamikaze_cycle_time_attr_id], value=sec_cycle_time)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_kamikaze_range_attr_id], value=sec_range)
+    conditional_insert(container=attrs, path=[basic_info.ftr_abil_kamikaze_sig_radius_attr_id], value=sec_sig_radius)
+    conditional_insert(
+        container=attrs, path=[basic_info.ftr_abil_kamikaze_resist_ref_attr_id], value=sec_resist_attr_id)
+    conditional_insert(container=attrs, path=[basic_info.max_ftr_count_attr_id], value=sq_size)
+    conditional_insert(container=attrs, path=[basic_info.refuel_duration_attr_id], value=refuel_duration)
+    conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
+    conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
+    conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
+    return client.mk_eve_fighter(
+        attrs=attrs,
+        eff_ids=[basic_info.ftr_abil_atkm_effect_id, basic_info.ftr_abil_kamikaze_effect_id],
+        defeff_id=basic_info.ftr_abil_atkm_effect_id,
+        abils=[
+            client.mk_eve_item_abil(id_=basic_info.atkm_abil_id),
+            client.mk_eve_item_abil(id_=basic_info.kamikaze_abil_id)])
 
 
 def make_eve_smartbomb(

@@ -29,7 +29,7 @@ impl EAbilId {
     pub(crate) const ROCKET_THERM: Self = Self::from_i32(34);
     pub(crate) const ROCKET_KIN: Self = Self::from_i32(35);
     pub(crate) const ROCKET_EXP: Self = Self::from_i32(36);
-    pub(crate) const KAMIKAZE: Self = Self::from_i32(38);
+    pub(crate) const TRUE_SACRIFICE: Self = Self::from_i32(38);
     pub(crate) const ATK_BLASTER_KIN: Self = Self::from_i32(44);
     pub(crate) const ATK_RAIL_KIN: Self = Self::from_i32(45);
 }
