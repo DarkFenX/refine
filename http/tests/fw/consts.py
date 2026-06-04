@@ -150,6 +150,7 @@ class EveEffect(IntEnum):
     emergency_hull_energizer = 6484
     ftr_abil_launch_bomb = 6485
     doomsday_aoe_ecm = 6513
+    ftr_abil_kamikaze = 6554
     ship_mod_ancillary_remote_armor_repairer = 6651
     ship_mod_ancillary_remote_shield_booster = 6652
     struct_mod_effect_ecm = 6685
@@ -260,6 +261,7 @@ class EveAbil(IntEnum):
     ecm = 12
     pulse_cannon = 22
     heavy_rocket_salvo = 33
+    true_sacrifice = 38
 
 
 @unique
@@ -479,6 +481,12 @@ class EveAttr(IntEnum):
     doomsday_aoe_sig_radius = 2281
     doomsday_aoe_duration = 2280
     ftr_abil_launch_bomb_type = 2324
+    ftr_abil_kamikaze_dmg_em = 2325
+    ftr_abil_kamikaze_dmg_therm = 2326
+    ftr_abil_kamikaze_dmg_kin = 2327
+    ftr_abil_kamikaze_dmg_exp = 2328
+    ftr_abil_kamikaze_sig_radius = 2329
+    ftr_abil_kamikaze_range = 2330
     disallow_tethering = 2343
     ftr_abil_launch_bomb_duration = 2349
     disallow_drive_jumping = 2353
@@ -488,8 +496,10 @@ class EveAttr(IntEnum):
     nullsec_modifier = 2357
     security_modifier = 2358
     can_fit_ship_group10 = 2396
+    ftr_abil_kamikaze_duration = 2401
     ftr_refueling_time = 2426
     max_type_fitted = 2431
+    ftr_abil_kamikaze_resist_id = 2432
     energy_neut_sig_res = 2451
     disallow_cloaking = 2454
     can_fit_ship_type7 = 2463

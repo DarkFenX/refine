@@ -115,6 +115,17 @@ class DmgBasicInfo:
     ftr_abil_bomb_cycle_time_attr_id: int
     ftr_abil_bomb_effect_id: int
     bomb_abil_id: int
+    # Fighter kamikaze attack
+    ftr_abil_kamikaze_dmg_em_attr_id: int
+    ftr_abil_kamikaze_dmg_therm_attr_id: int
+    ftr_abil_kamikaze_dmg_kin_attr_id: int
+    ftr_abil_kamikaze_dmg_expl_attr_id: int
+    ftr_abil_kamikaze_cycle_time_attr_id: int
+    ftr_abil_kamikaze_range_attr_id: int
+    ftr_abil_kamikaze_sig_radius_attr_id: int
+    ftr_abil_kamikaze_resist_ref_attr_id: int
+    ftr_abil_kamikaze_effect_id: int
+    kamikaze_abil_id: int
     # Misc
     guided_bomb_group_id: int
 
@@ -129,330 +140,357 @@ def setup_dmg_basics(
         effect_tracking: bool = True,
 ) -> DmgBasicInfo:
     # Attrs
-    eve_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
-    eve_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
-    eve_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg)
-    eve_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg)
-    eve_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult)
-    eve_dmg_mult_spool_step_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_per_cycle)
-    eve_dmg_mult_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_max)
-    eve_dmg_breach_abs_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_dmg_per_tick)
-    eve_dmg_breach_rel_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_hp_perc_per_tick)
-    eve_dmg_breach_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_duration)
-    eve_dd_delay1_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_delay_duration)
-    eve_dd_delay2_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
-    eve_dd_dmg_interval_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_cycle_time)
-    eve_dd_dmg_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_duration)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
-    eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_reactivation_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
-    eve_reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
-    eve_crystal_get_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
-    eve_crystal_volatility_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
-    eve_crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
-    eve_ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
-    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
-    eve_prop_sig_radius_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
-    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_max_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
-    eve_falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.falloff)
-    eve_tracking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tracking_speed)
-    eve_sig_resolution_attr_id = client.mk_eve_attr(id_=consts.EveAttr.optimal_sig_radius)
-    eve_emp_field_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
-    eve_entity_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
-    eve_max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
-    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
-    eve_agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
-    eve_max_fof_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_fof_target_range)
-    eve_aoe_cloud_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_cloud_size)
-    eve_aoe_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_velocity)
-    eve_aoe_drf_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_damage_reduction_factor)
-    eve_shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
-    eve_armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
-    eve_hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
-    eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
-    eve_neut_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
-    eve_max_ftr_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
-    eve_refuel_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_refueling_time)
+    dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.em_dmg)
+    dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.therm_dmg)
+    dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.kin_dmg)
+    dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.expl_dmg)
+    dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult)
+    dmg_mult_spool_step_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_per_cycle)
+    dmg_mult_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_max)
+    dmg_breach_abs_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_dmg_per_tick)
+    dmg_breach_rel_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_max_hp_perc_per_tick)
+    dmg_breach_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dot_duration)
+    dd_delay1_attr_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_delay_duration)
+    dd_delay2_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
+    dd_dmg_interval_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_cycle_time)
+    dd_dmg_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_duration)
+    capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
+    cycle_time_attr_id = client.mk_eve_attr()
+    reactivation_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
+    reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
+    crystal_get_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
+    crystal_volatility_chance_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_chance)
+    crystal_volatility_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystal_volatility_damage)
+    ammo_loaded_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ammo_loaded)
+    sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    prop_sig_radius_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_max_velocity_sig_radius_mult)
+    radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    max_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
+    falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.falloff)
+    tracking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tracking_speed)
+    sig_resolution_attr_id = client.mk_eve_attr(id_=consts.EveAttr.optimal_sig_radius)
+    emp_field_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.emp_field_range)
+    entity_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
+    max_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
+    mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    agility_attr_id = client.mk_eve_attr(id_=consts.EveAttr.agility)
+    max_fof_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_fof_target_range)
+    aoe_cloud_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_cloud_size)
+    aoe_velocity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_velocity)
+    aoe_drf_attr_id = client.mk_eve_attr(id_=consts.EveAttr.aoe_damage_reduction_factor)
+    shield_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.shield_capacity)
+    armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
+    hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
+    resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
+    neut_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
+    max_ftr_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    refuel_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_refueling_time)
     # Effects
-    eve_turret_proj_effect_id = client.mk_eve_effect(
+    turret_proj_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.projectile_fired,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_max_range_attr_id if effect_range else Default,
-        falloff_attr_id=eve_falloff_attr_id if effect_falloff else Default,
-        tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
-    eve_turret_spool_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=max_range_attr_id if effect_range else Default,
+        falloff_attr_id=falloff_attr_id if effect_falloff else Default,
+        tracking_attr_id=tracking_attr_id if effect_tracking else Default)
+    turret_spool_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_disintegrator_attack,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_max_range_attr_id if effect_range else Default,
-        falloff_attr_id=eve_falloff_attr_id if effect_falloff else Default,
-        tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
-    eve_tgt_attack_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=max_range_attr_id if effect_range else Default,
+        falloff_attr_id=falloff_attr_id if effect_falloff else Default,
+        tracking_attr_id=tracking_attr_id if effect_tracking else Default)
+    tgt_attack_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.tgt_attack,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_max_range_attr_id if effect_range else Default,
-        falloff_attr_id=eve_falloff_attr_id if effect_falloff else Default,
-        tracking_attr_id=eve_tracking_attr_id if effect_tracking else Default)
-    eve_vorton_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=max_range_attr_id if effect_range else Default,
+        falloff_attr_id=falloff_attr_id if effect_falloff else Default,
+        tracking_attr_id=tracking_attr_id if effect_tracking else Default)
+    vorton_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.chain_lightning,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_max_range_attr_id if effect_range else Default)
-    eve_launcher_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=max_range_attr_id if effect_range else Default)
+    launcher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.use_missiles,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
-    eve_missile_fof_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
+    missile_fof_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fof_missile_launching,
         cat_id=consts.EveEffCat.active)
-    eve_missile_defender_effect_id = client.mk_eve_effect(
+    missile_defender_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.defender_missile_launching,
         cat_id=consts.EveEffCat.active)
-    eve_breacher_effect_id = client.mk_eve_effect(
+    breacher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.dot_missile_launching,
         cat_id=consts.EveEffCat.target)
-    eve_bomb_effect_id = client.mk_eve_effect(
+    bomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.bomb_launching,
         cat_id=consts.EveEffCat.active)
-    eve_smartbomb_effect_id = client.mk_eve_effect(
+    smartbomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_emp_field_range_attr_id if effect_range else Default)
-    eve_pds_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=emp_field_range_attr_id if effect_range else Default)
+    pds_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.point_defense,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_emp_field_range_attr_id if effect_range else Default)
-    eve_dd_direct_amarr_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=emp_field_range_attr_id if effect_range else Default)
+    dd_direct_amarr_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.super_weapon_amarr,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_direct_caldari_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_direct_caldari_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.super_weapon_caldari,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_direct_gallente_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_direct_gallente_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.super_weapon_gallente,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_direct_minmatar_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_direct_minmatar_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.super_weapon_minmatar,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_lance_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_lance_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_beam_dot,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_lance_debuff_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_lance_debuff_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.debuff_lance,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_reaper_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_reaper_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_slash,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_boson_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_boson_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_cone_dot,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
-    eve_dd_vorton_effect_id = client.mk_eve_effect(
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
+    dd_vorton_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.lightning_weapon,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id if effect_duration else Default)
+        duration_attr_id=cycle_time_attr_id if effect_duration else Default)
     # Fighter "primary" missile attack
-    eve_ftr_abil_atkm_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_em)
-    eve_ftr_abil_atkm_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_therm)
-    eve_ftr_abil_atkm_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_kin)
-    eve_ftr_abil_atkm_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_expl)
-    eve_ftr_abil_atkm_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_mult)
-    eve_ftr_abil_atkm_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_duration)
-    eve_ftr_abil_atkm_range_optimal_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_range_optimal)
-    eve_ftr_abil_atkm_range_falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_range_falloff)
-    eve_ftr_abil_atkm_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_expl_radius)
-    eve_ftr_abil_atkm_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_expl_velocity)
-    eve_ftr_abil_atkm_dr_factor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_reduction_factor)
-    eve_ftr_abil_atkm_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_reduction_sens)
-    eve_ftr_abil_atkm_effect_id = client.mk_eve_effect(
+    ftr_abil_atkm_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_em)
+    ftr_abil_atkm_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_therm)
+    ftr_abil_atkm_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_kin)
+    ftr_abil_atkm_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_expl)
+    ftr_abil_atkm_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_dmg_mult)
+    ftr_abil_atkm_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_duration)
+    ftr_abil_atkm_range_optimal_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_range_optimal)
+    ftr_abil_atkm_range_falloff_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_range_falloff)
+    ftr_abil_atkm_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_expl_radius)
+    ftr_abil_atkm_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_expl_velocity)
+    ftr_abil_atkm_dr_factor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_reduction_factor)
+    ftr_abil_atkm_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_atkm_reduction_sens)
+    ftr_abil_atkm_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_attack_m,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_ftr_abil_atkm_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_ftr_abil_atkm_range_optimal_attr_id if effect_range else Default,
-        falloff_attr_id=eve_ftr_abil_atkm_range_falloff_attr_id if effect_falloff else Default)
-    eve_atkm_abil_id = client.mk_eve_abil(id_=consts.EveAbil.pulse_cannon)
+        duration_attr_id=ftr_abil_atkm_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=ftr_abil_atkm_range_optimal_attr_id if effect_range else Default,
+        falloff_attr_id=ftr_abil_atkm_range_falloff_attr_id if effect_falloff else Default)
+    atkm_abil_id = client.mk_eve_abil(id_=consts.EveAbil.pulse_cannon)
     # Fighter "secondary" missile attack
-    eve_ftr_abil_missiles_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_em)
-    eve_ftr_abil_missiles_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_therm)
-    eve_ftr_abil_missiles_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_kin)
-    eve_ftr_abil_missiles_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_expl)
-    eve_ftr_abil_missiles_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_mult)
-    eve_ftr_abil_missiles_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_duration)
-    eve_ftr_abil_missiles_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_range)
-    eve_ftr_abil_missiles_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_radius)
-    eve_ftr_abil_missiles_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_velocity)
-    eve_ftr_abil_missiles_dr_factor_attr_id = client.mk_eve_attr(
+    ftr_abil_missiles_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_em)
+    ftr_abil_missiles_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_therm)
+    ftr_abil_missiles_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_kin)
+    ftr_abil_missiles_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_expl)
+    ftr_abil_missiles_dmg_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_mult)
+    ftr_abil_missiles_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_duration)
+    ftr_abil_missiles_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_range)
+    ftr_abil_missiles_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_radius)
+    ftr_abil_missiles_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_velocity)
+    ftr_abil_missiles_dr_factor_attr_id = client.mk_eve_attr(
         id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_factor)
-    eve_ftr_abil_missiles_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_sens)
-    eve_ftr_abil_missiles_resist_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_resist_id)
-    eve_ftr_abil_missiles_effect_id = client.mk_eve_effect(
+    ftr_abil_missiles_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_sens)
+    ftr_abil_missiles_resist_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_resist_id)
+    ftr_abil_missiles_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_missiles,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_ftr_abil_missiles_cycle_time_attr_id if effect_duration else Default,
-        range_attr_id=eve_ftr_abil_missiles_range_attr_id if effect_range else Default)
-    eve_missiles_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
+        duration_attr_id=ftr_abil_missiles_cycle_time_attr_id if effect_duration else Default,
+        range_attr_id=ftr_abil_missiles_range_attr_id if effect_range else Default)
+    missiles_abil_id = client.mk_eve_abil(id_=consts.EveAbil.heavy_rocket_salvo)
     # Fighter bomb attack
-    eve_ftr_abil_bomb_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
-    eve_ftr_abil_bomb_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_duration)
-    eve_ftr_abil_bomb_effect_id = client.mk_eve_effect(
+    ftr_abil_bomb_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    ftr_abil_bomb_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_duration)
+    ftr_abil_bomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active,
-        duration_attr_id=eve_ftr_abil_bomb_cycle_time_attr_id if effect_duration else Default)
-    eve_bomb_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
+        duration_attr_id=ftr_abil_bomb_cycle_time_attr_id if effect_duration else Default)
+    bomb_abil_id = client.mk_eve_abil(id_=consts.EveAbil.launch_bomb)
+    # Fighter kamikaze attack
+    ftr_abil_kamikaze_dmg_em_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_dmg_em)
+    ftr_abil_kamikaze_dmg_therm_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_dmg_therm)
+    ftr_abil_kamikaze_dmg_kin_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_dmg_kin)
+    ftr_abil_kamikaze_dmg_expl_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_dmg_exp)
+    ftr_abil_kamikaze_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_duration)
+    ftr_abil_kamikaze_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_range)
+    ftr_abil_kamikaze_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_sig_radius)
+    ftr_abil_kamikaze_resist_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_kamikaze_resist_id)
+    ftr_abil_kamikaze_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ftr_abil_kamikaze,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=ftr_abil_kamikaze_cycle_time_attr_id if effect_duration else Default)
+    kamikaze_abil_id = client.mk_eve_abil(id_=consts.EveAbil.true_sacrifice)
     # Ensure effects and abilities are not cleaned up even if not all of them are used in a test
     client.mk_eve_fighter(
         eff_ids=[
-            eve_turret_proj_effect_id,
-            eve_turret_spool_effect_id,
-            eve_tgt_attack_effect_id,
-            eve_vorton_effect_id,
-            eve_launcher_effect_id,
-            eve_missile_effect_id,
-            eve_missile_fof_effect_id,
-            eve_missile_defender_effect_id,
-            eve_breacher_effect_id,
-            eve_bomb_effect_id,
-            eve_smartbomb_effect_id,
-            eve_pds_effect_id,
-            eve_dd_direct_amarr_effect_id,
-            eve_dd_direct_caldari_effect_id,
-            eve_dd_direct_gallente_effect_id,
-            eve_dd_direct_minmatar_effect_id,
-            eve_dd_lance_effect_id,
-            eve_dd_lance_debuff_effect_id,
-            eve_dd_reaper_effect_id,
-            eve_dd_boson_effect_id,
-            eve_dd_vorton_effect_id,
-            eve_ftr_abil_atkm_effect_id,
-            eve_ftr_abil_missiles_effect_id,
-            eve_ftr_abil_bomb_effect_id],
+            turret_proj_effect_id,
+            turret_spool_effect_id,
+            tgt_attack_effect_id,
+            vorton_effect_id,
+            launcher_effect_id,
+            missile_effect_id,
+            missile_fof_effect_id,
+            missile_defender_effect_id,
+            breacher_effect_id,
+            bomb_effect_id,
+            smartbomb_effect_id,
+            pds_effect_id,
+            dd_direct_amarr_effect_id,
+            dd_direct_caldari_effect_id,
+            dd_direct_gallente_effect_id,
+            dd_direct_minmatar_effect_id,
+            dd_lance_effect_id,
+            dd_lance_debuff_effect_id,
+            dd_reaper_effect_id,
+            dd_boson_effect_id,
+            dd_vorton_effect_id,
+            ftr_abil_atkm_effect_id,
+            ftr_abil_missiles_effect_id,
+            ftr_abil_bomb_effect_id,
+            ftr_abil_kamikaze_effect_id],
         abils=[
-            client.mk_eve_item_abil(id_=eve_atkm_abil_id),
-            client.mk_eve_item_abil(id_=eve_missiles_abil_id),
-            client.mk_eve_item_abil(id_=eve_bomb_abil_id)])
+            client.mk_eve_item_abil(id_=atkm_abil_id),
+            client.mk_eve_item_abil(id_=missiles_abil_id),
+            client.mk_eve_item_abil(id_=bomb_abil_id),
+            client.mk_eve_item_abil(id_=kamikaze_abil_id)])
     return DmgBasicInfo(
         # Attrs
-        dmg_em_attr_id=eve_dmg_em_attr_id,
-        dmg_therm_attr_id=eve_dmg_therm_attr_id,
-        dmg_kin_attr_id=eve_dmg_kin_attr_id,
-        dmg_expl_attr_id=eve_dmg_expl_attr_id,
-        dmg_mult_attr_id=eve_dmg_mult_attr_id,
-        dmg_mult_spool_step_attr_id=eve_dmg_mult_spool_step_attr_id,
-        dmg_mult_spool_max_attr_id=eve_dmg_mult_spool_max_attr_id,
-        dmg_breach_abs_attr_id=eve_dmg_breach_abs_attr_id,
-        dmg_breach_rel_attr_id=eve_dmg_breach_rel_attr_id,
-        dmg_breach_duration_attr_id=eve_dmg_breach_duration_attr_id,
-        dd_delay1_attr_id=eve_dd_delay1_attr_id,
-        dd_delay2_attr_id=eve_dd_delay2_attr_id,
-        dd_dmg_interval_attr_id=eve_dd_dmg_interval_attr_id,
-        dd_dmg_duration_attr_id=eve_dd_dmg_duration_attr_id,
-        cycle_time_attr_id=eve_cycle_time_attr_id,
-        reactivation_delay_attr_id=eve_reactivation_delay_attr_id,
-        volume_attr_id=eve_volume_attr_id,
-        capacity_attr_id=eve_capacity_attr_id,
-        charge_rate_attr_id=eve_charge_rate_attr_id,
-        reload_time_attr_id=eve_reload_time_attr_id,
-        crystal_get_dmg_attr_id=eve_crystal_get_dmg_attr_id,
-        crystal_volatility_chance_attr_id=eve_crystal_volatility_chance_attr_id,
-        crystal_volatility_dmg_attr_id=eve_crystal_volatility_dmg_attr_id,
-        ammo_loaded_attr_id=eve_ammo_loaded_attr_id,
-        sig_radius_attr_id=eve_sig_radius_attr_id,
-        prop_sig_radius_mult_attr_id=eve_prop_sig_radius_mult_attr_id,
-        radius_attr_id=eve_radius_attr_id,
-        max_range_attr_id=eve_max_range_attr_id,
-        falloff_attr_id=eve_falloff_attr_id,
-        tracking_attr_id=eve_tracking_attr_id,
-        sig_resolution_attr_id=eve_sig_resolution_attr_id,
-        emp_field_range_attr_id=eve_emp_field_range_attr_id,
-        entity_cruise_speed_attr_id=eve_entity_cruise_speed_attr_id,
-        max_velocity_attr_id=eve_max_velocity_attr_id,
-        flight_time_attr_id=eve_flight_time_attr_id,
-        mass_attr_id=eve_mass_attr_id,
-        agility_attr_id=eve_agility_attr_id,
-        max_fof_range_attr_id=eve_max_fof_range_attr_id,
-        aoe_cloud_size_attr_id=eve_aoe_cloud_size_attr_id,
-        aoe_velocity_attr_id=eve_aoe_velocity_attr_id,
-        aoe_drf_attr_id=eve_aoe_drf_attr_id,
-        shield_hp_attr_id=eve_shield_hp_attr_id,
-        armor_hp_attr_id=eve_armor_hp_attr_id,
-        hull_hp_attr_id=eve_hull_hp_attr_id,
-        resist_ref_attr_id=eve_resist_def_attr_id,
-        neut_resist_attr_id=eve_neut_resist_attr_id,
-        max_ftr_count_attr_id=eve_max_ftr_count_attr_id,
-        refuel_duration_attr_id=eve_refuel_duration_attr_id,
+        dmg_em_attr_id=dmg_em_attr_id,
+        dmg_therm_attr_id=dmg_therm_attr_id,
+        dmg_kin_attr_id=dmg_kin_attr_id,
+        dmg_expl_attr_id=dmg_expl_attr_id,
+        dmg_mult_attr_id=dmg_mult_attr_id,
+        dmg_mult_spool_step_attr_id=dmg_mult_spool_step_attr_id,
+        dmg_mult_spool_max_attr_id=dmg_mult_spool_max_attr_id,
+        dmg_breach_abs_attr_id=dmg_breach_abs_attr_id,
+        dmg_breach_rel_attr_id=dmg_breach_rel_attr_id,
+        dmg_breach_duration_attr_id=dmg_breach_duration_attr_id,
+        dd_delay1_attr_id=dd_delay1_attr_id,
+        dd_delay2_attr_id=dd_delay2_attr_id,
+        dd_dmg_interval_attr_id=dd_dmg_interval_attr_id,
+        dd_dmg_duration_attr_id=dd_dmg_duration_attr_id,
+        cycle_time_attr_id=cycle_time_attr_id,
+        reactivation_delay_attr_id=reactivation_delay_attr_id,
+        volume_attr_id=volume_attr_id,
+        capacity_attr_id=capacity_attr_id,
+        charge_rate_attr_id=charge_rate_attr_id,
+        reload_time_attr_id=reload_time_attr_id,
+        crystal_get_dmg_attr_id=crystal_get_dmg_attr_id,
+        crystal_volatility_chance_attr_id=crystal_volatility_chance_attr_id,
+        crystal_volatility_dmg_attr_id=crystal_volatility_dmg_attr_id,
+        ammo_loaded_attr_id=ammo_loaded_attr_id,
+        sig_radius_attr_id=sig_radius_attr_id,
+        prop_sig_radius_mult_attr_id=prop_sig_radius_mult_attr_id,
+        radius_attr_id=radius_attr_id,
+        max_range_attr_id=max_range_attr_id,
+        falloff_attr_id=falloff_attr_id,
+        tracking_attr_id=tracking_attr_id,
+        sig_resolution_attr_id=sig_resolution_attr_id,
+        emp_field_range_attr_id=emp_field_range_attr_id,
+        entity_cruise_speed_attr_id=entity_cruise_speed_attr_id,
+        max_velocity_attr_id=max_velocity_attr_id,
+        flight_time_attr_id=flight_time_attr_id,
+        mass_attr_id=mass_attr_id,
+        agility_attr_id=agility_attr_id,
+        max_fof_range_attr_id=max_fof_range_attr_id,
+        aoe_cloud_size_attr_id=aoe_cloud_size_attr_id,
+        aoe_velocity_attr_id=aoe_velocity_attr_id,
+        aoe_drf_attr_id=aoe_drf_attr_id,
+        shield_hp_attr_id=shield_hp_attr_id,
+        armor_hp_attr_id=armor_hp_attr_id,
+        hull_hp_attr_id=hull_hp_attr_id,
+        resist_ref_attr_id=resist_def_attr_id,
+        neut_resist_attr_id=neut_resist_attr_id,
+        max_ftr_count_attr_id=max_ftr_count_attr_id,
+        refuel_duration_attr_id=refuel_duration_attr_id,
         # Effects
-        turret_proj_effect_id=eve_turret_proj_effect_id,
-        turret_spool_effect_id=eve_turret_spool_effect_id,
-        tgt_attack_effect_id=eve_tgt_attack_effect_id,
-        vorton_effect_id=eve_vorton_effect_id,
-        launcher_effect_id=eve_launcher_effect_id,
-        missile_effect_id=eve_missile_effect_id,
-        missile_fof_effect_id=eve_missile_fof_effect_id,
-        missile_defender_effect_id=eve_missile_defender_effect_id,
-        breacher_effect_id=eve_breacher_effect_id,
-        bomb_effect_id=eve_bomb_effect_id,
-        smartbomb_effect_id=eve_smartbomb_effect_id,
-        pds_effect_id=eve_pds_effect_id,
-        dd_direct_amarr_effect_id=eve_dd_direct_amarr_effect_id,
-        dd_direct_caldari_effect_id=eve_dd_direct_caldari_effect_id,
-        dd_direct_gallente_effect_id=eve_dd_direct_gallente_effect_id,
-        dd_direct_minmatar_effect_id=eve_dd_direct_minmatar_effect_id,
-        dd_lance_effect_id=eve_dd_lance_effect_id,
-        dd_lance_debuff_effect_id=eve_dd_lance_debuff_effect_id,
-        dd_reaper_effect_id=eve_dd_reaper_effect_id,
-        dd_boson_effect_id=eve_dd_boson_effect_id,
-        dd_vorton_effect_id=eve_dd_vorton_effect_id,
+        turret_proj_effect_id=turret_proj_effect_id,
+        turret_spool_effect_id=turret_spool_effect_id,
+        tgt_attack_effect_id=tgt_attack_effect_id,
+        vorton_effect_id=vorton_effect_id,
+        launcher_effect_id=launcher_effect_id,
+        missile_effect_id=missile_effect_id,
+        missile_fof_effect_id=missile_fof_effect_id,
+        missile_defender_effect_id=missile_defender_effect_id,
+        breacher_effect_id=breacher_effect_id,
+        bomb_effect_id=bomb_effect_id,
+        smartbomb_effect_id=smartbomb_effect_id,
+        pds_effect_id=pds_effect_id,
+        dd_direct_amarr_effect_id=dd_direct_amarr_effect_id,
+        dd_direct_caldari_effect_id=dd_direct_caldari_effect_id,
+        dd_direct_gallente_effect_id=dd_direct_gallente_effect_id,
+        dd_direct_minmatar_effect_id=dd_direct_minmatar_effect_id,
+        dd_lance_effect_id=dd_lance_effect_id,
+        dd_lance_debuff_effect_id=dd_lance_debuff_effect_id,
+        dd_reaper_effect_id=dd_reaper_effect_id,
+        dd_boson_effect_id=dd_boson_effect_id,
+        dd_vorton_effect_id=dd_vorton_effect_id,
         # Fighter "primary" missile attack
-        ftr_abil_atkm_dmg_em_attr_id=eve_ftr_abil_atkm_dmg_em_attr_id,
-        ftr_abil_atkm_dmg_therm_attr_id=eve_ftr_abil_atkm_dmg_therm_attr_id,
-        ftr_abil_atkm_dmg_kin_attr_id=eve_ftr_abil_atkm_dmg_kin_attr_id,
-        ftr_abil_atkm_dmg_expl_attr_id=eve_ftr_abil_atkm_dmg_expl_attr_id,
-        ftr_abil_atkm_dmg_mult_attr_id=eve_ftr_abil_atkm_dmg_mult_attr_id,
-        ftr_abil_atkm_cycle_time_attr_id=eve_ftr_abil_atkm_cycle_time_attr_id,
-        ftr_abil_atkm_range_optimal_attr_id=eve_ftr_abil_atkm_range_optimal_attr_id,
-        ftr_abil_atkm_range_falloff_attr_id=eve_ftr_abil_atkm_range_falloff_attr_id,
-        ftr_abil_atkm_exp_radius_attr_id=eve_ftr_abil_atkm_exp_radius_attr_id,
-        ftr_abil_atkm_exp_speed_attr_id=eve_ftr_abil_atkm_exp_speed_attr_id,
-        ftr_abil_atkm_dr_factor_attr_id=eve_ftr_abil_atkm_dr_factor_attr_id,
-        ftr_abil_atkm_dr_sens_attr_id=eve_ftr_abil_atkm_dr_sens_attr_id,
-        ftr_abil_atkm_effect_id=eve_ftr_abil_atkm_effect_id,
-        atkm_abil_id=eve_atkm_abil_id,
+        ftr_abil_atkm_dmg_em_attr_id=ftr_abil_atkm_dmg_em_attr_id,
+        ftr_abil_atkm_dmg_therm_attr_id=ftr_abil_atkm_dmg_therm_attr_id,
+        ftr_abil_atkm_dmg_kin_attr_id=ftr_abil_atkm_dmg_kin_attr_id,
+        ftr_abil_atkm_dmg_expl_attr_id=ftr_abil_atkm_dmg_expl_attr_id,
+        ftr_abil_atkm_dmg_mult_attr_id=ftr_abil_atkm_dmg_mult_attr_id,
+        ftr_abil_atkm_cycle_time_attr_id=ftr_abil_atkm_cycle_time_attr_id,
+        ftr_abil_atkm_range_optimal_attr_id=ftr_abil_atkm_range_optimal_attr_id,
+        ftr_abil_atkm_range_falloff_attr_id=ftr_abil_atkm_range_falloff_attr_id,
+        ftr_abil_atkm_exp_radius_attr_id=ftr_abil_atkm_exp_radius_attr_id,
+        ftr_abil_atkm_exp_speed_attr_id=ftr_abil_atkm_exp_speed_attr_id,
+        ftr_abil_atkm_dr_factor_attr_id=ftr_abil_atkm_dr_factor_attr_id,
+        ftr_abil_atkm_dr_sens_attr_id=ftr_abil_atkm_dr_sens_attr_id,
+        ftr_abil_atkm_effect_id=ftr_abil_atkm_effect_id,
+        atkm_abil_id=atkm_abil_id,
         # Fighter "secondary" missile attack
-        ftr_abil_missiles_dmg_em_attr_id=eve_ftr_abil_missiles_dmg_em_attr_id,
-        ftr_abil_missiles_dmg_therm_attr_id=eve_ftr_abil_missiles_dmg_therm_attr_id,
-        ftr_abil_missiles_dmg_kin_attr_id=eve_ftr_abil_missiles_dmg_kin_attr_id,
-        ftr_abil_missiles_dmg_expl_attr_id=eve_ftr_abil_missiles_dmg_expl_attr_id,
-        ftr_abil_missiles_dmg_mult_attr_id=eve_ftr_abil_missiles_dmg_mult_attr_id,
-        ftr_abil_missiles_cycle_time_attr_id=eve_ftr_abil_missiles_cycle_time_attr_id,
-        ftr_abil_missiles_range_attr_id=eve_ftr_abil_missiles_range_attr_id,
-        ftr_abil_missiles_exp_radius_attr_id=eve_ftr_abil_missiles_exp_radius_attr_id,
-        ftr_abil_missiles_exp_speed_attr_id=eve_ftr_abil_missiles_exp_speed_attr_id,
-        ftr_abil_missiles_dr_factor_attr_id=eve_ftr_abil_missiles_dr_factor_attr_id,
-        ftr_abil_missiles_dr_sens_attr_id=eve_ftr_abil_missiles_dr_sens_attr_id,
-        ftr_abil_missiles_resist_ref_attr_id=eve_ftr_abil_missiles_resist_ref_attr_id,
-        ftr_abil_missiles_effect_id=eve_ftr_abil_missiles_effect_id,
-        missiles_abil_id=eve_missiles_abil_id,
+        ftr_abil_missiles_dmg_em_attr_id=ftr_abil_missiles_dmg_em_attr_id,
+        ftr_abil_missiles_dmg_therm_attr_id=ftr_abil_missiles_dmg_therm_attr_id,
+        ftr_abil_missiles_dmg_kin_attr_id=ftr_abil_missiles_dmg_kin_attr_id,
+        ftr_abil_missiles_dmg_expl_attr_id=ftr_abil_missiles_dmg_expl_attr_id,
+        ftr_abil_missiles_dmg_mult_attr_id=ftr_abil_missiles_dmg_mult_attr_id,
+        ftr_abil_missiles_cycle_time_attr_id=ftr_abil_missiles_cycle_time_attr_id,
+        ftr_abil_missiles_range_attr_id=ftr_abil_missiles_range_attr_id,
+        ftr_abil_missiles_exp_radius_attr_id=ftr_abil_missiles_exp_radius_attr_id,
+        ftr_abil_missiles_exp_speed_attr_id=ftr_abil_missiles_exp_speed_attr_id,
+        ftr_abil_missiles_dr_factor_attr_id=ftr_abil_missiles_dr_factor_attr_id,
+        ftr_abil_missiles_dr_sens_attr_id=ftr_abil_missiles_dr_sens_attr_id,
+        ftr_abil_missiles_resist_ref_attr_id=ftr_abil_missiles_resist_ref_attr_id,
+        ftr_abil_missiles_effect_id=ftr_abil_missiles_effect_id,
+        missiles_abil_id=missiles_abil_id,
         # Fighter bomb attack
-        ftr_abil_bomb_type_attr_id=eve_ftr_abil_bomb_type_attr_id,
-        ftr_abil_bomb_cycle_time_attr_id=eve_ftr_abil_bomb_cycle_time_attr_id,
-        ftr_abil_bomb_effect_id=eve_ftr_abil_bomb_effect_id,
-        bomb_abil_id=eve_bomb_abil_id,
+        ftr_abil_bomb_type_attr_id=ftr_abil_bomb_type_attr_id,
+        ftr_abil_bomb_cycle_time_attr_id=ftr_abil_bomb_cycle_time_attr_id,
+        ftr_abil_bomb_effect_id=ftr_abil_bomb_effect_id,
+        bomb_abil_id=bomb_abil_id,
+        # Fighter kamikaze attack
+        ftr_abil_kamikaze_dmg_em_attr_id=ftr_abil_kamikaze_dmg_em_attr_id,
+        ftr_abil_kamikaze_dmg_therm_attr_id=ftr_abil_kamikaze_dmg_therm_attr_id,
+        ftr_abil_kamikaze_dmg_kin_attr_id=ftr_abil_kamikaze_dmg_kin_attr_id,
+        ftr_abil_kamikaze_dmg_expl_attr_id=ftr_abil_kamikaze_dmg_expl_attr_id,
+        ftr_abil_kamikaze_cycle_time_attr_id=ftr_abil_kamikaze_cycle_time_attr_id,
+        ftr_abil_kamikaze_range_attr_id=ftr_abil_kamikaze_range_attr_id,
+        ftr_abil_kamikaze_sig_radius_attr_id=ftr_abil_kamikaze_sig_radius_attr_id,
+        ftr_abil_kamikaze_resist_ref_attr_id=ftr_abil_kamikaze_resist_ref_attr_id,
+        ftr_abil_kamikaze_effect_id=ftr_abil_kamikaze_effect_id,
+        kamikaze_abil_id=kamikaze_abil_id,
         # Misc
         guided_bomb_group_id=consts.EveItemGrp.guided_bomb)
 
