@@ -1,4 +1,4 @@
-use super::{seq::CycleSeq, seq_looped::CycleSeqLooped};
+use super::{seq::CycleSeq, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit};
 use crate::util::LibConverter;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,12 +25,11 @@ impl<D, HDT> CSeqLoopSin<D, HDT> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CSeqLoopSin<D, HDT> {
-    pub(super) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>>
-    where
-        D: Copy,
-        HDT: Copy,
-    {
-        Some(CycleSeqLooped::LoopSin(*self))
+    pub(super) fn split_lim_loop(self) -> CycleSeqSplit<D, HDT> {
+        CycleSeqSplit {
+            limited: None,
+            looped: Some(CycleSeqLooped::LoopSin(self)),
+        }
     }
     pub(super) fn convert<D2, HDT2>(self) -> CSeqLoopSin<D2, HDT2>
     where

@@ -33,7 +33,7 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(cseq) = cseq.try_loop_cseq() else {
+    let Some(cseq) = cseq.split_lim_loop().looped else {
         return false;
     };
     let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {

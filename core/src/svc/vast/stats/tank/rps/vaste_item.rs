@@ -239,7 +239,7 @@ fn get_irr_data(
                             // Adjust averaged reps per second to initial cycle duration to for
                             // purposes of RR stacking penalty calculation. This does not provide
                             // accurate result, but is likely to be a good enough approximation.
-                            let first_cycle_duration = match cseq.try_loop_cseq() {
+                            let first_cycle_duration = match cseq.split_lim_loop().looped {
                                 Some(cseq_looped) => cseq_looped.get_first_cycle().get_main_duration(),
                                 None => cseq.get_first_cycle().get_main_duration(),
                             };

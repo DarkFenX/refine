@@ -1,4 +1,7 @@
-use super::{seq::CycleSeq, seq_looped::CycleSeqLooped, seq_var_lim_inf::CSeqLimInf, seq_var_loop_sin::CSeqLoopSin};
+use super::{
+    seq::CycleSeq, seq_limited::CycleSeqLimited, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit,
+    seq_var_lim_inf::CSeqLimInf, seq_var_lim_sin::CSeqLimSin, seq_var_loop_sin::CSeqLoopSin,
+};
 use crate::{num::Count, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,14 +26,18 @@ impl<D> CSeqLimSinInf<D> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D> CSeqLimSinInf<D> {
-    pub(super) fn try_loop_cseq<HDT>(&self) -> Option<CycleSeqLooped<D, HDT>>
-    where
-        D: Copy,
-    {
-        Some(CycleSeqLooped::LoopSin(CSeqLoopSin {
-            data: self.p3_data,
-            hard_dt: None,
-        }))
+    pub(super) fn split_lim_loop<HDT>(self) -> CycleSeqSplit<D, HDT> {
+        CycleSeqSplit {
+            limited: Some(CycleSeqLimited::LimSin(CSeqLimSin {
+                p1_data: self.p1_data,
+                p1_repeat_count: self.p1_repeat_count,
+                p2_data: self.p2_data,
+            })),
+            looped: Some(CycleSeqLooped::LoopSin(CSeqLoopSin {
+                data: self.p3_data,
+                hard_dt: None,
+            })),
+        }
     }
     pub(super) fn convert<D2>(self) -> CSeqLimSinInf<D2>
     where

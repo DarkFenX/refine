@@ -1,5 +1,5 @@
 use super::{
-    seq_looped::CycleSeqLooped, seq_var_lim::CSeqLim, seq_var_lim_inf::CSeqLimInf, seq_var_lim_sin_inf::CSeqLimSinInf,
+    seq_split::CycleSeqSplit, seq_var_lim::CSeqLim, seq_var_lim_inf::CSeqLimInf, seq_var_lim_sin_inf::CSeqLimSinInf,
     seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
 };
 use crate::util::LibConverter;
@@ -40,17 +40,17 @@ where
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CycleSeq<D, HDT> {
-    pub(in crate::svc) fn try_loop_cseq(&self) -> Option<CycleSeqLooped<D, HDT>>
+    pub(in crate::svc) fn split_lim_loop(self) -> CycleSeqSplit<D, HDT>
     where
         D: Copy,
         HDT: Copy,
     {
         match self {
-            Self::Lim(inner) => inner.try_loop_cseq(),
-            Self::LimInf(inner) => inner.try_loop_cseq(),
-            Self::LimSinInf(inner) => inner.try_loop_cseq(),
-            Self::LoopSin(inner) => inner.try_loop_cseq(),
-            Self::LoopLimSin(inner) => inner.try_loop_cseq(),
+            Self::Lim(inner) => inner.split_lim_loop(),
+            Self::LimInf(inner) => inner.split_lim_loop(),
+            Self::LimSinInf(inner) => inner.split_lim_loop(),
+            Self::LoopSin(inner) => inner.split_lim_loop(),
+            Self::LoopLimSin(inner) => inner.split_lim_loop(),
         }
     }
     pub(in crate::svc) fn convert_and_optimize<D2, HDT2>(self) -> CycleSeq<D2, HDT2>
