@@ -1,4 +1,4 @@
-use super::seq::{CycleSeq, CycleSeqLooped};
+use super::{seq_enum::CycleSeq, seq_enum_looped::CycleSeqLooped};
 use crate::util::LibConverter;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

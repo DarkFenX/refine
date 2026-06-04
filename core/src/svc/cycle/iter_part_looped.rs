@@ -1,4 +1,4 @@
-use super::{seq::CycleSeqLooped, seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin};
+use super::{seq_enum_looped::CycleSeqLooped, seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin};
 use crate::num::Count;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

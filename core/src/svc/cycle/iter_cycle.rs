@@ -1,5 +1,5 @@
 use super::{
-    seq::CycleSeq, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
+    seq_enum::CycleSeq, seq_lim::CSeqLim, seq_lim_inf::CSeqLimInf, seq_lim_sin_inf::CSeqLimSinInf,
     seq_loop_lim_sin::CSeqLoopLimSin, seq_loop_sin::CSeqLoopSin,
 };
 use crate::{
