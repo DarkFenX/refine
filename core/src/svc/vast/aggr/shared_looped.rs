@@ -52,6 +52,25 @@ pub(super) fn alooped_process_both_for_looped_cseq_hard_dt<I, IA>(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Limited part processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn alooped_process_output_for_limited_cseq_regular<I, IA>(
+    cseq: CycleSeqLimited<AggrPartData<I>>,
+    chance_mult: Option<PValue>,
+    accum: &mut IA,
+) where
+    I: Copy + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
+{
+    match cseq {
+        CycleSeqLimited::Lim(inner) => {
+            accum.add_output_full(&inner.data.output, chance_mult, inner.repeat_count);
+        }
+        CycleSeqLimited::LimSin(inner) => {
+            accum.add_output_full(&inner.p1_data.output, chance_mult, inner.p1_repeat_count);
+            accum.add_output_full(&inner.p2_data.output, chance_mult, Count::ONE);
+        }
+    }
+}
+
 pub(super) fn alooped_process_output_for_limited_cseq_hard_dt<I, IA>(
     cseq: CycleSeqLimited<AggrPartDataTail<I>>,
     chance_mult: Option<PValue>,

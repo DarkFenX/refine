@@ -1,23 +1,8 @@
-use super::shared::{SeqAccum, SeqInstanceAccum};
+use super::shared::SeqInstanceAccum;
 use crate::{
     num::{Count, PValue},
     util::{LibDefault, LibMax},
 };
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Top-level accumulator interface
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> SeqAccum<SeqInstanceAccumMax<I>> {
-    pub(in crate::svc::vast) fn new_max() -> Self
-    where
-        I: LibDefault,
-    {
-        SeqAccum {
-            instances: SeqInstanceAccumMax::new(),
-            time: PValue::ZERO,
-        }
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sequence accumulator implementation

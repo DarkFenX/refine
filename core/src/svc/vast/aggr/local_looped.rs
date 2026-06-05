@@ -3,7 +3,7 @@ use super::{
     local_shared::{AggrLocalInvData, LocalConverter},
     shared_looped::{
         alooped_process_both_for_looped_cseq_hard_dt, alooped_process_both_for_looped_cseq_regular,
-        alooped_process_output_for_limited_cseq_hard_dt,
+        alooped_process_output_for_limited_cseq_hard_dt, alooped_process_output_for_limited_cseq_regular,
     },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -88,7 +88,11 @@ where
                 time_until_hard_dt,
                 accum_lim,
             ),
-            None => (),
+            None => alooped_process_output_for_limited_cseq_regular(
+                cseq_limited.convert_with_and_optimize(&mut converter),
+                None,
+                accum_lim,
+            ),
         }
         accum_data = true;
     }
