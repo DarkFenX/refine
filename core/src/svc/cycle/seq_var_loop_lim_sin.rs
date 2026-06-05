@@ -25,7 +25,7 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
     pub(super) fn get_first_cycle(&self) -> &D {
         &self.p1_data
     }
-    pub(super) fn get_main_duration(&self) -> PValue
+    pub(in crate::svc) fn get_main_duration(&self) -> PValue
     where
         D: GetMainDuration,
     {

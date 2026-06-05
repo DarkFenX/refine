@@ -36,11 +36,11 @@ pub(super) fn process_hard_dt<I, IA>(
     match cseq {
         CycleSeqLooped::LoopSin(inner) => {
             process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, chance_mult, Count::ONE);
-            accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
+            accum.time += inner.get_main_duration() + inner.hard_dt.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
             process_output_of_lls_with_cutoff(&mut accum.instances, &inner, chance_mult, Count::ONE);
-            accum.time += inner.get_full_duration() + inner.hard_dt.unwrap().duration;
+            accum.time += inner.get_main_duration() + inner.hard_dt.unwrap().duration;
         }
     }
 }

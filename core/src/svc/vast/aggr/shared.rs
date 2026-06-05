@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CSeqLoopSin, GetDuration, GetMainDuration},
+        cycle::{CSeqHardDtFull, CSeqLoopLimSin, GetDuration, GetMainDuration},
         output::Output,
     },
     ud::UItemId,
@@ -68,6 +68,11 @@ impl<I> AggrPartDataTail<I> {
         duration
     }
 }
+impl<I> GetMainDuration for AggrPartDataTail<I> {
+    fn get_main_duration(&self) -> PValue {
+        self.cycle_main_duration
+    }
+}
 
 #[derive(Copy, Clone)]
 pub(in crate::svc::vast) struct AggrHardDtSimple {
@@ -113,31 +118,15 @@ pub(super) struct AggrPartDataSpoolTail {
     // Includes both invariant str mult and part-specific str mult
     pub(super) str_mult: PValue,
 }
+impl GetMainDuration for AggrPartDataSpoolTail {
+    fn get_main_duration(&self) -> PValue {
+        self.cycle_main_duration
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I, HDT> CSeqLoopSin<AggrPartDataTail<I>, HDT> {
-    pub(super) fn get_full_duration(&self) -> PValue {
-        self.data.cycle_main_duration
-    }
-}
-
-impl<I, HDT> CSeqLoopLimSin<AggrPartDataTail<I>, HDT> {
-    pub(super) fn get_full_duration(&self) -> PValue {
-        self.p1_data
-            .cycle_main_duration
-            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.cycle_main_duration)
-    }
-}
-impl<HDT> CSeqLoopLimSin<AggrPartDataSpoolTail, HDT> {
-    pub(super) fn get_full_duration(&self) -> PValue {
-        self.p1_data
-            .cycle_main_duration
-            .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.cycle_main_duration)
-    }
-}
-
 pub(super) fn get_cycle_tail_duration(
     cycle_main_duration: PValue,
     output_completion_duration: PValue,
@@ -175,7 +164,7 @@ pub(super) fn process_output_of_lls_with_cutoff<I, IA>(
     IA: SeqInstanceAccum<I>,
 {
     // Once hard downtime starts, instances cannot be applied
-    let mut time = cseq.get_full_duration().into_value();
+    let mut time = cseq.get_main_duration().into_value();
     let p1_full_repeat_count = cseq.p1_repeat_count.min(get_tailed_cycle_full_repeat_count(
         time,
         cseq.p1_data.cycle_main_duration,

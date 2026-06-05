@@ -16,7 +16,7 @@ impl<D, HDT> CSeqLoopSin<D, HDT> {
     pub(super) fn get_first_cycle(&self) -> &D {
         &self.data
     }
-    pub(super) fn get_main_duration(&self) -> PValue
+    pub(in crate::svc) fn get_main_duration(&self) -> PValue
     where
         D: GetMainDuration,
     {

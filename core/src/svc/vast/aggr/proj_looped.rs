@@ -175,7 +175,7 @@ fn process_spool_hard_dt<I, IA, C>(
             None => {
                 let inner_conv: CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple> =
                     inner.convert_with(&mut converter);
-                let loop_inner_duration = inner_conv.get_full_duration();
+                let loop_inner_duration = inner_conv.get_main_duration();
                 let loop_full_duration = loop_inner_duration + inner_conv.hard_dt.unwrap().duration;
                 process_output_of_spooling_lls_with_cutoff(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
                 accum.time += loop_full_duration;

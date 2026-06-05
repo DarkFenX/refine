@@ -452,7 +452,7 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<I, IA>(
         inv_spool,
         cseq.p1_data,
         accum,
-        &mut cseq.get_full_duration().into_value(),
+        &mut cseq.get_main_duration().into_value(),
         &mut uninterrupted_cycles,
         cseq.p1_repeat_count,
     );
