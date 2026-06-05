@@ -6,7 +6,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqMap, CyclingOptions, GetMainDuration, get_item_cseq_map},
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,

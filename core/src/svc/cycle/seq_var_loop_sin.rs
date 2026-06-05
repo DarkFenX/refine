@@ -1,5 +1,5 @@
-use super::{seq::CycleSeq, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit};
-use crate::util::LibConverter;
+use super::{data::GetMainDuration, seq::CycleSeq, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit};
+use crate::{num::PValue, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Following parts are lopped:
@@ -15,6 +15,12 @@ pub(in crate::svc) struct CSeqLoopSin<D, HDT> {
 impl<D, HDT> CSeqLoopSin<D, HDT> {
     pub(super) fn get_first_cycle(&self) -> &D {
         &self.data
+    }
+    pub(super) fn get_main_duration(&self) -> PValue
+    where
+        D: GetMainDuration,
+    {
+        self.data.get_main_duration()
     }
     pub(super) fn get_hard_dt(&self) -> Option<&HDT> {
         self.hard_dt.as_ref()

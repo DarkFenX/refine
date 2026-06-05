@@ -14,7 +14,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqLoopLimSin, CycleDataFull},
+        cycle::{CSeqLoopLimSin, CycleDataFull, GetMainDuration},
         funcs,
         output::Output,
     },

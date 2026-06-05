@@ -15,5 +15,4 @@ mod spool;
 mod svc;
 mod svce_debug;
 mod svce_notify;
-mod traits;
 pub(crate) mod vast;

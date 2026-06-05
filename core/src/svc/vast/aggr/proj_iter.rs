@@ -10,7 +10,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
         vast::aggr::proj_shared::get_proj_spool_cycle_output,
     },
     ud::UItemId,

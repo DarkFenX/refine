@@ -1,18 +1,20 @@
 use super::{
-    seq::CycleSeq, seq_var_lim::CSeqLim, seq_var_lim_inf::CSeqLimInf, seq_var_lim_sin_inf::CSeqLimSinInf,
-    seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
+    data::{GetDuration, GetMainDuration},
+    seq::CycleSeq,
+    seq_var_lim::CSeqLim,
+    seq_var_lim_inf::CSeqLimInf,
+    seq_var_lim_sin_inf::CSeqLimSinInf,
+    seq_var_loop_lim_sin::CSeqLoopLimSin,
+    seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::{
-    num::{Count, PValue},
-    svc::traits::GetDuration,
-};
+use crate::num::{Count, PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CycleSeq<D, HDT>
 where
-    D: Copy + GetDuration,
+    D: Copy + GetMainDuration,
     HDT: GetDuration,
 {
     pub(in crate::svc) fn iter_cycles(&self) -> CycleIter<D> {
@@ -42,7 +44,7 @@ pub(in crate::svc) enum CycleIter<D> {
 }
 impl<D> Iterator for CycleIter<D>
 where
-    D: Copy + GetDuration,
+    D: Copy + GetMainDuration,
 {
     type Item = CycleIterItem<D>;
 
@@ -221,13 +223,10 @@ pub(in crate::svc) struct CSeqLoopSinCycleIter<D> {
 impl<D> CSeqLoopSinCycleIter<D> {
     fn new<HDT>(cseq: &CSeqLoopSin<D, HDT>) -> Self
     where
-        D: Copy + GetDuration,
+        D: Copy + GetMainDuration,
         HDT: GetDuration,
     {
-        let time_until_hard_dt = match cseq.hard_dt.is_some() {
-            true => Some(cseq.data.get_duration()),
-            false => None,
-        };
+        let time_until_hard_dt = cseq.hard_dt.as_ref().map(|_| cseq.data.get_main_duration());
         Self {
             item: CycleIterItem {
                 data: cseq.data,
@@ -261,11 +260,11 @@ pub(in crate::svc) struct CSeqLoopLimSinCycleIter<D> {
 impl<D> CSeqLoopLimSinCycleIter<D> {
     fn new<HDT>(cseq: &CSeqLoopLimSin<D, HDT>) -> Self
     where
-        D: Copy + GetDuration,
+        D: Copy + GetMainDuration,
         HDT: GetDuration,
     {
         let (p2_time_until_hard_dt, hard_dt_duration) = match &cseq.hard_dt {
-            Some(hard_dt) => (Some(cseq.p2_data.get_duration()), Some(hard_dt.get_duration())),
+            Some(hard_dt) => (Some(cseq.p2_data.get_main_duration()), Some(hard_dt.get_duration())),
             None => (None, None),
         };
         Self {
@@ -286,7 +285,7 @@ impl<D> CSeqLoopLimSinCycleIter<D> {
 }
 impl<D> Iterator for CSeqLoopLimSinCycleIter<D>
 where
-    D: Copy + GetDuration,
+    D: Copy + GetMainDuration,
 {
     type Item = CycleIterItem<D>;
 
@@ -297,7 +296,9 @@ where
         }
         let mut p1_item = self.p1_item_draft;
         if self.p2_item.hard_dt_duration.is_some() {
-            let p1_duration = self.p1_item_draft.data.get_duration();
+            // TODO: check if p1 main duration needs to be stored on iter?
+            // TODO: (might make sense if it is used on full data, where active/soft DT are split)
+            let p1_duration = self.p1_item_draft.data.get_main_duration();
             let p1_repeats_left = (self.p1_repeats_limit - self.p1_repeats_done).into_pvalue();
             let p2_duration = self.p2_item.time_until_hard_dt.unwrap();
             p1_item.time_until_hard_dt = Some(p1_duration.mul_add(p1_repeats_left, p2_duration));

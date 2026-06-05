@@ -13,7 +13,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
         spool::ResolvedSpool,
     },
     ud::UItemId,

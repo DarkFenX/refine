@@ -5,9 +5,8 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CSeqLoopSin},
+        cycle::{CSeqHardDtFull, CSeqLoopLimSin, CSeqLoopSin, GetDuration, GetMainDuration},
         output::Output,
-        traits::GetDuration,
     },
     ud::UItemId,
 };
@@ -34,8 +33,8 @@ pub(in crate::svc::vast) struct AggrPartData<I> {
     pub(in crate::svc::vast) cycle_main_duration: PValue,
     pub(in crate::svc::vast) output: Output<I>,
 }
-impl<I> GetDuration for AggrPartData<I> {
-    fn get_duration(&self) -> PValue {
+impl<I> GetMainDuration for AggrPartData<I> {
+    fn get_main_duration(&self) -> PValue {
         self.cycle_main_duration
     }
 }

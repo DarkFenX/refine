@@ -6,7 +6,12 @@ use crate::{
     nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval},
     rd::{REffect, REffectLocalOpcSpec},
-    svc::{SvcCtx, calc::Calc, cycle::CycleDataFull, output::Output},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        cycle::{CycleDataFull, GetMainDuration},
+        output::Output,
+    },
     ud::UItemId,
     util::LibConverter,
 };

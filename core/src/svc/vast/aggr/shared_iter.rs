@@ -6,9 +6,8 @@ use super::{
 use crate::{
     num::{Count, PValue},
     svc::{
-        cycle::{CycleIter, CycleSeq},
+        cycle::{CycleIter, CycleSeq, GetMainDuration},
         output::Output,
-        traits::GetDuration,
     },
 };
 
@@ -204,15 +203,12 @@ pub(in crate::svc::vast) struct AggrPartDataSpoolIter<I> {
     pub(super) output_max_spool: Output<I>,
 }
 impl<I> AggrPartDataSpoolIter<I> {
-    pub(in crate::svc::vast) fn get_cycle_main_duration(&self) -> PValue {
-        self.cycle_main_duration
-    }
     pub(in crate::svc::vast) fn get_output_zero_spool(&self) -> &Output<I> {
         &self.output_zero_spool
     }
 }
-impl<I> GetDuration for AggrPartDataSpoolIter<I> {
-    fn get_duration(&self) -> PValue {
+impl<I> GetMainDuration for AggrPartDataSpoolIter<I> {
+    fn get_main_duration(&self) -> PValue {
         self.cycle_main_duration
     }
 }

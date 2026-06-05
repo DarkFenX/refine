@@ -1,5 +1,5 @@
-use super::{seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin};
-use crate::util::LibConverter;
+use super::{data::GetMainDuration, seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin};
+use crate::{num::PValue, util::LibConverter};
 
 pub(in crate::svc) enum CycleSeqLooped<D, HDT> {
     LoopSin(CSeqLoopSin<D, HDT>),
@@ -10,6 +10,16 @@ impl<D, HDT> CycleSeqLooped<D, HDT> {
         match self {
             Self::LoopSin(inner) => inner.get_first_cycle(),
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
+        }
+    }
+
+    pub(super) fn get_main_duration(&self) -> PValue
+    where
+        D: GetMainDuration,
+    {
+        match self {
+            Self::LoopSin(inner) => inner.get_main_duration(),
+            Self::LoopLimSin(inner) => inner.get_main_duration(),
         }
     }
     pub(in crate::svc) fn get_hard_dt(&self) -> Option<&HDT> {

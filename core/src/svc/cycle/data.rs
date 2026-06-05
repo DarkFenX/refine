@@ -1,7 +1,13 @@
-use crate::{
-    num::{PValue, UnitInterval},
-    svc::traits::GetDuration,
-};
+use crate::num::{PValue, UnitInterval};
+
+pub(in crate::svc) trait GetDuration {
+    fn get_duration(&self) -> PValue;
+}
+
+pub(in crate::svc) trait GetMainDuration {
+    // Active duration and soft downtime duration combined
+    fn get_main_duration(&self) -> PValue;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cycle data containers
@@ -11,20 +17,13 @@ pub(in crate::svc) struct CycleDataFull {
     pub(in crate::svc) active: CycleActive,
     pub(in crate::svc) soft_dt: Option<CycleSoftDtFull>,
 }
-impl CycleDataFull {
-    // Active duration and soft downtime duration combined
-    pub(in crate::svc) fn get_main_duration(&self) -> PValue {
+impl GetMainDuration for CycleDataFull {
+    fn get_main_duration(&self) -> PValue {
         let mut duration = self.active.duration;
         if let Some(soft_dt) = &self.soft_dt {
             duration += soft_dt.duration;
         }
         duration
-    }
-}
-// TODO: try removing after refactoring aggregators
-impl GetDuration for CycleDataFull {
-    fn get_duration(&self) -> PValue {
-        self.get_main_duration()
     }
 }
 

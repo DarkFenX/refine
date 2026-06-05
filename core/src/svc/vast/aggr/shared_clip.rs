@@ -6,7 +6,7 @@ use super::{
 use crate::{
     misc::InfCount,
     num::{Count, PValue},
-    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
     util::LibConverter,
 };
 

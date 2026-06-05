@@ -6,7 +6,7 @@ use crate::{
     nd::NEffectBreacherAmount,
     num::Count,
     svc::{
-        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
         output::Output,
     },
 };
