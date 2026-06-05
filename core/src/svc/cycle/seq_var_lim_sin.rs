@@ -1,5 +1,8 @@
-use super::data::GetMainDuration;
-use crate::num::{Count, PValue};
+use super::{data::GetMainDuration, seq_limited::CycleSeqLimited, seq_var_lim::CSeqLim};
+use crate::{
+    num::{Count, PValue},
+    util::LibConverter,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times
@@ -19,5 +22,33 @@ impl<D> CSeqLimSin<D> {
         self.p1_data
             .get_main_duration()
             .mul_add(self.p1_repeat_count.into_pvalue(), self.p2_data.get_main_duration())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<D> CSeqLimSin<D> {
+    pub(in crate::svc) fn convert_with<C, D2>(self, converter: &mut C) -> CSeqLimSin<D2>
+    where
+        C: LibConverter<D, D2>,
+    {
+        CSeqLimSin {
+            p1_data: converter.lib_convert(self.p1_data),
+            p1_repeat_count: self.p1_repeat_count,
+            p2_data: converter.lib_convert(self.p2_data),
+        }
+    }
+    pub(super) fn optimize_limited(self) -> CycleSeqLimited<D>
+    where
+        D: Eq,
+    {
+        match self.p1_data == self.p2_data {
+            true => CycleSeqLimited::Lim(CSeqLim {
+                data: self.p1_data,
+                repeat_count: self.p1_repeat_count + Count::ONE,
+            }),
+            false => CycleSeqLimited::LimSin(self),
+        }
     }
 }

@@ -1,7 +1,10 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared_looped::{alooped_process_both_for_cseq_hard_dt, alooped_process_both_for_cseq_regular},
+    shared_looped::{
+        alooped_process_both_for_looped_cseq_hard_dt, alooped_process_both_for_looped_cseq_regular,
+        alooped_process_output_for_limited_cseq_hard_dt,
+    },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -41,8 +44,12 @@ where
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
-        true => alooped_process_both_for_cseq_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum),
-        false => alooped_process_both_for_cseq_regular(cseq.convert_with_and_optimize(&mut converter), None, accum),
+        true => {
+            alooped_process_both_for_looped_cseq_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum)
+        }
+        false => {
+            alooped_process_both_for_looped_cseq_regular(cseq.convert_with_and_optimize(&mut converter), None, accum)
+        }
     }
     true
 }
@@ -58,7 +65,7 @@ pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAL, IAO>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum_lim: &mut SeqAccum<IAL>,
+    accum_lim: &mut IAL,
     accum_loop: &mut SeqAccum<IAO>,
 ) -> bool
 where
@@ -71,10 +78,16 @@ where
         return false;
     };
     let mut accum_data = false;
+    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq = cseq.split_lim_loop();
     if let Some(cseq_limited) = cseq.limited {
         match get_time_until_hard_dt_for_split(&cseq_limited, cseq.looped.as_ref()) {
-            Some(time_until_hard_dt) => (),
+            Some(time_until_hard_dt) => alooped_process_output_for_limited_cseq_hard_dt(
+                cseq_limited.convert_with_and_optimize(&mut converter),
+                None,
+                time_until_hard_dt,
+                accum_lim,
+            ),
             None => (),
         }
         accum_data = true;
@@ -82,12 +95,12 @@ where
     if let Some(cseq_looped) = cseq.looped {
         let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
         match cseq_looped.get_hard_dt().is_some() {
-            true => alooped_process_both_for_cseq_hard_dt(
+            true => alooped_process_both_for_looped_cseq_hard_dt(
                 cseq_looped.convert_with_and_optimize(&mut converter),
                 None,
                 accum_loop,
             ),
-            false => alooped_process_both_for_cseq_regular(
+            false => alooped_process_both_for_looped_cseq_regular(
                 cseq_looped.convert_with_and_optimize(&mut converter),
                 None,
                 accum_loop,

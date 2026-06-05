@@ -65,7 +65,7 @@ pub(super) fn atime_process_output_for_cseq_regular<I, IA>(
     }
 }
 
-fn process_output_for_part_single_regular<I, IA>(
+pub(super) fn process_output_for_part_single_regular<I, IA>(
     accum: &mut IA,
     time: &mut Value,
     data: &AggrPartDataTail<I>,
@@ -85,7 +85,7 @@ fn process_output_for_part_single_regular<I, IA>(
     *time -= data.cycle_main_duration;
 }
 
-fn process_output_for_part_limited_regular<I, IA>(
+pub(super) fn process_output_for_part_limited_regular<I, IA>(
     accum: &mut IA,
     time: &mut Value,
     data: &AggrPartDataTail<I>,

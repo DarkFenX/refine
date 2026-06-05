@@ -5,7 +5,7 @@ use super::{
         process_output_for_cseq_lls_spool_hard_dt,
     },
     shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
-    shared_looped::{alooped_process_both_for_cseq_hard_dt, alooped_process_both_for_cseq_regular},
+    shared_looped::{alooped_process_both_for_looped_cseq_hard_dt, alooped_process_both_for_looped_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -59,12 +59,12 @@ where
             ),
         },
         None => match cseq.get_hard_dt() {
-            Some(_) => alooped_process_both_for_cseq_hard_dt(
+            Some(_) => alooped_process_both_for_looped_cseq_hard_dt(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj.chance_mult,
                 accum,
             ),
-            None => alooped_process_both_for_cseq_regular(
+            None => alooped_process_both_for_looped_cseq_regular(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj.chance_mult,
                 accum,
@@ -159,7 +159,7 @@ fn alooped_process_both_for_cseq_spool_hard_dt<I, IA, C>(
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeqLooped::LoopSin(_) => alooped_process_both_for_cseq_hard_dt(
+        CycleSeqLooped::LoopSin(_) => alooped_process_both_for_looped_cseq_hard_dt(
             cseq.convert_with_and_optimize(&mut converter),
             inv_proj.chance_mult,
             accum,
@@ -167,7 +167,7 @@ fn alooped_process_both_for_cseq_spool_hard_dt<I, IA, C>(
         CycleSeqLooped::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => alooped_process_both_for_cseq_hard_dt(
+            Some(_) => alooped_process_both_for_looped_cseq_hard_dt(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj.chance_mult,
                 accum,

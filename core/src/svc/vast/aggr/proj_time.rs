@@ -6,7 +6,7 @@ use super::{
         process_output_for_part_single_spool,
     },
     shared::{AggrHardDtSimple, AggrPartDataSpoolTail, AggrPartDataTail, get_tailed_cycle_full_repeat_count},
-    shared_time::{get_cutoff_cycle_full_repeat_count, atime_process_output_for_cseq_regular},
+    shared_time::{atime_process_output_for_cseq_regular, get_cutoff_cycle_full_repeat_count},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{

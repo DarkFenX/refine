@@ -55,4 +55,7 @@ impl<D> CSeqLim<D> {
     pub(in crate::svc) fn optimize<HDT>(self) -> CycleSeq<D, HDT> {
         CycleSeq::Lim(self)
     }
+    pub(super) fn optimize_limited(self) -> CycleSeqLimited<D> {
+        CycleSeqLimited::Lim(self)
+    }
 }
