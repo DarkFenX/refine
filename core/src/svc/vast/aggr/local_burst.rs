@@ -40,11 +40,11 @@ where
     };
     let &first_cycle = cseq.get_first_cycle();
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    process_cycle_regular(converter.lib_convert(first_cycle), accum);
+    process_both_for_cycle_regular(converter.lib_convert(first_cycle), accum);
     true
 }
 
-fn process_cycle_regular<I, IA>(cycle_data: AggrPartData<I>, accum: &mut SeqAccum<IA>)
+fn process_both_for_cycle_regular<I, IA>(cycle_data: AggrPartData<I>, accum: &mut SeqAccum<IA>)
 where
     I: Copy,
     IA: SeqInstanceAccum<I>,

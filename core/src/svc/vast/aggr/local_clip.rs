@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared_clip::{process_cseq_hard_dt, process_cseq_regular},
+    shared_clip::{aclip_process_both_for_cseq_hard_dt, aclip_process_both_for_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -38,7 +38,7 @@ where
     };
     let converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
-        true => process_cseq_hard_dt(cseq, None, accum, converter),
-        false => process_cseq_regular(cseq, None, accum, converter),
+        true => aclip_process_both_for_cseq_hard_dt(cseq, None, accum, converter),
+        false => aclip_process_both_for_cseq_regular(cseq, None, accum, converter),
     }
 }

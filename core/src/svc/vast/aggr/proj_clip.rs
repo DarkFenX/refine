@@ -2,10 +2,10 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_cseq_lls_spool_hard_dt,
+        process_output_for_cseq_lls_spool_hard_dt,
     },
     shared::{AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
-    shared_clip::{process_cseq_hard_dt, process_cseq_regular},
+    shared_clip::{aclip_process_both_for_cseq_hard_dt, aclip_process_both_for_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -47,17 +47,19 @@ where
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match (inv_spool, cseq.get_hard_dt().is_some()) {
-        (Some(inv_spool), true) => process_cseq_spool_hard_dt(cseq, &inv_proj, &inv_spool, accum, converter),
-        (Some(inv_spool), false) => process_cseq_spool(cseq, &inv_proj, &inv_spool, accum, converter),
-        (None, true) => process_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
-        (None, false) => process_cseq_regular(cseq, inv_proj.chance_mult, accum, converter),
+        (Some(inv_spool), true) => {
+            aclip_process_both_for_cseq_spool_hard_dt(cseq, &inv_proj, &inv_spool, accum, converter)
+        }
+        (Some(inv_spool), false) => aclip_process_both_for_cseq_spool(cseq, &inv_proj, &inv_spool, accum, converter),
+        (None, true) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+        (None, false) => aclip_process_both_for_cseq_regular(cseq, inv_proj.chance_mult, accum, converter),
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn process_cseq_spool<I, IA, C>(
+fn aclip_process_both_for_cseq_spool<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
@@ -128,7 +130,7 @@ where
     !cseq_parts.loops
 }
 
-fn process_cseq_spool_hard_dt<I, IA, C>(
+fn aclip_process_both_for_cseq_spool_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
@@ -144,16 +146,16 @@ where
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeq::LoopSin(_) => process_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+        CycleSeq::LoopSin(_) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => process_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+            Some(_) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
             None => {
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
                 let inner_conv = inner.convert_with(&mut converter);
-                process_output_cseq_lls_spool_hard_dt(&inner_conv, inv_proj, inv_spool, &mut accum.instances);
+                process_output_for_cseq_lls_spool_hard_dt(&inner_conv, inv_proj, inv_spool, &mut accum.instances);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,

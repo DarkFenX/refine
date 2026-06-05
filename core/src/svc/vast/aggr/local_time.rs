@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared_time::process_cseq_regular,
+    shared_time::atime_process_output_for_cseq_regular,
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -38,7 +38,7 @@ where
         return false;
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    process_cseq_regular(
+    atime_process_output_for_cseq_regular(
         cseq.convert_with_and_optimize(&mut converter),
         None,
         &mut accum.instances,

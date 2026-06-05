@@ -154,7 +154,7 @@ pub(super) fn get_tailed_cycle_full_repeat_count(
     Count::from_pvalue_trunced(time_no_tail / cycle_main_duration)
 }
 
-pub(super) fn process_output_cseq_lls_hard_dt<I, IA>(
+pub(super) fn process_output_for_cseq_lls_hard_dt<I, IA>(
     accum: &mut IA,
     cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
@@ -185,10 +185,10 @@ pub(super) fn process_output_cseq_lls_hard_dt<I, IA>(
         time -= cseq.p1_data.cycle_main_duration;
         p1_remaining_repeat_count -= Count::ONE;
     }
-    process_output_cycle_hard_dt(accum, &cseq.p2_data, chance_mult, loop_repeat_count);
+    process_output_for_cycle_hard_dt(accum, &cseq.p2_data, chance_mult, loop_repeat_count);
 }
 
-pub(super) fn process_output_cycle_hard_dt<I, IA>(
+pub(super) fn process_output_for_cycle_hard_dt<I, IA>(
     accum: &mut IA,
     data: &AggrPartDataTail<I>,
     chance_mult: Option<PValue>,

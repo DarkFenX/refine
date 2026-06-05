@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared_looped::{process_cseq_hard_dt, process_cseq_regular},
+    shared_looped::{alooped_process_both_for_cseq_hard_dt, alooped_process_both_for_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -41,8 +41,8 @@ where
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
-        true => process_cseq_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum),
-        false => process_cseq_regular(cseq.convert_with_and_optimize(&mut converter), None, accum),
+        true => alooped_process_both_for_cseq_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum),
+        false => alooped_process_both_for_cseq_regular(cseq.convert_with_and_optimize(&mut converter), None, accum),
     }
     true
 }
@@ -82,8 +82,16 @@ where
     if let Some(cseq_looped) = cseq.looped {
         let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
         match cseq_looped.get_hard_dt().is_some() {
-            true => process_cseq_hard_dt(cseq_looped.convert_with_and_optimize(&mut converter), None, accum_loop),
-            false => process_cseq_regular(cseq_looped.convert_with_and_optimize(&mut converter), None, accum_loop),
+            true => alooped_process_both_for_cseq_hard_dt(
+                cseq_looped.convert_with_and_optimize(&mut converter),
+                None,
+                accum_loop,
+            ),
+            false => alooped_process_both_for_cseq_regular(
+                cseq_looped.convert_with_and_optimize(&mut converter),
+                None,
+                accum_loop,
+            ),
         }
         accum_data = true;
     }
