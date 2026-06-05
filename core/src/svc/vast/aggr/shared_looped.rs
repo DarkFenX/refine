@@ -16,7 +16,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Higher-level routers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn alooped_process_both_for_limited_cseq<I, IA, C>(
+pub(super) fn alooped_route_for_limited_cseq_nonspool<I, IA, C>(
     cseq_limited: CycleSeqLimited<CycleDataFull>,
     cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
     chance_mult: Option<PValue>,
@@ -42,7 +42,7 @@ pub(super) fn alooped_process_both_for_limited_cseq<I, IA, C>(
     }
 }
 
-pub(super) fn alooped_process_both_for_looped_cseq<I, IA, C>(
+pub(super) fn alooped_route_for_looped_cseq_nonspool<I, IA, C>(
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,

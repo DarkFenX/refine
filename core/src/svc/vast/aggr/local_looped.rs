@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared_looped::{alooped_process_both_for_limited_cseq, alooped_process_both_for_looped_cseq},
+    shared_looped::{alooped_route_for_limited_cseq_nonspool, alooped_route_for_looped_cseq_nonspool},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -40,7 +40,7 @@ where
         return false;
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    alooped_process_both_for_looped_cseq(cseq, None, accum, &mut converter);
+    alooped_route_for_looped_cseq_nonspool(cseq, None, accum, &mut converter);
     true
 }
 
@@ -71,11 +71,11 @@ where
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     let cseq = cseq.split_lim_loop();
     if let Some(cseq_limited) = cseq.limited {
-        alooped_process_both_for_limited_cseq(cseq_limited, cseq.looped.as_ref(), None, accum_lim, &mut converter);
+        alooped_route_for_limited_cseq_nonspool(cseq_limited, cseq.looped.as_ref(), None, accum_lim, &mut converter);
         accum_data = true;
     }
     if let Some(cseq_looped) = cseq.looped {
-        alooped_process_both_for_looped_cseq(cseq_looped, None, accum_loop, &mut converter);
+        alooped_route_for_looped_cseq_nonspool(cseq_looped, None, accum_loop, &mut converter);
         accum_data = true;
     }
     accum_data
