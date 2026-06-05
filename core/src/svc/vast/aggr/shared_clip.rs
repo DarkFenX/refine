@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    shared::{AggrPartData, AggrPartDataTail, process_output_for_cseq_lls_hard_dt, process_output_for_cycle_hard_dt},
+    shared::{AggrPartData, AggrPartDataTail, process_output_for_cycle_hard_dt, process_output_for_lls_cseq_hard_dt},
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -96,7 +96,7 @@ where
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
                 let inner_conv = inner.convert_with(&mut converter);
-                process_output_for_cseq_lls_hard_dt(&mut accum.instances, &inner_conv, chance_mult, Count::ONE);
+                process_output_for_lls_cseq_hard_dt(&mut accum.instances, &inner_conv, chance_mult, Count::ONE);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,

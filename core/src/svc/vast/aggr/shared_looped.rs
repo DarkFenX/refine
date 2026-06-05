@@ -1,8 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     shared::{
-        AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_for_cseq_lls_hard_dt,
-        process_output_for_cycle_hard_dt,
+        AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_for_cycle_hard_dt,
+        process_output_for_lls_cseq_hard_dt,
     },
     shared_time::{process_output_for_part_limited_regular, process_output_for_part_single_regular},
     traits::InstanceDuration,
@@ -10,12 +10,62 @@ use super::{
 use crate::{
     num::{Count, PValue},
     svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeqLimited, CycleSeqLooped},
+    util::LibConverter,
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Higher-level routers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) fn alooped_process_both_for_limited_cseq<I, IA, C>(
+    cseq_limited: CycleSeqLimited<CycleDataFull>,
+    cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
+    chance_mult: Option<PValue>,
+    accum: &mut IA,
+    converter: &mut C,
+) where
+    I: Copy + Eq + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartData<I>> + LibConverter<CycleDataFull, AggrPartDataTail<I>>,
+{
+    match get_time_until_hard_dt_for_split(&cseq_limited, cseq_looped) {
+        Some(time_until_hard_dt) => alooped_process_output_for_limited_cseq_hard_dt(
+            cseq_limited.convert_with_and_optimize(converter),
+            chance_mult,
+            time_until_hard_dt,
+            accum,
+        ),
+        None => alooped_process_output_for_limited_cseq_regular(
+            cseq_limited.convert_with_and_optimize(converter),
+            chance_mult,
+            accum,
+        ),
+    }
+}
+
+pub(super) fn alooped_process_both_for_looped_cseq<I, IA, C>(
+    cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
+    chance_mult: Option<PValue>,
+    accum: &mut SeqAccum<IA>,
+    converter: &mut C,
+) where
+    I: Copy + Eq + InstanceDuration,
+    IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartData<I>> + LibConverter<CycleDataFull, AggrPartDataTail<I>>,
+{
+    match cseq.get_hard_dt().is_some() {
+        true => {
+            alooped_process_both_for_looped_cseq_hard_dt(cseq.convert_with_and_optimize(converter), chance_mult, accum)
+        }
+        false => {
+            alooped_process_both_for_looped_cseq_regular(cseq.convert_with_and_optimize(converter), chance_mult, accum)
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Looped part processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn alooped_process_both_for_looped_cseq_regular<I, IA>(
+fn alooped_process_both_for_looped_cseq_regular<I, IA>(
     cseq: CycleSeqLooped<AggrPartData<I>, AggrHardDtNull>,
     chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,
@@ -43,7 +93,7 @@ pub(super) fn alooped_process_both_for_looped_cseq_hard_dt<I, IA>(
             accum.time += inner.get_main_duration() + inner.hard_dt.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
-            process_output_for_cseq_lls_hard_dt(&mut accum.instances, &inner, chance_mult, Count::ONE);
+            process_output_for_lls_cseq_hard_dt(&mut accum.instances, &inner, chance_mult, Count::ONE);
             accum.time += inner.get_main_duration() + inner.hard_dt.unwrap().duration;
         }
     }
@@ -52,7 +102,7 @@ pub(super) fn alooped_process_both_for_looped_cseq_hard_dt<I, IA>(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Limited part processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn alooped_process_output_for_limited_cseq_regular<I, IA>(
+fn alooped_process_output_for_limited_cseq_regular<I, IA>(
     cseq: CycleSeqLimited<AggrPartData<I>>,
     chance_mult: Option<PValue>,
     accum: &mut IA,
@@ -71,7 +121,7 @@ pub(super) fn alooped_process_output_for_limited_cseq_regular<I, IA>(
     }
 }
 
-pub(super) fn alooped_process_output_for_limited_cseq_hard_dt<I, IA>(
+fn alooped_process_output_for_limited_cseq_hard_dt<I, IA>(
     cseq: CycleSeqLimited<AggrPartDataTail<I>>,
     chance_mult: Option<PValue>,
     time_until_hard_dt: PValue,
@@ -102,7 +152,7 @@ pub(super) fn alooped_process_output_for_limited_cseq_hard_dt<I, IA>(
     }
 }
 
-pub(super) fn get_time_until_hard_dt_for_split(
+fn get_time_until_hard_dt_for_split(
     cseq_limited: &CycleSeqLimited<CycleDataFull>,
     cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
 ) -> Option<PValue> {

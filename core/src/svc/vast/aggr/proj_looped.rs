@@ -2,10 +2,10 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_for_cseq_lls_spool_hard_dt,
+        process_output_for_lls_cseq_spool_hard_dt,
     },
     shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
-    shared_looped::{alooped_process_both_for_looped_cseq_hard_dt, alooped_process_both_for_looped_cseq_regular},
+    shared_looped::{alooped_process_both_for_looped_cseq, alooped_process_both_for_looped_cseq_hard_dt},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -50,34 +50,58 @@ where
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {
         Some(inv_spool) => match cseq.get_hard_dt() {
-            Some(_) => alooped_process_both_for_cseq_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
-            None => alooped_process_both_for_cseq_spool(
+            Some(_) => alooped_process_both_for_looped_cseq_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
+            None => alooped_process_both_for_looped_cseq_spool(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj,
                 inv_spool,
                 accum,
             ),
         },
-        None => match cseq.get_hard_dt() {
-            Some(_) => alooped_process_both_for_looped_cseq_hard_dt(
-                cseq.convert_with_and_optimize(&mut converter),
-                inv_proj.chance_mult,
-                accum,
-            ),
-            None => alooped_process_both_for_looped_cseq_regular(
-                cseq.convert_with_and_optimize(&mut converter),
-                inv_proj.chance_mult,
-                accum,
-            ),
-        },
+        None => alooped_process_both_for_looped_cseq(cseq, inv_proj.chance_mult, accum, &mut converter),
     }
     true
 }
 
+// Projected effects, puts data for non-looped part into one accumulator, and for looped part into
+// another
+#[must_use]
+pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAL, IAO>(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    effect: &REffect,
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
+    ospec: &REffectProjOpcSpec<BG>,
+    base_xargs: BX,
+    projectee_uid: Option<UItemId>,
+    accum_lim: &mut IAL,
+    accum_loop: &mut SeqAccum<IAO>,
+) -> bool
+where
+    BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
+    IAL: SeqInstanceAccum<I>,
+    IAO: SeqInstanceAccum<I>,
+{
+    let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
+    else {
+        return false;
+    };
+    let mut accum_data = false;
+    let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
+    let cseq = cseq.split_lim_loop();
+    true
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Implementation details
+// Higher-level routers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn alooped_process_both_for_cseq_spool<I, IA>(
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Spool-specific processing for looped part
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn alooped_process_both_for_looped_cseq_spool<I, IA>(
     cseq: CycleSeqLooped<AggrPartDataSpool, AggrHardDtNull>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
@@ -149,7 +173,7 @@ fn get_starting_uninterrupted_cycles(
     uninterrupted_cycles
 }
 
-fn alooped_process_both_for_cseq_spool_hard_dt<I, IA, C>(
+fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
@@ -180,7 +204,7 @@ fn alooped_process_both_for_cseq_spool_hard_dt<I, IA, C>(
                     inner.convert_with(&mut converter);
                 let loop_inner_duration = inner_conv.get_main_duration();
                 let loop_full_duration = loop_inner_duration + inner_conv.hard_dt.unwrap().duration;
-                process_output_for_cseq_lls_spool_hard_dt(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
+                process_output_for_lls_cseq_spool_hard_dt(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
                 accum.time += loop_full_duration;
             }
         },

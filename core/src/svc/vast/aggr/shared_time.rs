@@ -2,7 +2,7 @@ use super::{
     accum::SeqInstanceAccum,
     shared::{
         AggrHardDtSimple, AggrPartDataTail, get_cycle_tail_duration, get_tailed_cycle_full_repeat_count,
-        process_output_for_cseq_lls_hard_dt, process_output_for_cycle_hard_dt,
+        process_output_for_cycle_hard_dt, process_output_for_lls_cseq_hard_dt,
     },
     traits::InstanceDuration,
 };
@@ -55,12 +55,12 @@ pub(super) fn atime_process_output_for_cseq_regular<I, IA>(
             process_output_for_part_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
         CycleSeq::LoopSin(inner) => match inner.hard_dt {
-            Some(hard_dt) => atime_process_output_for_cseq_ls_hard_dt(accum, ptime, inner, hard_dt, chance_mult),
+            Some(hard_dt) => atime_process_output_for_ls_cseq_hard_dt(accum, ptime, inner, hard_dt, chance_mult),
             None => process_output_for_part_infinite_regular(accum, &mut ptime.into_value(), &inner.data, chance_mult),
         },
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
-            Some(_) => atime_process_output_for_cseq_lls_hard_dt(accum, ptime, inner, chance_mult),
-            None => atime_process_output_for_cseq_lls_regular(accum, ptime, inner, chance_mult),
+            Some(_) => atime_process_output_for_lls_cseq_hard_dt(accum, ptime, inner, chance_mult),
+            None => atime_process_output_for_lls_cseq_regular(accum, ptime, inner, chance_mult),
         },
     }
 }
@@ -139,7 +139,7 @@ fn process_output_for_part_infinite_regular<I, IA>(
     }
 }
 
-fn atime_process_output_for_cseq_ls_hard_dt<I, IA>(
+fn atime_process_output_for_ls_cseq_hard_dt<I, IA>(
     accum: &mut IA,
     ptime: PValue,
     cseq: CSeqLoopSin<AggrPartDataTail<I>, AggrHardDtSimple>,
@@ -167,7 +167,7 @@ fn atime_process_output_for_cseq_ls_hard_dt<I, IA>(
     }
 }
 
-fn atime_process_output_for_cseq_lls_regular<I, IA>(
+fn atime_process_output_for_lls_cseq_regular<I, IA>(
     accum: &mut IA,
     ptime: PValue,
     cseq: CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
@@ -200,11 +200,11 @@ fn atime_process_output_for_cseq_lls_regular<I, IA>(
     // While loop instead of if is for cases of really long tails, which never happen in EVE but can
     // happen in current data format
     while time >= Value::ZERO {
-        atime_process_output_for_cseq_lls_incomplete(accum, &mut time, &cseq, chance_mult);
+        atime_process_output_for_lls_cseq_incomplete(accum, &mut time, &cseq, chance_mult);
     }
 }
 
-fn atime_process_output_for_cseq_lls_hard_dt<I, IA>(
+fn atime_process_output_for_lls_cseq_hard_dt<I, IA>(
     accum: &mut IA,
     ptime: PValue,
     cseq: CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,
@@ -219,16 +219,16 @@ fn atime_process_output_for_cseq_lls_hard_dt<I, IA>(
     let loop_full_repeat_count = get_cutoff_cycle_full_repeat_count(time, loop_inner_duration, loop_full_duration);
     // Apply full loops
     if loop_full_repeat_count > Count::ZERO {
-        process_output_for_cseq_lls_hard_dt(accum, &cseq, chance_mult, loop_full_repeat_count);
+        process_output_for_lls_cseq_hard_dt(accum, &cseq, chance_mult, loop_full_repeat_count);
         time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
     }
     // Apply partial loop
     if time >= Value::ZERO {
-        atime_process_output_for_cseq_lls_incomplete(accum, &mut time, &cseq, chance_mult);
+        atime_process_output_for_lls_cseq_incomplete(accum, &mut time, &cseq, chance_mult);
     }
 }
 
-fn atime_process_output_for_cseq_lls_incomplete<I, IA>(
+fn atime_process_output_for_lls_cseq_incomplete<I, IA>(
     accum: &mut IA,
     time: &mut Value,
     cseq: &CSeqLoopLimSin<AggrPartDataTail<I>, AggrHardDtSimple>,

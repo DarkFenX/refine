@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverter, process_output_for_cseq_lls_spool_hard_dt,
+        AggrProjInvData, AggrSpoolInvData, ProjConverter, process_output_for_lls_cseq_spool_hard_dt,
         process_output_for_part_infinite_spool, process_output_for_part_limited_spool,
         process_output_for_part_single_spool,
     },
@@ -205,14 +205,14 @@ fn atime_process_output_for_cseq_spool<I, IA, C>(
                     ptime,
                 ),
                 false => match inner.hard_dt {
-                    Some(_) => atime_process_output_for_cseq_lls_spool_hard_dt(
+                    Some(_) => atime_process_output_for_lls_cseq_spool_hard_dt(
                         &inner.convert_with(&mut converter),
                         &inv_proj,
                         &inv_spool,
                         accum,
                         ptime,
                     ),
-                    None => atime_process_output_for_cseq_lls_spool(
+                    None => atime_process_output_for_lls_cseq_spool(
                         &inner.convert_with(&mut converter),
                         &inv_proj,
                         &inv_spool,
@@ -225,7 +225,7 @@ fn atime_process_output_for_cseq_spool<I, IA, C>(
     }
 }
 
-fn atime_process_output_for_cseq_lls_spool<I, IA>(
+fn atime_process_output_for_lls_cseq_spool<I, IA>(
     cseq: &CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
@@ -274,7 +274,7 @@ fn atime_process_output_for_cseq_lls_spool<I, IA>(
     }
 }
 
-fn atime_process_output_for_cseq_lls_spool_hard_dt<I, IA>(
+fn atime_process_output_for_lls_cseq_spool_hard_dt<I, IA>(
     cseq: &CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
@@ -291,7 +291,7 @@ fn atime_process_output_for_cseq_lls_spool_hard_dt<I, IA>(
     // Process full cycles
     if loop_full_repeat_count > Count::ZERO {
         let mut inner_accum = accum.copy_blank();
-        process_output_for_cseq_lls_spool_hard_dt(cseq, inv_proj, inv_spool, &mut inner_accum);
+        process_output_for_lls_cseq_spool_hard_dt(cseq, inv_proj, inv_spool, &mut inner_accum);
         accum.merge(&inner_accum, loop_full_repeat_count);
         time -= loop_full_duration * loop_full_repeat_count.into_pvalue();
     }

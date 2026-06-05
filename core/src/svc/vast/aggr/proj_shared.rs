@@ -436,7 +436,7 @@ pub(super) fn process_output_for_part_infinite_spool<I, IA>(
     }
 }
 
-pub(super) fn process_output_for_cseq_lls_spool_hard_dt<I, IA>(
+pub(super) fn process_output_for_lls_cseq_spool_hard_dt<I, IA>(
     cseq: &CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,

@@ -2,7 +2,7 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_for_cseq_lls_spool_hard_dt,
+        process_output_for_lls_cseq_spool_hard_dt,
     },
     shared::{AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
     shared_clip::{aclip_process_both_for_cseq_hard_dt, aclip_process_both_for_cseq_regular},
@@ -155,7 +155,7 @@ where
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
                 let inner_conv = inner.convert_with(&mut converter);
-                process_output_for_cseq_lls_spool_hard_dt(&inner_conv, inv_proj, inv_spool, &mut accum.instances);
+                process_output_for_lls_cseq_spool_hard_dt(&inner_conv, inv_proj, inv_spool, &mut accum.instances);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,
