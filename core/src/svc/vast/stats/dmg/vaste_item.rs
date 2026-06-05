@@ -9,11 +9,12 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, SeqInstanceAccumMax, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
             stats::item_checks::check_autocharge_charge_drone_fighter_module,
         },
     },
     ud::UItemId,
+    util::LibMax,
 };
 
 impl Vast {
@@ -112,29 +113,53 @@ impl Vast {
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
-                let mut accum = SeqAccum::new_stack_max();
-                if match time_options {
-                    StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
-                        ctx,
-                        calc,
-                        item_uid,
-                        effect,
-                        cseq,
-                        ospec,
-                        (),
-                        None,
-                        burst_opts.spool,
-                        &mut accum,
-                    ),
+                match time_options {
+                    StatTimeOptions::Burst(burst_opts) => {
+                        let mut accum = SeqAccum::new_stack_max();
+                        if aggr_proj_burst(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            (),
+                            None,
+                            burst_opts.spool,
+                            &mut accum,
+                        ) {
+                            *dps_normal += accum.get_per_second();
+                            *volley_normal += accum.instances.max;
+                        }
+                    }
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
                         Some(time) if time > PValue::ZERO => {
-                            aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum, time)
+                            let mut accum = SeqAccum::new_stack_max();
+                            if aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum, time) {
+                                *dps_normal += accum.get_per_second();
+                                *volley_normal += accum.instances.max;
+                            }
                         }
-                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum),
+                        _ => {
+                            let mut accum_main = SeqAccum::new_stack_max();
+                            let mut accum_volley = SeqInstanceAccumMax::new();
+                            if aggr_proj_split(
+                                ctx,
+                                calc,
+                                item_uid,
+                                effect,
+                                cseq,
+                                ospec,
+                                (),
+                                None,
+                                &mut accum_volley,
+                                &mut accum_main,
+                            ) {
+                                *dps_normal += accum_main.get_per_second();
+                                *volley_normal += accum_main.instances.max.lib_max(accum_volley.max);
+                            }
+                        }
                     },
-                } {
-                    *volley_normal += accum.instances.max;
-                    *dps_normal += accum.get_per_second();
                 }
             }
             if let Some(ospec) = &effect.breacher_dmg {
@@ -178,48 +203,64 @@ impl Vast {
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
-                let mut accum = SeqAccum::new_stack_max();
-                if match time_options {
-                    StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
-                        ctx,
-                        calc,
-                        item_uid,
-                        effect,
-                        cseq,
-                        ospec,
-                        (),
-                        Some(projectee_uid),
-                        burst_opts.spool,
-                        &mut accum,
-                    ),
+                match time_options {
+                    StatTimeOptions::Burst(burst_opts) => {
+                        let mut accum = SeqAccum::new_stack_max();
+                        if aggr_proj_burst(
+                            ctx,
+                            calc,
+                            item_uid,
+                            effect,
+                            cseq,
+                            ospec,
+                            (),
+                            Some(projectee_uid),
+                            burst_opts.spool,
+                            &mut accum,
+                        ) {
+                            *dps_normal += accum.get_per_second();
+                            *volley_normal += accum.instances.max;
+                        }
+                    }
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
-                        Some(time) if time > PValue::ZERO => aggr_proj_time(
-                            ctx,
-                            calc,
-                            item_uid,
-                            effect,
-                            cseq,
-                            ospec,
-                            (),
-                            Some(projectee_uid),
-                            &mut accum,
-                            time,
-                        ),
-                        _ => aggr_proj_looped(
-                            ctx,
-                            calc,
-                            item_uid,
-                            effect,
-                            cseq,
-                            ospec,
-                            (),
-                            Some(projectee_uid),
-                            &mut accum,
-                        ),
+                        Some(time) if time > PValue::ZERO => {
+                            let mut accum = SeqAccum::new_stack_max();
+                            if aggr_proj_time(
+                                ctx,
+                                calc,
+                                item_uid,
+                                effect,
+                                cseq,
+                                ospec,
+                                (),
+                                Some(projectee_uid),
+                                &mut accum,
+                                time,
+                            ) {
+                                *dps_normal += accum.get_per_second();
+                                *volley_normal += accum.instances.max;
+                            }
+                        }
+                        _ => {
+                            let mut accum_main = SeqAccum::new_stack_max();
+                            let mut accum_volley = SeqInstanceAccumMax::new();
+                            if aggr_proj_split(
+                                ctx,
+                                calc,
+                                item_uid,
+                                effect,
+                                cseq,
+                                ospec,
+                                (),
+                                Some(projectee_uid),
+                                &mut accum_volley,
+                                &mut accum_main,
+                            ) {
+                                *dps_normal += accum_main.get_per_second();
+                                *volley_normal += accum_main.instances.max.lib_max(accum_volley.max);
+                            }
+                        }
                     },
-                } {
-                    *volley_normal += accum.instances.max;
-                    *dps_normal += accum.get_per_second();
                 }
             }
             if let Some(ospec) = &effect.breacher_dmg {

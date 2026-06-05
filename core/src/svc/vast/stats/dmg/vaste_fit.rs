@@ -9,10 +9,11 @@ use crate::{
         vast::{
             StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatTimeOptions, Vast,
             VastFitData,
-            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, SeqInstanceAccumMax, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
         },
     },
     ud::{UFitId, UItemId},
+    util::LibMax,
 };
 
 impl Vast {
@@ -244,22 +245,10 @@ impl VastFitData {
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                     continue;
                 };
-                let mut accum = SeqAccum::new_stack_max();
-                if match time_options {
-                    StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
-                        ctx,
-                        calc,
-                        item_uid,
-                        effect,
-                        cseq,
-                        ospec,
-                        (),
-                        projectee_uid,
-                        burst_opts.spool,
-                        &mut accum,
-                    ),
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
-                        Some(time) if time > PValue::ZERO => aggr_proj_time(
+                match time_options {
+                    StatTimeOptions::Burst(burst_opts) => {
+                        let mut accum = SeqAccum::new_stack_max();
+                        if aggr_proj_burst(
                             ctx,
                             calc,
                             item_uid,
@@ -268,14 +257,52 @@ impl VastFitData {
                             ospec,
                             (),
                             projectee_uid,
+                            burst_opts.spool,
                             &mut accum,
-                            time,
-                        ),
-                        _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), projectee_uid, &mut accum),
+                        ) {
+                            *dps_normal += accum.get_per_second();
+                            *volley_normal += accum.instances.max;
+                        }
+                    }
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                        Some(time) if time > PValue::ZERO => {
+                            let mut accum = SeqAccum::new_stack_max();
+                            if aggr_proj_time(
+                                ctx,
+                                calc,
+                                item_uid,
+                                effect,
+                                cseq,
+                                ospec,
+                                (),
+                                projectee_uid,
+                                &mut accum,
+                                time,
+                            ) {
+                                *dps_normal += accum.get_per_second();
+                                *volley_normal += accum.instances.max;
+                            }
+                        }
+                        _ => {
+                            let mut accum_main = SeqAccum::new_stack_max();
+                            let mut accum_volley = SeqInstanceAccumMax::new();
+                            if aggr_proj_split(
+                                ctx,
+                                calc,
+                                item_uid,
+                                effect,
+                                cseq,
+                                ospec,
+                                (),
+                                projectee_uid,
+                                &mut accum_volley,
+                                &mut accum_main,
+                            ) {
+                                *dps_normal += accum_main.get_per_second();
+                                *volley_normal += accum_main.instances.max.lib_max(accum_volley.max);
+                            }
+                        }
                     },
-                } {
-                    *volley_normal += accum.instances.max;
-                    *dps_normal += accum.get_per_second();
                 }
             }
         }

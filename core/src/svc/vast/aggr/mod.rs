@@ -1,7 +1,7 @@
 //! Aggregators convert cycle sequence and output-per-cycle into a more processed form like
 //! single-number stats.
 
-pub(in crate::svc::vast) use accum::{SeqAccum, SeqInstanceAccum};
+pub(in crate::svc::vast) use accum::{SeqAccum, SeqInstanceAccum, SeqInstanceAccumMax};
 pub(in crate::svc::vast) use local_burst::aggr_local_burst;
 pub(in crate::svc::vast) use local_clip::aggr_local_clip;
 pub(in crate::svc::vast) use local_iter::aggr_local_iter;

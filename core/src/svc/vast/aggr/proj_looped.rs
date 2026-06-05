@@ -101,7 +101,7 @@ where
         alooped_route_for_looped_cseq(cseq_looped, inv_proj, inv_spool, accum_loop, &mut converter);
         accum_data = true;
     }
-    true
+    accum_data
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

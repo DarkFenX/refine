@@ -17,9 +17,9 @@ impl<I> SeqAccum<SeqInstanceAccumStackMax<I>> {
             time: PValue::ZERO,
         }
     }
-    pub(in crate::svc::vast) fn get_per_second(self) -> I
+    pub(in crate::svc::vast) fn get_per_second(&self) -> I
     where
-        I: std::ops::Div<PValue, Output = I>,
+        I: Copy + std::ops::Div<PValue, Output = I>,
     {
         self.instances.stacked / self.time
     }
