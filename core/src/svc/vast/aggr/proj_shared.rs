@@ -282,9 +282,9 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cseq/part/cycle processing functions
+// Cseq/part processing functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) fn process_single_spool<I, IA>(
+pub(super) fn process_part_single_spool<I, IA>(
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     part_data: AggrPartDataSpoolTail,
@@ -311,7 +311,7 @@ pub(super) fn process_single_spool<I, IA>(
     }
 }
 
-pub(super) fn process_limited_spool<I, IA>(
+pub(super) fn process_part_limited_spool<I, IA>(
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     part_data: AggrPartDataSpoolTail,
@@ -375,7 +375,7 @@ pub(super) fn process_limited_spool<I, IA>(
     }
 }
 
-pub(super) fn process_infinite_spool<I, IA>(
+pub(super) fn process_part_infinite_spool<I, IA>(
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
     part_data: AggrPartDataSpoolTail,
@@ -436,7 +436,7 @@ pub(super) fn process_infinite_spool<I, IA>(
     }
 }
 
-pub(super) fn process_output_of_spooling_lls_with_cutoff<I, IA>(
+pub(super) fn process_output_cseq_lls_spool_hard_dt<I, IA>(
     cseq: &CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
@@ -447,7 +447,7 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<I, IA>(
 {
     // Hard downtime resets uninterrupted cycles, so always start from 0
     let mut uninterrupted_cycles = Count::ZERO;
-    process_limited_spool(
+    process_part_limited_spool(
         inv_proj,
         inv_spool,
         cseq.p1_data,
@@ -458,7 +458,7 @@ pub(super) fn process_output_of_spooling_lls_with_cutoff<I, IA>(
     );
     // Tracking time remaining after part 1 would be prone to float calculation errors. Instead,
     // pass active + soft downtime duration as soft limit, since after that hard downtime hits.
-    process_single_spool(
+    process_part_single_spool(
         inv_proj,
         inv_spool,
         cseq.p2_data,

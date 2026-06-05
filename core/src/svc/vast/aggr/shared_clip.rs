@@ -1,6 +1,6 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
-    shared::{AggrPartData, AggrPartDataTail, process_output_of_cycle_with_cutoff, process_output_of_lls_with_cutoff},
+    shared::{AggrPartData, AggrPartDataTail, process_output_cseq_lls_hard_dt, process_output_cycle_hard_dt},
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -10,7 +10,7 @@ use crate::{
     util::LibConverter,
 };
 
-pub(super) fn process_regular<I, IA, C>(
+pub(super) fn process_cseq_regular<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,
@@ -48,7 +48,7 @@ where
     !cseq_parts.loops
 }
 
-pub(super) fn process_hard_dt<I, IA, C>(
+pub(super) fn process_cseq_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,
@@ -63,7 +63,7 @@ where
         // Infinite cycle with hard downtime on every cycle means we have just that cycle in clip
         CycleSeq::LoopSin(inner) => {
             let inner_data_conv = converter.lib_convert(inner.data);
-            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner_data_conv, chance_mult, Count::ONE);
+            process_output_cycle_hard_dt(&mut accum.instances, &inner_data_conv, chance_mult, Count::ONE);
             // Record time until reload or hard downtime starts
             let p1_final_cycle_duration = match inner.data.soft_dt {
                 Some(soft_dt) if soft_dt.reason.reload => inner.data.active.duration,
@@ -96,7 +96,7 @@ where
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle
                 let inner_conv = inner.convert_with(&mut converter);
-                process_output_of_lls_with_cutoff(&mut accum.instances, &inner_conv, chance_mult, Count::ONE);
+                process_output_cseq_lls_hard_dt(&mut accum.instances, &inner_conv, chance_mult, Count::ONE);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {
                     Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,

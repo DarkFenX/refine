@@ -5,6 +5,7 @@ pub(crate) use item_getters::CseqMap;
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};
 pub(in crate::svc) use iter_cycle::CycleIter;
 pub(in crate::svc) use seq::CycleSeq;
+pub(in crate::svc) use seq_limited::CycleSeqLimited;
 pub(in crate::svc) use seq_looped::CycleSeqLooped;
 pub(in crate::svc) use seq_var_lim::CSeqLim;
 pub(in crate::svc) use seq_var_lim_inf::CSeqLimInf;

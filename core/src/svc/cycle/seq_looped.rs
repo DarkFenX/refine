@@ -12,8 +12,7 @@ impl<D, HDT> CycleSeqLooped<D, HDT> {
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
         }
     }
-
-    pub(super) fn get_main_duration(&self) -> PValue
+    pub(in crate::svc) fn get_main_duration(&self) -> PValue
     where
         D: GetMainDuration,
     {

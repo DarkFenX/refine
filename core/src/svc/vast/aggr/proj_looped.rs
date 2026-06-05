@@ -2,10 +2,10 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_of_spooling_lls_with_cutoff,
+        process_output_cseq_lls_spool_hard_dt,
     },
     shared::{AggrHardDtNull, AggrHardDtSimple, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
-    shared_looped::{process_hard_dt, process_regular},
+    shared_looped::{process_cseq_hard_dt, process_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -50,8 +50,8 @@ where
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {
         Some(inv_spool) => match cseq.get_hard_dt() {
-            Some(_) => process_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
-            None => process_spool(
+            Some(_) => process_cseq_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
+            None => process_cseq_spool(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj,
                 inv_spool,
@@ -59,12 +59,12 @@ where
             ),
         },
         None => match cseq.get_hard_dt() {
-            Some(_) => process_hard_dt(
+            Some(_) => process_cseq_hard_dt(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj.chance_mult,
                 accum,
             ),
-            None => process_regular(
+            None => process_cseq_regular(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj.chance_mult,
                 accum,
@@ -74,7 +74,7 @@ where
     true
 }
 
-fn process_spool<I, IA>(
+fn process_cseq_spool<I, IA>(
     cseq: CycleSeqLooped<AggrPartDataSpool, AggrHardDtNull>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
@@ -146,7 +146,7 @@ fn get_starting_uninterrupted_cycles(
     uninterrupted_cycles
 }
 
-fn process_spool_hard_dt<I, IA, C>(
+fn process_cseq_spool_hard_dt<I, IA, C>(
     cseq: CycleSeqLooped<CycleDataFull, CSeqHardDtFull>,
     inv_proj: AggrProjInvData<I>,
     inv_spool: AggrSpoolInvData,
@@ -159,7 +159,7 @@ fn process_spool_hard_dt<I, IA, C>(
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeqLooped::LoopSin(_) => process_hard_dt(
+        CycleSeqLooped::LoopSin(_) => process_cseq_hard_dt(
             cseq.convert_with_and_optimize(&mut converter),
             inv_proj.chance_mult,
             accum,
@@ -167,7 +167,7 @@ fn process_spool_hard_dt<I, IA, C>(
         CycleSeqLooped::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => process_hard_dt(
+            Some(_) => process_cseq_hard_dt(
                 cseq.convert_with_and_optimize(&mut converter),
                 inv_proj.chance_mult,
                 accum,
@@ -177,7 +177,7 @@ fn process_spool_hard_dt<I, IA, C>(
                     inner.convert_with(&mut converter);
                 let loop_inner_duration = inner_conv.get_main_duration();
                 let loop_full_duration = loop_inner_duration + inner_conv.hard_dt.unwrap().duration;
-                process_output_of_spooling_lls_with_cutoff(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
+                process_output_cseq_lls_spool_hard_dt(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
                 accum.time += loop_full_duration;
             }
         },

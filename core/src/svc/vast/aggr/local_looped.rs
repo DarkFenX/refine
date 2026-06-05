@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     local_shared::{AggrLocalInvData, LocalConverter},
-    shared_looped::{process_hard_dt, process_regular},
+    shared_looped::{process_cseq_hard_dt, process_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -11,7 +11,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, CycleSeqLimited, CycleSeqLooped},
     },
     ud::UItemId,
 };
@@ -41,8 +41,8 @@ where
     };
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
-        true => process_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum),
-        false => process_regular(cseq.convert_with_and_optimize(&mut converter), None, accum),
+        true => process_cseq_hard_dt(cseq.convert_with_and_optimize(&mut converter), None, accum),
+        false => process_cseq_regular(cseq.convert_with_and_optimize(&mut converter), None, accum),
     }
     true
 }
@@ -72,16 +72,31 @@ where
     };
     let mut accum_data = false;
     let cseq = cseq.split_lim_loop();
-    let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     if let Some(cseq_limited) = cseq.limited {
+        match get_time_until_hard_dt_for_split(&cseq_limited, cseq.looped.as_ref()) {
+            Some(time_until_hard_dt) => (),
+            None => (),
+        }
         accum_data = true;
     }
     if let Some(cseq_looped) = cseq.looped {
+        let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
         match cseq_looped.get_hard_dt().is_some() {
-            true => process_hard_dt(cseq_looped.convert_with_and_optimize(&mut converter), None, accum_loop),
-            false => process_regular(cseq_looped.convert_with_and_optimize(&mut converter), None, accum_loop),
+            true => process_cseq_hard_dt(cseq_looped.convert_with_and_optimize(&mut converter), None, accum_loop),
+            false => process_cseq_regular(cseq_looped.convert_with_and_optimize(&mut converter), None, accum_loop),
         }
         accum_data = true;
     }
     accum_data
+}
+
+fn get_time_until_hard_dt_for_split(
+    cseq_limited: &CycleSeqLimited<CycleDataFull>,
+    cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
+) -> Option<PValue> {
+    let cseq_loop = cseq_looped?;
+    if cseq_loop.get_hard_dt().is_none() {
+        return None;
+    }
+    Some(cseq_limited.get_main_duration() + cseq_loop.get_main_duration())
 }

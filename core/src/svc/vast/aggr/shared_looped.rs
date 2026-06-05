@@ -1,8 +1,8 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     shared::{
-        AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_of_cycle_with_cutoff,
-        process_output_of_lls_with_cutoff,
+        AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_cseq_lls_hard_dt,
+        process_output_cycle_hard_dt,
     },
     traits::InstanceDuration,
 };
@@ -11,7 +11,7 @@ use crate::{
     svc::cycle::CycleSeqLooped,
 };
 
-pub(super) fn process_regular<I, IA>(
+pub(super) fn process_cseq_regular<I, IA>(
     cseq: CycleSeqLooped<AggrPartData<I>, AggrHardDtNull>,
     chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,
@@ -25,7 +25,7 @@ pub(super) fn process_regular<I, IA>(
     }
 }
 
-pub(super) fn process_hard_dt<I, IA>(
+pub(super) fn process_cseq_hard_dt<I, IA>(
     cseq: CycleSeqLooped<AggrPartDataTail<I>, AggrHardDtSimple>,
     chance_mult: Option<PValue>,
     accum: &mut SeqAccum<IA>,
@@ -35,11 +35,11 @@ pub(super) fn process_hard_dt<I, IA>(
 {
     match cseq {
         CycleSeqLooped::LoopSin(inner) => {
-            process_output_of_cycle_with_cutoff(&mut accum.instances, &inner.data, chance_mult, Count::ONE);
+            process_output_cycle_hard_dt(&mut accum.instances, &inner.data, chance_mult, Count::ONE);
             accum.time += inner.get_main_duration() + inner.hard_dt.unwrap().duration;
         }
         CycleSeqLooped::LoopLimSin(inner) => {
-            process_output_of_lls_with_cutoff(&mut accum.instances, &inner, chance_mult, Count::ONE);
+            process_output_cseq_lls_hard_dt(&mut accum.instances, &inner, chance_mult, Count::ONE);
             accum.time += inner.get_main_duration() + inner.hard_dt.unwrap().duration;
         }
     }

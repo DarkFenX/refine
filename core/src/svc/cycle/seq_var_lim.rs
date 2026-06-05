@@ -1,5 +1,8 @@
-use super::{seq::CycleSeq, seq_limited::CycleSeqLimited, seq_split::CycleSeqSplit};
-use crate::{num::Count, util::LibConverter};
+use super::{data::GetMainDuration, seq::CycleSeq, seq_limited::CycleSeqLimited, seq_split::CycleSeqSplit};
+use crate::{
+    num::{Count, PValue},
+    util::LibConverter,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times
@@ -12,6 +15,12 @@ pub(in crate::svc) struct CSeqLim<D> {
 impl<D> CSeqLim<D> {
     pub(super) fn get_first_cycle(&self) -> &D {
         &self.data
+    }
+    pub(super) fn get_main_duration(&self) -> PValue
+    where
+        D: GetMainDuration,
+    {
+        self.data.get_main_duration() * self.repeat_count.into_pvalue()
     }
 }
 
