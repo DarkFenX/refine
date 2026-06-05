@@ -9,7 +9,7 @@ use super::{
 };
 use crate::{
     num::{Count, PValue},
-    svc::cycle::{CycleSeqLimited, CycleSeqLooped},
+    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeqLimited, CycleSeqLooped},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,4 +100,15 @@ pub(super) fn alooped_process_output_for_limited_cseq_hard_dt<I, IA>(
             process_output_for_part_single_regular(accum, &mut time, &inner.p2_data, chance_mult);
         }
     }
+}
+
+pub(super) fn get_time_until_hard_dt_for_split(
+    cseq_limited: &CycleSeqLimited<CycleDataFull>,
+    cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
+) -> Option<PValue> {
+    let cseq_loop = cseq_looped?;
+    if cseq_loop.get_hard_dt().is_none() {
+        return None;
+    }
+    Some(cseq_limited.get_main_duration() + cseq_loop.get_main_duration())
 }
