@@ -85,8 +85,7 @@ fn get_ocps(
                 continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let mut accum = SeqAccum::new_stack();
-            if match time_options {
+            if let Some(accum) = match time_options {
                 StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
                     calc,
@@ -97,7 +96,7 @@ fn get_ocps(
                     (),
                     projectee_uid,
                     burst_opts.spool,
-                    &mut accum,
+                    SeqAccum::new_stack(),
                 ),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => aggr_proj_time(
@@ -109,10 +108,20 @@ fn get_ocps(
                         ospec,
                         (),
                         projectee_uid,
-                        &mut accum,
+                        SeqAccum::new_stack(),
                         time,
                     ),
-                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, (), projectee_uid, &mut accum),
+                    _ => aggr_proj_looped(
+                        ctx,
+                        calc,
+                        item_uid,
+                        effect,
+                        cseq,
+                        ospec,
+                        (),
+                        projectee_uid,
+                        SeqAccum::new_stack(),
+                    ),
                 },
             } {
                 orps += accum.get_per_second();

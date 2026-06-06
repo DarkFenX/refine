@@ -85,8 +85,7 @@ where
             Some(effect_mining) if effect_mining.check(item) => &effect_mining.ospec,
             _ => continue,
         };
-        let mut accum = SeqAccum::new_stack();
-        if match time_options {
+        if let Some(accum) = match time_options {
             StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                 ctx,
                 calc,
@@ -97,13 +96,32 @@ where
                 base_xargs,
                 None,
                 burst_opts.spool,
-                &mut accum,
+                SeqAccum::new_stack(),
             ),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => aggr_proj_time(
-                    ctx, calc, item_uid, effect, cseq, ospec, base_xargs, None, &mut accum, time,
+                    ctx,
+                    calc,
+                    item_uid,
+                    effect,
+                    cseq,
+                    ospec,
+                    base_xargs,
+                    None,
+                    SeqAccum::new_stack(),
+                    time,
                 ),
-                _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, ospec, base_xargs, None, &mut accum),
+                _ => aggr_proj_looped(
+                    ctx,
+                    calc,
+                    item_uid,
+                    effect,
+                    cseq,
+                    ospec,
+                    base_xargs,
+                    None,
+                    SeqAccum::new_stack(),
+                ),
             },
         } {
             mps += accum.get_per_second();

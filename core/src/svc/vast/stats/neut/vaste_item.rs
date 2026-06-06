@@ -37,8 +37,7 @@ impl Vast {
                 Some(neut) if neut.check(u_item, ctx.ac()) => neut.ospec,
                 _ => continue,
             };
-            let mut accum = SeqAccum::new_stack();
-            if match time_options {
+            if let Some(accum) = match time_options {
                 StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
                     calc,
@@ -49,7 +48,7 @@ impl Vast {
                     (),
                     projectee_uid,
                     burst_opts.spool,
-                    &mut accum,
+                    SeqAccum::new_stack(),
                 ),
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
                     Some(time) if time > PValue::ZERO => aggr_proj_time(
@@ -61,10 +60,20 @@ impl Vast {
                         &ospec,
                         (),
                         projectee_uid,
-                        &mut accum,
+                        SeqAccum::new_stack(),
                         time,
                     ),
-                    _ => aggr_proj_looped(ctx, calc, item_uid, effect, cseq, &ospec, (), projectee_uid, &mut accum),
+                    _ => aggr_proj_looped(
+                        ctx,
+                        calc,
+                        item_uid,
+                        effect,
+                        cseq,
+                        &ospec,
+                        (),
+                        projectee_uid,
+                        SeqAccum::new_stack(),
+                    ),
                 },
             } {
                 nps += accum.get_per_second();

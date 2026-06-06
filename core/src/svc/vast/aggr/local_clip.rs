@@ -17,7 +17,6 @@ use crate::{
 };
 
 // Local effects, considers only part of sequence until charges are out
-#[must_use]
 pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -26,15 +25,15 @@ pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum: &mut SeqAccum<IA>,
-) -> bool
+    accum: SeqAccum<IA>,
+) -> Option<SeqAccum<IA>>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
     let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
-        return false;
+        return None;
     };
     let converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {

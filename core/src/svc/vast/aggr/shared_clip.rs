@@ -13,9 +13,9 @@ use crate::{
 pub(super) fn aclip_process_both_for_cseq_regular<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
-    accum: &mut SeqAccum<IA>,
+    mut accum: SeqAccum<IA>,
     mut converter: C,
-) -> bool
+) -> Option<SeqAccum<IA>>
 where
     I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     IA: SeqInstanceAccum<I>,
@@ -32,28 +32,30 @@ where
             accum.add_output_full(&cseq_part_data_conv.output, chance_mult, Count::ONE);
             // Record only active duration before reload, ignore soft downtime duration
             accum.time += cseq_part.data.active.duration;
-            return true;
+            return Some(accum);
         }
         let part_cycle_count = match cseq_part.repeat_count {
             InfCount::Count(part_cycle_count) => part_cycle_count,
             // If any cycle repeats infinitely without running out, then it does not run out of
             // "clip", no clip - no data
-            InfCount::Infinite => return false,
+            InfCount::Infinite => return None,
         };
         accum.add_output_full(&cseq_part_data_conv.output, chance_mult, part_cycle_count);
         accum.time += cseq_part_data_conv.cycle_main_duration * part_cycle_count.into_pvalue();
     }
-    // If we went through all parts without reloads, and they loop, return marker that data should
-    // be ignored
-    !cseq_parts.loops
+    match cseq_parts.loops {
+        // If we went through all parts without reloads, and they loop, then there is no "clip"
+        true => None,
+        false => Some(accum),
+    }
 }
 
 pub(super) fn aclip_process_both_for_cseq_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     chance_mult: Option<PValue>,
-    accum: &mut SeqAccum<IA>,
+    mut accum: SeqAccum<IA>,
     mut converter: C,
-) -> bool
+) -> Option<SeqAccum<IA>>
 where
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
@@ -70,7 +72,7 @@ where
                 _ => inner_data_conv.cycle_main_duration,
             };
             accum.time += p1_final_cycle_duration;
-            true
+            Some(accum)
         }
         CycleSeq::LoopLimSin(inner) => {
             if let Some(soft_dt) = inner.p1_data.soft_dt
@@ -107,7 +109,7 @@ where
                     .cycle_main_duration
                     .mul_add(inner_conv.p1_repeat_count.into_pvalue(), p2_final_cycle_duration);
             }
-            true
+            Some(accum)
         }
         // Other sequence types do not have hard downtime, so this should be unreachable
         _ => unreachable!(),

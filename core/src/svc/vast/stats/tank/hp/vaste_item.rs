@@ -106,8 +106,7 @@ fn get_local_ancil_hp(
                 continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let mut accum = SeqAccum::new_stack();
-            if aggr_local_clip(ctx, calc, item_uid, effect, cseq, ospec, (), &mut accum) {
+            if let Some(accum) = aggr_local_clip(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack()) {
                 total_ancil_hp += accum.instances.stacked;
             }
         }
@@ -135,8 +134,7 @@ fn get_remote_ancil_hp(
                 continue;
             };
             let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
-            let mut accum = SeqAccum::new_stack();
-            if aggr_proj_clip(
+            if let Some(accum) = aggr_proj_clip(
                 ctx,
                 calc,
                 projector_item_uid,
@@ -145,7 +143,7 @@ fn get_remote_ancil_hp(
                 ospec,
                 (),
                 Some(projectee_item_uid),
-                &mut accum,
+                SeqAccum::new_stack(),
             ) {
                 total_ancil_hp += accum.instances.stacked;
             }

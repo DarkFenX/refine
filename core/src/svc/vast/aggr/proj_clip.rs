@@ -23,7 +23,6 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-#[must_use]
 pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -33,8 +32,8 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, I, IA>(
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
-    accum: &mut SeqAccum<IA>,
-) -> bool
+    accum: SeqAccum<IA>,
+) -> Option<SeqAccum<IA>>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
@@ -42,7 +41,7 @@ where
 {
     let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
     else {
-        return false;
+        return None;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
@@ -63,9 +62,9 @@ fn aclip_process_both_for_cseq_spool<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
-    accum: &mut SeqAccum<IA>,
+    mut accum: SeqAccum<IA>,
     mut converter: C,
-) -> bool
+) -> Option<SeqAccum<IA>>
 where
     I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
     IA: SeqInstanceAccum<I>,
@@ -85,13 +84,13 @@ where
             accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
             // Record only active duration before reload, ignore soft downtime duration
             accum.time += cseq_part.data.active.duration;
-            return true;
+            return Some(accum);
         }
         let part_cycle_count = match cseq_part.repeat_count {
             InfCount::Count(part_cycle_count) => part_cycle_count,
             // If any cycle repeats infinitely without running out, then it does not run out of
             // "clip", no clip - no data
-            InfCount::Infinite => return false,
+            InfCount::Infinite => return None,
         };
         for i in Count::ZERO..part_cycle_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
@@ -125,18 +124,20 @@ where
             }
         }
     }
-    // If we went through all parts without reloads, and they loop, return marker that data should
-    // be ignored
-    !cseq_parts.loops
+    match cseq_parts.loops {
+        // If we went through all parts without reloads, and they loop, then there is no "clip"
+        true => None,
+        false => Some(accum),
+    }
 }
 
 fn aclip_process_both_for_cseq_spool_hard_dt<I, IA, C>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     inv_proj: &AggrProjInvData<I>,
     inv_spool: &AggrSpoolInvData,
-    accum: &mut SeqAccum<IA>,
+    mut accum: SeqAccum<IA>,
     mut converter: C,
-) -> bool
+) -> Option<SeqAccum<IA>>
 where
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
@@ -165,7 +166,7 @@ where
                     .p1_data
                     .cycle_main_duration
                     .mul_add(inner_conv.p1_repeat_count.into_pvalue(), p2_final_cycle_duration);
-                true
+                Some(accum)
             }
         },
         // Other sequence types do not have hard downtime, so this should be unreachable

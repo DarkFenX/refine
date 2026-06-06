@@ -27,7 +27,6 @@ use crate::{
 };
 
 // Projected effects, considers only infinite parts of cycles
-#[must_use]
 pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -37,24 +36,24 @@ pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, I, IA>(
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
-    accum: &mut SeqAccum<IA>,
-) -> bool
+    mut accum: SeqAccum<IA>,
+) -> Option<SeqAccum<IA>>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
     let Some(cseq) = cseq.split_lim_loop().looped else {
-        return false;
+        return None;
     };
     let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
     else {
-        return false;
+        return None;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
-    alooped_route_for_looped_cseq(cseq, inv_proj, inv_spool, accum, &mut converter);
-    true
+    alooped_route_for_looped_cseq(cseq, inv_proj, inv_spool, &mut accum, &mut converter);
+    Some(accum)
 }
 
 // Projected effects, puts data for non-looped part into one accumulator, and for looped part into

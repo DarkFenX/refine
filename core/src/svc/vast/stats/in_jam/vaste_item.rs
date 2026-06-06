@@ -46,8 +46,7 @@ impl Vast {
                 let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
-                        let mut accum = SeqAccum::new_jam_chance(sensors);
-                        if aggr_proj_burst(
+                        if let Some(accum) = aggr_proj_burst(
                             ctx,
                             calc,
                             projector_item_uid,
@@ -57,7 +56,7 @@ impl Vast {
                             (),
                             Some(projectee_item_uid),
                             burst_opts.spool,
-                            &mut accum,
+                            SeqAccum::new_jam_chance(sensors),
                         ) {
                             projectee_unjam_chance *= accum.get_unjam_chance().into_value();
                             projectee_unjam_uptime *= accum.get_unjam_uptime().into_value();
@@ -65,8 +64,7 @@ impl Vast {
                     }
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
                         Some(time) if time > PValue::ZERO => {
-                            let mut accum = SeqAccum::new_jam_chance(sensors);
-                            if aggr_proj_time(
+                            if let Some(accum) = aggr_proj_time(
                                 ctx,
                                 calc,
                                 projector_item_uid,
@@ -75,7 +73,7 @@ impl Vast {
                                 ospec,
                                 (),
                                 Some(projectee_item_uid),
-                                &mut accum,
+                                SeqAccum::new_jam_chance(sensors),
                                 time,
                             ) {
                                 projectee_unjam_chance *= accum.get_unjam_chance().into_value();
@@ -83,8 +81,7 @@ impl Vast {
                             }
                         }
                         _ => {
-                            let mut accum = SeqAccum::new_jam_chance(sensors);
-                            if aggr_proj_looped(
+                            if let Some(accum) = aggr_proj_looped(
                                 ctx,
                                 calc,
                                 projector_item_uid,
@@ -93,7 +90,7 @@ impl Vast {
                                 ospec,
                                 (),
                                 Some(projectee_item_uid),
-                                &mut accum,
+                                SeqAccum::new_jam_chance(sensors),
                             ) {
                                 // For looped version, set unjam chance to 0 if it's below 1
                                 if accum.get_unjam_chance() < UnitInterval::ONE {

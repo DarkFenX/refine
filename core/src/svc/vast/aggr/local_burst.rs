@@ -27,20 +27,20 @@ pub(in crate::svc::vast) fn aggr_local_burst<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum: &mut SeqAccum<IA>,
-) -> bool
+    mut accum: SeqAccum<IA>,
+) -> Option<SeqAccum<IA>>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
     let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
-        return false;
+        return None;
     };
     let &first_cycle = cseq.get_first_cycle();
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
-    process_both_for_cycle_regular(converter.lib_convert(first_cycle), accum);
-    true
+    process_both_for_cycle_regular(converter.lib_convert(first_cycle), &mut accum);
+    Some(accum)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

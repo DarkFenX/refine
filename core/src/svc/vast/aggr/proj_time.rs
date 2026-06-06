@@ -23,7 +23,6 @@ use crate::{
 };
 
 // Projected effects, aggregates total output by specified time
-#[must_use]
 pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -33,9 +32,9 @@ pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, I, IA>(
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
-    accum: &mut SeqAccum<IA>,
+    mut accum: SeqAccum<IA>,
     time: PValue,
-) -> bool
+) -> Option<SeqAccum<IA>>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
@@ -43,7 +42,7 @@ where
 {
     let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
     else {
-        return false;
+        return None;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
@@ -59,7 +58,7 @@ where
         ),
     }
     accum.time += time;
-    true
+    Some(accum)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

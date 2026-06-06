@@ -13,7 +13,6 @@ use crate::{
         },
     },
     ud::{UFitId, UItemId},
-    util::LibMax,
 };
 
 impl Vast {
@@ -247,8 +246,7 @@ impl VastFitData {
                 };
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
-                        let mut accum = SeqAccum::new_stack_max();
-                        if aggr_proj_burst(
+                        if let Some(accum) = aggr_proj_burst(
                             ctx,
                             calc,
                             item_uid,
@@ -258,7 +256,7 @@ impl VastFitData {
                             (),
                             projectee_uid,
                             burst_opts.spool,
-                            &mut accum,
+                            SeqAccum::new_stack_max(),
                         ) {
                             *dps_normal += accum.get_per_second();
                             *volley_normal += accum.instances.max;
@@ -266,8 +264,7 @@ impl VastFitData {
                     }
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
                         Some(time) if time > PValue::ZERO => {
-                            let mut accum = SeqAccum::new_stack_max();
-                            if aggr_proj_time(
+                            if let Some(accum) = aggr_proj_time(
                                 ctx,
                                 calc,
                                 item_uid,
@@ -276,7 +273,7 @@ impl VastFitData {
                                 ospec,
                                 (),
                                 projectee_uid,
-                                &mut accum,
+                                SeqAccum::new_stack_max(),
                                 time,
                             ) {
                                 *dps_normal += accum.get_per_second();

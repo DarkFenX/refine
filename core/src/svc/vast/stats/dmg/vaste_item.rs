@@ -14,7 +14,6 @@ use crate::{
         },
     },
     ud::UItemId,
-    util::LibMax,
 };
 
 impl Vast {
@@ -115,8 +114,7 @@ impl Vast {
             if let Some(ospec) = &effect.normal_dmg {
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
-                        let mut accum = SeqAccum::new_stack_max();
-                        if aggr_proj_burst(
+                        if let Some(accum) = aggr_proj_burst(
                             ctx,
                             calc,
                             item_uid,
@@ -126,7 +124,7 @@ impl Vast {
                             (),
                             None,
                             burst_opts.spool,
-                            &mut accum,
+                            SeqAccum::new_stack_max(),
                         ) {
                             *dps_normal += accum.get_per_second();
                             *volley_normal += accum.instances.max;
@@ -134,8 +132,18 @@ impl Vast {
                     }
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
                         Some(time) if time > PValue::ZERO => {
-                            let mut accum = SeqAccum::new_stack_max();
-                            if aggr_proj_time(ctx, calc, item_uid, effect, cseq, ospec, (), None, &mut accum, time) {
+                            if let Some(accum) = aggr_proj_time(
+                                ctx,
+                                calc,
+                                item_uid,
+                                effect,
+                                cseq,
+                                ospec,
+                                (),
+                                None,
+                                SeqAccum::new_stack_max(),
+                                time,
+                            ) {
                                 *dps_normal += accum.get_per_second();
                                 *volley_normal += accum.instances.max;
                             }
@@ -206,8 +214,7 @@ impl Vast {
             if let Some(ospec) = &effect.normal_dmg {
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
-                        let mut accum = SeqAccum::new_stack_max();
-                        if aggr_proj_burst(
+                        if let Some(accum) = aggr_proj_burst(
                             ctx,
                             calc,
                             item_uid,
@@ -217,7 +224,7 @@ impl Vast {
                             (),
                             Some(projectee_uid),
                             burst_opts.spool,
-                            &mut accum,
+                            SeqAccum::new_stack_max(),
                         ) {
                             *dps_normal += accum.get_per_second();
                             *volley_normal += accum.instances.max;
@@ -225,8 +232,7 @@ impl Vast {
                     }
                     StatTimeOptions::Sim(sim_options) => match sim_options.time {
                         Some(time) if time > PValue::ZERO => {
-                            let mut accum = SeqAccum::new_stack_max();
-                            if aggr_proj_time(
+                            if let Some(accum) = aggr_proj_time(
                                 ctx,
                                 calc,
                                 item_uid,
@@ -235,7 +241,7 @@ impl Vast {
                                 ospec,
                                 (),
                                 Some(projectee_uid),
-                                &mut accum,
+                                SeqAccum::new_stack_max(),
                                 time,
                             ) {
                                 *dps_normal += accum.get_per_second();
