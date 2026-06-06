@@ -187,7 +187,7 @@ fn alooped_process_output_for_limited_cseq_hard_dt<I, IA>(
     }
 }
 
-fn get_time_until_hard_dt_for_split(
+pub(super) fn get_time_until_hard_dt_for_split(
     cseq_limited: &CycleSeqLimited<CycleDataFull>,
     cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
 ) -> Option<PValue> {

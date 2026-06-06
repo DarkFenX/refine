@@ -2,14 +2,15 @@ use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
         AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_for_lls_cseq_spool_hard_dt,
+        process_output_for_lls_cseq_spool_hard_dt, process_output_for_part_limited_spool,
+        process_output_for_part_single_spool,
     },
     shared::{
         AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail,
     },
     shared_looped::{
         SplitAccums, alooped_process_both_for_looped_cseq_hard_dt, alooped_route_for_limited_cseq_nonspool,
-        alooped_route_for_looped_cseq_nonspool,
+        alooped_route_for_looped_cseq_nonspool, get_time_until_hard_dt_for_split,
     },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -108,12 +109,24 @@ fn alooped_route_for_limited_cseq<I, IA, C>(
     accum: &mut IA,
     converter: &mut C,
 ) where
-    I: Copy + Eq + InstanceDuration,
+    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
-    C: LibConverter<CycleDataFull, AggrPartData<I>> + LibConverter<CycleDataFull, AggrPartDataTail<I>>,
+    C: LibConverter<CycleDataFull, AggrPartData<I>>
+        + LibConverter<CycleDataFull, AggrPartDataTail<I>>
+        + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
     match inv_spool {
-        Some(inv_spool) => (),
+        Some(inv_spool) => match get_time_until_hard_dt_for_split(&cseq_limited, cseq_looped) {
+            Some(time_until_hard_dt) => alooped_process_output_for_limited_cseq_spool_hard_dt(
+                cseq_limited.convert_with_and_optimize(converter),
+                inv_proj,
+                inv_spool,
+                time_until_hard_dt,
+                accum,
+            ),
+            // TODO: implement
+            None => (),
+        },
         None => {
             alooped_route_for_limited_cseq_nonspool(cseq_limited, cseq_looped, inv_proj.chance_mult, accum, converter)
         }
@@ -234,6 +247,7 @@ fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
     IA: SeqInstanceAccum<I>,
     C: LibConverter<CycleDataFull, AggrPartDataTail<I>> + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
+    // TODO: deoptimize looped vs non-looped here
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
         CycleSeqLooped::LoopSin(_) => alooped_process_both_for_looped_cseq_hard_dt(
@@ -258,4 +272,51 @@ fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
             }
         },
     };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Spool-specific processing for limited part
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn alooped_process_output_for_limited_cseq_spool_hard_dt<I, IA>(
+    cseq: CycleSeqLimited<AggrPartDataSpoolTail>,
+    inv_proj: AggrProjInvData<I>,
+    inv_spool: AggrSpoolInvData,
+    time_until_hard_dt: PValue,
+    accum: &mut IA,
+) where
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
+{
+    let mut time = time_until_hard_dt.into_value();
+    let mut uninterrupted_cycles = Count::ZERO;
+    match cseq {
+        CycleSeqLimited::Lim(inner) => process_output_for_part_limited_spool(
+            &inv_proj,
+            &inv_spool,
+            inner.data,
+            accum,
+            &mut time,
+            &mut uninterrupted_cycles,
+            inner.repeat_count,
+        ),
+        CycleSeqLimited::LimSin(inner) => {
+            process_output_for_part_limited_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p1_data,
+                accum,
+                &mut time,
+                &mut uninterrupted_cycles,
+                inner.p1_repeat_count,
+            );
+            process_output_for_part_single_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p2_data,
+                accum,
+                &mut time,
+                &mut uninterrupted_cycles,
+            );
+        }
+    }
 }

@@ -5,7 +5,7 @@ use super::{
         process_output_for_part_infinite_spool, process_output_for_part_limited_spool,
         process_output_for_part_single_spool,
     },
-    shared::{AggrHardDtSimple, AggrPartDataSpoolTail, AggrPartDataTail, get_tailed_cycle_full_repeat_count},
+    shared::{AggrHardDtSimple, AggrPartDataSpoolTail, get_tailed_cycle_full_repeat_count},
     shared_time::{atime_process_output_for_cseq_regular, get_cutoff_cycle_full_repeat_count},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -19,7 +19,6 @@ use crate::{
         cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
-    util::LibConverter,
 };
 
 // Projected effects, aggregates total output by specified time
@@ -44,9 +43,13 @@ where
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {
-        Some(inv_spool) => {
-            atime_process_output_for_cseq_spool(cseq, inv_proj, &mut accum.instances, time, inv_spool, converter)
-        }
+        Some(inv_spool) => atime_process_output_for_cseq_spool(
+            cseq.convert_with_and_optimize(&mut converter),
+            inv_proj,
+            &mut accum.instances,
+            time,
+            inv_spool,
+        ),
         None => atime_process_output_for_cseq_regular(
             cseq.convert_with_and_optimize(&mut converter),
             inv_proj.chance_mult,
@@ -61,163 +64,97 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific processing (includes hard downtime logic)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn atime_process_output_for_cseq_spool<I, IA, C>(
-    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
+fn atime_process_output_for_cseq_spool<I, IA>(
+    cseq: CycleSeq<AggrPartDataSpoolTail, AggrHardDtSimple>,
     inv_proj: AggrProjInvData<I>,
     accum: &mut IA,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
-    mut converter: C,
 ) where
-    I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
+    I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
-    C: LibConverter<CycleDataFull, AggrPartDataTail<I>> + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
     match cseq {
-        CycleSeq::Lim(inner) => match inner.data.soft_dt.is_some() {
-            // Non-spool handling for case when interruptions happen every cycle
-            true => atime_process_output_for_cseq_regular(
-                inner.convert_with(&mut converter).optimize(),
-                inv_proj.chance_mult,
+        CycleSeq::Lim(inner) => {
+            let mut time = ptime.into_value();
+            let mut uninterrupted_cycles = Count::ZERO;
+            process_output_for_part_limited_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.data,
                 accum,
-                ptime,
-            ),
-            // Spool is considered
-            false => {
-                let mut time = ptime.into_value();
-                let mut uninterrupted_cycles = Count::ZERO;
-                process_output_for_part_limited_spool(
-                    &inv_proj,
-                    &inv_spool,
-                    converter.lib_convert(inner.data),
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                    inner.repeat_count,
-                );
-            }
-        },
-        CycleSeq::LimInf(inner) => match inner.p1_data.soft_dt.is_some() && inner.p2_data.soft_dt.is_some() {
-            // Non-spool handling for case when interruptions happen every cycle
-            true => atime_process_output_for_cseq_regular(
-                inner.convert_with(&mut converter).optimize(),
-                inv_proj.chance_mult,
+                &mut time,
+                &mut uninterrupted_cycles,
+                inner.repeat_count,
+            );
+        }
+        CycleSeq::LimInf(inner) => {
+            let mut time = ptime.into_value();
+            let mut uninterrupted_cycles = Count::ZERO;
+            process_output_for_part_limited_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p1_data,
                 accum,
-                ptime,
-            ),
-            false => {
-                let mut time = ptime.into_value();
-                let mut uninterrupted_cycles = Count::ZERO;
-                process_output_for_part_limited_spool(
-                    &inv_proj,
-                    &inv_spool,
-                    converter.lib_convert(inner.p1_data),
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                    inner.p1_repeat_count,
-                );
-                process_output_for_part_infinite_spool(
-                    &inv_proj,
-                    &inv_spool,
-                    converter.lib_convert(inner.p2_data),
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                );
-            }
-        },
+                &mut time,
+                &mut uninterrupted_cycles,
+                inner.p1_repeat_count,
+            );
+            process_output_for_part_infinite_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p2_data,
+                accum,
+                &mut time,
+                &mut uninterrupted_cycles,
+            );
+        }
         CycleSeq::LimSinInf(inner) => {
-            match inner.p1_data.soft_dt.is_some() && inner.p2_data.soft_dt.is_some() && inner.p3_data.soft_dt.is_some()
-            {
-                // Non-spool handling for case when interruptions happen every cycle
-                true => atime_process_output_for_cseq_regular(
-                    inner.convert_with(&mut converter).optimize(),
-                    inv_proj.chance_mult,
-                    accum,
-                    ptime,
-                ),
-                false => {
-                    let mut time = ptime.into_value();
-                    let mut uninterrupted_cycles = Count::ZERO;
-                    process_output_for_part_limited_spool(
-                        &inv_proj,
-                        &inv_spool,
-                        converter.lib_convert(inner.p1_data),
-                        accum,
-                        &mut time,
-                        &mut uninterrupted_cycles,
-                        inner.p1_repeat_count,
-                    );
-                    process_output_for_part_single_spool(
-                        &inv_proj,
-                        &inv_spool,
-                        converter.lib_convert(inner.p2_data),
-                        accum,
-                        &mut time,
-                        &mut uninterrupted_cycles,
-                    );
-                    process_output_for_part_infinite_spool(
-                        &inv_proj,
-                        &inv_spool,
-                        converter.lib_convert(inner.p3_data),
-                        accum,
-                        &mut time,
-                        &mut uninterrupted_cycles,
-                    );
-                }
-            }
-        }
-        CycleSeq::LoopSin(inner) => match inner.data.soft_dt.is_some() || inner.hard_dt.is_some() {
-            // Non-spool handling for case when interruptions happen every cycle
-            true => atime_process_output_for_cseq_regular(
-                inner.convert_with(&mut converter).optimize(),
-                inv_proj.chance_mult,
+            let mut time = ptime.into_value();
+            let mut uninterrupted_cycles = Count::ZERO;
+            process_output_for_part_limited_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p1_data,
                 accum,
-                ptime,
-            ),
-            // Spool is considered - without hard downtime loop of a single cycle can be considered
-            // as an infinite sequence
-            false => {
-                let mut time = ptime.into_value();
-                let mut uninterrupted_cycles = Count::ZERO;
-                process_output_for_part_infinite_spool(
-                    &inv_proj,
-                    &inv_spool,
-                    converter.lib_convert(inner.data),
-                    accum,
-                    &mut time,
-                    &mut uninterrupted_cycles,
-                );
-            }
-        },
-        CycleSeq::LoopLimSin(inner) => {
-            match inner.p1_data.soft_dt.is_some() && (inner.p2_data.soft_dt.is_some() || inner.hard_dt.is_some()) {
-                // Non-spool handling for case when interruptions happen every cycle
-                true => atime_process_output_for_cseq_regular(
-                    inner.convert_with(&mut converter).optimize(),
-                    inv_proj.chance_mult,
-                    accum,
-                    ptime,
-                ),
-                false => match inner.hard_dt {
-                    Some(_) => atime_process_output_for_lls_cseq_spool_hard_dt(
-                        &inner.convert_with(&mut converter),
-                        &inv_proj,
-                        &inv_spool,
-                        accum,
-                        ptime,
-                    ),
-                    None => atime_process_output_for_lls_cseq_spool(
-                        &inner.convert_with(&mut converter),
-                        &inv_proj,
-                        &inv_spool,
-                        accum,
-                        ptime,
-                    ),
-                },
-            }
+                &mut time,
+                &mut uninterrupted_cycles,
+                inner.p1_repeat_count,
+            );
+            process_output_for_part_single_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p2_data,
+                accum,
+                &mut time,
+                &mut uninterrupted_cycles,
+            );
+            process_output_for_part_infinite_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.p3_data,
+                accum,
+                &mut time,
+                &mut uninterrupted_cycles,
+            );
         }
+        CycleSeq::LoopSin(inner) => {
+            // TODO: check if hard downtime needs to be checked here
+            let mut time = ptime.into_value();
+            let mut uninterrupted_cycles = Count::ZERO;
+            process_output_for_part_infinite_spool(
+                &inv_proj,
+                &inv_spool,
+                inner.data,
+                accum,
+                &mut time,
+                &mut uninterrupted_cycles,
+            );
+        }
+        CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
+            Some(_) => atime_process_output_for_lls_cseq_spool_hard_dt(&inner, &inv_proj, &inv_spool, accum, ptime),
+            None => atime_process_output_for_lls_cseq_spool(&inner, &inv_proj, &inv_spool, accum, ptime),
+        },
     }
 }
 
