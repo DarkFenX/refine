@@ -8,7 +8,7 @@ use crate::{misc::InfCount, num::Count};
 // High-level interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CycleSeq<D, HDT> {
-    pub(in crate::svc) fn get_cseq_parts(&self) -> CSeqParts<'_, D, HDT> {
+    pub(in crate::svc) fn get_parts(&self) -> CSeqParts<'_, D, HDT> {
         let loops = match self {
             Self::Lim(_) | Self::LimInf(_) | Self::LimSinInf(_) => false,
             Self::LoopSin(_) | Self::LoopLimSin(_) => true,
@@ -24,11 +24,11 @@ pub(crate) struct CSeqParts<'a, D, HDT> {
 impl<'a, D, HDT> CSeqParts<'a, D, HDT> {
     pub(crate) fn iter(&self) -> CSeqPartIter<'a, D, HDT> {
         match self.cseq {
-            CycleSeq::Lim(inner) => CSeqPartIter::Lim(inner.iter_cseq_parts_regular()),
-            CycleSeq::LimInf(inner) => CSeqPartIter::LimInf(inner.iter_cseq_parts_regular()),
-            CycleSeq::LimSinInf(inner) => CSeqPartIter::LimSinInf(inner.iter_cseq_parts_regular()),
-            CycleSeq::LoopSin(inner) => CSeqPartIter::LoopSin(inner.iter_cseq_parts_regular()),
-            CycleSeq::LoopLimSin(inner) => CSeqPartIter::LoopLimSin(inner.iter_cseq_parts_regular()),
+            CycleSeq::Lim(inner) => CSeqPartIter::Lim(inner.iter_parts_regular()),
+            CycleSeq::LimInf(inner) => CSeqPartIter::LimInf(inner.iter_parts_regular()),
+            CycleSeq::LimSinInf(inner) => CSeqPartIter::LimSinInf(inner.iter_parts_regular()),
+            CycleSeq::LoopSin(inner) => CSeqPartIter::LoopSin(inner.iter_parts_regular()),
+            CycleSeq::LoopLimSin(inner) => CSeqPartIter::LoopLimSin(inner.iter_parts_regular()),
         }
     }
 }
@@ -44,7 +44,7 @@ impl<D, HDT> Iterator for CSeqPartIter<'_, D, HDT>
 where
     D: Copy,
 {
-    type Item = CSeqPart<D>;
+    type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
@@ -57,7 +57,7 @@ where
     }
 }
 
-pub(crate) struct CSeqPart<D> {
+pub(crate) struct CSeqPartInf<D> {
     pub(crate) data: D,
     pub(crate) repeat_count: InfCount,
 }
@@ -66,7 +66,7 @@ pub(crate) struct CSeqPart<D> {
 // Lim
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D> CSeqLim<D> {
-    fn iter_cseq_parts_regular(&self) -> CSeqLimPartIter<'_, D> {
+    fn iter_parts_regular(&self) -> CSeqLimPartIter<'_, D> {
         CSeqLimPartIter::new(self)
     }
 }
@@ -84,13 +84,13 @@ impl<D> Iterator for CSeqLimPartIter<'_, D>
 where
     D: Copy,
 {
-    type Item = CSeqPart<D>;
+    type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.yielded {
             return None;
         }
-        Some(CSeqPart {
+        Some(CSeqPartInf {
             data: self.cseq.data,
             repeat_count: InfCount::Count(self.cseq.repeat_count),
         })
@@ -101,7 +101,7 @@ where
 // LimInf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D> CSeqLimInf<D> {
-    fn iter_cseq_parts_regular(&self) -> CSeqLimInfPartIter<'_, D> {
+    fn iter_parts_regular(&self) -> CSeqLimInfPartIter<'_, D> {
         CSeqLimInfPartIter::new(self)
     }
 }
@@ -119,20 +119,20 @@ impl<D> Iterator for CSeqLimInfPartIter<'_, D>
 where
     D: Copy,
 {
-    type Item = CSeqPart<D>;
+    type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
             0 => {
                 self.index = 1;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p1_data,
                     repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
             1 => {
                 self.index = 2;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p2_data,
                     repeat_count: InfCount::Infinite,
                 })
@@ -147,7 +147,7 @@ where
 // LimSinInf
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D> CSeqLimSinInf<D> {
-    fn iter_cseq_parts_regular(&self) -> CSeqLimSinInfPartIter<'_, D> {
+    fn iter_parts_regular(&self) -> CSeqLimSinInfPartIter<'_, D> {
         CSeqLimSinInfPartIter::new(self)
     }
 }
@@ -165,27 +165,27 @@ impl<D> Iterator for CSeqLimSinInfPartIter<'_, D>
 where
     D: Copy,
 {
-    type Item = CSeqPart<D>;
+    type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
             0 => {
                 self.index = 1;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p1_data,
                     repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
             1 => {
                 self.index = 2;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p2_data,
                     repeat_count: InfCount::Count(Count::ONE),
                 })
             }
             2 => {
                 self.index = 3;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p3_data,
                     repeat_count: InfCount::Infinite,
                 })
@@ -200,7 +200,7 @@ where
 // LoopSin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CSeqLoopSin<D, HDT> {
-    fn iter_cseq_parts_regular(&self) -> CSeqLoopSinPartIter<'_, D, HDT> {
+    fn iter_parts_regular(&self) -> CSeqLoopSinPartIter<'_, D, HDT> {
         CSeqLoopSinPartIter::new(self)
     }
 }
@@ -218,14 +218,14 @@ impl<D, HDT> Iterator for CSeqLoopSinPartIter<'_, D, HDT>
 where
     D: Copy,
 {
-    type Item = CSeqPart<D>;
+    type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.yielded {
             return None;
         }
         self.yielded = true;
-        Some(CSeqPart {
+        Some(CSeqPartInf {
             data: self.cseq.data,
             repeat_count: InfCount::Count(Count::ONE),
         })
@@ -236,7 +236,7 @@ where
 // LoopLimSin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<D, HDT> CSeqLoopLimSin<D, HDT> {
-    fn iter_cseq_parts_regular(&self) -> CSeqLoopLimSinPartIter<'_, D, HDT> {
+    fn iter_parts_regular(&self) -> CSeqLoopLimSinPartIter<'_, D, HDT> {
         CSeqLoopLimSinPartIter::new(self)
     }
 }
@@ -254,20 +254,20 @@ impl<D, HDT> Iterator for CSeqLoopLimSinPartIter<'_, D, HDT>
 where
     D: Copy,
 {
-    type Item = CSeqPart<D>;
+    type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.index {
             0 => {
                 self.index = 1;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p1_data,
                     repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
             1 => {
                 self.index = 2;
-                Some(CSeqPart {
+                Some(CSeqPartInf {
                     data: self.cseq.p2_data,
                     repeat_count: InfCount::Count(Count::ONE),
                 })

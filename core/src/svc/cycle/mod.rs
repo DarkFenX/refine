@@ -18,7 +18,7 @@ mod effect_charge_info;
 mod item_getters;
 mod iter_cycle;
 mod iter_part;
-mod iter_part_looped;
+mod iter_part_split;
 mod seq;
 mod seq_limited;
 mod seq_looped;

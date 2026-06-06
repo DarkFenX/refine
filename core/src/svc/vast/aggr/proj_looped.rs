@@ -1,9 +1,9 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_for_lls_cseq_spool_hard_dt, process_output_for_part_limited_spool,
-        process_output_for_part_single_spool,
+        AggrProjInvData, AggrSpoolInvData, ProjConverter, atime_process_output_for_part_limited_spool,
+        atime_process_output_for_part_single_spool, get_proj_spool_cycle_output,
+        process_output_for_lls_cseq_spool_hard_dt,
     },
     shared::{
         AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail,
@@ -175,7 +175,7 @@ fn alooped_process_both_for_looped_cseq_spool<I, IA>(
 {
     // Do a dry run to set amount of interrupted cycles before we begin
     let mut uninterrupted_cycles = get_starting_uninterrupted_cycles(&cseq, &inv_spool);
-    'part: for cseq_part in cseq.iter_cseq_parts() {
+    'part: for cseq_part in cseq.iter_parts() {
         for i in Count::ZERO..cseq_part.repeat_count {
             // Case when spool multiplier does not change for the rest of cycles of current part
             let stable_spool = match cseq_part.data.soft_dt {
@@ -218,7 +218,7 @@ fn get_starting_uninterrupted_cycles(
         return uninterrupted_cycles;
     }
     let mut downtimes = false;
-    for cseq_part in cseq.iter_cseq_parts() {
+    for cseq_part in cseq.iter_parts() {
         match cseq_part.data.soft_dt {
             true => {
                 uninterrupted_cycles = Count::ZERO;
@@ -290,7 +290,7 @@ fn alooped_process_output_for_limited_cseq_spool_hard_dt<I, IA>(
     let mut time = time_until_hard_dt.into_value();
     let mut uninterrupted_cycles = Count::ZERO;
     match cseq {
-        CycleSeqLimited::Lim(inner) => process_output_for_part_limited_spool(
+        CycleSeqLimited::Lim(inner) => atime_process_output_for_part_limited_spool(
             &inv_proj,
             &inv_spool,
             inner.data,
@@ -300,7 +300,7 @@ fn alooped_process_output_for_limited_cseq_spool_hard_dt<I, IA>(
             inner.repeat_count,
         ),
         CycleSeqLimited::LimSin(inner) => {
-            process_output_for_part_limited_spool(
+            atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p1_data,
@@ -309,7 +309,7 @@ fn alooped_process_output_for_limited_cseq_spool_hard_dt<I, IA>(
                 &mut uninterrupted_cycles,
                 inner.p1_repeat_count,
             );
-            process_output_for_part_single_spool(
+            atime_process_output_for_part_single_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p2_data,

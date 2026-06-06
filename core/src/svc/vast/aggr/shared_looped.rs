@@ -108,7 +108,7 @@ fn alooped_process_both_for_looped_cseq_regular<I, IA>(
     I: Copy,
     IA: SeqInstanceAccum<I>,
 {
-    for cseq_part in cseq.iter_cseq_parts() {
+    for cseq_part in cseq.iter_parts() {
         accum.add_output_full(&cseq_part.data.output, chance_mult, cseq_part.repeat_count);
         accum.time += cseq_part.data.cycle_main_duration * cseq_part.repeat_count.into_pvalue();
     }

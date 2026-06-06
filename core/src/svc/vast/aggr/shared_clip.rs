@@ -21,7 +21,7 @@ where
     IA: SeqInstanceAccum<I>,
     C: LibConverter<CycleDataFull, AggrPartData<I>>,
 {
-    let cseq_parts = cseq.get_cseq_parts();
+    let cseq_parts = cseq.get_parts();
     for cseq_part in cseq_parts.iter() {
         let cseq_part_data_conv = converter.lib_convert(cseq_part.data);
         // Add first cycle after which there is a reload. Here we assume every part has 1+ cycle

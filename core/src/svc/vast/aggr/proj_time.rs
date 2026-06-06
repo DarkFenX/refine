@@ -1,9 +1,9 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverter, process_output_for_lls_cseq_spool_hard_dt,
-        process_output_for_part_infinite_spool, process_output_for_part_limited_spool,
-        process_output_for_part_single_spool,
+        AggrProjInvData, AggrSpoolInvData, ProjConverter, atime_process_output_for_part_infinite_spool,
+        atime_process_output_for_part_limited_spool, atime_process_output_for_part_single_spool,
+        process_output_for_lls_cseq_spool_hard_dt,
     },
     shared::{AggrHardDtSimple, AggrPartDataSpoolTail, get_tailed_cycle_full_repeat_count},
     shared_time::{atime_process_output_for_cseq_regular, get_cutoff_cycle_full_repeat_count},
@@ -78,7 +78,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
         CycleSeq::Lim(inner) => {
             let mut time = ptime.into_value();
             let mut uninterrupted_cycles = Count::ZERO;
-            process_output_for_part_limited_spool(
+            atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.data,
@@ -91,7 +91,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
         CycleSeq::LimInf(inner) => {
             let mut time = ptime.into_value();
             let mut uninterrupted_cycles = Count::ZERO;
-            process_output_for_part_limited_spool(
+            atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p1_data,
@@ -100,7 +100,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
                 &mut uninterrupted_cycles,
                 inner.p1_repeat_count,
             );
-            process_output_for_part_infinite_spool(
+            atime_process_output_for_part_infinite_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p2_data,
@@ -112,7 +112,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
         CycleSeq::LimSinInf(inner) => {
             let mut time = ptime.into_value();
             let mut uninterrupted_cycles = Count::ZERO;
-            process_output_for_part_limited_spool(
+            atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p1_data,
@@ -121,7 +121,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
                 &mut uninterrupted_cycles,
                 inner.p1_repeat_count,
             );
-            process_output_for_part_single_spool(
+            atime_process_output_for_part_single_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p2_data,
@@ -129,7 +129,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
                 &mut time,
                 &mut uninterrupted_cycles,
             );
-            process_output_for_part_infinite_spool(
+            atime_process_output_for_part_infinite_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.p3_data,
@@ -142,7 +142,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             // TODO: check if hard downtime needs to be checked here
             let mut time = ptime.into_value();
             let mut uninterrupted_cycles = Count::ZERO;
-            process_output_for_part_infinite_spool(
+            atime_process_output_for_part_infinite_spool(
                 &inv_proj,
                 &inv_spool,
                 inner.data,
@@ -173,7 +173,7 @@ fn atime_process_output_for_lls_cseq_spool<I, IA>(
     while time >= Value::ZERO {
         let mut loop_accum = accum.copy_blank();
         let saved_uninterrupted_cycles = uninterrupted_cycles;
-        process_output_for_part_limited_spool(
+        atime_process_output_for_part_limited_spool(
             inv_proj,
             inv_spool,
             cseq.p1_data,
@@ -182,7 +182,7 @@ fn atime_process_output_for_lls_cseq_spool<I, IA>(
             &mut uninterrupted_cycles,
             cseq.p1_repeat_count,
         );
-        process_output_for_part_single_spool(
+        atime_process_output_for_part_single_spool(
             inv_proj,
             inv_spool,
             cseq.p2_data,
@@ -231,7 +231,7 @@ fn atime_process_output_for_lls_cseq_spool_hard_dt<I, IA>(
     // Process partial cycle
     // Hard downtime resets uninterrupted cycles, so always start from 0
     let mut uninterrupted_cycles = Count::ZERO;
-    process_output_for_part_limited_spool(
+    atime_process_output_for_part_limited_spool(
         inv_proj,
         inv_spool,
         cseq.p1_data,
@@ -240,7 +240,7 @@ fn atime_process_output_for_lls_cseq_spool_hard_dt<I, IA>(
         &mut uninterrupted_cycles,
         cseq.p1_repeat_count,
     );
-    process_output_for_part_single_spool(
+    atime_process_output_for_part_single_spool(
         inv_proj,
         inv_spool,
         cseq.p2_data,
