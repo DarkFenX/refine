@@ -351,31 +351,32 @@ def test_time(client, consts):
     assert api_fighter_dmg_stats.dps == [approx(30000), approx(30000), approx(30000), approx(30000)]
     assert api_fighter_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     # Verification - sim without time. Since kamikaze ability is an one-off, suppresses other
-    # abilities and is not rearmable, 0 damage is returned for stats over infinite period
+    # abilities and is not rearmable, 0 damage is returned for dps, and kamikaze volley as max seen
+    # volley
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
         StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))])))
     api_fleet_dmg_disabled, api_fleet_dmg_rearm = api_fleet_stats.dmg
     assert api_fleet_dmg_disabled.dps == [0, 0, 0, 0]
-    assert api_fleet_dmg_disabled.volley == [0, 0, 0, 0]
+    assert api_fleet_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fleet_dmg_rearm.dps == [0, 0, 0, 0]
-    assert api_fleet_dmg_rearm.volley == [0, 0, 0, 0]
+    assert api_fleet_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=(True, [
         StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
         StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))])))
     api_fit_dmg_disabled, api_fit_dmg_rearm = api_fit_stats.dmg
     assert api_fit_dmg_disabled.dps == [0, 0, 0, 0]
-    assert api_fit_dmg_disabled.volley == [0, 0, 0, 0]
+    assert api_fit_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fit_dmg_rearm.dps == [0, 0, 0, 0]
-    assert api_fit_dmg_rearm.volley == [0, 0, 0, 0]
+    assert api_fit_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=(True, [
         StatsOptionItemDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
         StatsOptionItemDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))])))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, 0]
-    assert api_fighter_dmg_disabled.volley == [0, 0, 0, 0]
+    assert api_fighter_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fighter_dmg_rearm.dps == [0, 0, 0, 0]
-    assert api_fighter_dmg_rearm.volley == [0, 0, 0, 0]
+    assert api_fighter_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     # Verification - time just before kamikaze ability end of cycle
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=9))]))).dmg.one()
