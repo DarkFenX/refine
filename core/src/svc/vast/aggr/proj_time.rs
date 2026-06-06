@@ -40,10 +40,7 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
-    else {
-        return None;
-    };
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {

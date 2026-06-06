@@ -192,8 +192,6 @@ fn get_time_until_hard_dt_for_split(
     cseq_looped: Option<&CycleSeqLooped<CycleDataFull, CSeqHardDtFull>>,
 ) -> Option<PValue> {
     let cseq_loop = cseq_looped?;
-    if cseq_loop.get_hard_dt().is_none() {
-        return None;
-    }
+    cseq_loop.get_hard_dt()?;
     Some(cseq_limited.get_main_duration() + cseq_loop.get_main_duration())
 }

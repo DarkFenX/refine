@@ -43,13 +43,8 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(cseq) = cseq.split_lim_loop().looped else {
-        return None;
-    };
-    let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
-    else {
-        return None;
-    };
+    let cseq = cseq.split_lim_loop().looped?;
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     alooped_route_for_looped_cseq(cseq, inv_proj, inv_spool, &mut accum, &mut converter);

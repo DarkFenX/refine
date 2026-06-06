@@ -32,12 +32,8 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(cseq) = cseq.split_lim_loop().looped else {
-        return None;
-    };
-    let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
-        return None;
-    };
+    let cseq = cseq.split_lim_loop().looped?;
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     alooped_route_for_looped_cseq_nonspool(cseq, None, &mut accum, &mut converter);
     Some(accum)

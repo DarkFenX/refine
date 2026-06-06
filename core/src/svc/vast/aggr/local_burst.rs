@@ -34,9 +34,7 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
-        return None;
-    };
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;
     let &first_cycle = cseq.get_first_cycle();
     let mut converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     process_both_for_cycle_regular(converter.lib_convert(first_cycle), &mut accum);

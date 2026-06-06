@@ -32,9 +32,7 @@ where
     I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
-        return None;
-    };
+    let inv_local = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs)?;
     let converter = LocalConverter::new(ctx, calc, item_uid, ospec, &inv_local);
     match cseq.get_hard_dt().is_some() {
         true => aclip_process_both_for_cseq_hard_dt(cseq, None, accum, converter),

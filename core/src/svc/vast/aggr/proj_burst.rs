@@ -38,10 +38,7 @@ where
     I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
-    else {
-        return None;
-    };
+    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
     let cycle_data = cseq.get_first_cycle();
     let cycle_output = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_rids
