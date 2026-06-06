@@ -65,19 +65,19 @@ impl<'a, T> Iterator for DmgKindsIter<'a, T> {
         match self.state {
             State5::One => {
                 self.state = State5::Two;
-                Some(self.item.em)
+                Some(&self.item.em)
             }
             State5::Two => {
                 self.state = State5::Three;
-                Some(self.item.thermal)
+                Some(&self.item.thermal)
             }
             State5::Three => {
                 self.state = State5::Four;
-                Some(self.item.kinetic)
+                Some(&self.item.kinetic)
             }
             State5::Four => {
                 self.state = State5::Five;
-                Some(self.item.explosive)
+                Some(&self.item.explosive)
             }
             State5::Five => None,
         }
