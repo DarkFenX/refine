@@ -71,10 +71,10 @@ where
     IAO: SeqInstanceAccum<I>,
     IAL: SeqInstanceAccum<I>,
 {
-    let mut accum_data = SplitAccums::new();
+    let mut accums = SplitAccums::new();
     let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
     else {
-        return accum_data;
+        return accums;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
@@ -88,13 +88,13 @@ where
             &mut accum_lim,
             &mut converter,
         );
-        accum_data.limited = Some(accum_lim);
+        accums.limited = Some(accum_lim);
     }
     if let Some(cseq_looped) = cseq.looped {
         alooped_route_for_looped_cseq(cseq_looped, inv_proj, inv_spool, &mut accum_loop, &mut converter);
-        accum_data.looped = Some(accum_loop);
+        accums.looped = Some(accum_loop);
     }
-    accum_data
+    accums
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
