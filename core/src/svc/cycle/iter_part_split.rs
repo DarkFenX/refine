@@ -2,7 +2,7 @@ use super::{
     seq_limited::CycleSeqLimited, seq_looped::CycleSeqLooped, seq_var_lim::CSeqLim, seq_var_lim_sin::CSeqLimSin,
     seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::num::Count;
+use crate::{num::Count, util::State3};
 
 pub(crate) struct CSeqPart<D> {
     pub(crate) data: D,
@@ -86,11 +86,14 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
 
 pub(in crate::svc) struct CSeqLoopedLoopLimSinPartIter<'a, D, HDT> {
     cseq: &'a CSeqLoopLimSin<D, HDT>,
-    index: usize,
+    state: State3,
 }
 impl<'a, D, HDT> CSeqLoopedLoopLimSinPartIter<'a, D, HDT> {
     fn new(cseq: &'a CSeqLoopLimSin<D, HDT>) -> Self {
-        Self { cseq, index: 0 }
+        Self {
+            cseq,
+            state: State3::One,
+        }
     }
 }
 impl<D, HDT> Iterator for CSeqLoopedLoopLimSinPartIter<'_, D, HDT>
@@ -100,23 +103,22 @@ where
     type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
+        match self.state {
+            State3::One => {
+                self.state = State3::Two;
                 Some(CSeqPart {
                     data: self.cseq.p1_data,
                     repeat_count: self.cseq.p1_repeat_count,
                 })
             }
-            1 => {
-                self.index = 2;
+            State3::Two => {
+                self.state = State3::Three;
                 Some(CSeqPart {
                     data: self.cseq.p2_data,
                     repeat_count: Count::ONE,
                 })
             }
-            2 => None,
-            _ => unreachable!(),
+            State3::Three => None,
         }
     }
 }
@@ -198,11 +200,14 @@ impl<D> CSeqLimSin<D> {
 
 pub(in crate::svc) struct CSeqLimitedLimSinPartIter<'a, D> {
     cseq: &'a CSeqLimSin<D>,
-    index: usize,
+    state: State3,
 }
 impl<'a, D> CSeqLimitedLimSinPartIter<'a, D> {
     fn new(cseq: &'a CSeqLimSin<D>) -> Self {
-        Self { cseq, index: 0 }
+        Self {
+            cseq,
+            state: State3::One,
+        }
     }
 }
 impl<D> Iterator for CSeqLimitedLimSinPartIter<'_, D>
@@ -212,23 +217,22 @@ where
     type Item = CSeqPart<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
+        match self.state {
+            State3::One => {
+                self.state = State3::Two;
                 Some(CSeqPart {
                     data: self.cseq.p1_data,
                     repeat_count: self.cseq.p1_repeat_count,
                 })
             }
-            1 => {
-                self.index = 2;
+            State3::Two => {
+                self.state = State3::Three;
                 Some(CSeqPart {
                     data: self.cseq.p2_data,
                     repeat_count: Count::ONE,
                 })
             }
-            2 => None,
-            _ => unreachable!(),
+            State3::Three => None,
         }
     }
 }

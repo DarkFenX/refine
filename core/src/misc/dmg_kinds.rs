@@ -1,3 +1,5 @@
+use crate::util::State5;
+
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash)]
 pub(crate) struct DmgKinds<T> {
     pub(crate) em: T,
@@ -9,12 +11,10 @@ impl<T> DmgKinds<T> {
     pub(crate) fn iter(&self) -> impl Iterator<Item = &T> {
         DmgKindsIter::new(self)
     }
-}
-impl<T> DmgKinds<T>
-where
-    T: Copy + std::ops::Add<T, Output = T>,
-{
-    pub(crate) fn get_total(&self) -> T {
+    pub(crate) fn get_total(&self) -> T
+    where
+        T: Copy + std::ops::Add<T, Output = T>,
+    {
         self.em + self.thermal + self.kinetic + self.explosive
     }
 }
@@ -43,26 +43,43 @@ impl<T> std::ops::IndexMut<usize> for DmgKinds<T> {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct DmgKindsIter<'a, T> {
     item: &'a DmgKinds<T>,
-    index: usize,
+    state: State5,
 }
 impl<'a, T> DmgKindsIter<'a, T> {
     pub(in crate::misc) fn new(item: &'a DmgKinds<T>) -> Self {
-        Self { item, index: 0 }
+        Self {
+            item,
+            state: State5::One,
+        }
     }
 }
 impl<'a, T> Iterator for DmgKindsIter<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0..4 => {
-                let result = &self.item[self.index];
-                self.index += 1;
-                Some(result)
+        match self.state {
+            State5::One => {
+                self.state = State5::Two;
+                Some(self.item.em)
             }
-            _ => None,
+            State5::Two => {
+                self.state = State5::Three;
+                Some(self.item.thermal)
+            }
+            State5::Three => {
+                self.state = State5::Four;
+                Some(self.item.kinetic)
+            }
+            State5::Four => {
+                self.state = State5::Five;
+                Some(self.item.explosive)
+            }
+            State5::Five => None,
         }
     }
 }

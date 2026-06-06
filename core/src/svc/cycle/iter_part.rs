@@ -2,7 +2,11 @@ use super::{
     seq::CycleSeq, seq_var_lim::CSeqLim, seq_var_lim_inf::CSeqLimInf, seq_var_lim_sin_inf::CSeqLimSinInf,
     seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::{misc::InfCount, num::Count};
+use crate::{
+    misc::InfCount,
+    num::Count,
+    util::{State3, State4},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface
@@ -108,11 +112,14 @@ impl<D> CSeqLimInf<D> {
 
 pub(in crate::svc) struct CSeqLimInfPartIter<'a, D> {
     cseq: &'a CSeqLimInf<D>,
-    index: usize,
+    state: State3,
 }
 impl<'a, D> CSeqLimInfPartIter<'a, D> {
     fn new(cseq: &'a CSeqLimInf<D>) -> Self {
-        Self { cseq, index: 0 }
+        Self {
+            cseq,
+            state: State3::One,
+        }
     }
 }
 impl<D> Iterator for CSeqLimInfPartIter<'_, D>
@@ -122,23 +129,22 @@ where
     type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
+        match self.state {
+            State3::One => {
+                self.state = State3::Two;
                 Some(CSeqPartInf {
                     data: self.cseq.p1_data,
                     repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
-            1 => {
-                self.index = 2;
+            State3::Two => {
+                self.state = State3::Three;
                 Some(CSeqPartInf {
                     data: self.cseq.p2_data,
                     repeat_count: InfCount::Infinite,
                 })
             }
-            2 => None,
-            _ => unreachable!(),
+            State3::Three => None,
         }
     }
 }
@@ -154,11 +160,14 @@ impl<D> CSeqLimSinInf<D> {
 
 pub(in crate::svc) struct CSeqLimSinInfPartIter<'a, D> {
     cseq: &'a CSeqLimSinInf<D>,
-    index: usize,
+    state: State4,
 }
 impl<'a, D> CSeqLimSinInfPartIter<'a, D> {
     fn new(cseq: &'a CSeqLimSinInf<D>) -> Self {
-        Self { cseq, index: 0 }
+        Self {
+            cseq,
+            state: State4::One,
+        }
     }
 }
 impl<D> Iterator for CSeqLimSinInfPartIter<'_, D>
@@ -168,30 +177,29 @@ where
     type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
+        match self.state {
+            State4::One => {
+                self.state = State4::Two;
                 Some(CSeqPartInf {
                     data: self.cseq.p1_data,
                     repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
-            1 => {
-                self.index = 2;
+            State4::Two => {
+                self.state = State4::Three;
                 Some(CSeqPartInf {
                     data: self.cseq.p2_data,
                     repeat_count: InfCount::Count(Count::ONE),
                 })
             }
-            2 => {
-                self.index = 3;
+            State4::Three => {
+                self.state = State4::Four;
                 Some(CSeqPartInf {
                     data: self.cseq.p3_data,
                     repeat_count: InfCount::Infinite,
                 })
             }
-            3 => None,
-            _ => unreachable!(),
+            State4::Four => None,
         }
     }
 }
@@ -243,11 +251,14 @@ impl<D, HDT> CSeqLoopLimSin<D, HDT> {
 
 pub(in crate::svc) struct CSeqLoopLimSinPartIter<'a, D, HDT> {
     cseq: &'a CSeqLoopLimSin<D, HDT>,
-    index: usize,
+    state: State3,
 }
 impl<'a, D, HDT> CSeqLoopLimSinPartIter<'a, D, HDT> {
     fn new(cseq: &'a CSeqLoopLimSin<D, HDT>) -> Self {
-        Self { cseq, index: 0 }
+        Self {
+            cseq,
+            state: State3::One,
+        }
     }
 }
 impl<D, HDT> Iterator for CSeqLoopLimSinPartIter<'_, D, HDT>
@@ -257,23 +268,22 @@ where
     type Item = CSeqPartInf<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
-                self.index = 1;
+        match self.state {
+            State3::One => {
+                self.state = State3::Two;
                 Some(CSeqPartInf {
                     data: self.cseq.p1_data,
                     repeat_count: InfCount::Count(self.cseq.p1_repeat_count),
                 })
             }
-            1 => {
-                self.index = 2;
+            State3::Two => {
+                self.state = State3::Three;
                 Some(CSeqPartInf {
                     data: self.cseq.p2_data,
                     repeat_count: InfCount::Count(Count::ONE),
                 })
             }
-            2 => None,
-            _ => unreachable!(),
+            State3::Three => None,
         }
     }
 }

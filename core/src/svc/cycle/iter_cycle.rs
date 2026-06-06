@@ -163,7 +163,7 @@ pub(in crate::svc) struct CSeqLimSinInfCycleIter<D> {
     p3_item: CycleIterItem<D>,
     // State
     p1_repeats_done: Count,
-    index: u8,
+    p1_p2_done: bool,
 }
 impl<D> CSeqLimSinInfCycleIter<D> {
     fn new(cseq: &CSeqLimSinInf<D>) -> Self
@@ -187,8 +187,8 @@ impl<D> CSeqLimSinInfCycleIter<D> {
                 time_until_hard_dt: None,
                 hard_dt_duration: None,
             },
-            index: 0,
             p1_repeats_done: Count::ZERO,
+            p1_p2_done: false,
         }
     }
 }
@@ -199,17 +199,16 @@ where
     type Item = CycleIterItem<D>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.index {
-            0 => {
+        match self.p1_p2_done {
+            false => {
                 if self.p1_repeats_done >= self.p1_repeats_limit {
-                    self.index = 1;
+                    self.p1_p2_done = true;
                     return Some(self.p2_item);
                 }
                 self.p1_repeats_done += Count::ONE;
                 Some(self.p1_item)
             }
-            1 => Some(self.p3_item),
-            _ => unreachable!(),
+            true => Some(self.p3_item),
         }
     }
 }

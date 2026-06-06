@@ -1,13 +1,16 @@
-use crate::{svc::calc::LocationKind, ud::UItem};
+use crate::{svc::calc::LocationKind, ud::UItem, util::State4};
 
 // Iterator over item's potential location roots
 pub(super) struct PotentialLocations<'a> {
     item: &'a UItem,
-    index: usize,
+    state: State4,
 }
 impl<'a> PotentialLocations<'a> {
     pub(super) fn new(item: &'a UItem) -> Self {
-        Self { item, index: 0 }
+        Self {
+            item,
+            state: State4::One,
+        }
     }
 }
 impl Iterator for PotentialLocations<'_> {
@@ -15,26 +18,26 @@ impl Iterator for PotentialLocations<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {
-            match self.index {
-                0 => {
-                    self.index += 1;
+            match self.state {
+                State4::One => {
+                    self.state = State4::Two;
                     if self.item.is_on_char_root() {
                         return Some(LocationKind::Character);
                     }
                 }
-                1 => {
-                    self.index += 1;
+                State4::Two => {
+                    self.state = State4::Three;
                     if self.item.is_on_ship_root() {
                         return Some(LocationKind::Ship);
                     }
                 }
-                2 => {
-                    self.index += 1;
+                State4::Three => {
+                    self.state = State4::Four;
                     if self.item.is_on_struct_root() {
                         return Some(LocationKind::Structure);
                     }
                 }
-                _ => return None,
+                State4::Four => return None,
             }
         }
     }
