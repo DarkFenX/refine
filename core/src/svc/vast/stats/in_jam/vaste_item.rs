@@ -1,4 +1,4 @@
-use super::stat::StatInJam;
+use super::{accum::SeqInstanceAccumEcm, stat::StatInJam};
 use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
@@ -8,7 +8,7 @@ use crate::{
         err::StatItemCheckError,
         vast::{
             StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
+            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
             stats::item_checks::check_drone_fighter_ship,
         },
     },
@@ -56,7 +56,7 @@ impl Vast {
                             (),
                             Some(projectee_item_uid),
                             burst_opts.spool,
-                            SeqAccum::new_jam_chance(sensors),
+                            SeqAccum::new_ecm(sensors),
                         ) {
                             projectee_unjam_chance *= accum.get_unjam_chance().into_value();
                             projectee_unjam_uptime *= accum.get_unjam_uptime().into_value();
@@ -73,7 +73,7 @@ impl Vast {
                                 ospec,
                                 (),
                                 Some(projectee_item_uid),
-                                SeqAccum::new_jam_chance(sensors),
+                                SeqAccum::new_ecm(sensors),
                                 time,
                             ) {
                                 projectee_unjam_chance *= accum.get_unjam_chance().into_value();
@@ -81,7 +81,7 @@ impl Vast {
                             }
                         }
                         _ => {
-                            if let Some(accum) = aggr_proj_looped(
+                            let accums = aggr_proj_split(
                                 ctx,
                                 calc,
                                 projector_item_uid,
@@ -90,13 +90,21 @@ impl Vast {
                                 ospec,
                                 (),
                                 Some(projectee_item_uid),
-                                SeqAccum::new_jam_chance(sensors),
-                            ) {
-                                // For looped version, set unjam chance to 0 if it's below 1
-                                if accum.get_unjam_chance() < UnitInterval::ONE {
+                                SeqAccum::new_ecm(sensors),
+                                SeqInstanceAccumEcm::new(sensors),
+                            );
+                            // Non-repeating part does not affect downtime, and chance is affected
+                            // like it's applied only once
+                            if let Some(accum_limited) = accums.limited {
+                                projectee_unjam_chance *= accum_limited.get_unjam_chance().into_value();
+                            }
+                            // Looped version affects uptime, and any chance to jam target becomes
+                            // 100%, since looped part is assumed to be repeated infinitely
+                            if let Some(accum_looped) = accums.looped {
+                                if accum_looped.get_unjam_chance() < UnitInterval::ONE {
                                     projectee_unjam_chance = Value::ZERO;
                                 }
-                                projectee_unjam_uptime *= accum.get_unjam_uptime().into_value();
+                                projectee_unjam_uptime *= accum_looped.get_unjam_uptime().into_value();
                             }
                         }
                     },

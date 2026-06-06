@@ -11,16 +11,16 @@ use crate::{
 // Top-level accumulator interface
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SeqAccum<SeqInstanceAccumEcm> {
-    pub(in crate::svc::vast) fn new_jam_chance(sensors: StatSensors) -> Self {
+    pub(in crate::svc::vast::stats::in_jam) fn new_ecm(sensors: StatSensors) -> Self {
         SeqAccum {
             instances: SeqInstanceAccumEcm::new(sensors),
             time: PValue::ZERO,
         }
     }
-    pub(in crate::svc::vast) fn get_unjam_chance(&self) -> UnitInterval {
-        UnitInterval::from_pvalue_clamped(self.instances.unjam_chance)
+    pub(in crate::svc::vast::stats::in_jam) fn get_unjam_chance(&self) -> UnitInterval {
+        self.instances.get_unjam_chance()
     }
-    pub(in crate::svc::vast) fn get_unjam_uptime(&self) -> UnitInterval {
+    pub(in crate::svc::vast::stats::in_jam) fn get_unjam_uptime(&self) -> UnitInterval {
         UnitInterval::from_value_clamped(PValue::ONE - self.instances.jam_time / self.time)
     }
 }
@@ -28,7 +28,7 @@ impl SeqAccum<SeqInstanceAccumEcm> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sequence accumulator implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::svc::vast) struct SeqInstanceAccumEcm {
+pub(in crate::svc::vast::stats::in_jam) struct SeqInstanceAccumEcm {
     sensors: StatSensors,
     // This is total chance target won't be jammed a single time over sequence
     unjam_chance: PValue,
@@ -37,12 +37,15 @@ pub(in crate::svc::vast) struct SeqInstanceAccumEcm {
     jam_time: PValue,
 }
 impl SeqInstanceAccumEcm {
-    pub(in crate::svc::vast) fn new(sensors: StatSensors) -> Self {
+    pub(in crate::svc::vast::stats::in_jam) fn new(sensors: StatSensors) -> Self {
         Self {
             sensors,
             unjam_chance: PValue::ONE,
             jam_time: PValue::ZERO,
         }
+    }
+    pub(in crate::svc::vast::stats::in_jam) fn get_unjam_chance(&self) -> UnitInterval {
+        UnitInterval::from_pvalue_clamped(self.unjam_chance)
     }
 }
 impl SeqInstanceAccum<NEffectEcmAmount> for SeqInstanceAccumEcm {

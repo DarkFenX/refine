@@ -17,8 +17,8 @@ use crate::{
 // Return value which contains both aggregators, and some methods to access it
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct SplitAccums<IAO, IAL> {
-    pub(super) looped: Option<SeqAccum<IAO>>,
-    pub(super) limited: Option<IAL>,
+    pub(in crate::svc::vast) looped: Option<SeqAccum<IAO>>,
+    pub(in crate::svc::vast) limited: Option<IAL>,
 }
 impl<IAO, IAL> SplitAccums<IAO, IAL> {
     pub(super) fn new() -> Self {
