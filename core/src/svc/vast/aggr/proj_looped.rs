@@ -112,6 +112,7 @@ fn alooped_route_for_limited_cseq<I, IA, C>(
     I: Copy + Eq + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
     C: LibConverter<CycleDataFull, AggrPartData<I>>
+        + LibConverter<CycleDataFull, AggrPartDataSpool>
         + LibConverter<CycleDataFull, AggrPartDataTail<I>>
         + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
@@ -124,8 +125,12 @@ fn alooped_route_for_limited_cseq<I, IA, C>(
                 time_until_hard_dt,
                 accum,
             ),
-            // TODO: implement
-            None => (),
+            None => alooped_process_output_for_limited_cseq_spool(
+                cseq_limited.convert_with_and_optimize(converter),
+                inv_proj,
+                inv_spool,
+                accum,
+            ),
         },
         None => {
             alooped_route_for_limited_cseq_nonspool(cseq_limited, cseq_looped, inv_proj.chance_mult, accum, converter)
@@ -277,6 +282,50 @@ fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific processing for limited part
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fn alooped_process_output_for_limited_cseq_spool<I, IA>(
+    cseq: CycleSeqLimited<AggrPartDataSpool>,
+    inv_proj: AggrProjInvData<I>,
+    inv_spool: AggrSpoolInvData,
+    accum: &mut IA,
+) where
+    I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
+    IA: SeqInstanceAccum<I>,
+{
+    // Replica of method for looped part, but starts from zero cycles and does not record time
+    let mut uninterrupted_cycles = Count::ZERO;
+    'part: for cseq_part in cseq.iter_parts() {
+        for i in Count::ZERO..cseq_part.repeat_count {
+            // Case when spool multiplier does not change for the rest of cycles of current part
+            let stable_spool = match cseq_part.data.soft_dt {
+                // Current cycle is at 0 spool, and we have an interrupt every cycle
+                true if uninterrupted_cycles == Count::ZERO => Some(Value::ZERO),
+                // Current cycle is at max spool, and we have no interrupts in cycles of current
+                // part
+                false if uninterrupted_cycles >= inv_spool.cycles_to_max => Some(inv_spool.max),
+                _ => None,
+            };
+            if let Some(stable_spool) = stable_spool {
+                let remaining_cycles = cseq_part.repeat_count - i;
+                let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part.data.str_mult, stable_spool);
+                accum.add_output_full(&cycle_output, inv_proj.chance_mult, remaining_cycles);
+                if !cseq_part.data.soft_dt {
+                    uninterrupted_cycles += remaining_cycles;
+                }
+                // We've processed all the remaining cycles of current part, go next
+                continue 'part;
+            }
+            let cycle_spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
+            let cycle_output = get_proj_spool_cycle_output(&inv_proj, cseq_part.data.str_mult, cycle_spool);
+            accum.add_output_full(&cycle_output, inv_proj.chance_mult, Count::ONE);
+            // Update state
+            match cseq_part.data.soft_dt {
+                true => uninterrupted_cycles = Count::ZERO,
+                false => uninterrupted_cycles += Count::ONE,
+            }
+        }
+    }
+}
+
 fn alooped_process_output_for_limited_cseq_spool_hard_dt<I, IA>(
     cseq: CycleSeqLimited<AggrPartDataSpoolTail>,
     inv_proj: AggrProjInvData<I>,
