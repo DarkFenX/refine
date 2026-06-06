@@ -141,9 +141,7 @@ impl Vast {
                             }
                         }
                         _ => {
-                            let mut accum_main = SeqAccum::new_stack_max();
-                            let mut accum_volley = SeqInstanceAccumMax::new();
-                            if aggr_proj_split(
+                            let accums = aggr_proj_split(
                                 ctx,
                                 calc,
                                 item_uid,
@@ -152,11 +150,14 @@ impl Vast {
                                 ospec,
                                 (),
                                 None,
-                                &mut accum_volley,
-                                &mut accum_main,
-                            ) {
-                                *dps_normal += accum_main.get_per_second();
-                                *volley_normal += accum_main.instances.max.lib_max(accum_volley.max);
+                                SeqAccum::new_stack_max(),
+                                SeqInstanceAccumMax::new(),
+                            );
+                            if let Some(accum_dps) = accums.get_per_second() {
+                                *dps_normal += accum_dps;
+                            }
+                            if let Some(aaccum_volley) = accums.get_max() {
+                                *volley_normal += aaccum_volley;
                             }
                         }
                     },
@@ -242,9 +243,7 @@ impl Vast {
                             }
                         }
                         _ => {
-                            let mut accum_main = SeqAccum::new_stack_max();
-                            let mut accum_volley = SeqInstanceAccumMax::new();
-                            if aggr_proj_split(
+                            let accums = aggr_proj_split(
                                 ctx,
                                 calc,
                                 item_uid,
@@ -253,11 +252,14 @@ impl Vast {
                                 ospec,
                                 (),
                                 Some(projectee_uid),
-                                &mut accum_volley,
-                                &mut accum_main,
-                            ) {
-                                *dps_normal += accum_main.get_per_second();
-                                *volley_normal += accum_main.instances.max.lib_max(accum_volley.max);
+                                SeqAccum::new_stack_max(),
+                                SeqInstanceAccumMax::new(),
+                            );
+                            if let Some(accum_dps) = accums.get_per_second() {
+                                *dps_normal += accum_dps;
+                            }
+                            if let Some(aaccum_volley) = accums.get_max() {
+                                *volley_normal += aaccum_volley;
                             }
                         }
                     },

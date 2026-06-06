@@ -8,7 +8,7 @@ use super::{
         AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail,
     },
     shared_looped::{
-        alooped_process_both_for_looped_cseq_hard_dt, alooped_route_for_limited_cseq_nonspool,
+        SplitAccums, alooped_process_both_for_looped_cseq_hard_dt, alooped_route_for_limited_cseq_nonspool,
         alooped_route_for_looped_cseq_nonspool,
     },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
@@ -59,8 +59,7 @@ where
 
 // Projected effects, puts data for non-looped part into one accumulator, and for looped part into
 // another
-#[must_use]
-pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAL, IAO>(
+pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAO, IAL>(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -69,20 +68,20 @@ pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAL, IAO>(
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
     projectee_uid: Option<UItemId>,
-    accum_lim: &mut IAL,
-    accum_loop: &mut SeqAccum<IAO>,
-) -> bool
+    mut accum_loop: SeqAccum<IAO>,
+    mut accum_lim: IAL,
+) -> SplitAccums<IAO, IAL>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    IAL: SeqInstanceAccum<I>,
     IAO: SeqInstanceAccum<I>,
+    IAL: SeqInstanceAccum<I>,
 {
+    let mut accum_data = SplitAccums::new();
     let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
     else {
-        return false;
+        return accum_data;
     };
-    let mut accum_data = false;
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     let cseq = cseq.split_lim_loop();
@@ -92,14 +91,14 @@ where
             cseq.looped.as_ref(),
             inv_proj,
             inv_spool,
-            accum_lim,
+            &mut accum_lim,
             &mut converter,
         );
-        accum_data = true;
+        accum_data.limited = Some(accum_lim);
     }
     if let Some(cseq_looped) = cseq.looped {
-        alooped_route_for_looped_cseq(cseq_looped, inv_proj, inv_spool, accum_loop, &mut converter);
-        accum_data = true;
+        alooped_route_for_looped_cseq(cseq_looped, inv_proj, inv_spool, &mut accum_loop, &mut converter);
+        accum_data.looped = Some(accum_loop);
     }
     accum_data
 }

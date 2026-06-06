@@ -1,5 +1,5 @@
 use super::{
-    accum::{SeqAccum, SeqInstanceAccum},
+    accum::{SeqAccum, SeqInstanceAccum, SeqInstanceAccumMax, SeqInstanceAccumStackMax},
     shared::{
         AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_for_cycle_hard_dt,
         process_output_for_lls_cseq_hard_dt,
@@ -10,8 +10,43 @@ use super::{
 use crate::{
     num::{Count, PValue},
     svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeqLimited, CycleSeqLooped},
-    util::LibConverter,
+    util::{LibConverter, LibMax},
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Return value which contains both aggregators, and some methods to access it
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::vast) struct SplitAccums<IAO, IAL> {
+    pub(super) looped: Option<SeqAccum<IAO>>,
+    pub(super) limited: Option<IAL>,
+}
+impl<IAO, IAL> SplitAccums<IAO, IAL> {
+    pub(super) fn new() -> Self {
+        Self {
+            looped: None,
+            limited: None,
+        }
+    }
+}
+impl<I> SplitAccums<SeqInstanceAccumStackMax<I>, SeqInstanceAccumMax<I>> {
+    pub(in crate::svc::vast) fn get_per_second(&self) -> Option<I>
+    where
+        I: Copy + std::ops::Div<PValue, Output = I>,
+    {
+        self.looped.as_ref().map(|v| v.get_per_second())
+    }
+    pub(in crate::svc::vast) fn get_max(&self) -> Option<I>
+    where
+        I: Copy + LibMax,
+    {
+        match (self.looped.as_ref(), self.limited.as_ref()) {
+            (None, None) => None,
+            (None, Some(limited)) => Some(limited.max),
+            (Some(looped), None) => Some(looped.instances.max),
+            (Some(looped), Some(limited)) => Some(looped.instances.max.lib_max(limited.max)),
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Higher-level routers

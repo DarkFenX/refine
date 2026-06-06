@@ -47,7 +47,7 @@ where
 // Local effects, puts data for non-looped part into one accumulator, and for looped part into
 // another
 #[must_use]
-pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAL, IAO>(
+pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAO, IAL>(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -55,14 +55,14 @@ pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAL, IAO>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectLocalOpcSpec<BG>,
     base_xargs: BX,
-    accum_lim: &mut IAL,
     accum_loop: &mut SeqAccum<IAO>,
+    accum_lim: &mut IAL,
 ) -> bool
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
-    IAL: SeqInstanceAccum<I>,
     IAO: SeqInstanceAccum<I>,
+    IAL: SeqInstanceAccum<I>,
 {
     let Some(inv_local) = AggrLocalInvData::try_make(ctx, calc, item_uid, effect, ospec, base_xargs) else {
         return false;
