@@ -55,7 +55,7 @@ pub(super) fn atime_process_output_for_cseq_regular<I, IA>(
             process_output_for_part_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
         CycleSeq::LoopSin(inner) => match inner.hard_dt {
-            Some(hard_dt) => atime_process_output_for_ls_cseq_hard_dt(accum, ptime, inner, hard_dt, chance_mult),
+            Some(_) => atime_process_output_for_ls_cseq_hard_dt(accum, ptime, inner, chance_mult),
             None => process_output_for_part_infinite_regular(accum, &mut ptime.into_value(), &inner.data, chance_mult),
         },
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
@@ -139,18 +139,17 @@ fn process_output_for_part_infinite_regular<I, IA>(
     }
 }
 
-fn atime_process_output_for_ls_cseq_hard_dt<I, IA>(
+pub(super) fn atime_process_output_for_ls_cseq_hard_dt<I, IA>(
     accum: &mut IA,
     ptime: PValue,
     cseq: CSeqLoopSin<AggrPartDataTail<I>, AggrHardDtSimple>,
-    hard_dt: AggrHardDtSimple,
     chance_mult: Option<PValue>,
 ) where
     I: Copy + InstanceDuration,
     IA: SeqInstanceAccum<I>,
 {
     let mut time = ptime.into_value();
-    let full_duration = cseq.data.cycle_main_duration + hard_dt.duration;
+    let full_duration = cseq.data.cycle_main_duration + cseq.hard_dt.unwrap().duration;
     let mut full_repeat_count = Count::from_value_trunced(time / full_duration);
     time -= full_duration * full_repeat_count.into_pvalue();
     if time >= cseq.data.cycle_main_duration.into_value() {

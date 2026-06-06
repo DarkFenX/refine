@@ -5,8 +5,11 @@ use super::{
         atime_process_output_for_part_limited_spool, atime_process_output_for_part_single_spool,
         process_output_for_lls_cseq_spool_hard_dt,
     },
-    shared::{AggrHardDtSimple, AggrPartDataSpoolTail, get_tailed_cycle_full_repeat_count},
-    shared_time::{atime_process_output_for_cseq_regular, get_cutoff_cycle_full_repeat_count},
+    shared::{AggrHardDtSimple, AggrPartDataSpoolTail, AggrPartDataTail, get_tailed_cycle_full_repeat_count},
+    shared_time::{
+        atime_process_output_for_cseq_regular, atime_process_output_for_ls_cseq_hard_dt,
+        get_cutoff_cycle_full_repeat_count,
+    },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
@@ -19,6 +22,7 @@ use crate::{
         cycle::{CSeqHardDtFull, CSeqLoopLimSin, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
+    util::LibConverter,
 };
 
 // Projected effects, aggregates total output by specified time
@@ -43,13 +47,9 @@ where
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {
-        Some(inv_spool) => atime_process_output_for_cseq_spool(
-            cseq.convert_with_and_optimize(&mut converter),
-            inv_proj,
-            &mut accum.instances,
-            time,
-            inv_spool,
-        ),
+        Some(inv_spool) => {
+            atime_process_output_for_cseq_spool(cseq, inv_proj, &mut accum.instances, time, inv_spool, &mut converter)
+        }
         None => atime_process_output_for_cseq_regular(
             cseq.convert_with_and_optimize(&mut converter),
             inv_proj.chance_mult,
@@ -64,15 +64,17 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Spool-specific processing (includes hard downtime logic)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn atime_process_output_for_cseq_spool<I, IA>(
-    cseq: CycleSeq<AggrPartDataSpoolTail, AggrHardDtSimple>,
+fn atime_process_output_for_cseq_spool<I, IA, C>(
+    cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     inv_proj: AggrProjInvData<I>,
     accum: &mut IA,
     ptime: PValue,
     inv_spool: AggrSpoolInvData,
+    converter: &mut C,
 ) where
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
+    C: LibConverter<CycleDataFull, AggrPartDataTail<I>> + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
     match cseq {
         CycleSeq::Lim(inner) => {
@@ -81,7 +83,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
-                inner.data,
+                converter.lib_convert(inner.data),
                 accum,
                 &mut time,
                 &mut uninterrupted_cycles,
@@ -94,7 +96,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
-                inner.p1_data,
+                converter.lib_convert(inner.p1_data),
                 accum,
                 &mut time,
                 &mut uninterrupted_cycles,
@@ -103,7 +105,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             atime_process_output_for_part_infinite_spool(
                 &inv_proj,
                 &inv_spool,
-                inner.p2_data,
+                converter.lib_convert(inner.p2_data),
                 accum,
                 &mut time,
                 &mut uninterrupted_cycles,
@@ -115,7 +117,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             atime_process_output_for_part_limited_spool(
                 &inv_proj,
                 &inv_spool,
-                inner.p1_data,
+                converter.lib_convert(inner.p1_data),
                 accum,
                 &mut time,
                 &mut uninterrupted_cycles,
@@ -124,7 +126,7 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             atime_process_output_for_part_single_spool(
                 &inv_proj,
                 &inv_spool,
-                inner.p2_data,
+                converter.lib_convert(inner.p2_data),
                 accum,
                 &mut time,
                 &mut uninterrupted_cycles,
@@ -132,28 +134,48 @@ fn atime_process_output_for_cseq_spool<I, IA>(
             atime_process_output_for_part_infinite_spool(
                 &inv_proj,
                 &inv_spool,
-                inner.p3_data,
+                converter.lib_convert(inner.p3_data),
                 accum,
                 &mut time,
                 &mut uninterrupted_cycles,
             );
         }
-        CycleSeq::LoopSin(inner) => {
-            // TODO: check if hard downtime needs to be checked here
-            let mut time = ptime.into_value();
-            let mut uninterrupted_cycles = Count::ZERO;
-            atime_process_output_for_part_infinite_spool(
-                &inv_proj,
-                &inv_spool,
-                inner.data,
+        CycleSeq::LoopSin(inner) => match inner.hard_dt {
+            // Use non-spool processing in case of a single cycle with hard downtime
+            Some(_) => atime_process_output_for_ls_cseq_hard_dt(
                 accum,
-                &mut time,
-                &mut uninterrupted_cycles,
-            );
-        }
+                ptime,
+                inner.convert_with(converter),
+                inv_proj.chance_mult,
+            ),
+            None => {
+                let mut time = ptime.into_value();
+                let mut uninterrupted_cycles = Count::ZERO;
+                atime_process_output_for_part_infinite_spool(
+                    &inv_proj,
+                    &inv_spool,
+                    converter.lib_convert(inner.data),
+                    accum,
+                    &mut time,
+                    &mut uninterrupted_cycles,
+                );
+            }
+        },
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
-            Some(_) => atime_process_output_for_lls_cseq_spool_hard_dt(&inner, &inv_proj, &inv_spool, accum, ptime),
-            None => atime_process_output_for_lls_cseq_spool(&inner, &inv_proj, &inv_spool, accum, ptime),
+            Some(_) => atime_process_output_for_lls_cseq_spool_hard_dt(
+                &inner.convert_with(converter),
+                &inv_proj,
+                &inv_spool,
+                accum,
+                ptime,
+            ),
+            None => atime_process_output_for_lls_cseq_spool(
+                &inner.convert_with(converter),
+                &inv_proj,
+                &inv_spool,
+                accum,
+                ptime,
+            ),
         },
     }
 }

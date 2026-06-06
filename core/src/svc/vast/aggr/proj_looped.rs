@@ -252,7 +252,6 @@ fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
     IA: SeqInstanceAccum<I>,
     C: LibConverter<CycleDataFull, AggrPartDataTail<I>> + LibConverter<CycleDataFull, AggrPartDataSpoolTail>,
 {
-    // TODO: deoptimize looped vs non-looped here
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
         CycleSeqLooped::LoopSin(_) => alooped_process_both_for_looped_cseq_hard_dt(
@@ -260,22 +259,13 @@ fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
             inv_proj.chance_mult,
             accum,
         ),
-        CycleSeqLooped::LoopLimSin(inner) => match inner.p1_data.soft_dt {
-            // Composite loop with soft downtimes in first part and hard downtime after second also
-            // does not spool up
-            Some(_) => alooped_process_both_for_looped_cseq_hard_dt(
-                cseq.convert_with_and_optimize(converter),
-                inv_proj.chance_mult,
-                accum,
-            ),
-            None => {
-                let inner_conv: CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple> = inner.convert_with(converter);
-                let loop_inner_duration = inner_conv.get_main_duration();
-                let loop_full_duration = loop_inner_duration + inner_conv.hard_dt.unwrap().duration;
-                process_output_for_lls_cseq_spool_hard_dt(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
-                accum.time += loop_full_duration;
-            }
-        },
+        CycleSeqLooped::LoopLimSin(inner) => {
+            let inner_conv: CSeqLoopLimSin<AggrPartDataSpoolTail, AggrHardDtSimple> = inner.convert_with(converter);
+            let loop_inner_duration = inner_conv.get_main_duration();
+            let loop_full_duration = loop_inner_duration + inner_conv.hard_dt.unwrap().duration;
+            process_output_for_lls_cseq_spool_hard_dt(&inner_conv, &inv_proj, &inv_spool, &mut accum.instances);
+            accum.time += loop_full_duration;
+        }
     };
 }
 
