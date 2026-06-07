@@ -7,14 +7,9 @@ pub(crate) use mining::{
     NEffectMining, NEffectMiningAmount, NEffectMiningChecker, NEffectMiningOutputGetter, NEffectMiningXargs,
 };
 pub(crate) use neut::{NEffectNeut, NEffectNeutChecker, NEffectNeutKind};
-pub(crate) use spec::{
-    NEffectChargeMultGetter, NEffectLocalOpcSpec, NEffectOutputGetter, NEffectProjGetter, NEffectProjOpcSpec,
-    NEffectResist,
-};
 
 mod dmg;
 mod ecm;
 mod general;
 mod mining;
 mod neut;
-mod spec;

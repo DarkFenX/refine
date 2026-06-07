@@ -15,7 +15,7 @@ use crate::{
     ud::{UItemId, UProjData},
 };
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_turret_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_turret_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -34,7 +34,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_turret_proj_mult(
     calc_turret_mult(cth)
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_disintegrator_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_disintegrator_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -53,7 +53,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_disintegrator_proj_m
     calc_turret_mult(cth)
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_vorton_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_vorton_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -68,7 +68,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_vorton_proj_mult(
     mult * get_std_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_burst_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -89,7 +89,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_burst_proj_mult(
     )
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_dd_dmg_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -103,7 +103,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_dd_dmg_proj_mult
     mult * get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().sig_radius)
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_dd_side_neut_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_side_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -123,7 +123,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_aoe_dd_side_neut_pro
     )
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_neut_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -144,7 +144,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_neut_proj_mult(
     )
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_attack_m_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_attack_m_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -169,7 +169,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_attack_m_pr
     )
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_missiles_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_missiles_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -194,7 +194,7 @@ pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_missiles_pr
     )
 }
 
-pub(in crate::nd::effect::output::spec::proj_getter) fn get_ftr_abil_kamikaze_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_kamikaze_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

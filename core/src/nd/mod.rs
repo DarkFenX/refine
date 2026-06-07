@@ -12,8 +12,8 @@ pub(crate) use effect::{
     NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm, NEffectEcmAmount, NEffectEcmChecker,
     NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectMiningAmount,
     NEffectMiningChecker, NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut, NEffectNeutChecker,
-    NEffectNeutKind, NEffectOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectResist,
-    NEffectSpoolAttrs,
+    NEffectNeutKind, NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec,
+    NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 
