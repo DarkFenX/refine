@@ -237,6 +237,8 @@ impl AAttrId {
     pub(crate) const FTR_ABIL_MWD_SIG_RADIUS_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_MWD_SIG_RADIUS_BONUS);
     pub(crate) const FTR_ABIL_MJD_SIG_RADIUS_BONUS: Self = Self::from_eid(EAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS);
     pub(crate) const FTR_ABIL_MISSILES_RESIST_ID: Self = Self::from_eid(EAttrId::FTR_ABIL_MISSILES_RESIST_ID);
+    pub(crate) const FTR_ABIL_WARP_DISRUPT_POINT_STR_INTERIM: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_WARP_DISRUPT_POINT_STR_INTERIM);
     pub(crate) const FTR_ABIL_ENERGY_NEUT_AMOUNT: Self = Self::from_eid(EAttrId::FTR_ABIL_ENERGY_NEUT_AMOUNT);
     pub(crate) const FTR_SQ_IS_LIGHT: Self = Self::from_eid(EAttrId::FTR_SQ_IS_LIGHT);
     pub(crate) const FTR_SQ_IS_SUPPORT: Self = Self::from_eid(EAttrId::FTR_SQ_IS_SUPPORT);

@@ -60,7 +60,8 @@ fn update_effect(a_effect: &mut AEffect) {
         },
     ]);
     // Fighter MWD and MJD stoppers
-    a_effect
-        .stopped_effect_ids
-        .extend([AEffectId::FTR_ABIL_MWD, AEffectId::FTR_ABIL_MJD]);
+    a_effect.stopped_effect_ids.extend([
+        AEffectId::FTR_ABIL_MICRO_WARP_DRIVE,
+        AEffectId::FTR_ABIL_MICRO_JUMP_DRIVE,
+    ]);
 }

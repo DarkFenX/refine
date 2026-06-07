@@ -6,7 +6,7 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_EVASION;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_EVASIVE_MANEUVERS;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -45,7 +45,7 @@ fn update_effect(a_effect: &mut AEffect) {
 fn mk_mobility_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(affector_attr_id),
-        op: AOp::PostPerc,
+        op: AOp::PostPercImmune,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id,
     }
@@ -54,7 +54,7 @@ fn mk_mobility_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) ->
 fn mk_resist_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(affector_attr_id),
-        op: AOp::PostMul,
+        op: AOp::PostMulImmune,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id,
     }

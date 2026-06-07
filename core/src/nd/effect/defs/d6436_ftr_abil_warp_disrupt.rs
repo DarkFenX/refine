@@ -1,32 +1,30 @@
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
-        AState,
     },
-    nd::NEffect,
+    nd::{NEffect, NEffectProjGetter},
 };
 
-const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_MICRO_JUMP_DRIVE;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_WARP_DISRUPT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
+        modifier_proj: Some(NEffectProjGetter::GenericRangeSimpleSts),
         ..
     }
 }
 
 fn update_effect(a_effect: &mut AEffect) {
-    // Make sure to apply self-modifiers even if fighter is disabled
-    a_effect.state = AState::Disabled;
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {EFFECT_AID}: fighter MJD effect has modifiers, overwriting them");
+        tracing::info!("effect {EFFECT_AID}: fighter warp disrupt effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.insert(AEffectModifier {
-        strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS),
-        op: AOp::PostPercImmune,
+        strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_WARP_DISRUPT_POINT_STR_INTERIM),
+        op: AOp::Add,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
-        affectee_attr_id: AAttrId::SIG_RADIUS,
+        affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
     });
 }

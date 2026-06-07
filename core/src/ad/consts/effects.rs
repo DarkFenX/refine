@@ -77,14 +77,14 @@ impl AEffectId {
     pub(crate) const SHIP_MOD_REMOTE_TRACKING_COMPUTER: Self =
         Self::from_eid(EEffectId::SHIP_MOD_REMOTE_TRACKING_COMPUTER);
     pub(crate) const FTR_ABIL_MISSILES: Self = Self::from_eid(EEffectId::FTR_ABIL_MISSILES);
-    pub(crate) const FTR_ABIL_NEUT: Self = Self::from_eid(EEffectId::FTR_ABIL_NEUT);
-    pub(crate) const FTR_ABIL_WEB: Self = Self::from_eid(EEffectId::FTR_ABIL_WEB);
-    pub(crate) const FTR_ABIL_POINT: Self = Self::from_eid(EEffectId::FTR_ABIL_POINT);
+    pub(crate) const FTR_ABIL_ENERGY_NEUT: Self = Self::from_eid(EEffectId::FTR_ABIL_ENERGY_NEUT);
+    pub(crate) const FTR_ABIL_STASIS_WEB: Self = Self::from_eid(EEffectId::FTR_ABIL_STASIS_WEB);
+    pub(crate) const FTR_ABIL_WARP_DISRUPT: Self = Self::from_eid(EEffectId::FTR_ABIL_WARP_DISRUPT);
     pub(crate) const FTR_ABIL_ECM: Self = Self::from_eid(EEffectId::FTR_ABIL_ECM);
-    pub(crate) const FTR_ABIL_EVASION: Self = Self::from_eid(EEffectId::FTR_ABIL_EVASION);
-    pub(crate) const FTR_ABIL_AB: Self = Self::from_eid(EEffectId::FTR_ABIL_AB);
-    pub(crate) const FTR_ABIL_MWD: Self = Self::from_eid(EEffectId::FTR_ABIL_MWD);
-    pub(crate) const FTR_ABIL_MJD: Self = Self::from_eid(EEffectId::FTR_ABIL_MJD);
+    pub(crate) const FTR_ABIL_EVASIVE_MANEUVERS: Self = Self::from_eid(EEffectId::FTR_ABIL_EVASIVE_MANEUVERS);
+    pub(crate) const FTR_ABIL_AFTERBURNER: Self = Self::from_eid(EEffectId::FTR_ABIL_AFTERBURNER);
+    pub(crate) const FTR_ABIL_MICRO_WARP_DRIVE: Self = Self::from_eid(EEffectId::FTR_ABIL_MICRO_WARP_DRIVE);
+    pub(crate) const FTR_ABIL_MICRO_JUMP_DRIVE: Self = Self::from_eid(EEffectId::FTR_ABIL_MICRO_JUMP_DRIVE);
     pub(crate) const POINT_DEFENSE: Self = Self::from_eid(EEffectId::POINT_DEFENSE);
     pub(crate) const LIGHTNING_WEAPON: Self = Self::from_eid(EEffectId::LIGHTNING_WEAPON);
     pub(crate) const FTR_ABIL_TACKLE: Self = Self::from_eid(EEffectId::FTR_ABIL_TACKLE);
@@ -99,7 +99,7 @@ impl AEffectId {
     pub(crate) const DOOMSDAY_AOE_TRACK: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_TRACK);
     pub(crate) const DOOMSDAY_AOE_DAMP: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_DAMP);
     pub(crate) const EMERGENCY_HULL_ENERGIZER: Self = Self::from_eid(EEffectId::EMERGENCY_HULL_ENERGIZER);
-    pub(crate) const FTR_ABIL_BOMB: Self = Self::from_eid(EEffectId::FTR_ABIL_BOMB);
+    pub(crate) const FTR_ABIL_LAUNCH_BOMB: Self = Self::from_eid(EEffectId::FTR_ABIL_LAUNCH_BOMB);
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_ECM);
     pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_eid(EEffectId::FTR_ABIL_KAMIKAZE);
     pub(crate) const MOD_BONUS_NETWORKED_SENSOR_ARRAY: Self =
@@ -174,8 +174,11 @@ impl AEffectId {
     pub(crate) const WARP_DISRUPT_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(4));
     pub(crate) const STASIS_WEB_PROBE: Self = Self::Custom(ACustomEffectId::from_i32(5));
     pub(crate) const WDFG_SCRIPT_DEBUBBLE: Self = Self::Custom(ACustomEffectId::from_i32(6));
-    pub(crate) const STABILITY_GENERATOR_ELECTRIC: Self = Self::Custom(ACustomEffectId::from_i32(7));
-    pub(crate) const STABILITY_GENERATOR_PLASMA: Self = Self::Custom(ACustomEffectId::from_i32(8));
-    pub(crate) const STABILITY_GENERATOR_EXOTIC: Self = Self::Custom(ACustomEffectId::from_i32(9));
-    pub(crate) const STABILITY_GENERATOR_GAMMA: Self = Self::Custom(ACustomEffectId::from_i32(10));
+    pub(crate) const FTR_ABIL_WARP_DISRUPT_INTERIM: Self = Self::Custom(ACustomEffectId::from_i32(7));
+    pub(crate) const FTR_ABIL_STASIS_WEB_INTERIM: Self = Self::Custom(ACustomEffectId::from_i32(8));
+    pub(crate) const FTR_ABIL_TACKLE_INTERIM: Self = Self::Custom(ACustomEffectId::from_i32(9));
+    pub(crate) const STABILITY_GENERATOR_ELECTRIC: Self = Self::Custom(ACustomEffectId::from_i32(10));
+    pub(crate) const STABILITY_GENERATOR_PLASMA: Self = Self::Custom(ACustomEffectId::from_i32(11));
+    pub(crate) const STABILITY_GENERATOR_EXOTIC: Self = Self::Custom(ACustomEffectId::from_i32(12));
+    pub(crate) const STABILITY_GENERATOR_GAMMA: Self = Self::Custom(ACustomEffectId::from_i32(13));
 }

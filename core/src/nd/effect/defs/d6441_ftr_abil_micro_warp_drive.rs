@@ -6,7 +6,7 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_MWD;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_MICRO_WARP_DRIVE;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -26,13 +26,13 @@ fn update_effect(a_effect: &mut AEffect) {
     a_effect.modifiers.extend([
         AEffectModifier {
             strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MWD_SPEED_BONUS),
-            op: AOp::PostPerc,
+            op: AOp::PostPercImmune,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
             affectee_attr_id: AAttrId::MAX_VELOCITY,
         },
         AEffectModifier {
             strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MWD_SIG_RADIUS_BONUS),
-            op: AOp::PostPerc,
+            op: AOp::PostPercImmune,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
             affectee_attr_id: AAttrId::SIG_RADIUS,
         },

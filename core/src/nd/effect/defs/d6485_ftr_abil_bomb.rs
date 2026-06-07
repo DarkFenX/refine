@@ -3,7 +3,7 @@ use crate::{
     nd::{NEffect, NEffectCharge, NEffectChargeLoc},
 };
 
-const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_BOMB;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_LAUNCH_BOMB;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

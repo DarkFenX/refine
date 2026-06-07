@@ -6,7 +6,7 @@ use crate::{
     nd::NEffect,
 };
 
-const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_AB;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_AFTERBURNER;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
@@ -25,7 +25,7 @@ fn update_effect(a_effect: &mut AEffect) {
     }
     a_effect.modifiers.insert(AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_AB_SPEED_BONUS),
-        op: AOp::PostPerc,
+        op: AOp::PostPercImmune,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id: AAttrId::MAX_VELOCITY,
     });

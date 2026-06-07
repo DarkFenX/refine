@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_NEUT;
+const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_ENERGY_NEUT;
 
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {

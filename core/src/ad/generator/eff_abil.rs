@@ -2,37 +2,37 @@ use crate::ed::{EAbilId, EEffectId};
 
 pub(in crate::ad::generator) fn get_abil_effect(abil_id: EAbilId) -> Option<EEffectId> {
     match abil_id {
-        EAbilId::ATK_PULSE
-        | EAbilId::ATK_BEAM
-        | EAbilId::ATK_BLASTER_THERM
-        | EAbilId::ATK_BLASTER_KIN
-        | EAbilId::ATK_RAIL_THERM
-        | EAbilId::ATK_RAIL_KIN
-        | EAbilId::ATK_AUTOCANNON
-        | EAbilId::ATK_ARTY => Some(EEffectId::FTR_ABIL_ATTACK_M),
-        EAbilId::UMISSILE_EM
-        | EAbilId::UMISSILE_THERM
-        | EAbilId::UMISSILE_KIN
-        | EAbilId::UMISSILE_EXP
-        | EAbilId::ROCKET_EM
-        | EAbilId::ROCKET_THERM
-        | EAbilId::ROCKET_KIN
-        | EAbilId::ROCKET_EXP
-        | EAbilId::TORP_EM
-        | EAbilId::TORP_THERM
-        | EAbilId::TORP_KIN
-        | EAbilId::TORP_EXP => Some(EEffectId::FTR_ABIL_MISSILES),
-        EAbilId::BOMB => Some(EEffectId::FTR_ABIL_BOMB),
+        EAbilId::PULSE_CANNON
+        | EAbilId::BEAM_CANNON
+        | EAbilId::BLASTER_CANNON_THERM
+        | EAbilId::BLASTER_CANNON_KIN
+        | EAbilId::RAILGUN_THERM
+        | EAbilId::RAILGUN_KIN
+        | EAbilId::AUTOCANNON
+        | EAbilId::ARTILLERY => Some(EEffectId::FTR_ABIL_ATTACK_M),
+        EAbilId::UMISSILE_SWARM_EM
+        | EAbilId::UMISSILE_SWARM_THERM
+        | EAbilId::UMISSILE_SWARM_KIN
+        | EAbilId::UMISSILE_SWARM_EXP
+        | EAbilId::HEAVY_ROCKET_SALVO_EM
+        | EAbilId::HEAVY_ROCKET_SALVO_THERM
+        | EAbilId::HEAVY_ROCKET_SALVO_KIN
+        | EAbilId::HEAVY_ROCKET_SALVO_EXP
+        | EAbilId::TORPEDO_SALVO_EM
+        | EAbilId::TORPEDO_SALVO_THERM
+        | EAbilId::TORPEDO_SALVO_KIN
+        | EAbilId::TORPEDO_SALVO_EXP => Some(EEffectId::FTR_ABIL_MISSILES),
+        EAbilId::LAUNCH_BOMB => Some(EEffectId::FTR_ABIL_LAUNCH_BOMB),
         EAbilId::TRUE_SACRIFICE => Some(EEffectId::FTR_ABIL_KAMIKAZE),
-        EAbilId::POINT => Some(EEffectId::FTR_ABIL_POINT),
-        EAbilId::WEB => Some(EEffectId::FTR_ABIL_WEB),
+        EAbilId::WARP_DISRUPT => Some(EEffectId::FTR_ABIL_WARP_DISRUPT),
+        EAbilId::STASIS_WEB => Some(EEffectId::FTR_ABIL_STASIS_WEB),
         EAbilId::TACKLE => Some(EEffectId::FTR_ABIL_TACKLE),
-        EAbilId::NEUT => Some(EEffectId::FTR_ABIL_NEUT),
+        EAbilId::ENERGY_NEUT => Some(EEffectId::FTR_ABIL_ENERGY_NEUT),
         EAbilId::ECM => Some(EEffectId::FTR_ABIL_ECM),
-        EAbilId::MWD => Some(EEffectId::FTR_ABIL_MWD),
-        EAbilId::AB => Some(EEffectId::FTR_ABIL_AB),
-        EAbilId::MJD => Some(EEffectId::FTR_ABIL_MJD),
-        EAbilId::EVASION => Some(EEffectId::FTR_ABIL_EVASION),
+        EAbilId::MICRO_WARP_DRIVE => Some(EEffectId::FTR_ABIL_MICRO_WARP_DRIVE),
+        EAbilId::AFTERBURNER => Some(EEffectId::FTR_ABIL_AFTERBURNER),
+        EAbilId::MICRO_JUMP_DRIVE => Some(EEffectId::FTR_ABIL_MICRO_JUMP_DRIVE),
+        EAbilId::EVASIVE_MANEUVERS => Some(EEffectId::FTR_ABIL_EVASIVE_MANEUVERS),
         _ => None,
     }
 }
