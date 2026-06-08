@@ -66,6 +66,7 @@ pub(in crate::nd::effect) mod d6427_remote_sensor_boost_falloff;
 pub(in crate::nd::effect) mod d6428_ship_mod_remote_tracking_computer;
 pub(in crate::nd::effect) mod d6431_ftr_abil_missiles;
 pub(in crate::nd::effect) mod d6434_ftr_abil_energy_neut;
+pub(in crate::nd::effect) mod d6435_ftr_abil_stasis_web;
 pub(in crate::nd::effect) mod d6436_ftr_abil_warp_disrupt;
 pub(in crate::nd::effect) mod d6437_ftr_abil_ecm;
 pub(in crate::nd::effect) mod d6439_ftr_abil_evasive_maneuvers;

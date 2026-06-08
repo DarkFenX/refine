@@ -221,6 +221,9 @@ impl EAttrId {
     pub(crate) const FTR_ABIL_MWD_SIG_RADIUS_BONUS: Self = Self::from_i32(2153);
     pub(crate) const FTR_ABIL_MJD_SIG_RADIUS_BONUS: Self = Self::from_i32(2156);
     pub(crate) const FTR_ABIL_MISSILES_RESIST_ID: Self = Self::from_i32(2170);
+    pub(crate) const FTR_ABIL_STASIS_WEB_SPEED_PENALTY: Self = Self::from_i32(2184);
+    pub(crate) const FTR_ABIL_STASIS_WEB_SPEED_PENALTY_INTERIM: Self = Self::from_i32(2185);
+    pub(crate) const FTR_ABIL_STASIS_WEB_RESIST_ID: Self = Self::from_i32(2188);
     pub(crate) const FTR_ABIL_WARP_DISRUPT_POINT_STR: Self = Self::from_i32(2205);
     pub(crate) const FTR_ABIL_WARP_DISRUPT_POINT_STR_INTERIM: Self = Self::from_i32(2206);
     pub(crate) const FTR_ABIL_ENERGY_NEUT_AMOUNT: Self = Self::from_i32(2211);

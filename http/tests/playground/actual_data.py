@@ -383,22 +383,22 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     for eve_skill_id in get_skill_type_ids():
         api_src_fit.add_skill(type_id=eve_skill_id, level=5)
     api_src_fit.set_ship(type_id=24483, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Nidhoggur
-    # Siren II
-    api_src_ftr1 = api_src_fit.add_fighter(type_id=40570, state=consts.ApiMinionState.engaging)
+    # Dromi II
+    api_src_ftr1 = api_src_fit.add_fighter(type_id=40571, state=consts.ApiMinionState.engaging)
 
     api_tgt_fit = api_sol.create_fit()
     api_tgt_fit.change(fleet_id=api_fleet.id)
     api_tgt_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_tgt_fit.add_skill(type_id=eve_skill_id, level=5)
-    # Rattlesnake
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=17918, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    # Cenotaph
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=85086, coordinates=(0, 0, 0), movement=(0, 0, 0))
 
-    api_src_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_warp=True))
-    print(api_src_fit_stats.can_warp)  # noqa: T201
+    api_src_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    print(api_src_fit_stats.speed)  # noqa: T201
     api_src_ftr1.change_fighter(add_projs=[api_tgt_ship.id])
-    api_src_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_warp=True))
-    print(api_src_fit_stats.can_warp)  # noqa: T201
+    api_src_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    print(api_src_fit_stats.speed)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
