@@ -248,6 +248,8 @@ impl EAttrId {
     pub(crate) const FTR_ABIL_ATK_MISSILE_EXPLOSION_VELOCITY: Self = Self::from_i32(2235);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL: Self = Self::from_i32(2236);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF: Self = Self::from_i32(2237);
+    pub(crate) const FTR_ABIL_TACKLE_WEB_SPEED_PENALTY: Self = Self::from_i32(2242);
+    pub(crate) const FTR_ABIL_TACKLE_WEB_SPEED_PENALTY_INTERIM: Self = Self::from_i32(2243);
     pub(crate) const FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC: Self = Self::from_i32(2246);
     pub(crate) const FTR_ABIL_ECM_STRENGTH_LADAR: Self = Self::from_i32(2247);
     pub(crate) const FTR_ABIL_ECM_STRENGTH_MAGNETOMETRIC: Self = Self::from_i32(2248);
@@ -277,6 +279,7 @@ impl EAttrId {
     pub(crate) const NULLSEC_MODIFIER: Self = Self::from_i32(2357);
     pub(crate) const SECURITY_MODIFIER: Self = Self::from_i32(2358);
     pub(crate) const CAN_FIT_SHIP_GROUP10: Self = Self::from_i32(2396);
+    pub(crate) const FTR_ABIL_TACKLE_WARP_DISRUPT_POINT_STR: Self = Self::from_i32(2425);
     pub(crate) const FTR_REFUELING_TIME: Self = Self::from_i32(2426);
     pub(crate) const DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION: Self = Self::from_i32(2427);
     pub(crate) const DOOMSDAY_IMMOBILITY_DURATION: Self = Self::from_i32(2428);

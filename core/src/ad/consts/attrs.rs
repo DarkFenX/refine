@@ -274,6 +274,10 @@ impl AAttrId {
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL);
     pub(crate) const FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF: Self =
         Self::from_eid(EAttrId::FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF);
+    pub(crate) const FTR_ABIL_TACKLE_WEB_SPEED_PENALTY: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_TACKLE_WEB_SPEED_PENALTY);
+    pub(crate) const FTR_ABIL_TACKLE_WEB_SPEED_PENALTY_INTERIM: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_TACKLE_WEB_SPEED_PENALTY_INTERIM);
     pub(crate) const FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC: Self =
         Self::from_eid(EAttrId::FTR_ABIL_ECM_STRENGTH_GRAVIMETRIC);
     pub(crate) const FTR_ABIL_ECM_STRENGTH_LADAR: Self = Self::from_eid(EAttrId::FTR_ABIL_ECM_STRENGTH_LADAR);
@@ -305,6 +309,8 @@ impl AAttrId {
     pub(crate) const NULLSEC_MODIFIER: Self = Self::from_eid(EAttrId::NULLSEC_MODIFIER);
     pub(crate) const SECURITY_MODIFIER: Self = Self::from_eid(EAttrId::SECURITY_MODIFIER);
     pub(crate) const CAN_FIT_SHIP_GROUP10: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_GROUP10);
+    pub(crate) const FTR_ABIL_TACKLE_WARP_DISRUPT_POINT_STR: Self =
+        Self::from_eid(EAttrId::FTR_ABIL_TACKLE_WARP_DISRUPT_POINT_STR);
     pub(crate) const FTR_REFUELING_TIME: Self = Self::from_eid(EAttrId::FTR_REFUELING_TIME);
     pub(crate) const DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION: Self =
         Self::from_eid(EAttrId::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION);
