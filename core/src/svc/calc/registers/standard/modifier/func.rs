@@ -19,9 +19,11 @@ pub(super) fn add_cmod<K>(
         let affector_aspec = AttrSpec::new(ctx_item_uid, resist_attr_rid);
         aspec_storage.add_entry(affector_aspec, cmod);
     }
-    for proj_attr_rid in cmod.raw.proj_attr_rids.into_iter().flatten() {
-        let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_uid, proj_attr_rid);
-        aspec_storage.add_entry(affector_aspec, cmod);
+    if let Some(mspec) = cmod.raw.proj_spec {
+        for proj_attr_rid in mspec.proj_attr_rids.into_iter().flatten() {
+            let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_uid, proj_attr_rid);
+            aspec_storage.add_entry(affector_aspec, cmod);
+        }
     }
 }
 
@@ -42,8 +44,10 @@ pub(super) fn remove_cmod<K>(
         let affector_aspec = AttrSpec::new(ctx_item_uid, resist_attr_rid);
         aspec_storage.remove_entry(affector_aspec, cmod);
     }
-    for proj_attr_rid in cmod.raw.proj_attr_rids.into_iter().flatten() {
-        let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_uid, proj_attr_rid);
-        aspec_storage.remove_entry(affector_aspec, cmod);
+    if let Some(mspec) = cmod.raw.proj_spec {
+        for proj_attr_rid in mspec.proj_attr_rids.into_iter().flatten() {
+            let affector_aspec = AttrSpec::new(cmod.raw.affector_espec.item_uid, proj_attr_rid);
+            aspec_storage.remove_entry(affector_aspec, cmod);
+        }
     }
 }

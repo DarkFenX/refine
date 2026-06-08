@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm,
-        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjGetter,
+        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjModSpec,
         NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
     },
     svc::calc::CalcCustomModifier,
@@ -31,31 +31,31 @@ pub(crate) struct NEffect {
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization ran during runtime in calculator service
     pub(crate) calc_custom_mod: Option<CalcCustomModifier> = None,
-    // Getters/specs - modifier projection
-    pub(crate) modifier_proj: Option<NEffectProjGetter> = None,
-    // Getters/specs - damage output
+    // Specs - modifier
+    pub(crate) proj_mod: Option<NEffectProjModSpec> = None,
+    // Specs - damage output
     pub(crate) dmg_kind: Option<NEffectDmgKindGetter> = None,
     pub(crate) normal_dmg: Option<NEffectProjOpcSpec<NEffectDmgOutputGetter>> = None,
     pub(crate) breacher_dmg: Option<NEffectProjOpcSpec<NEffectBreacherOutputGetter>> = None,
-    // Getters/specs - mining
+    // Specs - mining
     pub(crate) mining_ore: Option<NEffectMining> = None,
     pub(crate) mining_ice: Option<NEffectMining> = None,
     pub(crate) mining_gas: Option<NEffectMining> = None,
-    // Getters/specs - rep output
+    // Specs - rep output
     pub(crate) outgoing_shield_rep: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) outgoing_armor_rep: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) outgoing_hull_rep: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
-    // Getters/specs - local reps
+    // Specs - local reps
     pub(crate) local_shield_rep: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) local_armor_rep: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) local_hull_rep: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
-    // Getters/specs - cap
+    // Specs - cap
     pub(crate) cap_consume: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) neut: Option<NEffectNeut> = None,
     // Nosf spec is used only for purposes of cap balance/sim calcs
     pub(crate) nosf: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) outgoing_cap: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) cap_inject: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
-    // Getters/specs - misc
+    // Specs - misc
     pub(crate) ecm: Option<NEffectEcm> = None,
 }

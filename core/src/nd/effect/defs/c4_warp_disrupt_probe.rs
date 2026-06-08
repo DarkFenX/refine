@@ -8,7 +8,7 @@ use crate::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId,
         AEffectId, AEffectModStrength, AItem, AItemId, AItemListId, AState, AValue,
     },
-    nd::{NEffect, NEffectProjGetter},
+    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
     util::RMap,
 };
 
@@ -19,7 +19,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(assign_effect),
-        modifier_proj: Some(NEffectProjGetter::GenericRangeSimpleCts),
+        proj_mod: Some(NEffectProjModSpec {
+            proj_mult: NEffectProjGetter::GenericRangeSimpleCts,
+            ..
+        }),
         ..
     }
 }

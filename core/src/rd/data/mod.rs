@@ -5,8 +5,8 @@ pub(in crate::rd) use data::RData;
 pub(crate) use data::{RcEffect, RcItem, RcMuta};
 pub(crate) use effect::{
     REffect, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectConsts, REffectEcm, REffectId,
-    REffectLocalOpcSpec, REffectMining, REffectModStrength, REffectModifier, REffectNeut, REffectProjOpcSpec,
-    REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
+    REffectLocalOpcSpec, REffectMining, REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec,
+    REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
 };
 pub(crate) use item::{
     RItem, RItemAXt, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemShipLimit,

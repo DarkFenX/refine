@@ -80,6 +80,7 @@ fn is_any_in_effective_range(
     false
 }
 
+// TODO: consider moving elsewhere
 fn get_espec_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -87,7 +88,7 @@ fn get_espec_proj_mult(
     projectee_uid: UItemId,
 ) -> Option<PValue> {
     let projector_effect = ctx.u_data.src.get_effect_by_rid(projector_espec.effect_rid);
-    let proj_mult_getter = projector_effect.modifier_proj?;
+    let proj_mult_getter = projector_effect.proj_mod?.proj_mult;
     let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_uid)?;
     Some(proj_mult_getter.get_mult(
         ctx,

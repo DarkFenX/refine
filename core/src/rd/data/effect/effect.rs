@@ -2,12 +2,12 @@ use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
         N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
-        NEffectGeneralOutputGetter, NEffectProjGetter,
+        NEffectGeneralOutputGetter,
     },
     rd::{
         RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectEcm, REffectId, REffectLocalOpcSpec,
-        REffectMining, REffectModifier, REffectNeut, REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs,
-        RItem, RItemListId, RState,
+        REffectMining, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter,
+        REffectSpoolAttrs, RItem, RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -46,8 +46,7 @@ pub(crate) struct REffect {
     pub(crate) chance_attr_rid: Option<RAttrId>,
     pub(crate) resist_attr_rid: Option<RAttrId>,
     pub(crate) spool_attr_rids: Option<REffectSpoolAttrs>,
-    pub(crate) modifier_proj_attr_rids: [Option<RAttrId>; 2],
-    pub(crate) modifier_proj: Option<NEffectProjGetter>,
+    pub(crate) proj_mod: Option<REffectProjModSpec>,
     // Output getters/specs
     pub(crate) dmg_kind: Option<NEffectDmgKindGetter>,
     pub(crate) normal_dmg: Option<REffectProjOpcSpec<NEffectDmgOutputGetter>>,
@@ -122,7 +121,6 @@ impl REffect {
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
-            modifier_proj: n_effect.and_then(|n| n.modifier_proj),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             // Fields which depend on data not available during instantiation
             modifiers: Default::default(),
@@ -131,7 +129,6 @@ impl REffect {
             charge: Default::default(),
             projectee_filter: Default::default(),
             spool_attr_rids: Default::default(),
-            modifier_proj_attr_rids: Default::default(),
             discharge_attr_rid: Default::default(),
             duration_attr_rid: Default::default(),
             range_attr_rid: Default::default(),
@@ -140,6 +137,7 @@ impl REffect {
             chance_attr_rid: Default::default(),
             resist_attr_rid: Default::default(),
             is_active_with_duration: Default::default(),
+            proj_mod: Default::default(),
             normal_dmg: Default::default(),
             breacher_dmg: Default::default(),
             mining_ore: Default::default(),
@@ -225,10 +223,12 @@ impl REffect {
                 .spool_attrs
                 .as_ref()
                 .and_then(|n_spool_attrs| REffectSpoolAttrs::try_from_n_spool_attrs(n_spool_attrs, attr_aid_rid_map));
-            if let Some(modifier_proj_attrs_getter) = &n_effect.modifier_proj {
-                let proj_attr_aids = modifier_proj_attrs_getter.get_modifier_attr_aids(a_effect);
-                self.modifier_proj_attr_rids = proj_attr_aids
-                    .map(|attr_aid| attr_aid.and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()));
+            if let Some(mspec) = &n_effect.proj_mod {
+                self.proj_mod = Some(REffectProjModSpec::from_n_proj_mod_spec(
+                    mspec,
+                    a_effect,
+                    attr_aid_rid_map,
+                ));
             }
             self.normal_dmg = n_effect
                 .normal_dmg

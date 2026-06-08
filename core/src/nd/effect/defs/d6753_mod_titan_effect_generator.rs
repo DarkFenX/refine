@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId, AItemListId},
-    nd::{NEffect, NEffectProjGetter},
+    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::MOD_TITAN_EFFECT_GENERATOR;
@@ -15,7 +15,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             }),
             ..
         }),
-        modifier_proj: Some(NEffectProjGetter::GenericRangeSimpleSts),
+        proj_mod: Some(NEffectProjModSpec {
+            proj_mult: NEffectProjGetter::GenericRangeSimpleSts,
+            ..
+        }),
         ..
     }
 }

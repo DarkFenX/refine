@@ -6,7 +6,10 @@ use crate::{
         AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
         AEffectModStrength, AItemListId, AValue,
     },
-    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
+    nd::{
+        NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjModSpec,
+        NEffectProjOpcSpec,
+    },
 };
 
 const EFFECT_AID: AEffectId = AEffectId::DEBUFF_LANCE;
@@ -49,7 +52,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             .collect(),
             ..
         }),
-        modifier_proj: Some(NEffectProjGetter::AoeDdRange),
+        proj_mod: Some(NEffectProjModSpec {
+            proj_mult: NEffectProjGetter::AoeDdRange,
+            ..
+        }),
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::DotDelay,
