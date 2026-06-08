@@ -135,6 +135,7 @@ class EveEffect(IntEnum):
     service_slot = 6306
     ftr_abil_missiles = 6431
     ftr_abil_energy_neut = 6434
+    ftr_abil_stasis_web = 6435
     ftr_abil_ecm = 6437
     ftr_abil_ab = 6440
     ftr_abil_mwd = 6441
@@ -442,10 +443,14 @@ class EveAttr(IntEnum):
     ftr_abil_missiles_dmg_expl = 2134
     remote_resistance_id = 2138
     ftr_abil_missiles_range = 2149
+    ftr_sq_size = 2150
     ftr_abil_ab_speed_bonus = 2151
     ftr_abil_mjd_sig_radius_bonus = 2156
     ftr_abil_missiles_resist_id = 2170
     ftr_abil_missiles_duration = 2182
+    ftr_abil_stasis_web_speed_penalty = 2184
+    ftr_abil_stasis_web_speed_penalty_interim = 2185
+    ftr_abil_stasis_web_speed_resist_id = 2188
     ftr_abil_energy_neut_amount = 2211
     ftr_tubes = 2216
     ftr_light_slots = 2217
