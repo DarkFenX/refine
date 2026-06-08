@@ -42,18 +42,18 @@ def test_resistance(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_dromi.change_fighter(add_projs=[api_tgt_ship.id])
     # Verification
-    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
-    assert api_fit_stats.speed == approx(550)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(550)
     # Action
     api_booster = api_tgt_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
-    assert api_fit_stats.speed == approx(662.5)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(662.5)
     # Action
     api_booster.remove()
     # Verification
-    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
-    assert api_fit_stats.speed == approx(550)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(550)
 
 
 def test_count(client, consts):
@@ -76,10 +76,60 @@ def test_count(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_dromi.change_fighter(add_projs=[api_tgt_ship.id])
     # Verification
-    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
-    assert api_fit_stats.speed == approx(700)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(700)
     # Action
     api_src_dromi.change_fighter(count=4)
     # Verification
-    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
-    assert api_fit_stats.speed == approx(400)
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(400)
+
+
+def test_attr_state(client, consts):
+    # Check that even when ability/fighter are "disabled", web strength attribute value is still
+    # multiplied
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_web_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_stasis_web_speed_penalty)
+    eve_web_interim_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_stasis_web_speed_penalty_interim)
+    client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_size)
+    eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_web_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_stasis_web, cat_id=consts.EveEffCat.target)
+    eve_web_ability_id = client.mk_eve_abil(id_=consts.EveAbil.stasis_web)
+    eve_dromi_id = client.mk_eve_fighter(
+        attrs={eve_web_attr_id: -15, eve_web_interim_attr_id: 0, eve_max_count_attr_id: 3},
+        eff_ids=[eve_web_effect_id],
+        defeff_id=eve_web_effect_id,
+        abils=[client.mk_eve_item_abil(id_=eve_web_ability_id)])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_dromi = api_src_fit.add_fighter(
+        type_id=eve_dromi_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_web_ability_id: True})
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_src_dromi.change_fighter(add_projs=[api_tgt_ship.id])
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(550)
+    assert api_src_dromi.update().attrs[eve_web_interim_attr_id].modified == approx(-45)
+    # Action
+    api_src_dromi.change_fighter(state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(1000)
+    assert api_src_dromi.update().attrs[eve_web_interim_attr_id].modified == approx(-45)
+    # Action
+    api_src_dromi.change_fighter(abilities={eve_web_ability_id: False})
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(1000)
+    assert api_src_dromi.update().attrs[eve_web_interim_attr_id].modified == approx(-45)
+    # Action
+    api_src_dromi.change_fighter(state=consts.ApiMinionState.engaging)
+    # Verification
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
+    assert api_tgt_fit_stats.speed == approx(1000)
+    assert api_src_dromi.update().attrs[eve_web_interim_attr_id].modified == approx(-45)

@@ -255,6 +255,7 @@ class EveBuffOp(StrEnum):
 
 @unique
 class EveAbil(IntEnum):
+    stasis_web = 2
     mjd = 5
     launch_bomb = 7
     ab = 9
