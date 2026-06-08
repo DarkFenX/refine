@@ -5,9 +5,9 @@ use crate::{
         NEffectGeneralOutputGetter,
     },
     rd::{
-        RAttrId, RBuffId, REffectBuff, REffectCharge, REffectChargeLoc, REffectEcm, REffectId, REffectLocalOpcSpec,
-        REffectMining, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter,
-        REffectSpoolAttrs, RItem, RItemListId, RState,
+        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectEcm, REffectId,
+        REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
+        REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -293,6 +293,11 @@ impl REffect {
                 .as_ref()
                 .map(|ecm| REffectEcm::from_n_effect_ecm(ecm, a_effect, attr_aid_rid_map));
         }
+        // Generate default projected modifier specification here, since NEffects do not cover all
+        // the effects which need it
+        if self.proj_mod.is_none() && self.has_projected_modifiers() {
+            self.proj_mod = Some(REffectProjModSpec::default_from_a_effect(a_effect, attr_aid_rid_map));
+        }
         // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
         // all effects which need it.
         if self.cap_consume.is_none() && self.discharge_attr_rid.is_some() {
@@ -303,5 +308,27 @@ impl REffect {
             })
         }
         self.is_active_with_duration = self.state == RState::Active && self.duration_attr_rid.is_some();
+    }
+    fn has_projected_modifiers(&self) -> bool {
+        if matches!(self.category, AEffectCatId::TARGET) && !self.modifiers.is_empty() {
+            return true;
+        }
+        if matches!(self.category, AEffectCatId::ACTIVE | AEffectCatId::TARGET)
+            && let Some(buff) = self.buff.as_ref()
+        {
+            if let Some(merge_buff) = buff.attr_merge.as_ref()
+                && matches!(merge_buff.scope, REffectBuffScope::Projected(_))
+            {
+                return true;
+            }
+            if buff
+                .full
+                .iter()
+                .any(|v| matches!(v.scope, REffectBuffScope::Projected(_)))
+            {
+                return true;
+            }
+        }
+        false
     }
 }

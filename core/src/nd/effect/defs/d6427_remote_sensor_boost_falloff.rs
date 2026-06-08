@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: NEffectProjGetter::GenericRangeFullStsRestricted,
+            proj_mult: Some(NEffectProjGetter::GenericRangeFullStsRestricted),
             ..
         }),
         ..

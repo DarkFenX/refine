@@ -10,7 +10,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: NEffectProjGetter::GenericRangeSimpleSts,
+            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
             ..
         }),
         ..

@@ -16,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_update_effect_fn: Some(update_effect),
         ignore_offmod_immunity: true,
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: NEffectProjGetter::GenericRangeSimpleSts,
+            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
             ..
         }),
         ..

@@ -59,7 +59,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: NEffectProjGetter::AoeBurstRange,
+            proj_mult: Some(NEffectProjGetter::AoeBurstRange),
             ..
         }),
         ..

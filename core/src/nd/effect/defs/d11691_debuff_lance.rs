@@ -53,7 +53,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: NEffectProjGetter::AoeDdRange,
+            proj_mult: Some(NEffectProjGetter::AoeDdRange),
             ..
         }),
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
