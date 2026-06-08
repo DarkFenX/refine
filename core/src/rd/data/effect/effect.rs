@@ -295,7 +295,7 @@ impl REffect {
         }
         // Generate default projected modifier specification here, since NEffects do not cover all
         // the effects which need it
-        if self.proj_mod.is_none() && self.has_projected_modifiers() {
+        if self.proj_mod.is_none() && self.needs_proj_mod_spec() {
             self.proj_mod = Some(REffectProjModSpec::default_from_a_effect(a_effect, attr_aid_rid_map));
         }
         // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
@@ -309,11 +309,11 @@ impl REffect {
         }
         self.is_active_with_duration = self.state == RState::Active && self.duration_attr_rid.is_some();
     }
-    fn has_projected_modifiers(&self) -> bool {
-        if matches!(self.category, AEffectCatId::TARGET) && !self.modifiers.is_empty() {
+    fn needs_proj_mod_spec(&self) -> bool {
+        if self.category == AEffectCatId::TARGET {
             return true;
         }
-        if matches!(self.category, AEffectCatId::ACTIVE | AEffectCatId::TARGET)
+        if self.category == AEffectCatId::ACTIVE
             && let Some(buff) = self.buff.as_ref()
         {
             if let Some(merge_buff) = buff.attr_merge.as_ref()
@@ -329,6 +329,6 @@ impl REffect {
                 return true;
             }
         }
-        false
+        true
     }
 }
