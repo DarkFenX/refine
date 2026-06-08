@@ -17,3 +17,22 @@ pub(in crate::nd::effect::defs) fn assign_defeff_to_item(
         None => false,
     }
 }
+
+pub(in crate::nd::effect::defs) fn assign_to_item_with_eff(
+    a_items: &mut RMap<AItemId, AItem>,
+    check_effect_aid: AEffectId,
+    assign_effect_aid: AEffectId,
+) -> bool {
+    let mut assigned = false;
+    for a_item in a_items
+        .values_mut()
+        .filter(|v| v.effects.contains_id(&check_effect_aid))
+    {
+        a_item.effects.insert(AItemEffect {
+            id: assign_effect_aid,
+            ..
+        });
+        assigned = true;
+    }
+    assigned
+}

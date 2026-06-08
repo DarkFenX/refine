@@ -16,6 +16,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::c4_warp_disrupt_probe::mk_n_effect(),
         defs::c5_stasis_web_probe::mk_n_effect(),
         defs::c6_wdfg_script_debubble::mk_n_effect(),
+        defs::c7_ftr_abil_warp_disrupt_interim::mk_n_effect(),
         defs::c10_stability_generator_electric::mk_n_effect(),
         defs::c11_stability_generator_plasma::mk_n_effect(),
         defs::c12_stability_generator_exotic::mk_n_effect(),
