@@ -24,7 +24,7 @@ fn make_effect() -> AEffect {
     AEffect {
         id: EFFECT_AID,
         category: AEffectCatId::PASSIVE,
-        state: AState::Disabled,
+        state: AState::Offline,
         modifiers: [
             AEffectModifier {
                 strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_WARP_DISRUPT_POINT_STR),

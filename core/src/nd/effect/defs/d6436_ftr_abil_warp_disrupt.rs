@@ -27,7 +27,7 @@ fn update_effect(a_effect: &mut AEffect) {
     a_effect.modifiers.insert(AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_WARP_DISRUPT_POINT_STR_INTERIM),
         op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
+        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Target),
         affectee_attr_id: AAttrId::WARP_SCRAMBLE_STATUS,
     });
 }
