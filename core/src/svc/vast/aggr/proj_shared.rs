@@ -7,15 +7,14 @@ use super::{
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
-    misc::{AttrSpec, EffectSpec},
+    misc::EffectSpec,
     nd::NEffectOutputGetter,
     num::{Count, PValue, UnitInterval, Value},
-    rd::{REffect, REffectProjOpcSpec, REffectResist},
+    rd::{REffect, REffectProjOpcSpec},
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{CSeqLoopLimSin, CycleDataFull, GetMainDuration},
-        funcs,
         output::Output,
     },
     ud::UItemId,
@@ -85,18 +84,7 @@ impl<I> AggrProjInvData<I> {
             }
             // Resists
             if let Some(resist) = ospec.resist {
-                let resist_mult = match resist {
-                    REffectResist::Standard => {
-                        funcs::get_effect_default_resist_mult(ctx, calc, projector_uid, effect, projectee_uid)
-                    }
-                    REffectResist::AttrRef(resist_ref_attr_rid) => funcs::get_referenced_resist_mult(
-                        ctx,
-                        calc,
-                        &AttrSpec::new(projector_uid, resist_ref_attr_rid),
-                        projectee_uid,
-                    ),
-                };
-                match resist_mult {
+                match resist.get_mult_by_projection(ctx, calc, projector_uid, projectee_uid) {
                     Some(PValue::ZERO) => return None,
                     Some(resist_mult) => str_mult *= resist_mult,
                     None => (),

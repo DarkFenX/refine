@@ -1,5 +1,5 @@
 use crate::{
-    ad::{ABuffId, AEveBuffId},
+    ad::ABuffId,
     misc::EffectSpec,
     num::Value,
     rd::{RAttrId, RBuff, REffect, REffectBuffScope, REffectId, REffectModStrength},
@@ -7,7 +7,7 @@ use crate::{
         SvcCtx,
         calc::{Calc, RawModifier},
     },
-    ud::{UItem, UItemId},
+    ud::{UData, UItem, UItemId},
 };
 
 impl Calc {
@@ -22,7 +22,7 @@ impl Calc {
         reuse_rmods.clear();
         // Regular modifiers
         for effect_mod in effect.modifiers.iter() {
-            match RawModifier::try_from_effect_mod(item_uid, item, effect, effect_mod) {
+            match RawModifier::try_from_effect_mod(ctx.u_data, item_uid, item, effect, effect_mod) {
                 Some(raw_mod) => reuse_rmods.push(raw_mod),
                 None => continue,
             };
@@ -34,11 +34,14 @@ impl Calc {
             if let Some(buff_attr_merge) = &effect_buff.attr_merge {
                 for (buff_type_attr_rid, buff_str_attr_rid) in ctx.ac().buff_merge_ids_strs.iter() {
                     if let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, *buff_type_attr_rid) {
-                        let buff_aid = ABuffId::Eve(AEveBuffId::from_f64_rounded(buff_id_cval.extra.into_f64()));
+                        let Some(buff_aid) = ABuffId::try_eve_from_f64_rounded(buff_id_cval.extra.into_f64()) else {
+                            continue;
+                        };
                         let Some(buff) = ctx.u_data.src.get_buff_by_aid(&buff_aid) else {
                             continue;
                         };
                         add_buff_mods_with_attr(
+                            ctx.u_data,
                             reuse_rmods,
                             item_uid,
                             item,
@@ -57,6 +60,7 @@ impl Calc {
                     REffectModStrength::Attr(buff_str_attr_rid) => {
                         let buff = ctx.u_data.src.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_attr(
+                            ctx.u_data,
                             reuse_rmods,
                             item_uid,
                             item,
@@ -70,6 +74,7 @@ impl Calc {
                     REffectModStrength::Hardcoded(buff_str) => {
                         let buff = ctx.u_data.src.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_hardcoded(
+                            ctx.u_data,
                             reuse_rmods,
                             item_uid,
                             item,
@@ -108,11 +113,14 @@ impl Calc {
                 && let Some(buff_attr_merge) = &effect_buff.attr_merge
                 && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, buff_type_attr_rid)
             {
-                let buff_aid = ABuffId::Eve(AEveBuffId::from_f64_rounded(buff_id_cval.extra.into_f64()));
+                let Some(buff_aid) = ABuffId::try_eve_from_f64_rounded(buff_id_cval.extra.into_f64()) else {
+                    continue;
+                };
                 let Some(buff) = ctx.u_data.src.get_buff_by_aid(&buff_aid) else {
                     continue;
                 };
                 add_buff_mods_with_attr(
+                    ctx.u_data,
                     &mut rmods,
                     item_uid,
                     item,
@@ -129,6 +137,7 @@ impl Calc {
 }
 
 fn add_buff_mods_with_attr(
+    u_data: &UData,
     rmods: &mut Vec<RawModifier>,
     item_uid: UItemId,
     item: &UItem,
@@ -140,6 +149,7 @@ fn add_buff_mods_with_attr(
 ) {
     for buff_mod in buff.mods.iter() {
         let Some(rmod) = RawModifier::try_from_buff_with_attr(
+            u_data,
             item_uid,
             item,
             effect,
@@ -156,6 +166,7 @@ fn add_buff_mods_with_attr(
 }
 
 fn add_buff_mods_with_hardcoded(
+    u_data: &UData,
     rmods: &mut Vec<RawModifier>,
     item_uid: UItemId,
     item: &UItem,
@@ -165,9 +176,9 @@ fn add_buff_mods_with_hardcoded(
     buff_str: Value,
 ) {
     for buff_mod in buff.mods.iter() {
-        if let Some(rmod) =
-            RawModifier::try_from_buff_with_hardcoded(item_uid, item, effect, buff, buff_scope, buff_mod, buff_str)
-        {
+        if let Some(rmod) = RawModifier::try_from_buff_with_hardcoded(
+            u_data, item_uid, item, effect, buff, buff_scope, buff_mod, buff_str,
+        ) {
             rmods.push(rmod);
         }
     }

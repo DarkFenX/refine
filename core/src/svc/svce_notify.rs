@@ -107,7 +107,7 @@ impl Svc {
         self.calc
             .effect_projected(svc_ctx, projector_espec, projectee_uid, projectee_item);
         self.vast.effect_projected(
-            u_data.src.get_attr_consts(),
+            u_data,
             projector_uid,
             projector_item,
             effect,
@@ -129,7 +129,7 @@ impl Svc {
         self.calc
             .effect_unprojected(svc_ctx, projector_espec, projectee_uid, projectee_item);
         self.vast.effect_unprojected(
-            u_data.src.get_attr_consts(),
+            u_data,
             projector_uid,
             projector_item,
             effect,

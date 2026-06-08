@@ -44,7 +44,6 @@ pub(crate) struct REffect {
     pub(crate) falloff_attr_rid: Option<RAttrId>,
     pub(crate) track_attr_rid: Option<RAttrId>,
     pub(crate) chance_attr_rid: Option<RAttrId>,
-    pub(crate) resist_attr_rid: Option<RAttrId>,
     pub(crate) spool_attr_rids: Option<REffectSpoolAttrs>,
     pub(crate) proj_mod: Option<REffectProjModSpec>,
     // Output getters/specs
@@ -135,7 +134,6 @@ impl REffect {
             falloff_attr_rid: Default::default(),
             track_attr_rid: Default::default(),
             chance_attr_rid: Default::default(),
-            resist_attr_rid: Default::default(),
             is_active_with_duration: Default::default(),
             proj_mod: Default::default(),
             normal_dmg: Default::default(),
@@ -191,10 +189,6 @@ impl REffect {
             .chance_attr_id
             .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid))
             .copied();
-        self.resist_attr_rid = a_effect
-            .resist_attr_id
-            .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid))
-            .copied();
         self.modifiers.extend(
             a_effect
                 .modifiers
@@ -233,35 +227,35 @@ impl REffect {
             self.normal_dmg = n_effect
                 .normal_dmg
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.breacher_dmg = n_effect
                 .breacher_dmg
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.mining_ore = n_effect
                 .mining_ore
                 .as_ref()
-                .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
+                .map(|mining| REffectMining::from_n_effect_mining(mining, a_effect, attr_aid_rid_map));
             self.mining_ice = n_effect
                 .mining_ice
                 .as_ref()
-                .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
+                .map(|mining| REffectMining::from_n_effect_mining(mining, a_effect, attr_aid_rid_map));
             self.mining_gas = n_effect
                 .mining_gas
                 .as_ref()
-                .map(|mining| REffectMining::from_n_effect_mining(mining, attr_aid_rid_map));
+                .map(|mining| REffectMining::from_n_effect_mining(mining, a_effect, attr_aid_rid_map));
             self.outgoing_shield_rep = n_effect
                 .outgoing_shield_rep
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.outgoing_armor_rep = n_effect
                 .outgoing_armor_rep
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.outgoing_hull_rep = n_effect
                 .outgoing_hull_rep
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.local_shield_rep = n_effect
                 .local_shield_rep
                 .as_ref()
@@ -281,15 +275,15 @@ impl REffect {
             self.neut = n_effect
                 .neut
                 .as_ref()
-                .map(|neut| REffectNeut::from_n_effect_neut(neut, attr_aid_rid_map));
+                .map(|neut| REffectNeut::from_n_effect_neut(neut, a_effect, attr_aid_rid_map));
             self.nosf = n_effect
                 .nosf
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.outgoing_cap = n_effect
                 .outgoing_cap
                 .as_ref()
-                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, attr_aid_rid_map));
+                .map(|ospec| REffectProjOpcSpec::from_n_proj_opc_spec(ospec, a_effect, attr_aid_rid_map));
             self.cap_inject = n_effect
                 .cap_inject
                 .as_ref()
@@ -297,7 +291,7 @@ impl REffect {
             self.ecm = n_effect
                 .ecm
                 .as_ref()
-                .map(|ecm| REffectEcm::from_n_effect_ecm(ecm, attr_aid_rid_map));
+                .map(|ecm| REffectEcm::from_n_effect_ecm(ecm, a_effect, attr_aid_rid_map));
         }
         // Generate default cap consumption OPC spec here, since it's not defined on NEffects for
         // all effects which need it.

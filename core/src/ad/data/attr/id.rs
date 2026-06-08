@@ -66,6 +66,9 @@ impl AAttrId {
     pub(in crate::ad) const fn from_eid(attr_eid: EAttrId) -> Self {
         Self::Eve(AEveAttrId(attr_eid.into_i32()))
     }
+    pub(crate) fn try_eve_from_f64_rounded(id: f64) -> Option<Self> {
+        Some(Self::Eve(AEveAttrId::try_from_f64_rounded(id)?))
+    }
     pub(in crate::ad) fn dc_eve(&self) -> Option<EAttrId> {
         match self {
             Self::Eve(eve_attr_aid) => Some(EAttrId::from_i32(eve_attr_aid.into_i32())),
@@ -74,7 +77,11 @@ impl AAttrId {
     }
 }
 impl AEveAttrId {
-    pub(crate) fn from_f64_rounded(id: f64) -> Self {
-        Self(round_f64_to_i32(id))
+    fn try_from_f64_rounded(id: f64) -> Option<Self> {
+        match round_f64_to_i32(id) {
+            // Reference to 0 is considered as no reference throughout EVE data
+            0 => None,
+            id => Some(Self(id)),
+        }
     }
 }

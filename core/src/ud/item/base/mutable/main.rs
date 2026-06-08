@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, AEffectId, AEveItemListId, AItemCatId, AItemGrpId, AItemId, AItemListId},
+    ad::{AAttrId, AEffectId, AItemCatId, AItemGrpId, AItemId, AItemListId},
     err::basic::ItemNotMutatedError,
     misc::EffectMode,
     num::{SkillLevel, UnitInterval, Value},
@@ -639,13 +639,9 @@ fn merge_effects(
         if let Some(charge_info) = &effect.charge
             && let Some(attr_rid) = charge_info.location.get_autocharge_attr_rid()
         {
-            let new_ac_type_aid = merged_attrs.get(&attr_rid).and_then(|v| {
-                let type_aid = AItemId::from_f64_rounded(v.into_f64());
-                match type_aid == AItemId::from_i32(0) {
-                    true => None,
-                    false => Some(type_aid),
-                }
-            });
+            let new_ac_type_aid = merged_attrs
+                .get(&attr_rid)
+                .and_then(|v| AItemId::try_from_f64_rounded(v.into_f64()));
             if new_ac_type_aid != effect_data.autocharge {
                 let inner = result.get_or_insert_with(|| effects.clone());
                 inner.get_mut(&effect_rid).unwrap().autocharge = new_ac_type_aid;
@@ -655,13 +651,10 @@ fn merge_effects(
         if let Some(projectee_filter_info) = &effect.projectee_filter
             && let Some(attr_rid) = projectee_filter_info.get_item_list_attr_rid()
         {
-            let new_projectee_filter = merged_attrs.get(&attr_rid).and_then(|v| {
-                let item_list_id = AEveItemListId::from_f64_rounded(v.into_f64());
-                match item_list_id == AEveItemListId::from_i32(0) {
-                    true => None,
-                    false => src.get_item_list_rid_by_aid(&AItemListId::Eve(item_list_id)),
-                }
-            });
+            let new_projectee_filter = merged_attrs
+                .get(&attr_rid)
+                .and_then(|v| AItemListId::try_eve_from_f64_rounded(v.into_f64()))
+                .and_then(|v| src.get_item_list_rid_by_aid(&v));
             if new_projectee_filter != effect_data.projectee_filter {
                 let inner = result.get_or_insert_with(|| effects.clone());
                 inner.get_mut(&effect_rid).unwrap().projectee_filter = new_projectee_filter;

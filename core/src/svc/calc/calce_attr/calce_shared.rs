@@ -1,12 +1,10 @@
 use crate::{
-    misc::AttrSpec,
     num::{PValue, Value},
     rd::RAttr,
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, misc::ItemAttrData},
         err::UItemLoadedError,
-        funcs,
     },
     ud::{UItem, UItemId},
 };
@@ -19,9 +17,9 @@ impl Calc {
             .ok_or(UItemLoadedError { item_uid })
     }
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
-        let resist_attr_rid = cmod.raw.resist_attr_rid?;
-        let item_uid = cmod.ctx.get_item_uid()?;
-        let resist = funcs::get_resist_mult(ctx, self, &AttrSpec::new(item_uid, resist_attr_rid))?;
+        let r_resist = cmod.raw.proj_spec?.resist?;
+        let projectee_uid = cmod.ctx.get_item_uid()?;
+        let resist = r_resist.get_mult_by_projection(ctx, self, cmod.raw.affector_espec.item_uid, projectee_uid)?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {

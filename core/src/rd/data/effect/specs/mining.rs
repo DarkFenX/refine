@@ -1,5 +1,5 @@
 use crate::{
-    ad::AAttrId,
+    ad::{AAttrId, AEffect},
     nd::{NEffectMining, NEffectMiningChecker, NEffectMiningOutputGetter},
     rd::{RAttrId, REffectProjOpcSpec},
     ud::UItem,
@@ -25,11 +25,12 @@ impl REffectMining {
 impl REffectMining {
     pub(in crate::rd::data::effect) fn from_n_effect_mining(
         n_effect_mining: &NEffectMining,
+        a_effect: &AEffect,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             checker: n_effect_mining.checker,
-            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_mining.ospec, attr_aid_rid_map),
+            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_mining.ospec, a_effect, attr_aid_rid_map),
         }
     }
 }

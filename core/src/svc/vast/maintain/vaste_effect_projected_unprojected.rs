@@ -1,15 +1,15 @@
 use crate::{
     ad::AEffectCatId,
     misc::{AttrSpec, EffectSpec},
-    rd::{RAttrConsts, REffect},
-    svc::{funcs, vast::Vast},
-    ud::{UItem, UItemId},
+    rd::REffect,
+    svc::vast::Vast,
+    ud::{UData, UItem, UItemId},
 };
 
 impl Vast {
     pub(in crate::svc) fn effect_projected(
         &mut self,
-        attr_consts: &RAttrConsts,
+        u_data: &UData,
         projector_uid: UItemId,
         projector_item: &UItem,
         effect: &REffect,
@@ -38,7 +38,10 @@ impl Vast {
                         .blockable_offense
                         .add_entry(projectee_uid, projector_espec);
                 }
-                if let Some(resist_attr_rid) = funcs::get_resist_attr_rid(projector_item, effect) {
+                if let Some(mspec) = effect.proj_mod
+                    && let Some(resist) = mspec.resist
+                    && let Some(resist_attr_rid) = resist.get_attr_rid(u_data, projector_uid)
+                {
                     let projectee_aspec = AttrSpec::new(projectee_uid, resist_attr_rid);
                     projector_fit_data
                         .resist_immunity
@@ -90,13 +93,13 @@ impl Vast {
                 .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
         }
         if let Some(neut) = &effect.neut
-            && neut.check(projector_item, attr_consts)
+            && neut.check(projector_item, u_data.src.get_attr_consts())
         {
             self.in_neuts
                 .add_entry(projectee_uid, projector_uid, effect.rid, neut.ospec);
         }
         if let Some(ecm) = &effect.ecm
-            && ecm.check(projector_item, attr_consts)
+            && ecm.check(projector_item, u_data.src.get_attr_consts())
         {
             self.in_ecm
                 .add_entry(projectee_uid, projector_uid, effect.rid, ecm.ospec);
@@ -104,7 +107,7 @@ impl Vast {
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
-        attr_consts: &RAttrConsts,
+        u_data: &UData,
         projector_uid: UItemId,
         projector_item: &UItem,
         effect: &REffect,
@@ -130,7 +133,10 @@ impl Vast {
                         .blockable_offense
                         .remove_entry(projectee_uid, &projector_espec);
                 }
-                if let Some(resist_attr_rid) = funcs::get_resist_attr_rid(projector_item, effect) {
+                if let Some(mspec) = effect.proj_mod
+                    && let Some(resist) = mspec.resist
+                    && let Some(resist_attr_rid) = resist.get_attr_rid(u_data, projector_uid)
+                {
                     let projectee_aspec = AttrSpec::new(projectee_uid, resist_attr_rid);
                     projector_fit_data
                         .resist_immunity
@@ -174,12 +180,12 @@ impl Vast {
             self.in_cap.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
         if let Some(neut) = &effect.neut
-            && neut.check(projector_item, attr_consts)
+            && neut.check(projector_item, u_data.src.get_attr_consts())
         {
             self.in_neuts.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
         if let Some(ecm) = &effect.ecm
-            && ecm.check(projector_item, attr_consts)
+            && ecm.check(projector_item, u_data.src.get_attr_consts())
         {
             self.in_ecm.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }

@@ -1,5 +1,5 @@
 use crate::{
-    ad::AAttrId,
+    ad::{AAttrId, AEffect},
     nd::{NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutChecker, NEffectNeutKind},
     rd::{RAttrConsts, RAttrId, REffectProjOpcSpec},
     ud::UItem,
@@ -26,12 +26,13 @@ impl REffectNeut {
 impl REffectNeut {
     pub(in crate::rd::data::effect) fn from_n_effect_neut(
         n_effect_neut: &NEffectNeut,
+        a_effect: &AEffect,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             kind: n_effect_neut.kind,
             checker: n_effect_neut.checker,
-            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_neut.ospec, attr_aid_rid_map),
+            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_neut.ospec, a_effect, attr_aid_rid_map),
         }
     }
 }

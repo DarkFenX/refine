@@ -29,7 +29,7 @@ impl REffectProjModSpec {
                 .proj_mult
                 .get_modifier_attr_aids(a_effect)
                 .map(|attr_aid| attr_aid.and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied())),
-            resist: REffectResist::try_from_n_effect_resist(&n_proj_mod_spec.resist, attr_aid_rid_map),
+            resist: REffectResist::try_from_n_effect_resist(&n_proj_mod_spec.resist, a_effect, attr_aid_rid_map),
         }
     }
 }

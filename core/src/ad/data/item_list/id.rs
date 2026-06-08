@@ -66,6 +66,9 @@ impl AItemListId {
     pub(in crate::ad) const fn from_eid(item_list_eid: EItemListId) -> Self {
         Self::Eve(AEveItemListId(item_list_eid.into_i32()))
     }
+    pub(crate) fn try_eve_from_f64_rounded(id: f64) -> Option<Self> {
+        Some(Self::Eve(AEveItemListId::try_from_f64_rounded(id)?))
+    }
     pub(in crate::ad) fn dc_eve(&self) -> Option<EItemListId> {
         match self {
             Self::Eve(eve_item_list_aid) => Some(EItemListId::from_i32(eve_item_list_aid.into_i32())),
@@ -74,7 +77,11 @@ impl AItemListId {
     }
 }
 impl AEveItemListId {
-    pub(crate) fn from_f64_rounded(id: f64) -> Self {
-        Self(round_f64_to_i32(id))
+    fn try_from_f64_rounded(id: f64) -> Option<Self> {
+        match round_f64_to_i32(id) {
+            // Reference to 0 is considered as no reference throughout EVE data
+            0 => None,
+            id => Some(Self(id)),
+        }
     }
 }

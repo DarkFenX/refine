@@ -25,8 +25,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_container_limit(
         attr_consts.launcher_group6,
     ]
     .iter()
-    .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemGrpId::from_f64_rounded(v.into_f64()))
+    .filter_map(|attr_rid| {
+        attr_rid
+            .and_then(|attr_rid| item_attrs.get(&attr_rid))
+            .and_then(|v| AItemGrpId::try_from_f64_rounded(v.into_f64()))
+    })
     .unique()
     .collect_vec();
     if group_ids.is_empty() {

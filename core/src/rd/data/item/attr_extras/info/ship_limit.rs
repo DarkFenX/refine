@@ -34,8 +34,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
         attr_consts.fits_to_ship_type,
     ]
     .iter()
-    .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemId::from_f64_rounded(v.into_f64()))
+    .filter_map(|attr_rid| {
+        attr_rid
+            .and_then(|attr_rid| item_attrs.get(&attr_rid))
+            .and_then(|v| AItemId::try_from_f64_rounded(v.into_f64()))
+    })
     .unique()
     .collect_vec();
     let limit_group_aids = [
@@ -61,8 +64,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
         attr_consts.can_fit_ship_group20,
     ]
     .iter()
-    .filter_map(|attr_rid| attr_rid.and_then(|attr_rid| item_attrs.get(&attr_rid)))
-    .map(|v| AItemGrpId::from_f64_rounded(v.into_f64()))
+    .filter_map(|attr_rid| {
+        attr_rid
+            .and_then(|attr_rid| item_attrs.get(&attr_rid))
+            .and_then(|v| AItemGrpId::try_from_f64_rounded(v.into_f64()))
+    })
     .unique()
     .collect_vec();
     match item_aid {

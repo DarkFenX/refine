@@ -1,5 +1,5 @@
 use crate::{
-    ad::AAttrId,
+    ad::{AAttrId, AEffect},
     dbg::DebugResult,
     nd::{NEffectChargeMultGetter, NEffectOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
     rd::{RAttrId, REffectResist},
@@ -31,6 +31,7 @@ where
 {
     pub(in crate::rd::data::effect) fn from_n_proj_opc_spec(
         n_proj_opc_spec: &NEffectProjOpcSpec<BG>,
+        a_effect: &AEffect,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
@@ -42,7 +43,7 @@ where
             resist: n_proj_opc_spec
                 .resist
                 .as_ref()
-                .and_then(|n_resist| REffectResist::try_from_n_effect_resist(n_resist, attr_aid_rid_map)),
+                .and_then(|n_resist| REffectResist::try_from_n_effect_resist(n_resist, a_effect, attr_aid_rid_map)),
             local_limit_attr_id: n_proj_opc_spec
                 .local_limit_attr_id
                 .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied()),

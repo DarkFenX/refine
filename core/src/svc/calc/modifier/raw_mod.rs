@@ -17,7 +17,6 @@ use crate::{
             AffecteeFilter, Affector, AggrMode, Calc, CalcOp, ItemAddRemoveReviser, Location, ModifierKind,
             modifier::ModStrength,
         },
-        funcs,
     },
     ud::{UData, UItem, UItemId},
 };
@@ -64,6 +63,7 @@ impl Hash for RawModifier {
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_effect_mod(
+        u_data: &UData,
         affector_uid: UItemId,
         affector_item: &UItem,
         effect: &REffect,
@@ -71,10 +71,16 @@ impl RawModifier {
     ) -> Option<Self> {
         let affectee_filter = AffecteeFilter::from_effect_affectee_filter(&effect_mod.affectee_filter, affector_item);
         let kind = get_effect_mod_kind(effect.category, &affectee_filter)?;
-        // Only targeted effects can be affected by resists
-        let resist_attr_rid = match kind {
-            ModifierKind::Targeted => funcs::get_resist_attr_rid(affector_item, effect),
-            _ => None,
+        // Only targeted effects can be affected by projected modifier spec (range/resist reduction)
+        let (proj_spec, resist_attr_rid) = match kind {
+            ModifierKind::Targeted => (
+                effect.proj_mod,
+                effect
+                    .proj_mod
+                    .and_then(|v| v.resist)
+                    .and_then(|v| v.get_attr_rid(u_data, affector_uid)),
+            ),
+            _ => (None, None),
         };
         Some(Self {
             kind,
@@ -88,12 +94,13 @@ impl RawModifier {
             affectee_filter,
             affectee_attr_rid: effect_mod.affectee_attr_rid,
             buff_type_attr_rid: None,
-            proj_spec: effect.proj_mod,
+            proj_spec,
             resist_attr_rid,
             ..
         })
     }
     pub(in crate::svc::calc) fn try_from_buff_with_attr(
+        u_data: &UData,
         affector_uid: UItemId,
         affector_item: &UItem,
         effect: &REffect,
@@ -104,6 +111,7 @@ impl RawModifier {
         buff_str_attr_rid: RAttrId,
     ) -> Option<Self> {
         RawModifier::try_from_buff(
+            u_data,
             affector_uid,
             affector_item,
             effect,
@@ -115,6 +123,7 @@ impl RawModifier {
         )
     }
     pub(in crate::svc::calc) fn try_from_buff_with_hardcoded(
+        u_data: &UData,
         affector_rid: UItemId,
         affector_item: &UItem,
         effect: &REffect,
@@ -124,6 +133,7 @@ impl RawModifier {
         buff_str: Value,
     ) -> Option<Self> {
         RawModifier::try_from_buff(
+            u_data,
             affector_rid,
             affector_item,
             effect,
@@ -135,6 +145,7 @@ impl RawModifier {
         )
     }
     fn try_from_buff(
+        u_data: &UData,
         affector_uid: UItemId,
         affector_item: &UItem,
         effect: &REffect,
@@ -181,7 +192,10 @@ impl RawModifier {
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
                 buff_type_attr_rid,
                 proj_spec: effect.proj_mod,
-                resist_attr_rid: funcs::get_resist_attr_rid(affector_item, effect),
+                resist_attr_rid: effect
+                    .proj_mod
+                    .and_then(|v| v.resist)
+                    .and_then(|v| v.get_attr_rid(u_data, affector_uid)),
                 ..
             },
             // Fleet buffs cannot be resisted and range-reduced regardless of what effect says

@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AData, AEveItemListId, AItemListId},
+    ad::{AData, AItemListId},
     nd::{N_EFFECT_MAP, NEffectProjecteeFilter},
 };
 
@@ -15,11 +15,10 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_projectee_filter
                         let Some(a_item_attr) = a_item.attrs.get(attr_aid) else {
                             continue;
                         };
-                        let eve_item_list_aid = AEveItemListId::from_f64_rounded(a_item_attr.value.into_f64());
-                        if eve_item_list_aid == AEveItemListId::from_i32(0) {
-                            continue;
+                        match AItemListId::try_eve_from_f64_rounded(a_item_attr.value.into_f64()) {
+                            Some(item_list_aid) => item_list_aid,
+                            None => continue,
                         }
-                        AItemListId::Eve(eve_item_list_aid)
                     }
                 };
                 a_item_effect.data.projectee_filter = Some(item_list_aid);

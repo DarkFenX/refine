@@ -11,8 +11,7 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_effect_autocharges(a_da
                 && let Some(ac_attr_aid) = n_charge.location.get_autocharge_attr_aid()
                 && let Some(ac_a_item_attr) = a_item.attrs.get(&ac_attr_aid)
             {
-                let ac_item_aid = AItemId::from_f64_rounded(ac_a_item_attr.value.into_f64());
-                if ac_item_aid != AItemId::from_i32(0) {
+                if let Some(ac_item_aid) = AItemId::try_from_f64_rounded(ac_a_item_attr.value.into_f64()) {
                     a_item_effect.data.autocharge = Some(ac_item_aid)
                 }
             }

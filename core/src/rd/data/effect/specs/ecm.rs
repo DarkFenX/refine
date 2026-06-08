@@ -1,5 +1,5 @@
 use crate::{
-    ad::AAttrId,
+    ad::{AAttrId, AEffect},
     nd::{NEffectEcm, NEffectEcmChecker, NEffectEcmOutputGetter},
     rd::{RAttrConsts, RAttrId, REffectProjOpcSpec},
     ud::UItem,
@@ -25,11 +25,12 @@ impl REffectEcm {
 impl REffectEcm {
     pub(in crate::rd::data::effect) fn from_n_effect_ecm(
         n_effect_ecm: &NEffectEcm,
+        a_effect: &AEffect,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
             checker: n_effect_ecm.checker,
-            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_ecm.ospec, attr_aid_rid_map),
+            ospec: REffectProjOpcSpec::from_n_proj_opc_spec(&n_effect_ecm.ospec, a_effect, attr_aid_rid_map),
         }
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, AEveAttrId},
+    ad::AAttrId,
     num::{Count, FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrConsts, RAttrId},
     util::RMap,
@@ -82,11 +82,8 @@ pub(in crate::rd::data::item::attr_extras) fn get_remote_resist_attr_id(
 ) -> Option<RAttrId> {
     let attr_rid = attr_consts.remote_resist_id?;
     let attr_value = *item_attrs.get(&attr_rid)?;
-    let eve_attr_aid = AEveAttrId::from_f64_rounded(attr_value.into_f64());
-    if eve_attr_aid == AEveAttrId::from_i32(0) {
-        return None;
-    }
-    attr_aid_rid_map.get(&AAttrId::Eve(eve_attr_aid)).copied()
+    let attr_aid = AAttrId::try_eve_from_f64_rounded(attr_value.into_f64())?;
+    attr_aid_rid_map.get(&attr_aid).copied()
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_overload_td_lvl(

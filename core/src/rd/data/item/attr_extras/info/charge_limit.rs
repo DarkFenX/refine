@@ -24,8 +24,10 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_charge_limit(
         attr_consts.charge_group5,
     ]
     .iter()
-    .filter_map(|opt| opt.and_then(|attr_key| item_attrs.get(&attr_key)))
-    .map(|v| AItemGrpId::from_f64_rounded(v.into_f64()))
+    .filter_map(|opt| {
+        opt.and_then(|attr_key| item_attrs.get(&attr_key))
+            .and_then(|v| AItemGrpId::try_from_f64_rounded(v.into_f64()))
+    })
     .unique()
     .collect_vec();
     if group_ids.is_empty() {

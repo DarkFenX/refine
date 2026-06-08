@@ -11,6 +11,7 @@ pub(crate) mod eff_projs;
 pub(crate) mod err;
 pub(crate) mod funcs;
 pub(crate) mod output;
+mod r_resist_exts;
 mod spool;
 mod svc;
 mod svce_debug;
