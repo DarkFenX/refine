@@ -45,7 +45,7 @@ fn update_effect(a_effect: &mut AEffect) {
 fn mk_mobility_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(affector_attr_id),
-        op: AOp::PostPercImmune,
+        op: AOp::PostPerc,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id,
     }
@@ -54,7 +54,7 @@ fn mk_mobility_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) ->
 fn mk_resist_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(affector_attr_id),
-        op: AOp::PostMulImmune,
+        op: AOp::PostMul,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id,
     }
