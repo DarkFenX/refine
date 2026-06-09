@@ -1,8 +1,9 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
+        AItemListId, AOp,
     },
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec, NEffectProjecteeFilter},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_TACKLE;
@@ -11,6 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
+        projectee_filter: Some(NEffectProjecteeFilter::ItemList(AItemListId::DRONES_FIGHTERS)),
         proj_mod: Some(NEffectProjModSpec {
             proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
             ..
