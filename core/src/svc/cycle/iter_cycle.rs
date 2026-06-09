@@ -295,8 +295,6 @@ where
         }
         let mut p1_item = self.p1_item_draft;
         if self.p2_item.hard_dt_duration.is_some() {
-            // TODO: check if p1 main duration needs to be stored on iter?
-            // TODO: (might make sense if it is used on full data, where active/soft DT are split)
             let p1_duration = self.p1_item_draft.data.get_main_duration();
             let p1_repeats_left = (self.p1_repeats_limit - self.p1_repeats_done).into_pvalue();
             let p2_duration = self.p2_item.time_until_hard_dt.unwrap();
