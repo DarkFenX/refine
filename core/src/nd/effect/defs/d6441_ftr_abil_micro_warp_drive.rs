@@ -26,7 +26,7 @@ fn update_effect(a_effect: &mut AEffect) {
     a_effect.modifiers.extend([
         AEffectModifier {
             strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MWD_SPEED_BONUS),
-            op: AOp::PostPercImmune,
+            op: AOp::PostPerc,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
             affectee_attr_id: AAttrId::MAX_VELOCITY,
         },
