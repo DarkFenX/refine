@@ -1,6 +1,3 @@
-// TODO: after everything is implemented, remove this and see what needs to be cleaned up
-#![allow(dead_code)]
-
 use crate::{
     ad::{ACustomEffectId, AEffectId},
     ed::EEffectId,
