@@ -5,9 +5,10 @@ from fw.api import ItemStatsOptions
 def test_sig_radius_stacking(client, consts):
     # This test checks that drone prop sig blow is not stacking penalized against PostMul
     # modifications. This was tested ingame on 2026-06-10 by bombing an MWD'ing drone in a c3
-    # pulsar. Here, in test, a buff used instead of a system effect, because pulsar affecting drones
-    # seems to be a bug by itself (ingame it affects them on 1st release, then does not after a
-    # scoop-deploy cycle)
+    # pulsar (which uses PostMul to apply sig blow). Here, in test, a buff used instead of a system
+    # effect, because pulsar affecting drones seems to be a bug by itself. The bug is that ship
+    # modifiers from system effects affect drones on first release, then do not after a scoop-deploy
+    # cycle. This bug is not replicated in the lib, so using buff here instead.
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_cruise_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.entity_cruise_speed)
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
