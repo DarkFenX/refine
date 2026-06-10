@@ -23,6 +23,8 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: fighter MJD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
+    // As of 2026-06-10, fighter sig blow during MJD seems to be not a thing on TQ; reported it to
+    // FC, just keeping it enabled in case fix is missed in the future.
     a_effect.modifiers.insert(AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS),
         op: AOp::PostPerc,

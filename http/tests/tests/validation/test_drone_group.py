@@ -1,8 +1,8 @@
 """
 Drone group restriction isn't used in EVE as of 2025-03-05. It used to be a thing briefly for
-motherships/supercarriers when they were transitioned into fighter drones, before CCP implemented
-fighters as we know them today. Nevertheless, the lib supports this validation, just in case it ever
-gets back.
+motherships/supercarriers when they were transitioned into fighter drones, before fighters were
+implemented as we know them today. Nevertheless, the lib supports this validation, just in case it
+ever gets back.
 """
 
 from fw import approx, check_no_field

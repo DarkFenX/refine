@@ -4,9 +4,9 @@
 //   via custom/hardcoded attribute, which is modified via custom/hardcoded buff, which affects
 //   carrying ship, as well as targets it is projected upon. When a WDFG script is loaded, it does
 //   not remove the buff, but makes its strength 0;
-// - blocking MJD with both focused scripts. According to CCP Kestrel, scripts decide that they
-//   block MJD based on its graphical effect, not based on regular dogma group ID or skill
-//   requirement. In the library, it's changed to use conventional attributes;
+// - blocking MJD with both focused scripts. According to FC Kestrel, scripts decide that they block
+//   MJD based on its graphical effect, not based on regular dogma group ID or skill requirement. In
+//   the library, it's changed to use conventional attributes;
 // - attributes used by focused scripts are defined on parent item, not on script itself, while
 //   dogma (at least in the lib's implementation) assumes that source attributes are always defined
 //   on item which carries the effect;

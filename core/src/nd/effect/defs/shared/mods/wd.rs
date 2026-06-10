@@ -38,7 +38,7 @@ fn add_td_modifiers(mods: &mut AEffectModifiers) {
         make_direct_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::MAX_RANGE),
         make_direct_mod(AAttrId::FALLOFF_BONUS, AAttrId::FALLOFF),
         make_direct_mod(AAttrId::TRACKING_SPEED_BONUS, AAttrId::TRACKING_SPEED),
-        // Fighters - explosion radius is actually getting improved, which is a bug on CCP side
+        // Fighters - explosion radius is actually getting improved, which is a bug in EVE
         make_direct_mod(AAttrId::MAX_RANGE_BONUS, AAttrId::FTR_ABIL_ATK_MISSILE_RANGE_OPTIMAL),
         make_direct_mod(AAttrId::FALLOFF_BONUS, AAttrId::FTR_ABIL_ATK_MISSILE_RANGE_FALLOFF),
         make_direct_mod(

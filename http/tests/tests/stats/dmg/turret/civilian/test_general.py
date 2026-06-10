@@ -243,8 +243,8 @@ def test_time(client, consts):
 
 
 def test_charge_absent(client, consts):
-    # Civilian guns use on-gun damage stats (confirmed by CCP Kestrel on 2025-07-30), so if charge
-    # is not there, it's not an issue for the damage dealing part
+    # Civilian guns use on-gun damage stats (confirmed by FC Kestrel on 2025-07-30), so if charge is
+    # not there, it's not an issue for the damage dealing part
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_civilian(
         client=client, basic_info=eve_basic_info, dmgs=(0, 0, 2, 3), dmg_mult=2.4,
@@ -268,8 +268,8 @@ def test_charge_absent(client, consts):
 
 
 def test_charge_not_loaded(client, consts):
-    # Civilian guns use on-gun damage stats (confirmed by CCP Kestrel on 2025-07-30), so if charge
-    # is not there, it's not an issue for the damage dealing part
+    # Civilian guns use on-gun damage stats (confirmed by FC Kestrel on 2025-07-30), so if charge is
+    # not there, it's not an issue for the damage dealing part
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_charge_id = client.alloc_item_id()
     eve_module_id = make_eve_turret_civilian(

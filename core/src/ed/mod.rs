@@ -1,7 +1,7 @@
 //! EVE data handler and data types.
 //!
 //! Please be aware that neither handler interface nor data types should be considered as stable.
-//! Whenever CCP significantly change the EVE data format, the interface has to change as well.
+//! Whenever the EVE data format is significantly changed, the interface has to change as well.
 //!
 //! # Assumptions about data
 //! Refine verifies data integrity and makes several assumptions about it. If those assumptions are

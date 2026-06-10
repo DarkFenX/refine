@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         charge: Some(NEffectCharge {
-            // Autocharge attribute ID is defined just for completeness of data. CCP Kestrel
+            // Autocharge attribute ID is defined just for completeness of data. FC Kestrel
             // confirmed civilian guns use on-gun damage attributes, and ammo is possibly loaded
             // just for various side effects (e.g. ammo affecting module attributes, or shot
             // graphics). The library doesn't implement on-module autocharges just for this

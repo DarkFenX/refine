@@ -2,7 +2,7 @@ from fw import approx
 
 
 def test_preassign_min(client, consts):
-    # Pre-assign isn't used by CCP in buffs, but we check it nevertheless
+    # Pre-assign isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=True)
@@ -38,7 +38,7 @@ def test_preassign_min(client, consts):
 
 
 def test_preassign_max(client, consts):
-    # Pre-assign isn't used by CCP in buffs, but we check it nevertheless
+    # Pre-assign isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=False)
@@ -190,7 +190,7 @@ def test_premul_max(client, consts):
 
 
 def test_prediv_min(client, consts):
-    # Pre-division isn't used by CCP in buffs, but we check it nevertheless
+    # Pre-division isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=True)
@@ -249,7 +249,7 @@ def test_prediv_min(client, consts):
 
 
 def test_prediv_max(client, consts):
-    # Pre-division isn't used by CCP in buffs, but we check it nevertheless
+    # Pre-division isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=False)
@@ -380,7 +380,7 @@ def test_add_max(client, consts):
 
 
 def test_sub_min(client, consts):
-    # Subtraction isn't used by CCP in buffs, but we check it nevertheless
+    # Subtraction isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=True)
@@ -417,7 +417,7 @@ def test_sub_min(client, consts):
 
 
 def test_sub_max(client, consts):
-    # Subtraction isn't used by CCP in buffs, but we check it nevertheless
+    # Subtraction isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=False)
@@ -570,7 +570,7 @@ def test_postmul_max(client, consts):
 
 
 def test_postdiv_min(client, consts):
-    # Post-division isn't used by CCP in buffs, but we check it nevertheless
+    # Post-division isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=True)
@@ -629,7 +629,7 @@ def test_postdiv_min(client, consts):
 
 
 def test_postdiv_max(client, consts):
-    # Post-division isn't used by CCP in buffs, but we check it nevertheless
+    # Post-division isn't used in EVE buffs, but we check it nevertheless
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     # Setting HiG here just to check that aggregation mode takes precedence
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value, high_is_good=False)

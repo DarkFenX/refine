@@ -1,7 +1,7 @@
 """
 Space component proximity traps were initially used by the Dr Who event, and in a few following
 events. As of 2025-03-28, there seems to be no items which actively use it, so there seems to be no
-normal way of testing it. However, thanks to CCP Kestrel, we know that as of 2025-03-28 traps do not
+normal way of testing it. However, thanks to FC Kestrel, we know that as of 2025-03-28 traps do not
 apply to drones.
 
 Proximity traps have an item list attached, which, judging by the name, defines which entities can

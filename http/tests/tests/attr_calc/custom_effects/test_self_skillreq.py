@@ -207,8 +207,8 @@ def test_drone_dmg(client, consts):
 
 def test_cloak_recalibration(client, consts):
     # Since there is only one cloaking skill, this could've been expressed as a normal modifier
-    # info, but CCP didn't put any modifiers into effect which provides bonus to sensor
-    # recalibration, so it was hardcoded into the lib as self-requirement
+    # info, but no modifiers were put into effect which provides bonus to sensor recalibration, so
+    # it was hardcoded into the lib as self-requirement
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cloaking_targeting_delay_bonus)
     eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cloaking_targeting_delay)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking_targeting_delay_bonus)
