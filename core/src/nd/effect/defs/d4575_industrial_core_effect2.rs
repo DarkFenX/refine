@@ -1,4 +1,4 @@
-use super::shared::mk_cannot_cloak_mod;
+use super::shared::mk_cannot_cloak_mod_hardcoded;
 use crate::{
     ad::{AEffect, AEffectId},
     nd::NEffect,
@@ -17,5 +17,5 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 fn update_effect(a_effect: &mut AEffect) {
     // Tested on 2026-04-07 on thunderdome, rorqual can't cloak with industrial core running, and
     // there are no attributes and modifiers to transfer either of no-cloak attributes to ship
-    a_effect.modifiers.insert(mk_cannot_cloak_mod());
+    a_effect.modifiers.insert(mk_cannot_cloak_mod_hardcoded());
 }

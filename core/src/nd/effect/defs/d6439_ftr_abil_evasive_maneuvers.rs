@@ -54,6 +54,9 @@ fn mk_mobility_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) ->
 fn mk_resist_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(affector_attr_id),
+        // It is unclear if it uses PreMul or PostMul. But, since there are no other shield resist
+        // modifiers using those operators, we cannot figure out, and it does not matter which one
+        // is used
         op: AOp::PostMul,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id,

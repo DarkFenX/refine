@@ -4,7 +4,7 @@ use crate::ad::{
 };
 
 // Disable cloak on ships via canCloak attribute on non-targeted modules
-pub(in crate::nd::effect::defs) fn mk_cannot_cloak_mod() -> AEffectModifier {
+pub(in crate::nd::effect::defs) fn mk_cannot_cloak_mod_hardcoded() -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Hardcoded(AValue::from_f64(0.0)),
         op: AOp::PostAssign,
@@ -14,7 +14,7 @@ pub(in crate::nd::effect::defs) fn mk_cannot_cloak_mod() -> AEffectModifier {
 }
 
 // Transfer canCloak value from item to ship on non-targeted modules
-pub(in crate::nd::effect::defs) fn mk_can_cloak_mod() -> AEffectModifier {
+pub(in crate::nd::effect::defs) fn mk_cannot_cloak_mod_transfer() -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::CAN_CLOAK),
         op: AOp::PostAssign,

@@ -1,4 +1,6 @@
-pub(in crate::nd::effect::defs) use cloak::{mk_can_cloak_mod, mk_cannot_cloak_mod, mk_disallow_cloak_buff};
+pub(in crate::nd::effect::defs) use cloak::{
+    mk_cannot_cloak_mod_hardcoded, mk_cannot_cloak_mod_transfer, mk_disallow_cloak_buff,
+};
 pub(in crate::nd::effect::defs) use damp::add_damp_mods;
 pub(in crate::nd::effect::defs) use dd::make_dd_self_debuffs;
 pub(in crate::nd::effect::defs) use misc::mk_disallow_assistance_mod;
