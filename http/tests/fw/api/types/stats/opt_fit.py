@@ -81,6 +81,7 @@ class FitStatsOptions:
     drone_control_range: bool | type[Absent] = Absent
     can_warp: bool | type[Absent] = Absent
     can_jump_gate: bool | type[Absent] = Absent
+    can_jump_wormhole: bool | type[Absent] = Absent
     can_jump_drive: bool | type[Absent] = Absent
     can_dock_station: bool | type[Absent] = Absent
     can_dock_citadel: bool | type[Absent] = Absent

@@ -202,6 +202,7 @@ impl HFitStats {
             drone_control_range: TriStateField::default(),
             can_warp: TriStateField::default(),
             can_jump_gate: TriStateField::default(),
+            can_jump_wormhole: TriStateField::default(),
             can_jump_drive: TriStateField::default(),
             can_dock_station: TriStateField::default(),
             can_dock_citadel: TriStateField::default(),
