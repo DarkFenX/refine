@@ -14,16 +14,13 @@ def setup_burst_projector_test(client, consts):
     eve_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
     eve_aoe_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_duration)
     eve_aoe_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_range)
-    eve_optimal_attr_id = client.mk_eve_attr()
-    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
     eve_resist_attr_id = client.mk_eve_attr()
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_jam_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_aoe_ecm,
         cat_id=consts.EveEffCat.active,
         duration_attr_id=eve_cycle_time_attr_id,
-        range_attr_id=eve_optimal_attr_id,
-        falloff_attr_id=eve_falloff_attr_id,
         resist_attr_id=eve_resist_attr_id)
     eve_module_id = client.mk_eve_item(
         attrs={

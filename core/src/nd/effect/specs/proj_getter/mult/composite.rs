@@ -72,11 +72,10 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
-    let mult = get_aoe_burst_range_mult(ctx, calc, projector_uid, effect, proj_data);
+    let mult = get_aoe_burst_range_mult(ctx, calc, projector_uid, proj_data);
     if mult == PValue::ZERO {
         return PValue::ZERO;
     }

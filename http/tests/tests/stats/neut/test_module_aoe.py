@@ -130,7 +130,7 @@ def test_time(client, consts):
 def test_range(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
-    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
     eve_aoe_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_aoe_range)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
@@ -138,8 +138,7 @@ def test_range(client, consts):
     eve_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_aoe_neut,
         cat_id=consts.EveEffCat.target,
-        duration_attr_id=eve_cycle_time_attr_id,
-        range_attr_id=eve_optimal_attr_id)
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
         attrs={
             eve_neut_amount_attr_id: 4000, eve_cycle_time_attr_id: 63000,

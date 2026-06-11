@@ -148,6 +148,7 @@ class EveEffect(IntEnum):
     doomsday_cone_dot = 6473
     doomsday_aoe_web = 6476
     doomsday_aoe_neut = 6477
+    doomsday_aoe_bubble = 6482
     emergency_hull_energizer = 6484
     ftr_abil_launch_bomb = 6485
     doomsday_aoe_ecm = 6513

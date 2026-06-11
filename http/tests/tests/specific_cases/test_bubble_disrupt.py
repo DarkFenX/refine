@@ -197,7 +197,7 @@ def test_module_state_up_state_down(client, consts):
 
 
 def test_module_range(client, consts):
-    # Check that wubbles use specific range attribute, and uses center-to-surface range to apply its
+    # Check that bubbles use specific range attribute, and uses center-to-surface range to apply its
     # modifiers
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)

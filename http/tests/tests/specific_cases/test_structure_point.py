@@ -1,5 +1,5 @@
 from fw import approx, check_no_field
-from fw.api import ValOptions
+from fw.api import ItemStatsOptions, ValOptions
 
 
 def test_warp_scram_status(client, consts):
@@ -21,10 +21,28 @@ def test_warp_scram_status(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].modified == approx(0)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        can_warp=True,
+        can_tether=True,
+        can_jump_drive=True,
+        can_dock_citadel=True))
+    assert api_ship_stats.can_warp is True
+    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_jump_drive is True
+    assert api_ship_stats.can_dock_citadel is True
     # Action
     api_point.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].modified == approx(100)
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        can_warp=True,
+        can_tether=True,
+        can_jump_drive=True,
+        can_dock_citadel=True))
+    assert api_ship_stats.can_warp is False
+    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_jump_drive is False
+    assert api_ship_stats.can_dock_citadel is False
 
 
 def test_module_mwd_block(client, consts):

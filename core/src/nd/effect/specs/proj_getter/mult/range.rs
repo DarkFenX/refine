@@ -249,11 +249,10 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
-    effect: &REffect,
     proj_data: UProjData,
 ) -> PValue {
     // Doomsday projectiles are launched from center of the ship, and range is extended by aoe range
-    let affector_optimal = get_effect_range(ctx, calc, projector_uid, effect.range_attr_rid);
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, ctx.ac().max_range);
     let affector_aoe = get_effect_range(ctx, calc, projector_uid, ctx.ac().doomsday_aoe_range);
     match proj_data.get_range_c2s() <= affector_optimal + affector_aoe {
         true => PValue::ONE,
