@@ -156,6 +156,37 @@ def test_module_range(client, consts):
     assert api_affectee_ship_stats.speed == approx(1000)
 
 
+def test_module_resist(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_resist_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
+    eve_resist_attr_id = client.mk_eve_attr()
+    client.mk_eve_buff(
+        id_=consts.EveBuff.stasis_webification_burst,
+        aggr_mode=consts.EveBuffAggrMode.min,
+        op=consts.EveBuffOp.post_percent,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
+    eve_charge_id = client.mk_eve_item(
+        id_=consts.EveItem.stasis_webification_probe,
+        attrs={eve_affector_attr_id: -40, eve_resist_ref_attr_id: eve_resist_attr_id})
+    eve_module_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_module_effect_id], defeff_id=eve_module_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000, eve_resist_attr_id: 0.75})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_module_id,
+        charge_type_id=eve_charge_id,
+        state=consts.ApiModuleState.active)
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    # Verification
+    api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
+    assert api_affectee_ship_stats.speed == approx(700)
+
+
 def test_charge_proj_effect(client, consts):
     # Check how web bubble works when it's a projected effect - happens to work because it's a buff
     eve_affector_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)

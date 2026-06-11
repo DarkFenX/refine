@@ -14,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_buff: Some(AEffectBuff {
             // Prevent projected targets within range from warping and jumping. Use custom buff for
             // this, since using warp status attribute prevents targets from e.g. docking to
-            // citadels too. Intentionally do not apply effects onto ship which launches buff
+            // citadels too
             full: vec![AEffectBuffFull {
                 buff_id: ABuffId::DISALLOW_WARP_JUMP,
                 strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
