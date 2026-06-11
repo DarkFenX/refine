@@ -64,6 +64,7 @@ pub(crate) struct HGetItemStatsCmd {
     drone_control_range: Option<bool>,
     can_warp: Option<bool>,
     can_jump_gate: Option<bool>,
+    can_jump_wormhole: Option<bool>,
     can_jump_drive: Option<bool>,
     can_dock_station: Option<bool>,
     can_dock_citadel: Option<bool>,
@@ -221,6 +222,9 @@ impl HGetItemStatsCmd {
         }
         if self.can_jump_gate.unwrap_or(self.default) {
             stats.can_jump_gate = core_item.get_stat_can_jump_gate().into();
+        }
+        if self.can_jump_wormhole.unwrap_or(self.default) {
+            stats.can_jump_wormhole = core_item.get_stat_can_jump_wormhole().into();
         }
         if self.can_jump_drive.unwrap_or(self.default) {
             stats.can_jump_drive = core_item.get_stat_can_jump_drive().into();

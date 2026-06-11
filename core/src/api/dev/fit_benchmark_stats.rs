@@ -560,6 +560,10 @@ impl<'a> FitMut<'a> {
                 .unwrap();
             self.sol
                 .svc
+                .get_stat_item_can_jump_wormhole(&self.sol.u_data, ship_uid)
+                .unwrap();
+            self.sol
+                .svc
                 .get_stat_item_can_jump_drive(&self.sol.u_data, ship_uid)
                 .unwrap();
             self.sol

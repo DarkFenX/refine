@@ -81,6 +81,8 @@ pub(crate) struct HItemStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_jump_gate: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) can_jump_wormhole: TriStateField<bool>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_jump_drive: TriStateField<bool>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) can_dock_station: TriStateField<bool>,

@@ -7,6 +7,9 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_can_jump_gate(&mut self) -> Result<bool, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_can_jump_gate()?)
     }
+    pub fn get_stat_can_jump_wormhole(&mut self) -> Result<bool, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_can_jump_wormhole()?)
+    }
     pub fn get_stat_can_jump_drive(&mut self) -> Result<bool, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_can_jump_drive()?)
     }

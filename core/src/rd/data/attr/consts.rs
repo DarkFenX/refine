@@ -81,6 +81,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) disallow_tethering: Option<RAttrId>,
     pub(crate) disallow_vs_ew_immune_tgt: Option<RAttrId>,
     pub(crate) disallow_warping_and_drive_jumping: Option<RAttrId>,
+    pub(crate) disallow_wormhole_jumping: Option<RAttrId>,
     pub(crate) dmg_delay_duration: Option<RAttrId>,
     pub(crate) dmg_mult: Option<RAttrId>,
     pub(crate) doomsday_aoe_duration: Option<RAttrId>,
@@ -352,6 +353,7 @@ impl RAttrConsts {
             disallow_warping_and_drive_jumping: attr_aid_rid_map
                 .get(&AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING)
                 .copied(),
+            disallow_wormhole_jumping: attr_aid_rid_map.get(&AAttrId::DISALLOW_WORMHOLE_JUMPING).copied(),
             dmg_delay_duration: attr_aid_rid_map.get(&AAttrId::DMG_DELAY_DURATION).copied(),
             dmg_mult: attr_aid_rid_map.get(&AAttrId::DMG_MULT).copied(),
             doomsday_aoe_duration: attr_aid_rid_map.get(&AAttrId::DOOMSDAY_AOE_DURATION).copied(),

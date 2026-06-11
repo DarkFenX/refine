@@ -561,6 +561,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_can_jump_gate(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
+    fn get_stat_can_jump_wormhole(&mut self) -> Result<bool, ItemStatError> {
+        let item_uid = self.get_uid();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_can_jump_wormhole(&sol.u_data, item_uid)
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+    }
     fn get_stat_can_jump_drive(&mut self) -> Result<bool, ItemStatError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();

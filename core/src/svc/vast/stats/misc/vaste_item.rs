@@ -82,6 +82,27 @@ impl Vast {
         }
         Ok(true)
     }
+    pub(in crate::svc) fn get_stat_item_can_jump_wormhole(
+        &self,
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+    ) -> Result<bool, StatItemCheckError> {
+        let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
+        // WH jumping is blocked by:
+        // - type ID being on type list 245 WH jump black list (supercapitals)
+        // - special attribute which disallows wormhole jumping (MJDs, sieges)
+        if ship.get_disallowed_in_wspace() == Some(false) {
+            return Ok(false);
+        }
+        let wh_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_wormhole_jumping, Value::ZERO)
+            .unwrap();
+        if wh_status > Value::FLOAT_TOLERANCE {
+            return Ok(false);
+        }
+        Ok(true)
+    }
     pub(in crate::svc) fn get_stat_item_can_jump_drive(
         ctx: SvcCtx,
         calc: &mut Calc,
