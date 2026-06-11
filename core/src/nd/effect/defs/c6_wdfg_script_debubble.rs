@@ -26,10 +26,10 @@ fn make_effect() -> AEffect {
         category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
         modifiers: [AEffectModifier {
-            strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
+            strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING),
             op: AOp::PostAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
-            affectee_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
+            affectee_attr_id: AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING,
         }]
         .into_iter()
         .collect(),

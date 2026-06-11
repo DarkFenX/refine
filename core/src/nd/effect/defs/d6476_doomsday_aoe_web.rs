@@ -1,4 +1,4 @@
-use super::shared::{mk_cannot_cloak_mod_hardcoded, mk_disallow_warp_jump_mod_hardcoded};
+use super::shared::{mk_cannot_cloak_mod_hardcoded, mk_disallow_warp_and_drive_jump_mod_hardcoded};
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
@@ -35,7 +35,8 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: web projector effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
-    a_effect
-        .modifiers
-        .extend([mk_disallow_warp_jump_mod_hardcoded(), mk_cannot_cloak_mod_hardcoded()]);
+    a_effect.modifiers.extend([
+        mk_disallow_warp_and_drive_jump_mod_hardcoded(),
+        mk_cannot_cloak_mod_hardcoded(),
+    ]);
 }

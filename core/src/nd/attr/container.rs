@@ -9,8 +9,11 @@ use crate::{
 pub(crate) static N_ATTR_MAP: LazyLock<RMap<AAttrId, NAttr>> = LazyLock::new(get_attr_map);
 
 fn get_attr_map() -> RMap<AAttrId, NAttr> {
-    [defs::c1_disallow_warping_jumping::mk_n_attr()]
-        .into_iter()
-        .map(|n_attr| (n_attr.aid, n_attr))
-        .collect()
+    [
+        defs::c1_disallow_warping_and_drive_jumping::mk_n_attr(),
+        defs::c2_disallow_wormhole_jumping::mk_n_attr(),
+    ]
+    .into_iter()
+    .map(|n_attr| (n_attr.aid, n_attr))
+    .collect()
 }

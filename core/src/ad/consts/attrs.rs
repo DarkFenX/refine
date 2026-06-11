@@ -372,5 +372,6 @@ impl AAttrId {
     pub(crate) const MINING_CRIT_CHANCE: Self = Self::from_eid(EAttrId::MINING_CRIT_CHANCE);
     pub(crate) const MINING_CRIT_BONUS_YIELD: Self = Self::from_eid(EAttrId::MINING_CRIT_BONUS_YIELD);
     // Library-specific attributes
-    pub(crate) const DISALLOW_WARPING_JUMPING: Self = Self::Custom(ACustomAttrId::from_i32(1));
+    pub(crate) const DISALLOW_WARPING_AND_DRIVE_JUMPING: Self = Self::Custom(ACustomAttrId::from_i32(1));
+    pub(crate) const DISALLOW_WORMHOLE_JUMPING: Self = Self::Custom(ACustomAttrId::from_i32(2));
 }

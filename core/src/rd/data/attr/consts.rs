@@ -80,7 +80,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) disallow_offensive_modifiers: Option<RAttrId>,
     pub(crate) disallow_tethering: Option<RAttrId>,
     pub(crate) disallow_vs_ew_immune_tgt: Option<RAttrId>,
-    pub(crate) disallow_warping_jumping: Option<RAttrId>,
+    pub(crate) disallow_warping_and_drive_jumping: Option<RAttrId>,
     pub(crate) dmg_delay_duration: Option<RAttrId>,
     pub(crate) dmg_mult: Option<RAttrId>,
     pub(crate) doomsday_aoe_duration: Option<RAttrId>,
@@ -349,7 +349,9 @@ impl RAttrConsts {
             disallow_offensive_modifiers: attr_aid_rid_map.get(&AAttrId::DISALLOW_OFFENSIVE_MODIFIERS).copied(),
             disallow_tethering: attr_aid_rid_map.get(&AAttrId::DISALLOW_TETHERING).copied(),
             disallow_vs_ew_immune_tgt: attr_aid_rid_map.get(&AAttrId::DISALLOW_VS_EW_IMMUNE_TGT).copied(),
-            disallow_warping_jumping: attr_aid_rid_map.get(&AAttrId::DISALLOW_WARPING_JUMPING).copied(),
+            disallow_warping_and_drive_jumping: attr_aid_rid_map
+                .get(&AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING)
+                .copied(),
             dmg_delay_duration: attr_aid_rid_map.get(&AAttrId::DMG_DELAY_DURATION).copied(),
             dmg_mult: attr_aid_rid_map.get(&AAttrId::DMG_MULT).copied(),
             doomsday_aoe_duration: attr_aid_rid_map.get(&AAttrId::DOOMSDAY_AOE_DURATION).copied(),

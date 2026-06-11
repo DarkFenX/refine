@@ -1,4 +1,5 @@
-use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModStrength, AEffectModifier, AOp};
+use super::cloak::mk_cannot_cloak_mod_hardcoded;
+use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModStrength, AEffectModifier, AOp, AValue};
 
 pub(in crate::nd::effect::defs) fn mk_prop_mass_mod() -> AEffectModifier {
     AEffectModifier {
@@ -8,6 +9,7 @@ pub(in crate::nd::effect::defs) fn mk_prop_mass_mod() -> AEffectModifier {
         affectee_attr_id: AAttrId::MASS,
     }
 }
+
 pub(in crate::nd::effect::defs) fn mk_mwd_sig_mod() -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::SIG_RADIUS_BONUS),
@@ -16,11 +18,41 @@ pub(in crate::nd::effect::defs) fn mk_mwd_sig_mod() -> AEffectModifier {
         affectee_attr_id: AAttrId::SIG_RADIUS,
     }
 }
-pub(in crate::nd::effect::defs) fn mk_mjd_sig_mod() -> AEffectModifier {
-    AEffectModifier {
-        strength: AEffectModStrength::Attr(AAttrId::SIG_RADIUS_BONUS_PERCENT),
-        op: AOp::PostPerc,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id: AAttrId::SIG_RADIUS,
-    }
+
+pub(in crate::nd::effect::defs) fn mk_mjd_mods() -> impl ExactSizeIterator<Item = AEffectModifier> {
+    // Besides blowing signature, MJD disables pretty much everything, except for tether (which is
+    // still disabled for MJFGs due to aggro)
+    [
+        // Signature penalty
+        AEffectModifier {
+            strength: AEffectModStrength::Attr(AAttrId::SIG_RADIUS_BONUS_PERCENT),
+            op: AOp::PostPerc,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+            affectee_attr_id: AAttrId::SIG_RADIUS,
+        },
+        // Disable cloak
+        mk_cannot_cloak_mod_hardcoded(),
+        // Disable warping and jump drive
+        AEffectModifier {
+            strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+            affectee_attr_id: AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING,
+        },
+        // Disable docking to stations, docking to citadels, and gate jumping
+        AEffectModifier {
+            strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+            affectee_attr_id: AAttrId::DISALLOW_DOCKING,
+        },
+        // Disable wormhole jumping
+        AEffectModifier {
+            strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
+            op: AOp::Add,
+            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
+            affectee_attr_id: AAttrId::DISALLOW_WORMHOLE_JUMPING,
+        },
+    ]
+    .into_iter()
 }

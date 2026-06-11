@@ -36,13 +36,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 // Disallows warping and jumping for everything in range, including self
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
-                    strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
+                    strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
-                    strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_JUMPING),
+                    strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING),
                     duration: AEffectBuffDuration::None,
                     scope: AEffectBuffScope::Carrier,
                 },

@@ -47,7 +47,7 @@ impl Vast {
             return Ok(false);
         }
         let warp_jump_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping_jumping, Value::ZERO)
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping_and_drive_jumping, Value::ZERO)
             .unwrap();
         if warp_jump_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
@@ -105,7 +105,7 @@ impl Vast {
             return Ok(false);
         }
         let warp_jump_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping_jumping, Value::ZERO)
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping_and_drive_jumping, Value::ZERO)
             .unwrap();
         if warp_jump_status > Value::FLOAT_TOLERANCE {
             return Ok(false);

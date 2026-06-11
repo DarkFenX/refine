@@ -20,7 +20,7 @@ fn make_buff() -> ABuff {
         op: AOp::Add,
         mods: [ABuffModifier {
             affectee_filter: ABuffAffecteeFilter::Direct,
-            affectee_attr_id: AAttrId::DISALLOW_WARPING_JUMPING,
+            affectee_attr_id: AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING,
         }]
         .into_iter()
         .collect(),
