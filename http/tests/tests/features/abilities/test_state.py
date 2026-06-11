@@ -6,12 +6,12 @@ def test_switch_state_local(client, consts):
     # regardless of fighter state
     eve_affector_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_ab_speed_bonus)
     eve_affectee_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_affector_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_mjd_sig_radius_bonus)
+    eve_affector_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_mwd_sig_radius_bonus)
     eve_affectee_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_primary_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_ab, cat_id=consts.EveEffCat.active)
-    eve_secondary_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
+    eve_secondary_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
     eve_primary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.ab)
-    eve_secondary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.mjd)
+    eve_secondary_abil_id = client.mk_eve_abil(id_=consts.EveAbil.mwd)
     eve_fighter_id = client.mk_eve_fighter(
         attrs={
             eve_affector_attr1_id: 400, eve_affectee_attr1_id: 1017.5,
@@ -241,14 +241,14 @@ def test_src_switch_no_abil_data(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_affector_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_ab_speed_bonus)
     eve_affectee_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.max_velocity)
-    eve_affector_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_mjd_sig_radius_bonus)
+    eve_affector_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_mwd_sig_radius_bonus)
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.sig_radius)
     eve_primary_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_ab, cat_id=consts.EveEffCat.active)
     eve_secondary_effect_id = client.mk_eve_effect(
-        datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
+        datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
     eve_primary_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2], id_=consts.EveAbil.ab)
-    eve_secondary_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2], id_=consts.EveAbil.mjd)
+    eve_secondary_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2], id_=consts.EveAbil.mwd)
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_fighter(
         datas=[eve_d1],
@@ -330,14 +330,14 @@ def test_src_switch_no_abil(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_affector_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_ab_speed_bonus)
     eve_affectee_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.max_velocity)
-    eve_affector_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_mjd_sig_radius_bonus)
+    eve_affector_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_mwd_sig_radius_bonus)
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.sig_radius)
     eve_primary_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_ab, cat_id=consts.EveEffCat.active)
     eve_secondary_effect_id = client.mk_eve_effect(
-        datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
+        datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
     eve_primary_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2], id_=consts.EveAbil.ab)
-    eve_secondary_abil_id = client.mk_eve_abil(datas=[eve_d2], id_=consts.EveAbil.mjd)
+    eve_secondary_abil_id = client.mk_eve_abil(datas=[eve_d2], id_=consts.EveAbil.mwd)
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_fighter(
         datas=[eve_d1],
@@ -413,14 +413,14 @@ def test_src_switch_not_loaded(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_affector_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_ab_speed_bonus)
     eve_affectee_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.max_velocity)
-    eve_affector_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_mjd_sig_radius_bonus)
+    eve_affector_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.ftr_abil_mwd_sig_radius_bonus)
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.sig_radius)
     eve_primary_effect_id = client.mk_eve_effect(
         datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_ab, cat_id=consts.EveEffCat.active)
     eve_secondary_effect_id = client.mk_eve_effect(
-        datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
+        datas=[eve_d1, eve_d2], id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
     eve_primary_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2], id_=consts.EveAbil.ab)
-    eve_secondary_abil_id = client.mk_eve_abil(datas=[eve_d2], id_=consts.EveAbil.mjd)
+    eve_secondary_abil_id = client.mk_eve_abil(datas=[eve_d2], id_=consts.EveAbil.mwd)
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_fighter(
         datas=[eve_d2],

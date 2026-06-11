@@ -139,7 +139,6 @@ class EveEffect(IntEnum):
     ftr_abil_ecm = 6437
     ftr_abil_ab = 6440
     ftr_abil_mwd = 6441
-    ftr_abil_mjd = 6442
     point_defense = 6443
     lightning_weapon = 6447
     ftr_abil_attack_m = 6465
@@ -257,7 +256,7 @@ class EveBuffOp(StrEnum):
 @unique
 class EveAbil(IntEnum):
     stasis_web = 2
-    mjd = 5
+    mwd = 4
     launch_bomb = 7
     ab = 9
     energy_neut = 11
@@ -447,7 +446,7 @@ class EveAttr(IntEnum):
     ftr_abil_missiles_range = 2149
     ftr_sq_size = 2150
     ftr_abil_ab_speed_bonus = 2151
-    ftr_abil_mjd_sig_radius_bonus = 2156
+    ftr_abil_mwd_sig_radius_bonus = 2153
     ftr_abil_missiles_resist_id = 2170
     ftr_abil_missiles_duration = 2182
     ftr_abil_stasis_web_speed_penalty = 2184
