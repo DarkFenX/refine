@@ -95,6 +95,7 @@ impl AEffectId {
     pub(crate) const DOOMSDAY_AOE_PAINT: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_PAINT);
     pub(crate) const DOOMSDAY_AOE_TRACK: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_TRACK);
     pub(crate) const DOOMSDAY_AOE_DAMP: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_DAMP);
+    pub(crate) const DOOMSDAY_AOE_BUBBLE: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_BUBBLE);
     pub(crate) const EMERGENCY_HULL_ENERGIZER: Self = Self::from_eid(EEffectId::EMERGENCY_HULL_ENERGIZER);
     pub(crate) const FTR_ABIL_LAUNCH_BOMB: Self = Self::from_eid(EEffectId::FTR_ABIL_LAUNCH_BOMB);
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_ECM);

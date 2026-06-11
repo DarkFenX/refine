@@ -86,6 +86,7 @@ pub(in crate::nd::effect) mod d6477_doomsday_aoe_neut;
 pub(in crate::nd::effect) mod d6478_doomsday_aoe_paint;
 pub(in crate::nd::effect) mod d6479_doomsday_aoe_track;
 pub(in crate::nd::effect) mod d6481_doomsday_aoe_damp;
+pub(in crate::nd::effect) mod d6482_doomsday_aoe_bubble;
 pub(in crate::nd::effect) mod d6484_emergency_hull_energizer;
 pub(in crate::nd::effect) mod d6485_ftr_abil_bomb;
 pub(in crate::nd::effect) mod d6513_doomsday_aoe_ecm;

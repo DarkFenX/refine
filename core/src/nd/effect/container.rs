@@ -102,6 +102,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d6478_doomsday_aoe_paint::mk_n_effect(),
         defs::d6479_doomsday_aoe_track::mk_n_effect(),
         defs::d6481_doomsday_aoe_damp::mk_n_effect(),
+        defs::d6482_doomsday_aoe_bubble::mk_n_effect(),
         defs::d6484_emergency_hull_energizer::mk_n_effect(),
         defs::d6485_ftr_abil_bomb::mk_n_effect(),
         defs::d6513_doomsday_aoe_ecm::mk_n_effect(),

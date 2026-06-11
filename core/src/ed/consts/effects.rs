@@ -89,6 +89,7 @@ impl EEffectId {
     pub(crate) const DOOMSDAY_AOE_PAINT: Self = Self::from_i32(6478);
     pub(crate) const DOOMSDAY_AOE_TRACK: Self = Self::from_i32(6479);
     pub(crate) const DOOMSDAY_AOE_DAMP: Self = Self::from_i32(6481);
+    pub(crate) const DOOMSDAY_AOE_BUBBLE: Self = Self::from_i32(6482);
     pub(crate) const EMERGENCY_HULL_ENERGIZER: Self = Self::from_i32(6484);
     pub(crate) const FTR_ABIL_LAUNCH_BOMB: Self = Self::from_i32(6485);
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_i32(6513);
