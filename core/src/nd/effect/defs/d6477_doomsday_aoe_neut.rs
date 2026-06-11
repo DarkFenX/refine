@@ -1,5 +1,6 @@
+use super::shared::{mk_cannot_cloak_mod_hardcoded, mk_disallow_warp_jump_mod_hardcoded};
 use crate::{
-    ad::{AAttrId, AEffectId},
+    ad::{AAttrId, AEffect, AEffectId},
     nd::{
         NEffect, NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutKind, NEffectProjGetter, NEffectProjOpcSpec,
         NEffectResist,
@@ -11,6 +12,7 @@ const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_NEUT;
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
+        adg_update_effect_fn: Some(update_effect),
         neut: Some(NEffectNeut {
             kind: NEffectNeutKind::Module,
             checker: None,
@@ -24,4 +26,14 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
+}
+
+fn update_effect(a_effect: &mut AEffect) {
+    if !a_effect.modifiers.is_empty() {
+        tracing::info!("effect {EFFECT_AID}: neut projector effect has modifiers, overwriting them");
+        a_effect.modifiers.clear();
+    }
+    a_effect
+        .modifiers
+        .extend([mk_disallow_warp_jump_mod_hardcoded(), mk_cannot_cloak_mod_hardcoded()]);
 }

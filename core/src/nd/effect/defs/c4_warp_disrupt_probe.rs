@@ -2,11 +2,11 @@
 // across multiple items (survey probes, web bubbles), I decided to split warp bubble functionality
 // into separate custom effect specific to it.
 
-use super::shared::assign_defeff_to_item;
+use super::shared::{assign_defeff_to_item, mk_bubble_buff};
 use crate::{
     ad::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId,
-        AEffectId, AEffectModStrength, AItem, AItemId, AItemListId, AState, AValue,
+        AEffectId, AEffectModStrength, AItem, AItemId, AState, AValue,
     },
     nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
     util::RMap,
@@ -35,15 +35,7 @@ fn make_effect() -> AEffect {
         range_attr_id: Some(AAttrId::WARP_SCRAMBLE_RANGE),
         buff: Some(AEffectBuff {
             full: vec![
-                // Prevent projected targets within range from warping and jumping. Use custom buff
-                // for this, since using warp status attribute prevents targets from e.g. docking to
-                // citadels too. Intentionally do not apply effects onto ship which launches buff
-                AEffectBuffFull {
-                    buff_id: ABuffId::DISALLOW_WARP_JUMP,
-                    strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
-                    duration: AEffectBuffDuration::None,
-                    scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
-                },
+                mk_bubble_buff(AEffectBuffDuration::None),
                 // Bubble prevents dictor from tethering as long as it's up
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_TETHER,

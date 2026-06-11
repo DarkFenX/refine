@@ -1,8 +1,6 @@
+use super::shared::{mk_bubble_buff, mk_cannot_cloak_mod_hardcoded, mk_disallow_warp_jump_mod_hardcoded};
 use crate::{
-    ad::{
-        AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
-        AEffectModStrength, AItemListId, AValue,
-    },
+    ad::{AAttrId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectId},
     nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
 };
 
@@ -12,21 +10,26 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
-            // Prevent projected targets within range from warping and jumping. Use custom buff for
-            // this, since using warp status attribute prevents targets from e.g. docking to
-            // citadels too
-            full: vec![AEffectBuffFull {
-                buff_id: ABuffId::DISALLOW_WARP_JUMP,
-                strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
-                duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_AOE_DURATION),
-                scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
-            }],
+            full: vec![mk_bubble_buff(AEffectBuffDuration::AttrMs(
+                AAttrId::DOOMSDAY_AOE_DURATION,
+            ))],
             ..
         }),
+        adg_update_effect_fn: Some(update_effect),
         proj_mod: Some(NEffectProjModSpec {
             proj_mult: Some(NEffectProjGetter::AoeBurstRange),
             ..
         }),
         ..
     }
+}
+
+fn update_effect(a_effect: &mut AEffect) {
+    if !a_effect.modifiers.is_empty() {
+        tracing::info!("effect {EFFECT_AID}: bubble projector effect has modifiers, overwriting them");
+        a_effect.modifiers.clear();
+    }
+    a_effect
+        .modifiers
+        .extend([mk_disallow_warp_jump_mod_hardcoded(), mk_cannot_cloak_mod_hardcoded()]);
 }

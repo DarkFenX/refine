@@ -1,4 +1,4 @@
-use super::shared::{mk_cannot_cloak_mod_hardcoded, mk_disallow_assistance_mod};
+use super::shared::{mk_cannot_cloak_mod_hardcoded, mk_disallow_assistance_mod_transfer};
 use crate::{
     ad::{AEffect, AEffectId},
     nd::NEffect,
@@ -20,5 +20,5 @@ fn update_effect(a_effect: &mut AEffect) {
     // to ship for simplicity
     a_effect
         .modifiers
-        .extend([mk_disallow_assistance_mod(), mk_cannot_cloak_mod_hardcoded()]);
+        .extend([mk_disallow_assistance_mod_transfer(), mk_cannot_cloak_mod_hardcoded()]);
 }

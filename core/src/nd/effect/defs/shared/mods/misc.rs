@@ -1,6 +1,6 @@
 use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModStrength, AEffectModifier, AOp};
 
-pub(in crate::nd::effect::defs) fn mk_disallow_assistance_mod() -> AEffectModifier {
+pub(in crate::nd::effect::defs) fn mk_disallow_assistance_mod_transfer() -> AEffectModifier {
     AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::DISALLOW_ASSISTANCE),
         op: AOp::Add,
