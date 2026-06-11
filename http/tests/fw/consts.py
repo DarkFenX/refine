@@ -139,6 +139,7 @@ class EveEffect(IntEnum):
     ftr_abil_ecm = 6437
     ftr_abil_ab = 6440
     ftr_abil_mwd = 6441
+    ftr_abil_mjd = 6442
     point_defense = 6443
     lightning_weapon = 6447
     ftr_abil_attack_m = 6465
