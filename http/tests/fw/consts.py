@@ -119,6 +119,7 @@ class EveEffect(IntEnum):
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
     max_range_hidden_preass_warp_scramble_range = 4894
+    micro_jump_drive = 4921
     adaptive_armor_hardener = 4928
     fueled_shield_boosting = 4936
     fueled_armor_repair = 5275
@@ -130,6 +131,7 @@ class EveEffect(IntEnum):
     ship_mod_remote_armor_repairer = 6188
     energy_nosf_falloff = 6197
     doomsday_slash = 6201
+    micro_jump_portal_drive = 6208
     struct_energy_neut_falloff = 6216
     struct_warp_scramble_block_mwd_with_npc = 6222
     service_slot = 6306
@@ -174,6 +176,7 @@ class EveEffect(IntEnum):
     ship_mod_remote_armor_mutadaptive_repairer = 7166
     chain_lightning = 8037
     debuff_lance = 11691
+    micro_jump_portal_drive_capital = 12126
     dot_missile_launching = 12174
 
 
@@ -258,6 +261,7 @@ class EveBuffOp(StrEnum):
 class EveAbil(IntEnum):
     stasis_web = 2
     mwd = 4
+    mjd = 5
     launch_bomb = 7
     ab = 9
     energy_neut = 11
@@ -377,6 +381,7 @@ class EveAttr(IntEnum):
     mass_addition = 796
     disallow_assistance = 854
     disallow_offensive_modifiers = 872
+    sig_radius_bonus_percent = 973
     max_group_online = 978
     disallow_in_empire_space = 1074
     boosterness = 1087
@@ -448,6 +453,7 @@ class EveAttr(IntEnum):
     ftr_sq_size = 2150
     ftr_abil_ab_speed_bonus = 2151
     ftr_abil_mwd_sig_radius_bonus = 2153
+    ftr_abil_mjd_sig_radius_bonus = 2156
     ftr_abil_missiles_resist_id = 2170
     ftr_abil_missiles_duration = 2182
     ftr_abil_stasis_web_speed_penalty = 2184

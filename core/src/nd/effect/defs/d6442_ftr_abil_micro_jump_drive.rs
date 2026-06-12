@@ -23,8 +23,8 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: fighter MJD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
-    // As of 2026-06-10, fighter sig blow during MJD does not work on TQ (tested by bombing
-    // structure LR drones); reported it to the devs, not enabling it until it's fixed
+    // As of 2026-06-10, fighter sig blow during MJD does not work on TQ, keeping it disabled until
+    // it is fixed
     if false {
         a_effect.modifiers.insert(AEffectModifier {
             strength: AEffectModStrength::Attr(AAttrId::FTR_ABIL_MJD_SIG_RADIUS_BONUS),

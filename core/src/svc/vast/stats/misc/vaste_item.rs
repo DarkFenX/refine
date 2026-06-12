@@ -92,7 +92,7 @@ impl Vast {
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)
         // - special attribute which disallows wormhole jumping (MJDs, sieges)
-        if ship.get_disallowed_in_wspace() == Some(false) {
+        if ship.get_disallowed_in_wspace() == Some(true) {
             return Ok(false);
         }
         let wh_status = calc
