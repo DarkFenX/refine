@@ -130,10 +130,16 @@ def test_debuff_dock_jump(client, consts):
     api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     api_affectee_fit_stats = api_affectee_fit.get_stats(
-        options=FitStatsOptions(can_dock_station=True, can_dock_citadel=True, can_jump_gate=True, can_jump_drive=True))
+        options=FitStatsOptions(
+            can_dock_station=True,
+            can_dock_citadel=True,
+            can_jump_gate=True,
+            can_jump_wormhole=True,
+            can_jump_drive=True))
     assert api_affectee_fit_stats.can_dock_station is False
     assert api_affectee_fit_stats.can_dock_citadel is False
     assert api_affectee_fit_stats.can_jump_gate is False
+    assert api_affectee_fit_stats.can_jump_wormhole is True
     assert api_affectee_fit_stats.can_jump_drive is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].modified == approx(1)
@@ -160,10 +166,16 @@ def test_debuff_dock_jump(client, consts):
     api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_fit_stats = api_affectee_fit.get_stats(
-        options=FitStatsOptions(can_dock_station=True, can_dock_citadel=True, can_jump_gate=True, can_jump_drive=True))
+        options=FitStatsOptions(
+            can_dock_station=True,
+            can_dock_citadel=True,
+            can_jump_gate=True,
+            can_jump_wormhole=True,
+            can_jump_drive=True))
     assert api_affectee_fit_stats.can_dock_station is False
     assert api_affectee_fit_stats.can_dock_citadel is False
     assert api_affectee_fit_stats.can_jump_gate is False
+    assert api_affectee_fit_stats.can_jump_wormhole is True
     assert api_affectee_fit_stats.can_jump_drive is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].modified == approx(1)

@@ -25,6 +25,7 @@ def test_module_self(client, consts):
         speed=True,
         can_warp=True,
         can_jump_gate=True,
+        can_jump_wormhole=True,
         can_jump_drive=True,
         can_dock_station=True,
         can_dock_citadel=True,
@@ -32,6 +33,7 @@ def test_module_self(client, consts):
     assert api_ship_stats.speed == approx(1000)
     assert api_ship_stats.can_warp is True
     assert api_ship_stats.can_jump_gate is True
+    assert api_ship_stats.can_jump_wormhole is True
     assert api_ship_stats.can_jump_drive is True
     assert api_ship_stats.can_dock_station is True
     assert api_ship_stats.can_dock_citadel is True
