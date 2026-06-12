@@ -214,7 +214,7 @@ def test_module_state_up_state_down(client, consts):
     assert api_affectee_ship_stats.can_tether is True
 
 
-def test_module_range(client, consts):
+def test_module_range_vs_ship(client, consts):
     # Check that bubbles use specific range attribute, and uses center-to-surface range to apply its
     # modifiers
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range)
@@ -269,6 +269,39 @@ def test_module_range(client, consts):
     assert api_affectee_ship_stats.can_dock_station is True
     assert api_affectee_ship_stats.can_dock_citadel is True
     assert api_affectee_ship_stats.can_tether is True
+
+
+def test_module_range_vs_fighter(client, consts):
+    # Check that bubbles use specific range attribute, and uses center-to-surface range to apply its
+    # modifiers
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_charge_id = client.mk_eve_item(id_=consts.EveItem.warp_disrupt_probe, attrs={eve_range_attr_id: 20000})
+    eve_module_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_module_effect_id], defeff_id=eve_module_effect_id)
+    eve_affector_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 5000})
+    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 500})
+    eve_affectee_fighter_id = client.mk_eve_fighter(attrs={eve_radius_attr_id: 35})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affector_fit.set_ship(type_id=eve_affector_ship_id, coordinates=(0, 0, 0))
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 0, 0))
+    api_affectee_fighter = api_affectee_fit.add_fighter(type_id=eve_affectee_fighter_id, coordinates=(0, 20034, 0))
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id, api_affectee_fighter.id])
+    # Verification
+    api_affectee_fighter_stats = api_affectee_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_affectee_fighter_stats.can_warp is False
+    # Action
+    api_affectee_fighter.change_fighter(coordinates=(0, 20501, 0))
+    # Verification
+    api_affectee_fighter_stats = api_affectee_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_affectee_fighter_stats.can_warp is True
 
 
 def test_charge_proj_effect(client, consts):

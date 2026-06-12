@@ -1,5 +1,5 @@
 from fw import approx, check_no_field
-from fw.api import FitStatsOptions, StatsOptionCapBalance, StatTimeBurst, StatTimeSim, ValOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapBalance, StatTimeBurst, StatTimeSim, ValOptions
 
 
 def test_bubble_sig_local(client, consts):
@@ -616,26 +616,27 @@ def test_block_fighter_mwd_mjd_sscript(client, consts):
     assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
 
 
-def test_range_bubble(client, consts):
+def test_range_bubble_vs_ship(client, consts):
+    # Range is assumed to be surface-to-surface, but was not actually tested
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
-    eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
-    eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_wdfg_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.warp_disrupt_sphere,
         cat_id=consts.EveEffCat.active,
         range_attr_id=eve_range_attr_id)
     eve_wdfg_id = client.mk_eve_item(
-        attrs={eve_range_attr_id: 20000, eve_str_attr_id: 100},
+        attrs={eve_range_attr_id: 20000},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 88})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 4400})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(19999, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(24487, 0, 0))
     api_wdfg.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
@@ -645,7 +646,7 @@ def test_range_bubble(client, consts):
     assert api_tgt_stats.can_dock_citadel is True
     assert api_tgt_stats.can_tether is True
     # Action
-    api_tgt_ship.change_ship(coordinates=(20001, 0, 0))
+    api_tgt_ship.change_ship(coordinates=(24489, 0, 0))
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
@@ -655,12 +656,48 @@ def test_range_bubble(client, consts):
     assert api_tgt_stats.can_tether is True
 
 
+def test_range_bubble_vs_fighter(client, consts):
+    # Range is assumed to be surface-to-surface, but was not actually tested
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_wdfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        range_attr_id=eve_range_attr_id)
+    eve_wdfg_id = client.mk_eve_item(
+        attrs={eve_range_attr_id: 20000},
+        eff_ids=[eve_wdfg_effect_id],
+        defeff_id=eve_wdfg_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 88})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 4400})
+    eve_tgt_fighter_id = client.mk_eve_fighter(attrs={eve_radius_attr_id: 35})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_tgt_fit = api_sol.create_fit()
+    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0))
+    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_fighter_id, coordinates=(20122, 0, 0))
+    api_wdfg.change_module(add_projs=[api_tgt_ship.id, api_tgt_fighter.id])
+    # Verification
+    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_tgt_fighter_stats.can_warp is False
+    # Action
+    api_tgt_fighter.change_fighter(coordinates=(20124, 0, 0))
+    # Verification
+    api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_tgt_fighter_stats.can_warp is True
+
+
 def test_range_dscript(client, consts):
+    # Range is assumed to be surface-to-surface, but was not actually tested
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
     eve_range_hidden_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range_hidden, def_val=0)
     eve_range_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range_bonus, def_val=0)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_wdfg_range_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.other,
@@ -697,19 +734,21 @@ def test_range_dscript(client, consts):
         attrs={eve_range_bonus_attr_id: 50},
         eff_ids=[eve_script_main_effect_id, eve_script_range_effect_id],
         defeff_id=eve_script_main_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 88})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_radius_attr_id: 4400})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(29999, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(34487, 0, 0))
     api_wdfg.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - range should be 30k (20k base from module +50% from script)
+    # Verification - range should be 30k (20k base from module +50% from script), plus radii of both
+    # ships
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
     assert api_tgt_stats.can_warp is False
@@ -717,7 +756,7 @@ def test_range_dscript(client, consts):
     assert api_tgt_stats.can_dock_citadel is False
     assert api_tgt_stats.can_tether is False
     # Action
-    api_tgt_ship.change_ship(coordinates=(30001, 0, 0))
+    api_tgt_ship.change_ship(coordinates=(34489, 0, 0))
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
@@ -728,11 +767,13 @@ def test_range_dscript(client, consts):
 
 
 def test_range_sscript(client, consts):
+    # Range is assumed to be surface-to-surface, but was not actually tested
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
     eve_range_hidden_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range_hidden, def_val=0)
     eve_range_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range_bonus, def_val=0)
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_wdfg_range_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.other,
@@ -769,22 +810,24 @@ def test_range_sscript(client, consts):
         attrs={eve_range_bonus_attr_id: -20},
         eff_ids=[eve_script_main_effect_id, eve_script_range_effect_id],
         defeff_id=eve_script_main_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0})
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 88})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_radius_attr_id: 4400})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(16000, 0, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(20487, 0, 0))
     api_wdfg.change_module(add_projs=[api_tgt_ship.id])
-    # Verification - range should be 16k (20k base from module -20% from script)
+    # Verification - range should be 16k (20k base from module -20% from script), plus radii of both
+    # ships
     assert api_tgt_ship.update().attrs[eve_status_attr_id].modified == approx(100)
     # Action
-    api_tgt_ship.change_ship(coordinates=(16001, 0, 0))
+    api_tgt_ship.change_ship(coordinates=(20490, 0, 0))
     # Verification
     assert api_tgt_ship.update().attrs[eve_status_attr_id].modified == approx(0)
 
