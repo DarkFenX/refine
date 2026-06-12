@@ -5,6 +5,7 @@ def test_module_self(client, consts):
     # Shouldn't affect ship of owner even if activated
     eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     client.mk_eve_buff(
         id_=consts.EveBuff.disallow_tether,
         aggr_mode=consts.EveBuffAggrMode.max,
@@ -61,6 +62,7 @@ def test_module_self(client, consts):
 
 
 def test_module_charge_uncharge(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_charge1_id = client.mk_eve_item(id_=consts.EveItem.warp_disrupt_probe)
     eve_charge2_id = client.mk_eve_item(id_=consts.EveItem.surgical_warp_disrupt_probe)
     eve_module_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
@@ -146,6 +148,7 @@ def test_module_charge_uncharge(client, consts):
 
 
 def test_module_state_up_state_down(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_charge_id = client.mk_eve_item(id_=consts.EveItem.warp_disrupt_probe)
     eve_module_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_module_effect_id], defeff_id=eve_module_effect_id)
@@ -217,6 +220,7 @@ def test_module_state_up_state_down(client, consts):
 def test_module_range_vs_ship(client, consts):
     # Check that bubbles use specific range attribute, and uses center-to-surface range to apply its
     # modifiers
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
     eve_charge_id = client.mk_eve_item(id_=consts.EveItem.warp_disrupt_probe, attrs={eve_range_attr_id: 20000})
@@ -306,6 +310,7 @@ def test_module_range_vs_fighter(client, consts):
 
 def test_charge_proj_effect(client, consts):
     # Check how warp bubble works when it's a projected effect - happens to work because it's a buff
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_charge_id = client.mk_eve_item(id_=consts.EveItem.warp_disrupt_probe)
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()

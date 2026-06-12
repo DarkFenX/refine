@@ -3,6 +3,7 @@ from fw.api import ItemStatsOptions, ValOptions
 
 def test_self_effect(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_projector_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_aoe_bubble,
         cat_id=consts.EveEffCat.active,
@@ -56,6 +57,7 @@ def test_self_effect(client, consts):
 
 
 def test_remote_effect(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_bubble, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship()

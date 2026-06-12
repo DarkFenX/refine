@@ -18,10 +18,16 @@ fn make_buff() -> ABuff {
         id: BUFF_AID,
         aggr_mode: ABuffAggrMode::Max,
         op: AOp::Add,
-        mods: [ABuffModifier {
-            affectee_filter: ABuffAffecteeFilter::Direct,
-            affectee_attr_id: AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING,
-        }]
+        mods: [
+            ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::Direct,
+                affectee_attr_id: AAttrId::DISALLOW_WARPING,
+            },
+            ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::Direct,
+                affectee_attr_id: AAttrId::DISALLOW_DRIVE_JUMPING,
+            },
+        ]
         .into_iter()
         .collect(),
     }

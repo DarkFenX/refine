@@ -1,4 +1,6 @@
-use super::shared::{mk_bubble_buff, mk_cannot_cloak_mod_hardcoded, mk_disallow_warp_and_drive_jump_mod_hardcoded};
+use super::shared::{
+    mk_bubble_buff, mk_cannot_cloak_mod_hardcoded, mk_disallow_drive_jump_mod_hardcoded, mk_disallow_warp_mod_hardcoded,
+};
 use crate::{
     ad::{AAttrId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectId},
     nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
@@ -30,7 +32,8 @@ fn update_effect(a_effect: &mut AEffect) {
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.extend([
-        mk_disallow_warp_and_drive_jump_mod_hardcoded(),
+        mk_disallow_warp_mod_hardcoded(),
+        mk_disallow_drive_jump_mod_hardcoded(),
         mk_cannot_cloak_mod_hardcoded(),
     ]);
 }

@@ -2,7 +2,7 @@
 
 use crate::ad::{AAttrId, AData, AEffectId, AItemAttr, AValue};
 
-const BUBBLE_ATTR_ID: AAttrId = AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING;
+const BUBBLE_ATTR_ID: AAttrId = AAttrId::WARP_BUBBLE_STRENGTH;
 const BUBBLE_EFFECT_ID: AEffectId = AEffectId::WARP_DISRUPT_SPHERE;
 
 pub(in crate::ad::generator::flow::s7_custom) fn add_wdfg_bubble_strength(a_data: &mut AData) {

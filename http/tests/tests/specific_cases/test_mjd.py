@@ -7,6 +7,7 @@ def test_module_mjd(client, consts):
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_sig_radius_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius_bonus_percent)
     client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
     eve_mjd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.micro_jump_drive, cat_id=consts.EveEffCat.active)
     eve_mjd_id = client.mk_eve_item(
@@ -48,6 +49,7 @@ def test_module_mjfg(client, consts):
     eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_sig_radius_bonus_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius_bonus_percent)
     client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
     eve_mjd_subcap_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.micro_jump_portal_drive,

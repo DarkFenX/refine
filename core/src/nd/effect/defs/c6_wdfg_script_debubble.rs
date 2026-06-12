@@ -3,7 +3,7 @@
 use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModStrength,
-        AEffectModifier, AItem, AItemEffect, AItemId, AOp, AState,
+        AEffectModifier, AItem, AItemEffect, AItemId, AOp, AState, AValue,
     },
     nd::NEffect,
     util::RMap,
@@ -26,10 +26,10 @@ fn make_effect() -> AEffect {
         category: AEffectCatId::PASSIVE,
         state: AState::Disabled,
         modifiers: [AEffectModifier {
-            strength: AEffectModStrength::Attr(AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING),
+            strength: AEffectModStrength::Hardcoded(AValue::from_f64(0.0)),
             op: AOp::PostAssign,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Other),
-            affectee_attr_id: AAttrId::DISALLOW_WARPING_AND_DRIVE_JUMPING,
+            affectee_attr_id: AAttrId::WARP_BUBBLE_STRENGTH,
         }]
         .into_iter()
         .collect(),

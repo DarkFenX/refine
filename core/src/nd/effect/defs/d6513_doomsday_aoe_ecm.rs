@@ -1,5 +1,8 @@
+use super::shared::{
+    mk_cannot_cloak_mod_hardcoded, mk_disallow_drive_jump_mod_hardcoded, mk_disallow_warp_mod_hardcoded,
+};
 use crate::{
-    ad::AEffectId,
+    ad::{AEffect, AEffectId},
     nd::{NEffect, NEffectEcm, NEffectEcmOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist},
 };
 
@@ -8,6 +11,7 @@ const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_ECM;
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
+        adg_update_effect_fn: Some(update_effect),
         ecm: Some(NEffectEcm {
             checker: None,
             ospec: NEffectProjOpcSpec {
@@ -19,4 +23,16 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         ..
     }
+}
+
+fn update_effect(a_effect: &mut AEffect) {
+    if !a_effect.modifiers.is_empty() {
+        tracing::info!("effect {EFFECT_AID}: ECM projector effect has modifiers, overwriting them");
+        a_effect.modifiers.clear();
+    }
+    a_effect.modifiers.extend([
+        mk_disallow_warp_mod_hardcoded(),
+        mk_disallow_drive_jump_mod_hardcoded(),
+        mk_cannot_cloak_mod_hardcoded(),
+    ]);
 }
