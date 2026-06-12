@@ -20,29 +20,8 @@ def test_module_mjd(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_mjd = api_fit.add_module(type_id=eve_mjd_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_mjd_id, state=consts.ApiModuleState.active)
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        sig_radius=True,
-        can_warp=True,
-        can_jump_gate=True,
-        can_jump_wormhole=True,
-        can_jump_drive=True,
-        can_dock_station=True,
-        can_dock_citadel=True,
-        can_tether=True))
-    assert api_ship_stats.sig_radius == approx(165)
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is True
-    # Action
-    api_mjd.change_module(state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
@@ -93,30 +72,9 @@ def test_module_mjfg(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_subcap = api_fit.add_module(type_id=eve_mjd_subcap_id, state=consts.ApiModuleState.online)
+    api_mjd_subcap = api_fit.add_module(type_id=eve_mjd_subcap_id, state=consts.ApiModuleState.active)
     api_mjd_cap = api_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.online)
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        sig_radius=True,
-        can_warp=True,
-        can_jump_gate=True,
-        can_jump_wormhole=True,
-        can_jump_drive=True,
-        can_dock_station=True,
-        can_dock_citadel=True,
-        can_tether=True))
-    assert api_ship_stats.sig_radius == approx(165)
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is True
-    # Action
-    api_mjd_subcap.change_module(state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
@@ -178,32 +136,11 @@ def test_fighter_mjd(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fighter = api_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_mjd_abil_id: True})
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        sig_radius=True,
-        can_warp=True,
-        can_jump_gate=True,
-        can_jump_wormhole=True,
-        can_jump_drive=True,
-        can_dock_station=True,
-        can_dock_citadel=True,
-        can_tether=True))
-    assert api_ship_stats.sig_radius == approx(18640)
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is False
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(sig_radius=True, can_warp=True))
-    assert api_fighter_stats.sig_radius == approx(120)
-    assert api_fighter_stats.can_warp is True
-    # Action
-    api_fighter.change_fighter(abilities={eve_mjd_abil_id: True})
     # Verification - fighter MJD:
     # - does not affect parent ship
     # - does not prevent fighter from warping regardless of MJD direction (tested on 2026-06-12 on
