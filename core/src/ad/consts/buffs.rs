@@ -4,7 +4,6 @@ use crate::{
 };
 
 impl ABuffId {
-    pub(crate) const VELOCITY_PENALTY: Self = Self::from_eid(EBuffId::VELOCITY_PENALTY);
     pub(crate) const WARP_PENALTY: Self = Self::from_eid(EBuffId::WARP_PENALTY);
     pub(crate) const DISALLOW_CLOAK: Self = Self::from_eid(EBuffId::DISALLOW_CLOAK);
     pub(crate) const DISALLOW_DOCK_JUMP: Self = Self::from_eid(EBuffId::DISALLOW_DOCK_JUMP);

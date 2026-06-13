@@ -2,7 +2,6 @@ use crate::ed::EBuffId;
 
 impl EBuffId {
     // Using buff developer descriptions as names here
-    pub(crate) const VELOCITY_PENALTY: Self = Self::from_i32(3);
     pub(crate) const WARP_PENALTY: Self = Self::from_i32(4);
     pub(crate) const DISALLOW_CLOAK: Self = Self::from_i32(5);
     pub(crate) const DISALLOW_DOCK_JUMP: Self = Self::from_i32(6);
