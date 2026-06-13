@@ -53,22 +53,18 @@ impl CycleSoftDtFull {
 }
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSoftDtReason {
-    // Module reactivation delays & ability cooldowns
-    pub(in crate::svc) cooldown: bool,
-    // Module reloads only; fighter rearms are considered as a hard downtime
     pub(in crate::svc) reload: bool,
-    // When there is some, but too little time to fit even partial cycle before fighter rearm, that
-    // time is considered as pre-rearm-idling
-    pub(in crate::svc) pre_rearm_idle: bool,
 }
 impl CycleSoftDtReason {
+    // Soft downtime reasons affect if soft downtime will be created, but not all of them are stored
+    // (since some of those are not used anywhere). Full list of reasons is here:
+    // - cooldown: module reactivation delays & ability cooldowns
+    // - reload: module reloads only; fighter rearms are considered as a hard downtime
+    // - pre-rearm idle: when there is some time, but too little to fit even partial cycle before
+    //   fighter rearm, that time is considered as pre-rearm-idling
     fn try_new(cooldown: bool, reload: bool, pre_rearm_idle: bool) -> Option<Self> {
         match cooldown || reload || pre_rearm_idle {
-            true => Some(Self {
-                cooldown,
-                reload,
-                pre_rearm_idle,
-            }),
+            true => Some(Self { reload }),
             false => None,
         }
     }
