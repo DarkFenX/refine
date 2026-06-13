@@ -3,7 +3,6 @@ from fw.api import ItemStatsOptions, ValOptions
 
 def test_self_effect(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_projector_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_aoe_bubble,
         cat_id=consts.EveEffCat.active,
@@ -37,7 +36,8 @@ def test_self_effect(client, consts):
     assert api_ship_stats.can_tether is True
     # Action
     api_projector.change_module(state=consts.ApiModuleState.active)
-    # Verification
+    # Verification - burst projectors seem to have normal restrictions from aggression, plus cloaks
+    # cannot be used while projector is cycling. Tested on Singularity on 2026-06-13.
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         can_warp=True,
@@ -47,17 +47,16 @@ def test_self_effect(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is False
+    assert api_ship_stats.can_warp is True
     assert api_ship_stats.can_jump_gate is False
     assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is False
+    assert api_ship_stats.can_jump_drive is True
     assert api_ship_stats.can_dock_station is False
     assert api_ship_stats.can_dock_citadel is False
     assert api_ship_stats.can_tether is False
 
 
 def test_remote_effect(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_bubble, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship()

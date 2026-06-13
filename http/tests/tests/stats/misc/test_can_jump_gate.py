@@ -1,10 +1,21 @@
+"""
+According to FC Kestrel, gate jump checks include following checks:
+- cloaked status
+- cyno status
+- gate scramble status
+- drive jumping status
+- some kind of "disabling" effect (presumably MJDs and other effects incompatible with gating)
+Cloak/cyno/disabling effect are covered with custom modifiers for needed items, while gate scramble
+status and drive jumping status are checked explicitly. Tests here cover just those explicit checks.
+"""
+
 from fw import check_no_field
 from fw.api import FitStatsOptions, ItemStatsOptions
 
 
 def test_ship_gate_modified(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -14,7 +25,7 @@ def test_ship_gate_modified(client, consts):
         affectee_attr_id=eve_gate_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1}, eff_ids=[eve_mod_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -40,19 +51,19 @@ def test_ship_gate_modified(client, consts):
     assert api_ship_stats.can_jump_gate is True
 
 
-def test_ship_dock_modified(client, consts):
+def test_ship_jump_modified(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_dock_attr_id)
+        affectee_attr_id=eve_jump_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1}, eff_ids=[eve_mod_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -80,10 +91,10 @@ def test_ship_dock_modified(client, consts):
 
 def test_ship_aggro(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, is_offensive=True)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -112,11 +123,11 @@ def test_ship_aggro(client, consts):
 
 def test_ship_gate_values(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
-    eve_ship1_id = client.mk_eve_ship(attrs={eve_dock_attr_id: 0, eve_gate_attr_id: -100})
-    eve_ship2_id = client.mk_eve_ship(attrs={eve_dock_attr_id: 0, eve_gate_attr_id: 0})
-    eve_ship3_id = client.mk_eve_ship(attrs={eve_dock_attr_id: 0, eve_gate_attr_id: 100})
-    eve_ship4_id = client.mk_eve_ship(attrs={eve_dock_attr_id: 0})
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_jump_attr_id: 0, eve_gate_attr_id: -100})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_jump_attr_id: 0, eve_gate_attr_id: 0})
+    eve_ship3_id = client.mk_eve_ship(attrs={eve_jump_attr_id: 0, eve_gate_attr_id: 100})
+    eve_ship4_id = client.mk_eve_ship(attrs={eve_jump_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -151,8 +162,8 @@ def test_ship_gate_values(client, consts):
 
 def test_ship_gate_no_attr(client, consts):
     eve_gate_attr_id = consts.EveAttr.gate_scramble_status
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 1, eve_dock_attr_id: 0})
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 1, eve_jump_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -164,12 +175,12 @@ def test_ship_gate_no_attr(client, consts):
     assert api_ship_stats.can_jump_gate is True
 
 
-def test_ship_dock_values(client, consts):
+def test_ship_jump_values(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
-    eve_ship1_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: -100})
-    eve_ship2_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: 0})
-    eve_ship3_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: 100})
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    eve_ship1_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: -100})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: 0})
+    eve_ship3_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: 100})
     eve_ship4_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
@@ -203,10 +214,10 @@ def test_ship_dock_values(client, consts):
     assert api_ship_stats.can_jump_gate is True
 
 
-def test_ship_dock_no_attr(client, consts):
+def test_ship_jump_no_attr(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = consts.EveAttr.disallow_docking
-    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_dock_attr_id: 1})
+    eve_jump_attr_id = consts.EveAttr.disallow_drive_jumping
+    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 0, eve_jump_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -220,7 +231,7 @@ def test_ship_dock_no_attr(client, consts):
 
 def test_ship_absent(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -231,7 +242,7 @@ def test_ship_absent(client, consts):
 
 def test_ship_not_loaded(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -246,8 +257,8 @@ def test_ship_not_loaded(client, consts):
 
 def test_struct(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
-    eve_struct_id = client.mk_eve_struct(attrs={eve_gate_attr_id: 1, eve_dock_attr_id: 1})
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    eve_struct_id = client.mk_eve_struct(attrs={eve_gate_attr_id: 1, eve_jump_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -261,8 +272,8 @@ def test_struct(client, consts):
 
 def test_incorrect_item_kind(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
-    eve_fighter_id = client.mk_eve_fighter(attrs={eve_gate_attr_id: 100, eve_dock_attr_id: 100})
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    eve_fighter_id = client.mk_eve_fighter(attrs={eve_gate_attr_id: 100, eve_jump_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -274,8 +285,8 @@ def test_incorrect_item_kind(client, consts):
 
 def test_not_requested(client, consts):
     eve_gate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
-    eve_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 100, eve_dock_attr_id: 100})
+    eve_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_gate_attr_id: 100, eve_jump_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

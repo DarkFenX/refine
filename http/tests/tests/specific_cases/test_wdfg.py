@@ -47,7 +47,6 @@ def test_warp_dscript(client, consts):
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping, def_val=0)
     eve_wdfg_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.warp_disrupt_sphere,
         cat_id=consts.EveEffCat.active,
@@ -130,7 +129,6 @@ def test_warp_sscript(client, consts):
     eve_str_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping, def_val=0)
     eve_wdfg_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.warp_disrupt_sphere,
         cat_id=consts.EveEffCat.active,
@@ -622,7 +620,6 @@ def test_range_bubble_vs_ship(client, consts):
     # Range is assumed to be surface-to-surface, but was not actually tested
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping, def_val=0)
     eve_wdfg_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.warp_disrupt_sphere,
         cat_id=consts.EveEffCat.active,
