@@ -25,7 +25,7 @@ fn make_buff() -> ABuff {
             },
             ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::Direct,
-                affectee_attr_id: AAttrId::DISALLOW_DRIVE_JUMPING,
+                affectee_attr_id: AAttrId::DISALLOW_DRIVE_JUMPING_ONLY,
             },
         ]
         .into_iter()

@@ -39,14 +39,14 @@ pub(in crate::nd::effect::defs) fn mk_mjd_mods() -> impl ExactSizeIterator<Item 
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::DISALLOW_WARPING,
         },
-        // Disable jump drive
+        // Disable gate jumping and jump drive
         AEffectModifier {
             strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::DISALLOW_DRIVE_JUMPING,
         },
-        // Disable docking to stations, docking to citadels, and gate jumping
+        // Disable docking to stations, docking to citadels
         AEffectModifier {
             strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
             op: AOp::Add,

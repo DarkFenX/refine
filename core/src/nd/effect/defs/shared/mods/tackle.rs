@@ -3,24 +3,6 @@ use crate::ad::{
     AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AItemListId, AOp, AValue,
 };
 
-pub(in crate::nd::effect::defs) fn mk_disallow_warp_mod_hardcoded() -> AEffectModifier {
-    AEffectModifier {
-        strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id: AAttrId::DISALLOW_WARPING,
-    }
-}
-
-pub(in crate::nd::effect::defs) fn mk_disallow_drive_jump_mod_hardcoded() -> AEffectModifier {
-    AEffectModifier {
-        strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
-        op: AOp::Add,
-        affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-        affectee_attr_id: AAttrId::DISALLOW_DRIVE_JUMPING,
-    }
-}
-
 pub(in crate::nd::effect::defs) fn mk_bubble_buff(duration: AEffectBuffDuration) -> AEffectBuffFull {
     // Prevent projected targets within range from warping and jumping. Use custom buff for this,
     // since using warp status attribute prevents targets from e.g. docking to citadels too

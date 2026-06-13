@@ -31,8 +31,8 @@ impl Vast {
     ) -> Result<bool, StatItemCheckError> {
         check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         // Warping is blocked by either of:
-        // - warp scram status
-        // - special attribute which disallows warping
+        // - standard warp scram status attribute
+        // - custom warp status attribute
         // - having no max velocity
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
@@ -63,8 +63,9 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Gating is blocked by either of:
         // - having aggro modules active
-        // - gate scram status (scripted HIC ray)
-        // - special attribute which disallows docking (disruptive lance)
+        // - standard gate scram status attribute (scripted HIC ray)
+        // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
+        //   jumps)
         if self.is_fit_aggroed(ship.get_fit_uid()) {
             return Ok(false);
         }
@@ -75,7 +76,7 @@ impl Vast {
             return Ok(false);
         }
         let dock_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_docking, Value::ZERO)
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_drive_jumping, Value::ZERO)
             .unwrap();
         if dock_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
@@ -91,7 +92,7 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)
-        // - special attribute which disallows wormhole jumping (MJDs, sieges)
+        // - custom WH jump status attribute (MJDs, sieges)
         if ship.get_disallowed_in_wspace() == Some(true) {
             return Ok(false);
         }
@@ -110,8 +111,10 @@ impl Vast {
     ) -> Result<bool, StatItemCheckError> {
         check_ship_no_struct(ctx.u_data, item_uid)?;
         // Jumping (with a jump drive) is blocked by either of:
-        // - warp scram status
-        // - special attribute which disallows jumping
+        // - standard warp scram status attribute
+        // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
+        //   jumps)
+        // - custom drive jump status attribute (bubbles)
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
             .unwrap();
@@ -120,6 +123,12 @@ impl Vast {
         }
         let jump_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_drive_jumping, Value::ZERO)
+            .unwrap();
+        if jump_status > Value::FLOAT_TOLERANCE {
+            return Ok(false);
+        }
+        let jump_status = calc
+            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_drive_jumping_only, Value::ZERO)
             .unwrap();
         if jump_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
@@ -135,7 +144,7 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Station docking is blocked by either of:
         // - having any aggro effects active
-        // - special attribute which disallows docking (scripted HIC ray)
+        // - standard dock status attribute (scripted HIC ray)
         if self.is_fit_aggroed(ship.get_fit_uid()) {
             return Ok(false);
         }
@@ -156,8 +165,8 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Citadel docking is blocked by either of:
         // - having any aggro effects active
-        // - scramble status
-        // - special attribute which disallows docking
+        // - standard warp scram status attribute
+        // - standard dock status attribute (scripted HIC ray)
         if self.is_fit_aggroed(ship.get_fit_uid()) {
             return Ok(false);
         }
@@ -185,8 +194,8 @@ impl Vast {
         // Tether is blocked by either of:
         // - having any aggro effects active
         // - any drones or fighters being outside
-        // - warp scram status
-        // - special attribute which disallows tethering
+        // - standard warp scram status attribute
+        // - standard tether status attribute
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
         if !fit_data.aggro_effects.is_empty() {
             return Ok(false);
