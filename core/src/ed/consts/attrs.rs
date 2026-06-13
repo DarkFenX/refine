@@ -136,6 +136,7 @@ impl EAttrId {
     pub(crate) const HULL_KIN_DMG_RESONANCE: Self = Self::from_i32(976);
     pub(crate) const HULL_THERM_DMG_RESONANCE: Self = Self::from_i32(977);
     pub(crate) const MAX_GROUP_ONLINE: Self = Self::from_i32(978);
+    pub(crate) const DISALLOW_REPEATING_ACTIVATION: Self = Self::from_i32(1014);
     pub(crate) const SCAN_GRAVIMETRIC_STRENGTH_PERCENT: Self = Self::from_i32(1027);
     pub(crate) const SCAN_LADAR_STRENGTH_PERCENT: Self = Self::from_i32(1028);
     pub(crate) const SCAN_MAGNETOMETRIC_STRENGTH_PERCENT: Self = Self::from_i32(1029);

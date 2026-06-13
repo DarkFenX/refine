@@ -7,6 +7,7 @@ pub(crate) use ship_limit::RItemShipLimit;
 pub(super) mod attr_val;
 pub(super) mod charge_limit;
 pub(super) mod container_limit;
+pub(super) mod cycle;
 pub(super) mod drone_limit;
 pub(super) mod effect_immunity;
 pub(super) mod fighter_kind;

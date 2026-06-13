@@ -145,6 +145,7 @@ impl AAttrId {
     pub(crate) const HULL_KIN_DMG_RESONANCE: Self = Self::from_eid(EAttrId::HULL_KIN_DMG_RESONANCE);
     pub(crate) const HULL_THERM_DMG_RESONANCE: Self = Self::from_eid(EAttrId::HULL_THERM_DMG_RESONANCE);
     pub(crate) const MAX_GROUP_ONLINE: Self = Self::from_eid(EAttrId::MAX_GROUP_ONLINE);
+    pub(crate) const DISALLOW_REPEATING_ACTIVATION: Self = Self::from_eid(EAttrId::DISALLOW_REPEATING_ACTIVATION);
     pub(crate) const SCAN_GRAVIMETRIC_STRENGTH_PERCENT: Self =
         Self::from_eid(EAttrId::SCAN_GRAVIMETRIC_STRENGTH_PERCENT);
     pub(crate) const SCAN_LADAR_STRENGTH_PERCENT: Self = Self::from_eid(EAttrId::SCAN_LADAR_STRENGTH_PERCENT);
