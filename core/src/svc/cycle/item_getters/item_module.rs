@@ -22,7 +22,7 @@ use crate::{
             seq_var_loop_lim_sin::CSeqLoopLimSin,
             seq_var_loop_sin::CSeqLoopSin,
         },
-        funcs::get_effect_duration_s,
+        funcs::{get_effect_duration_s, is_oattr_flag_set},
     },
     ud::{UItem, UItemId, UModule},
 };
@@ -466,4 +466,46 @@ fn both_r(
         },
         hard_dt: None,
     })
+}
+
+struct SoftDtCdInfo {
+    duration: PValue,
+    reason_cooldown: bool,
+    reason_non_repeating: bool,
+}
+impl SoftDtCdInfo {
+    fn new_for_regular_cycles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
+        let item_axt = module.get_axt().unwrap();
+        // If auto-repeats are allowed - neither extra delay for activation, nor reactivation delay
+        // are added (reactivation delay is added only when cycle sequence is due to any reason)
+        if !(item_axt.specs_disallow_repeats
+            && is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_repeating_activation).unwrap_or(false))
+        {
+            return Self {
+                duration: PValue::ZERO,
+                reason_cooldown: false,
+                reason_non_repeating: false,
+            };
+        }
+        // If auto-repeats are not allowed, but there is no reactivation delay - set downtime
+        // duration to one tick. Tested on Singularity on 2026-06-14 by using direct DD on random
+        // capitals (DD cycle duration 252 seconds, damage intervals were 253 seconds)
+        if !item_axt.specs_reactivation_delay {
+            return Self {
+                duration: PValue::SERVER_TICK_S,
+                reason_cooldown: false,
+                reason_non_repeating: true,
+            };
+        }
+        let reactivation_delay = PValue::from_value_clamped(
+            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
+                .unwrap()
+                / Value::THOUSAND,
+        );
+        Self {
+            duration: reactivation_delay.max(PValue::SERVER_TICK_S),
+            reason_cooldown: reactivation_delay > PValue::FLOAT_TOLERANCE,
+            reason_non_repeating: true,
+        }
+    }
 }

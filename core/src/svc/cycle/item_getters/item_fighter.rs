@@ -505,6 +505,9 @@ impl RearmInfo {
 }
 
 impl CycleSoftDtFull {
+    // For fighters, having auto-repeats disabled does not seem to introduce any delays. Tested on
+    // Singularity on 2026-06-14 by using secondary ability on Templar I's secondary ability, its
+    // volleys arrived at the same interval as ability duration (14 seconds)
     fn try_new_for_fighter(effect_info: &EffectInfo, duration: PValue, pre_rearm_idle: bool) -> Option<Self> {
         Self::try_new(
             duration,
