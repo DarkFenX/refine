@@ -22,7 +22,7 @@ use crate::{
             seq_var_loop_lim_sin::CSeqLoopLimSin,
             seq_var_loop_sin::CSeqLoopSin,
         },
-        funcs,
+        funcs::get_effect_duration_s,
     },
     ud::{UItem, UItemId, UModule},
 };
@@ -79,7 +79,7 @@ fn fill_module_effect_info(
         return;
     }
     // No appropriate duration - no info
-    let Some(active_duration) = funcs::get_effect_duration_s(ctx, calc, item_uid, effect) else {
+    let Some(active_duration) = get_effect_duration_s(ctx, calc, item_uid, effect) else {
         return;
     };
     // Charge count info

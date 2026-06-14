@@ -1,10 +1,14 @@
 use std::collections::HashMap;
 
-use super::shared::{is_attr_flag_set, is_oattr_flag_set};
 use crate::{
     misc::{SecZone, SecZoneCorruption},
     num::Value,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        funcs::{is_attr_flag_set, is_oattr_flag_set},
+        vast::VastFitData,
+    },
     ud::{ItemId, UItemId},
     util::{RMap, RSet},
 };

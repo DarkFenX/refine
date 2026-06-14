@@ -1,7 +1,6 @@
-use super::shared::is_oattr_flag_set;
 use crate::{
     num::Count,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
+    svc::{SvcCtx, calc::Calc, funcs::is_oattr_flag_set, vast::VastFitData},
     ud::{ItemId, UFit, UItemId},
     util::RSet,
 };
