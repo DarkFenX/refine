@@ -27,7 +27,7 @@ where
         // Add first cycle after which there is a reload. Here we assume every part has 1+ cycle
         // count, which is something cseq creating functions uphold
         if let Some(soft_dt) = cseq_part.data.soft_dt
-            && soft_dt.reason.reload
+            && soft_dt.reasons.reload
         {
             accum.add_output_full(&cseq_part_data_conv.output, chance_mult, Count::ONE);
             // Record only active duration before reload, ignore soft downtime duration
@@ -68,7 +68,7 @@ where
             process_output_for_cycle_hard_dt(&mut accum.instances, &inner_data_conv, chance_mult, Count::ONE);
             // Record time until reload or hard downtime starts
             let p1_final_cycle_duration = match inner.data.soft_dt {
-                Some(soft_dt) if soft_dt.reason.reload => inner.data.active.duration,
+                Some(soft_dt) if soft_dt.reasons.reload => inner.data.active.duration,
                 _ => inner_data_conv.cycle_main_duration,
             };
             accum.time += p1_final_cycle_duration;
@@ -76,7 +76,7 @@ where
         }
         CycleSeq::LoopLimSin(inner) => {
             if let Some(soft_dt) = inner.p1_data.soft_dt
-                && soft_dt.reason.reload
+                && soft_dt.reasons.reload
             {
                 // Case when there is a reload right after first cycle
                 let inner_p1_data_conv: AggrPartData<_> = converter.lib_convert(inner.p1_data);
@@ -101,7 +101,7 @@ where
                 process_output_for_lls_cseq_hard_dt(&mut accum.instances, &inner_conv, chance_mult, Count::ONE);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {
-                    Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,
+                    Some(soft_dt) if soft_dt.reasons.reload => inner.p2_data.active.duration,
                     _ => inner_conv.p2_data.cycle_main_duration,
                 };
                 accum.time += inner_conv

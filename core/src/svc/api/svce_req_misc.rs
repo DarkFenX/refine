@@ -49,7 +49,7 @@ impl Svc {
             charged_cycles += repeat_count;
             // Break sequence only on reloads
             if let Some(soft_dt) = cycle_part.data.soft_dt
-                && soft_dt.reason.reload
+                && soft_dt.reasons.reload
             {
                 return Some(InfCount::Count(charged_cycles));
             }

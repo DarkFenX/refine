@@ -74,7 +74,7 @@ where
         // Add first cycle after which there is a reload. Here we assume every part has 1+ cycle
         // count, which is something cseq creating functions uphold
         if let Some(soft_dt) = cseq_part.data.soft_dt
-            && soft_dt.reason.reload
+            && soft_dt.reasons.reload
         {
             let spool = inv_spool.calc_cycle_spool(uninterrupted_cycles);
             let cycle_output = get_proj_spool_cycle_output(inv_proj, cseq_part_data_conv.str_mult, spool);
@@ -156,7 +156,7 @@ where
                 process_output_for_lls_cseq_spool_hard_dt(&inner_conv, inv_proj, inv_spool, &mut accum.instances);
                 // Record time until reload or hard downtime starts
                 let p2_final_cycle_duration = match inner.p2_data.soft_dt {
-                    Some(soft_dt) if soft_dt.reason.reload => inner.p2_data.active.duration,
+                    Some(soft_dt) if soft_dt.reasons.reload => inner.p2_data.active.duration,
                     _ => inner_conv.p2_data.cycle_main_duration,
                 };
                 accum.time += inner_conv

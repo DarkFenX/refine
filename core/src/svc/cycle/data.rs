@@ -43,7 +43,7 @@ pub(in crate::svc) struct CycleActive {
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSoftDtFull {
     pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) reason: CycleSoftDtReason,
+    pub(in crate::svc) reasons: CycleSoftDtReasons,
 }
 impl CycleSoftDtFull {
     pub(super) fn try_new(
@@ -53,15 +53,15 @@ impl CycleSoftDtFull {
         non_repeating: bool,
         pre_rearm_idle: bool,
     ) -> Option<Self> {
-        let reason = CycleSoftDtReason::try_new(cooldown, reload, non_repeating, pre_rearm_idle)?;
-        Some(Self { duration, reason })
+        let reasons = CycleSoftDtReasons::try_new(cooldown, reload, non_repeating, pre_rearm_idle)?;
+        Some(Self { duration, reasons })
     }
 }
 #[derive(Copy, Clone)]
-pub(in crate::svc) struct CycleSoftDtReason {
+pub(in crate::svc) struct CycleSoftDtReasons {
     pub(in crate::svc) reload: bool,
 }
-impl CycleSoftDtReason {
+impl CycleSoftDtReasons {
     // Soft downtime reasons affect if soft downtime will be created, but not all of them are stored
     // (since some of those are not used anywhere). Full list of reasons is here:
     // - cooldown: module reactivation delays & ability cooldowns
@@ -82,19 +82,19 @@ impl CycleSoftDtReason {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqHardDtFull {
     pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) reason: CSeqHardDtReason,
+    pub(in crate::svc) reasons: CSeqHardDtReasons,
 }
 impl CSeqHardDtFull {
     pub(super) fn try_new(duration: PValue, rearm: bool) -> Option<Self> {
-        let reason = CSeqHardDtReason::try_new(rearm)?;
-        Some(Self { duration, reason })
+        let reasons = CSeqHardDtReasons::try_new(rearm)?;
+        Some(Self { duration, reasons })
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc) struct CSeqHardDtReason {
+pub(in crate::svc) struct CSeqHardDtReasons {
     pub(in crate::svc) refuel: bool,
 }
-impl CSeqHardDtReason {
+impl CSeqHardDtReasons {
     fn try_new(refuel: bool) -> Option<Self> {
         match refuel {
             true => Some(Self { refuel }),

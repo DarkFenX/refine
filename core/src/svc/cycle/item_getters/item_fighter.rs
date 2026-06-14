@@ -55,7 +55,9 @@ struct EffectInfo {
     active_duration: PValue,
     // Counting from end of active duration
     cooldown_duration: PValue,
-    soft_dt_cd: bool,
+    // Soft downtime reasons
+    sdtr_cooldown: bool,
+    sdtr_non_repeating: bool,
     charge_count: Option<Count>,
     charge_rearm_duration: PValue,
 }
@@ -87,12 +89,15 @@ fn get_effect_info(
     // longer than duration, but data format does not guarantee that
     let cooldown_duration = PValue::from_value_clamped(effect_data.cooldown_s - active_duration);
     // Assume any cooldown interrupts cycling, even if it shorter than ability cycle
-    let soft_dt_cd = effect_data.cooldown_s > PValue::ZERO;
+    let sdtr_cooldown = effect_data.cooldown_s > PValue::ZERO;
+    // Any abilities which have charges cannot be auto-repeated
+    let sdtr_non_repeating = effect_data.charge_count.is_some();
     Some(EffectInfo {
         kills_item: effect.kills_item,
         active_duration,
         cooldown_duration,
-        soft_dt_cd,
+        sdtr_cooldown,
+        sdtr_non_repeating,
         charge_count: effect_data.charge_count,
         charge_rearm_duration: effect_data.charge_reload_duration,
     })
@@ -144,13 +149,7 @@ fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull, CSeqHa
                 duration: effect_info.active_duration,
                 chargedness: effect_info.get_chargedness(),
             },
-            soft_dt: CycleSoftDtFull::try_new(
-                effect_info.cooldown_duration,
-                effect_info.soft_dt_cd,
-                false,
-                false,
-                false,
-            ),
+            soft_dt: CycleSoftDtFull::try_new_for_fighter(&effect_info, effect_info.cooldown_duration, false),
         },
         hard_dt: None,
     })
@@ -198,13 +197,7 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull,
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDtFull::try_new(
-            effect_info.cooldown_duration,
-            effect_info.soft_dt_cd,
-            false,
-            false,
-            false,
-        ),
+        soft_dt: CycleSoftDtFull::try_new_for_fighter(&effect_info, effect_info.cooldown_duration, false),
     };
     match effect_info.charge_count {
         Some(charge_count) => CycleSeq::Lim(CSeqLim {
@@ -367,13 +360,7 @@ fn sim_rearm_trigger_info_to_cseq(
                         duration: effect_info.active_duration,
                         chargedness: effect_info.get_chargedness(),
                     },
-                    soft_dt: CycleSoftDtFull::try_new(
-                        effect_info.cooldown_duration,
-                        effect_info.soft_dt_cd,
-                        false,
-                        false,
-                        false,
-                    ),
+                    soft_dt: CycleSoftDtFull::try_new_for_fighter(&effect_info, effect_info.cooldown_duration, false),
                 },
                 p1_repeat_count,
                 p2_data: CycleDataFull {
@@ -448,13 +435,7 @@ fn make_full_cycle_data(effect_info: EffectInfo) -> CycleDataFull {
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDtFull::try_new(
-            effect_info.cooldown_duration,
-            effect_info.soft_dt_cd,
-            false,
-            false,
-            false,
-        ),
+        soft_dt: CycleSoftDtFull::try_new_for_fighter(&effect_info, effect_info.cooldown_duration, false),
     }
 }
 fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration: PValue) -> CycleDataFull {
@@ -463,11 +444,9 @@ fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDtFull::try_new(
+        soft_dt: CycleSoftDtFull::try_new_for_fighter(
+            &effect_info,
             effect_info.cooldown_duration + idle_duration,
-            effect_info.soft_dt_cd,
-            false,
-            false,
             idle_duration > PValue::ZERO,
         ),
     }
@@ -480,7 +459,7 @@ fn make_extra_cycle_active_partial_data(effect_info: EffectInfo, active_duration
         },
         // Since we are assuming that any cooldown interrupts cycling, follow that logic here and
         // make soft downtime if ability has any cooldown, even if its duration is 0
-        soft_dt: CycleSoftDtFull::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false, false),
+        soft_dt: CycleSoftDtFull::try_new_for_fighter(&effect_info, PValue::ZERO, false),
     }
 }
 fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: PValue) -> CycleDataFull {
@@ -489,11 +468,9 @@ fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: 
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDtFull::try_new(
+        soft_dt: CycleSoftDtFull::try_new_for_fighter(
+            &effect_info,
             soft_dt_duration,
-            effect_info.soft_dt_cd,
-            false,
-            false,
             soft_dt_duration > effect_info.cooldown_duration,
         ),
     }
@@ -524,6 +501,18 @@ impl RearmInfo {
                 rearm_duration: effect_info.charge_rearm_duration * charge_count.into_pvalue(),
             }),
         }
+    }
+}
+
+impl CycleSoftDtFull {
+    fn try_new_for_fighter(effect_info: &EffectInfo, duration: PValue, pre_rearm_idle: bool) -> Option<Self> {
+        Self::try_new(
+            duration,
+            effect_info.sdtr_cooldown,
+            false,
+            effect_info.sdtr_non_repeating,
+            pre_rearm_idle,
+        )
     }
 }
 
