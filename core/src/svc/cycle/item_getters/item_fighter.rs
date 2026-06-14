@@ -144,7 +144,13 @@ fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull, CSeqHa
                 duration: effect_info.active_duration,
                 chargedness: effect_info.get_chargedness(),
             },
-            soft_dt: CycleSoftDtFull::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+            soft_dt: CycleSoftDtFull::try_new(
+                effect_info.cooldown_duration,
+                effect_info.soft_dt_cd,
+                false,
+                false,
+                false,
+            ),
         },
         hard_dt: None,
     })
@@ -192,7 +198,13 @@ fn sim_no_rearm_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull,
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDtFull::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+        soft_dt: CycleSoftDtFull::try_new(
+            effect_info.cooldown_duration,
+            effect_info.soft_dt_cd,
+            false,
+            false,
+            false,
+        ),
     };
     match effect_info.charge_count {
         Some(charge_count) => CycleSeq::Lim(CSeqLim {
@@ -360,6 +372,7 @@ fn sim_rearm_trigger_info_to_cseq(
                         effect_info.soft_dt_cd,
                         false,
                         false,
+                        false,
                     ),
                 },
                 p1_repeat_count,
@@ -435,7 +448,13 @@ fn make_full_cycle_data(effect_info: EffectInfo) -> CycleDataFull {
             duration: effect_info.active_duration,
             chargedness: effect_info.get_chargedness(),
         },
-        soft_dt: CycleSoftDtFull::try_new(effect_info.cooldown_duration, effect_info.soft_dt_cd, false, false),
+        soft_dt: CycleSoftDtFull::try_new(
+            effect_info.cooldown_duration,
+            effect_info.soft_dt_cd,
+            false,
+            false,
+            false,
+        ),
     }
 }
 fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration: PValue) -> CycleDataFull {
@@ -447,6 +466,7 @@ fn make_full_cycle_with_extra_idling_data(effect_info: EffectInfo, idle_duration
         soft_dt: CycleSoftDtFull::try_new(
             effect_info.cooldown_duration + idle_duration,
             effect_info.soft_dt_cd,
+            false,
             false,
             idle_duration > PValue::ZERO,
         ),
@@ -460,7 +480,7 @@ fn make_extra_cycle_active_partial_data(effect_info: EffectInfo, active_duration
         },
         // Since we are assuming that any cooldown interrupts cycling, follow that logic here and
         // make soft downtime if ability has any cooldown, even if its duration is 0
-        soft_dt: CycleSoftDtFull::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false),
+        soft_dt: CycleSoftDtFull::try_new(PValue::ZERO, effect_info.soft_dt_cd, false, false, false),
     }
 }
 fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: PValue) -> CycleDataFull {
@@ -472,6 +492,7 @@ fn make_extra_cycle_active_full_data(effect_info: EffectInfo, soft_dt_duration: 
         soft_dt: CycleSoftDtFull::try_new(
             soft_dt_duration,
             effect_info.soft_dt_cd,
+            false,
             false,
             soft_dt_duration > effect_info.cooldown_duration,
         ),

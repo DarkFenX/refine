@@ -46,8 +46,14 @@ pub(in crate::svc) struct CycleSoftDtFull {
     pub(in crate::svc) reason: CycleSoftDtReason,
 }
 impl CycleSoftDtFull {
-    pub(super) fn try_new(duration: PValue, cooldown: bool, reload: bool, pre_rearm_idle: bool) -> Option<Self> {
-        let reason = CycleSoftDtReason::try_new(cooldown, reload, pre_rearm_idle)?;
+    pub(super) fn try_new(
+        duration: PValue,
+        cooldown: bool,
+        reload: bool,
+        non_repeating: bool,
+        pre_rearm_idle: bool,
+    ) -> Option<Self> {
+        let reason = CycleSoftDtReason::try_new(cooldown, reload, non_repeating, pre_rearm_idle)?;
         Some(Self { duration, reason })
     }
 }
@@ -60,10 +66,12 @@ impl CycleSoftDtReason {
     // (since some of those are not used anywhere). Full list of reasons is here:
     // - cooldown: module reactivation delays & ability cooldowns
     // - reload: module reloads only; fighter rearms are considered as a hard downtime
+    // - non-repeating: used for effects which cannot be auto-repeated (some modules like titan DDs,
+    //   fighter abilities limited by charge count)
     // - pre-rearm idle: when there is some time, but too little to fit even partial cycle before
     //   fighter rearm, that time is considered as pre-rearm-idling
-    fn try_new(cooldown: bool, reload: bool, pre_rearm_idle: bool) -> Option<Self> {
-        match cooldown || reload || pre_rearm_idle {
+    fn try_new(cooldown: bool, reload: bool, non_repeating: bool, pre_rearm_idle: bool) -> Option<Self> {
+        match cooldown || reload || non_repeating || pre_rearm_idle {
             true => Some(Self { reload }),
             false => None,
         }
