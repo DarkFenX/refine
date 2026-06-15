@@ -19,18 +19,18 @@ where
     pub(in crate::svc) fn get_first_cycle(&self) -> &D {
         match self {
             Self::Lim(inner) => inner.get_first_cycle(),
-            Self::LoopSin(inner) => inner.get_first_cycle(),
             Self::LimInf(inner) => inner.get_first_cycle(),
             Self::LimSinInf(inner) => inner.get_first_cycle(),
+            Self::LoopSin(inner) => inner.get_first_cycle(),
             Self::LoopLimSin(inner) => inner.get_first_cycle(),
         }
     }
     pub(in crate::svc) fn get_hard_dt(&self) -> Option<&HDT> {
         match self {
             Self::Lim(_) => None,
-            Self::LoopSin(inner) => inner.get_hard_dt(),
             Self::LimInf(_) => None,
             Self::LimSinInf(_) => None,
+            Self::LoopSin(inner) => inner.get_hard_dt(),
             Self::LoopLimSin(inner) => inner.get_hard_dt(),
         }
     }
