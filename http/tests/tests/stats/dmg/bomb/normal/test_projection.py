@@ -7,7 +7,7 @@ def test_range_tick_aligned(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -106,7 +106,7 @@ def test_range_tick_misaligned(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7, 7, 7, 7), volume=75,
         speed=4000, flight_time=7500, mass=1000, agility=0.0000251, exp_range=15000, exp_radius=400)
@@ -301,7 +301,7 @@ def test_application(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -365,7 +365,7 @@ def test_resist(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(8.75, 7, 7, 7), volume=75, speed=2500, flight_time=12000,
         mass=1000, agility=0.0275, exp_range=15000, exp_radius=400, neut_resist_attr=True)
@@ -400,7 +400,7 @@ def test_npc_prop_mode(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -460,7 +460,7 @@ def test_bomb_attr_speed_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -525,7 +525,7 @@ def test_bomb_attr_flight_time_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -590,7 +590,7 @@ def test_bomb_attr_mass_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -655,7 +655,7 @@ def test_bomb_attr_agility_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, exp_range=15000, exp_radius=400)
@@ -720,7 +720,7 @@ def test_bomb_attr_exp_range_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_radius=400)
@@ -785,7 +785,7 @@ def test_bomb_attr_exp_radius_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000)
@@ -817,7 +817,7 @@ def test_bomb_ship_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -849,7 +849,7 @@ def test_tgt_attr_sig_radius_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
@@ -881,7 +881,7 @@ def test_tgt_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
-        cycle_time=10000, reload_time=10000, reactivation_delay=67500)
+        cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
         speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)

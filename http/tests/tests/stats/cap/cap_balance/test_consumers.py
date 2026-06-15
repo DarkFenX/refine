@@ -346,13 +346,16 @@ def test_time_ancil_shield(client, consts):
 def test_time_reactivation_delay(client, consts):
     eve_use_attr_id = client.mk_eve_attr()
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_reactivation_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
     eve_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.active,
         discharge_attr_id=eve_use_attr_id,
         duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_use_attr_id: 30, eve_cycle_time_attr_id: 15000, eve_reactivation_attr_id: 45000},
+        attrs={
+            eve_use_attr_id: 30, eve_cycle_time_attr_id: 15000,
+            eve_disallow_repeats_attr_id: 1, eve_reactivation_attr_id: 45000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship()

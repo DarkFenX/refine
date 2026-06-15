@@ -54,7 +54,7 @@ def test_type_list(client, consts):
     assert api_ship_stats.can_jump_wormhole is True
 
 
-def test_ship_absent(client, consts):
+def test_ship_absent(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -63,7 +63,7 @@ def test_ship_absent(client, consts):
     assert api_fit_stats.can_jump_wormhole is None
 
 
-def test_ship_not_loaded(client, consts):
+def test_ship_not_loaded(client):
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -76,7 +76,7 @@ def test_ship_not_loaded(client, consts):
     assert api_ship_stats.can_jump_wormhole is None
 
 
-def test_struct(client, consts):
+def test_struct(client):
     eve_struct_id = client.mk_eve_struct()
     client.create_sources()
     api_sol = client.create_sol()
@@ -89,7 +89,7 @@ def test_struct(client, consts):
     assert api_ship_stats.can_jump_wormhole is None
 
 
-def test_incorrect_item_kind(client, consts):
+def test_incorrect_item_kind(client):
     eve_fighter_id = client.mk_eve_fighter()
     client.create_sources()
     api_sol = client.create_sol()

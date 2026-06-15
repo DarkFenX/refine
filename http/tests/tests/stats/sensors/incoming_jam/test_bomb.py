@@ -14,6 +14,7 @@ def setup_bomb_test(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
     eve_flight_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
@@ -31,7 +32,9 @@ def setup_bomb_test(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(

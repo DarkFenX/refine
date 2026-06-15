@@ -8,7 +8,7 @@ def test_ship(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,
-        cycle_time=5000, reactivation_delay=60000, reload_time=10000)
+        cycle_time=5000, disallow_repeating_activation=1, reactivation_delay=60000, reload_time=10000)
     eve_charge_id = make_eve_missile_defender(
         client=client, basic_info=eve_basic_info, dmgs=(200, 200, 200, 200), volume=0.015,
         speed=15000, flight_time=3000, mass=700, agility=0, exp_radius=10, exp_speed=400, drf=0.1)
@@ -50,7 +50,7 @@ def test_tgt_not_loaded(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,
-        cycle_time=5000, reactivation_delay=60000, reload_time=10000)
+        cycle_time=5000, disallow_repeating_activation=1, reactivation_delay=60000, reload_time=10000)
     eve_charge_id = make_eve_missile_defender(
         client=client, basic_info=eve_basic_info, dmgs=(200, 200, 200, 200), volume=0.015,
         speed=15000, flight_time=3000, mass=700, agility=0, exp_radius=10, exp_speed=400, drf=0.1)

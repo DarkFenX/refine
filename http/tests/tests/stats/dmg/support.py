@@ -28,6 +28,7 @@ class DmgBasicInfo:
     volume_attr_id: int
     charge_rate_attr_id: int
     cycle_time_attr_id: int
+    disallow_repeating_activation_attr_id: int
     reactivation_delay_attr_id: int
     reload_time_attr_id: int
     crystal_get_dmg_attr_id: int
@@ -158,6 +159,7 @@ def setup_dmg_basics(
     volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
     cycle_time_attr_id = client.mk_eve_attr()
+    disallow_repeating_activation_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     reactivation_delay_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
     reload_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
     crystal_get_dmg_attr_id = client.mk_eve_attr(id_=consts.EveAttr.crystals_get_damaged)
@@ -391,6 +393,7 @@ def setup_dmg_basics(
         dd_dmg_interval_attr_id=dd_dmg_interval_attr_id,
         dd_dmg_duration_attr_id=dd_dmg_duration_attr_id,
         cycle_time_attr_id=cycle_time_attr_id,
+        disallow_repeating_activation_attr_id=disallow_repeating_activation_attr_id,
         reactivation_delay_attr_id=reactivation_delay_attr_id,
         volume_attr_id=volume_attr_id,
         capacity_attr_id=capacity_attr_id,
@@ -701,12 +704,17 @@ def make_eve_launcher(
         basic_info: DmgBasicInfo,
         cycle_time: float | type[Absent] = Absent,
         capacity: float | type[Absent] = Absent,
+        disallow_repeating_activation: float | type[Absent] = Absent,
         reactivation_delay: float | type[Absent] = Absent,
         reload_time: float | type[Absent] = Absent,
 ) -> int:
     attrs = {basic_info.charge_rate_attr_id: 1.0}
     conditional_insert(container=attrs, path=[basic_info.cycle_time_attr_id], value=cycle_time)
     conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
+    conditional_insert(
+        container=attrs,
+        path=[basic_info.disallow_repeating_activation_attr_id],
+        value=disallow_repeating_activation)
     conditional_insert(container=attrs, path=[basic_info.reactivation_delay_attr_id], value=reactivation_delay)
     conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     return client.mk_eve_item(

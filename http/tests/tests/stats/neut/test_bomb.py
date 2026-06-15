@@ -14,6 +14,7 @@ from fw.api import (
 def test_state(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -23,7 +24,9 @@ def test_state(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -116,6 +119,7 @@ def test_state(client, consts):
 def test_time(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -125,7 +129,9 @@ def test_time(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -196,6 +202,7 @@ def test_time(client, consts):
 def test_range_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -213,7 +220,9 @@ def test_range_and_cap_limit(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -400,6 +409,7 @@ def test_range_and_cap_limit(client, consts):
 def test_application_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -415,7 +425,9 @@ def test_application_and_cap_limit(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -477,6 +489,7 @@ def test_application_and_cap_limit(client, consts):
 def test_resist_and_cap_limit(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -493,7 +506,9 @@ def test_resist_and_cap_limit(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -557,6 +572,7 @@ def test_resist_and_cap_limit(client, consts):
 def test_item_kind(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -566,7 +582,9 @@ def test_item_kind(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -595,6 +613,7 @@ def test_item_kind(client, consts):
 def test_include_charges(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -604,7 +623,9 @@ def test_include_charges(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -637,6 +658,7 @@ def test_include_charges(client, consts):
 def test_zero_cycle_time(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
@@ -646,7 +668,9 @@ def test_zero_cycle_time(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 0, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 0, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(
@@ -674,13 +698,16 @@ def test_zero_cycle_time(client, consts):
 def test_no_cycle_time(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_disallow_repeats_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_repeating_activation)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reactivation_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.module_reactivation_delay)
     eve_launcher_effect_id = client.mk_eve_effect(id_=consts.EveEffect.use_missiles, cat_id=consts.EveEffCat.active)
     eve_bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
-        attrs={eve_cycle_time_attr_id: 10000, eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
+        attrs={
+            eve_cycle_time_attr_id: 10000, eve_disallow_repeats_attr_id: 1,
+            eve_reactivation_time_attr_id: 67500, eve_capacity_attr_id: 300},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge_id = client.mk_eve_item(

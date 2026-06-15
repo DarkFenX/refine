@@ -383,6 +383,7 @@ class EveAttr(IntEnum):
     disallow_offensive_modifiers = 872
     sig_radius_bonus_percent = 973
     max_group_online = 978
+    disallow_repeating_activation = 1014
     disallow_in_empire_space = 1074
     boosterness = 1087
     upgrade_capacity = 1132

@@ -21,7 +21,7 @@ def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,
-        cycle_time=5000, reactivation_delay=60000, reload_time=10000)
+        cycle_time=5000, disallow_repeating_activation=1, reactivation_delay=60000, reload_time=10000)
     eve_charge_id = make_eve_missile_defender(
         client=client, basic_info=eve_basic_info, dmgs=(200, 200, 200, 200), volume=0.015)
     client.create_sources()
@@ -146,7 +146,7 @@ def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,
-        cycle_time=5000, reactivation_delay=60000, reload_time=10000)
+        cycle_time=5000, disallow_repeating_activation=1, reactivation_delay=60000, reload_time=10000)
     eve_charge_id = make_eve_missile_defender(
         client=client, basic_info=eve_basic_info, dmgs=(200, 200, 200, 200), volume=0.015)
     client.create_sources()
@@ -176,7 +176,7 @@ def test_include_charges(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,
-        cycle_time=5000, reactivation_delay=60000, reload_time=10000)
+        cycle_time=5000, disallow_repeating_activation=1, reactivation_delay=60000, reload_time=10000)
     eve_charge_id = make_eve_missile_defender(
         client=client, basic_info=eve_basic_info, dmgs=(200, 200, 200, 200), volume=0.015)
     client.create_sources()
@@ -208,7 +208,7 @@ def test_time(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=0.15,
-        cycle_time=5000, reactivation_delay=60000, reload_time=10000)
+        cycle_time=5000, disallow_repeating_activation=1, reactivation_delay=60000, reload_time=10000)
     eve_charge_id = make_eve_missile_defender(
         client=client, basic_info=eve_basic_info, dmgs=(200, 200, 200, 200), volume=0.015)
     client.create_sources()
